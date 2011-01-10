@@ -4,10 +4,28 @@ This is the website for iTerm2. It is built with [Jekyll](https://github.com/moj
 
 ## Development
 
-Install dependencies:
+1. Fork the code on GitHub
+
+2. Clone the repository
+
+    $ git clone git@github.com:[you]/iTerm2.git
+
+3. Check out the `website` branch:
+
+    $ git checkout website
+
+4. Install Bundler if not installed
+
+    $ gem install bundler
+
+5. Install dependencies:
 
     $ bundle install
 
-Run the server locally:
+6. Run the server locally:
 
-    $ rackup
+    $ jekyll --server
+
+7. Open the site:
+
+    $ open http://localhost:4000/
