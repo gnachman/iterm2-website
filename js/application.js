@@ -1,25 +1,30 @@
-var iTerm2 = {};
+var iTerm2 = {
 
-iTerm2.app = $.sammy(function() {
+  sammifyNavBarLinks: function() {
+    $('#navbar a').each(function() {
+      $(this).attr('href', $(this).attr('href').replace(/^#/, '#/section/'));
+    });
+  },
 
-  this.get('#:section', function() {
-    console.log('Showing section ' + this.params.section);
+  app: $.sammy(function() {
 
-    $('#navbar a[href="#' + this.params.section + '"]')
-      .siblings('a').removeClass('selected').end()
-      .addClass('selected');
+    this.get('#/section/:section', function() {
+      console.log('Showing section ' + this.params.section);
 
-    $('#' + this.params.section)
-      .siblings('article').hide().end()
-      .show();
-  });
+      $('#navbar a[href="#' + this.params.section + '"]')
+        .siblings('a').removeClass('selected').end()
+        .addClass('selected');
 
-  this.get('', function() {
-    this.redirect('#home');
-  });
+      $('#' + this.params.section)
+        .siblings('article').hide().end()
+        .show();
+    });
 
-});
+  })
+
+};
 
 $(function() {
-  iTerm2.app.run();
+  iTerm2.sammifyNavBarLinks();
+  iTerm2.app.run('#/section/home');
 });
