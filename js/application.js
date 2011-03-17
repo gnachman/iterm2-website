@@ -11,7 +11,7 @@ var iTerm2 = {
     this.get('#/section/:section', function() {
       console.log('Showing section ' + this.params.section);
 
-      $('#navbar a[href="#' + this.params.section + '"]')
+      $('#navbar a[href="#/section/' + this.params.section + '"]')
         .siblings('a').removeClass('selected').end()
         .addClass('selected');
 
