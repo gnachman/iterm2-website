@@ -949,7 +949,7 @@
           path_params,
           final_returned;
 
-      this.log('runRoute', [verb, path].join(' '));
+      // this.log('runRoute', [verb, path].join(' '));
       this.trigger('run-route', {verb: verb, path: path, params: params});
       if (typeof params == 'undefined') { params = {}; }
 
@@ -1155,7 +1155,7 @@
       if (this.raise_errors) {
         throw(original_error);
       } else {
-        this.log(original_error.message, original_error);
+        //this.log(original_error.message, original_error);
       }
     },
 
@@ -1188,7 +1188,7 @@
       path  = $form.attr('action');
       verb  = this._getFormVerb($form);
       if (!verb || verb == '') { verb = 'get'; }
-      this.log('_checkFormSubmission', $form, path, verb);
+      // this.log('_checkFormSubmission', $form, path, verb);
       if (verb === 'get') {
         this.setLocation(path + '?' + this._serializeFormParams($form));
         returned = false;
