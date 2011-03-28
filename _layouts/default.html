@@ -7,13 +7,31 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>iTerm2 - {{ page.title }}</title>
+    <title>iTerm2 - Mac OS Terminal Replacement</title>
     <meta name="description" content="iTerm2 is a replacement for Terminal and the successor to iTerm">
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css?v=2">
+
     <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
     <script src="js/modernizr-1.6.min.js"></script>
+
+
+<script>
+currentVisible="initial"
+function showFeature(theName) {
+  document.getElementById("f_" + theName).style.display="";
+  document.getElementById("l_" + theName).setAttribute("class", "currentSubNav");
+
+  document.getElementById("f_" + currentVisible).style.display="none";
+  if (currentVisible != "initial") {
+    document.getElementById("l_" + currentVisible).setAttribute("class", "");
+  }
+
+  currentVisible = theName;
+}
+</script>
+  
   </head>
   <body>
     <div id="container">
@@ -24,11 +42,9 @@
       </header>
       <nav id='navbar'>
         <a href='#home'>Home</a>
+        <a href='#faq'>FAQ</a>
         <a href='#documentation'>Documentation</a>
         <a href='#features'>Features</a>
-        <a href='#compare'>Compare</a>
-        <a href='#localizations'>Localizations</a>
-        <a href='#screenshots'>Screenshots</a>
         <div class='clearfix'>&nbsp;</div>
       </nav>
       <div id="main">
@@ -38,15 +54,11 @@
         iTerm2 by George Nachman.
         Website by Matthew Freeman, George Nachman, and
         <a href='http://jamesarosen.com'>James A. Rosen</a>.
-        Last updated
-        <time datetime="{{ site.time | date_to_xmlschema }}">
-          {{ site.time | date: "%d %B %Y" }}
-        </time>
       </footer>
     </div>
     <!-- Grab Google CDN's jQuery. fall back to local if necessary -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-    <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery-1.4.4.js"%3E%3C/script%3E'))</script>
+    <script src="/js/jquery-1.4.4.js"></script>
+
     <script src='/js/sammy.js'></script>
     <script src='/js/application.js'></script>
     <script>
@@ -58,6 +70,8 @@
       g.src = ('https:' == location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
       s.parentNode.insertBefore(g, s);
      })(document, 'script');
+
     </script>
+    <script type="text/javascript" src="js/lightbox.js"></script>
   </body>
 </html>
