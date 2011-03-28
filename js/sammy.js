@@ -227,7 +227,7 @@
         // if we receive a native hash change event, set the proxy accordingly
         // and stop polling
         if (proxy.is_native === false && !non_native) {
-          Sammy.log('native hash change exists, using');
+          //Sammy.log('native hash change exists, using');
           proxy.is_native = true;
           window.clearInterval(Sammy.HashLocationProxy._interval);
         }
