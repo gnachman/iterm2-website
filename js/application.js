@@ -18,6 +18,15 @@ var iTerm2 = {
         .show();
     });
 
+    this.get('#/section/:section/:sub', function() {
+      $('#navbar a[href="#/section/' + this.params.section + '"]')
+        .siblings('a').removeClass('selected').end()
+        .addClass('selected');
+      $('#' + this.params.section)
+        .siblings('article').hide().end()
+        .show();
+      showFeature(this.params.sub)
+    });
   })
 
 };
