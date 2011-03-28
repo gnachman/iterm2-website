@@ -1,20 +1,142 @@
-# Menu Items
-### iTerm &gt; Secure Keyboard Entry
+# Documentation
+iTerm2 should require little explanation for users accustomed to terminal emulators. Even if you are an experienced user, take the time to read through the first section of this document. It will familiarize you with some features of iTerm2 that you may not have seen in other terminal emulators that can make a real difference in the way you work.
+
+## Highlights for New Users
+
+iTerm2 has many features that will change the way you interact with your terminal. This section outlines them briefly.
+<br/>
+<br/>
+
+#### Text Selection
+There are two ways to select text to copy to the clipboard: you can use the mouse, or you can use the find feature's "mouseless copy" feature.
+
+In iTerm2, text is copied to the clipboard immediately upon selecting it.  When selecting text with the mouse, you can click and drag to select a region of text. Double-clicking selects a word delimited by whitespace or any non-word character (there is a field in Preferences that lets you name any symbols you would like to define as word characters). Triple-clicking performs a "smart selection": if the mouse is over a recognizable object such as a URL, email address, pathname, Java/Python include path, or one of several other kinds of strings, it will be selected; otherwise, the entire line will be selected.  Quadruple-clicking always selects an entire line. Any of these multiple clicks may be followed by dragging to select a region.
+
+If you hold down shift while making a selection, the existing selection will be extended. If you hold down option and command while making a selection, a rectangular region is selected. If mouse reporting is on (meaning the application is reciving information about mouse events), you can temporarily turn it off to make a selection by holding down option.
+
+To select text without using the mouse, press cmd-f to open the find field. Enter the beginning fo the text you wish to copy and the find feature will select it in your window. Then press tab and the end of the selection will advance by a word. To advance the beginning of the selection to the left, press shift-tab. At most one line of text can be selected this way
+
+<br/>
+<br/>
+#### URLs
+If you hold down command, you can click on a URL to open it.
+
+<br/>
+<br/>
+#### Split Panes
+iTerm2 allows you to divide a tab into many rectangular "panes", each of which is a different terminal session. The shortcuts cmd-d and cmd-shift-d divide an existing session vertically or horizontally, respectively. You can navigate among split panes with cmd-opt-<i>arrow</i> or cmd-[ and cmd-]. You can "maximize" the current pane--hiding all others in that tab--with cmd-shift-enter. Pressing the shortcut again restores the hidden panes.
+
+<br/>
+<br/>
+#### Hotkey Window
+iTerm2 offers a special terminal window that is always available with a single keystroke. This window is called the "hotkey window" and is most commonly used for occasional administrative tasks. To enable this feature, go to Preferences &gt; Keys. Enable "Show/Hide iTerm2 with a system-wide hotkey". Click in the field and enter the key combination you'd like to use. Then check "hotkey toggles a dedicated window with profile:". A new profile will be created that is optimized for the feature. Pressing the hotkey will drop a terminal window down from the top of the screen, and pressing it again (or clicking in any other window) causes it to disappear.
+
+<br/>
+<br/>
+#### Swap Cmd and Option
+iTerm2 allows you to remap modifiers. You have separate control over left and right command and option keys. One common need is to exchange cmd and option. To do this, go to Preferences &gt; Keys. Set Left option key to Left command key and Left command key to Left option key (and do the same for Right command and Right option if you please). You can add exceptions if you don't want certain combinations to be remapped (for example, cmd-tab) by adding a new global shortcut with the action "Do Not Remap" and the keystroke of the (unremapped) key you wish to keep unaffected by modifier remapping.
+
+<br/>
+<br/>
+#### Keyboard Navigation
+You can select a tab with cmd+number (and cmd+9 always selects the last tab) and you can select a window with cmd+opt+number. Window numbers are shown in their titles by default. You can change the modifiers used to make these selections under Preferences &gt; Keys.
+
+<br/>
+<br/>
+#### Save Mark/Jump to Mark
+You can mark a location in a session with cmd-shift-M and then jump back to it with cmd-shift-J. This is useful, for instance, if you suspend your editor to compile a program and it emits errors. You can save a mark at that point and then return to your editor to fix the errors. As you work, you can jump back to the compilation errors with cmd-shift-J.
+
+<br/>
+<br/>
+#### Regular Expression Search
+When you open the find field (cmd-f) there is a down arrow on the left of the field by the magnifying glass. Clicking it opens a menu of options in which you can enable regular expression search. The [ICU syntax](http://userguide.icu-project.org/strings/regexp#TOC-Regular-Expression-Metacharacters) is used.
+
+<br/>
+<br/>
+#### Autocomplete
+Any text that exists in a tab or its scrollback buffer can be autocompleted in that tab. To use autocomplete, type the beginning of a word and then press cmd-;. An autocomplete window opens showing the top 20 choices for words beginning what what you have entered. The list can be filtered by typing a subsequence. The filter can be reset by pressing backspace. If you make a selection and press return, it will be entered for you. If you make a selection and press tab, your autocomplete will be extended with the selection.
+
+<br/>
+<br/>
+#### Paste History
+Whenever text is copied or pasted in iTerm2 it is added to the paste history. You can access paste history with cmd-shift-H. It can be filtered by typing a subsequence, and the filter can be cleared by pressing backspace. You can choose to have your paste history saved to disk by turning that option on under Preferences &gt; General &gt; Save copy/paste history to disk.
+
+<br/>
+<br/>
+#### Instant Replay
+Sometimes interactive programs will overwrite something of interest on the screen (for example, top(1) does this all the time). Normally, this would be lost forever. With Instant Replay, you can step back in time to see exactly what was on your screen at some point in the recent past. To enable, press cmd-opt-B. Once you are in instant replay mode, you can use the left and right arrow keys to navigate back and forward through time. Esc exits instant replay mode. By default, each session uses up to 4MB to save its instant replay history, and this can be adjusted under Preferences &gt; General &gt; Instant Replay uses __ MB per session.
+
+Another benefit of Instant Replay is that it shows you the exact time that something appeared on your screen down to the second. This is useful when trying to figure out when an error occurred, for example.
+
+<br/>
+<br/>
+#### Full Screen
+You can press cmd-enter and iTerm2 will take up the entire screen. If you had a transparent background configured, it will be turned off upon entering full screen mode to reduce distractions. You can re-enable it with cmd-U.
+
+<br/>
+<br/>
+#### 256 Color Mode
+iTerm2 supports 256 color mode. To enable this for csh shells, set your terminal to xterm-256color (under Preferences &gt; Profiles &gt; Terminal &gt; Report Terminal Type). Some applications may need to be configured to support this mode. In vim, add this to your .vimrc:
+
+<pre>
+set t_Co=256
+</pre>
+
+<br/>
+<br/>
+#### Focus Follows Mouse
+This option is off by default, but can be enabled under Preferences &gt; General &gt; Focus follows mouse. It only affects iTerm2 windows.
+
+<br/>
+<br/>
+#### Middle Button Paste
+If you have a three-button mouse, by default the middle button performs "paste".
+
+<br/>
+<br/>
+#### Smart Cursor Color
+When using a block cursor, it's hard to pick a cursor color that's visible against every background color. If you enable Smart cursor color (under Preferences &gt; Profiles &gt; Colors) then the cursor color will be dynamically chosen to be visible against the text it is over and the adjacent cells. 
+
+<br/>
+<br/>
+#### Minimum Contrast
+Sometimes an application will display text with a color combination that is hard to read. Colorblind users in particular may find certain combinations hard to see if the colors differ only in hue and not brightness. If you enable minimum contrast (under Preferences &gt; Profiles &gt; Colors &gt; Minimum contrast, then iTerm2 will guarantee a minmum level of brightness difference between the foreground and background color of every character. If you set this to its maximum value, then all text will be black or white.
+
+<br/>
+<br/>
+#### Growl Support
+If you enable Growl (Preferences &gt; Profiles &gt; Terminal &gt; Enable Growl Notifications) and you have [Growl](http://growl.info/) installed then you'll receive messages when a terminal beeps, has output after a period of silence, or terminates.
+
+<br/>
+<br/>
+#### Expos√© Tabs
+If you have too many tabs and are unable to find the one you're looking for, you can use the Expos√ ©Tabs feature to find it. Press cmd-opt-E and all your tabs will be shown at once. You can then perform a search over all tabs simultaneously to find what you're looking for.
+<br/>
+<br/>
+<hr/>
+## Menu Items
+<br/><br/>
+#### iTerm &gt; Secure Keyboard Entry
 When this is enabled, the operating system will prevent other programs running on your computer from being able to see what you are typing. If you're concerned that untrusted programs might try to steal your passwords, you can turn this on, but it may disable global hotkeys in other programs.
 
-### Shell &gt; Split Vertically/Horizontally
+<br/><br/>
+#### Shell &gt; Split Vertically/Horizontally
 These menu items allow you to divide a tab into two or more split panes. The panes can be adjusted by dragging the line that divides them.
 
-### Shell &gt; Send Input to All Sessions
+<br/><br/>
+#### Shell &gt; Send Input to All Sessions
 When this is enabled, keybard input will be sent to all tabs in the current window. Other windows are not affected.
 
-### Shell &gt; Log &gt; Start/Stop
+<br/><br/>
+#### Shell &gt; Log &gt; Start/Stop
 Logging saves all input received in a session to a file on disk.
 
-### Edit &gt; Paste Special &gt; Paste Escaping Special Characters
+<br/><br/>
+#### Edit &gt; Paste Special &gt; Paste Escaping Special Characters
 "Paste Escaping Special Characters" pastes the current string in the clipboard, but places a backslash before spaces and backslashes.
 
-### Edit &gt; Paste Slowly
+<br/><br/>
+#### Edit &gt; Paste Slowly
 "Paste Slowly" pastes the current string in the clipboard, but it doesn't send the whole string at once. It is sent in batches of 16 bytes with a 125ms delay between batches. These values can be tweaked with hidden settings. For example:
 
 <pre>
@@ -22,282 +144,377 @@ Logging saves all input received in a session to a file on disk.
     defaults write com.googlecode.iterm2 SlowPasteDelayBetweenCalls -float 0.125
 </pre>
 
-### Edit &gt; Open Paste History...
+<br/><br/>
+#### Edit &gt; Open Paste History...
 "Open Paste History" opens a window showing up to the last 20 values that were copied or pasted in iTerm2. You can search its contents by typing a (non-necessarily-consecutive) subsequence of characters that appear in the value. You can use arrow keys and enter to make a selection, or you can click on an item to choose it, and it will be pasted. If you enable the <b>Save copy/pate history to disk</b> preference then these values will persist across sessions of iTerm2.
 
-### Edit &gt; Special Characters...
+<br/><br/>
+#### Edit &gt; Special Characters...
 "Special Characters" opens a window that facilitates entering any unicode character.
 
-### View &gt; Use Transparency
+<br/><br/>
+#### View &gt; Use Transparency
 This toggles transparency. It only has an effect if you have configured your session to be transparent under Preferences &gt; Profiles &gt; Window &gt; Transparency. When Full Screen mode is entered, transparency is turned off by default, but you can select this menu item to re-enable it.
 
-### View &gt; Edit Current Session
+<br/><br/>
+#### View &gt; Edit Current Session
 This opens a window that lets you change the settings of the current session without affecting any other sessions. Once this has been done, changes to the profile will not affect this session.
 
-### View &gt; Step Back/Forward in Time
+<br/><br/>
+#### View &gt; Step Back/Forward in Time
 Stepping through time allows you to see what was on the screen at a previous time. This is different than going back through the scrollback buffer, as interactive programs sometimes overwrite the screen contents without having them scroll back. Once in this mode, you can use the left and right arrow keys to step back and forward, respectively. The "esc" key exits this mode, as does clicking the close button in the bar that appears on the bottom. You can adjust the amount of memory dedicated to this feature in Preferences &gt; Instant Replay uses <b>xx</b> MB per session. The more memory you assign, the further back in time you can step.
 
-### Profiles &gt; Open Profiles...
+<br/><br/>
+#### Profiles &gt; Open Profiles...
 This opens the "Profiles Window" which allows you to create new windows, tabs, or panes from one or more profiles. You can perform a search by entering text in the search field. Profile names and tags are searched, and the listed profiles are filtered as you type. You can use the up and down arrow keys to make a selection. Pressing enter will open a new tab, while shift-enter will open a new window. You can make multiple selections by holding down shift or cmd and clicking on profiles. The "New Tabs in New Window" button is enabled only when more than one profile is selected: it will open a new window and create a new tab for each profile selected.
 
-### Window &gt; Expos√© All Tabs
+<br/><br/>
+#### Window &gt; Expos√© All Tabs
 All iTerm2 tabs will be shown tiled on the main screen. You can mouse over a tab to see it larger, and clicking on it will restore the windows and select that tab and bring its window to the front. You can search the contents of all tabs by typing in the search field that appears on the left. Making a selection from the results below it will highlight the tab that contains that text. This is useful when you have many tabs open and can't find the one you're looking for.
 
-### Window &gt; Save/Restore Window Arrangement
+<br/><br/>
+#### Window &gt; Save/Restore Window Arrangement
 The current state and positions of windows, tabs, and spit panes is recorded and saved to disk with Save Window Arrangement. Restore Window Arrangement opens a new collection of windows having the saved state. You can automatically restore the arrangement in Preferences &gt; General &gt; Open saved window arrangement.
 
 <hr>
-# Preferences
-## General
-### Open profiles window
+## Preferences
+<br/>
+### General
+<br/><br/>
+#### Open profiles window
 If selected, the Profiles Window will automatically open when iTerm2 is started.
 
-### Open saved window arrangement
+<br/><br/>
+#### Open saved window arrangement
 If selected, the saved window arrangement will be restored when iTerm2 starts. This is diabled if you haven't yet saved a window arrangement with Window &gt; Save Window Arrangement.
 
-### Quit when all windows are closed
+<br/><br/>
+#### Quit when all windows are closed
 If selected, iTerm2 will automatically quit when its last terminal window is closed.
 
-### Confirm commands that close a session
+<br/><br/>
+#### Confirm commands that close a session
 If selected, commands such as "Shell &gt; Close" will require confirmation via an alert box before being executed.
 
-### Only when multiple sessions close
+<br/><br/>
+#### Only when multiple sessions close
 If selected, commands that close one session will not be confirmed, but commands that close multiple sessions (such as clicking the red button on a window with two or more tabs) will be confirmed with an alert box.
 
-### Confirm Quit iTerm2 Command
+<br/><br/>
+#### Confirm Quit iTerm2 Command
 If selected, the Quit iTerm2 (cmd-Q) command will be confirmed if any terminal windows are open.
 
-### Smart window placement
+<br/><br/>
+#### Smart window placement
 If enabled, new windows will be opened where they least overlap existing windows.
 
-### Green button zooms vertically only
+<br/><br/>
+#### Green button zooms vertically only
 If selected, the green "Zoom" button expands a terminal window vertically but does not affect its width. This can be overriden by holding down shift while clicking the zoom button.
 
-### Instant Replay Uses X MB per Session
+<br/><br/>
+#### Instant Replay Uses X MB per Session
 This setting specifies the maximum amount of memory allocated to instant replay for each tab or split pane. More memory means instant replay is able to go farther back into the past. You can enter instant replay with View &gt; Step Back in Time.
 
-### Save copy/paste history to disk
+<br/><br/>
+#### Save copy/paste history to disk
 If selected, every time text is copied or pasted in iTerm2 it will be saved to disk. The last 20 values are recorded. They can be accessed with Edit &gt; Open Paste History....
 
-### Copy to clipboard on selection
+<br/><br/>
+#### Copy to clipboard on selection
 If selected, text is copied to the clipboard immediately upon selection. If not selected, you must select Edit &gt; Copy to copy it.
 
-### Focus follows mouse
+<br/><br/>
+#### Focus follows mouse
 If selected, moving the mouse over an inactive window will cause it to receive keyboard focus.
 
-### Middle button pastes from clipboard
+<br/><br/>
+#### Middle button pastes from clipboard
 If selected, clicking the mouse's middle button will paste. Otherwise, it may be reported to the application if Xterm mouse reporting is on and the application supports it.
 
-### Report ctrl-click to apps instead of opening menu
+<br/><br/>
+#### Report ctrl-click to apps instead of opening menu
 If selected, ctrl-click will be sent to applications that support Xterm mouse reporting (if mouse reporting is enabled).
 
-### Characters considered part of a word for selection
+<br/><br/>
+#### Characters considered part of a word for selection
 When you double-click in the terminal window, a "word" is selected. A word is defined as a string delimited by characters of a different class. The classes of characters are whitespace, word characters, and non-word characters. The characters in this field define the set of non-word characters.
 
-### Add bonjour hosts to profiles
+<br/><br/>
+#### Add bonjour hosts to profiles
 If selected, all bonjour hosts on the local network have a profile created for them as long as they're around.
 
-### Check for updates automatically
+<br/><br/>
+#### Check for updates automatically
 If enabled, iTerm2 will periodically check if a new version of iTerm2 exists, and if so it will prompt you to download and upgrade.
 
-### Prompt for test releases
+<br/><br/>
+#### Prompt for test releases
 If enabled, iTerm2 will periodically check if a new unstable version of iTerm2 exists, and if so it will prompt you to download and upgrade.
 
-## Appearance
+<br/>
+### Appearance
 
-### Tab Style
+<br/><br/>
+#### Tab Style
 Select from a list of tab looks.
 
-### Tab Position
+<br/><br/>
+#### Tab Position
 Defines whether tabs appear at the top or bottom of a window.
 
-### Hide tab bar when there is only one tab
+<br/><br/>
+#### Hide tab bar when there is only one tab
 If selected, the tab bar will become invisible when a window contains exactly one tab.
 
-### Color tab labels on activity
+<br/><br/>
+#### Color tab labels on activity
 If selected, tab labels become purple when a non-selected tab has new output, and red when a non-selected tab has output you haven't seen but that is not very recent.
 
-### Hide tab number and tab close button
+<br/><br/>
+#### Hide tab number and tab close button
 If selected, only the tab name appears in a tab.
 
-### Tabs show in fullscreen mode when cmd is held down for a period of time
+<br/><br/>
+#### Tabs show in fullscreen mode when cmd is held down for a period of time
 When in fullscreen mode, holding down the cmd key will cause the tab bar to show. This setting allows you to specify how long cmd must be held down before the tab bar is shown.
 
-### Hide scrollbar and resize control
+<br/><br/>
+#### Hide scrollbar and resize control
 If selected, the scrollbar and resize control will not be visible.
 
-### Dim inactive split panes
+<br/><br/>
+#### Dim inactive split panes
 If selected, split panes that do not have keybaord focus will be slightly dimmed.
 
-### Show border around window
+<br/><br/>
+#### Show border around window
 If selected, a 1-pixel border will be shown around the edges of terminal windows.
 
-### Show window number
+<br/><br/>
+#### Show window number
 If selected, window titles include the window number. You can navigate to a window by pressing cmd-opt-N where N is the window number.
 
-### Show current job name
+<br/><br/>
+#### Show current job name
 If selected, tab and window titles will show the name of the foreground job.
 
-### Show profile name
+<br/><br/>
+#### Show profile name
 If selected, tab and window titles will show profile names.
 
-## Profiles &gt; General
+<br/>
+### Profiles &gt; General
 
-### Name
+<br/><br/>
+#### Name
 Gives the name of the profile which is shown in menus, preferences, and the profiles window.
 
-### Shortcut
+<br/><br/>
+#### Shortcut
 This shortcut can be used to open a new window or tab. By default, it opens a new tab, but if you hold down the option key while pressing the shortcut, a new window will be opened in stead.
 
-### Tags
+<br/><br/>
+#### Tags
 Tags are a collection of words or phrases that annotate a profile. When you search your profiles (for instance, in the profiles window), the tag names are searched in addition to the profile name.
 
-### Command
+<br/><br/>
+#### Command
 This is the command that is executed when a new session with ths profile is created. If login shell is chosen, then your shell is run with '-' as the first character of argv[0].
 
-### Working directory
+<br/><br/>
+#### Working directory
 Normally, new sessions begin in your home directory. You can choose to open new sessions in the same directory as the current session (but only when creating a new tab), or you can specify a starting directory.
 
-### URL Schemes
+<br/><br/>
+#### URL Schemes
 You can configure a profile to handle a URL scheme, such as ssh. When a hyperlink is clicked on with that scheme, a new tab is opened with the selected bookmark. It is recommended that you set the command to "$$", in which case an ssh command line will be auto-generated.
 
-## Profiles &gt; Colors
+<br/>
+### Profiles &gt; Colors
 Clicking on any of the color wells opens a color picker that lets you change the setting for the selected color.
 
-### Smart cursor color
+<br/><br/>
+#### Smart cursor color
 When selected, a block cursor will be displayed in reverse video. If this would result in confusion, then a different color is chosen that will be most visible given the surrounding cells' background colors.
 
-### Minimum contrast
+<br/><br/>
+#### Minimum contrast
 If text is displayed against a similar background color, the minimum contrast setting will move the text color towards black or towards white to ensure some minimum level of visibility. Setting this slider all the way to maximum will make all text black and white.
 
-### Load Presets
+<br/><br/>
+#### Load Presets
 iTerm2 ships with some color presets, which you may load from this popup menu. You can import and export color presets to files with the extension "itermcolors". There is an online color gallery where users may share color presets, and a link to it is provided in this menu. When importing a color preset, the name it is assigned is based on the filename imported.
 
-## Profiles &gt; Text
-### Cursor
+<br/>
+### Profiles &gt; Text
+<br/><br/>
+#### Cursor
 This lets you select a cursor shape.
 
-### Blinking cursor
+<br/><br/>
+#### Blinking cursor
 If checked, the cursor will blink slowly to improve visibility.
 
-### Draw bold text in bold font
+<br/><br/>
+#### Draw bold text in bold font
 If selected, bold text will be drawn in a bold version of the selected font. If the font does not have a bold version, then a bold appearance is simluated by "double striking" the text: that is, drawing it twice, shifting it one pixel horizontally the second time.
 
-### Draw bold text in bright colors
+<br/><br/>
+#### Draw bold text in bright colors
 If selected, bold text will be drawn in a bright version of its color.
 
-### Regular font
+<br/><br/>
+#### Regular font
 ASCII text (latin letters, numbers, and some symbols) will be drawn using this font. Select "Anti-aliased" to draw the text with smooth edges.
 
-### Non-ASCII font
+<br/><br/>
+#### Non-ASCII font
 All non-ASCII text (many accented Latin letters, non-Latin text, less-common symbols, and thousands of miscellaneous unicode characters) will be drawn with this font. It is recommended that you use the same point size for both regular and non-ASCII fonts. Select "Anti-alised" to draw the text with smooth edges.
 
-### Treat ambiguous-width characters as double width
+<br/><br/>
+#### Treat ambiguous-width characters as double width
 Some characters (e.g., Chinese ideograms) are double-width, and take two cells to display. Other characters (e.g., Latin letters) are single width and take only one cell to display. There is another category of characters known as "ambiguous width". One example of ambiguous-width characters are Greek letters. Depending on your application, you may prefer to display them as double-width or single-width. If most of the text you deal with is double-width, then you should enable this setting as it will help things to line up correctly in that context.
 
-## Profiles &gt; Window
+<br/>
+### Profiles &gt; Window
 
-### Rows/Columns
+<br/><br/>
+#### Rows/Columns
 When creating a new window with this profile, it will be created with this many rows and columns.
 
-### Style
+<br/><br/>
+#### Style
 This defines the window style. Top-of-screen windows will disregard the columns settting, while full-screen windows only respect the rows and columns setting when full-screen mode is exited.
 
-### Screen
+<br/><br/>
+#### Screen
 If you have more than one screen connected, this lets you select the screen on which a new window should open. It is particularly useful for fullscreen and top-of-screen window styles.
 
-### Space
+<br/><br/>
+#### Space
 If you have enabled Spaces and have set Spaces to use Control+Number to switch spaces, then you can use this setting to select the initial space to open a new window using this profile.
 
-### Transparency
+<br/><br/>
+#### Transparency
 This sets the transparency of the window background. It can be temporarily disabled with View &gt; Use Transparency.
 
-### Blur
+<br/><br/>
+#### Blur
 If selected, the window background is blurred provided the background has some transparency.
 
-### Background Image
+<br/><br/>
+#### Background Image
 This allows you to select an image to display behind the terminal's text.
 
-### Server-set tab title preserve profile name (if shown)
+<br/><br/>
+#### Server-set tab title preserve profile name (if shown)
 You can specify that profile names are shown in window and tab titles under Preferences &gt; Appearance &gt; Show Profile Name. If that is not set, then this option is irrelevant. When in use, a host may send an escape code that changes the window title. This setting causes the profile name to be preserved in that session-set title.
 
-### Disable session-initiated window resizing
+<br/><br/>
+#### Disable session-initiated window resizing
 If the host sends an escape code to resize the window, it will be ignored if this option is selected..
 
-## Profiles &gt; Keys
+<br/>
+### Profiles &gt; Keys
 This panel shows key mappings. You can double-click on a mapping to edit it. When the "Keyboard Shortcut" field has focus, you should press the keystroke that you want to modifiy (even if it involves modifiers like Cmd). The following actions are available:
 
-### ignore
+<br/><br/>
+#### ignore
 The keypress will do nothing.
 
-### Do not remap modifiers
+<br/><br/>
+#### Do not remap modifiers
 If modifier remapping is in effect (set under Preferences &gt; Keys), it can be disabled for certain key combinations. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
 
-### Remap modifiers in iTerm2 only
+<br/><br/>
+#### Remap modifiers in iTerm2 only
 If modifier remapping is in effect (set under Preferences &gt; Keys), it can be set to not affect other applications that may listen for global hotkeys. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
 
-### Split/New Window/Tab with Profile
+<br/><br/>
+#### Split/New Window/Tab with Profile
 These actions allow you to create a new session with a specified profile when a key is pressed.
 
-### Backward in Time/Forward in Time
+<br/><br/>
+#### Backward in Time/Forward in Time
 This is equivalent to the menu item View &gt; Step Backward/Forward in Time
 
-### Next/Previous Tab/Window
+<br/><br/>
+#### Next/Previous Tab/Window
 These actions navigate among tabs and windows.
 
-### Scroll to End/Top/Up/Down
+<br/><br/>
+#### Scroll to End/Top/Up/Down
 These actions move through the scrollback buffer.
 
-### Select Split Pane Above/Below/Left/Right
+<br/><br/>
+#### Select Split Pane Above/Below/Left/Right
 These actions navigate split panes.
 
-### Send ^? / ^H Backspace
+<br/><br/>
+#### Send ^? / ^H Backspace
 Modern systems use ^? for backspace, while some legacy systems use ^H.
 
-### Send Escape Sequence
+<br/><br/>
+#### Send Escape Sequence
 This action allows you to enter some text that will be sent when the associated key is pressed. First, the ESC character is sent, and then the text you entered is sent.
 
-### Send Hex Code
+<br/><br/>
+#### Send Hex Code
 This action allows you to enter a sequence of hex codes that will be sent. Each value should begin with "0x" followed by one or two hex digits (0-9, a-f, or A-F). Each code should be separated by a space. You can see a list of hex codes on http://asciitable.com/ in the "Hx" column.
 
-### Send Text
+<br/><br/>
+#### Send Text
 This action allows you to enter a text string that will be sent when the associated key is pressed.
 
-### Toggle Fullscreen
+<br/><br/>
+#### Toggle Fullscreen
 This action enters or exits full screen mode.
 
-### Select Menu Item...
+<br/><br/>
+#### Select Menu Item...
 This action allows you to enter the name of an iTerm2 menu item. It must be entered exactly the same as it appears in the menu. Ellipses can be typed with option-semicolon.
 
 You can add a new keymapping by pressing "+". You can remove an existing mapping by selecting it and pressing "-". Two presets are provided: "Xterm defaults" is the normal key mappings, while "Xterm defaults with numeric keypad" disables the "application keypad" in favor of the numbers and symbols that the numeric keypad typically emits.
 
-### Left/Right Option Key Acts As
+<br/><br/>
+#### Left/Right Option Key Acts As
 It is common to use a modifier to send so-called "meta keys". For most users, selecting "+Esc" here is the right choice. The "Meta" option sets the high bit of the input character, and is not compatible with modern systems.
 
-### Delete sends ^H
+<br/><br/>
+#### Delete sends ^H
 If you are on a legacy system that does not accept ^? for backspace, select this and it will add a key mapping for you.
 
-## Keys
-### Remap modifier keys
+<br/>
+### Keys
+<br/><br/>
+#### Remap modifier keys
 iTerm2 allows you to change the meanings of the modifier keys only within iTerm2. This is useful, for example, if you find it difficult to press "option" for "meta" and would prefer to use "command" for that purpose.
 
-### To switch tabs
+<br/><br/>
+#### To switch tabs
 Tabs are normally navigated with cmd+number, but you can change the modifier used for that function here.
 
-### To switch windows
+<br/><br/>
+#### To switch windows
 Windows are normally navigated with cmd+opt+number, but you can change the modifier used for that function here.
 
-### Show/Hide iTerm2 with a system-wide hotkey
+<br/><br/>
+#### Show/Hide iTerm2 with a system-wide hotkey
 When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assitive devices in the Universal Access panel of System Preferences.
 
-### Hotkey toggles a dedicated window with profile
+<br/><br/>
+#### Hotkey toggles a dedicated window with profile
 If enabled, the hotkey set above will toggle a single window with a specific profile. This provides an always-available terminal.
 
-### Global shortcut keys
+<br/><br/>
+#### Global shortcut keys
 This interface works like the keyboard shortcut system in profiles (described above) but it affects all profiles. Settings here are overridden by those in a profile's key mappings.
+<br/>
+<br/>
 
 <hr>
-## Hidden Settings
+### Hidden Settings
 
 There are a few settings that you cannot access via iTerm2's own Preferences
 panel. However, you can use 'defaults" command to change them to your taste.
@@ -326,9 +543,11 @@ For example, if you like Yahoo, here is the command:
             -string "http://search.yahoo.com/search?p=%@"
 </pre>
 
-## AppleScript
+<br/>
+### AppleScript
 
-### Example Script
+<br/><br/>
+#### Example Script
 
 iTerm2 has sophisticated Applescript support allowing one to write stand-alone
 scripts to launch the application and open multiple sessions from the
@@ -414,7 +633,8 @@ transparency. Here is a sample script:
 
 These scripts can then be saved as stand-alone executable applications.
 
-### Autolanching Scripts
+<br/><br/>
+#### Autolanching Scripts
 
 iTerm2 also supports autolaunching of an Applescript on startup. On startup,
 iTerm2 looks for an Applescript called `AutoLaunch.scpt` under
@@ -422,7 +642,8 @@ iTerm2 looks for an Applescript called `AutoLaunch.scpt` under
 is launched and executed. This feature can be used to launch multiple
 sessions in defined windows and tabs when iTerm2 starts up.
 
-### User-Defined Scripts
+<br/><br/>
+#### User-Defined Scripts
 
 iTerm2 also supports launching of user defined scripts from the "Scripts"
 menu. The scripts need to be stored under the
@@ -430,7 +651,8 @@ menu. The scripts need to be stored under the
 this directory if it does not already exist. iTerm2 checks this directory
 on startup.
 
-## Interesting Links
+<br/>
+### Interesting Links
 
 Here are some links to some iTerm2-related websites.
 
@@ -451,7 +673,8 @@ Here are some links to some iTerm2-related websites.
 * [WidgetTerm](http://widgetterm.sourceforge.net/):
   A mini terminal in your dash board.
 
-## Fonts
+<br/>
+### Fonts
 
 While iTerm2 does not require monospaced fonts, they look much better than proportionately spaced fonts. Here are some recommended fonts:
 
@@ -472,7 +695,8 @@ One **non**-recommended font is Consolas. It has an improperly set baseline offs
 appears too high. It can be fixed, though; please see this page on
 [how to fix Consolas baseline](http://mbauman.net/geek/2009/03/15/minor-truetype-font-editing-on-a-mac/).
 
-## UTF-8 patch for tcsh 6.12.00
+<br/>
+### UTF-8 patch for tcsh 6.12.00
 
 By Yuichi Ohkawa.
 
@@ -481,7 +705,8 @@ you input mult-bytes characters to tcsh, this patch may help you to edit the cha
 
 Download from [here](ftp://ftp.tba.org.tohoku.ac.jp/pub/tcsh-6.12-utf8.patch.gz)
 
-## Tips for using zsh with iTerm2
+<br/>
+### Tips for using zsh with iTerm2
 
 Provided by Marius Wyx.
 
