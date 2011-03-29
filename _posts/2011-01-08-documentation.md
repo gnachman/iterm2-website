@@ -110,7 +110,7 @@ If you enable Growl (Preferences &gt; Profiles &gt; Terminal &gt; Enable Growl N
 <br/>
 <br/>
 #### Expos√© Tabs
-If you have too many tabs and are unable to find the one you're looking for, you can use the Expos√ ©Tabs feature to find it. Press cmd-opt-E and all your tabs will be shown at once. You can then perform a search over all tabs simultaneously to find what you're looking for.
+If you have too many tabs and are unable to find the one you're looking for, you can use the Expos√© Tabs feature to find it. Press cmd-opt-E and all your tabs will be shown at once. You can then perform a search over all tabs simultaneously to find what you're looking for.
 <br/>
 <br/>
 <hr/>
@@ -541,6 +541,13 @@ For example, if you like Yahoo, here is the command:
 <pre>
     defaults write com.googlecode.iterm2 SearchCommand \
             -string "http://search.yahoo.com/search?p=%@"
+</pre>
+
+You can adjust the speed of the animation of the hotkey window's appearance and disappearance:
+
+<pre>
+    defaults write com.googlecode.iterm2 HotkeyTermAnimationDuration \
+            -float 0.25
 </pre>
 
 <br/>
