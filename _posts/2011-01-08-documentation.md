@@ -78,7 +78,7 @@ Every aspect of the keyboard can be configured in iTerm2. These keystrokes may b
  * Cmd+number navigates directly to a tab.
  * Cmd+Option+Number navigates directly to a window.
  + Cmd+Option+Arrow keys navigate among split panes.
- * Cmd+] and Cmd+[ navigates among split panesn in order of use.
+ * Cmd+] and Cmd+[ navigates among split panes in order of use.
 
 You can configure any key combination to perform any action in two places: in Preferences &gt; Keys, you can define global key shortcuts that affect all profiles. In Preferences &gt; Profiles &gt; Keys, you can define key shortcuts that affect only a single profile.
 
