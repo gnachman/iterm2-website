@@ -25,7 +25,9 @@ var iTerm2 = {
       $('#' + this.params.section)
         .siblings('article').hide().end()
         .show();
-      showFeature(this.params.sub)
+      if (this.params.section == "features") {
+        showFeature(this.params.sub)
+      }
     });
   })
 

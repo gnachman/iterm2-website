@@ -1,7 +1,23 @@
 # Documentation
 iTerm2 should require little explanation for users accustomed to terminal emulators. Even if you are an experienced user, take the time to read through the first section of this document. It will familiarize you with some features of iTerm2 that you may not have seen in other terminal emulators that can make a real difference in the way you work.
 
+## Table of Contents
+<ul>
+  <li><a href="#/section/documentation/highlights">Highlights for New Users</a></li>
+  <li><a href="#/section/documentation/menu_items">Menu Items</a></li>
+  <li><a href="#/section/documentation/preferences">Preferences</a></li>
+  <li><a href="#/section/documentation/hidden_settings">Hidden Settings</a></li>
+  <li><a href="#/section/documentation/scripting">Scripting</a></li>
+  <li><a href="#/section/documentation/links">Links</a></li>
+  <li><a href="#/section/documentation/fonts">Fonts</a></li>
+  <li><a href="#/section/documentation/shell_tips">Shell Tips</a></li>
+</ul>
+
+<br/>
+<a name="/section/documentation/highlights">
+</a>
 ## Highlights for New Users
+<hr />
 
 iTerm2 has many features that will change the way you interact with your terminal. This section outlines them briefly.
 <br/>
@@ -113,8 +129,11 @@ If you enable Growl (Preferences &gt; Profiles &gt; Terminal &gt; Enable Growl N
 If you have too many tabs and are unable to find the one you're looking for, you can use the Exposé Tabs feature to find it. Press cmd-opt-E and all your tabs will be shown at once. You can then perform a search over all tabs simultaneously to find what you're looking for.
 <br/>
 <br/>
-<hr/>
+
+<a name="/section/documentation/menu_items">
+</a>
 ## Menu Items
+<hr/>
 <br/><br/>
 #### iTerm &gt; Secure Keyboard Entry
 When this is enabled, the operating system will prevent other programs running on your computer from being able to see what you are typing. If you're concerned that untrusted programs might try to steal your passwords, you can turn this on, but it may disable global hotkeys in other programs.
@@ -176,8 +195,10 @@ All iTerm2 tabs will be shown tiled on the main screen. You can mouse over a tab
 #### Window &gt; Save/Restore Window Arrangement
 The current state and positions of windows, tabs, and spit panes is recorded and saved to disk with Save Window Arrangement. Restore Window Arrangement opens a new collection of windows having the saved state. You can automatically restore the arrangement in Preferences &gt; General &gt; Open saved window arrangement.
 
-<hr>
+<a name="/section/documentation/preferences">
+</a>
 ## Preferences
+<hr>
 <br/>
 ### General
 <br/><br/>
@@ -513,8 +534,10 @@ This interface works like the keyboard shortcut system in profiles (described ab
 <br/>
 <br/>
 
+<a name="/section/documentation/hidden_settings">
+</a>
+## Hidden Settings
 <hr>
-### Hidden Settings
 
 There are a few settings that you cannot access via iTerm2's own Preferences
 panel. However, you can use 'defaults" command to change them to your taste.
@@ -551,8 +574,16 @@ You can adjust the speed of the animation of the hotkey window's appearance and 
 </pre>
 
 <br/>
-### AppleScript
+<br/>
+<br/>
+<a name="/section/documentation/scripting">
+</a>
+## Scripting
+<hr/>
 
+iTerm2 features Applescript support which allows you to automate many aspects of its behavior. Quite a bit of customization is also possible by writing shell scripts.
+
+### Applescript
 <br/><br/>
 #### Example Script
 
@@ -659,7 +690,12 @@ this directory if it does not already exist. iTerm2 checks this directory
 on startup.
 
 <br/>
-### Interesting Links
+<br/>
+<br/>
+<a name="/section/documentation/links">
+</a>
+## Interesting Links
+<hr/>
 
 Here are some links to some iTerm2-related websites.
 
@@ -681,7 +717,12 @@ Here are some links to some iTerm2-related websites.
   A mini terminal in your dash board.
 
 <br/>
-### Fonts
+<br/>
+<br/>
+<a name="/section/documentation/fonts">
+</a>
+## Fonts
+<hr/>
 
 While iTerm2 does not require monospaced fonts, they look much better than proportionately spaced fonts. Here are some recommended fonts:
 
@@ -703,6 +744,13 @@ appears too high. It can be fixed, though; please see this page on
 [how to fix Consolas baseline](http://mbauman.net/geek/2009/03/15/minor-truetype-font-editing-on-a-mac/).
 
 <br/>
+<br/>
+<br/>
+<a name="/section/documentation/shell_tips">
+</a>
+## Shell Tips
+<hr/>
+
 ### UTF-8 patch for tcsh 6.12.00
 
 By Yuichi Ohkawa.
