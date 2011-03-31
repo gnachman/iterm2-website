@@ -51,7 +51,7 @@ Info Panel lets you modify the apperance of a single session. Note that after yo
 <br/>
 #### Mouse
 
-The primary use of the mouse in iTerm2 is to select text, and (by default) text is copied to the clipboard immediately upon being selected. You can click and drag to perform a normal selection. Double-clicking selects a whole word. Triple-clicking selects an entire line. Quadruple-clicking performs a "smart select", matching recognized strings such as URLs and email addresses, or selecting the whole line if nothing is matched. 
+The primary use of the mouse in iTerm2 is to select text, and (by default) text is copied to the clipboard immediately upon being selected. You can click and drag to perform a normal selection. Double-clicking selects a whole word. Triple-clicking selects an entire line. Quadruple-clicking performs a "smart select", matching recognized strings such as URLs and email addresses.
 
 If you hold shift while clicking the existing selection is extended.
 
