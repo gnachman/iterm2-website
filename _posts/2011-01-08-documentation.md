@@ -12,6 +12,7 @@ iTerm2 should require little explanation for users accustomed to terminal emulat
   <li><a href="#/section/documentation/links">Links</a></li>
   <li><a href="#/section/documentation/fonts">Fonts</a></li>
   <li><a href="#/section/documentation/shell_tips">Shell Tips</a></li>
+  <li><a href="#/section/documentation/escape_codes">Proprietary Escape Codes</a></li>
 </ul>
 
 <br/>
@@ -21,7 +22,7 @@ iTerm2 should require little explanation for users accustomed to terminal emulat
 
 #### Tabs
 
-When you first start iTerm2, a window opens showing a terminal session. If you want to open more that one session at a time, you have a few options: You can create a new window (Shell &gt; New Window), you can createa  new tab (Shell &gt; New Tab), or you can split the current session into two panes (Shell  &gt; Split Horizontally, Shell &gt; Split Vertically), each of which is a separate session.
+When you first start iTerm2, a window opens showing a terminal session. If you want to open more that one session at a time, you have a few options: You can create a new window (Shell &gt; New Window), you can create a new tab (Shell &gt; New Tab), or you can split the current session into two panes (Shell  &gt; Split Horizontally, Shell &gt; Split Vertically), each of which is a separate session.
 
 Tabs in iTerm2 behave like tabs in other programs, most notably web browsers like Safari, Firefox, and Google Chrome. Note that you can drag and drop tabs to reorder them within a window. You can drag tabs from one window to another, and you can drag a tab from a window into a new window by dropping it outside any iTerm2 window's tab bar.
 
@@ -36,7 +37,7 @@ Tab labels are colored to indicate their status. When new output is received in 
 The toolbar provides quick access to some commonly used features.
 
 * The <i>New</i> button allows you to open a new tab. If you have configured multiple profiles, it allows you to select one from a list.
-* The <i>Info</i> button allows you to change the apperance of the current session.
+* The <i>Info</i> button allows you to change the appearance of the current session.
 * The <i>Close</i> button closes the current session, and may close the current window if it was the only session.
 * The <i>Execute</i> field lets you to type in a command locally before sending it to the terminal. You can also type in a URL (including the scheme, such as <i>http://</i>), in which case the URL will be opened by the appropriate application. If you press TAB key instead of Enter after you type in the command, a new tab will be launched with your command. 
 
@@ -78,11 +79,11 @@ Every aspect of the keyboard can be configured in iTerm2. These keystrokes may b
  * Cmd+number navigates directly to a tab.
  * Cmd+Option+Number navigates directly to a window.
  + Cmd+Option+Arrow keys navigate among split panes.
- * Cmd+] and Cmd+[ navigates among split panesn in order of use.
+ * Cmd+] and Cmd+[ navigates among split panes in order of use.
 
 You can configure any key combination to perform any action in two places: in Preferences &gt; Keys, you can define global key shortcuts that affect all profiles. In Preferences &gt; Profiles &gt; Keys, you can define key shortcuts that affect only a single profile.
 
-You can remap modifiers like Option and Cmd within iTerm2. Some users find that pression Option frequently is uncomfortable, and configure iTerm2 to swap the function of the Option and Cmd keys. This is done in Preferences &gt; Keys under Remap Modifier Keys. If there is some key combination that you don't want to be affected by this change (such as Cmd-tab) add a new global shortcut key with the action Do Not Remap.
+You can remap modifiers like Option and Cmd within iTerm2. Some users find that pressing Option frequently is uncomfortable, and configure iTerm2 to swap the function of the Option and Cmd keys. This is done in Preferences &gt; Keys under Remap Modifier Keys. If there is some key combination that you don't want to be affected by this change (such as Cmd-tab) add a new global shortcut key with the action Do Not Remap.
 
 iTerm2 allows you to define a global hotkey. This is a single keystroke that iTerm2 listens for even when another application has keyboard focus. When it is pressed, iTerm2 comes to the front. Press it again, and iTerm2 goes away. You can choose to bind the hotkey to a single dedicated window. This feature is similar to other programs like Visor, Guake, and Yakuake.
 
@@ -189,7 +190,7 @@ When using a block cursor, it's hard to pick a cursor color that's visible again
 <br/>
 <br/>
 #### Minimum Contrast
-Sometimes an application will display text with a color combination that is hard to read. Colorblind users in particular may find certain combinations hard to see if the colors differ only in hue and not brightness. If you enable minimum contrast (under Preferences &gt; Profiles &gt; Colors &gt; Minimum contrast, then iTerm2 will guarantee a minmum level of brightness difference between the foreground and background color of every character. If you set this to its maximum value, then all text will be black or white.
+Sometimes an application will display text with a color combination that is hard to read. Colorblind users in particular may find certain combinations hard to see if the colors differ only in hue and not brightness. If you enable minimum contrast (under Preferences &gt; Profiles &gt; Colors &gt; Minimum contrast, then iTerm2 will guarantee a minimum level of brightness difference between the foreground and background color of every character. If you set this to its maximum value, then all text will be black or white.
 
 <br/>
 <br/>
@@ -222,7 +223,7 @@ These menu items allow you to divide a tab into two or more split panes. The pan
 
 <br/><br/>
 #### Shell &gt; Send Input to All Sessions
-When this is enabled, keybard input will be sent to all tabs in the current window. Other windows are not affected.
+When this is enabled, keyboard input will be sent to all tabs in the current window. Other windows are not affected.
 
 <br/><br/>
 #### Shell &gt; Log &gt; Start/Stop
@@ -285,7 +286,7 @@ If selected, the Profiles Window will automatically open when iTerm2 is started.
 
 <br/><br/>
 #### Open saved window arrangement
-If selected, the saved window arrangement will be restored when iTerm2 starts. This is diabled if you haven't yet saved a window arrangement with Window &gt; Save Window Arrangement.
+If selected, the saved window arrangement will be restored when iTerm2 starts. This is disabled if you haven't yet saved a window arrangement with Window &gt; Save Window Arrangement.
 
 <br/><br/>
 #### Quit when all windows are closed
@@ -309,7 +310,7 @@ If enabled, new windows will be opened where they least overlap existing windows
 
 <br/><br/>
 #### Green button zooms vertically only
-If selected, the green "Zoom" button expands a terminal window vertically but does not affect its width. This can be overriden by holding down shift while clicking the zoom button.
+If selected, the green "Zoom" button expands a terminal window vertically but does not affect its width. This can be overridden by holding down shift while clicking the zoom button.
 
 <br/><br/>
 #### Instant Replay Uses X MB per Session
@@ -384,7 +385,7 @@ If selected, the scrollbar and resize control will not be visible.
 
 <br/><br/>
 #### Dim inactive split panes
-If selected, split panes that do not have keybaord focus will be slightly dimmed.
+If selected, split panes that do not have keyboard focus will be slightly dimmed.
 
 <br/><br/>
 #### Show border around window
@@ -403,9 +404,9 @@ If selected, tab and window titles will show the name of the foreground job.
 If selected, tab and window titles will show profile names.
 
 <br/>
+<br/>
 ### Profiles &gt; General
 
-<br/><br/>
 #### Name
 Gives the name of the profile which is shown in menus, preferences, and the profiles window.
 
@@ -419,7 +420,7 @@ Tags are a collection of words or phrases that annotate a profile. When you sear
 
 <br/><br/>
 #### Command
-This is the command that is executed when a new session with ths profile is created. If login shell is chosen, then your shell is run with '-' as the first character of argv[0]. You can put special terms surrounded by $$ in this field (example: $$USERNAME$$). When a new session is created, you will be prompted to enter a value for each such term. See the description of URL Schemes below for details about the special "$$" value that can go in this field.
+This is the command that is executed when a new session with the profile is created. If login shell is chosen, then your shell is run with '-' as the first character of argv[0]. You can put special terms surrounded by $$ in this field (example: $$USERNAME$$). When a new session is created, you will be prompted to enter a value for each such term. See the description of URL Schemes below for details about the special "$$" value that can go in this field.
 
 <br/><br/>
 #### Working directory
@@ -427,7 +428,7 @@ Normally, new sessions begin in your home directory. You can choose to open new 
 
 <br/><br/>
 #### URL Schemes
-You can configure a profile to handle a URL scheme, such as ssh. When a hyperlink is clicked on with that scheme, a new tab is opened with the selected bookmark. It is recommended that you set the command to "$$", in which case an ssh command line will be auto-generated. For other schemes, you can uses these variables in the Command field and they will be replaced with the appropriate part of the URL:
+You can configure a profile to handle a URL scheme, such as ssh. When a hyperlink is clicked on with that scheme, a new tab is opened with the selected profile. It is recommended that you set the command to "$$", in which case an ssh command line will be auto-generated. For other schemes, you can uses these variables in the Command field and they will be replaced with the appropriate part of the URL:
 
 * $$URL$$ The complete url
 * $$HOST$$ The host portion of a url like scheme://host/
@@ -464,7 +465,7 @@ If checked, the cursor will blink slowly to improve visibility.
 
 <br/><br/>
 #### Draw bold text in bold font
-If selected, bold text will be drawn in a bold version of the selected font. If the font does not have a bold version, then a bold appearance is simluated by "double striking" the text: that is, drawing it twice, shifting it one pixel horizontally the second time.
+If selected, bold text will be drawn in a bold version of the selected font. If the font does not have a bold version, then a bold appearance is simulated by "double striking" the text: that is, drawing it twice, shifting it one pixel horizontally the second time.
 
 <br/><br/>
 #### Draw bold text in bright colors
@@ -476,7 +477,7 @@ ASCII text (latin letters, numbers, and some symbols) will be drawn using this f
 
 <br/><br/>
 #### Non-ASCII font
-All non-ASCII text (many accented Latin letters, non-Latin text, less-common symbols, and thousands of miscellaneous unicode characters) will be drawn with this font. It is recommended that you use the same point size for both regular and non-ASCII fonts. Select "Anti-alised" to draw the text with smooth edges.
+All non-ASCII text (many accented Latin letters, non-Latin text, less-common symbols, and thousands of miscellaneous unicode characters) will be drawn with this font. It is recommended that you use the same point size for both regular and non-ASCII fonts. Select "Anti-aliased" to draw the text with smooth edges.
 
 <br/><br/>
 #### Treat ambiguous-width characters as double width
@@ -491,7 +492,7 @@ When creating a new window with this profile, it will be created with this many 
 
 <br/><br/>
 #### Style
-This defines the window style. Top-of-screen windows will disregard the columns settting, while full-screen windows only respect the rows and columns setting when full-screen mode is exited.
+This defines the window style. Top-of-screen windows will disregard the columns setting, while full-screen windows only respect the rows and columns setting when full-screen mode is exited.
 
 <br/><br/>
 #### Screen
@@ -523,7 +524,7 @@ If the host sends an escape code to resize the window, it will be ignored if thi
 
 <br/>
 ### Profiles &gt; Keys
-This panel shows key mappings. You can double-click on a mapping to edit it. When the "Keyboard Shortcut" field has focus, you should press the keystroke that you want to modifiy (even if it involves modifiers like Cmd). The following actions are available:
+This panel shows key mappings. You can double-click on a mapping to edit it. When the "Keyboard Shortcut" field has focus, you should press the keystroke that you want to modify (even if it involves modifiers like Cmd). The following actions are available:
 
 <br/><br/>
 #### ignore
@@ -607,7 +608,7 @@ Windows are normally navigated with cmd+opt+number, but you can change the modif
 
 <br/><br/>
 #### Show/Hide iTerm2 with a system-wide hotkey
-When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assitive devices in the Universal Access panel of System Preferences.
+When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assistive devices in the Universal Access panel of System Preferences.
 
 <br/><br/>
 #### Hotkey toggles a dedicated window with profile
@@ -672,8 +673,8 @@ iTerm2 features Applescript support which allows you to automate many aspects of
 #### Example Script
 
 iTerm2 has sophisticated Applescript support allowing one to write stand-alone
-scripts to launch the application and open multiple sessions from the
-addressbook into either new tabs or new windows. You can also set some other
+scripts to launch the application and open multiple sessions with profiles
+into either new tabs or new windows. You can also set some other
 parameters for a session such as foreground and background colors, and
 transparency. Here is a sample script:
 
@@ -716,7 +717,7 @@ transparency. Here is a sample script:
         -- launch a default shell in a new tab in the same terminal
         launch session "Default Session"
 
-        -- launch a saved session from the addressbook.
+        -- launch a saved session.
         launch session "Root Shell"
         -- select the previous session
         select mysession
@@ -756,7 +757,7 @@ transparency. Here is a sample script:
 These scripts can then be saved as stand-alone executable applications.
 
 <br/><br/>
-#### Autolanching Scripts
+#### Autolaunching Scripts
 
 iTerm2 also supports autolaunching of an Applescript on startup. On startup, iTerm2 looks for an Applescript file in "~/Library/Application Support/iTerm2/AutoLaunch.scpt". If it is found, the "AutoLauch.scpt" script is launched and executed.
 
@@ -873,3 +874,81 @@ Also in zsh, the command line completion I have expanded to be
 
 typing: "open -a " and then pressing tab will try and complete any
 application... (added an alias run as well)
+
+<br/>
+<br/>
+<br/>
+<a name="/section/documentation/escape_codes">
+</a>
+## Proprietary Escape Codes
+<hr/>
+
+iTerm2 supports several non-standard escape codes. These may not work properly in tmux or screen, and may have unknown effects on other terminal emulators. Proceed with caution.
+
+<br/>
+<br/>
+#### Set cursor shape
+<pre>
+^[]50;CursorShape=N^G
+</pre>
+
+where N=0, 1, or 2.
+
+* 0: Block
+* 1: Vertical bar
+* 2: Underline
+
+Add this to your .vimrc to change cursor shape in insert mode:
+<pre>
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+</pre>
+
+This is derived from [Konsole](http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes).
+
+<br/>
+<br/>
+#### Set window title and tab chrome background color
+
+To set the window title and tab color use this escape sequence:
+
+<pre>
+^[]6;1;bg;red;brightness;N^G
+^[]6;1;bg;green;brightness;N^G
+^[]6;1;bg;blue;brightness;N^G
+</pre>
+
+Replace N with a decimal value in 0 to 255.
+
+Example in bash that turns the background purple:
+<pre>
+echo -e "\033]6;1;bg;red;brightness;255\a"
+echo -e "\033]6;1;bg;green;brightness;0\a"
+echo -e "\033]6;1;bg;blue;brightness;255\a"
+</pre>
+
+<br/>
+<br/>
+#### Change the color palette
+
+<pre>
+^[]Pnrrggbb^[\
+</pre>
+
+Replace "n" with:
+
+*  0-f (hex) = ansi color
+*  g = foreground
+*  h = background
+*  i = bold color
+*  j = selection color
+*  k = selected text color
+*  l = cursor
+*  m = cursor text
+
+rr, gg, bb are 2-digit hex value (for example, "ff").
+
+Example in bash that changes the foreground color blue:
+<pre>
+echo -e "\033]Pg4040ff\033\\"
+</pre>
