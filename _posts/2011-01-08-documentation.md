@@ -900,8 +900,8 @@ where N=0, 1, or 2.
 
 Add this to your .vimrc to change cursor shape in insert mode:
 <pre>
-let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+let &t_SI = "\&lt;Esc&gt;]50;CursorShape=1\x7"
+let &t_EI = "\&lt;Esc&gt;]50;CursorShape=0\x7"
 </pre>
 
 This is derived from [Konsole](http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes).
