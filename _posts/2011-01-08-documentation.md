@@ -658,6 +658,13 @@ You can adjust the speed of the animation of the hotkey window's appearance and 
             -float 0.25
 </pre>
 
+You can adjust the amount of dimming of split panes. Set the value to a floating-point number between 0 (no dimming) and 1 (complete dimming). The default is 0.15:
+
+<pre>
+    defaults write com.googlecode.iterm2 SplitPaneDimmingAmount \
+            -float 0.25
+</pre>
+
 <br/>
 <br/>
 <br/>
