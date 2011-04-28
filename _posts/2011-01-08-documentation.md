@@ -665,6 +665,13 @@ You can adjust the amount of dimming of split panes. Set the value to a floating
             -float 0.25
 </pre>
 
+If you don't mind <strong>extreme slowness</strong> you can turn on adjustable font width:
+<pre>
+    defaults write com.googlecode.iterm2 HiddenAdvancedFontRendering -bool true
+    defaults write com.googlecode.iterm2 HiddenAFRStrokeThickness -float -0.1
+</pre>
+The second parameter is a negative number, where values close to 0 are thin and very negative values are thick.
+
 <br/>
 <br/>
 <br/>
