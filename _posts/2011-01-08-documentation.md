@@ -864,14 +864,13 @@ There are people with hints on ways to customize the title bar and tabs, a
 much simpler way when using zsh is to do the following:
 
 
+    bell=`tput bel`
     precmd () {
-      echo -n "\033]1;$USERNAME@$HOST^G\033]2;$PWD>    - $USERNAME@$HOST
-      ($status)^G"
+     echo -n "\033]1;$USERNAME@$HOST$bell\033]2;$PWD>    - $USERNAME@$HOST ($status)$bell"
     }
     PROMPT='%m %B%3c%(#.#.>)%b '
     RPROMPT=''
 
-(NOTE: `^G` is CTRL-G, you need to enter it using `^V^G`)
 
 Much simpler and does not require anything special. (apart from zsh)
 
