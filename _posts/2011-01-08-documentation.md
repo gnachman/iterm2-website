@@ -672,6 +672,12 @@ If you don't mind <strong>extreme slowness</strong> you can turn on adjustable f
 </pre>
 The second parameter is a negative number, where values close to 0 are thin and very negative values are thick.
 
+If you'd like to receive Growl notifications for foreground tabs, which is useful as an accessibility feature, use this command:
+
+<pre>
+    defaults write com.googlecode.iterm2 GrowlOnForegroundTabs -bool true
+</pre>
+
 <br/>
 <br/>
 <br/>
