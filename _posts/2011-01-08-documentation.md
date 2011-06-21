@@ -55,7 +55,7 @@ The primary use of the mouse in iTerm2 is to select text, and (by default) text 
 
 If you hold shift while clicking the existing selection is extended.
 
-If you hold cmd and click on a URL it will be opened.
+If you hold cmd and click on a URL it will be opened. If you hold cmd and click on a filename, it will be opened. There is special support for Macvim, Textmate, and BBEdit when you cmd-click on a text file's name: if it is followed by a colon and line number, the file will be opened at that line number. The current directory is tracked if you have your shell prompt set the window title, <a href="http://www.faqs.org/docs/Linux-mini/Xterm-Title.html#toc4">as described here</a>. 
 
 If you hold cmd you can drag and drop selected text.
 
@@ -139,7 +139,7 @@ You can mark a location in a session with cmd-shift-M and then jump back to it w
 <br/>
 <br/>
 #### Regular Expression Search
-When you open the find field (cmd-f) there is a down arrow on the left of the field by the magnifying glass. Clicking it opens a menu of options in which you can enable regular expression search. The [ICU syntax](http://userguide.icu-project.org/strings/regexp#TOC-Regular-Expression-Metacharacters) is used.
+When you open the find field (cmd-f) there is a down-arrow on the left of the field by the magnifying glass. Clicking it opens a menu of options in which you can enable regular expression search. The [ICU syntax](http://userguide.icu-project.org/strings/regexp#TOC-Regular-Expression-Metacharacters) is used.
 
 <br/>
 <br/>
@@ -436,6 +436,7 @@ You can configure a profile to handle a URL scheme, such as ssh. When a hyperlin
 * $$PASSWORD$$ The password portion of a url like scheme://user:password@host/
 * $$PORT$$ The port number of a url like scheme://host:port/
 * $$PATH$$ The path portion of a url like scheme://host/path
+* $$RES$$ The portion of a url following the scheme.
 
 <br/>
 ### Profiles &gt; Colors
@@ -523,6 +524,57 @@ You can specify that profile names are shown in window and tab titles under Pref
 If the host sends an escape code to resize the window, it will be ignored if this option is selected..
 
 <br/>
+### Profiles &gt; Terminal
+
+<br/><br/>
+#### Automatically close a session when it ends
+If selected, a session's pane, tab, or window will automatically close when the session ends.
+
+<br/><br/>
+#### Silence bell
+If selected, the bell (control-G) will not make an audible sound.
+
+<br/><br/>
+#### Bell icon in tabs
+If selected, tabs will indicate that a bell has rung by displaying a bell graphic.
+
+<br/><br/>
+#### Visual bell
+If selected, a bell graphic will be flashed when the bell character is received.
+
+<br/><br/>
+#### Character encoding
+The encoding to send and receive in. For most people, "Unicode (UTF-8)" is the right choice.
+
+<br/><br/>
+#### Scrollback lines
+The number of lines of scrollback buffer to keep above the visible part of the screen.
+
+<br/><br/>
+#### Save lines to scrollback when an app status bar is present
+Some programs (such as vim or tmux) keep a status bar at the bottom of the screen. For some applications (like vim) it is undesirable to save lines to the scrollback buffer when the application scrolls. For others (like tmux) you may want to save scrolled-off lines into the scrollback buffer. When this setting is enabled, lines scrolled off the top of the screen in the presence of a status bar are added to the scrollback buffer. The screen is considered to have a status bar if it has a scroll region whose top is the first line of the screen and whose bottom is above the bottom of the screen.
+
+<br/><br/>
+#### Report terminal type
+The TERM variable will be set to this value by default. If xterm-256color is selected and your system is missing the terminfo file, you will be prompted to install it when you open a new session.
+
+<br/><br/>
+#### Enable xterm mouse reporting
+If selected, applications may choose to receive information about the mouse. This can be temporarily disabled by holding down Option.
+
+<br/><br/>
+#### Disable save/restore alternate screen
+Some programs (such as vim, tmux, and less) switch into a so-called "alternate screen". A characteristic of this behavior is that when these programs terminate the screen's contents are restored to their state from before the program was run. If this option is selected, alternate screen mode is disabled and the screen cannot be restored by an application.
+
+<br/><br/>
+#### When idle, send ASCII code
+If selected, the specified ASCII code will be transmitted every 30 seconds while nothing is happening. Don't use this unless you know what you're doing as it can have unexpected consequences.
+
+<br/><br/>
+#### Enable Growl notifications
+If selected and Growl is installed, iTerm2 will post a Growl notification when sessions receive output, become idle, ring the bell, or close. 
+
+<br/>
 ### Profiles &gt; Keys
 This panel shows key mappings. You can double-click on a mapping to edit it. When the "Keyboard Shortcut" field has focus, you should press the keystroke that you want to modify (even if it involves modifiers like Cmd). The following actions are available:
 
@@ -582,7 +634,7 @@ This action enters or exits full screen mode.
 #### Select Menu Item...
 This action allows you to enter the name of an iTerm2 menu item. It must be entered exactly the same as it appears in the menu. Ellipses can be typed with option-semicolon.
 
-You can add a new keymapping by pressing "+". You can remove an existing mapping by selecting it and pressing "-". Two presets are provided: "Xterm defaults" is the normal key mappings, while "Xterm defaults with numeric keypad" disables the "application keypad" in favor of the numbers and symbols that the numeric keypad typically emits.
+You can add a new keymapping by pressing "+". You can remove an existing mapping by selecting it and pressing "-". Three presets are provided: "Xterm defaults" is the normal key mappings, while "Xterm defaults with numeric keypad" disables the "application keypad" in favor of the numbers and symbols that the numeric keypad typically emits. "Terminal.app Compatability" tries to emulate the way that Terminal.app sends keys by default.
 
 <br/><br/>
 #### Left/Right Option Key Acts As
