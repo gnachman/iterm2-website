@@ -979,6 +979,15 @@ This is derived from [Konsole](http://vim.wikia.com/wiki/Change_cursor_shape_in_
 
 <br/>
 <br/>
+#### Set Mark
+The "Set Mark" (cmd-shift-M) command allows you to record a location and then jump back to it later (with cmd-shift-J). The following escape code has the same effect as that command:
+
+<pre>
+^[]50;SetMark^G
+</pre>
+
+<br/>
+<br/>
 #### Set window title and tab chrome background color
 
 To set the window title and tab color use this escape sequence:
