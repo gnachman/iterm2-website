@@ -865,7 +865,7 @@ Here are some links to some iTerm2-related websites.
 * [Open current directory in iTerm](http://www.bigbold.com/snippets/tag/iTerm)
 * [iTerm plugin](http://docs.blacktree.com/quicksilver/plug-ins/iterm?DokuWiki=)
   for Quicksilver.
-* [iTerm Here](http://www.tco.net/~dscott/software/itermhere/)
+* [Open current Find window in new iTerm tab](http://snippets.dzone.com/posts/show/961)
 * [WidgetTerm](http://widgetterm.sourceforge.net/):
   A mini terminal in your dash board.
 
