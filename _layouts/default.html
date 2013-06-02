@@ -31,6 +31,19 @@ function showFeature(theName) {
 
   currentVisible = theName;
 }
+function showId(id) {
+  console.log("element is ");
+  document.getElementById("changelist" + id).style.display = 'block';
+  document.getElementById("show" + id).style.display = 'none';
+  document.getElementById("hide" + id).style.display = 'inline';
+}
+
+function hideId(id) {
+  document.getElementById("changelist" + id).style.display = 'none';
+  document.getElementById("show" + id).style.display = 'inline';
+  document.getElementById("hide" + id).style.display = 'none';
+}
+
 </script>
   
   </head>
@@ -46,6 +59,7 @@ function showFeature(theName) {
         <a href='#features'>Features</a>
         <a href='#faq'>FAQ</a>
         <a href='#documentation'>Documentation</a>
+        <a href='#downloads'>Downloads</a>
 
           <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
             <input type="hidden" name="cmd" value="_s-xclick">
