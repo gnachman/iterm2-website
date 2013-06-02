@@ -5,36 +5,38 @@ import os
 import os.path, time
 import glob
 
-def Metadata(zip, metadataType):
+def Metadata(zip, metadataType, onError=None):
     basename = os.path.splitext(zip)[0]
     name = basename + "." + metadataType
-    print name
     try:
         return open(name, "r").read()
     except:
-        return basename
+	if onError is None:
+	    return os.path.split(basename)[1]
+	else:
+	    return onError
 
 def Summary(zip):
     return Metadata(zip, "summary")
 
 def Description(zip):
-    return Metadata(zip, "description")
+    return Metadata(zip, "description", onError="")
 
 def ChangeLog(zip):
-    content = Metadata(zip, "changelog")
+    content = Metadata(zip, "changelog", onError="")
     if len(content):
         id = abs(hash(zip))
         content = \
-'''<a href="javascript:showId(%s)" id='show%s'>▶ Show Changelog</a>
-<a href="javascript:hideId(%s)" id='hide%s' style="display: none">▼ Hide Changelog</a>
-<pre id="changelist%s" style="display: none">%s</pre><br>''' % (id, id, id, id, id, content)
+'''<p><a href="javascript:showId('%s')" id='show%s'>▶ Show Changelog</a>
+<a href="javascript:hideId('%s')" id='hide%s' style="display: none">▼ Hide Changelog</a>
+<pre id="changelist%s" style="display: none">%s</pre></p><br>''' % (id, id, id, id, id, content)
     return content
 
 
 BASE=os.environ["HOME"] + "/iterm2.com/downloads"
 DOWNLOADS_PATHS=[("Stable Releases", "stable"),
                  ("Test Releases", "beta"),
-                 ("Nightly build", "nightly")]
+                 ("Nightly builds", "nightly")]
 
 LIMIT = 5
 
@@ -48,9 +50,11 @@ for sectionName,path in DOWNLOADS_PATHS:
             break
         i += 1
         name = os.path.split(zip)[1]
-        print name
-        print '<a href="/downloads/' + path + '/' + name + '>' + Summary(zip) + '</a>'
+        print '<h4><a href="/downloads/' + path + '/' + name + '">' + Summary(zip) + '</a></h4>'
+	print "<p>"
         print Description(zip)
         cl = ChangeLog(zip)
         if len(cl):
             print cl
+	print "</p>"
+	print "<br>"
