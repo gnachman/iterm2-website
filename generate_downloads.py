@@ -50,9 +50,10 @@ for sectionName,path in DOWNLOADS_PATHS:
             break
         i += 1
         name = os.path.split(zip)[1]
-        print '<h4><a href="/downloads/' + path + '/' + name + '">' + Summary(zip) + '</a></h4>'
+        print '<h4><a href="/downloads/' + path + '/' + name + '"><img src="/images/small-download.png" align="left">&nbsp;' + Summary(zip) + '</a></h4>'
 	print "<p>"
         print Description(zip)
+	print '<br>'
         cl = ChangeLog(zip)
         if len(cl):
             print cl
