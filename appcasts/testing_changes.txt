@@ -1,5 +1,66 @@
 These release notes are for the development builds of iTerm2. The last stable release was 1.0.0.
 
+iTerm2 1.0.0.20130613
+Bug fixes. This release is a follow-on to 1.0.0.20130601, which was not put on auto-update, and will include its changes in the change log.
+
+Changes new in 1.0.0.20130613
+- Fix breakage with top-of-tree tmux
+- Improve performance in alternate screen mode by eliding unnecessary screen refreshes
+- Ignore extra CSI params (saitoha)
+- Fix bug where lines with multiple colors were rendered incorrectly.
+- Fix build breakage on 10.5/ppc
+- Fix a memory leak
+
+Changes carried over from 1.0.0.20130601
+Enhancements:
+- Add support for tiled background images (Foy Savas)
+- Add support for italics (Stefan Schüßler)
+
+Bug Fixes:
+- Fix a crash when a window closes after a session ends.
+- Fix crash when trying to find a filename in an empty string
+- Fix bug where bottom-of-screen windows resized incorrectly on screen change.
+- Disallow column mode (DECSET/DECRST 3) by default.
+- Move cursor back into last column (out of the virtual last+1 column) when moving cursor up or down. Fixes bug 2405
+- Detect Textmate 2 as Textmate
+- Fix problems with toolbar not remembering its state properly
+- Add any-event mouse tracking (DECSET 1003)
+- Fix bug where global prefs were considered when diffing prefs vs remote to see if anything changed
+- Add support for Sublime Text 3 (tinystatemachine)
+- Fix a bug in Exposé where the Exposé window was in the wrong place; also hide the dock and menu bar in Exposé.
+- Fix bug where we can't get a process's ppid if it's setuid (e.g., top). The fix only works on 10.7 and up.
+- Right clicking a profile in the "Profiles" dialog offers the option to "Edit Bookmark..." which is outdated and confusing terminology.
+- Prevent various bogus things from getting focus when cmd-tab'ing back to iTerm2.
+- Make setting highlight colors that affect only fg/bg actually affect only fg/bg. Fixes bug 2429
+- Fix accessibility breakage in OS 10.8 (Boris Dušek)
+- Remove calls to deprecated convertPointFromBase: which logged warning messages.
+- Fix bug where adding a tab when there are no tab stops causes a hang. Fixes bug 2437
+- Remove control chars before pasting
+- Fix bug where menu/dock showed when the number of tabs changed in fullscreen
+- Always use the Unicode font for non-ASCII (Aaron Meurer)
+- Save tab colors in arrangements
+- Fix bug where an unassigned hotkey maps to 'a' with no modifier
+- Restore support for G1..G3 character sets to fix line drawing chars.
+- Add Edit>Reset Character Set to fix what happens when line drawing escape codes go awry
+- When erasing a line, replace soft newlines with hard newlines (fixes copying out of vim combining multiple lines into one).
+- Don't lock auto scrolling on a first-mouse mouseDown event
+- Fix bug where XTERMCC_WINDOWPOS swapped its x and y args and make XTERMCC_REPORT_WIN_POS report the Y coordinate in a more traditional way (distance from top of screen to top of window)
+- Fix bug where alt-click didn't use the right condition to determine whether to move the cursor.
+
+Tmux integration bug fixes:
+- Fix bug where new tmux windows would open in a tab
+- Support an optional flag at the end of %begin and %end to fix post-tmux 1.8 bug
+- Fix bug where dragging a split pane to the left in tmux doesn't resize anything
+- Make cmd-t and cmd-w open a tmux window/tab if the current session is tmux
+- Work around bug in tmux 1.8 where unlink-window will print %exit without %end
+- Turn off tmux verbose logging
+- Fix bug where dragging a tmux split vertically computes the wrong splitter index and wrong distance moved, probably beacuse convertPointFromBase: does crazy things on retina
+- Fix bug where tmux window jumps to its previous coordinate when layout changes.
+- Work around bugs in post-1.8 tmux protocol
+- Split long send-keys commands into sub-1024-byte chunks to avoid crashing tmux 1.8
+- Fix problem where you can't open a tmux tab/window while not in a tmux window.
+
+
 iTerm2 1.0.0.20130601
 A big batch of bug fixes.
 
