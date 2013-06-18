@@ -38,7 +38,9 @@ DOWNLOADS_PATHS=[("Stable Releases", "stable"),
                  ("Test Releases", "beta"),
                  ("Nightly builds", "nightly")]
 
-LIMIT = 5
+LIMIT = { "stable": 1,
+          "beta": 2,
+	  "nightly": 5 }
 
 for sectionName,path in DOWNLOADS_PATHS:
     print "<h3>" + sectionName + "</h3>"
@@ -46,7 +48,7 @@ for sectionName,path in DOWNLOADS_PATHS:
     zips.sort(reverse=True)
     i = 0
     for zip in zips:
-        if i == LIMIT:
+        if i == LIMIT[path]:
             break
         i += 1
         name = os.path.split(zip)[1]
