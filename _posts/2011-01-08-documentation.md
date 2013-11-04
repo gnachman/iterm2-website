@@ -112,7 +112,7 @@ iTerm2 has many features that will change the way you interact with your termina
 <br/>
 
 #### Text Selection
-There are two ways to select text to copy to the clipboard: you can use the mouse, or you can use the find feature's "mouseless copy" feature. Text selection by mouse is described above in <a href="/section/documentation/general">General Usage</a> section.
+There are two ways to select text to copy to the clipboard: you can use the mouse, or you can use the find feature's "mouseless copy" feature. Text selection by mouse is described above in <a href="#/section/documentation/general">General Usage</a> section.
 
 To select text without using the mouse, press cmd-f to open the find field. Enter the beginning fo the text you wish to copy and the find feature will select it in your window. Then press tab and the end of the selection will advance by a word. To advance the beginning of the selection to the left, press shift-tab. At most one line of text can be selected this way
 
