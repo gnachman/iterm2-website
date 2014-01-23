@@ -540,7 +540,11 @@ If selected, tabs will indicate that a bell has rung by displaying a bell graphi
 
 <br/><br/>
 #### Visual bell
-If selected, a bell graphic will be flashed when the bell character is received.
+If selected, a bell graphic will be flashed when the bell character is received. This can be tweaked with a hidden setting to use a traditional visual bell (e.g. flashing the whole screen) instead of the graphic:
+
+<pre>
+    defaults write com.googlecode.iterm2 TraditionalVisualBell -bool true
+</pre>
 
 <br/><br/>
 #### Character encoding
