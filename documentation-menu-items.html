@@ -1,0 +1,96 @@
+---
+layout: default
+title: Menu Items - Documentation - iTerm2 - Mac OS Terminal Replacement
+active-state: documentation
+---
+<div class="doc-wrapper">
+	<h3>Documentation</h3>
+	<p class="answer">
+		iTerm2 should require little explanation for users accustomed to terminal emulators. Even if you are an experienced user, take the time to read through the <a href="documentation-highlights.html">highlights</a> section of this document. It will familiarize you with some features of iTerm2 that you may not have seen in other terminal emulators that can make a real difference in the way you work.
+	</p>
+	<h6 class="question">Table of Contents</h6>
+	<div class="inner-menu">
+		<ul class="sub-nav">
+			<li><a href="documentation-general-usage.html">General Usage</a></li>
+			<li><a href="documentation-highlights.html">Highlights for New Users</a></li>
+			<li class="active"><a href="documentation-menu-items.html">Menu Items</a></li>
+			<li><a href="documentation-preferences.html">Preferences</a></li>
+			<li><a href="documentation-hidden-settings.html">Hidden Settings</a></li>
+			<li><a href="documentation-scripting.html">Scripting</a></li>
+			<li><a href="documentation-interesting-links.html">Interesting Links</a></li>
+			<li><a href="documentation-fonts.html">Fonts</a></li>
+			<li><a href="documentation-shell-tips.html">Shell Tips</a></li>
+			<li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+			<li><a href="documentation-coprocesses.html">Coprocesses</a></li>
+			<li><a href="documentation-smart-selection.html">Smart Selection</a></li>
+			<li><a href="documentation-triggers.html">Triggers</a></li>
+		</ul>
+	</div>
+	<section class="doc-section">
+		<hr>
+		<h5>Menu Items</h5>
+		<hr>
+		<h6 class="question">iTerm > Secure Keyboard Entry</h6>
+		<p class="answer">
+			When this is enabled, the operating system will prevent other programs running on your computer from being able to see what you are typing. If you're concerned that untrusted programs might try to steal your passwords, you can turn this on, but it may disable global hotkeys in other programs.
+		</p>
+		<h6 class="question">Shell > Split Vertically/Horizontally</h6>
+		<p class="answer">
+			These menu items allow you to divide a tab into two or more split panes. The panes can be adjusted by dragging the line that divides them.
+		</p>
+		<h6 class="question">Shell > Send Input to All Sessions</h6>
+		<p class="answer">
+			When this is enabled, keyboard input will be sent to all tabs in the current window. Other windows are not affected.
+		</p>
+		<h6 class="question">Shell > Log > Start/Stop</h6>
+		<p class="answer">
+			Logging saves all input received in a session to a file on disk.
+		</p>
+		<h6 class="question">Edit > Paste Special > Paste Escaping Special Characters</h6>
+		<p class="answer">
+			"Paste Escaping Special Characters" pastes the current string in the clipboard, but places a backslash before spaces and backslashes.
+		</p>
+		<h6 class="question">Edit > Paste Slowly</h6>
+		<p class="answer">
+			"Paste Slowly" pastes the current string in the clipboard, but it doesn't send the whole string at once. It is sent in batches of 16 bytes with a 125ms delay between batches. These values can be tweaked with hidden settings. For example:
+			<div class="panel code">
+<pre>
+defaults write com.googlecode.iterm2 SlowPasteBytesPerCall -int 16
+defaults write com.googlecode.iterm2 SlowPasteDelayBetweenCalls -float 0.125
+</pre>
+			</div>
+		</p>
+		<h6 class="question">Edit > Open Paste History...</h6>
+		<p class="answer">
+			"Open Paste History" opens a window showing up to the last 20 values that were copied or pasted in iTerm2. You can search its contents by typing a (non-necessarily-consecutive) subsequence of characters that appear in the value. You can use arrow keys and enter to make a selection, or you can click on an item to choose it, and it will be pasted. If you enable the Save copy/pate history to disk preference then these values will persist across sessions of iTerm2.
+		</p>
+		<h6 class="question">Edit > Special Characters...</h6>
+		<p class="answer">
+			"Special Characters" opens a window that facilitates entering any unicode character.
+		</p>
+		<h6 class="question">View > Use Transparency</h6>
+		<p class="answer">
+			This toggles transparency. It only has an effect if you have configured your session to be transparent under Preferences > Profiles > Window > Transparency. When Full Screen mode is entered, transparency is turned off by default, but you can select this menu item to re-enable it.
+		</p>
+		<h6 class="question">View > Edit Current Session</h6>
+		<p class="answer">
+			This opens a window that lets you change the settings of the current session without affecting any other sessions. Once this has been done, changes to the profile will not affect this session.
+		</p>
+		<h6 class="question">View > Step Back/Forward in Time</h6>
+		<p class="answer">
+			Stepping through time allows you to see what was on the screen at a previous time. This is different than going back through the scrollback buffer, as interactive programs sometimes overwrite the screen contents without having them scroll back. Once in this mode, you can use the left and right arrow keys to step back and forward, respectively. The "esc" key exits this mode, as does clicking the close button in the bar that appears on the bottom. You can adjust the amount of memory dedicated to this feature in Preferences > Instant Replay uses xx MB per session. The more memory you assign, the further back in time you can step.
+		</p>
+		<h6 class="question">Profiles > Open Profiles...</h6>
+		<p class="answer">
+			This opens the "Profiles Window" which allows you to create new windows, tabs, or panes from one or more profiles. You can perform a search by entering text in the search field. Profile names and tags are searched, and the listed profiles are filtered as you type. You can use the up and down arrow keys to make a selection. Pressing enter will open a new tab, while shift-enter will open a new window. You can make multiple selections by holding down shift or cmd and clicking on profiles. The "New Tabs in New Window" button is enabled only when more than one profile is selected: it will open a new window and create a new tab for each profile selected.
+		</p>
+		<h6 class="question">Window > Exposé All Tabs</h6>
+		<p class="answer">
+			All iTerm2 tabs will be shown tiled on the main screen. You can mouse over a tab to see it larger, and clicking on it will restore the windows and select that tab and bring its window to the front. You can search the contents of all tabs by typing in the search field that appears on the left. Making a selection from the results below it will highlight the tab that contains that text. This is useful when you have many tabs open and can't find the one you're looking for.
+		</p>
+		<h6 class="question">Window > Save/Restore Window Arrangement</h6>
+		<p class="answer">
+			The current state and positions of windows, tabs, and spit panes is recorded and saved to disk with Save Window Arrangement. Restore Window Arrangement opens a new collection of windows having the saved state. You can automatically restore the arrangement in Preferences > General > Open saved window arrangement.
+		</p>
+	</section>
+</div>

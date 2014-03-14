@@ -1,0 +1,130 @@
+---
+layout: default
+title: Scripting - Documentation - iTerm2 - Mac OS Terminal Replacement
+active-state: documentation
+---
+<div class="doc-wrapper">
+	<h3>Documentation</h3>
+	<p class="answer">
+		iTerm2 should require little explanation for users accustomed to terminal emulators. Even if you are an experienced user, take the time to read through the <a href="documentation-highlights.html">highlights</a> section of this document. It will familiarize you with some features of iTerm2 that you may not have seen in other terminal emulators that can make a real difference in the way you work.
+	</p>
+	<h6 class="question">Table of Contents</h6>
+	<div class="inner-menu">
+		<ul class="sub-nav">
+			<li><a href="documentation-general-usage.html">General Usage</a></li>
+			<li><a href="documentation-highlights.html">Highlights for New Users</a></li>
+			<li><a href="documentation-menu-items.html">Menu Items</a></li>
+			<li><a href="documentation-preferences.html">Preferences</a></li>
+			<li><a href="documentation-hidden-settings.html">Hidden Settings</a></li>
+			<li class="active"><a href="documentation-scripting.html">Scripting</a></li>
+			<li><a href="documentation-interesting-links.html">Interesting Links</a></li>
+			<li><a href="documentation-fonts.html">Fonts</a></li>
+			<li><a href="documentation-shell-tips.html">Shell Tips</a></li>
+			<li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+			<li><a href="documentation-coprocesses.html">Coprocesses</a></li>
+			<li><a href="documentation-smart-selection.html">Smart Selection</a></li>
+			<li><a href="documentation-triggers.html">Triggers</a></li>
+		</ul>
+	</div>
+	<section class="doc-section">
+		<hr>
+		<h5>Scripting</h5>
+		<hr>
+		<p class="answer">iTerm2 features Applescript support which allows you to automate many aspects of its behavior. Quite a bit of customization is also possible by writing shell scripts.</p>
+		<h5>Applescript</h5>
+		<h6 class="question">Example Script</h6>
+		<p class="answer">
+			iTerm2 has sophisticated Applescript support allowing one to write stand-alone scripts to launch the application and open multiple sessions with profiles into either new tabs or new windows. You can also set some other parameters for a session such as foreground and background colors, and transparency. Here is a sample script:
+		</p>
+		<div class="panel code">
+<pre>
+-- A sample iTerm2 Applescript 
+
+tell application "iTerm" 
+activate  
+
+-- close the first session 
+terminate the first session of the first terminal 
+
+-- make a new terminal 
+set myterm to (make new terminal)  
+
+-- talk to the new terminal 
+tell myterm  
+
+-- set size 
+set number of columns to 100 
+set number of rows to 50 
+-- make a new session 
+set mysession to (make new session at the end of sessions)  
+
+-- talk to the session 
+tell mysession  
+
+-- set some attributes 
+set name to "tcsh" 
+set foreground color to "red" 
+set background color to "blue" 
+set transparency to "0.6"  
+
+-- execute a command 
+exec command "/bin/tcsh"  
+
+end tell -- we are done talking to the session  
+
+-- we are back to talking to the terminal  
+
+-- launch a default shell in a new tab in the same terminal 
+launch session "Default Session"  
+
+-- launch a saved session. 
+launch session "Root Shell" 
+-- select the previous session 
+select mysession 
+-- get the tty name of a session 
+set myttyname to the tty of the first session 
+-- refer to a session by its tty/id 
+tell session id myttyname 
+set foreground color to "yellow" 
+end tell  
+
+end tell  
+
+-- talk to the first terminal 
+tell the first terminal  
+
+-- launch a default shell in a new tab in the same terminal 
+launch session "Default Session"  
+
+tell the last session  
+
+-- write some text 
+write text "cd Projects/Cocoa/iTerm2" 
+-- write the contents of a file 
+write contents of file "/path/to/file/"  
+
+end tell  
+
+end tell  
+
+-- reposition window and name it 
+set the bounds of the first window to {100, 100, 700, 700} 
+set the name of the first window to "A Window Title"   
+
+
+end tell
+</pre>
+		</div>
+		<p class="answer">
+			These scripts can then be saved as stand-alone executable applications.
+		</p>
+		<h6 class="question">Autolaunching Scripts</h6>
+		<p class="answer">
+			iTerm2 also supports autolaunching of an Applescript on startup. On startup, iTerm2 looks for an Applescript file in "~/Library/Application Support/iTerm2/AutoLaunch.scpt". If it is found, the "AutoLauch.scpt" script is launched and executed.
+		</p>
+		<h6 class="question">User-Defined Scripts</h6>
+		<p class="answer">
+			iTerm2 also supports launching of user defined scripts from the "Scripts" menu. The scripts need to be stored under the ~/Library/Application Support/iTerm/Scripts directory. You can create this directory if it does not already exist. iTerm2 checks this directory on startup.
+		</p>
+	</section>
+</div>

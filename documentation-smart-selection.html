@@ -1,0 +1,99 @@
+---
+layout: default
+title: Smart Selection - Documentation - iTerm2 - Mac OS Terminal Replacement
+active-state: documentation
+---
+<div class="doc-wrapper">
+	<h3>Documentation</h3>
+	<p class="answer">
+		iTerm2 should require little explanation for users accustomed to terminal emulators. Even if you are an experienced user, take the time to read through the <a href="documentation-highlights.html">highlights</a> section of this document. It will familiarize you with some features of iTerm2 that you may not have seen in other terminal emulators that can make a real difference in the way you work.
+	</p>
+	<h6 class="question">Table of Contents</h6>
+	<div class="inner-menu">
+		<ul class="sub-nav">
+			<li><a href="documentation-general-usage.html">General Usage</a></li>
+			<li><a href="documentation-highlights.html">Highlights for New Users</a></li>
+			<li><a href="documentation-menu-items.html">Menu Items</a></li>
+			<li><a href="documentation-preferences.html">Preferences</a></li>
+			<li><a href="documentation-hidden-settings.html">Hidden Settings</a></li>
+			<li><a href="documentation-scripting.html">Scripting</a></li>
+			<li><a href="documentation-interesting-links.html">Interesting Links</a></li>
+			<li><a href="documentation-fonts.html">Fonts</a></li>
+			<li><a href="documentation-shell-tips.html">Shell Tips</a></li>
+			<li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+			<li><a href="documentation-coprocesses.html">Coprocesses</a></li>
+			<li class="active"><a href="documentation-smart-selection.html">Smart Selection</a></li>
+			<li><a href="documentation-triggers.html">Triggers</a></li>
+		</ul>
+	</div>
+	<section class="doc-section">
+		<hr>
+		<h5>Smart Selection</h5>
+		<hr>
+		<p class="answer">
+			iTerm2 offers a Smart Selection feature that simplifies making selections on semantically recognizable objects.
+		</p>
+		<h6 class="question">How do I use Smart Selection?</h6>
+		<p class="answer">
+			A quad-click (four clicks of the left mouse button in quick selection) activates Smart Selection at the mouse cursor's position. By default, the following kinds of strings are recognized: 
+			<ul>
+				<li>Words bounded by whitespace or line boundaries.</li>
+				<li>C++-style pairs of identifiers separated by double colons, such as "namespace::identifier".</li>
+				<li>Filesystem paths, such as "/foo/bar/baz.txt".</li>
+				<li>Quoted strings such as "foo bar".</li>
+				<li>Java or Python-style include paths, such as "foo.bar.baz".</li>
+				<li>URIs with the schemes: mailto, http, https, ssh, or telnet.</li>
+				<li>Objective-C selectors like "@selector(foo:bar:)".</li>
+				<li>Email addresses.</li>
+			</ul>
+		</p>
+		<h6 class="question">How do I Change Smart Selection Rules?</h6>
+		<p class="answer">
+			Under Preferences>Profiles>Advanced, you may edit the smart selection rules. In addition to a regular expression, each rule also has a Precision attribute, which takes a value of Very Low, Low, Normal, High, or Very High. Intuitively, it refers to how sure one can be that when a rule's regular expression finds a match that it is what the user intended. For example, the "Word" rule is low precision (it matches almost every time), while the "HTTP URL" rule is very high precision (it almost never produces false positives). This allows the "HTTP URL" rule to take precedence when both match, unless the "Word" rule matches a much longer string. That might happen, for instance, if there were a non-URL character after a URL followed by a lot more text. The precision levels have a very strong effect, so it's very rare for a lower precision rule to take precedence over a higher precision rule.
+
+			When editing rules, it is advised that you experiment with different precision levels and different kinds of strings to find one that works well. A collection of test cases may be found at smart_selection_cases.txt.
+
+			When Smart Selection is activated, iTerm2 tries each regular expression. For a given regex, various strings on the screen are tested until the longest match is found. Only matches that include the character under the cursor are of interest. The longest such match is added to a pool of "selection candidates". Each candidate is assigned a score equal to its length in characters times its precision coefficient. The precision coefficient is defined as follows:</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Precision</th>
+						<th>Coefficient</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Very Low</td>
+						<td>0.000001</td>
+					</tr>
+					<tr>
+						<td>Low</td>
+						<td>0.001</td>
+					</tr>
+					<tr>
+						<td>Normal</td>
+						<td>1.0</td>
+					</tr>
+					<tr>
+						<td>High</td>
+						<td>1000.0</td>
+					</tr>
+					<tr>
+						<td>Very High</td>
+						<td>1000000.0</td>
+					</tr>
+				</tbody>
+			</table>
+			<p class="answer">
+				The highest-scoring candidate is then used as the selection.
+			</p>
+			<h6 class="question">Actions</h6>
+			<p class="answer">
+				Actions may be associated with smart selection rules. When you right click in a terminal, smart selection is performed at the cursor's location. Any smart selection rule that matches that location will be searched for associated actions, and those actions will be added to the context menu. Actions may open a file, open a URL, run a command, or start a coprocess.
+			</p>
+			<h6 class="question">Regular Expressions</h6>
+			<p class="answer">
+				Regular expressions conform to the <a href="http://userguide.icu-project.org/strings/regexp">ICU regular expressions</a> rules.
+			</p>
+		</section>
+	</div>
