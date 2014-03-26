@@ -66,6 +66,47 @@ let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 ^[]50;SetMark^G
 </pre>
 		</div>
+		<h6 class="question">Steal Focus</h6>
+		<p class="answer">To bring iTerm2 to the foreground:</p>
+		<div class="panel code">
+<pre>
+^[]50;StealFocus^G
+</pre>
+		</div>
+		<h6 class="question">Clear Scrollback History</h6>
+		<p class="answer">To erase the scrollback history:</p>
+		<div class="panel code">
+<pre>
+^[]50;ClearScrollback^G
+</pre>
+		</div>
+		<h6 class="question">Set curent directory</h6>
+		<p class="answer">To inform iTerm2 of the current directory to help semantic history:</p>
+		<div class="panel code">
+<pre>
+^[]50;CurrentDir=/the/current/directory^G
+</pre>
+		</div>
+		<h6 class="question">Change profile</h6>
+		<p class="answer">To change the session's profile on the fly:</p>
+		<div class="panel code">
+<pre>
+^[]50;SetProfile=NewProfileName^G
+</pre>
+		</div>
+		<h6 class="question">Copy to clipboard</h6>
+		<p class="answer">To place text in the pasteboard:</p>
+		<div class="panel code">
+<pre>
+^[]50;CopyToClipboard=name^G
+</pre>
+		</div>
+		<p class="answer">Where name is one of "rule", "find", "font", or empty to mean the general pasteboard (which is what you normally want). After this is sent, all text received is placed in the pasteboard until this code comes in:</p>
+		<div class="panel code">
+<pre>
+^[]50;EndCopy^G
+</pre>
+		</div>
 		<h6 class="question">Set window title and tab chrome background color</h6>
 		<p class="answer">To set the window title and tab color use this escape sequence:</p>
 		<div class="panel code">
@@ -75,10 +116,9 @@ let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 ^[]6;1;bg;blue;brightness;N^G
 </pre>
 		</div>
-		<p class="answer">
-			Replace N with a decimal value in 0 to 255.
+		<p class="answer">Replace N with a decimal value in 0 to 255.
 
-			Example in bash that turns the background purple:</p>
+		Example in bash that turns the background purple:</p>
 		<div class="panel code">
 <pre>
 echo -e "\033]6;1;bg;red;brightness;255\a" 
@@ -92,9 +132,7 @@ echo -e "\033]6;1;bg;blue;brightness;255\a"
 ^[]Pnrrggbb^[\
 </pre>
 		</div>
-		<p class="answer">
-			Replace "n" with:
-		</p>
+		<p class="answer">Replace "n" with:</p>
 		<ul>
 			<li>0-f (hex) = ansi color</li>
 			<li>g = foreground</li>
@@ -104,12 +142,9 @@ echo -e "\033]6;1;bg;blue;brightness;255\a"
 			<li>k = selected text color</li>
 			<li>l = cursor</li>
 			<li>m = cursor text</li>
+			<p class="answer">rr, gg, bb are 2-digit hex value (for example, "ff").
+			Example in bash that changes the foreground color blue:</p>
 		</ul>
-		<p class="answer">
-			rr, gg, bb are 2-digit hex value (for example, "ff").
-
-			Example in bash that changes the foreground color blue:
-		</p>
 		<div class="panel code">
 <pre>
 echo -e "\033]Pg4040ff\033\\"

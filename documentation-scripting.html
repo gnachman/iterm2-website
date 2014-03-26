@@ -35,90 +35,12 @@ active-state: documentation
 		<hr>
 		<p class="answer">iTerm2 features Applescript support which allows you to automate many aspects of its behavior. Quite a bit of customization is also possible by writing shell scripts.</p>
 		<h5>Applescript</h5>
-		<h6 class="question">Example Script</h6>
+		<h6 class="question">Applescript</h6>
 		<p class="answer">
-			iTerm2 has sophisticated Applescript support allowing one to write stand-alone scripts to launch the application and open multiple sessions with profiles into either new tabs or new windows. You can also set some other parameters for a session such as foreground and background colors, and transparency. Here is a sample script:
-		</p>
-		<div class="panel code">
-<pre>
--- A sample iTerm2 Applescript 
+			iTerm2 has sophisticated Applescript support allowing one to write stand-alone scripts to launch the application and open multiple sessions with profiles into either new tabs or new windows. You can also set some other parameters for a session such as foreground and background colors, and transparency.
 
-tell application "iTerm" 
-activate  
+			Sample scripts may be found at the <a href="https://code.google.com/p/iterm2/wiki/AppleScript">iTerm2 Applescript Examples</a> page.
 
--- close the first session 
-terminate the first session of the first terminal 
-
--- make a new terminal 
-set myterm to (make new terminal)  
-
--- talk to the new terminal 
-tell myterm  
-
--- set size 
-set number of columns to 100 
-set number of rows to 50 
--- make a new session 
-set mysession to (make new session at the end of sessions)  
-
--- talk to the session 
-tell mysession  
-
--- set some attributes 
-set name to "tcsh" 
-set foreground color to "red" 
-set background color to "blue" 
-set transparency to "0.6"  
-
--- execute a command 
-exec command "/bin/tcsh"  
-
-end tell -- we are done talking to the session  
-
--- we are back to talking to the terminal  
-
--- launch a default shell in a new tab in the same terminal 
-launch session "Default Session"  
-
--- launch a saved session. 
-launch session "Root Shell" 
--- select the previous session 
-select mysession 
--- get the tty name of a session 
-set myttyname to the tty of the first session 
--- refer to a session by its tty/id 
-tell session id myttyname 
-set foreground color to "yellow" 
-end tell  
-
-end tell  
-
--- talk to the first terminal 
-tell the first terminal  
-
--- launch a default shell in a new tab in the same terminal 
-launch session "Default Session"  
-
-tell the last session  
-
--- write some text 
-write text "cd Projects/Cocoa/iTerm2" 
--- write the contents of a file 
-write contents of file "/path/to/file/"  
-
-end tell  
-
-end tell  
-
--- reposition window and name it 
-set the bounds of the first window to {100, 100, 700, 700} 
-set the name of the first window to "A Window Title"   
-
-
-end tell
-</pre>
-		</div>
-		<p class="answer">
 			These scripts can then be saved as stand-alone executable applications.
 		</p>
 		<h6 class="question">Autolaunching Scripts</h6>
