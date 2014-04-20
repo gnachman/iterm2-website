@@ -187,5 +187,15 @@ preexec() {
 
 preexec_install
 
+# iTerm2 Additions:
+
+function remote_host_sequence() {
+	printf "\033]1337;RemoteHost=%s@%s\007" "$USER" $(hostname -f)
+}
+
+function current_dir_sequence() {
+        printf "\033]1337;CurrentDir=%s\007" "$PWD"
+}
+
 # Send sequence marking the start of a command
-PS1="$PS1\[$(final_term_control_sequence 'B')\]"
+PS1="$PS1\[$(final_term_control_sequence 'B')$(remote_host_sequence)$(current_dir_sequence)\]"
