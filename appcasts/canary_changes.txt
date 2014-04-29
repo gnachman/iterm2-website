@@ -1,0 +1,84 @@
+These release notes are for the development builds of iTerm2. The last stable release was 1.0.0.
+
+iTerm2 1.0.0.20120108
+Second Canary
+
+The 12/19 release had a few bugs, so this is the second canary build for this release.
+Tmux has been updated, so if you installed the tmux for the first canary, please update it.
+
+Enhancements
+- Adds a tmux dashboard to manage sessions and windows (shell-&gt;tmux-&gt;dashboard)
+- Remembers which tmux windows were tabs in a native window
+- Remembers tmux window origins
+- Expand tildes in custom prefs folder
+- Add blend option to profile window prefs to adjust how much of the background image shows through.
+- Fix bug where mouse cursor was often wrong
+- Keep the close button visible when only one item is in the toolbelt and have it hide the toolbelt.
+- Change shortcut to set font size to normal to cmd-0
+- The coprocess field now remembers the last 20 entries.
+- Add tmux prefs to general prefs pane.
+- Use tmux profile's size for tmux windows.
+- Add hide after open option to window profile prefs.
+- Tweak smart cursor threshold to be a bit more aggressive about making the character white or black. Add hidden options SmartCursorColorFgThreshold/SmartCursorColorBgThreshold to allow the user to tweak it.
+- Respect line number setting in tmux profile.
+
+Bug Fixes
+- Unblock sigpipe before exec().
+- Remove excess logging from hotkey window code
+- Fix warnings about growl double-linkage
+- Don't set LC_CTYPE to unsupported locales
+- Fix fullscreen in tmux mode.
+- Remove most of the disallowed function calls between fork and exec.
+- Fix bug where closing a window would sometimes crash
+- Revert to old-style blur code for 10.6 to avoid window server crashes.
+- Fix bugs where windows weren't properly dimmed/undimmed (1664)
+- Don't use linen background for tmux windows. Display tmux windows that are smaller than their window pane correctly.
+- Handle unsupported tmux versions better.
+- Fix bug where choosing the home directory option in advanced prefs did not run login.
+- Fix toggling pane titles in tmux windows.
+- Fix tmux support with fullscreen and toolbelt.
+- Scroll to the bottom when you press a key in a tmux pane.
+- When closing a tmux gateway session, close all tmux tabs.
+- Use correct fg/bg color for tmux messages.
+- Fix assertion with highlighting trigger.
+- Fix assertion with certain kinds of clicks on splitters.
+
+iTerm2 1.0.0.20111219
+You'd better sit down for this one.
+
+Marquee Features
+- Deep tmux integration!
+   Have you ever had an ssh session lost because you had to reboot, had a network failure, or the power went out? Are you tired of giving up a keystroke to tmux or screen? Suffer no longer! iTerm2 and tmux are now deeply integrated. By installing a special version of tmux, it gains the ability to speak directly to iTerm2. When you run tmux with -C, iTerm2 will open real, native windows or tabs for each tmux window. The whole state of your tmux session is reflected in native iTerm2 windows. As you interact with a window, your typing is sent back to tmux. Any time you resize a window, add a split pane, close a split pane, close a window, or open a window (with Shell->tmux->new window), that action happens in tmux as well as in iTerm2.
+  Download the tmux code here: http://code.google.com/p/iterm2/downloads/detail?name=tmux-for-iTerm2-20111219.tar.gz
+
+Enhancements
+- Add title bars to split panes that show the title. You can drag panes by their titles, and there is a menu and a close button in it as well.
+- Support Lion's Restore functionality.
+- "Find" continues to search as new text appears.
+- Add option to always copy preferences to prefs stored in a custom folder.
+- Add "Always Run Command..." option to semantic history, which runs a command even if you don't cmd-click on a filename.
+- Add a new panel to prefs to make mouse actions configurable.
+- Add option to make triple-click select a whole wrapped line rather than just one row.
+- Add 'New Window (Default Profile)' to dock menu.
+- Allow users to add context menu actions through Prefs->Profiles->Advanced->Smart Selection->Edit Actions. When you right-click on text matching a a smart selection, the actions are added to the context menu.
+- Add hidden option AutocompleteMaxOptions to adjust number of autocomplete entries.
+- Add hidden option PasteHistoryMaxOptions to adjust number of paste history entries.
+- Add a new trigger action called "Silent Coprocess" that mutes the session while running (ideal for rz/sz).
+- Add \5 as a macro in Semantic History commands to pass the PWD.
+- Make growl alerts clickable (thanks, soul.cake.tuesday.duck and bauerb).
+- Add hidden variable URLCharacterSet that defines characters that are part of a URL.
+
+Bug fixes:
+- Growl notifications were off by default. Should work with Growl 1.3 now.
+- Fixed display of different-sized screens in window arrangements tab of prefs (thanks, 0xae).
+- Add | to legal URL characters.
+- Run triggers on CR, not just LF.
+- Fix toolbelt support in Lion fullscreen.
+- Ignore sigpipe from coprocesses.
+- Show all tabs in Window->Select Tab.
+- Fix number-of-scrollback-line field in Lion, which wouldn't allow you to go over 1000.
+- Fix bug where scrolling the window while making a selection didn't work sometimes.
+- Fix bug with window size changing badly when switching monitors.
+- Fix bug where move tab to new window command in tab's context menu creates a session with all black.
+- Preserve window number when toggling traditional fullscreen.
+- Respect "dim inactive split panes setting" when restoring window arrangements and broadcasting input.
