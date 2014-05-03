@@ -35,8 +35,7 @@ def ChangeLog(zip):
 
 BASE=os.environ["HOME"] + "/iterm2.com/downloads"
 DOWNLOADS_PATHS=[("Stable Releases", "stable"),
-                 ("Test Releases", "beta"),
-                 ("Nightly builds", "nightly")]
+                 ("Test Releases", "beta") ]
 
 LIMIT = { "stable": 1,
           "beta": 2,
@@ -61,3 +60,11 @@ for sectionName,path in DOWNLOADS_PATHS:
             print cl
 	print "</p>"
 	print "<br>"
+
+print "<h3>Nightly Builds</h3>"
+print '<h4><a target="_blank" href="/nightly/latest"><img src="/images/small-download.png" align="left">&nbsp;Latest nightly build</a></h4>'
+print "<p>"
+print "A nightly build is begun at midnight PST every day and uploaded upon successful completion. If no changes were made, no new build is created."
+print "The change log may be seen <a href=\"https://github.com/gnachman/iTerm2/commits/master\">on Github.</a>"
+print "</p>"
+print "<br>"
