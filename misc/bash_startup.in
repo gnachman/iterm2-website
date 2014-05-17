@@ -160,8 +160,12 @@ function prompt_suffix() {
   printf "\033]133;B\007"
 }
 
+function print_version_number() {
+  printf "\033]1337;ShellIntegrationVersion=1\007"
+}
+
 preexec_install
 
 # This is necessary so the first command line will have a hostname and current directory.
 remotehost_and_currentdir
-
+print_version_number
