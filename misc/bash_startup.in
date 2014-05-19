@@ -1,35 +1,5 @@
 #!/bin/bash
-# Source this file at the end of your .bashrc
-# For example:
-# source ~/bash_startup.in
-#
-# This is a port of FinalTerm's bash_startup.in with minor changes for Mac
-# compatibility.
-# - Termlet support removed
-# - Terminal commands removed
-# - preexec.bash inlined
-
-## Begin preexec.bash (inlined)
-
-# NOTE: This file is taken (with minor modifications) from
-#       Glyph Lefkowitz's blog post "This bash shell is now fully operational!"
-#       (http://glyf.livejournal.com/63106.html)
-
-# TODO: This appears to break if there is already a DEBUG trap installed
-
-
-# preexec.bash -- Bash support for ZSH-like 'preexec' and 'precmd' functions.
-
-# The 'preexec' function is executed before each interactive command is
-# executed, with the interactive command as its argument.  The 'precmd'
-# function is executed before each prompt is displayed.
-
-# To use, in order:
-
-#  1. source this file
-#  2. define 'preexec' and/or 'precmd' functions (AFTER sourcing this file),
-#  3. as near as possible to the end of your shell setup, run 'preexec_install'
-#     to kick everything off.
+# This is based on "preexec.bash" but is customized for iTerm2.
 
 # Note: this module requires 2 bash features which you must not otherwise be
 # using: the "DEBUG" trap, and the "PROMPT_COMMAND" variable.  preexec_install
@@ -42,11 +12,9 @@
 
 # Copy screen-run variables from the remote host, if they're available.
 
-if [[ "$SCREEN_RUN_HOST" == "" ]]
-then
-    SCREEN_RUN_HOST="$LC_SCREEN_RUN_HOST"
-    SCREEN_RUN_USER="$LC_SCREEN_RUN_USER"
-fi
+# Saved copy of your PS1. Changes to PS1 from here on are ignored as it is
+# re-set from PROMPT_COMMAND.
+orig_ps1="${PS1}"
 
 # This variable describes whether we are currently in "interactive mode";
 # i.e. whether this shell has just executed a prompt and is waiting for user
@@ -70,8 +38,27 @@ function precmd () {
 # was just displayed, to allow the DEBUG trap, below, to know that the next
 # command is likely interactive.
 function preexec_invoke_cmd () {
-    precmd
-    preexec_interactive_mode="yes"
+    last_hist_ent="$(history 1)";
+    precmd;
+    # This is an iTerm2 addition to try to work around a problem in the
+    # original preexec.bash.
+    # When the PS1 has command substitutions, this gets invoked for each
+    # substitution and each command that's run within the substitution, which
+    # really adds up. It would be great if we could do something like this at
+    # the end of this script:
+    #   PS1="$(prompt_prefix)$PS1($prompt_suffix)"
+    # and have prompt_prefix set a global variable that tells precmd not to
+    # output anything and have prompt_suffix reset that variable.
+    # Unfortunately, command substitutions run in subshells and can't
+    # communicate to the outside world. 
+    # Instead, we have this workaround. We save the original value of PS1 in
+    # $orig_ps1. Then each time this funciton is run (it's called from
+    # PROMPT_COMMAND just before the prompt is shown) it will change PS1 to a
+    # string without any command substitutions by doing eval on orig_ps1. At
+    # this point preexec_interactive_mode is still the empty string, so preexec
+    # won't produce output for command substitutions.
+    export PS1="\[$(prompt_prefix)\]$(eval "echo \"$orig_ps1\"")\[$(prompt_suffix)\]"
+    preexec_interactive_mode="yes";
 }
 
 # This function is installed as the DEBUG trap.  It is invoked before each
@@ -119,19 +106,26 @@ function preexec_invoke_exec () {
     # variable, but using history here is better in some ways: for example, "ps
     # auxf | less" will show up with both sides of the pipe if we use history,
     # but only as "ps auxf" if not.
-    local this_command=`history 1 | sed -e "s/^[ ]*[0-9]*[ ]*//g"`;
+    hist_ent="$(history 1)";
+    local prev_hist_ent="${last_hist_ent}";
+    last_hist_ent="${hist_ent}";
+    if [[ "${prev_hist_ent}" != "${hist_ent}" ]]; then
+        local this_command="$(echo "${hist_ent}" | sed -e "s/^[ ]*[0-9]*[ ]*//g")";
+    else
+        local this_command="";
+    fi;
 
     # If none of the previous checks have earlied out of this function, then
     # the command is in fact interactive and we should invoke the user's
     # preexec hook with the running command as an argument.
-    preexec "$this_command"
+    preexec "$this_command";
 }
 
 # Execute this to set up preexec and precmd execution.
 function preexec_install () {
 
     # *BOTH* of these options need to be set for the DEBUG trap to be invoked
-    # in ( ) subshells.  This smells like a bug in bash to me.  The null stderr
+    # in ( ) subshells.  This smells like a bug in bash to me.  The null stackederr
     # redirections are to quiet errors on bash2.05 (i.e. OSX's default shell)
     # where the options can't be set, and it's impossible to inherit the trap
     # into subshells.
@@ -140,62 +134,38 @@ function preexec_install () {
     shopt -s extdebug > /dev/null 2>&1
 
     # Finally, install the actual traps.
-    PROMPT_COMMAND="${PROMPT_COMMAND};preexec_invoke_cmd"
-    trap 'preexec_invoke_exec' DEBUG
+    PROMPT_COMMAND="preexec_invoke_cmd";
+    trap 'preexec_invoke_exec' DEBUG;
 }
 
-## End preexec.bash
+# -- begin iTerm2 customization
 
-# NOTE: xterm properly ignores sequences of this type as unknown,
-#       while some other terminals (such as GNOME Terminal) print them
-function final_term_control_sequence() {
-	control_sequence="\033]133;"
-	for argument in "$@"; do
-		control_sequence="$control_sequence$argument;"
-	done
-	# TODO: Remove last semicolon
-	control_sequence="$control_sequence\007"
-
-	# TODO: Should "-ne" be added here?
-	echo "$control_sequence"
-}
-export -f final_term_control_sequence
-
-function send_control_sequence() {
-	echo -ne "$1"
-}
-export -f send_control_sequence
-
-
-# Logic for prompt and command detection
-
-function send_return_code() {
-	# Send sequence containing the return code of the last command
-	send_control_sequence "$(final_term_control_sequence 'D' "$?")"
-}
-PROMPT_COMMAND=send_return_code;$PROMPT_COMMAND
-
-precmd() {
-	# Send sequence marking a command prompt
-	send_control_sequence "$(final_term_control_sequence 'A')"
+# Runs after interactively edited command but before execution
+function preexec() {
+  printf "\033]133;C\007"
 }
 
-preexec() {
-	# Send sequence containing the command to be executed
-	send_control_sequence "$(final_term_control_sequence 'C' "$1")"
+function remotehost_and_currentdir() {
+  printf "\033]1337;RemoteHost=%s@%s\007" "$USER" $(hostname -f)
+  printf "\033]1337;CurrentDir=%s\007" "$PWD"
+}
+
+function prompt_prefix() {
+  printf "\033]133;D;\$?\007"
+  remotehost_and_currentdir
+  printf "\033]133;A\007"
+}
+
+function prompt_suffix() {
+  printf "\033]133;B\007"
+}
+
+function print_version_number() {
+  printf "\033]1337;ShellIntegrationVersion=1\007"
 }
 
 preexec_install
 
-# iTerm2 Additions:
-
-function remote_host_sequence() {
-	printf "\033]1337;RemoteHost=%s@%s\007" "$USER" $(hostname -f)
-}
-
-function current_dir_sequence() {
-        printf "\033]1337;CurrentDir=%s\007" "$PWD"
-}
-
-# Send sequence marking the start of a command
-PS1="$PS1\[$(final_term_control_sequence 'B')$(remote_host_sequence)$(current_dir_sequence)\]"
+# This is necessary so the first command line will have a hostname and current directory.
+remotehost_and_currentdir
+print_version_number
