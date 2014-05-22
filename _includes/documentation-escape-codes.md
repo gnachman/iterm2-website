@@ -10,8 +10,10 @@ where N=0, 1, or 2.
         <li>2: Underline</li>
 </ul>
 Add this to your .vimrc to change cursor shape in insert mode:
+
     let &t_SI = "\<Esc>]50;CursorShape=1\x7" 
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
 This is derived from <a href="http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes">Konsole</a>.
 #### Set Mark
 The "Set Mark" (cmd-shift-M) command allows you to record a location and then jump back to it later (with cmd-shift-J). The following escape code has the same effect as that command:
