@@ -40,9 +40,6 @@ active-state: documentation
 {% include subdoc.md title="Hidden Settings" anchor="documentation-hidden-settings.html" %}
 {% include documentation-hidden-settings.md %}
 
-{% include subdoc.md title="Interesting Links" anchor="documentation-interesting-links.html" %}
-{% include documentation-interesting-links.md %}
-
 {% include subdoc.md title="Scripting" anchor="documentation-scripting.html" %}
 {% include documentation-scripting.md %}
 
