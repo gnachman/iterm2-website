@@ -1,49 +1,45 @@
 ---
-layout: default
+layout: subdoc
 title: Coprocesses - Documentation - iTerm2 - Mac OS Terminal Replacement
 active-state: documentation
 subhead: Coprocesses
 ---
-<div class="doc-wrapper">
-        {% include toc.html %}
-	<section class="doc-section">
-		<p class="answer">
-			iTerm2 offers support for "coprocesses". This very powerful feature will allow you to interact with your terminal session in a new way.
-		</p>
-		<h6 class="question">What is a Coprocess?</h6>
-		<p class="answer">
-			A coprocess is a job, such as a shell script, that has a special relationship with a particular iTerm2 session. All output in a terminal window (that is, what you see on the screen) is also input to the coprocess. All output from the coprocess acts like text that the user is typing at the keyboard.
+<p class="answer">
+        iTerm2 offers support for "coprocesses". This very powerful feature will allow you to interact with your terminal session in a new way.
+</p>
+<h6 class="question">What is a Coprocess?</h6>
+<p class="answer">
+        A coprocess is a job, such as a shell script, that has a special relationship with a particular iTerm2 session. All output in a terminal window (that is, what you see on the screen) is also input to the coprocess. All output from the coprocess acts like text that the user is typing at the keyboard.
 
-			One obvious use of this feature is to automate interaction. For instance, suppose you want to automate your presence in a chat room. The following script could be used as a coprocess:
-		</p>
-		<div class="panel code">
+        One obvious use of this feature is to automate interaction. For instance, suppose you want to automate your presence in a chat room. The following script could be used as a coprocess:
+</p>
+<div class="panel code">
 <pre>
 #!/usr/bin/python 
 import sys 
 while True: 
-line = raw_input() 
-if line.strip() == "Are you there?": 
-print "Yes"     sys.stdout.flush()
+  line = raw_input() 
+  if line.strip() == "Are you there?": 
+    print "Yes"
+  sys.stdout.flush()
 </pre>
-		</div>
-		<p class="answer">
-			You could disappear for years before your friends discover you're gone.
-		</p>	
-		<h6 class="question">How Do I Start a Coprocess?</h6>
-		<p class="answer">
-			There are two ways to start a coprocess.
-
-			1. Select "Run Coprocess..." from the Shell menu. Enter the name of a command to run as a coprocess.
-
-			2. Create a Trigger in Prefs>Profiles>Advaced and select Run Coprocess... as the action. Give the script to run as a parameter. Triggers also have Silent Coprocesses, which prevent any output from going to the screen. This is useful for ZModem, for example.
-		</p>
-		<h6 class="question">Usage</h6>
-		<p class="answer">
-			A session can not have more than one coprocess at a time. When a coprocess is active, an icon will indicate that in the top right of the session.
-		</p>	
-		<h6 class="question">Technical Details</h6>
-		<p class="answer">
-			The coprocess's stdin is a byte-for-byte copy of the input from the session's pty, beginning at the time the coprocess starts. In the case of a trigger-started coprocess, the line of input that triggered it MAY be the first line of input to the coprocess, but this is not guaranteed. If a coprocess is running, triggers with a Run Coprocess action will not fire. The coprocess's stdout stream will be treated the same as keyboard input. A small amount of buffering is provided for both input and output of the coprocess. When a buffer fills, the coprocess will block.
-		</p>
-	</section>
 </div>
+<p class="answer">
+        You could disappear for years before your friends discover you're gone.
+</p>	
+<h6 class="question">How Do I Start a Coprocess?</h6>
+<p class="answer">
+        There are two ways to start a coprocess.
+
+        1. Select "Run Coprocess..." from the Shell menu. Enter the name of a command to run as a coprocess.
+
+        2. Create a Trigger in Prefs>Profiles>Advaced and select Run Coprocess... as the action. Give the script to run as a parameter. Triggers also have Silent Coprocesses, which prevent any output from going to the screen. This is useful for ZModem, for example.
+</p>
+<h6 class="question">Usage</h6>
+<p class="answer">
+        A session can not have more than one coprocess at a time. When a coprocess is active, an icon will indicate that in the top right of the session.
+</p>	
+<h6 class="question">Technical Details</h6>
+<p class="answer">
+        The coprocess's stdin is a byte-for-byte copy of the input from the session's pty, beginning at the time the coprocess starts. In the case of a trigger-started coprocess, the line of input that triggered it MAY be the first line of input to the coprocess, but this is not guaranteed. If a coprocess is running, triggers with a Run Coprocess action will not fire. The coprocess's stdout stream will be treated the same as keyboard input. A small amount of buffering is provided for both input and output of the coprocess. When a buffer fills, the coprocess will block.
+</p>
