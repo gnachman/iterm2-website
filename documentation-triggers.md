@@ -5,7 +5,7 @@ active-state: documentation
 subhead: Triggers
 ---
 A trigger is an action that is performed when text matching some regular expression is received in a terminal session.
-<h6 class="question">What can Triggers Do?</h6>
+#### What can Triggers Do?
 Various actions may be assigned to triggers. These include:
 <ul>
         <li>Bounce Dock Icon: Makes the dock icon bounce until the iTerm2 window becomes key.</li>
@@ -16,7 +16,7 @@ Various actions may be assigned to triggers. These include:
         <li>Send Text: Sends user-defined text back to the terminal as though the user had typed it.</li>
         <li>Show Alert: Shows an alert box with user-defined text.</li>
 </ul>
-<h6 class="question">What is a Parameter?</h6>
+#### What is a Parameter?
 Various actions (Run Command, Run Coprocess, Send Growl Alert, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. Some special values are allowed here: 
 <table>
         <thead>
@@ -64,7 +64,7 @@ Various actions (Run Command, Run Coprocess, Send Growl Alert, Send Text, and Sh
                 </tr>
         </tbody>
 </table>
-<h6 class="question">Example</h6>
+#### Example
 The <a href="https://github.com/mmastrac/iterm2-zmodem">iTerm2-zmodem</a> project demonstrates hooking up iTerm2 to zmodem upload and download.
-<h6 class="question">Technical Details</h6>
+#### Technical Details
 Regular expressions conform to the <a href="http://userguide.icu-project.org/strings/regexp">ICU regular expressions</a> rules. Text that is written to the screen and bells are sent to the regex matcher for evaluation. Only one line at a time is matched. Matching is performed when a newline or cursor-moving escape code is processed. Lines longer than 1024 characters are truncated at the 1024th character for performance reasons.

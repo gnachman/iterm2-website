@@ -5,7 +5,7 @@ active-state: documentation
 subhead: Proprietary Escape Codes
 ---
 iTerm2 supports several non-standard escape codes. These may not work properly in tmux or screen, and may have unknown effects on other terminal emulators. Proceed with caution.
-<h6 class="question">Set cursor shape</h6>
+#### Set cursor shape
     ^[]50;CursorShape=N^G
 where N=0, 1, or 2.
 <ul>
@@ -17,32 +17,32 @@ Add this to your .vimrc to change cursor shape in insert mode:
     let &t_SI = "\<Esc>]50;CursorShape=1\x7" 
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 This is derived from <a href="http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes">Konsole</a>.
-<h6 class="question">Set Mark</h6>
+#### Set Mark
 The "Set Mark" (cmd-shift-M) command allows you to record a location and then jump back to it later (with cmd-shift-J). The following escape code has the same effect as that command:
 
     ^[]50;SetMark^G
 
-<h6 class="question">Steal Focus</h6>
+#### Steal Focus
 To bring iTerm2 to the foreground:
 
     ^[]50;StealFocus^G
 
-<h6 class="question">Clear Scrollback History</h6>
+#### Clear Scrollback History
 To erase the scrollback history:
 
     ^[]50;ClearScrollback^G
 
-<h6 class="question">Set curent directory</h6>
+#### Set curent directory
 To inform iTerm2 of the current directory to help semantic history:
 
     ^[]50;CurrentDir=/the/current/directory^G
 
-<h6 class="question">Change profile</h6>
+#### Change profile
 To change the session's profile on the fly:
 
     ^[]50;SetProfile=NewProfileName^G
 
-<h6 class="question">Copy to clipboard</h6>
+#### Copy to clipboard
 To place text in the pasteboard:
 
     ^[]50;CopyToClipboard=name^G
@@ -51,7 +51,7 @@ Where name is one of "rule", "find", "font", or empty to mean the general pasteb
 
     ^[]50;EndCopy^G
 
-<h6 class="question">Set window title and tab chrome background color</h6>
+#### Set window title and tab chrome background color
 To set the window title and tab color use this escape sequence:
 
     ^[]6;1;bg;red;brightness;N^G 
@@ -66,7 +66,7 @@ Example in bash that turns the background purple:
     echo -e "\033]6;1;bg;green;brightness;0\a" 
     echo -e "\033]6;1;bg;blue;brightness;255\a"
 
-<h6 class="question">Change the color palette</h6>
+#### Change the color palette
     ^[]Pnrrggbb^[\
 Replace "n" with:
 <ul>

@@ -4,7 +4,7 @@ title: General Usage - Documentation - iTerm2 - Mac OS Terminal Replacement
 active-state: documentation
 subhead: General Usage
 ---
-<h6 class="question">Tabs</h6>
+#### Tabs
 
 When you first start iTerm2, a window opens showing a terminal session. If you want to open more that one session at a time, you have a few options: You can create a new window (Shell > New Window), you can create a new tab (Shell > New Tab), or you can split the current session into two panes (Shell > Split Horizontally, Shell > Split Vertically), each of which is a separate session.
 
@@ -13,7 +13,7 @@ Tabs in iTerm2 behave like tabs in other programs, most notably web browsers lik
 By default, the label of each tab is the name of the job that's running in that session. Some systems are configured to augment this with additional information such as the hostname you're logged in to or your current directory (this is done by sending a special code of ESC]0;string ^G).
 
 Tab labels are colored to indicate their status. When new output is received in a tab other than the currently selected tab, its label changes color to magenta. After a few seconds it becomes red to indicate not-so-fresh output. When a tab's session terminates, the label turns gray. You can disable this coloring in Preferences > Appearance > Color tab labels on activity.
-<h6 class="question">Toolbar</h6>
+#### Toolbar
 The toolbar provides quick access to some commonly used features.
 <ul>
 <li>The New button allows you to open a new tab. If you have configured multiple profiles, it allows you to select one from a list.</li>
@@ -21,9 +21,9 @@ The toolbar provides quick access to some commonly used features.
 <li>The Close button closes the current session, and may close the current window if it was the only session.</li>
 <li>The Execute field lets you to type in a command locally before sending it to the terminal. You can also type in a URL (including the scheme, such as http://), in which case the URL will be opened by the appropriate application. If you press TAB key instead of Enter after you type in the command, a new tab will be launched with your command.</li>
 </ul>
-<h6 class="question">Info Panel</h6>
+#### Info Panel
 Info Panel lets you modify the apperance of a single session. Note that after you open this panel, your changes will not be reflected in the profile and profile changes will not be reflected in this session.
-<h6 class="question">Pointer</h6>
+#### Pointer
 The primary use of the mouse in iTerm2 is to select text, and (by default) text is copied to the clipboard immediately upon being selected. You can click and drag to perform a normal selection. Double-clicking selects a whole word. Triple-clicking selects an entire line. Quadruple-clicking performs a "smart select", matching recognized strings such as URLs and email addresses.
 
 If you hold shift while clicking the existing selection is extended.
@@ -41,7 +41,7 @@ If you hold the control key and click, that simulates a right click. If you'd pr
 Moving the mouse's scroll wheel scrolls up and down.
 
 A three-finger swipe left or right on a trackpad (if configured to "navigate") will select an adjacent tab.
-<h6 class="question">Keyboard</h6>
+#### Keyboard
 Every aspect of the keyboard can be configured in iTerm2. These keystrokes may be useful to remember:
 <ul>
 <li>Cmd+left arrow, Cmd+right arrow navigates among tabs. So does Cmd-{ and Cmd-}.
@@ -56,7 +56,7 @@ You can configure any key combination to perform any action in two places: in Pr
 You can remap modifiers like Option and Cmd within iTerm2. Some users find that pressing Option frequently is uncomfortable, and configure iTerm2 to swap the function of the Option and Cmd keys. This is done in Preferences > Keys under Remap Modifier Keys. If there is some key combination that you don't want to be affected by this change (such as Cmd-tab) add a new global shortcut key with the action Do Not Remap.
 
 iTerm2 allows you to define a global hotkey. This is a single keystroke that iTerm2 listens for even when another application has keyboard focus. When it is pressed, iTerm2 comes to the front. Press it again, and iTerm2 goes away. You can choose to bind the hotkey to a single dedicated window. This feature is similar to other programs like Visor, Guake, and Yakuake.
-<h6 class="question">Context menus</h6>
+#### Context menus
 By right-clicking in a session a context menu opens. You can use it to open a new session, perform various actions on selected text, or access frequently used features to affect the clicked-on session.
-<h6 class="question">Profiles</h6>
+#### Profiles
 Many settings are stored in profiles. A profile is a named collection of settings, and you can have as many of them as you like. Most users only have one profile, but if you find that you often connect to different servers, they may be useful for you. A key feature of a profile is that you can associate a command with it that is run when it begins. For instance, if you often ssh to a particular host, you could create a profile with the command "ssh example.com" to automate that process.

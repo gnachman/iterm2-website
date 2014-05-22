@@ -11,7 +11,7 @@ iTerm2 has sophisticated Applescript support allowing one to write stand-alone s
 Sample scripts may be found at the <a href="https://code.google.com/p/iterm2/wiki/AppleScript">iTerm2 Applescript Examples</a> page.
 
 These scripts can then be saved as stand-alone executable applications.
-<h6 class="question">Autolaunching Scripts</h6>
+#### Autolaunching Scripts
 iTerm2 also supports autolaunching of an Applescript on startup. On startup, iTerm2 looks for an Applescript file in "~/Library/Application Support/iTerm2/AutoLaunch.scpt". If it is found, the "AutoLauch.scpt" script is launched and executed.
-<h6 class="question">User-Defined Scripts</h6>
+#### User-Defined Scripts
 iTerm2 also supports launching of user defined scripts from the "Scripts" menu. The scripts need to be stored under the ~/Library/Application Support/iTerm/Scripts directory. You can create this directory if it does not already exist. iTerm2 checks this directory on startup.

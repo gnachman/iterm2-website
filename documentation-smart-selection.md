@@ -5,7 +5,7 @@ active-state: documentation
 subhead: Smart Selection
 ---
 iTerm2 offers a Smart Selection feature that simplifies making selections on semantically recognizable objects.
-<h6 class="question">How do I use Smart Selection?</h6>
+#### How do I use Smart Selection?
 A quad-click (four clicks of the left mouse button in quick selection) activates Smart Selection at the mouse cursor's position. By default, the following kinds of strings are recognized: 
 <ul>
         <li>Words bounded by whitespace or line boundaries.</li>
@@ -17,7 +17,7 @@ A quad-click (four clicks of the left mouse button in quick selection) activates
         <li>Objective-C selectors like "@selector(foo:bar:)".</li>
         <li>Email addresses.</li>
 </ul>
-<h6 class="question">How do I Change Smart Selection Rules?</h6>
+#### How do I Change Smart Selection Rules?
 Under Preferences>Profiles>Advanced, you may edit the smart selection rules. In addition to a regular expression, each rule also has a Precision attribute, which takes a value of Very Low, Low, Normal, High, or Very High. Intuitively, it refers to how sure one can be that when a rule's regular expression finds a match that it is what the user intended. For example, the "Word" rule is low precision (it matches almost every time), while the "HTTP URL" rule is very high precision (it almost never produces false positives). This allows the "HTTP URL" rule to take precedence when both match, unless the "Word" rule matches a much longer string. That might happen, for instance, if there were a non-URL character after a URL followed by a lot more text. The precision levels have a very strong effect, so it's very rare for a lower precision rule to take precedence over a higher precision rule.
 
 When editing rules, it is advised that you experiment with different precision levels and different kinds of strings to find one that works well. A collection of test cases may be found at smart_selection_cases.txt.
@@ -54,7 +54,7 @@ When Smart Selection is activated, iTerm2 tries each regular expression. For a g
         </tbody>
 </table>
 The highest-scoring candidate is then used as the selection.
-<h6 class="question">Actions</h6>
+#### Actions
 Actions may be associated with smart selection rules. When you right click in a terminal, smart selection is performed at the cursor's location. Any smart selection rule that matches that location will be searched for associated actions, and those actions will be added to the context menu. Actions may open a file, open a URL, run a command, or start a coprocess.
-<h6 class="question">Regular Expressions</h6>
+#### Regular Expressions
 Regular expressions conform to the <a href="http://userguide.icu-project.org/strings/regexp">ICU regular expressions</a> rules.
