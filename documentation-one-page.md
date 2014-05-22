@@ -6,7 +6,9 @@ active-state: documentation
 {% include documentation.md %}
 
 ### Table of Contents
+<UL>
 {% include toc_list.html hashmark="#" %}
+</UL>
 
 {% include subdoc.md title="Highlights for new Users" anchor="documentation-highlights.html" %}
 {% include documentation-highlights.md %}
