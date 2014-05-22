@@ -31,11 +31,10 @@ Another benefit of Instant Replay is that it shows you the exact time that somet
 You can press cmd-enter and iTerm2 will take up the entire screen. If you had a transparent background configured, it will be turned off upon entering full screen mode to reduce distractions. You can re-enable it with cmd-U.
 <h6 class="question">256 Color Mode</h6>
 iTerm2 supports 256 color mode. To enable this for csh shells, set your terminal to xterm-256color (under Preferences > Profiles > Terminal > Report Terminal Type). Some applications may need to be configured to support this mode. In vim, add this to your .vimrc:
-<div class="panel code">
-<pre>
-set t_Co=256
-</pre>
-</div>
+
+    set t_Co=256
+
+
 <h6 class="question">Focus Follows Mouse</h6>
 This option is off by default, but can be enabled under Preferences > General > Focus follows mouse. It only affects iTerm2 windows.
 <h6 class="question">Middle Button Paste</h6>
