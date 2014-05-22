@@ -1,40 +1,39 @@
----
-layout: default
-title: Downloads - iTerm2 - Mac OS Terminal Replacement
-active-state: downloads
----
+<h3>Stable Releases</h3>
+<h4><a target="_blank" href="/downloads/stable/iTerm2_v1_0_0.zip"><img src="/images/small-download.png" align="left">&nbsp;iTerm2 1.0.0 - current stable version
+</a></h4>
+<p>
+This is iTerm2 version 1.0.0, the first full releases of iTerm2.
 
-<section>
-	<h6 class="question">Stable Releases</h6>
-	<a class="download" href="/downloads/stable/iTerm2_v1_0_0.zip">iTerm2 1.0.0 - current stable version</a>
-	<p class="answer">
-		This is iTerm2 version 1.0.0, the first full releases of iTerm2. 
-	</p>
-</section>
-<section>
-	<h6 class="question">Test Releases</h6>
-	<a class="download" href="/downloads/beta/iTerm2-1_0_0_20140112.zip">iTerm2 1.0.0.20140112 beta (OS 10.6+, Intel-only)</a>
-	<p class="answer">
-		This is the recommended beta build for most users. It contains a bunch of bug fixes, including a fix for a crashing bug.  
-	</p>
-	<a href="#" data-dropdown="drop">&#x25BC; Changelog</a><br><br>
-	<div id="drop" data-dropdown-content class="f-dropdown dl-dropdown content">
-		<p class="answer">
-			<ul>
-				<li>Fix a rare crash in ProcessCache</li>
-				<li>Convert text to NFC form more aggressively, which should lead to latin characters with accents rendering more consistently with certain fonts like Inconsolata, which lacks some combining marks.</li>
-				<li>Update window titles immediately during live resize (bug 2812).</li>
-				<li>Don't underline null characters, and fix a bug where underlined characters weren't always drawn correctly in the presence of non-ASCII characters.</li>
-				<li>Fix tab order for controls in preferences.</li>
-				<li>Update help text for v2.</li>
-			</ul>
-		</p>
-	</div>
-</section>
-<section>
-	<h6 class="question">Nightly Builds</h6>
-	<a class="download" href="/nightly/latest"> Latest nightly build</a>
-	<p class="answer">
-		A nightly build is begun at midnight PST every day and uploaded upon successful completion. If no changes were made, no new build is created. The change log may be seen on Github.
-	</p>
-</section>
+<br>
+</p>
+<br>
+<h3>Test Releases</h3>
+<h4><a target="_blank" href="/downloads/beta/iTerm2-1_0_0_20140518.zip"><img src="/images/small-download.png" align="left">&nbsp;iTerm2 1.0.0.20140518 beta (OS 10.6+, Intel-only)
+</a></h4>
+<p>
+This is the version 2.0 release candidate.
+
+<br>
+<p><a href="javascript:showId('6114662122794527769')" id='show6114662122794527769'>▶ Show Changelog</a>
+<a href="javascript:hideId('6114662122794527769')" id='hide6114662122794527769' style="display: none">▼ Hide Changelog</a>
+<pre id="changelist6114662122794527769" style="display: none">- Removes an unncessary test for whether Growl is running, which caused crashes.
+- Removes assertions.
+</pre></p><br>
+</p>
+<br>
+<h4><a target="_blank" href="/downloads/beta/iTerm2-1_0_0_20140518-LeopardPPC.zip"><img src="/images/small-download.png" align="left">&nbsp;iTerm2 1.0.0.20140518 beta (OS 10.5, Intel, PPC)
+</a></h4>
+<p>
+This build has a limited set of features but supports OS 10.5 and PowerPC. If you have an Intel Mac that runs OS 10.6 or newer, you don't want this.
+
+<br>
+</p>
+<br>
+<h3>Nightly Builds</h3>
+<h4><a target="_blank" href="/nightly/latest"><img src="/images/small-download.png" align="left">&nbsp;Latest nightly build</a></h4>
+<p>
+A nightly build is begun at midnight PST every day and uploaded upon successful completion. If no changes were made, no new build is created.
+The change log may be seen <a href="https://github.com/gnachman/iTerm2/commits/master">on Github.</a>
+</p>
+<br>
+
