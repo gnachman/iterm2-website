@@ -4,7 +4,7 @@ title: Preferences - Documentation - iTerm2 - Mac OS Terminal Replacement
 active-state: documentation
 subhead: Preferences
 ---
-#### General
+### General
 <hr>
 #### Open profiles window
 If selected, the Profiles Window will automatically open when iTerm2 is started.
@@ -57,7 +57,7 @@ When attaching to a tmux session with the tmux integration, windows are normally
 #### Automatically hide the tmux client session after connecting
 When the tmux integration is entered by running tmux -CC, the window in which that command was run will miniaturize into the dock if this option is enabled.
 <hr>
-#### Appearance
+### Appearance
 <hr>
 #### Tab Style
 Select from a list of tab looks.
@@ -100,7 +100,7 @@ If selected, the scrollbar and resize control (for OS 10.5 and 10.6) will not be
 #### Disable transparency for fullscreen windows by default
 If enabled, entering fullscreen mode will automatically turn off transparency for that window.
 <hr>
-#### Profiles > General
+### Profiles > General
 <hr>
 #### Name
 Gives the name of the profile which is shown in menus, preferences, and the profiles window.
@@ -124,7 +124,7 @@ You can configure a profile to handle a URL scheme, such as ssh. When a hyperlin
       <li>$$RES$$ The portion of a url following the scheme.</li>
 </ul>
 <hr>
-<h5>Profiles > Colors</h5>
+### Profiles > Colors
 <hr>
 Clicking on any of the color wells opens a color picker that lets you change the setting for the selected color.
 #### Smart cursor color
@@ -134,7 +134,7 @@ If text is displayed against a similar background color, the minimum contrast se
 #### Load Presets
 iTerm2 ships with some color presets, which you may load from this popup menu. You can import and export color presets to files with the extension "itermcolors". There is an online color gallery where users may share color presets, and a link to it is provided in this menu. When importing a color preset, the name it is assigned is based on the filename imported.
 <hr>
-<h5>Profiles > Text</h5>
+### Profiles > Text
 <hr>
 #### Cursor
 This lets you select a cursor shape.
@@ -155,7 +155,7 @@ All non-ASCII text (many accented Latin letters, non-Latin text, less-common sym
 #### Treat ambiguous-width characters as double width
 Some characters (e.g., Chinese ideograms) are double-width, and take two cells to display. Other characters (e.g., Latin letters) are single width and take only one cell to display. There is another category of characters known as "ambiguous width". One example of ambiguous-width characters are Greek letters. Depending on your application, you may prefer to display them as double-width or single-width. If most of the text you deal with is double-width, then you should enable this setting as it will help things to line up correctly in that context.
 <hr>
-<h5>Profiles > Window</h5>
+### Profiles > Window
 <hr>
 #### Transparency
 This sets the transparency of the window background. It can be temporarily disabled with View > Use Transparency.
@@ -176,7 +176,7 @@ You can specify that profile names are shown in window and tab titles under Pref
 #### Disable session-initiated window resizing
 If the host sends an escape code to resize the window, it will be ignored if this option is selected..
 <hr>
-<h5>Profiles > Terminal</h5>
+### Profiles > Terminal
 <hr>
 #### Scrollback lines
 The number of lines of scrollback buffer to keep above the visible part of the screen. Unlimited scrollback will allow it to grow indefinitely, possibly using all available memory.
@@ -209,7 +209,7 @@ If selected, tabs will indicate that a bell has rung by displaying a bell graphi
 #### Set locale variables automatically
 If enabled, LANG and LC_CTYPE ennvironment variables will be set based on your machine's language settings.
 <hr>
-<h5>Profiles > Session</h5>
+### Profiles > Session
 <hr>
 #### Automatically close a session when it ends
 If selected, a session's pane, tab, or window will automatically close when the session ends.
@@ -220,7 +220,7 @@ If enabled, every session's output will be logged to a file in the specified dir
 #### When idle, send ASCII code
 If selected, the specified ASCII code will be transmitted every 30 seconds while nothing is happening. Don't use this unless you know what you're doing as it can have unexpected consequences.
 <hr>
-<h5>Profiles > Keys</h5>
+### Profiles > Keys
 <hr>
 This panel shows key mappings. You can double-click on a mapping to edit it. When the "Keyboard Shortcut" field has focus, you should press the keystroke that you want to modify (even if it involves modifiers like Cmd). The following actions are available:
 #### Ignore
@@ -264,7 +264,7 @@ It is common to use a modifier to send so-called "meta keys". For most users, se
 #### Delete sends ^H
 If you are on a legacy system that does not accept ^? for backspace, select this and it will add a key mapping for you.
 <hr>
-<h5>Profiles > Advanced</h5>
+### Profiles > Advanced
 <hr>
 #### Triggers
 Triggers are actions that are performed when text matching a regular expression is received. Each trigger has a regular expression, which defines when it runs. It has an action, which defines what it performs, and it has an optional parameter, whose meaning depends on the action. When the parameter is textual, \0 is replaced with the entire match, and \1...\9 are replaced with match groups.
@@ -292,7 +292,7 @@ Smart selection allows you to define a set of regular expressions, each with an 
 Semantic history is used to open a file when you Cmd-Click on it. The current working directory for each line in the terminal is tracked to help find files. If Semantic History is set to "Open with default app," then files are passed to the OS to be opened with whatever is associated. Alternatively, you can choose "Open URL..." to open a specific URL (with \1 replaced with the filename and \2 replaced with the line number, if applicable). If you choose "Open with editor..." then text files will be opened with the designated editor, while other files are opened with the default app for their file type. For more flexibility, choose "Run command..." and specify a command to execute. \1 will be replaced with the file name, \2 will be replaced with the line number (if applicable), \3 with text in the line prior to the click location, \4 with text in the line subsequent to the click location, and \5 for the working directory of the line clicked on. Finally, "Always run command..." is like "Run command...," but takes effect even if the object clicked on is not an existing filename.
 </p>		
 <hr>
-<h5>Keys</h5>
+### Keys
 <hr>
 #### Remap modifier keys
 iTerm2 allows you to change the meanings of the modifier keys only within iTerm2. This is useful, for example, if you find it difficult to press "option" for "meta" and would prefer to use "command" for that purpose.
@@ -307,7 +307,7 @@ If enabled, the hotkey set above will toggle a single window with a specific pro
 #### Global shortcut keys
 This interface works like the keyboard shortcut system in profiles (described above) but it affects all profiles. Settings here are overridden by those in a profile's key mappings.
 <hr>
-<h5>Pointer</h5>
+### Pointer
 <hr>
 #### Mouse Button and Trackpad Gesture Actions
 You may assign custo actions to mouse clicks and trackpad gestures. The left mouse button is not configurable because its behavior is rather complex, however. This is especially useful if you have a mouse with many buttons. Any combination of mouse button + number of clicks + modifiers may be assigned an action. For gestures, three finger taps and swipes may be configured in combination with modifiers. The following actions are available:
@@ -358,6 +358,6 @@ If enabled, a triple click selects a whole line, even if it was longer than one 
 #### Middle button pastes from clipboard
 If enabled, clicking the mouse's middle button will paste. Otherwise, it may be reported to the application if Xterm mouse reporting is on and the application supports it.
 <hr>
-<h5>Arrangements</h5>
+### Arrangements
 <hr>
 This tab lets you view saved window arrangements. You can delete them with the minus button and select the default arrangement.
