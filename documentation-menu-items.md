@@ -26,12 +26,10 @@ Logging saves all input received in a session to a file on disk.
 "Paste Escaping Special Characters" pastes the current string in the clipboard, but places a backslash before spaces and backslashes.
 <h6 class="question">Edit > Paste Slowly</h6>
 "Paste Slowly" pastes the current string in the clipboard, but it doesn't send the whole string at once. It is sent in batches of 16 bytes with a 125ms delay between batches. These values can be tweaked with hidden settings. For example:
-<div class="panel code">
-<pre>
-defaults write com.googlecode.iterm2 SlowPasteBytesPerCall -int 16
-defaults write com.googlecode.iterm2 SlowPasteDelayBetweenCalls -float 0.125
-</pre>
-</div>
+
+    defaults write com.googlecode.iterm2 SlowPasteBytesPerCall -int 16
+    defaults write com.googlecode.iterm2 SlowPasteDelayBetweenCalls -float 0.125
+
 <h6 class="question">Edit > Open Paste History...</h6>
 "Open Paste History" opens a window showing up to the last 20 values that were copied or pasted in iTerm2. You can search its contents by typing a (non-necessarily-consecutive) subsequence of characters that appear in the value. You can use arrow keys and enter to make a selection, or you can click on an item to choose it, and it will be pasted. If you enable the Save copy/pate history to disk preference then these values will persist across sessions of iTerm2.
 <h6 class="question">Edit > Open Autocomplete...</h6>
