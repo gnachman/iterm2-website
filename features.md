@@ -49,19 +49,19 @@ Instant replay lets you travel back in time. It's like TiVo for your terminal!
 <section class="feature-block">
 ### Configurability
 Map any key to any function. Assign separate functions to each option key--or even remap all the modifier keys. You can customize iTerm2's appearance to suit your needs: enable transparency, background blur, background images, and much more. 
-<a href="img/screenshots/v2-screen-shots/general.png" target="_blank"><img src="img/screenshots/v2-screen-shots/general.png"></a>
-<a href="img/screenshots/v2-screen-shots/appearance.jpg" target="_blank"><img src="img/screenshots/appearance.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_general.jpg" target="_blank"><img src="img/screenshots/profiles_general.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_colors.jpg" target="_blank"><img src="img/screenshots/profiles_colors.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_text.jpg" target="_blank"><img src="img/screenshots/profiles_text.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_window.jpg" target="_blank"><img src="img/screenshots/profiles_window.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_terminal.jpg" target="_blank"><img src="img/screenshots/profiles_terminal.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_session.jpg" target="_blank"><img src="img/screenshots/profiles_session.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_keys.jpg" target="_blank"><img src="img/screenshots/profiles_keys.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_advanced.jpg" target="_blank"><img src="img/screenshots/profiles_advanced.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/keys.jpg" target="_blank"><img src="img/screenshots/keys.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/pointer.jpg" target="_blank"><img src="img/screenshots/pointer.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/savedarrangements.jpg" target="_blank"><img src="img/screenshots/savedarrangements.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/general.png" target="_blank"><img src="img/screenshots/v2-screen-shots/general.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/appearance.png" target="_blank"><img src="img/screenshots/v2-screen-shots/appearance.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_general.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_general.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_colors.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_colors.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_text.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_text.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_window.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_window.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_terminal.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_terminal.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_session.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_session.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_keys.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_keys.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_advanced.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_advanced.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/keys.png" target="_blank"><img src="img/screenshots/v2-screen-shots/keys.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/pointer.png" target="_blank"><img src="img/screenshots/v2-screen-shots/pointer.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/savedarrangements.png" target="_blank"><img src="img/screenshots/v2-screen-shots/savedarrangements.jpg"></a>
 
 </section>
 <section class="feature-block">
