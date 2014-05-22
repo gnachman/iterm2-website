@@ -4,7 +4,7 @@ title: Interesting Links - Documentation - iTerm2 - Mac OS Terminal Replacement
 active-state: documentation
 subhead: Interesting Links
 ---
-<p class="answer">Here are some links to some iTerm2-related websites.</p>
+Here are some links to some iTerm2-related websites.
 <ul>
         <li><a href="http://homepage.mac.com/denao/scripts/">Applescripts for executing a command and connecting to a remote server</a> by Denis A.V. Jr.</li>
         <li><a href="http://damonparker.org/blog/2005/09/14/iterm-tricks/">Applescript for opening a session</a>  by Damon Parker</li>
