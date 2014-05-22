@@ -9,17 +9,16 @@ iTerm2 offers support for "coprocesses". This very powerful feature will allow y
 A coprocess is a job, such as a shell script, that has a special relationship with a particular iTerm2 session. All output in a terminal window (that is, what you see on the screen) is also input to the coprocess. All output from the coprocess acts like text that the user is typing at the keyboard.
 
 One obvious use of this feature is to automate interaction. For instance, suppose you want to automate your presence in a chat room. The following script could be used as a coprocess:
-<div class="panel code">
-<pre>
-#!/usr/bin/python 
-import sys 
-while True: 
-  line = raw_input() 
-  if line.strip() == "Are you there?": 
-    print "Yes"
-  sys.stdout.flush()
-</pre>
-</div>
+
+
+    #!/usr/bin/python 
+    import sys 
+    while True: 
+      line = raw_input() 
+      if line.strip() == "Are you there?": 
+        print "Yes"
+      sys.stdout.flush()
+
 You could disappear for years before your friends discover you're gone.
 <h6 class="question">How Do I Start a Coprocess?</h6>
 There are two ways to start a coprocess.
