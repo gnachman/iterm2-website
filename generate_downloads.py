@@ -35,7 +35,8 @@ def ChangeLog(zip):
 
 BASE=os.environ["HOME"] + "/iterm2.com/downloads"
 DOWNLOADS_PATHS=[("Stable Releases", "stable"),
-                 ("Test Releases", "beta") ]
+                 ("Test Releases", "beta"),
+                 ("Nightly builds", "nightly")]
 
 LIMIT = { "stable": 1,
           "beta": 2,
