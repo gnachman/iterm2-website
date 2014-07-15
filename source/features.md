@@ -59,9 +59,9 @@ Map any key to any function. Assign separate functions to each option key--or ev
 <a href="img/screenshots/v2-screen-shots/profiles_session.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_session.jpg"></a>
 <a href="img/screenshots/v2-screen-shots/profiles_keys.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_keys.jpg"></a>
 <a href="img/screenshots/v2-screen-shots/profiles_advanced.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_advanced.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/keys.png" target="_blank"><img src="img/screenshots/v2-screen-shots/keys.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/pointer.png" target="_blank"><img src="img/screenshots/v2-screen-shots/pointer.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/savedarrangements.png" target="_blank"><img src="img/screenshots/v2-screen-shots/savedarrangements.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_keys.jpg" target="_blank"><img src="img/screenshots/v2-screen-shots/keys.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_pointer.png" target="_blank"><img src="img/screenshots/v2-screen-shots/pointer.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_arrangements.png" target="_blank"><img src="img/screenshots/v2-screen-shots/savedarrangements.jpg"></a>
 
 </section>
 <section class="feature-block">
