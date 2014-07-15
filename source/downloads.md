@@ -5,22 +5,15 @@ active-state: downloads
 ---
 
 <h3>Stable Releases</h3>
-<h4><a target="_blank" href="/downloads/stable/iTerm2_v1_0_0.zip"><img src="/img/small-download.png" align="left">&nbsp;iTerm2 1.0.0 - current stable version
-</a></h4>
-<p>
-This is iTerm2 version 1.0.0, the first full releases of iTerm2.
-
-<br>
-</p>
-<h4><a target="_blank" href="/downloads/stable/iTerm2-2_0.zip"><img src="/img/small-download.png" align="left">&nbsp;iTerm2 2.0 (OS 10.6+, Intel-only)
+<h4><a target="_blank" href="/downloads/stable/iTerm2_v2_0.zip"><img src="/img/small-download.png" align="left">&nbsp;iTerm2 2.0 (OS 10.6+, Intel-only)
 </a></h4>
 <p>
 iTerm2 v2.0: this is the recommended for most users. It requires OS X 10.7+ and an Intel CPU.
 
 <br>
-<p><a href="javascript:showId('8352641138528772645')" id='show8352641138528772645'>▶ Show Changelog</a>
-<a href="javascript:hideId('8352641138528772645')" id='hide8352641138528772645' style="display: none">▼ Hide Changelog</a>
-<pre id="changelist8352641138528772645" style="display: none">Important Features
+<p><a href="javascript:showId('1020684951754796022')" id='show1020684951754796022'>▶ Show Changelog</a>
+<a href="javascript:hideId('1020684951754796022')" id='hide1020684951754796022' style="display: none">▼ Hide Changelog</a>
+<pre id="changelist1020684951754796022" style="display: none">Major New Features
 ------------------
 - Deep tmux integration!
   Have you ever had an ssh session lost because you had to reboot, had a network
@@ -236,6 +229,24 @@ Proprietary Escape Codes
 
 </pre></p>
 </p>
+<h4><a target="_blank" href="/downloads/stable/iTerm2_v2_0-LeopardPPC.zip"><img src="/img/small-download.png" align="left">&nbsp;iTerm2 2.0 (OS 10.5, Intel, PPC)
+</a></h4>
+<p>
+This build has a limited set of features but supports OS 10.5 and PowerPC. If you have an Intel Mac that runs OS 10.6 or newer, you don't want this.
+
+<br>
+</p>
+<p><a href="javascript:showId('stable')" id='showstable'>▶ Show Older Versions</a>
+<a href="javascript:hideId('stable')" id='hidestable' style="display: none">▼ Hide Older Versions</a>
+<div id="changeliststable" style="margin-left: 15pt; display: none"><h3>Older Stable Releases</h3>
+<h4><a target="_blank" href="/downloads/stable/iTerm2_v1_0_0.zip"><img src="/img/small-download.png" align="left">&nbsp;iTerm2 1.0.0 - first stable version
+</a></h4>
+<p>
+This is iTerm2 version 1.0.0, the first full releases of iTerm2.
+
+<br>
+</p>
+</div>
 <h3>Test Releases</h3>
 <h4><a target="_blank" href="/downloads/beta/iTerm2-1_0_0_20140629.zip"><img src="/img/small-download.png" align="left">&nbsp;iTerm2 1.0.0.20140629 beta (OS 10.6+, Intel-only)
 </a></h4>
@@ -260,7 +271,7 @@ This build has a limited set of features but supports OS 10.5 and PowerPC. If yo
 </p>
 <p><a href="javascript:showId('beta')" id='showbeta'>▶ Show Older Versions</a>
 <a href="javascript:hideId('beta')" id='hidebeta' style="display: none">▼ Hide Older Versions</a>
-<div id="changelistbeta" style="margin-left: 15pt; display: none"><br/><br/><h3>Older Test Releases</h3>
+<div id="changelistbeta" style="margin-left: 15pt; display: none"><h3>Older Test Releases</h3>
 <h4><a target="_blank" href="/downloads/beta/iTerm2-1_0_0_20140518.zip"><img src="/img/small-download.png" align="left">&nbsp;iTerm2 1.0.0.20140518 beta (OS 10.6+, Intel-only)
 </a></h4>
 <p>
@@ -844,7 +855,7 @@ This build has a limited set of features but supports OS 10.5 and PowerPC. If yo
 </p>
 <p><a href="javascript:showId('nightly')" id='shownightly'>▶ Show Older Versions</a>
 <a href="javascript:hideId('nightly')" id='hidenightly' style="display: none">▼ Hide Older Versions</a>
-<div id="changelistnightly" style="margin-left: 15pt; display: none"><br/><br/><h3>Older Nightly builds</h3>
+<div id="changelistnightly" style="margin-left: 15pt; display: none"><h3>Older Nightly builds</h3>
 <h4><a target="_blank" href="/downloads/nightly/iTerm2-1_0_0_20140705-nightly.zip"><img src="/img/small-download.png" align="left">&nbsp;iTerm2-1_0_0_20140705-nightly</a></h4>
 <p>
 

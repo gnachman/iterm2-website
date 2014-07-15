@@ -60,7 +60,7 @@ for sectionName,path in DOWNLOADS_PATHS:
 	  haveArchive = True
 	  print '''<p><a href="javascript:showId('%s')" id='show%s'>▶ Show Older Versions</a>
 <a href="javascript:hideId('%s')" id='hide%s' style="display: none">▼ Hide Older Versions</a>
-<div id="changelist%s" style="margin-left: 15pt; display: none"><br/><br/><h3>Older %s</h3>''' % (path, path, path, path, path, sectionName)
+<div id="changelist%s" style="margin-left: 15pt; display: none"><h3>Older %s</h3>''' % (path, path, path, path, path, sectionName)
         i += 1
         name = os.path.split(zip)[1]
         print '<h4><a target="_blank" href="/downloads/' + path + '/' + name + '"><img src="/img/small-download.png" align="left">&nbsp;' + Summary(zip) + '</a></h4>'

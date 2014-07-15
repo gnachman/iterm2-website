@@ -19,5 +19,5 @@ After three years of development, the second major version of iTerm2 has been re
 
   * New proprietary escape sequences integrate terminal apps, allowing you to change a session's profile automatically, manipulate the pasteboard remotely, bounce the dock icon, and much more.
 
-For a full list of changes, please see the <a href="/appcasts/full_changes.txt">change log</a>. Downloads are available at <a href="http://iterm2.com/downloads.html">the Downloads page</a>.
+For a full list of changes, please see the <a href="/appcasts/full_changes.txt">change log</a>. Downloads are available at <a href="/downloads.html">the Downloads page</a>.
 
