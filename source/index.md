@@ -16,3 +16,5 @@ Try the <a href="faq.html">FAQ</a> or the <a href="documentation.html">documenta
 <div class="text-center">
         <a href="/downloads/stable/iTerm2_v2_0.zip"><img src="img/download-button.png"></a>
 </div>
+
+iTerm2 is licensed under <a href="license.txt">GPL v2.</a>
