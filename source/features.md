@@ -76,11 +76,6 @@ With 256-color mode, Vim explodes with photorealism: the terminal is a medley of
 
 </section>
 <section class="feature-block">
-### Unixyness
-Coming from a Unix world? You'll feel at home with focus follows mouse, copy on select, middle button paste, and keyboard shortcuts to avoid mousing.
-
-</section>
-<section class="feature-block">
 ### Readability
 Do you lose your cursor when there are lots of different colors or have programs display hard-to-read color combinations? With the Smart Cursor Color and Minimum Contrast features, you can ensure that these problems are gone for good.
 
