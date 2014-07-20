@@ -37,7 +37,10 @@ A: First of all, make sure your encoding settings is correct. For example, there
 If you are running a telnet session, be sure you turned on the 8-bit data path. Try using "telnet -8 yourhost" in your command.
 
 #### Q: Where does iTerm2 store its settings?
-A: Preferences, including profiles, are stored in ~/Library/Preferences/com.googlecode.iterm2.plist. If something goes wrong, you can try deleting this file and iTerm2 will generate a new settings file that should always work.
+A: Preferences, including profiles, are stored in ~/Library/Preferences/com.googlecode.iterm2.plist. To modify it, use the "defaults" command. For example, to delete all settings, run:
+<pre>
+defaults delete com.googlecode.iterm2
+</pre>
 
 #### Q: The fonts are looking weird. What should I do?
 A: iTerm2 lets you to specify two fonts. If you only use English or western european languages, you probably only need to set the font for ASCII characters. For other languages, you need to specify a font that works with your language as the Non-ASCII font. You need to make sure the size (height) of two fonts do not differ greatly, so iTerm2 won't display a mess of mixed glyphs.
@@ -46,21 +49,24 @@ A: iTerm2 lets you to specify two fonts. If you only use English or western euro
 #### Q: I'm a Chinese, Japanese, or Korean user and some characters don't line up because they are not rendered in double-width.
 A: Go to Preferences->Profiles->Text and change the setting of "Treat ambiguous-width characters as double-width."
 
-#### Q: Why can't I set my session's shortcut key to CTRL-COMMAND-D
+#### Q: Why can't I set my session's shortcut key to Ctrl-Cmd-D?
 A: That key is used by OS X's dictionary program.
 
 #### Q: How do I make the option/alt key act like Meta or send escape codes?
-A: Go to Preferences->Profiles tab. Select your profile on the left, and then open the Keyboard tab. At the bottom is a set of buttons that lets you select the behavior of the Option key. For many users esc+ will be the best choice.
+A: Go to Preferences->Profiles tab. Select your profile on the left, and then open the Keyboard tab. At the bottom is a set of buttons that lets you select the behavior of the Option key. For most users, <i>Esc+</i> will be the best choice.
 
 #### Q: What modifier keys affect marking a selection for copy and paste?
 A: If you hold down modifier keys while making a selection, the behavior changes in various ways:
-Alt/Option: Mouse reporting will be disabled. If you're using vim and you can't make a selection, try holding down the alt key and see if that fixes it.
-Alt + Cmd: Make a rectangular selection.
-Shift: Extend an existing selection.
-Alt + Shift: Extend a rectangular selection.
+
+  * Alt/Option: Mouse reporting will be disabled. If you're using vim and you can't make a selection, try holding down the alt key and see if that fixes it.
+  * Alt + Cmd: Make a rectangular selection.
+  * Shift: Extend an existing selection.
+  * Alt + Shift: Extend a rectangular selection.
+
 Additionally, you can affect other mouse-related activities with modifier keys:
-Cmd+drag a selection copies and pastes it.
-Cmd+click on a URL opens it.
+
+  * Cmd+drag a selection copies and pastes it.
+  * Cmd+click on a URL opens it.
 
 #### Q: How do I change a tab's title?
 A: Press Cmd-I (or View->Edit Current Session...) and enter a new title in the "Name" field. You can set it programatically (in bash) with:
@@ -70,15 +76,16 @@ A: Press Cmd-I (or View->Edit Current Session...) and enter a new title in the "
 
 #### Q: How do I set iTerm2 as the handler for ssh:// links?
 A: Two steps:
-1. Create a new profile called "ssh". In the General tab, select the Command: button and enter $$ as the command.
 
+1. Create a new profile called "ssh". In the General tab, select the Command: button and enter $$ as the command.
 2. In Preferences->Profiles->General, select "ssh" for "Select URL Schemes...."
 
 
 #### Q: How can I open a profile from the Profiles window in a new window without using the mouse?
 A: Select a profile with the up and down arrow keys and press shift-enter.
 
-A: The recommended way is to set your terminal type to xterm-256color in Preferences->Profiles->Terminal->Report Terminal Type. You may also need to put set background=light or set background=dark in your .vimrc. Another technique is described by Kevin Coylar in this blog post on Pretty Vim Color Schemes in Iterm2.
+#### Q: How do I get 256 color mode working in vim?
+A: The recommended way is to set your terminal type to xterm-256color in Preferences->Profiles->Terminal->Report Terminal Type. You may also need to put set background=light or set background=dark in your .vimrc. Another technique is described by Kevin Coylar in this blog post on <a href="http://kevin.colyar.net/2011/01/pretty-vim-color-schemes-in-iterm2/?utm_source=rss&utm_medium=rss&utm_campaign=pretty-vim-color-schemes-in-iterm2">Pretty Vim Color Schemes in iTerm2</a>.
 
 #### Q: How do I use Growl with iTerm2?
 A: See <a href="http://aming-blog.blogspot.com/2011/01/growl-notification-from-iterm-2.html">this blog post</a> on Growl in iTerm2.

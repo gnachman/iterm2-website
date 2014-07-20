@@ -59,9 +59,9 @@ Map any key to any function. Assign separate functions to each option key--or ev
 <a href="img/screenshots/v2-screen-shots/profiles_session.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_session.jpg"></a>
 <a href="img/screenshots/v2-screen-shots/profiles_keys.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_keys.jpg"></a>
 <a href="img/screenshots/v2-screen-shots/profiles_advanced.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_advanced.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/keys.png" target="_blank"><img src="img/screenshots/v2-screen-shots/keys.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/pointer.png" target="_blank"><img src="img/screenshots/v2-screen-shots/pointer.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/savedarrangements.png" target="_blank"><img src="img/screenshots/v2-screen-shots/savedarrangements.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_keys.jpg" target="_blank"><img src="img/screenshots/v2-screen-shots/keys.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_pointer.png" target="_blank"><img src="img/screenshots/v2-screen-shots/pointer.jpg"></a>
+<a href="img/screenshots/v2-screen-shots/profiles_arrangements.png" target="_blank"><img src="img/screenshots/v2-screen-shots/savedarrangements.jpg"></a>
 
 </section>
 <section class="feature-block">
@@ -73,11 +73,6 @@ Coming from a Unix world? You'll feel at home with focus follows mouse, copy on 
 ### 256 Colors
 With 256-color mode, Vim explodes with photorealism: the terminal is a medley of color and code comes alive.
 <a href="img/screenshots/256colors.png" target="_blank"><img src="img/screenshots/256colors.png"></a>
-
-</section>
-<section class="feature-block">
-### Unixyness
-Coming from a Unix world? You'll feel at home with focus follows mouse, copy on select, middle button paste, and keyboard shortcuts to avoid mousing.
 
 </section>
 <section class="feature-block">
