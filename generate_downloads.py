@@ -41,16 +41,21 @@ def ChangeLog(zip):
 
 
 BASE=os.environ["HOME"] + "/iterm2.com/downloads"
-DOWNLOADS_PATHS=[("Stable Releases", "stable"),
-                 ("Test Releases", "beta"),
-                 ("Nightly builds", "nightly")]
+DOWNLOADS_PATHS=[("Stable Releases", "stable", "Stable releases update rarely but have no serious bugs."),
+                 ("Test Releases", "beta", "Test releases update many times a year and are occasionally unstable."),
+                 ("Nightly builds", "nightly", "A nightly build is begun at midnight PST every day and uploaded upon successful completion. If no changes were made, no new build is created. The change log may be seen <a href=\"https://github.com/gnachman/iTerm2/commits/master\">on Github.</a>. Nightly builds sometimes have serious bugs.")]
 
 LIMIT = { "stable": 2,
           "beta": 2,
 	  "nightly": 5 }
 
-for sectionName,path in DOWNLOADS_PATHS:
+for sectionName,path,note in DOWNLOADS_PATHS:
     print "<h3>" + sectionName + "</h3>"
+    if note is not None:
+      print "<p>"
+      print note
+      print "</p>"
+
     zips = glob.glob(BASE + "/" + path + "/*.zip")
     zips.sort(reverse=True)
     i = 0
@@ -63,21 +68,15 @@ for sectionName,path in DOWNLOADS_PATHS:
 <div id="changelist%s" style="margin-left: 15pt; display: none"><h3>Older %s</h3>''' % (path, path, path, path, path, sectionName)
         i += 1
         name = os.path.split(zip)[1]
-        print '<h4><a target="_blank" href="/downloads/' + path + '/' + name + '"><img src="/img/small-download.png" align="left">&nbsp;' + Summary(zip) + '</a></h4>'
-	print "<p>"
-        print Description(zip)
-	print '<br>'
-        cl = ChangeLog(zip)
-        if len(cl):
-            print cl
-	print "</p>"
+	print '<h4><a href="https://iterm2.com/downloads/' + path + '/' + name + '"><img src="/img/small-download.png" align="left">&nbsp;' + Summary(zip) + '</a></h4>'
+	descr = Description(zip)
+	if len(descr) > 0:
+	  print "<p>"
+	  print descr
+	  print '<br>'
+	  cl = ChangeLog(zip)
+	  if len(cl):
+	      print cl
+	  print "</p>"
     if haveArchive:
       print '''</div>'''
-
-print "<h3>Nightly Builds</h3>"
-print '<h4><a target="_blank" href="/nightly/latest"><img src="/img/small-download.png" align="left">&nbsp;Latest nightly build</a></h4>'
-print "<p>"
-print "A nightly build is begun at midnight PST every day and uploaded upon successful completion. If no changes were made, no new build is created."
-print "The change log may be seen <a href=\"https://github.com/gnachman/iTerm2/commits/master\">on Github.</a>"
-print "</p>"
-print "<br>"
