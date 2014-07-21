@@ -87,6 +87,14 @@ A: Select a profile with the up and down arrow keys and press shift-enter.
 #### Q: How do I get 256 color mode working in vim?
 A: The recommended way is to set your terminal type to xterm-256color in Preferences->Profiles->Terminal->Report Terminal Type. You may also need to put set background=light or set background=dark in your .vimrc. Another technique is described by Kevin Coylar in this blog post on <a href="http://kevin.colyar.net/2011/01/pretty-vim-color-schemes-in-iterm2/?utm_source=rss&utm_medium=rss&utm_campaign=pretty-vim-color-schemes-in-iterm2">Pretty Vim Color Schemes in iTerm2</a>.
 
+#### Q: Mouse reporting in vim doesn't work for some rows/columns in a big terminal window.
+A: Older mouse reporting protocols didn't work in large terminals. Recent versions of vim (at least 7.4) support the "SGR" protocol, which does not have any practical limits on terminal size. To enable it in vim, add this to your .vimrc:
+<pre>
+if has('mouse_sgr')
+    set ttymouse=sgr
+endif
+</pre>
+
 #### Q: How do I use Growl with iTerm2?
 A: See <a href="http://aming-blog.blogspot.com/2011/01/growl-notification-from-iterm-2.html">this blog post</a> on Growl in iTerm2.
 
