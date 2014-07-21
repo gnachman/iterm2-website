@@ -1,4 +1,7 @@
 iTerm2 supports several non-standard escape codes. These may not work properly in tmux or screen, and may have unknown effects on other terminal emulators. Proceed with caution.
+
+A quick comment on notation: in this document, ^[ means "Escape" (hex code 0x1b) and ^G means "bel" (hex code 0x07).
+
 #### Set cursor shape
 
     ^[]50;CursorShape=N^G
@@ -34,6 +37,13 @@ To erase the scrollback history:
 To inform iTerm2 of the current directory to help semantic history:
 
     ^[]50;CurrentDir=/the/current/directory^G
+
+#### Post a Growl notification
+To post a Growl notification:
+
+    ^[]9;Message content goes here^G
+
+This will have no effect if Growl is not running.
 
 #### Change profile
 To change the session's profile on the fly:
