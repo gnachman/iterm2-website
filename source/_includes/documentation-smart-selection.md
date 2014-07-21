@@ -1,6 +1,6 @@
 iTerm2 offers a Smart Selection feature that simplifies making selections on semantically recognizable objects.
 #### How do I use Smart Selection?
-A quad-click (four clicks of the left mouse button in quick selection) activates Smart Selection at the mouse cursor's position. By default, the following kinds of strings are recognized: 
+A quad-click (four clicks of the left mouse button in quick succession) activates Smart Selection at the mouse cursor's position. By default, the following kinds of strings are recognized: 
 <ul>
         <li>Words bounded by whitespace or line boundaries.</li>
         <li>C++-style pairs of identifiers separated by double colons, such as "namespace::identifier".</li>
