@@ -74,6 +74,14 @@ Example in bash that turns the background purple:
     echo -e "\033]6;1;bg;green;brightness;0\a" 
     echo -e "\033]6;1;bg;blue;brightness;255\a"
 
+To reset the window title and tab color, use this code:
+
+    ^[]6;1;bg;*;default^G
+
+For example:
+
+    echo -e "\033]6;1;bg;*;default\a"
+
 #### Change the color palette
     ^[]Pnrrggbb^[\
 Replace "n" with:
