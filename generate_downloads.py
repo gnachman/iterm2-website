@@ -43,7 +43,7 @@ def ChangeLog(zip):
 BASE=os.environ["HOME"] + "/iterm2.com/downloads"
 DOWNLOADS_PATHS=[("Stable Releases", "stable", "Stable releases update rarely but have no serious bugs."),
                  ("Test Releases", "beta", "Test releases update many times a year and are occasionally unstable."),
-                 ("Nightly builds", "nightly", "A nightly build is begun at midnight PST every day and uploaded upon successful completion. If no changes were made, no new build is created. The change log may be seen <a href=\"https://github.com/gnachman/iTerm2/commits/master\">on Github.</a>. Nightly builds sometimes have serious bugs.")]
+                 ]
 
 LIMIT = { "stable": 2,
           "beta": 2,
@@ -68,7 +68,7 @@ for sectionName,path,note in DOWNLOADS_PATHS:
 <div id="changelist%s" style="margin-left: 15pt; display: none"><h3>Older %s</h3>''' % (path, path, path, path, path, sectionName)
         i += 1
         name = os.path.split(zip)[1]
-	print '<h4><a href="https://iterm2.com/downloads/' + path + '/' + name + '"><img src="/img/small-download.png" align="left">&nbsp;' + Summary(zip) + '</a></h4>'
+	print '<h4><a href="https://iterm2.com/downloads/' + path + '/' + name + '"><img src="/img/med-download.png" align="left">&nbsp;' + Summary(zip) + '</a></h4>'
 	descr = Description(zip)
 	if len(descr) > 0:
 	  print "<p>"
@@ -80,3 +80,17 @@ for sectionName,path,note in DOWNLOADS_PATHS:
 	  print "</p>"
     if haveArchive:
       print '''</div>'''
+
+print '''
+<h3>Nightly Builds</h3>
+<p>
+A nightly build is made at midnight Pacific time on days where a change was committed. The change log may be seen <a href=\"https://github.com/gnachman/iTerm2/commits/master\">on Github</a>. Nightly builds sometimes have serious bugs.
+</p><p>
+<a href="/nightly/latest">
+<img src="/img/med-download.png">
+Download the latest nightly build.
+</a>
+</p><p>
+Older nightly builds may be found in the <a href="/downloads/nightly">nightly build archives.</a>
+</p>
+'''
