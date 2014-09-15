@@ -23,6 +23,13 @@ orig_ps1="${PS1}"
 # and unset as soon as the trace hook is run.
 preexec_interactive_mode=""
 
+# tmux and screen are not supported; even using the tmux hack to get escape
+# codes passed through, ncurses interferes and the cursor isn't in the right
+# place at the time it's passed through.
+if ( [ x"$TERM" = xscreen ] ); then
+  exit
+fi
+
 # Default do-nothing implementation of preexec.
 function preexec () {
     true
@@ -52,7 +59,7 @@ function preexec_invoke_cmd () {
     # Unfortunately, command substitutions run in subshells and can't
     # communicate to the outside world. 
     # Instead, we have this workaround. We save the original value of PS1 in
-    # $orig_ps1. Then each time this funciton is run (it's called from
+    # $orig_ps1. Then each time this function is run (it's called from
     # PROMPT_COMMAND just before the prompt is shown) it will change PS1 to a
     # string without any command substitutions by doing eval on orig_ps1. At
     # this point preexec_interactive_mode is still the empty string, so preexec
@@ -134,34 +141,63 @@ function preexec_install () {
     shopt -s extdebug > /dev/null 2>&1
 
     # Finally, install the actual traps.
-    PROMPT_COMMAND="preexec_invoke_cmd";
+    if ( [ x"$PROMPT_COMMAND" = x ]); then
+      PROMPT_COMMAND="preexec_invoke_cmd";
+    else
+      PROMPT_COMMAND="$PROMPT_COMMAND; preexec_invoke_cmd";
+    fi
     trap 'preexec_invoke_exec' DEBUG;
 }
 
 # -- begin iTerm2 customization
 
+function iterm2_begin_osc {
+  printf "\033]"
+}
+
+function iterm2_end_osc {
+  printf "\007"
+}
+
 # Runs after interactively edited command but before execution
 function preexec() {
-  printf "\033]133;C\007"
+  iterm2_begin_osc
+  printf "133;C"
+  iterm2_end_osc
 }
 
 function remotehost_and_currentdir() {
-  printf "\033]1337;RemoteHost=%s@%s\007" "$USER" $(hostname -f)
-  printf "\033]1337;CurrentDir=%s\007" "$PWD"
+  iterm2_begin_osc
+  printf "1337;RemoteHost=%s@%s" "$USER" $(hostname -f)
+  iterm2_end_osc
+
+  iterm2_begin_osc
+  printf "1337;CurrentDir=%s" "$PWD"
+  iterm2_end_osc
 }
 
 function prompt_prefix() {
-  printf "\033]133;D;\$?\007"
+  iterm2_begin_osc
+  printf "133;D;\$?"
+  iterm2_end_osc
+
   remotehost_and_currentdir
-  printf "\033]133;A\007"
+
+  iterm2_begin_osc
+  printf "133;A"
+  iterm2_end_osc
 }
 
 function prompt_suffix() {
-  printf "\033]133;B\007"
+  iterm2_begin_osc
+  printf "133;B"
+  iterm2_end_osc
 }
 
 function print_version_number() {
-  printf "\033]1337;ShellIntegrationVersion=1\007"
+  iterm2_begin_osc
+  printf "1337;ShellIntegrationVersion=1"
+  iterm2_end_osc
 }
 
 preexec_install
