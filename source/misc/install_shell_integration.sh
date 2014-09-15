@@ -24,9 +24,27 @@ then
   URL="http://iterm2.com/misc/bash_startup.in"
   test -f "${HOME}/.bash_profile" && SCRIPT="${HOME}/.bash_profile" || SCRIPT="${HOME}/.profile"
 fi
+if [ "${SHELL}" == fish ]
+then
+  echo "Fish support is nascent. You need a version of fish newer than 2.1.0 (so you probably need to build it yourself). Your version is:"
+  fish -v
+  echo "FYI, version 2.1.0 has a bug where long lines wrap prematurely."
+  while true; do
+      read -p "Do you want to install shell integration for fish? (y/n) " yn
+      case $yn in
+          [Yy]* ) break;;
+          [Nn]* ) exit;;
+          * ) echo "Please answer y or n.";;
+      esac
+  done
+
+  URL="http://iterm2.com/misc/fish_startup.in"
+  mkdir -p "${HOME}/.config/fish"
+  SCRIPT="${HOME}/.config/fish/config.fish"
+fi
 if [ "${URL}" == "" ]
 then
-  die "Your shell, ${SHELL}, is not supported yet. Only tcsh, zsh, and bash are supported. Sorry!"
+  die "Your shell, ${SHELL}, is not supported yet. Only tcsh, zsh, bash, and fish are supported. Sorry!"
   exit 1
 fi
 
