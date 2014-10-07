@@ -15,7 +15,7 @@ Dynamic Profiles are available in iTerm2 2.9.20140923 and later.
 
 When iTerm2 starts, it creates a folder:
 <pre>
-~/Library/Preferences/Application Support/iTerm2/DynamicProfiles
+~/Library/Application Support/iTerm2/DynamicProfiles
 </pre>
 
 While iTerm2 runs, it monitors the contents of that folder. Any time the folder's contents change, all files in it are reloaded.
