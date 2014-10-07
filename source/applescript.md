@@ -8,7 +8,7 @@ title: Applescript - iTerm2 - Mac OS Terminal Replacement
 This is an example of the new Applescript syntax available in versions 2.9 and up.
 
 <pre>
-tell application iTerm2
+tell application iTerm
         -- application-level commands
         create window with default profile
         create window with default profile command "ls -l -R /"
