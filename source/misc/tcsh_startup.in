@@ -5,59 +5,57 @@ if ( (! $?ENVONLY) && $?prompt ) then
   set iterm_hostname=`hostname -f`
 
   # Define aliases for the start and end of OSC escape codes used by shell integration.
-  if ( x"$TERM" == xscreen ) then
-    exit
+  if ( x"$TERM" != xscreen ) then
+    alias _iterm2_start        'printf "\033]"'
+    alias _iterm2_end          'printf "\007"'
+    alias _iterm2_end_prompt   'printf "\007"'
+
+    # Define aliases for printing the current hostname
+    alias _iterm2_print_remote_host 'printf "1337;RemoteHost=$USER@$iterm_hostname"'
+    alias _iterm2_remote_host       "(_iterm2_start; _iterm2_print_remote_host; _iterm2_end)"
+
+    # Define aliases for printing the current directory
+    alias _iterm2_print_current_dir 'printf "1337;CurrentDir=$PWD"'
+    alias _iterm2_current_dir       "(_iterm2_start; _iterm2_print_current_dir; _iterm2_end)"
+
+    # Define aliases for printing the shell integration version this script is written against
+    alias _iterm2_print_shell_integration_version 'printf "1337;ShellIntegrationVersion=1"'
+    alias _iterm2_shell_integration_version       "(_iterm2_start; _iterm2_print_shell_integration_version; _iterm2_end)"
+
+    # Define aliases for defining the boundary between a command prompt and the
+    # output of a command started from that prompt.
+    alias _iterm2_print_between_prompt_and_exec 'printf "133;C"'
+    alias _iterm2_between_prompt_and_exec "(_iterm2_start; _iterm2_print_between_prompt_and_exec; _iterm2_end)"
+
+    # Define aliases for defining the start of a command prompt.
+    alias _iterm2_print_before_prompt 'printf "133;A"'
+    alias _iterm2_before_prompt       "(_iterm2_start; _iterm2_print_before_prompt; _iterm2_end_prompt)"
+
+    # Define aliases for defining the end of a command prompt.
+    alias _iterm2_print_after_prompt 'printf "133;B"'
+    alias _iterm2_after_prompt       "(_iterm2_start; _iterm2_print_after_prompt; _iterm2_end_prompt)"
+     
+    # Define aliases for printing the status of the last command.
+    alias _iterm2_last_status        'printf "\033]133;D;$?\007"'
+
+    # This is necessary so the first command line will have a hostname and current directory.
+    _iterm2_remote_host
+    _iterm2_current_dir
+    _iterm2_shell_integration_version
+
+    # Define precmd, which runs just before the prompt is printed. This could go
+    # in $prompt but this keeps things a little simpler in here.
+    # No parens or iterm2_start call is allowed prior to evaluating the last status.
+    alias precmd '_iterm2_last_status; _iterm2_remote_host; _iterm2_current_dir'
+
+    # Define postcmd, which runs just before a command is executed.
+    alias postcmd '(_iterm2_between_prompt_and_exec)'
+
+    # Remove the terminal space from the prompt to work around a tcsh bug.
+    set _iterm2_truncated_prompt=`echo "$prompt" | sed -e 's/ $//'`
+
+    # Wrap the prompt in FinalTerm escape codes and re-add a terminal space.
+    set prompt="%{"`_iterm2_before_prompt`"%}$_iterm2_truncated_prompt%{"`_iterm2_after_prompt`"%} "
   endif
-
-  alias _iterm2_start        'printf "\033]"'
-  alias _iterm2_end          'printf "\007"'
-  alias _iterm2_end_prompt   'printf "\007"'
-
-  # Define aliases for printing the current hostname
-  alias _iterm2_print_remote_host 'printf "1337;RemoteHost=$USER@$iterm_hostname"'
-  alias _iterm2_remote_host       "(_iterm2_start; _iterm2_print_remote_host; _iterm2_end)"
-
-  # Define aliases for printing the current directory
-  alias _iterm2_print_current_dir 'printf "1337;CurrentDir=$PWD"'
-  alias _iterm2_current_dir       "(_iterm2_start; _iterm2_print_current_dir; _iterm2_end)"
-
-  # Define aliases for printing the shell integration version this script is written against
-  alias _iterm2_print_shell_integration_version 'printf "1337;ShellIntegrationVersion=1"'
-  alias _iterm2_shell_integration_version       "(_iterm2_start; _iterm2_print_shell_integration_version; _iterm2_end)"
-
-  # Define aliases for defining the boundary between a command prompt and the
-  # output of a command started from that prompt.
-  alias _iterm2_print_between_prompt_and_exec 'printf "133;C"'
-  alias _iterm2_between_prompt_and_exec "(_iterm2_start; _iterm2_print_between_prompt_and_exec; _iterm2_end)"
-
-  # Define aliases for defining the start of a command prompt.
-  alias _iterm2_print_before_prompt 'printf "133;A"'
-  alias _iterm2_before_prompt       "(_iterm2_start; _iterm2_print_before_prompt; _iterm2_end_prompt)"
-
-  # Define aliases for defining the end of a command prompt.
-  alias _iterm2_print_after_prompt 'printf "133;B"'
-  alias _iterm2_after_prompt       "(_iterm2_start; _iterm2_print_after_prompt; _iterm2_end_prompt)"
-   
-  # Define aliases for printing the status of the last command.
-  alias _iterm2_last_status        'printf "\033]133;D;$?\007"'
-
-  # This is necessary so the first command line will have a hostname and current directory.
-  _iterm2_remote_host
-  _iterm2_current_dir
-  _iterm2_shell_integration_version
-
-  # Define precmd, which runs just before the prompt is printed. This could go
-  # in $prompt but this keeps things a little simpler in here.
-  # No parens or iterm2_start call is allowed prior to evaluating the last status.
-  alias precmd '_iterm2_last_status; _iterm2_remote_host; _iterm2_current_dir'
-
-  # Define postcmd, which runs just before a command is executed.
-  alias postcmd '(_iterm2_between_prompt_and_exec)'
-
-  # Remove the terminal space from the prompt to work around a tcsh bug.
-  set _iterm2_truncated_prompt=`echo "$prompt" | sed -e 's/ $//'`
-
-  # Wrap the prompt in FinalTerm escape codes and re-add a terminal space.
-  set prompt="%{"`_iterm2_before_prompt`"%}$_iterm2_truncated_prompt%{"`_iterm2_after_prompt`"%} "
 endif
 
