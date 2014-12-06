@@ -30,7 +30,7 @@ iTerm2 supports 256 color mode. To enable this for csh shells, set your terminal
 
 
 #### Focus Follows Mouse
-This option is off by default, but can be enabled under Preferences > General > Focus follows mouse. It only affects iTerm2 windows.
+This option is off by default, but can be enabled under Preferences > Pointer > Focus follows mouse. It only affects iTerm2 windows.
 #### Middle Button Paste
 If you have a three-button mouse, by default the middle button performs "paste".
 #### Smart Cursor Color
