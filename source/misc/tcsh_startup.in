@@ -55,9 +55,11 @@ if ( (! $?ENVONLY) && $?prompt ) then
   alias postcmd '(_iterm2_between_prompt_and_exec)'
 
   # Remove the terminal space from the prompt to work around a tcsh bug.
+  set noglob
   set _iterm2_truncated_prompt=`echo "$prompt" | sed -e 's/ $//'`
 
   # Wrap the prompt in FinalTerm escape codes and re-add a terminal space.
   set prompt="%{"`_iterm2_before_prompt`"%}$_iterm2_truncated_prompt%{"`_iterm2_after_prompt`"%} "
+  unset noglob
 endif
 
