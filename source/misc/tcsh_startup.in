@@ -56,11 +56,17 @@ if ( (! $?ENVONLY) && $?prompt ) then
     # Define postcmd, which runs just before a command is executed.
     alias postcmd '(_iterm2_between_prompt_and_exec)'
 
+    # Quotes are ignored inside backticks, so use noglob to prevent bug 3393.
+    set noglob
+
     # Remove the terminal space from the prompt to work around a tcsh bug.
     set _iterm2_truncated_prompt=`echo "$prompt" | sed -e 's/ $//'`
 
     # Wrap the prompt in FinalTerm escape codes and re-add a terminal space.
     set prompt="%{"`_iterm2_before_prompt`"%}$_iterm2_truncated_prompt%{"`_iterm2_after_prompt`"%} "
+
+    # Turn globbing back on.
+    unset noglob
   endif
 endif
 
