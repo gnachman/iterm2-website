@@ -42,6 +42,7 @@ if ( [ x"$TERM" != xscreen ] ); then
   # was just displayed, to allow the DEBUG trap, below, to know that the next
   # command is likely interactive.
   function preexec_invoke_cmd () {
+      prev_status=$?
       last_hist_ent="$(history 1)";
       precmd;
       # This is an iTerm2 addition to try to work around a problem in the
@@ -61,8 +62,9 @@ if ( [ x"$TERM" != xscreen ] ); then
       # string without any command substitutions by doing eval on orig_ps1. At
       # this point preexec_interactive_mode is still the empty string, so preexec
       # won't produce output for command substitutions.
-      export PS1="\[$(prompt_prefix)\]$(eval "echo \"$orig_ps1\"")\[$(prompt_suffix)\]"
+      export PS1="\[$(prompt_prefix)\]$(eval "bash -c 'exit $prev_status'; echo \"$orig_ps1\"")\[$(prompt_suffix)\]"
       preexec_interactive_mode="yes";
+      bash -c "exit $prev_status"
   }
 
   # This function is installed as the DEBUG trap.  It is invoked before each
@@ -176,7 +178,7 @@ if ( [ x"$TERM" != xscreen ] ); then
 
   function prompt_prefix() {
     iterm2_begin_osc
-    printf "133;D;\$?"
+    printf "133;D;$prev_status"
     iterm2_end_osc
 
     remotehost_and_currentdir
