@@ -1,7 +1,7 @@
 # Note that tcsh doesn't allow the prompt to end in an escape code so the terminal space here is required. iTerm2 ignores spaces after this code.
 # This is the second version of this script. It rejects "screen" terminals and uses aliases to make the code readable.
 
-if ( (! $?ENVONLY) && $?prompt ) then
+if ( $?loginsh ) then
   set iterm_hostname=`hostname -f`
 
   # Define aliases for the start and end of OSC escape codes used by shell integration.
