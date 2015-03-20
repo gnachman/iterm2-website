@@ -12,9 +12,12 @@
 
 # Copy screen-run variables from the remote host, if they're available.
 
-# Saved copy of your PS1. Changes to PS1 from here on are ignored as it is
-# re-set from PROMPT_COMMAND.
-orig_ps1="${PS1}"
+# Saved copy of your PS1. This is used to detect if the user changes PS1
+# directly. prev_ps1 will hold the last value that this script set PS1 to
+# (including various custom escape sequences). orig_ps1 always holds the last
+# user-set value of PS1.
+orig_ps1="$PS1"
+prev_ps1="$PS1"
 
 # This variable describes whether we are currently in "interactive mode";
 # i.e. whether this shell has just executed a prompt and is waiting for user
@@ -62,10 +65,24 @@ if ( [ x"$TERM" != xscreen ] ); then
       # string without any command substitutions by doing eval on orig_ps1. At
       # this point preexec_interactive_mode is still the empty string, so preexec
       # won't produce output for command substitutions.
+
+      if [[ "$PS1" != "$prev_ps1" ]]
+      then
+        export orig_ps1="$PS1"
+      fi
+
+      # Get the value of the prompt prefix, which will change $?
+      local prompt_prefix_value="$(prompt_prefix)"
+
+      # Reset $? to its saved value, which might be used in $orig_ps1.
       sh -c "exit $s"
-      local orig_ps1_value="$(eval "echo \"$orig_ps1\"")"
-      export PS1="\[$(prompt_prefix)\]$orig_ps1_value\[$(prompt_suffix)\]"
+
+      # Set PS1 to various escape sequences, the user's preferred prompt, and more escape sequences.
+      export PS1="\[$prompt_prefix_value\]$orig_ps1\[$(prompt_suffix)\]"
       preexec_interactive_mode="yes";
+
+      # Save the value we just set PS1 to so if the user changes PS1 we'll know and we can update orig_ps1.
+      export prev_ps1="$PS1"
       sh -c "exit $s"
   }
 
