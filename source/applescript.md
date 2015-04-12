@@ -102,6 +102,12 @@ tell application iTerm
                 if (is processing) then
                   set foreground color to { 65535, 65535, 65535, 65535 }
                 end if
+
+                -- This will only work if shell integration is installed.
+                -- Otherwise it always returns false.
+                if (is at shell prompt) then
+                  set background color to { 65535, 0, 65535, 65535 }
+                end if
         end tell
 end tell
 
