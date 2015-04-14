@@ -7,6 +7,8 @@ title: Applescript - iTerm2 - Mac OS Terminal Replacement
 
 This is an example of the new Applescript syntax available in versions 2.9 and up.
 
+Please note that as of 2.9.20150414, "terminal window" has been replaced with "window" to improve compliance with standard Applescript conventions.
+
 <pre>
 tell application iTerm
         -- application-level commands
