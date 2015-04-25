@@ -189,8 +189,9 @@ if ( [ x"$TERM" != xscreen ] ); then
   }
 
   function remotehost_and_currentdir() {
+    local hn=$(hostname -f)
     iterm2_begin_osc
-    printf "1337;RemoteHost=%s@%s" "$USER" $(hostname -f)
+    printf "1337;RemoteHost=%s@%s" "$USER" "$hn"
     iterm2_end_osc
 
     iterm2_begin_osc
