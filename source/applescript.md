@@ -7,17 +7,19 @@ title: Applescript - iTerm2 - Mac OS Terminal Replacement
 
 This is an example of the new Applescript syntax available in versions 2.9 and up.
 
+Please note that as of 2.9.20150414, "terminal window" has been replaced with "window" to improve compliance with standard Applescript conventions.
+
 <pre>
 tell application iTerm
         -- application-level commands
         create window with default profile
         create window with default profile command "ls -l -R /"
-        select first terminal window
+        select first window
         create window with profile "Default"
         create window with profile "Default" command "ls -l -R /"
 
         -- window-level commands
-        repeat with aWindow in terminal windows
+        repeat with aWindow in windows
                 tell aWindow
                         tell current session
                                 split horizontally with default profile
@@ -53,7 +55,7 @@ tell application iTerm
          end tell
 
         -- session-level commands
-        tell current session of first terminal window
+        tell current session of first window
                 write text "cat > /dev/null"
                 write contents of file "/etc/passwd"
                 write text (tty)
