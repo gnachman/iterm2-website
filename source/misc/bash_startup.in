@@ -79,11 +79,14 @@ if ( [ x"$TERM" != xscreen ] ); then
 
       # Set PS1 to various escape sequences, the user's preferred prompt, and more escape sequences.
       export PS1="\[$prompt_prefix_value\]$orig_ps1\[$(prompt_suffix)\]"
-      preexec_interactive_mode="yes";
 
       # Save the value we just set PS1 to so if the user changes PS1 we'll know and we can update orig_ps1.
       export prev_ps1="$PS1"
       sh -c "exit $s"
+
+      # This must be the last line in this function, or else
+      # preexec_invoke_exec will do its thing at the wrong time.
+      preexec_interactive_mode="yes";
   }
 
   # This function is installed as the DEBUG trap.  It is invoked before each
