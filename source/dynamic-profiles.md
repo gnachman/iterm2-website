@@ -55,7 +55,7 @@ Here is a fully formed (but minimal) Dynamic Profiles plist:
 {
   "Profiles": [
     {
-      "Name": "Example"
+      "Name": "Example",
       "Guid": "ba19744f-6af3-434d-aaa6-0a48e0969958"
     }
   ]
@@ -64,7 +64,7 @@ Here is a fully formed (but minimal) Dynamic Profiles plist:
 
 ### Attributes
 
-Every profile preference that iTerm2 supports may be an attribute of a Dynamic Profile. Since there are dozens of attributes, you usually won't specify them all. Any attribute not specified will inherit its value from the default profile.
+Every profile preference that iTerm2 supports may be an attribute of a Dynamic Profile. Since there are dozens of attributes, you usually won't specify them all. Any attribute not specified will inherit its value from the default profile, or a specified "parent" profile (see below).
 
 The easiest way to find the name and legal value of a profile attribute is to copy it from a known-good reference. To get the JSON for a profile you already have, follow these steps:
 
@@ -76,6 +76,25 @@ The easiest way to find the name and legal value of a profile attribute is to co
 
 If you paste a whole profile into a Dynamic Profile this way, make sure you remember to change the Guid. A Dynamic Profile with a Guid equal to an existing Guid of a regular profile will be ignored.
 
+#### Parent Profiles
+
+Normally, a dynamic profile inherits any attributes you don't explicitly specify from the default profile. You may also specify a particular profile to inherit from using the <i>Dynamic Profile Parent Name</i> attribute. The value it takes is a profile name (that is, the name you see listed in the list of profiles in Preferences box). Profile names are not guaranteed to be unique, but they are more convenient than GUIDs. If no profile with the specified name is found, the default profile is used instead. For example:
+
+<pre>
+{
+  "Profiles": [
+    {
+      "Name": "Example",
+      "Guid": "ba19744f-6af3-434d-aaa6-0a48e0969958",
+      "Dynamic Profile Parent Name": "Light Background"
+    }
+  ]
+}
+</pre>
+
+### Minutiae
+
+Dynamic profiles are loaded in alphabetical order by filename. Within a particular file, they are loaded in the order they're listed in. This only matters if one dynamic profile references another dynamic profile as its parent; the parent should be placed so it loads before any of its children.
 
 ### Troubleshooting
 
