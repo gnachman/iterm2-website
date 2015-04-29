@@ -48,6 +48,6 @@ Performing a quad-click does a "smart selection," which selects text under the p
 #### Triggers
 Triggers are user-configurable regular expressions with associated actions that run when text is received that matches the regex. Actions include highlighting the matching text, showing an alert, sending text back, and more.
 #### Tmux Integration
-iTerm2 is tightly integrated with tmux. The integration allows you to see tmux windows as native iTerm2 windows or tabs. The tmux prefix key is not needed, as native menu commands operate on tmux windows. For more information, please see the <a href="https://code.google.com/p/iterm2/wiki/TmuxIntegration">iTerm2-tmux Integration</a> document.
+iTerm2 is tightly integrated with tmux. The integration allows you to see tmux windows as native iTerm2 windows or tabs. The tmux prefix key is not needed, as native menu commands operate on tmux windows. For more information, please see the <a href="https://gitlab.com/gnachman/iterm2/wikis/TmuxIntegration">iTerm2-tmux Integration</a> document.
 #### Coprocesses
 Coprocesses are programs that run alongside iTerm2 and are bound to a single session. All output bound for the session is also routed as input to the coprocess. The coprocess's output acts like the user typing at the keyboard. Coprocesses can be used to automate tasks. For more information, see the <a href="documentation-coprocesses.html">Coprocess</a> document.

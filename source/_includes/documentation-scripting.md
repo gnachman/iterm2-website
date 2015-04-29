@@ -2,7 +2,7 @@ iTerm2 features Applescript support which allows you to automate many aspects of
 ### Applescript
 iTerm2 has sophisticated Applescript support allowing one to write stand-alone scripts to launch the application and open multiple sessions with profiles into either new tabs or new windows. You can also set some other parameters for a session such as foreground and background colors, and transparency.
 
-Sample scripts may be found at the <a href="https://code.google.com/p/iterm2/wiki/AppleScript">iTerm2 Applescript Examples</a> page.
+Sample scripts may be found at the <a href="https://gitlab.com/gnachman/iterm2/wikis/Applescript">iTerm2 Applescript Examples</a> page.
 
 These scripts can then be saved as stand-alone executable applications.
 
