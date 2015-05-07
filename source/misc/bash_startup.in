@@ -94,6 +94,13 @@ if ( [ x"$TERM" != xscreen ] ); then
   # environment to attempt to detect if the current command is being invoked
   # interactively, and invoke 'preexec' if so.
   function preexec_invoke_exec () {
+      if [ ! -t 1 ]
+      then
+          # We're in a piped subshell (STDOUT is not a TTY) like
+          #   (echo -n A; sleep 1; echo -n B) | wc -c
+          # ...which should return "2".
+          return
+      fi
       if [[ -n "$COMP_LINE" ]]
       then
           # We're in the middle of a completer.  This obviously can't be
