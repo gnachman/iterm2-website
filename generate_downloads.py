@@ -3,6 +3,7 @@
 
 import os
 import os.path, time
+import re
 import glob
 
 print '''---
@@ -11,6 +12,31 @@ title: Downloads - iTerm2 - Mac OS Terminal Replacement
 active-state: downloads
 ---
 '''
+
+# Compare version numbers of iTerm2 filenames.
+def CompareZipFileNames(x, y):
+  xname = os.path.basename(os.path.normpath(x))
+  yname = os.path.basename(os.path.normpath(y))
+  xversion = re.sub(r"iTerm2.*?([0-9_*]+(-[^.]+)?)\.zip", r"\1", xname)
+  yversion = re.sub(r"iTerm2.*?([0-9_*]+(-[^.]+)?)\.zip", r"\1", yname)
+
+  xnumbers = re.sub(r"[0-9_]+(-.*)", r"", xversion).split("_")
+  ynumbers = re.sub(r"[0-9_]+(-.*)", r"", yversion).split("_")
+
+  i = 0
+  while (i < len(xnumbers) and i < len(ynumbers)):
+    if xnumbers[i] > ynumbers[i]:
+      return 1
+    if xnumbers[i] < ynumbers[i]:
+      return -1
+    i += 1
+
+  if len(xnumbers) > len(ynumbers):
+    return 1
+  elif len(xnumbers) < len(ynumbers):
+    return -1
+
+  return cmp(yversion, xversion)
 
 def Metadata(zip, metadataType, onError=None):
     basename = os.path.splitext(zip)[0]
@@ -56,8 +82,27 @@ for sectionName,path,note in DOWNLOADS_PATHS:
       print note
       print "</p>"
 
-    zips = glob.glob(BASE + "/" + path + "/*.zip")
-    zips.sort(reverse=True)
+    # Grab the "legacy" zip files, which have a suffix like -LeopardPPC.zip
+    legacy_zips = glob.glob(BASE + "/" + path + "/iTerm2?*-*.zip")
+    legacy_zips.sort(cmp=CompareZipFileNames, reverse=True)
+
+    # Grab all the zip files and remove the legacy ones, leaving the modern ones.
+    modern_zips = glob.glob(BASE + "/" + path + "/*.zip")
+    modern_zips.sort(cmp=CompareZipFileNames, reverse=True)
+    for s in legacy_zips:
+      modern_zips.remove(s)
+
+    # Sort zips by first modern, first legacy, and then sorted list of mixed
+    # modern and legacy versions together.
+    if LIMIT[path] == 1:
+      zips = [ modern_zips[0] ]
+      remainder = modern_zips[1:] + legacy_zips
+    else:
+      zips = [ modern_zips[0], legacy_zips[0] ]
+      remainder = modern_zips[1:] + legacy_zips[1:]
+    remainder.sort(cmp=CompareZipFileNames, reverse=True)
+    zips += remainder
+
     i = 0
     haveArchive = False
     for zip in zips:
