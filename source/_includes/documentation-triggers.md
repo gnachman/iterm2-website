@@ -62,3 +62,8 @@ Various actions (Run Command, Run Coprocess, Send Growl Alert, Send Text, and Sh
 The <a href="https://github.com/mmastrac/iterm2-zmodem">iTerm2-zmodem</a> project demonstrates hooking up iTerm2 to zmodem upload and download.
 #### Technical Details
 Regular expressions conform to the <a href="http://userguide.icu-project.org/strings/regexp">ICU regular expressions</a> rules. Text that is written to the screen and bells are sent to the regex matcher for evaluation. Only one line at a time is matched. Matching is performed when a newline or cursor-moving escape code is processed. Lines longer than 1024 characters are truncated at the 1024th character for performance reasons.
+#### New features in 2.9 and later
+##### Open Password Manager
+This trigger opens the password manager. Its parameter is the name of an account in the password manager to select by default.
+##### Instant Triggers
+Since their inception, triggers would only fire at the end of a line (or in a few other cases, such as when part of the line is erased). The nightly build now has an "Instant" property for each trigger. When <i>Instant</i> is set, the trigger will fire once per line as soon as the match occurs, without waiting for a newline. This was added for the benefit of the <i>Open Password Manager</i> trigger, since password prompts usually are not followed by a newline. This may cause certain regular expressions (for example, ".*") to match less than they otherwise might.
