@@ -12,7 +12,7 @@ URL=""
 if [ "${SHELL}" == tcsh ]
 then
   URL="http://iterm2.com/misc/tcsh_startup.in"
-  SCRIPT="${HOME}/.tcshrc"
+  SCRIPT="${HOME}/.login"
 fi
 if [ "${SHELL}" == zsh ]
 then
