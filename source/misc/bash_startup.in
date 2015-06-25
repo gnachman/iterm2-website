@@ -195,7 +195,7 @@ if ( [ x"$TERM" != xscreen ] ); then
     iterm2_end_osc
   }
 
-  function remotehost_and_currentdir() {
+  function iterm2_print_state_data() {
     local hn=$(hostname -f)
     iterm2_begin_osc
     printf "1337;RemoteHost=%s@%s" "$USER" "$hn"
@@ -204,6 +204,20 @@ if ( [ x"$TERM" != xscreen ] ); then
     iterm2_begin_osc
     printf "1337;CurrentDir=%s" "$PWD"
     iterm2_end_osc
+
+    iterm2_print_user_vars
+  }
+
+  # Usage: iterm2_set_user_var key value
+  function iterm2_set_user_var() {
+    iterm2_begin_osc
+    printf "1337;SetUserVar=%s=%s" "$1" $(printf "%s" "$2" | base64)
+    iterm2_end_osc
+  }
+
+  # Users can write their own version of this method. It should call
+  # iterm2_set_user_var but not produce any other output.
+  function iterm2_print_user_vars() {
   }
 
   function prompt_prefix() {
@@ -211,7 +225,7 @@ if ( [ x"$TERM" != xscreen ] ); then
     printf "133;D;\$?"
     iterm2_end_osc
 
-    remotehost_and_currentdir
+    iterm2_print_state_data
 
     iterm2_begin_osc
     printf "133;A"
@@ -233,6 +247,6 @@ if ( [ x"$TERM" != xscreen ] ); then
   preexec_install
 
   # This is necessary so the first command line will have a hostname and current directory.
-  remotehost_and_currentdir
+  iterm2_print_state_data
   print_version_number
 fi
