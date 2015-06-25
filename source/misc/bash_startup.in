@@ -2,7 +2,7 @@
 # This is based on "preexec.bash" but is customized for iTerm2.
 
 # Note: this module requires 2 bash features which you must not otherwise be
-# using: the "DEBUG" trap, and the "PROMPT_COMMAND" variable.  preexec_install
+# using: the "DEBUG" trap, and the "PROMPT_COMMAND" variable.  iterm2_preexec_install
 # will override these and if you override one or the other this _will_ break.
 
 # This is known to support bash3, as well as *mostly* support bash2.05b.  It
@@ -44,7 +44,7 @@ if ( [ x"$TERM" != xscreen ] ); then
   # interactive prompt display.  It sets a variable to indicate that the prompt
   # was just displayed, to allow the DEBUG trap, below, to know that the next
   # command is likely interactive.
-  function preexec_invoke_cmd () {
+  function iterm2_preexec_invoke_cmd () {
       local s=$?
       last_hist_ent="$(history 1)";
       precmd;
@@ -54,9 +54,9 @@ if ( [ x"$TERM" != xscreen ] ); then
       # substitution and each command that's run within the substitution, which
       # really adds up. It would be great if we could do something like this at
       # the end of this script:
-      #   PS1="$(prompt_prefix)$PS1($prompt_suffix)"
-      # and have prompt_prefix set a global variable that tells precmd not to
-      # output anything and have prompt_suffix reset that variable.
+      #   PS1="$(iterm2_prompt_prefix)$PS1($iterm2_prompt_suffix)"
+      # and have iterm2_prompt_prefix set a global variable that tells precmd not to
+      # output anything and have iterm2_prompt_suffix reset that variable.
       # Unfortunately, command substitutions run in subshells and can't
       # communicate to the outside world. 
       # Instead, we have this workaround. We save the original value of PS1 in
@@ -72,20 +72,20 @@ if ( [ x"$TERM" != xscreen ] ); then
       fi
 
       # Get the value of the prompt prefix, which will change $?
-      local prompt_prefix_value="$(prompt_prefix)"
+      local iterm2_prompt_prefix_value="$(iterm2_prompt_prefix)"
 
       # Reset $? to its saved value, which might be used in $orig_ps1.
       sh -c "exit $s"
 
       # Set PS1 to various escape sequences, the user's preferred prompt, and more escape sequences.
-      export PS1="\[$prompt_prefix_value\]$orig_ps1\[$(prompt_suffix)\]"
+      export PS1="\[$iterm2_prompt_prefix_value\]$orig_ps1\[$(iterm2_prompt_suffix)\]"
 
       # Save the value we just set PS1 to so if the user changes PS1 we'll know and we can update orig_ps1.
       export prev_ps1="$PS1"
       sh -c "exit $s"
 
       # This must be the last line in this function, or else
-      # preexec_invoke_exec will do its thing at the wrong time.
+      # iterm2_preexec_invoke_exec will do its thing at the wrong time.
       preexec_interactive_mode="yes";
   }
 
@@ -93,7 +93,7 @@ if ( [ x"$TERM" != xscreen ] ); then
   # interactive prompt display.  Its purpose is to inspect the current
   # environment to attempt to detect if the current command is being invoked
   # interactively, and invoke 'preexec' if so.
-  function preexec_invoke_exec () {
+  function iterm2_preexec_invoke_exec () {
       if [ ! -t 1 ]
       then
           # We're in a piped subshell (STDOUT is not a TTY) like
@@ -123,11 +123,11 @@ if ( [ x"$TERM" != xscreen ] ); then
               preexec_interactive_mode=""
           fi
       fi
-      if [[ "preexec_invoke_cmd" == "$BASH_COMMAND" ]]
+      if [[ "iterm2_preexec_invoke_cmd" == "$BASH_COMMAND" ]]
       then
           # Sadly, there's no cleaner way to detect two prompts being displayed
           # one after another.  This makes it important that PROMPT_COMMAND
-          # remain set _exactly_ as below in preexec_install.  Let's switch back
+          # remain set _exactly_ as below in iterm2_preexec_install.  Let's switch back
           # out of interactive mode and not trace any of the commands run in
           # precmd.
 
@@ -157,7 +157,7 @@ if ( [ x"$TERM" != xscreen ] ); then
   }
 
   # Execute this to set up preexec and precmd execution.
-  function preexec_install () {
+  function iterm2_preexec_install () {
 
       # *BOTH* of these options need to be set for the DEBUG trap to be invoked
       # in ( ) subshells.  This smells like a bug in bash to me.  The null stackederr
@@ -170,12 +170,12 @@ if ( [ x"$TERM" != xscreen ] ); then
 
       # Finally, install the actual traps.
       if ( [ x"$PROMPT_COMMAND" = x ]); then
-        PROMPT_COMMAND="preexec_invoke_cmd";
+        PROMPT_COMMAND="iterm2_preexec_invoke_cmd";
       else
         # If there's a trailing semicolon folowed by spaces, remove it (issue 3358).
-        PROMPT_COMMAND="$(echo -n $PROMPT_COMMAND | sed -e 's/; *$//'); preexec_invoke_cmd";
+        PROMPT_COMMAND="$(echo -n $PROMPT_COMMAND | sed -e 's/; *$//'); iterm2_preexec_invoke_cmd";
       fi
-      trap 'preexec_invoke_exec' DEBUG;
+      trap 'iterm2_preexec_invoke_exec' DEBUG;
   }
 
   # -- begin iTerm2 customization
@@ -195,44 +195,63 @@ if ( [ x"$TERM" != xscreen ] ); then
     iterm2_end_osc
   }
 
-  function remotehost_and_currentdir() {
-    local hn=$(hostname -f)
+  function iterm2_print_state_data() {
     iterm2_begin_osc
-    printf "1337;RemoteHost=%s@%s" "$USER" "$hn"
+    printf "1337;RemoteHost=%s@%s" "$USER" "$iterm2_hostname"
     iterm2_end_osc
 
     iterm2_begin_osc
     printf "1337;CurrentDir=%s" "$PWD"
     iterm2_end_osc
+
+    iterm2_print_user_vars
   }
 
-  function prompt_prefix() {
+  # Usage: iterm2_set_user_var key value
+  function iterm2_set_user_var() {
+    iterm2_begin_osc
+    printf "1337;SetUserVar=%s=%s" "$1" $(printf "%s" "$2" | base64)
+    iterm2_end_osc
+  }
+
+  # Users can write their own version of this method. It should call
+  # iterm2_set_user_var but not produce any other output.
+  function iterm2_print_user_vars() {
+    true
+  }
+
+  function iterm2_prompt_prefix() {
     iterm2_begin_osc
     printf "133;D;\$?"
     iterm2_end_osc
 
-    remotehost_and_currentdir
+    iterm2_print_state_data
 
     iterm2_begin_osc
     printf "133;A"
     iterm2_end_osc
   }
 
-  function prompt_suffix() {
+  function iterm2_prompt_suffix() {
     iterm2_begin_osc
     printf "133;B"
     iterm2_end_osc
   }
 
-  function print_version_number() {
+  function iterm2_print_version_number() {
     iterm2_begin_osc
     printf "1337;ShellIntegrationVersion=1"
     iterm2_end_osc
   }
 
-  preexec_install
+
+  # If hostname -f is slow on your system, set iterm2_hostname before sourcing this script.
+  if [ -z "$iterm2_hostname" ]; then
+    iterm2_hostname=$(hostname -f)
+  fi
+  iterm2_preexec_install
 
   # This is necessary so the first command line will have a hostname and current directory.
-  remotehost_and_currentdir
-  print_version_number
+  iterm2_print_state_data
+  iterm2_print_version_number
 fi
