@@ -196,9 +196,8 @@ if ( [ x"$TERM" != xscreen ] ); then
   }
 
   function iterm2_print_state_data() {
-    local hn=$(hostname -f)
     iterm2_begin_osc
-    printf "1337;RemoteHost=%s@%s" "$USER" "$hn"
+    printf "1337;RemoteHost=%s@%s" "$USER" "$iterm2_hostname"
     iterm2_end_osc
 
     iterm2_begin_osc
@@ -245,6 +244,11 @@ if ( [ x"$TERM" != xscreen ] ); then
     iterm2_end_osc
   }
 
+
+  # If hostname -f is slow on your system, set iterm2_hostname before sourcing this script.
+  if [ -z "$iterm2_hostname" ]; then
+    iterm2_hostname=$(hostname -f)
+  fi
   iterm2_preexec_install
 
   # This is necessary so the first command line will have a hostname and current directory.
