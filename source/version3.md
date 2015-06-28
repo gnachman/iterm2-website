@@ -33,7 +33,7 @@ Shell Integration is a modification to your shell's login script that informs iT
 
 #### Session Restoration
 
-Session Restoration allows your jobs to keep running after iTerm2 upgrades, is force-quit, or crashes. It's like tmux without tmux! Note that this is off by default but <a href="https://iterm2.com/restoration.html">it can be enabled in advanced settings</a>.
+Session Restoration allows your jobs to keep running after iTerm2 upgrades, is force-quit, or crashes. It's like tmux without tmux!
 
 #### Inline Images
 
