@@ -39,21 +39,17 @@ if [[ -o login ]]; then
       printf "\033]133;B\007"
     }
 
-    PS1="%{$(iterm2_prompt_start)%}$PS1%{$(iterm2_prompt_end)%}"
-    ITERM2_PREV_PS1="$PS1"
-
     iterm2_precmd() {
       iterm2_after_cmd_executes
 
       # The user or another precmd may have changed PS1 (e.g., powerline-shell).
       # Ensure that our escape sequences are added back in.
-      if [ x"$PS1" != x"$ITERM2_PREV_PS1" ]; then
-        PS1="%{$(iterm2_prompt_start)%}$PS1%{$(iterm2_prompt_end)%}"
-        ITERM2_PREV_PS1="$PS1"
-      fi
+      ITERM2_SAVED_PS1="$PS1"
+      PS1="%{$(iterm2_prompt_start)%}$ITERM2_SAVED_PS1%{$(iterm2_prompt_end)%}"
     }
 
     iterm2_preexec() {
+      PS1="$ITERM2_SAVED_PS1"
       iterm2_before_cmd_executes
     }
 
