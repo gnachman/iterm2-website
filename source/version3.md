@@ -2,15 +2,6 @@
 layout: default
 title: Version 3 Beta - iTerm2 - Mac OS Terminal Replacement
 ---
-<script>
-function show(name) {
-  document.getElementById("bash").style.display="none";
-  document.getElementById("fish").style.display="none";
-  document.getElementById("tcsh").style.display="none";
-  document.getElementById("zsh").style.display="none";
-  document.getElementById(name).style.display="";
-}
-</script>
 ## iTerm2 Version 3 Now in Beta
 
 Version 3 of iTerm2 is now in Beta. There are a few things you should know before jumping in.
@@ -18,6 +9,10 @@ Version 3 of iTerm2 is now in Beta. There are a few things you should know befor
 ### What do I need to know?
 
 There are dozens of new features. Many bugs have been fixed. Performance is significantly improved. The look and feel has been updated for Yosemite. Applescript support has been updated, but it's not backwards compatible.
+
+### Where do I get it?
+
+It's on the <a href="https://iterm2.com/downloads.html">Downloads page</a> under *Test Releases*.
 
 ### Major New Features
 
@@ -31,6 +26,10 @@ iTerm2 has been updated for the new Mac OS X Yosemite flat look and is stunningl
 
 Shell Integration is a modification to your shell's login script that informs iTerm2 of which commands you're running, which host you're logged in to, what your user name is, and what your current directory is. This enables all kinds of cool features, such as easily navigating to preceding shell prompts, getting a notification when a long-running job finishes, drag-dropping files to upload and download on remote hosts, and much more. All the details are at the <a href="/shell_integration.html">Shell Integration</a> document.
 
+#### Automatic Profile Switching
+
+iTerm2 can change your profile (for example, affecting the color of your terminal) when you ssh to a remote host, when you run sudo, or even depending on your current directory. Automatic Profile Switching is part of <a href="https://iterm2.com/shell_integration.html">Shell integration.</a>
+
 #### Session Restoration
 
 Session Restoration allows your jobs to keep running after iTerm2 upgrades, is force-quit, or crashes. It's like tmux without tmux!
@@ -38,6 +37,10 @@ Session Restoration allows your jobs to keep running after iTerm2 upgrades, is f
 #### Inline Images
 
 Using the <a href="/imgcat">imgcat</a> script, iTerm2 can display image files right in the terminal--even animated GIFs. See the <a href="/images.html">Inline Images</a> document for details.
+
+#### Badges
+
+iTerm2 version 3 introduces the concept of a *Badge*. A badge is user-defined text that goes in the top-right of your terminal behind its content and can display information like your current host name or git branch. <a href="/badges.html">Learn more about badges.</a>
 
 #### Password Manager
 
@@ -59,9 +62,19 @@ Dynamic Profiles allow you to store profiles in JSON files. This is really handy
 
 Never lose your cursor. An optional cursor guide highlights the entire row your cursor is on and Cursor Boost dims all colors other than the cursor to make it really stand out.
 
+#### Timestamps
+
+iTerm2 tracks the last-modified time of each line in history so you can see how long commands took to run or when error messages were printed.
+
+#### Captured Output
+
+Use iTerm2 as your IDE. You can define regular expressions to match lines of text like error messages from a compiler. The matching lines are shown in the toolbelt on the side of your terminal. You can click to jump to the line or double-click to run a coprocess, which can open the file in your favorite editor right to the line number you need. <a href="/captured_output.html">Learn more about Captured Output.</a>
+
 #### All the Small Things
 
 Performance is greatly improved by parsing the incoming bytes off the main thread. Hundreds of bugs have been fixed. Lots of details have been improved: for example, if you print a binary file to the console, you're offered the option to silence the bell. You can edit strings before you paste them. You get warned before pasting tabs at your shell prompt. And much more!
+
+<hr>
 
 ### Alfred Support
 
@@ -76,3 +89,13 @@ The bad news is that existing Applescript won't work any more.
 The good news is that it's pretty easy to fix.
 
 <a href="/applescript.html">The new Applescript syntax is described here.</a>
+
+<script>
+function show(name) {
+  document.getElementById("bash").style.display="none";
+  document.getElementById("fish").style.display="none";
+  document.getElementById("tcsh").style.display="none";
+  document.getElementById("zsh").style.display="none";
+  document.getElementById(name).style.display="";
+}
+</script>
