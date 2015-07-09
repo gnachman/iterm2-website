@@ -6,7 +6,7 @@ title: Shell Integration - iTerm2 - Mac OS Terminal Replacement
 iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more--even over ssh. This enables several useful features.
 
 ### Availability
-Shell integration is currently available in the beta releases of iTerm2 version 3, <a href="/nightly/latest">nightly builds</a> and is in the master branch of the <a href="http://github.com/gnachman/iTerm2">GitHub repo</a>. It is not in version 2.1.
+Shell integration is currently available in the beta releases of iTerm2 version 3, <a href="/nightly/latest">nightly builds</a> and is in the master branch of the <a href="https://github.com/gnachman/iTerm2">GitHub repo</a>. It is not in version 2.1.
 
 ### How To Enable Shell Integration
 The easiest way to install shell integration is to select the *iTerm2&gt;Install Shell Integration* menu item. It will download and run a shell script as described blow. You should do this on every host you ssh to as well as your local machine.  Only tcsh, zsh, and bash are currently supported (and contributions for other shells are most welcome). Fish support is available but isn't fully baked.
@@ -70,28 +70,28 @@ Shell Integration works by configuring your shell on each host you log into to s
 #### Marks
 When shell integration is enabled, iTerm2 automatically adds a mark at each command prompt. Marks are indicated visually by a small blue triangle in the left margin.
 
-<img src="http://www.iterm2.com/images/mark.png" />
+<img src="/images/mark.png" />
 
 You can navigate marks with Cmd-Shift-Up and Down-arrow keys.
 
 #### Alert on next mark
 iTerm2 can show an alert box when a mark appears. This is useful when you start a long-running command. Select *Edit&gt;Alert on next mark* (Cmd-Opt-A) after starting a command, and you can go do something else in another window or tab. When the command prompt returns, a modal alert will appear, calling attention to the finished job.
 
-<img src="images/AlertOnMark.png">
+<img src="/images/AlertOnMark.png">
 
 #### Command status
 The mark on a command line will turn red if a command fails. You can right click the mark to view its return code.
 
-<img src="images/FailedCommandMenu.png">
+<img src="/images/FailedCommandMenu.png">
 
 #### Download with scp
 You can right-click on a filename (e.g., in the output of *ls*) and select *Download with scp from *hostname**, and iTerm2 will download the file for you.
 
-<img src="images/DownloadWithScp.png">
+<img src="/images/DownloadWithScp.png">
 
 A new menu bar item will be added called *Downloads* that lets you view downloaded files and track their progress.
 
-<img src="images/DownloadsMenu.png">
+<img src="/images/DownloadsMenu.png">
 
 #### Upload with scp
 If you drop a file (e.g., from Finder) into iTerm2 while holding the option key, iTerm2 will offer to upload the file via scp to the remote host into the directory you were in on the line you dropped the file on. A new menu bar item will be added called *Uploads* that lets you view uploaded files and track their progress.
@@ -108,7 +108,7 @@ Commands in command history are also added to Autocomplete (Cmd-;). If *Preferen
 ##### Toolbelt
 A commmand history tool may be added to the toolbelt by selecting *Toolbelt&gt;Command History*.
 
-<img src="images/CommandHistory.png" width=207 height=301>
+<img src="/images/CommandHistory.png" width=207 height=301>
 
 Bold commands are from the current session. Clicking on one will scroll to reveal it. Double-clicking enters the command for you. Option-double-clicking will output a "cd" command to go to the directory you were in when it was last run.
 
@@ -123,7 +123,7 @@ You can view and search your recently and frequently used directories in *Edit&g
 
 ##### Toolbelt
 A *Recent Directories* tool may be added to the toolbelt by selecting *Toolbelt&gt;Recent Directories*.
-<img src="http://iterm2.com/images/DirectoriesTool.png" style='border:1px solid #aaa'>
+<img src="/images/DirectoriesTool.png" style='border:1px solid #aaa'>
 
 Double-clicking a directory will type its path for you into the current terminal. Option-double-click will enter a "cd" command for you. You can also right-click on a directory to toggle its "starred" status. A starred directory will always appear at the bottom of the list so it is easy to find.
 
@@ -154,7 +154,7 @@ The UI tries to prevent you from entering the same rule in two different profile
 
 How might you use this? You could create a profile with a red background color and assign it a rule like "root@". Then any time you are logged in as root, the background color will change. Of course, you'd need to make sure root has shell integration installed, and you'd also need a rule for all other user names in a profile that doesn't have a red background so the red background doesn't stick around after root logs out.
 
-<img src="images/AutomaticProfileSwitching.png">
+<img src="/images/AutomaticProfileSwitching.png">
 
 <hr/>
 
