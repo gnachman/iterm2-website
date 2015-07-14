@@ -9,7 +9,7 @@ iTerm2 may be integrated with the unix shell so that it can keep track of your c
 Shell integration is currently available in the beta releases of iTerm2 version 3, <a href="/nightly/latest">nightly builds</a> and is in the master branch of the <a href="https://github.com/gnachman/iTerm2">GitHub repo</a>. It is not in version 2.1.
 
 ### How To Enable Shell Integration
-The easiest way to install shell integration is to select the *iTerm2&gt;Install Shell Integration* menu item. It will download and run a shell script as described below. You should do this on every host you ssh to as well as your local machine.  Only tcsh, zsh, and bash are currently supported (and contributions for other shells are most welcome). Fish support is available but isn't fully baked.
+The easiest way to install shell integration is to select the *iTerm2&gt;Install Shell Integration* menu item. It will download and run a shell script as described below. You should do this on every host you ssh to as well as your local machine. The following shells are supported: tcsh, zsh, bash, and fish 2.2 or later. Contributions for other shells are most welcome.
 
 When you select the *iTerm2&gt;Install Shell Integration* menu item, it types this for you:
 
