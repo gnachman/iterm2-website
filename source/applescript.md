@@ -12,6 +12,8 @@ Please note that as of 2.9.20150414, "terminal window" has been replaced with "w
 <pre>
 tell application iTerm
         -- application-level commands
+
+       -- These commands return a window.
         create window with default profile
         create window with default profile command "ls -l -R /"
         select first window
@@ -27,6 +29,7 @@ tell application iTerm
                 end tell
         end repeat
         tell current window
+                -- These commands return a tab
                 create tab with default profile
                 create tab with profile "Projection"
         end tell
@@ -57,11 +60,13 @@ tell application iTerm
         -- session-level commands
         tell current session of first window
                 write text "cat > /dev/null"
+                write text "cat > /dev/null" newline NO
                 write contents of file "/etc/passwd"
                 write text (tty)
                 write text (contents)
                 write text (unique ID)
 
+                -- These commands return a session
                 split vertically with default profile
                 split vertically with profile "Default"
                 split vertically with same profile
