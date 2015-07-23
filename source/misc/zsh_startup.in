@@ -44,8 +44,10 @@ if [[ -o login ]]; then
 
       # The user or another precmd may have changed PS1 (e.g., powerline-shell).
       # Ensure that our escape sequences are added back in.
-      ITERM2_SAVED_PS1="$PS1"
-      PS1="%{$(iterm2_prompt_start)%}$ITERM2_SAVED_PS1%{$(iterm2_prompt_end)%}"
+      if [[ "$ITERM2_SAVED_PS1" != "$PS1" ]]; then
+        PS1="%{$(iterm2_prompt_start)%}$PS1%{$(iterm2_prompt_end)%}"
+        ITERM2_SAVED_PS1="$PS1"
+      fi
     }
 
     iterm2_preexec() {
