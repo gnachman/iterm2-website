@@ -60,8 +60,8 @@ def ChangeLog(zip):
     if len(content):
         id = abs(hash(zip))
         content = \
-'''<p><a href="javascript:showId('%s')" id='show%s'>▶ Show Changelog</a>
-<a href="javascript:hideId('%s')" id='hide%s' style="display: none">▼ Hide Changelog</a>
+'''<p><a href="javascript:showId('%s')" id='show%s'>&#x25b8; Show Changelog</a>
+<a href="javascript:hideId('%s')" id='hide%s' style="display: none">&#x25be; Hide Changelog</a>
 <pre id="changelist%s" style="display: none">%s</pre></p>''' % (id, id, id, id, id, content)
     return content
 
@@ -108,8 +108,8 @@ for sectionName,path,note in DOWNLOADS_PATHS:
     for zip in zips:
         if i == LIMIT[path]:
 	  haveArchive = True
-	  print '''<p><a href="javascript:showId('%s')" id='show%s'>▶ Show Older Versions</a>
-<a href="javascript:hideId('%s')" id='hide%s' style="display: none">▼ Hide Older Versions</a>
+	  print '''<p><a href="javascript:showId('%s')" id='show%s'>&#x25b8; Show Older Versions</a>
+<a href="javascript:hideId('%s')" id='hide%s' style="display: none">&#x25be; Hide Older Versions</a>
 <div id="changelist%s" style="margin-left: 15pt; display: none"><h3>Older %s</h3>''' % (path, path, path, path, path, sectionName)
         i += 1
         name = os.path.split(zip)[1]

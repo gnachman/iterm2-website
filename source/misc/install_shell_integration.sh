@@ -11,17 +11,17 @@ SHELL=$(echo "${SHELL}" | tr / "\n" | tail -1)
 URL=""
 if [ "${SHELL}" == tcsh ]
 then
-  URL="http://iterm2.com/misc/tcsh_startup.in"
+  URL="https://iterm2.com/misc/tcsh_startup.in"
   SCRIPT="${HOME}/.login"
 fi
 if [ "${SHELL}" == zsh ]
 then
-  URL="http://iterm2.com/misc/zsh_startup.in"
+  URL="https://iterm2.com/misc/zsh_startup.in"
   SCRIPT="${HOME}/.zshrc"
 fi
 if [ "${SHELL}" == bash ]
 then
-  URL="http://iterm2.com/misc/bash_startup.in"
+  URL="https://iterm2.com/misc/bash_startup.in"
   test -f "${HOME}/.bash_profile" && SCRIPT="${HOME}/.bash_profile" || SCRIPT="${HOME}/.profile"
 fi
 if [ `basename "${SHELL}"` == fish ]
@@ -30,7 +30,7 @@ then
   fish -v
   echo "FYI, version 2.1.1 has a bug where long lines wrap prematurely."
 
-  URL="http://iterm2.com/misc/fish_startup.in"
+  URL="https://iterm2.com/misc/fish_startup.in"
   mkdir -p "${HOME}/.config/fish"
   SCRIPT="${HOME}/.config/fish/config.fish"
 fi
