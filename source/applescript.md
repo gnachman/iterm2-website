@@ -12,26 +12,26 @@ Please note that as of 2.9.20150414, "terminal window" has been replaced with "w
 <pre>
 tell application iTerm
         -- application-level commands
+        -- These commands return a window.
+        set newWindow to (create window with default profile)
+        set newWindow to (create window with default profile command "ls -l -R /")
 
-       -- These commands return a window.
-        create window with default profile
-        create window with default profile command "ls -l -R /"
         select first window
-        create window with profile "Default"
-        create window with profile "Default" command "ls -l -R /"
+        set newWindow to (create window with profile "Default")
+        set newWindow to (create window with profile "Default" command "ls -l -R /")
 
         -- window-level commands
         repeat with aWindow in windows
                 tell aWindow
                         tell current session
-                                split horizontally with default profile
+                                set newSession to (split horizontally with default profile)
                         end tell
                 end tell
         end repeat
         tell current window
                 -- These commands return a tab
-                create tab with default profile
-                create tab with profile "Projection"
+                set newTab to (create tab with default profile)
+                set newTab to (create tab with profile "Projection")
         end tell
         tell current window
                 tell current session
@@ -62,18 +62,21 @@ tell application iTerm
                 write text "cat > /dev/null"
                 write text "cat > /dev/null" newline NO
                 write contents of file "/etc/passwd"
+                -- Get the path to the current session's tty and write it
                 write text (tty)
+                -- Get the content of the session and write it back
                 write text (contents)
+                -- Get the session's unique identifier and write it back
                 write text (unique ID)
 
                 -- These commands return a session
-                split vertically with default profile
-                split vertically with profile "Default"
-                split vertically with same profile
+                set newSession to (split vertically with default profile)
+                set newSession to (split vertically with profile "Default")
+                set newSession to (split vertically with same profile)
                 
-                split horizontally with default profile
-                split horizontally with profile "Default"
-                split horizontally with same profile
+                set newSession to (split horizontally with default profile)
+                set newSession to (split horizontally with profile "Default")
+                set newSession to (split horizontally with same profile)
 
 
                 set foreground color to {65535, 0, 0, 0}
