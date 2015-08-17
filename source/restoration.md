@@ -10,7 +10,7 @@ tl;dr watch this:
 <a href="/misc/restoration-demo.mov">Demo Video</a>
 
 ### Availability
-This feature is available in the current 2.9 branch, including the nightly builds.
+This feature is available in the current 2.9 branch, including the nightly builds, and the most recent beta.
 
 ### Notes
 
