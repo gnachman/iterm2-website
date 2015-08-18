@@ -18,8 +18,8 @@ if [[ -o login ]]; then
     }
 
     iterm2_print_state_data() {
-      printf "\033]1337;RemoteHost=$USER@$iterm2_hostname\007"
-      printf "\033]1337;CurrentDir=$PWD\007"
+      printf "\033]1337;RemoteHost=%s@%s\007" "$USER" "$iterm2_hostname"
+      printf "\033]1337;CurrentDir=%s\007" "$PWD"
       iterm2_print_user_vars
     }
 
