@@ -304,7 +304,7 @@ This interface works like the keyboard shortcut system in profiles (described ab
 ### Pointer
 <hr>
 #### Mouse Button and Trackpad Gesture Actions
-You may assign custo actions to mouse clicks and trackpad gestures. The left mouse button is not configurable because its behavior is rather complex, however. This is especially useful if you have a mouse with many buttons. Any combination of mouse button + number of clicks + modifiers may be assigned an action. For gestures, three finger taps and swipes may be configured in combination with modifiers. The following actions are available:
+You may assign custom actions to mouse clicks and trackpad gestures. The left mouse button is not configurable because its behavior is rather complex, however. This is especially useful if you have a mouse with many buttons. Any combination of mouse button + number of clicks + modifiers may be assigned an action. For gestures, three finger taps and swipes may be configured in combination with modifiers. The following actions are available:
 #### Extend selection
 The text selection will grow, either from its beginning or end, to the location of the pointer.
 #### Move pane

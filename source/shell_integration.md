@@ -163,7 +163,7 @@ iTerm2 can do uploads and downloads with scp as described above. There are a few
 
 iTerm2 links in libssh2, and does not shell out to scp. It respects /etc/known_hosts and ~/.ssh/known_hosts, and will update the latter file appropriately. Host fingerprints are verified. Password, keyboard-interactive, and public-key authentication are supported. Private keys by default come from ~/.ssh/id_rsa, id_dsa, or id_ecdsa, and may be encrypted with an optional passphrase.
 
-iTerm2 respsects ssh_config files, but only a subset of the commands are understood:
+iTerm2 respects ssh_config files, but only a subset of the commands are understood:
 
   * Host
   * HostName
