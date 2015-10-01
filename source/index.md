@@ -14,7 +14,7 @@ Check out the impressive <a href="features.html">features and screenshots</a>. I
 Try the <a href="faq.html">FAQ</a> or the <a href="documentation.html">documentation</a>. Got problems or ideas? Report them in the <a href="https://iterm2.com/bugs">bug tracker</a>, or take it to the <a href="http://groups.google.com/group/iterm2-discuss">forum</a>. Or tweet to <a href="http://twitter.com/?status=@gnachman">@gnachman</a> and I'll do my best to respond.
 
 <div class="text-center">
-        <a href="https://iterm2.com/downloads/stable/iTerm2_v2_0.zip"><img src="img/download-button.png"></a>
+        <a href="https://iterm2.com/downloads/stable/iTerm2-2_1_1.zip"><img src="img/download-button.png"></a>
 </div>
 
 iTerm2 is licensed under <a href="license.txt">GPL v2.</a>
