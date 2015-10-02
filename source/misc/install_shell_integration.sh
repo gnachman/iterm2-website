@@ -28,9 +28,8 @@ then
 fi
 if [ `basename "${SHELL}"` == fish ]
 then
-  echo "Fish support is nascent. You need a version of fish newer than 2.1.1 (so you probably need to build it yourself). Your version is:"
+  echo "Make sure you have fish 2.2 or later. Your version is:"
   fish -v
-  echo "FYI, version 2.1.1 has a bug where long lines wrap prematurely."
 
   URL="https://iterm2.com/misc/fish_startup.in"
   mkdir -p "${HOME}/.config/fish"
