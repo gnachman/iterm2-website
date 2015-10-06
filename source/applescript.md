@@ -107,6 +107,10 @@ tell application iTerm
                 set background image to "/usr/share/httpd/icons/small/rainbow.png"
                 set name to "New Name"
                 set transparency to 0.5
+                -- The name of the session's profile (different from the session's name, which can
+                -- be changed by editing the Session Title field in Edit Session or by an escape
+                -- sequence). Added 10/6/15.
+                write text (profile name)
 
                 -- is processing means it has received output in the last two seconds.
                 if (is processing) then
