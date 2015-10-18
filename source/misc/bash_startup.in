@@ -175,7 +175,8 @@ if ( [ x"$TERM" != xscreen ] ); then
         # If there's a trailing semicolon folowed by spaces, remove it (issue 3358).
         PROMPT_COMMAND="$(echo -n $PROMPT_COMMAND | sed -e 's/; *$//'); iterm2_preexec_invoke_cmd";
       fi
-      trap 'iterm2_preexec_invoke_exec' DEBUG;
+      # The $_ is ignored, but prevents it from changing (issue 3932).
+      trap 'iterm2_preexec_invoke_exec "$_"' DEBUG;
   }
 
   # -- begin iTerm2 customization
