@@ -3,7 +3,7 @@ layout: default
 title: Features - iTerm2 - Mac OS Terminal Replacement
 active-state: features
 ---
-iTerm2 has a lot of features. Every concievable desire a terminal user might have was forseen and solved. And these are just the main attractions!
+iTerm2 has a lot of features. Every conceivable desire a terminal user might have was foreseen and solved. And these are just the main attractions!
 
 <section class="feature-block">
 ### Split Panes
