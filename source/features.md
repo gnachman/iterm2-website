@@ -3,11 +3,11 @@ layout: default
 title: Features - iTerm2 - Mac OS Terminal Replacement
 active-state: features
 ---
-iTerm2 has a lot of features. Every concievable desire a terminal user might have was forseen and solved. And these are just the main attractions!
+iTerm2 has a lot of features. Every conceivable desire a terminal user might have has been foreseen and solved. And these are just the main attractions!
 
 <section class="feature-block">
 ### Split Panes
-Divide a tab up into multiple panes, each one of which shows a different session. You can slice vertically and horizontally and create any number of panes in any imaginable arrangement. 
+Divide a tab up into multiple panes, each one showing a different session. You can slice vertically and horizontally and create any number of panes in any imaginable arrangement. 
 <a href="img/screenshots/split_panes_full.png" target="_blank"><img src="img/screenshots/split_panes.png"></a>
 Notice how inactive panes are slightly dimmed so it's easy to see which is active.
 
@@ -134,7 +134,7 @@ iTerm2 can perform "smart selection" to highlight URLs, email addresses, filenam
 
 <section class="feature-block">
 ### Shell Integration
-iTerm2 can integration with your shell so it knows where your shell prompt is, what commands you're entering, which host you are on, and what your current directory is. This enables all sorts of cool features: you can easily navigate to previous shell prompts with &#8679;&#8984;&uarr; and &#8679;&#8984;&darr;. Your most used directories will be remembered for you. You can auto-complete previously used commands. And much more!
+iTerm2 can integrate with your shell so it knows where your shell prompt is, what commands you're entering, which host you are on, and what your current directory is. This enables all sorts of cool features: you can easily navigate to previous shell prompts with &#8679;&#8984;&uarr; and &#8679;&#8984;&darr;. Your most used directories will be remembered for you. You can auto-complete previously used commands. And much more!
 <a href="img/screenshots/v3-screen-shots/iterm2-shell-integration-navigation-demo.mov" target="_blank"><img src="img/screenshots/v3-screen-shots/iterm2-shell-integration-navigation-demo.gif"></a>
 </section>
 
