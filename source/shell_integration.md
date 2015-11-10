@@ -24,6 +24,9 @@ Then add this to your login script (.login for tcsh, .bash_profile for bash, .zs
 
 <pre>source ~/.iterm2_shell_integration.`basename $SHELL`</pre>
 
+Don't want to or can't install a login script? See the workaround at the end of this document using
+triggers.
+
 ### Features
 Shell Integration enables numerous features:
 
@@ -157,6 +160,46 @@ How might you use this? You could create a profile with a red background color a
 <img src="/images/AutomaticProfileSwitching.png">
 
 <hr/>
+
+#### Triggers
+For some users, installing a login script on every host they connect to is not an option. If that
+sounds like you, then you can get some of the benefit of shell integration by defining triggers.
+There are two relevant triggers: *Set Host &amp; User* and *Set Directory*. Use these triggers to
+tell iTerm2 your current username, hostname, and directory. Suppose you have a shell prompt that
+looks like this:
+
+<pre>
+george@example.com:/home/george%
+</pre>
+
+It exposes the username, hostname, and working directory. We can harvest those with a regular
+expression. First, define a trigger with this regex:
+
+<pre>
+^(\w+)@([\w.]+):.+%
+</pre>
+
+It captures the username and hostname from the example prompt above. Set the trigger's parameter to:
+
+<pre>
+\1@\2
+</pre>
+
+Then create another trigger with the action *Set Directory*. This regular expression will extract
+the directory from the example prompt:
+
+<pre>
+^\w+@[\w.]+:([^%]+)%
+</pre>
+
+Set this trigger's parameter to
+
+<pre>
+\1
+</pre>
+
+Make sure both triggers have their *Instant* checkbox enabled so they'll take effect before a
+newline is received.
 
 #### A Note on SCP
 iTerm2 can do uploads and downloads with scp as described above. There are a few things you should know.
