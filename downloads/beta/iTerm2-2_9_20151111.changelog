@@ -1,0 +1,62 @@
+iTerm2 2.9.20151111
+New features:
+- iTerm2 now uses a custom color picker which is much nicer than the OS's default. There is a button
+  to revert to the system color picker for those who prefer it.
+- Force touch support added. By default, it opens quicklook for files, the dictionary definition for
+  words, and a safari view for URLs. You can customize it in the Pointer panel of preferences.
+- Make semantic history (cmd-click on a file) download with with scp if you're ssh'ed to a host that
+  has shell integration installed.
+- Amount of time that tabs show in non-native fullscreen is configurable in advanced preferenes.
+- Make it possible to dismiss the Tip of the day by pressing esc.
+- Add profile name as a property of session in Applescript.
+- In the paste history tool, show the most recent entry at the bottom. This is consistent with the
+  command history tool.
+- Get rid of the "hold cmd to show tabs in fullscreen". Holding cmd after changing tabs will keep
+  the tab bar visible until it is released.
+- Failed commands are indicated with an emoji in the command history tool.
+- Add an advanced preference to make the hotkey window float above other apps' windows.
+- Make double-clicking in command history or recent directories tool change focus to the session.
+  Hold shift during a command click to append a newline.
+- Right clicking on a number that looks like a timestamp shows the human-readable date in the
+  context menu.
+- Change cursor when the autocomplete window is searching for a result.
+- Add an advanced preference to double-report scroll events to work around a bug in tmux (see issue
+  3950 for details).
+- Add an advanced pref to disallow dragging a tab into its own window.
+- Add key binding actions to move selection endpoints.
+- Add triggers to set the username, hostname, and current directory for users who can't install the
+  shell integration script.
+
+Bug fixes:
+- Fix a bug where split screen in El Capitan had black bars around the periphery.
+- Draw fonts with thinner strokes. You can disable this in the Text tab of Profile Preferences.
+- Send crash reports over SSL to avoid problems with App Transport Security.
+- Improve performance by storing command history and recent directories in a database.
+- Disable automatic spelling correction, dash substitution, quote substitution, data detection, and
+  link detection for advanced paste. Also disable smart insert/delete for advanced paste and notes
+  tool
+- Fix a crash when you press the delete button in the triggers panel and no trigger is selected.
+- Fix memory leak with inline images.
+- Close the autocomplete window automatically if no results are found.
+- Don't underline blue links on hover when cmd is pressed but the window is not key, since
+  cmd-clicking in a non-key window is treated like a regular click.
+- Improve appearance of emoji in the badge.
+- Fix a bug where spurious warnings about mouse reporting being left on were shown when restoring a
+  window arrangement or restoring the app after exit.
+- Improve fullscreen tabs animations.
+- Revert to the older "spotlight" Find Cursor appearance, except on very special occasions.
+- Improve Focus Follows Mouse behavior to be more predictable and sensible.
+- Fix a bug where the terminal would sometimes scroll during mouse reporting of wheel events.
+- Fix a bug where navigating among split panes with the keyboard would sometimes go in the wrong
+  direction.
+- Don't allow a fullscreen window do be moved with cmd+opt+shift+drag.
+- Don't perform rectangular selection if control+option+cmd is pressed.
+- Make cmd-click in an inactive pane in the key window activate semantic history without changing
+  first responder.
+- Change Applescript windows element to return only terminal windows.
+- Make sure the cursor becomes visible after doing Find Cursor.
+- Reduce the number of tracking areas to try to improve performance.
+- Don't let a new split pane steal focus when focus follows mouse is on, as long as the pointer
+  remains motionless.
+- Improve tab titles in tmux integration mode.
+- Make popup animation for autocomplete, command history, and paste history look nicer.
