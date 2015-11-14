@@ -194,6 +194,8 @@ if ( [ x"$TERM" != xscreen ] ); then
     iterm2_begin_osc
     printf "133;C;\r"
     iterm2_end_osc
+    # Reset PS1 back to its original value so scripts can change it.
+    export PS1="$orig_ps1"
   }
 
   function iterm2_print_state_data() {
