@@ -22,7 +22,7 @@ The primary use of the mouse in iTerm2 is to select text, and (by default) text 
 
 If you hold shift while clicking the existing selection is extended.
 
-If you hold cmd and click on a URL it will be opened. If you hold cmd and click on a filename, it will be opened. There is special support for Macvim, Textmate, and BBEdit when you cmd-click on a text file's name: if it is followed by a colon and line number, the file will be opened at that line number. The current directory is tracked if you have your shell prompt set the window title, <a href="http://www.faqs.org/docs/Linux-mini/Xterm-Title.html#toc4">as described here</a>.
+If you hold cmd and click on a URL it will be opened. If you hold cmd and click on a filename, it will be opened. There is special support for MacVim, TextMate, and BBEdit when you cmd-click on a text file's name: if it is followed by a colon and line number, the file will be opened at that line number. The current directory is tracked if you have your shell prompt set the window title, <a href="http://www.faqs.org/docs/Linux-mini/Xterm-Title.html#toc4">as described here</a>.
 
 If you hold cmd you can drag and drop selected text.
 
