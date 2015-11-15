@@ -27,7 +27,7 @@ You could disappear for years before your friends discover you're gone.
 There are two ways to start a coprocess.
 
   * Select "Run Coprocess..." from the Shell menu. Enter the name of a command to run as a coprocess.
-  * Create a Trigger in Prefs&gt;Profiles&gt;Advaced and select *Run Coprocess...* as the action. Give the script to run as a parameter. Triggers also have *Silent Coprocesses*, which prevent any output from going to the screen. This is useful for <a href="https://github.com/mmastrac/iterm2-zmodem">ZModem</a>, for example.
+  * Create a Trigger in Prefs&gt;Profiles&gt;Advanced and select *Run Coprocess...* as the action. Give the script to run as a parameter. Triggers also have *Silent Coprocesses*, which prevent any output from going to the screen. This is useful for <a href="https://github.com/mmastrac/iterm2-zmodem">ZModem</a>, for example.
 
 ### Usage
 

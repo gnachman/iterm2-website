@@ -31,7 +31,7 @@ If enabled, text is copied to the clipboard immediately upon selection. If not s
 #### Copied text includes trailing newline
 If enabled, a terminal newline will be copied to the pasteboard when the selection includes one; otherwise, no selection will ever include a terminal newline.
 #### Allow clipboard access to terminal apps
-If enabled, clipboard access will be granted via escape code to programs running in iTerm2. They will be able to retreive and set the contents of the system pasteboard.
+If enabled, clipboard access will be granted via escape code to programs running in iTerm2. They will be able to retrieve and set the contents of the system pasteboard.
 #### Characters considered part of a word for selection
 When you double-click in the terminal window, a "word" is selected. A word is defined as a string delimited by characters of a different class. The classes of characters are whitespace, word characters, and non-word characters. The characters in this field define the set of non-word characters.
 #### Smart window placement
@@ -47,7 +47,7 @@ If enabled, fullscreen windows will animate into a special desktop, as is typica
 #### When attaching, open unrecognized windows in...
 When attaching to a new tmux session with the tmux integration, tmux windows not seen by iTerm2 before will open in either new windows or tabs, as specified by this preference.
 #### Open dashboard if there are more than...tmux windows
-When attaching to a tmux session with the tmux integration, windows are normally opened automaticaly. If there are too many of them, then the tmux dashboard is opened instead.
+When attaching to a tmux session with the tmux integration, windows are normally opened automatically. If there are too many of them, then the tmux dashboard is opened instead.
 #### Automatically hide the tmux client session after connecting
 When the tmux integration is entered by running tmux -CC, the window in which that command was run will miniaturize into the dock if this option is enabled.
 <hr>
@@ -158,7 +158,7 @@ If selected, the window background is blurred provided the background has some t
 #### Rows/Columns
 When creating a new window with this profile, it will be created with this many rows and columns.
 #### Background Image
-This allows you to select an image to display behind the terminal's text. If Tile image is selected, then the image will be shown at its actual size and tesselated; otherwise, it will be stretched to fit the whole pane. The blending slider determines how strongly the image dominates over the text's background color.
+This allows you to select an image to display behind the terminal's text. If Tile image is selected, then the image will be shown at its actual size and tessellated; otherwise, it will be stretched to fit the whole pane. The blending slider determines how strongly the image dominates over the text's background color.
 #### Style
 This defines the window style. Bottom- and Top-of-screen windows will disregard the columns setting. Left-of-screen windows will disregard the rows setting. Full-screen windows only respect the rows and columns setting when full-screen mode is exited.
 #### Screen
@@ -201,7 +201,7 @@ If selected, a bell graphic will be flashed when the bell character is received.
 #### Show bell icon in tabs
 If selected, tabs will indicate that a bell has rung by displaying a bell graphic.
 #### Set locale variables automatically
-If enabled, LANG and LC_CTYPE ennvironment variables will be set based on your machine's language settings.
+If enabled, LANG and LC_CTYPE environment variables will be set based on your machine's language settings.
 <hr>
 ### Profiles > Session
 <hr>
@@ -252,7 +252,7 @@ This action launches a Coprocess. <a href="documentation-coprocesses.html">Learn
 #### Select Menu Item...
 This action allows you to enter the name of an iTerm2 menu item. It must be entered exactly the same as it appears in the menu. Ellipses can be typed with option-semicolon.
 
-You can add a new keymapping by pressing "+". You can remove an existing mapping by selecting it and pressing "-". Three presets are provided: "Xterm defaults" is the normal key mappings, while "Xterm defaults with numeric keypad" disables the "application keypad" in favor of the numbers and symbols that the numeric keypad typically emits. "Terminal.app Compatability" tries to emulate the way that Terminal.app sends keys by default.
+You can add a new keymapping by pressing "+". You can remove an existing mapping by selecting it and pressing "-". Three presets are provided: "Xterm defaults" is the normal key mappings, while "Xterm defaults with numeric keypad" disables the "application keypad" in favor of the numbers and symbols that the numeric keypad typically emits. "Terminal.app Compatibility" tries to emulate the way that Terminal.app sends keys by default.
 #### Left/Right Option Key Acts As
 It is common to use a modifier to send so-called "meta keys". For most users, selecting "+Esc" here is the right choice. The "Meta" option sets the high bit of the input character, and is not compatible with modern systems.
 #### Delete sends ^H
@@ -275,7 +275,7 @@ When text matching the trigger is received, a coprocess is started. The paramete
 #### Action: Run Silent Coprocess
 When text matching the trigger is received, a silent coprocess is started. A silent coprocess differs from a regular coprocess in that input goes only to the coprocess and not to the terminal display. This is useful, for example, for ZModem transfers. The parameter gives a command to run as the coprocess.
 #### Action: Send Growl Alert
-When text matching the trigger is received, a growl alert is posted with the text inthe parameter.
+When text matching the trigger is received, a growl alert is posted with the text in the parameter.
 #### Action: Send Text
 When text matching the trigger is received, text in the parameter is written to the terminal.
 #### Action: Show Alert
@@ -284,7 +284,7 @@ When text matching the trigger is received, a modal alert is shown with text in 
 Smart selection allows you to define a set of regular expressions, each with an assigned priority, that are used for making the best possible selection. By default, a quad-click invokes smart selection. Smart selection is described in full in the Smart Selection document.
 #### Semantic History
 Semantic history is used to open a file when you Cmd-Click on it. The current working directory for each line in the terminal is tracked to help find files. If Semantic History is set to "Open with default app," then files are passed to the OS to be opened with whatever is associated. Alternatively, you can choose "Open URL..." to open a specific URL (with \1 replaced with the filename and \2 replaced with the line number, if applicable). If you choose "Open with editor..." then text files will be opened with the designated editor, while other files are opened with the default app for their file type. For more flexibility, choose "Run command..." and specify a command to execute. \1 will be replaced with the file name, \2 will be replaced with the line number (if applicable), \3 with text in the line prior to the click location, \4 with text in the line subsequent to the click location, and \5 for the working directory of the line clicked on. Finally, "Always run command..." is like "Run command...," but takes effect even if the object clicked on is not an existing filename.
-</p>		
+</p>
 <hr>
 ### Keys
 <hr>

@@ -16,7 +16,7 @@ The toolbar provides quick access to some commonly used features.
 <li>The Execute field lets you to type in a command locally before sending it to the terminal. You can also type in a URL (including the scheme, such as http://), in which case the URL will be opened by the appropriate application. If you press TAB key instead of Enter after you type in the command, a new tab will be launched with your command.</li>
 </ul>
 #### Info Panel
-Info Panel lets you modify the apperance of a single session. Note that after you open this panel, your changes will not be reflected in the profile and profile changes will not be reflected in this session.
+Info Panel lets you modify the appearance of a single session. Note that after you open this panel, your changes will not be reflected in the profile and profile changes will not be reflected in this session.
 #### Pointer
 The primary use of the mouse in iTerm2 is to select text, and (by default) text is copied to the clipboard immediately upon being selected. You can click and drag to perform a normal selection. Double-clicking selects a whole word. Triple-clicking selects an entire line. Quadruple-clicking performs a "smart select", matching recognized strings such as URLs and email addresses.
 

@@ -35,7 +35,7 @@ Pastes (both regular and slow) are done by splitting the text to paste into chun
 
 To change the speed that "paste slowly" pastes at:
 
-    defaults write com.googlecode.iterm2 SlowPasteBytesPerCall -int 16 
+    defaults write com.googlecode.iterm2 SlowPasteBytesPerCall -int 16
     defaults write com.googlecode.iterm2 SlowPasteDelayBetweenCalls -float 0.125
 
 To disable using the pinch gesture to change font size:
@@ -52,7 +52,7 @@ To allow Growl notifications to be posted for the current tab:
 
 To tune smart cursor color settings:
 
-    defaults write com.googlecode.iterm2.plist SmartCursorColorBgThreshold -float 0.5 
+    defaults write com.googlecode.iterm2.plist SmartCursorColorBgThreshold -float 0.5
     defaults write com.googlecode.iterm2.plist SmartCursorColorFgThreshold -float 0.75
 
 SmartCursorColorBgThreshold: If the cursor's background color is too close to nearby background colors, force it to the "most different" color. This is the difference threshold that triggers that change. 0 means always trigger, 1 means never trigger.
@@ -76,10 +76,10 @@ To use some experimental optimizations that will improve performance (safety not
 
 To tweak tab sizes:
 
-    defaults write com.googlecode.iterm2 UseUnevenTabs -bool false 
-    defaults write com.googlecode.iterm2 MinTabWidth -int 75 
-    defaults write com.googlecode.iterm2 MinCompactTabWidth -int 60 
-    defaults write com.googlecode.iterm2 OptimumTabWidth -int 175 
+    defaults write com.googlecode.iterm2 UseUnevenTabs -bool false
+    defaults write com.googlecode.iterm2 MinTabWidth -int 75
+    defaults write com.googlecode.iterm2 MinCompactTabWidth -int 60
+    defaults write com.googlecode.iterm2 OptimumTabWidth -int 175
 
 To change your search engine:
 
@@ -88,10 +88,10 @@ To change your search engine:
 
 To adjust the speed of the animation of the hotkey window's appearance and disappearance:
 
-    defaults write com.googlecode.iterm2 HotkeyTermAnimationDuration \ 
+    defaults write com.googlecode.iterm2 HotkeyTermAnimationDuration \
     -float 0.25
 
 To adjust the amount of dimming of split panes. Set the value to a floating-point number between 0 (no dimming) and 1 (complete dimming). The default is 0.15:
 
-    defaults write com.googlecode.iterm2 SplitPaneDimmingAmount \ 
+    defaults write com.googlecode.iterm2 SplitPaneDimmingAmount \
     -float 0.25
