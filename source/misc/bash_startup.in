@@ -58,7 +58,7 @@ if ( [ x"$TERM" != xscreen ] ); then
       # and have iterm2_prompt_prefix set a global variable that tells precmd not to
       # output anything and have iterm2_prompt_suffix reset that variable.
       # Unfortunately, command substitutions run in subshells and can't
-      # communicate to the outside world. 
+      # communicate to the outside world.
       # Instead, we have this workaround. We save the original value of PS1 in
       # $orig_ps1. Then each time this function is run (it's called from
       # PROMPT_COMMAND just before the prompt is shown) it will change PS1 to a

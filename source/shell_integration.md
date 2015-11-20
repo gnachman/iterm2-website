@@ -135,7 +135,7 @@ In *Preferences&gt;Profiles&gt;Advanced*, you may specify a set of rules. When a
 <pre style="white-space: pre">
   RULE ::= USERNAME HOSTNAME ":" PATH |
            USERNAME "*" ":" PATH |
-	   USERNAME PATH |
+           USERNAME PATH |
            HOSTNAME |
            PATH
   USERNAME ::= [user name to match] "@"
