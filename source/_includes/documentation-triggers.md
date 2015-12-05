@@ -11,7 +11,7 @@ Various actions may be assigned to triggers. These include:
         <li>Show Alert: Shows an alert box with user-defined text.</li>
 </ul>
 #### What is a Parameter?
-Various actions (Run Command, Run Coprocess, Send Growl Alert, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. Some special values are allowed here: 
+Various actions (Run Command, Run Coprocess, Send Growl Alert, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. Some special values are allowed here:
 <table>
         <thead>
                 <tr>

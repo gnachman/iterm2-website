@@ -5,11 +5,11 @@ A coprocess is a job, such as a shell script, that has a special relationship wi
 One obvious use of this feature is to automate interaction. For instance, suppose you want to automate your presence in a chat room. The following script could be used as a coprocess:
 
 
-    #!/usr/bin/python 
-    import sys 
-    while True: 
-      line = raw_input() 
-      if line.strip() == "Are you there?": 
+    #!/usr/bin/python
+    import sys
+    while True:
+      line = raw_input()
+      if line.strip() == "Are you there?":
         print "Yes"
       sys.stdout.flush()
 
@@ -19,7 +19,7 @@ There are two ways to start a coprocess.
 
 1. Select "Run Coprocess..." from the Shell menu. Enter the name of a command to run as a coprocess.
 
-2. Create a Trigger in Prefs>Profiles>Advaced and select Run Coprocess... as the action. Give the script to run as a parameter. Triggers also have Silent Coprocesses, which prevent any output from going to the screen. This is useful for ZModem, for example.
+2. Create a Trigger in Prefs>Profiles>Advanced and select Run Coprocess... as the action. Give the script to run as a parameter. Triggers also have Silent Coprocesses, which prevent any output from going to the screen. This is useful for ZModem, for example.
 
 #### Usage
 A session can not have more than one coprocess at a time. When a coprocess is active, an icon will indicate that in the top right of the session.

@@ -14,7 +14,7 @@ where N=0, 1, or 2.
 </ul>
 Add this to your .vimrc to change cursor shape in insert mode:
 
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7" 
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 
 This is derived from <a href="http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes">Konsole</a>.
@@ -62,16 +62,16 @@ Where name is one of "rule", "find", "font", or empty to mean the general pasteb
 #### Set window title and tab chrome background color
 To set the window title and tab color use this escape sequence:
 
-    ^[]6;1;bg;red;brightness;N^G 
-    ^[]6;1;bg;green;brightness;N^G 
+    ^[]6;1;bg;red;brightness;N^G
+    ^[]6;1;bg;green;brightness;N^G
     ^[]6;1;bg;blue;brightness;N^G
 
 Replace N with a decimal value in 0 to 255.
 
 Example in bash that turns the background purple:
 
-    echo -e "\033]6;1;bg;red;brightness;255\a" 
-    echo -e "\033]6;1;bg;green;brightness;0\a" 
+    echo -e "\033]6;1;bg;red;brightness;255\a"
+    echo -e "\033]6;1;bg;green;brightness;0\a"
     echo -e "\033]6;1;bg;blue;brightness;255\a"
 
 To reset the window title and tab color, use this code:

@@ -7,26 +7,26 @@ iTerm2 has a lot of features. Every conceivable desire a terminal user might hav
 
 <section class="feature-block">
 ### Split Panes
-Divide a tab up into multiple panes, each one showing a different session. You can slice vertically and horizontally and create any number of panes in any imaginable arrangement. 
+Divide a tab up into multiple panes, each one showing a different session. You can slice vertically and horizontally and create any number of panes in any imaginable arrangement.
 <a href="img/screenshots/split_panes_full.png" target="_blank"><img src="img/screenshots/split_panes.png"></a>
 Notice how inactive panes are slightly dimmed so it's easy to see which is active.
 
 </section>
 <section class="feature-block">
 ### Hotkey Window
-Register a hotkey that brings iTerm2 to the foreground when you're in another application. A terminal is always a keypress away. You can choose to have the hotkey open a dedicated window. This gives you an always-available terminal (like Visor, Guake, or Yakuake) at your fingertips. 
+Register a hotkey that brings iTerm2 to the foreground when you're in another application. A terminal is always a keypress away. You can choose to have the hotkey open a dedicated window. This gives you an always-available terminal (like Visor, Guake, or Yakuake) at your fingertips.
 <a href="img/screenshots/hotkeywindow_full.png" target="_blank"><img src="img/screenshots/hotkeywindow.png"></a>
 
 </section>
 <section class="feature-block">
 ### Search
-iTerm2 comes with a robust find-on-page feature. The UI stays out of the way. All matches are immediately highlighted. Even regular expression support is offered! 
+iTerm2 comes with a robust find-on-page feature. The UI stays out of the way. All matches are immediately highlighted. Even regular expression support is offered!
 <a href="img/screenshots/search.png" target="_blank"><img src="img/screenshots/search.png"></a>
 
 </section>
 <section class="feature-block">
 ### Autocomplete
-Just type the start of any word that has ever appeared in your window and then Cmd-; will pop open a window with suggestions. The word you're looking for is usually on top of the list! 
+Just type the start of any word that has ever appeared in your window and then Cmd-; will pop open a window with suggestions. The word you're looking for is usually on top of the list!
 <a href="img/screenshots/autocomplete.png" target="_blank"><img src="img/screenshots/autocomplete.png"></a>
 
 </section>
@@ -44,13 +44,13 @@ Paste history lets you revisit recently copied or pasted text. You can even opt 
 </section>
 <section class="feature-block">
 ### Instant Replay
-Instant replay lets you travel back in time. It's like TiVo for your terminal! 
+Instant replay lets you travel back in time. It's like TiVo for your terminal!
 <a href="img/screenshots/instantreplay.gif" target="_blank"><img src="img/screenshots/instantreplay.gif"></a>
 
 </section>
 <section>
 ### Configurability
-Map any key to any function. Assign separate functions to each option key--or even remap all the modifier keys. You can customize iTerm2's appearance to suit your needs: enable transparency, background blur, background images, and much more. 
+Map any key to any function. Assign separate functions to each option key--or even remap all the modifier keys. You can customize iTerm2's appearance to suit your needs: enable transparency, background blur, background images, and much more.
 <div style="overflow-x:scroll; overflow-y: hidden; height: 379px;">
 <div style="width: 7800px; height: 379px; white-space: nowrap">
 <a href="img/screenshots/v2-screen-shots/general.png" target="_blank"><img src="img/screenshots/v2-screen-shots/general.jpg"></a>
@@ -99,7 +99,7 @@ You can choose to receive Growl notifications of activity, bells, and more. Feel
 </section>
 <section class="feature-block">
 ### Exposé Tabs
-Like OS X's Exposé feature, iTerm2 shows all your tabs on one screen. Better yet, you can search through them all at once. Go ahead and open as many tabs as you want--you can always find what you're looking for. 
+Like OS X's Exposé feature, iTerm2 shows all your tabs on one screen. Better yet, you can search through them all at once. Go ahead and open as many tabs as you want--you can always find what you're looking for.
 <a href="img/screenshots/expose_full.jpg" target="_blank"><img src="img/screenshots/expose.png"></a>
 
 </section>
@@ -118,13 +118,13 @@ iTerm2 features excellent internationalization support, including support for Un
 </section>
 <section class="feature-block">
 ### Triggers
-iTerm2 supports user-defined triggers, which are actions that run when text matching a regular expression is received. You can use it to highlight words, automatically respond to prompts, notify you when something important happens, and more. 
+iTerm2 supports user-defined triggers, which are actions that run when text matching a regular expression is received. You can use it to highlight words, automatically respond to prompts, notify you when something important happens, and more.
 <a href="img/screenshots/v2-screen-shots/triggers_full.png" target="_blank"><img src="img/screenshots/v2-screen-shots/triggers.png"></a>
 
 </section>
 <section class="feature-block">
 ### Smart Selection
-iTerm2 can perform "smart selection" to highlight URLs, email addresses, filenames, and more by recognizing what is under the cursor and choosing how much text to select. 
+iTerm2 can perform "smart selection" to highlight URLs, email addresses, filenames, and more by recognizing what is under the cursor and choosing how much text to select.
 
 </section>
 
