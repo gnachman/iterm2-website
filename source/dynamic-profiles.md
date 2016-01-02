@@ -5,7 +5,7 @@ title: Dynamic Profiles - iTerm2 - Mac OS Terminal Replacement
 
 ## Dynamic Profiles
 
-*Dynamic Profiles* is a feature that allows you to store your profiles in a file outside the usual OS X preferences database. Profiles may be changed at runtime by editing a plist file (formatted as JSON, XML, or in binary). Changes are picked up immediately.
+*Dynamic Profiles* is a feature that allows you to store your profiles in a file outside the usual OS X preferences database. Profiles may be changed at runtime by editing one or more plist files (formatted as JSON, XML, or in binary). Changes are picked up immediately.
 
 ### Availability
 
@@ -94,7 +94,9 @@ Normally, a dynamic profile inherits any attributes you don't explicitly specify
 
 ### Minutiae
 
-Dynamic profiles are loaded in alphabetical order by filename. Within a particular file, they are loaded in the order they're listed in. This only matters if one dynamic profile references another dynamic profile as its parent; the parent should be placed so it loads before any of its children.
+Dynamic profiles are loaded in alphabetical order by filename. Within a particular file, they are loaded in the order they're listed in. This only matters if one dynamic profile references another dynamic profile as its parent; the parent should be placed so it loads before any of its children. For all other purposes, the filenames don't matter.
+
+The *Dynamic* will automatically be added to all Dynamic Profiles.
 
 ### Troubleshooting
 
