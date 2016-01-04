@@ -182,6 +182,8 @@ When in alternate screen mode, lines that scroll off the top of the screen will 
 The encoding to send and receive in. For most people, "Unicode (UTF-8)" is the right choice.
 #### Report terminal type
 The TERM variable will be set to this value by default. If xterm-256color is selected and your system is missing the terminfo file, you will be prompted to install it when you open a new session.
+#### ENQ Answer Back
+When the host sends a terminal ENQ control character (^E) to the client, this string will be sent back to the host in response. "Special" characters may be included using standard shell backslash syntax. For example, a newline can be represented as \n, or \012 (octal), or \x0A (hex), \u000A (unicode), or \<C-J> (^J). A reasonable value is, nothing/empty (the default), or "iTerm2", or "iTerm2\n".
 #### Enable xterm mouse reporting
 If selected, applications may choose to receive information about the mouse. This can be temporarily disabled by holding down Option.
 #### Allow terminal to report window title
