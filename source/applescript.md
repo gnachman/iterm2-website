@@ -134,6 +134,9 @@ tell application iTerm
     if (is at shell prompt) then
       set background color to { 65535, 0, 65535, 65535 }
     end if
+
+    -- New in 2.9.20160104
+    set answerback string to "Hello world"
   end tell
 end tell
 
