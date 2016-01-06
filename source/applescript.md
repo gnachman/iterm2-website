@@ -10,7 +10,7 @@ This is an example of the new Applescript syntax available in versions 2.9 and u
 Please note that as of 2.9.20150414, "terminal window" has been replaced with "window" to improve compliance with standard Applescript conventions.
 
 <pre>
-tell application iTerm
+tell application iTerm2
   -- application-level commands
   -- These commands return a window.
   set newWindow to (create window with default profile)
