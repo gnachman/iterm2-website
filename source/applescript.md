@@ -137,6 +137,10 @@ tell application iTerm
 
     -- New in 2.9.20160104
     set answerback string to "Hello world"
+
+    -- New in 2.9.201601. See https://iterm2.com/badges.html for more on variables.
+    variable named "session.name"
+    set variable named "user.phaseOfTheMoon" to "Gibbous"
   end tell
 end tell
 
