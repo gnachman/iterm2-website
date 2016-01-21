@@ -191,7 +191,6 @@ if ( [ x"$TERM" != xscreen ] ); then
 
   # Runs after interactively edited command but before execution
   function preexec() {
-    [[ -t 1 ]] || return
     iterm2_begin_osc
     printf "133;C;\r"
     iterm2_end_osc
@@ -200,7 +199,6 @@ if ( [ x"$TERM" != xscreen ] ); then
   }
 
   function iterm2_print_state_data() {
-    [[ -t 1 ]] || return
     iterm2_begin_osc
     printf "1337;RemoteHost=%s@%s" "$USER" "$iterm2_hostname"
     iterm2_end_osc
@@ -214,7 +212,6 @@ if ( [ x"$TERM" != xscreen ] ); then
 
   # Usage: iterm2_set_user_var key value
   function iterm2_set_user_var() {
-    [[ -t 1 ]] || return
     iterm2_begin_osc
     printf "1337;SetUserVar=%s=%s" "$1" $(printf "%s" "$2" | base64)
     iterm2_end_osc
@@ -227,7 +224,6 @@ if ( [ x"$TERM" != xscreen ] ); then
   }
 
   function iterm2_prompt_prefix() {
-    [[ -t 1 ]] || return
     iterm2_begin_osc
     printf "133;D;\$?"
     iterm2_end_osc
@@ -240,7 +236,6 @@ if ( [ x"$TERM" != xscreen ] ); then
   }
 
   function iterm2_prompt_suffix() {
-    [[ -t 1 ]] || return
     iterm2_begin_osc
     printf "133;B"
     iterm2_end_osc
