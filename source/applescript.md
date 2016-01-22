@@ -10,7 +10,7 @@ This is an example of the new Applescript syntax available in versions 2.9 and u
 Please note that as of 2.9.20150414, "terminal window" has been replaced with "window" to improve compliance with standard Applescript conventions.
 
 <pre>
-tell application iTerm
+tell application iTerm2
   -- application-level commands
   -- These commands return a window.
   set newWindow to (create window with default profile)
@@ -134,6 +134,13 @@ tell application iTerm
     if (is at shell prompt) then
       set background color to { 65535, 0, 65535, 65535 }
     end if
+
+    -- New in 2.9.20160104
+    set answerback string to "Hello world"
+
+    -- New in 2.9.201601. See https://iterm2.com/badges.html for more on variables.
+    variable named "session.name"
+    set variable named "user.phaseOfTheMoon" to "Gibbous"
   end tell
 end tell
 
