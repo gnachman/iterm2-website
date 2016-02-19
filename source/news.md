@@ -4,6 +4,13 @@ title: iTerm2 - Mac OS Terminal Replacement
 active-state: news
 ---
 
+#### iTerm2 Version 3 Beta Released
+<i>Sunnyvale, CA&mdash;February 18, 2016</i>
+
+After eighteen months of development, the third major version of iTerm2 has entered beta testing. <a href="/version3.html">Read the full announcement here.</a>
+
+Get it from <a href="/downloads.html">the Downloads page</a> in the "Test Releases" section.
+
 #### iTerm2 2.0 Released
 <i>Sunnyvale, CA&mdash;July 14, 2014</i>
 

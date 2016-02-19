@@ -8,11 +8,11 @@ Version 3 of iTerm2 is now in Beta. There are a few things you should know befor
 
 ### What do I need to know?
 
-There are dozens of new features. Many bugs have been fixed. Performance is significantly improved. The look and feel has been updated for Yosemite. Applescript support has been updated, but it's not backwards compatible.
+There are dozens of new features. Many bugs have been fixed. Performance is significantly improved. The look and feel has been updated. Applescript support has been updated, but it's not backwards compatible.
 
 ### Where do I get it?
 
-It's on the <a href="https://iterm2.com/downloads.html">Downloads page</a> under *Test Releases*.
+<a href="https://iterm2.com/downloads/beta/iTerm2-2_9_20160206.zip">Download the beta version here.</a>
 
 ### Major New Features
 
@@ -20,7 +20,7 @@ There are a lot of new features in 3.0. It represents about eighteen months of d
 
 #### A Fresh Look
 
-iTerm2 has been updated for the new Mac OS X Yosemite flat look and is stunningly beautiful.
+iTerm2 has been updated for the modern Mac OS X "flat" look and is stunningly beautiful.
 
 #### Shell Integration
 
