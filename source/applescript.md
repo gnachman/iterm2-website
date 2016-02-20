@@ -145,3 +145,70 @@ tell application iTerm2
 end tell
 
 </pre>
+
+## Supporting both old and new versions of iTerm2
+
+If your application needs to support both the old and new applescript syntax, this is the recommended technique:
+
+<pre>
+on theSplit(theString, theDelimiter)
+    set oldDelimiters to AppleScript's text item delimiters
+    set AppleScript's text item delimiters to theDelimiter
+    set theArray to every text item of theString
+    set AppleScript's text item delimiters to oldDelimiters
+    return theArray
+end theSplit
+
+on IsModernVersion(version)
+    set myArray to my theSplit(version, ".")
+    set major to item 1 of myArray
+    set minor to item 2 of myArray
+    set veryMinor to item 3 of myArray
+    
+    if major < 2 then
+        return false
+    end if
+    if major > 2 then
+        return true
+    end if
+    if minor < 9 then
+        return false
+    end if
+    if minor > 9 then
+        return true
+    end if
+    if veryMinor < 20140903 then
+        return false
+    end if
+    return true
+end IsModernVersion
+
+on NewScript()
+    -- Return the modern script as a string here; what follows is an example.
+    return "create window with default profile"
+end NewScript
+
+on OldScript()
+    -- Return the legacy script as a string here; what follows is an example.
+    return "
+    set myTerm to (make new terminal)
+    tell myTerm
+        launch session \"Default\"
+    end tell"
+end OldScript
+
+tell application "iTerm"
+    if my IsModernVersion(version) then
+        set myScript to my NewScript()
+    else
+        set myScript to my OldScript()
+    end if
+end tell
+
+set fullScript to "tell application \"iTerm\"
+" & myScript & "
+end tell"
+
+run script fullScript
+</pre>
+
