@@ -49,7 +49,7 @@ echo "Downloading script from ${URL} and saving it to ${FILENAME}..."
 curl -L "${URL}" > "${FILENAME}" || die "Couldn't download script from ${URL}"
 chmod +x "${FILENAME}"
 echo "Checking if ${SCRIPT} contains iterm2_shell_integration..."
-grep iterm2_shell_integration "${SCRIPT}" > /dev/null 2>&1 || (echo "Appending source command to ${SCRIPT}..."; echo "" >> "${SCRIPT}"; echo "test -e ${RELATIVE_FILENAME} ${SHELL_AND} source ${RELATIVE_FILENAME}" >> "${SCRIPT}")
+grep iterm2_shell_integration "${SCRIPT}" > /dev/null 2>&1 || (echo "Appending source command to ${SCRIPT}..."; echo "" >> "${SCRIPT}"; echo "test -e \"${RELATIVE_FILENAME}\" ${SHELL_AND} source \"${RELATIVE_FILENAME}\"" >> "${SCRIPT}")
 echo "Done."
 echo ""
 echo "The next time you log in, shell integration will be enabled."
