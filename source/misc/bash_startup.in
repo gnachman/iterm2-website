@@ -251,13 +251,29 @@ if ( [ x"$TERM" != xscreen ] ); then
   # If hostname -f is slow on your system, set iterm2_hostname before sourcing this script.
   if [ -z "$iterm2_hostname" ]; then
     OS=$(uname -s 2> /dev/null)
-    if [ "$OS" = "OpenBSD" ]; then
-      # on OpenBSD 'hostname -f' does not work, so get contents of '/etc/myname'
-      # which contains the hostname of the system in the longest syntax including domain
-      iterm2_hostname=$(cat /etc/myname 2> /dev/null)
-    else
-      # on all other OS types, including Darwin (OSX), use standard hostname assignment
-      iterm2_hostname=$(hostname -f 2> /dev/null)
+    case $OS in
+      Linux)
+        # on linux - set hostname to work with mDNS if host does not have a domain
+        domain_result=$(dnsdomainname 2> /dev/null)
+        if [ -z "$domain_result" ] || [ "$domain_result" = "localdomain" ]; then
+          # domain is unset or has a "placeholder value", set hostname for mDNS interop
+          hostname_short=$(hostname -s 2> /dev/null)
+          iterm2_hostname="${hostname_short}.local"
+        else
+          # domain is set so use standard hostname assignment
+          iterm2_hostname=$(hostname -f 2> /dev/null)
+        fi
+        ;;
+      OpenBSD)
+        # on OpenBSD 'hostname -f' does not work, so get contents of '/etc/myname'
+        # which contains the hostname of the system in the longest syntax including domain
+        iterm2_hostname=$(cat /etc/myname 2> /dev/null)
+        ;;
+      *)
+        # on all other OS types, including Darwin (OSX), use standard hostname assignment
+        iterm2_hostname=$(hostname -f 2> /dev/null)
+        ;;
+    esac
     fi
   fi
   iterm2_preexec_install
