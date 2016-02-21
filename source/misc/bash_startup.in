@@ -250,7 +250,15 @@ if ( [ x"$TERM" != xscreen ] ); then
 
   # If hostname -f is slow on your system, set iterm2_hostname before sourcing this script.
   if [ -z "$iterm2_hostname" ]; then
-    iterm2_hostname=$(hostname -f)
+    OS=$(uname -s 2> /dev/null)
+    if [ "$OS" = "OpenBSD" ]; then
+      # on OpenBSD 'hostname -f' does not work, so get contents of '/etc/myname'
+      # which contains the hostname of the system in the longest syntax including domain
+      iterm2_hostname=$(cat /etc/myname 2> /dev/null)
+    else
+      # on all other OS types, including Darwin (OSX), use standard hostname assignment
+      iterm2_hostname=$(hostname -f 2> /dev/null)
+    fi
   fi
   iterm2_preexec_install
 
