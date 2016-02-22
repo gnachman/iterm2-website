@@ -22,7 +22,7 @@ Here is an example of a session with a badge indicating the current user and hos
 
 ### Availability
 
-Support for badges is available in version 2.9 and later, currently distributed in the <a href="/nightly/latest">nightly builds</a> and is in the master branch of the <a href="github.com/gnachman/iTerm2">GitHub repo</a>. It is not in version 2.1.1.
+Support for badges is available in version 2.9 and later, currently distributed in the <a href="/nightly/latest">nightly builds</a> and is in the master branch of the <a href="https://github.com/gnachman/iTerm2">GitHub repo</a>. It is not in version 2.1.1.
 
 ### Variables
 
