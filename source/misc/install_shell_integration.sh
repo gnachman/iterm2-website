@@ -11,20 +11,24 @@ SHELL=$(echo "${SHELL}" | tr / "\n" | tail -1)
 URL=""
 HOME_PREFIX='${HOME}'
 SHELL_AND='&&'
+QUOTE=''
 if [ "${SHELL}" == tcsh ]
 then
   URL="https://iterm2.com/misc/tcsh_startup.in"
   SCRIPT="${HOME}/.login"
+  QUOTE='"'
 fi
 if [ "${SHELL}" == zsh ]
 then
   URL="https://iterm2.com/misc/zsh_startup.in"
   SCRIPT="${HOME}/.zshrc"
+  QUOTE='"'
 fi
 if [ "${SHELL}" == bash ]
 then
   URL="https://iterm2.com/misc/bash_startup.in"
   test -f "${HOME}/.bash_profile" && SCRIPT="${HOME}/.bash_profile" || SCRIPT="${HOME}/.profile"
+  QUOTE='"'
 fi
 if [ `basename "${SHELL}"` == fish ]
 then
@@ -49,7 +53,7 @@ echo "Downloading script from ${URL} and saving it to ${FILENAME}..."
 curl -L "${URL}" > "${FILENAME}" || die "Couldn't download script from ${URL}"
 chmod +x "${FILENAME}"
 echo "Checking if ${SCRIPT} contains iterm2_shell_integration..."
-grep iterm2_shell_integration "${SCRIPT}" > /dev/null 2>&1 || (echo "Appending source command to ${SCRIPT}..."; echo "" >> "${SCRIPT}"; echo "test -e ${RELATIVE_FILENAME} ${SHELL_AND} source ${RELATIVE_FILENAME}" >> "${SCRIPT}")
+grep iterm2_shell_integration "${SCRIPT}" > /dev/null 2>&1 || (echo "Appending source command to ${SCRIPT}..."; echo "" >> "${SCRIPT}"; echo "test -e ${QUOTE}${RELATIVE_FILENAME}${QUOTE} ${SHELL_AND} source ${QUOTE}${RELATIVE_FILENAME}${QUOTE}" >> "${SCRIPT}")
 echo "Done."
 echo ""
 echo "The next time you log in, shell integration will be enabled."
