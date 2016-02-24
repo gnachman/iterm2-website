@@ -39,7 +39,7 @@ if [[ -o login ]]; then
       printf "\033]133;B\007"
     }
 
-    # There are two possible paths in life.
+    # There are three possible paths in life.
     #
     # 1) A command is entered at the prompt and you press return.
     #    The following steps happen:
@@ -62,6 +62,13 @@ if [[ -o login ]]; then
     #        sequences and ITERM2_PRECMD_PS1 already has PS1's original value)
     #    * zsh displays your prompt
     #    * You start entering a command
+    #
+    # 3) A new shell is born.
+    #    * PS1 has some initial value, either zsh's default or a value set before this script is sourced.
+    #    * iterm2_precmd is invoked
+    #      * ITERM2_PRECMD_PS1 is set to the initial value of PS1
+    #      * PS1 gets our escape sequences added to it
+    #    * Your prompt is shown and you may begin entering a command.
     #
     # Invariants:
     # * ITERM2_PRECMD_PS1 is empty during and just after command execution
@@ -97,8 +104,6 @@ if [[ -o login ]]; then
       ITERM2_PRECMD_PS1=""
       iterm2_before_cmd_executes
     }
-
-    iterm2_decorate_prompt
 
     # If hostname -f is slow on your system, set iterm2_hostname prior to sourcing this script.
     [[ -z "$iterm2_hostname" ]] && iterm2_hostname=`hostname -f`
