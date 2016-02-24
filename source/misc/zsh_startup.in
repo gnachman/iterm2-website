@@ -39,19 +39,69 @@ if [[ -o login ]]; then
       printf "\033]133;B\007"
     }
 
+    # There are three possible paths in life.
+    #
+    # 1) A command is entered at the prompt and you press return.
+    #    The following steps happen:
+    #    * iterm2_preexec is invoked
+    #      * PS1 is set to ITERM2_PRECMD_PS1
+    #      * ITERM2_PRECMD_PS1 is set to empty string
+    #    * The command executes (possibly reading or modifying PS1)
+    #    * iterm2_precmd is invoked
+    #      * ITERM2_PRECMD_PS1 is set to PS1 (as modified by command execution)
+    #      * PS1 gets our escape sequences added to it
+    #    * zsh displays your prompt
+    #    * You start entering a command
+    #
+    # 2) You press ^C while entering a command at the prompt.
+    #    The following steps happen:
+    #    * (iterm2_preexec is NOT invoked)
+    #    * iterm2_precmd is invoked
+    #      * iterm2_before_cmd_executes is called since we detected that iterm2_preexec was not run
+    #      * (ITERM2_PRECMD_PS1 and PS1 are not messed with, since PS1 already has our escape
+    #        sequences and ITERM2_PRECMD_PS1 already has PS1's original value)
+    #    * zsh displays your prompt
+    #    * You start entering a command
+    #
+    # 3) A new shell is born.
+    #    * PS1 has some initial value, either zsh's default or a value set before this script is sourced.
+    #    * iterm2_precmd is invoked
+    #      * ITERM2_PRECMD_PS1 is set to the initial value of PS1
+    #      * PS1 gets our escape sequences added to it
+    #    * Your prompt is shown and you may begin entering a command.
+    #
+    # Invariants:
+    # * ITERM2_PRECMD_PS1 is empty during and just after command execution
+    # * PS1 does not have our escape sequences during command execution
+    # * After the command executes but before a new one begins, PS1 has escape sequences and
+    #   ITERM2_PRECMD_PS1 has PS1's original value.
+    iterm2_decorate_prompt() {
+      # This should be a raw PS1 without iTerm2's stuff. It could be changed during command
+      # execution.
+      ITERM2_PRECMD_PS1="$PS1"
+
+      # Add our escape sequences just before the prompt is shown.
+      PS1="%{$(iterm2_prompt_start)%}$PS1%{$(iterm2_prompt_end)%}"
+    }
+
     iterm2_precmd() {
+      if [ -n "$ITERM2_PRECMD_PS1" ]; then
+        # You pressed ^C while entering a command (iterm2_preexec did not run)
+        iterm2_before_cmd_executes
+      fi
+
       iterm2_after_cmd_executes
 
-      # The user or another precmd may have changed PS1 (e.g., powerline-shell).
-      # Ensure that our escape sequences are added back in.
-      if [[ "$ITERM2_SAVED_PS1" != "$PS1" ]]; then
-        PS1="%{$(iterm2_prompt_start)%}$PS1%{$(iterm2_prompt_end)%}"
-        ITERM2_SAVED_PS1="$PS1"
+      if [ -z "$ITERM2_PRECMD_PS1" ]; then
+        iterm2_decorate_prompt
       fi
     }
 
+    # This is not run if you press ^C while entering a command.
     iterm2_preexec() {
-      PS1="$ITERM2_SAVED_PS1"
+      # Set PS1 back to its raw value prior to executing the command.
+      PS1="$ITERM2_PRECMD_PS1"
+      ITERM2_PRECMD_PS1=""
       iterm2_before_cmd_executes
     }
 
