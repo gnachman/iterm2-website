@@ -229,11 +229,15 @@ if ( [ x"$TERM" != xscreen ] ); then
     iterm2_end_osc
   }
 
-  # Users can write their own version of this method. It should call
-  # iterm2_set_user_var but not produce any other output.
-  function iterm2_print_user_vars() {
-    true
-  }
+  if [ -z "$(type -t iterm2_print_user_vars)" ] || [ "$(type -t iterm2_print_user_vars)" != function ]; then
+    # iterm2_print_user_vars is not already defined. Provide a no-op default version.
+    #
+    # Users can write their own version of this function. It should call
+    # iterm2_set_user_var but not produce any other output.
+    function iterm2_print_user_vars() {
+      true
+    }
+  fi
 
   function iterm2_prompt_prefix() {
     iterm2_begin_osc
