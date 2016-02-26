@@ -53,7 +53,7 @@ if ( ! ($?iterm2_shell_integration_installed)) then
 
       # User may override this to set user-defined vars. It should look like this, because your shell is terrible for scripting:
       # alias _iterm2_user_defined_vars (iterm2_set_user_var key1 `printf "%s" value1 | base64`; iterm2_set_user_var key2 `printf "%s" value2 | base64`; ...)
-      alias _iterm2_user_defined_vars ''
+      (which _iterm2_user_defined_vars >& /dev/null) || alias _iterm2_user_defined_vars ''
 
       # Combines all status update aliases
       alias _iterm2_update_current_state '_iterm2_remote_host; _iterm2_current_dir; _iterm2_user_defined_vars'
