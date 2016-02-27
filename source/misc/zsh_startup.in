@@ -14,8 +14,11 @@ if [[ -o login ]]; then
     # e.g., iterm2_set_user_var currentDirectory $PWD
     # Accessible in iTerm2 (in a badge now, elsewhere in the future) as
     # \(user.currentDirectory).
-    iterm2_print_user_vars() {
-    }
+    whence -v iterm2_print_user_vars > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+      iterm2_print_user_vars() {
+      }
+    fi
 
     iterm2_print_state_data() {
       printf "\033]1337;RemoteHost=%s@%s\007" "$USER" "$iterm2_hostname"
