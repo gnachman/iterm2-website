@@ -50,3 +50,7 @@ The UI tries to prevent you from entering the same rule in two different profile
 
 Since it's impractical to install shell integration everywhere (for example, as *root*), there will be times when you need to write a trigger to detect the current username or hostname. Please see the *Triggers* section of <a href="/shell_integration.html">Shell Integration</a> for details.
 
+### Troubleshooting
+
+There are a few ways things can go wrong. Please see the <a href="https://gitlab.com/gnachman/iterm2/wikis/scp-not-connecting">Why doesn't secure copy/automatic profile switching work?</a> document for help diagnosing and fixing these issues.
+

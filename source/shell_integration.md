@@ -131,42 +131,15 @@ A *Recent Directories* tool may be added to the toolbelt by selecting *Toolbelt&
 Double-clicking a directory will type its path for you into the current terminal. Option-double-click will enter a "cd" command for you. You can also right-click on a directory to toggle its "starred" status. A starred directory will always appear at the bottom of the list so it is easy to find.
 
 #### Automatic Profile Switching
-In *Preferences&gt;Profiles&gt;Advanced*, you may specify a set of rules. When any session satisfies a rule in a given profile, it will switch to that profile. The syntax for rules is as follows:
-<pre style="white-space: pre">
-  RULE ::= USERNAME HOSTNAME ":" PATH |
-           USERNAME "*" ":" PATH |
-           USERNAME PATH |
-           HOSTNAME |
-           PATH
-  USERNAME ::= [user name to match] "@"
-  HOSTNAME ::= [host name to match]
-  PATH ::= [path starting with /]
-</pre>
-
-Because more than one rule may match, a priority order is defined as follows:
-
-  * A username, hostname, and path. For example, "george@iterm2.com:/Users/george".
-  * A username and path, using "*" for the hostname. For example, "george@*:/Users/george".
-  * A combination of username and hostname. For example, "george@iterm2.com".
-  * A hostname and path. For example, "iterm2.com:/Users/george".
-  * A hostname. For example, "iterm2.com".
-  * A username alone. For example, "george@".
-  * A path alone. For example, "/Users/george".
-
-The UI tries to prevent you from entering the same rule in two different profiles, but if that does happen then one profile is chosen arbitrarily.
-
-How might you use this? You could create a profile with a red background color and assign it a rule like "root@". Then any time you are logged in as root, the background color will change. Of course, you'd need to make sure root has shell integration installed, and you'd also need a rule for all other user names in a profile that doesn't have a red background so the red background doesn't stick around after root logs out.
-
-<img src="/images/AutomaticProfileSwitching.png">
-
-<hr/>
+Please see the documentation at <a href="/automatic-profile-switching.html">Automatic Profile Switching</a>.
 
 #### Triggers
-For some users, installing a login script on every host they connect to is not an option. If that
-sounds like you, then you can get some of the benefit of shell integration by defining triggers.
-There are two relevant triggers: *Set Host &amp; User* and *Set Directory*. Use these triggers to
-tell iTerm2 your current username, hostname, and directory. Suppose you have a shell prompt that
-looks like this:
+For some users, installing a login script on every host they connect to is not
+an option. To be sure, modifying root's login script is usually a bad idea. In these cases
+you can get the benefits of shell integration
+by defining triggers.  There are two relevant triggers: *Set Host &amp; User*
+and *Set Directory*. Use these triggers to tell iTerm2 your current username,
+hostname, and directory. Suppose you have a shell prompt that looks like this:
 
 <pre>
 george@example.com:/home/george%
@@ -200,7 +173,6 @@ Set this trigger's parameter to
 
 Make sure both triggers have their *Instant* checkbox enabled so they'll take effect before a
 newline is received.
-
 #### A Note on SCP
 iTerm2 can do uploads and downloads with scp as described above. There are a few things you should know.
 
