@@ -85,7 +85,7 @@ The good news is that it's pretty easy to fix. <a href="/applescript.html">The n
 
 ### Alfred Support
 
-Although Applescript has changed, you can still get Alfred to work. Go to Alfred Preferences and choose Features. Pick *Terminal/Shell* and for *Application* choose *Custom*. Then paste the <a href="https://gist.githubusercontent.com/gnachman/4cbe6743baa7fe07536b/raw/466b24deb91b8c7dde396023f327326ca1fa3661/gistfile1.txt">iTerm2 3.0 Alfred Script</a> into the text field. <a href="/images/AlfredForiTerm2Version3.png">Perhaps a crude illustration will help.</a></p>
+Although Applescript has changed, you can still get Alfred to work. Go to Alfred Preferences and choose Features. Pick *Terminal/Shell* and for *Application* choose *Custom*. Then paste the <a href="https://gist.githubusercontent.com/gnachman/4cbe6743baa7fe07536b/raw/f07c15d3417e8704d617c4fa939e918265f105ba/gistfile1.txt">iTerm2 3.0 Alfred Script</a> into the text field. <a href="/images/AlfredForiTerm2Version3.png">Perhaps a crude illustration will help.</a></p>
 
 ### Docker Support
 The Docker Quickstart Terminal uses Applescript and is not compatible with iTerm2 version 2.9 and later. You can fix it by copying this version of <a href="https://gist.github.com/gnachman/f61614d0335e185787b0">iterm.scpt</a> over the following file:
