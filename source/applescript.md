@@ -146,9 +146,9 @@ end tell
 
 </pre>
 
-## Supporting both old and new versions of iTerm2
+### Supporting both old and new versions of iTerm2
 
-If your application needs to support both the old and new applescript syntax, this is the recommended technique:
+If your application needs to support both the old and new Applescript syntax, this is the recommended technique:
 
 <pre>
 on theSplit(theString, theDelimiter)
