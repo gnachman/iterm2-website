@@ -74,21 +74,22 @@ Use iTerm2 as your IDE. You can define regular expressions to match lines of tex
 
 Performance is greatly improved by parsing the incoming bytes off the main thread. Hundreds of bugs have been fixed. Lots of details have been improved: for example, if you print a binary file to the console, you're offered the option to silence the bell. You can edit strings before you paste them. You get warned before pasting tabs at your shell prompt. And much more!
 
-<hr>
-
-### Alfred Support
-
-Although Applescript has changed, you can still get Alfred to work. Go to Alfred Preferences and choose Features. Pick *Terminal/Shell* and for *Application* choose *Custom*. Then paste the <a href="https://gist.githubusercontent.com/gnachman/4cbe6743baa7fe07536b/raw/466b24deb91b8c7dde396023f327326ca1fa3661/gistfile1.txt">iTerm2 3.0 Alfred Script</a> into the text field. <a href="/images/AlfredForiTerm2Version3.png">Perhaps a crude illustration will help.</a></p>
-
 ### Applescript Not Backwards Compatible
 
 The good news is that iTerm2's Applescript makes a lot more sense than it used to. You can manipulate split panes, and scripting will receive more love and support in the future.
 
 The bad news is that existing Applescript won't work any more.
 
-The good news is that it's pretty easy to fix.
+The good news is that it's pretty easy to fix. <a href="/applescript.html">The new Applescript syntax is described here.</a>
+<hr>
 
-<a href="/applescript.html">The new Applescript syntax is described here.</a>
+### Alfred Support
+
+Although Applescript has changed, you can still get Alfred to work. Go to Alfred Preferences and choose Features. Pick *Terminal/Shell* and for *Application* choose *Custom*. Then paste the <a href="https://gist.githubusercontent.com/gnachman/4cbe6743baa7fe07536b/raw/466b24deb91b8c7dde396023f327326ca1fa3661/gistfile1.txt">iTerm2 3.0 Alfred Script</a> into the text field. <a href="/images/AlfredForiTerm2Version3.png">Perhaps a crude illustration will help.</a></p>
+
+### Docker Support
+The Docker Quickstart Terminal uses Applescript and is not compatible with iTerm2 version 2.9 and later. You can fix it by copying this version of <a href="https://gist.github.com/gnachman/f61614d0335e185787b0">iterm.scpt</a> over the following file:
+<pre>/Applications/Docker/Docker Quickstart Terminal.app/Contents/Resources/Scripts/iterm.scpt</pre>
 
 <script>
 function show(name) {
