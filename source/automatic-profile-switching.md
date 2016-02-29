@@ -54,3 +54,14 @@ Since it's impractical to install shell integration everywhere (for example, as 
 
 There are a few ways things can go wrong. Please see the <a href="https://gitlab.com/gnachman/iterm2/wikis/scp-not-connecting">Why doesn't secure copy/automatic profile switching work?</a> document for help diagnosing and fixing these issues.
 
+### Updates for February 29, 2016
+
+Builds from 2.9.20160229 have a new feature that enables a profile to revert to its original session when no APS rule is matched.
+
+The implementation is like this: each session maintains a stack of profiles. Initially, the stack contains the profile the session was created with. When the username, hostname, or path changes, iTerm2 finds the best-matching profile. If some profile has a matching rule, one of two things happens:
+
+  * If that profile is already on the stack, profiles above that one will be removed from the stack and the session will switch to that profile.
+  * Failing that, the profile will be pushed on the stack and the session will switch to that profile.
+
+If no profile has a matching rule, the stack is emptied (except for the first entry, the original profile for the session) and the session reverts to its original profile.
+
