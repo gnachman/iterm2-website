@@ -112,7 +112,7 @@ if ( [ x"$TERM" != xscreen ] ); then
           # ...which should return "2".
           return
       fi
-      if [[ -n "$COMP_LINE" ]]
+      if [[ -n "${COMP_LINE:-}" ]]
       then
           # We're in the middle of a completer.  This obviously can't be
           # an interactively issued command.
@@ -170,7 +170,7 @@ if ( [ x"$TERM" != xscreen ] ); then
   # Execute this to set up preexec and precmd execution.
   function iterm2_preexec_install () {
       # Finally, install the actual traps.
-      if ( [ x"$PROMPT_COMMAND" = x ]); then
+      if ( [ x"${PROMPT_COMMAND:-}" = x ]); then
         PROMPT_COMMAND="iterm2_preexec_invoke_cmd";
       else
         # If there's a trailing semicolon folowed by spaces, remove it (issue 3358).
@@ -203,7 +203,7 @@ if ( [ x"$TERM" != xscreen ] ); then
   function precmd () {
       # Work around a bug in CentOS 7.2 where preexec doesn't run if you press
       # ^C while entering a command.
-      if [[ -z "$iterm2_ran_preexec" ]]
+      if [[ -z "${iterm2_ran_preexec:-}" ]]
       then
           preexec ""
       fi
@@ -265,7 +265,7 @@ if ( [ x"$TERM" != xscreen ] ); then
 
 
   # If hostname -f is slow on your system, set iterm2_hostname before sourcing this script.
-  if [ -z "$iterm2_hostname" ]; then
+  if [ -z "${iterm2_hostname:-}" ]; then
     iterm2_hostname=$(hostname -f)
   fi
   iterm2_preexec_install
