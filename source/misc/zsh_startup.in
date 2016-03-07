@@ -28,7 +28,7 @@ if [[ -o login ]]; then
 
     # Report return code of command; runs after command finishes but before prompt
     iterm2_after_cmd_executes() {
-      printf "\033]133;D;$?\007"
+      printf "\033]133;D;%s\007" "$STATUS"
       iterm2_print_state_data
     }
 
@@ -88,12 +88,13 @@ if [[ -o login ]]; then
     }
 
     iterm2_precmd() {
+      local STATUS="$?"
       if [ -n "$ITERM2_PRECMD_PS1" ]; then
         # You pressed ^C while entering a command (iterm2_preexec did not run)
         iterm2_before_cmd_executes
       fi
 
-      iterm2_after_cmd_executes
+      iterm2_after_cmd_executes "$STATUS"
 
       if [ -z "$ITERM2_PRECMD_PS1" ]; then
         iterm2_decorate_prompt
