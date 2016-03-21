@@ -193,7 +193,7 @@ if ( [ x"$TERM" != xscreen ] ); then
   # Runs after interactively edited command but before execution
   function preexec() {
     iterm2_begin_osc
-    printf "133;C;\r"
+    printf "133;C;"
     iterm2_end_osc
     # Reset PS1 back to its original value so scripts can change it.
     export PS1="$orig_ps1"
