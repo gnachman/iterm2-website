@@ -71,7 +71,7 @@ DOWNLOADS_PATHS=[("Stable Releases", "stable", "Stable releases update rarely bu
                  ("Test Releases", "beta", "Test releases update many times a year and are occasionally unstable."),
                  ]
 
-LIMIT = { "stable": 2,
+LIMIT = { "stable": 1,
           "beta": 1,
 	  "nightly": 5 }
 
@@ -82,24 +82,15 @@ for sectionName,path,note in DOWNLOADS_PATHS:
       print note
       print "</p>"
 
-    # Grab the "legacy" zip files, which have a suffix like -LeopardPPC.zip
-    legacy_zips = glob.glob(BASE + "/" + path + "/iTerm2?*-*.zip")
-    legacy_zips.sort(cmp=CompareZipFileNames, reverse=True)
-
-    # Grab all the zip files and remove the legacy ones, leaving the modern ones.
     modern_zips = glob.glob(BASE + "/" + path + "/*.zip")
     modern_zips.sort(cmp=CompareZipFileNames, reverse=True)
-    for s in legacy_zips:
-      modern_zips.remove(s)
 
-    # Sort zips by first modern, first legacy, and then sorted list of mixed
-    # modern and legacy versions together.
     if LIMIT[path] == 1:
       zips = [ modern_zips[0] ]
-      remainder = modern_zips[1:] + legacy_zips
+      remainder = modern_zips[1:]
     else:
-      zips = [ modern_zips[0], legacy_zips[0] ]
-      remainder = modern_zips[1:] + legacy_zips[1:]
+      zips = [ modern_zips[0] ]
+      remainder = modern_zips[1:]
     remainder.sort(cmp=CompareZipFileNames, reverse=True)
     zips += remainder
 

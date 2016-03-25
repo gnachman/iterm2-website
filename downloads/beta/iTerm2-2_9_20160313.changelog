@@ -1,0 +1,136 @@
+tl;dr: Lots of bugs fixed. Significant changes to automatic profile swiitching.
+Miscellaneous small new features added.
+
+Major Changes:
+- Change how Automatic Profile Switching to keep a stack of profiles. When no
+  APS rule is matches the current state, we pop profiles from the stack until it
+  has only one or we find one whose rule matches.
+- Update to libssh2 version 1.7.0. Fixes a bug where known_hosts entries got
+  clobbered and adds new algorithms.
+
+New Prefs:
+- Add an advanced setting to disable escape sequences that could be misused by
+  untrusted content. Issue 4229.
+- Add a new advanced setting to control how many bytes of context are used in
+  semantic history. Issue 4399.
+
+Updates to Semantic History:
+- Treat IP addresses and hostnames with at least two components as URLs for
+  semantic history. Issue 4281.
+- When opening a file from semantic history, if no app is able to handle opening
+  the file offer the user the option to pick an app and associate it as the
+  default viewer. Issue 4281.
+- Strip enclosing parentheses, angle brackets, square brackets, apostrophes, and
+  quotes from filenames in sementic history (used to be just parens).
+
+Other Improvements:
+- Left-side tab bar can now be dragged wider or narrower. Issue 4270.
+- When dragging a file to upload with scp into iTerm2, indicate the various drop
+  targets' username, hostname, and destination directory.
+- When pasting one line ending with a newline to the shell prompt, offer to
+  strip the trailing newline.
+- Rename the trigger action 'Set Directory' and 'Set Host and User' to reduce
+  confusion. Allow 'Report Host and User' to report only the host ("@hostname")
+  or only the user ("username@").
+- Replace \n and \xXX in the badge with newline and an ascii value.
+- Add a "Don't Ask Again" option to the offer to restart a session.
+- Show a warning when we fail to connect to a remote host for scp with a help
+  button that takes you to the wiki article explaining how to fix it.
+- If you enter a query beginning with "/a", "/f", "/p", or "/t" in the Open
+  Quickly window then results are restricted to window arrangements, searching
+  sessions, switching profiles, and opening tabs, respectively.
+- Automatically detect when you're tryiing to use the scroll wheel to move
+  through a document in alternate screen mode and offer to change the setting.
+- Add support for a custom CSI code: CSI 1337 n. We'll report a string of 'CSI
+  ITERM2 versionnumber n'. This is useful for detecting that iTerm2 version 3 is
+  running in a way that's compatible with other terminals.
+
+Big Bugs Fixed:
+- Fix a bug where automatic profile switching didn't work in fullscreen.
+- Fix a bug where moving a horizontal splitter would sometimes not work.
+- Make smart selection work with double-width characters. Issue 4325.
+- Fix a bug where iTerm2 would hang when a profile had a command that ended
+  immediately. Issue 4383.
+- Fix a bug where the cursor would disappear. Issue 3875.
+- Fix a bug where Do Not Remap key actions didn't work. Issue 4284.
+
+Little Bugs Fixed:
+- Fix bug where cmd-opt-shift dragging a session in a tab with single session
+  into its own window's tab bar caused the window to close. Issue 4189.
+- Fix misalginment of tab close button when pressed.
+- Fix various memory leaks.
+- Make terminal first responder after double-clicking in command history.
+- Fix a bug where windows restored at startup into fullscreen wouldn't have
+  blurred backgrounds when fullscreen was exited. Issue 4269.
+- Don't check the nonstandard file ~/.ssh/ssh_config for scp transfers. Issue
+  3690.
+- Make a reset (by Cmd-R) of the terminal restore the cursor guide to its state
+  as specified by the profile, not always off. Issue 4272
+- Fix a bug where renaming a profile while the profile list view is sorted
+  alphabetically would change the selected profile. Issue 4085.
+- Don't make a hidden hotkey window key when the app becomes active, focus
+  follows mouse is on, and the mouse happens to be over the frame of the hotkey
+  window. Issue 4260.
+- Fix a bug where the pencil icon would not appear if growl notifications were
+  off. Issue 4255.
+- Don't show auto command history if the current command is empty. Issue 4246.
+- When you Undo Close a session with a broken pipe, show the offer to restart
+  it.
+- Fix a bug where the butter bar views leaked.
+- Fix a bug where the broken pipe red lines would disappear sometimes.
+- Remove deprecated BeginFile/EndFile escape sequences.
+- Account for vertical spacing when drawing mark indicator. Issue 4279.
+- Fix a bug where hotkey windows appear without blur initially. Issue 4280.
+- Ignore DefaultKeyBindings that cannot lead to insertText:.
+- Fix a bug where percentages in imgcat didn't work. Issue 4300.
+- Draw 'Tab Color' label properly with a dark theme. Issue 4298.
+- Default Google search to SSL.
+- Improve the appearance of tab colors for unselected tabs.
+- Fix wording of Show Timestamps tip of the day. Issue 4309.
+- Preserve soft line breaks when scrolling up in a region because a long string
+  was appended. Issue 4308.
+- Make the Open Command History menu item always visible (used to only show
+  while holding down Shift).
+- Fix bug where a double-click on the right half of a double-width character
+  would not have an effect.
+- Fix a bug where consecutive double-width characters would not get selected on
+  double-click.
+- Fix a bug where Chinese words (and presumably those of other languages as
+  well) composed of more than one ideograph didn't select the full word on
+  double click. Issue 4325.
+- Don't draw the same timestamp over and over on consecutive lines. Indicate
+  repeating timestamps with a double line. Increase the alpha value of the
+  timestamp background to 90%. Issue 4333.
+- Fix a bug where Search fields in the toolbelt would try to autocomplete for
+  some users.
+- Make Control-N/P work in Open Quickly window.
+- Fix a bug where SCP would fail you have had a private key to authenticate with
+  but not the corresponding public key.
+- Fix a bug where /bin/login wasn't run if you had a custom starting directory
+  for a profile.
+- If the bell is flashing but not audible, and it is ringing out of control,
+  offer to suppress all output. Don't offer to silence an inaudible bell, which
+  is kind of silly. Issue 4366.
+- Update tab icons to have a brighter version for the dark theme.
+- Fix a bug where changing themes could change a "session ended" icon into a
+  spinner.
+- Terminate all jobs when logging out. Issue 4147.
+- Fix a bug where cmd-clicking on a file with a line number wouldn't work if it
+  was set to open with the default app. Issue 4386.
+- Clarify text of Semantic History tip of the day. Issue 4407.
+- Improve performance of tab progress indicator with dark theme to use much less
+  CPU. Issue 3497.
+- Rename 'Toggle Hotkey Window Pinning' to 'Toggle Hotkey Hides When Focus Lost'
+  and have it update the prefs panel when it changes.
+- Use black text in profile list view when the app is inactive or the window is
+  not key.
+- Provide a Retina version of the tab bar Overflow menu icon.
+- When dragging a file into iTerm2 from a source that only allows copy, allow
+  the filename to be pasted (it used to insist on only doing secure copy). Issue
+  4286.
+- Fix a bug where the screen would redraw right after pressing enter at the
+  prompt, making it appear janky. Issue 4343.
+
+SHA-256 of the zip file is:
+6d7a8885bfc6aba54248004aa287af6ef339d5fcf8e34ec87becd6d01b92f8fb
+
