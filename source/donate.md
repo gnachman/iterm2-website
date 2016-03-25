@@ -29,3 +29,15 @@ Patreon is a convenient way to make monthly donations.
 
 Please send bitcoin to
 <font style="font-family: monospace">1D3tV8pvPV27JNKgB5fCA35CSpAXNvhTAH</font>
+
+<hr/>
+
+Please ship peaty single-malt Scotch (in a way that's legal in our jurisdictions) to:
+
+<div style="border: 1px solid #ccc; border-radius: 3px; line-height: 1.3; display: inline-block; padding: 8pt; background: #fff">
+George Nachman<br/>
+georgen<br/>
+1600 Amphitheatre Pkwy<br/>
+Mountain View, CA<br/>
+94043<br/>
+</div>
