@@ -59,6 +59,12 @@ Each session maintains a stack of profiles. Initially, the stack contains the pr
 
 If no profile has a matching rule, the stack is emptied (except for the first entry, the original profile for the session) and the session reverts to its original profile.
 
+### Unreleased Features
+
+For releases of iTerm2 from March 28, 2016 on, the path may contain wildcards such as /Users/* or /Users/*/Applications. Longer matches paths outrank shorter paths, if all else is equal.
+
+Rules may begin with ! to indicate "stickiness". A sticky rule causes its profile to stay even after the rule no longer applies, so long as no other rule matches.
+
 ### Triggers
 
 Since it's impractical to install shell integration everywhere (for example, as *root*), there will be times when you need to write a trigger to detect the current username or hostname. Please see the *Triggers* section of <a href="/shell_integration.html">Shell Integration</a> for details.
