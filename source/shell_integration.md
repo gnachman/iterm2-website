@@ -78,7 +78,7 @@ When shell integration is enabled, iTerm2 automatically adds a mark at each comm
 You can navigate marks with Cmd-Shift-Up and Down-arrow keys.
 
 #### Alert on next mark
-iTerm2 can show an alert box when a mark appears. This is useful when you start a long-running command. Select *Edit&gt;Alert on next mark* (Cmd-Opt-A) after starting a command, and you can go do something else in another window or tab. When the command prompt returns, a modal alert will appear, calling attention to the finished job.
+iTerm2 can show an alert box when a mark appears. This is useful when you start a long-running command. Select *Edit&gt;Marks and Annotations&gt;Alert on next mark* (Cmd-Opt-A) after starting a command, and you can go do something else in another window or tab. When the command prompt returns, a modal alert will appear, calling attention to the finished job.
 
 <img src="/images/AlertOnMark.png">
 
