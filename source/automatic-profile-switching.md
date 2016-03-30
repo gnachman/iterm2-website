@@ -37,7 +37,7 @@ Some examples:
 Because more than one rule may match at any given time, more complex rules will take priority over less complex rules. The priority order is defined like this:
 
   * A username, hostname, and path. For example, "george@iterm2.com:/Users/george".
-  * A username and path, using "*" for the hostname. For example, "george@*:/Users/george".
+  * A username and path, using "\*" for the hostname. For example, "george@\*:/Users/george".
   * A combination of username and hostname. For example, "george@iterm2.com".
   * A hostname and path. For example, "iterm2.com:/Users/george".
   * A hostname. For example, "iterm2.com".
@@ -58,6 +58,12 @@ Each session maintains a stack of profiles. Initially, the stack contains the pr
   * Failing that, the profile will be pushed on the stack and the session will switch to that profile.
 
 If no profile has a matching rule, the stack is emptied (except for the first entry, the original profile for the session) and the session reverts to its original profile.
+
+### Unreleased Features
+
+For releases of iTerm2 from March 28, 2016 on, the path may contain wildcards such as /Users/\* or /Users/\*/Applications. Longer matches paths outrank shorter paths, if all else is equal.
+
+Rules may begin with ! to indicate "stickiness". A sticky rule causes its profile to stay even after the rule no longer applies, so long as no other rule matches.
 
 ### Triggers
 
