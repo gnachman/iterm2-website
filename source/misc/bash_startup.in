@@ -9,27 +9,25 @@
 # has been tested with the default shells on MacOS X 10.4 "Tiger", Ubuntu 5.10
 # "Breezy Badger", Ubuntu 6.06 "Dapper Drake", and Ubuntu 6.10 "Edgy Eft".
 
-
-# Copy screen-run variables from the remote host, if they're available.
-
-# Saved copy of your PS1. This is used to detect if the user changes PS1
-# directly. prev_ps1 will hold the last value that this script set PS1 to
-# (including various custom escape sequences). orig_ps1 always holds the last
-# user-set value of PS1.
-orig_ps1="$PS1"
-prev_ps1="$PS1"
-
-# This variable describes whether we are currently in "interactive mode";
-# i.e. whether this shell has just executed a prompt and is waiting for user
-# input.  It documents whether the current command invoked by the trace hook is
-# run interactively by the user; it's set immediately after the prompt hook,
-# and unset as soon as the trace hook is run.
-preexec_interactive_mode=""
-
 # tmux and screen are not supported; even using the tmux hack to get escape
 # codes passed through, ncurses interferes and the cursor isn't in the right
 # place at the time it's passed through.
-if ( [ x"$TERM" != xscreen ] ); then
+if ( [ "$TERM" != screen -a "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" ] ); then
+  ITERM_SHELL_INTEGRATION_INSTALLED=Yes
+  # Saved copy of your PS1. This is used to detect if the user changes PS1
+  # directly. ITERM_PREV_PS1 will hold the last value that this script set PS1 to
+  # (including various custom escape sequences). ITERM_ORIG_PS1 always holds the last
+  # user-set value of PS1.
+  ITERM_ORIG_PS1="$PS1"
+  ITERM_PREV_PS1="$PS1"
+
+  # This variable describes whether we are currently in "interactive mode";
+  # i.e. whether this shell has just executed a prompt and is waiting for user
+  # input.  It documents whether the current command invoked by the trace hook is
+  # run interactively by the user; it's set immediately after the prompt hook,
+  # and unset as soon as the trace hook is run.
+  ITERM_PREEXEC_INTERACTIVE_MODE=""
+
   # Default do-nothing implementation of preexec.
   function preexec () {
       true
@@ -71,33 +69,33 @@ if ( [ x"$TERM" != xscreen ] ); then
       # Unfortunately, command substitutions run in subshells and can't
       # communicate to the outside world.
       # Instead, we have this workaround. We save the original value of PS1 in
-      # $orig_ps1. Then each time this function is run (it's called from
+      # $ITERM_ORIG_PS1. Then each time this function is run (it's called from
       # PROMPT_COMMAND just before the prompt is shown) it will change PS1 to a
-      # string without any command substitutions by doing eval on orig_ps1. At
-      # this point preexec_interactive_mode is still the empty string, so preexec
+      # string without any command substitutions by doing eval on ITERM_ORIG_PS1. At
+      # this point ITERM_PREEXEC_INTERACTIVE_MODE is still the empty string, so preexec
       # won't produce output for command substitutions.
 
-      if [[ "$PS1" != "$prev_ps1" ]]
+      if [[ "$PS1" != "$ITERM_PREV_PS1" ]]
       then
-        export orig_ps1="$PS1"
+        export ITERM_ORIG_PS1="$PS1"
       fi
 
       # Get the value of the prompt prefix, which will change $?
       local iterm2_prompt_prefix_value="$(iterm2_prompt_prefix)"
 
-      # Reset $? to its saved value, which might be used in $orig_ps1.
+      # Reset $? to its saved value, which might be used in $ITERM_ORIG_PS1.
       sh -c "exit $s"
 
       # Set PS1 to various escape sequences, the user's preferred prompt, and more escape sequences.
-      export PS1="\[$iterm2_prompt_prefix_value\]$orig_ps1\[$(iterm2_prompt_suffix)\]"
+      export PS1="\[$iterm2_prompt_prefix_value\]$ITERM_ORIG_PS1\[$(iterm2_prompt_suffix)\]"
 
-      # Save the value we just set PS1 to so if the user changes PS1 we'll know and we can update orig_ps1.
-      export prev_ps1="$PS1"
+      # Save the value we just set PS1 to so if the user changes PS1 we'll know and we can update ITERM_ORIG_PS1.
+      export ITERM_PREV_PS1="$PS1"
       sh -c "exit $s"
 
       # This must be the last line in this function, or else
       # iterm2_preexec_invoke_exec will do its thing at the wrong time.
-      preexec_interactive_mode="yes";
+      ITERM_PREEXEC_INTERACTIVE_MODE="yes";
   }
 
   # This function is installed as the DEBUG trap.  It is invoked before each
@@ -118,7 +116,7 @@ if ( [ x"$TERM" != xscreen ] ); then
           # an interactively issued command.
           return
       fi
-      if [[ -z "$preexec_interactive_mode" ]]
+      if [[ -z "$ITERM_PREEXEC_INTERACTIVE_MODE" ]]
       then
           # We're doing something related to displaying the prompt.  Let the
           # prompt set the title instead of me.
@@ -131,7 +129,7 @@ if ( [ x"$TERM" != xscreen ] ); then
           # You want to see the 'sleep 2' as a set_command_title as well.
           if [[ 0 -eq "$BASH_SUBSHELL" ]]
           then
-              preexec_interactive_mode=""
+              ITERM_PREEXEC_INTERACTIVE_MODE=""
           fi
       fi
       if [[ "iterm2_preexec_invoke_cmd" == "$BASH_COMMAND" ]]
@@ -144,7 +142,7 @@ if ( [ x"$TERM" != xscreen ] ); then
 
           # Given their buggy interaction between BASH_COMMAND and debug traps,
           # versions of bash prior to 3.1 can't detect this at all.
-          preexec_interactive_mode=""
+          ITERM_PREEXEC_INTERACTIVE_MODE=""
           return
       fi
 
@@ -196,7 +194,7 @@ if ( [ x"$TERM" != xscreen ] ); then
     printf "133;C;"
     iterm2_end_osc
     # Reset PS1 back to its original value so scripts can change it.
-    export PS1="$orig_ps1"
+    export PS1="$ITERM_ORIG_PS1"
     iterm2_ran_preexec="yes"
   }
 
