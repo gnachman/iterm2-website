@@ -56,7 +56,7 @@ if ( [ x"$TERM" != xscreen ] ); then
       set -o functrace > /dev/null 2>&1
       shopt -s extdebug > /dev/null 2>&1
 
-      local s=$?
+      \local s=$?
       last_hist_ent="$(\history 1)";
       precmd;
       # This is an iTerm2 addition to try to work around a problem in the
@@ -83,7 +83,7 @@ if ( [ x"$TERM" != xscreen ] ); then
       fi
 
       # Get the value of the prompt prefix, which will change $?
-      local iterm2_prompt_prefix_value="$(iterm2_prompt_prefix)"
+      \local iterm2_prompt_prefix_value="$(iterm2_prompt_prefix)"
 
       # Reset $? to its saved value, which might be used in $orig_ps1.
       sh -c "exit $s"
@@ -153,12 +153,12 @@ if ( [ x"$TERM" != xscreen ] ); then
       # auxf | less" will show up with both sides of the pipe if we use history,
       # but only as "ps auxf" if not.
       hist_ent="$(\history 1)";
-      local prev_hist_ent="${last_hist_ent}";
+      \local prev_hist_ent="${last_hist_ent}";
       last_hist_ent="${hist_ent}";
       if [[ "${prev_hist_ent}" != "${hist_ent}" ]]; then
-          local this_command="$(echo "${hist_ent}" | sed -e "s/^[ ]*[0-9]*[ ]*//g")";
+          \local this_command="$(echo "${hist_ent}" | sed -e "s/^[ ]*[0-9]*[ ]*//g")";
       else
-          local this_command="";
+          \local this_command="";
       fi;
 
       # If none of the previous checks have earlied out of this function, then
