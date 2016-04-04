@@ -1,5 +1,6 @@
 if [[ -o login ]]; then
-  if [ x"$TERM" != "xscreen" ]; then
+  if [ "$TERM" != "screen" -a "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" ]; then
+    export ITERM_SHELL_INTEGRATION_INSTALLED=Yes
     # Indicates start of command output. Runs just before command executes.
     iterm2_before_cmd_executes() {
       printf "\033]133;C;\007"
