@@ -1,6 +1,7 @@
 if [[ -o login ]]; then
   if [ "$TERM" != "screen" -a "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" ]; then
     export ITERM_SHELL_INTEGRATION_INSTALLED=Yes
+    ITERM2_SHOULD_DECORATE_PROMPT="1"
     # Indicates start of command output. Runs just before command executes.
     iterm2_before_cmd_executes() {
       printf "\033]133;C;\007"
@@ -49,7 +50,7 @@ if [[ -o login ]]; then
     #    The following steps happen:
     #    * iterm2_preexec is invoked
     #      * PS1 is set to ITERM2_PRECMD_PS1
-    #      * ITERM2_PREEXEC_RAN is set to 1
+    #      * ITERM2_SHOULD_DECORATE_PROMPT is set to 1
     #    * The command executes (possibly reading or modifying PS1)
     #    * iterm2_precmd is invoked
     #      * ITERM2_PRECMD_PS1 is set to PS1 (as modified by command execution)
@@ -70,12 +71,13 @@ if [[ -o login ]]; then
     # 3) A new shell is born.
     #    * PS1 has some initial value, either zsh's default or a value set before this script is sourced.
     #    * iterm2_precmd is invoked
+    #      * ITERM2_SHOULD_DECORATE_PROMPT is initialized to 1
     #      * ITERM2_PRECMD_PS1 is set to the initial value of PS1
     #      * PS1 gets our escape sequences added to it
     #    * Your prompt is shown and you may begin entering a command.
     #
     # Invariants:
-    # * ITERM2_PREEXEC_RAN is 1 during and just after command execution, and "" while the prompt is
+    # * ITERM2_SHOULD_DECORATE_PROMPT is 1 during and just after command execution, and "" while the prompt is
     #   shown and until you enter a command and press return.
     # * PS1 does not have our escape sequences during command execution
     # * After the command executes but before a new one begins, PS1 has escape sequences and
@@ -84,7 +86,7 @@ if [[ -o login ]]; then
       # This should be a raw PS1 without iTerm2's stuff. It could be changed during command
       # execution.
       ITERM2_PRECMD_PS1="$PS1"
-      ITERM2_PREEXEC_RAN=""
+      ITERM2_SHOULD_DECORATE_PROMPT=""
 
       # Add our escape sequences just before the prompt is shown.
       PS1="%{$(iterm2_prompt_start)%}$PS1%{$(iterm2_prompt_end)%}"
@@ -92,14 +94,14 @@ if [[ -o login ]]; then
 
     iterm2_precmd() {
       local STATUS="$?"
-      if [ -z "$ITERM2_PREEXEC_RAN" ]; then
+      if [ -z "$ITERM2_SHOULD_DECORATE_PROMPT" ]; then
         # You pressed ^C while entering a command (iterm2_preexec did not run)
         iterm2_before_cmd_executes
       fi
 
       iterm2_after_cmd_executes "$STATUS"
 
-      if [ -n "$ITERM2_PREEXEC_RAN" ]; then
+      if [ -n "$ITERM2_SHOULD_DECORATE_PROMPT" ]; then
         iterm2_decorate_prompt
       fi
     }
@@ -108,7 +110,7 @@ if [[ -o login ]]; then
     iterm2_preexec() {
       # Set PS1 back to its raw value prior to executing the command.
       PS1="$ITERM2_PRECMD_PS1"
-      ITERM2_PREEXEC_RAN="1"
+      ITERM2_SHOULD_DECORATE_PROMPT="1"
       iterm2_before_cmd_executes
     }
 
