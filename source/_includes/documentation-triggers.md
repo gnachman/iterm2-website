@@ -10,6 +10,9 @@ Various actions may be assigned to triggers. These include:
         <li>Send Text: Sends user-defined text back to the terminal as though the user had typed it.</li>
         <li>Show Alert: Shows an alert box with user-defined text.</li>
 </ul>
+#### How to Create a Trigger
+To create a trigger, open the **Preferences** panel. Select the **Profiles** tab. Choose the profile to which you wish to add a trigger. Then select the **Advanced** tab. Click the **Edit** button in the **Triggers** section. A panel opens that displays any existing triggers. You can click the **+** button to add a new trigger.
+
 #### What is a Parameter?
 Various actions (Run Command, Run Coprocess, Send Growl Alert, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. Some special values are allowed here:
 <table>
