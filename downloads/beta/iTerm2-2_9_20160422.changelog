@@ -1,0 +1,107 @@
+Lots of bug fixes and some teeny new features. Release notes now include the
+SHA-256 of the zip file.
+
+Updates:
+- Update libssh to version 1.7 to fix a crash when public key authentication
+  fails.
+- Update to the latest version of Sparkle, version 1.14.
+
+Major bug fixes:
+- Fix a memory leak.
+- Fix a crash when changing the number of displays.
+- Fix a crash when there is no general pasteboard.
+- Improve performance when a tmux window has a lot of tabs.
+- Setting the background image via an escape sequence is now disabled when the
+  terminal is marked untrusted in advanced prefs.
+- Make the scure input menu item indicate the true state of secure input, even
+  if another app has turned it on.
+- Remember the width that the tab bar was dragged to when it's on the left.
+
+New Features:
+- Add regular expression substitution to the advanced paste window.
+- Offer to install utilities (currently imgcat and it2dl, which downloads
+  files) when you install shell integration.
+- Add a new custom escape sequence. OSC 1337 ; ReportCellSize ST will respond
+  with OSC 1337 ; ReportCellSize= H ; W ST where H and W are floating point
+  values giving the height and width of a cell, respectively.
+- Parse /etc/auto_master to find NFS automounts and ignore them for semantic
+  history because they tend to be slow to statfs().
+- Add Select Current Command to the Edit menu. It selects the command at the
+  current command line. It requires that Shell Integration be installed.
+- Set TERM_SESSION_ID and TERM_PROGRAM_VERSION for compatibility with
+  Terminal.app's standard.
+
+Improvements to Automatic Profile Switching:
+- Fix a bug where Automatic Profile Switching rules were scored incorrectly.
+  Longer rules now outrank shorter rules ceteris paribus, as they always should
+  have.
+- Add support for "sticky" Automatic Profile Switching rules. A sticky rule
+  begins with ! and will stay in effect after its rules no longer match
+(provided no other APS rule matches).
+- Add support for wildcards in path names in Automatic Profile Switching rules.
+
+Visual Improvements:
+- Modernize the look of the Open Quickly window.
+- Improve the visual appearance of inactive tabs with colors.
+- Left-align tab labels when the tab bar is on the left.
+- Add high-contrast themes.
+
+New Preferences:
+- Add a checkbox to Window preferences to make non-default background colors
+  always opaque.
+- Add an advanced preference to disable dictionary lookup on force press.
+- Add an advanced preference to specify directories to ignore for semantic
+  history.
+- Add an off-by-default advanced preference to redraw the screen after Clear
+  Buffer is selected.
+- Add an advanced preference that makes cmd-click invoke semantic history even
+  when iTerm2 is not the active app.
+
+Minor bug fixes:
+- Fix a bug where open quickly would not search the names of sessions that had
+  been renamed in Get Info.
+- Improve how the bold version of your font is chosen.
+- Fix a bug where non-anti-aliased underlines were too thick.
+- Change how the view is redrawn. It now redraws 30 times per second when
+  active. Previously it did some really complicated, poorly understood, and
+  probably buggy things with adaptive rates.
+- Fix a bug where the hamburger menu's Restart Session item would restart the
+  tab's current session, not the session associated with the menu.
+- Improve signal handling for shells without job control by making the session
+  retoration server a process group leader.
+- Fix a bug where trying to tmux -CC attach to a tmux server without a session
+  would cause us to write a command to the shell prompt.
+- Fix a bug where the activity indicator in a tab wouldn't appear with a dark
+  theme, sometimes.
+- Reduce CPU usage in certain cases by not drawing tab labels and computing
+  their sizes excessively.
+- Improve predictability of restoring the default window arrangement.
+- Fix a bug where user names were not properly escaped as an argument to login.
+- Fix a bug where moving a selection's endpoint by one character with the
+  keyboard would move it by two sometimes.
+- Fix a bug in how selected text is reported to accessibility.
+- Fix a bug where option-click to move the cursor didn't handle double-width
+  characters properly.
+- Fix a bug where an unterminated DCS code would cause output to be consumed
+  indefinitely. Now we stop when we get a control character besides ESC or
+  non-ASCII text.
+- Pass -q to login if ~/.hushlogin exists. Fixes an issue where open a session
+  in a directory other than your home directory would not respect hushlogin.
+- Improve the appearance of top-right indicators when timestamps are being
+  drawn.
+- Allow windows without a title bar to be miniaturized.
+- Fix the colors of Advanced Preferences when the preferences panel is not key.
+- Fix a bug where right mouse clicks were reported incorrectly.
+- Update TextMate's bundle identifier for the new version with captial letters.
+- Make the custom escape sequence SetBackgroundImageFile with an empty name
+  remove the background image.
+- Fix a bug where launching Atom with shell integration would open two files.
+- Fix a bug where the current prompt loses the link to its mark when a window
+  is resized with bash.
+- Improve the visual appearance of marks, especially with larger fonts.
+- Highlight marks in red when they have an error code when navigating to them.
+- Make the confirmation click prompt to disable tip of the day more noticeable.
+
+SHA-256 of the zip file is:
+762d8e8568a6427dd29bd3292cdef3ec6eac05d1f17f21fe7a86b41b499bd377
+
