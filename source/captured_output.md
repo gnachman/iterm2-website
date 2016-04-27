@@ -20,7 +20,7 @@ One way to use Captured Output is to view compiler output. Suppose you run *make
 
 #### Step 1: Create Triggers
 
-Create a Trigger that matches your compiler's errors and warnings. Clang's errors look like this:
+<a href="/documentation-triggers.html">Create a Trigger</a> that matches your compiler's errors and warnings. Clang's errors look like this:
 <pre>
 filename.c:54:9: error: use of undeclared identifier 'foo'
 </pre>
