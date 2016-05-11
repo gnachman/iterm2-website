@@ -1,2 +1,32 @@
+Bug fixes:
+- Fix a crash when moving a session to a split pane in the same tab.
+- Don't hide and then show the "captured output tool isn't open" notice when one
+  is already opened.
+- Fix a bug where a color preset couldn't be imported by opening an .itermcolors
+  file prior to opening the preferences panel.
+- Fix a bug where automatic profile switching used to prefer an previously used
+  profile over the current one even when the current one outscores it.
+- Change how paths in automatic profiless pare matched. Now, /foo/bar/* will
+  match a path of /foo/bar. Before, it would only match /foo/bar/something. The
+  old behavior can be gotten with /foo/bar/* if that's what you want.
+- Make "redraw the screen after the clear buffer menu item is selected" more
+  reliable.
+- Fix how the cursor's location is reported for accessibility.
+- Fix a crash when an invalid number is passed to the SetCursorShape escape
+  sequence.
+- Improve DCS parsing.
+- Fix a bug where zombies would be left behind if session restoration was
+  disabled.
+- Fix a bug where the cursor wasn't properly restored on relaunch when legacy
+  scrollbars are present.
+- Improve performance when tabs have progress indicators in the Light theme.
+
+New features:
+- Add support for "adaptive frame rates" which flip between 30 and 60hz
+  depending on throughput. This is off by default but can be enabled in advanced
+  prefs.
+- Add paste history to Advanced Paste. This is off by default but can be enabled
+  in advanced prefs.
+
 SHA-256 of the zip file is
 4c8273c95a0200c175199f96d448700381838dca754ec5e1cfa41b934c305642
