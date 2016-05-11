@@ -4,6 +4,8 @@ title: Captured Output - iTerm2 - Mac OS Terminal Replacement
 ---
 iTerm2 has a feature called "Captured Output" which helps you find and track important lines of output from logs, build processes, and such.
 
+<center><img src="img/screenshots/v3-screen-shots/iterm2-captured-output.gif"></center>
+
 ### What does it do?
 
 Captured Output is a tool may be added to iTerm2's toolbelt (a view on the right side of terminal windows). It works in conjunction with user-defined <a href="https://www.iterm2.com/triggers.html">Triggers</a>. A Trigger whose action is *Capture Output* looks for lines of output that match its regular expression. When one is found, the entire line is added to the Captured Output tool. When the user clicks on a line in the Captured Output tool, iTerm2 scrolls to reveal that line. Double-clicking on a line in the Captured Output tools run a user-defined <a href="https://www.iterm2.com/coprocesses.html">Coprocess</a>.
@@ -18,7 +20,7 @@ One way to use Captured Output is to view compiler output. Suppose you run *make
 
 #### Step 1: Create Triggers
 
-Create a Trigger that matches your compiler's errors and warnings. Clang's errors look like this:
+<a href="/documentation-triggers.html">Create a Trigger</a> that matches your compiler's errors and warnings. Clang's errors look like this:
 <pre>
 filename.c:54:9: error: use of undeclared identifier 'foo'
 </pre>
