@@ -97,5 +97,5 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
   end
 
   iterm2_precmd
-  printf "\033]1337;ShellIntegrationVersion=1\007"
+  printf "\033]1337;ShellIntegrationVersion=2;shell=fish\007"
 end
