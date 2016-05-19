@@ -53,7 +53,7 @@ if [[ "$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == 
       shopt -s extdebug > /dev/null 2>&1
 
       \local s=$?
-      last_hist_ent="$(\history 1)";
+      last_hist_ent="$(HISTTIMEFORMAT= builtin history 1)";
       precmd;
       # This is an iTerm2 addition to try to work around a problem in the
       # original preexec.bash.
@@ -163,7 +163,7 @@ if [[ "$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == 
       # variable, but using history here is better in some ways: for example, "ps
       # auxf | less" will show up with both sides of the pipe if we use history,
       # but only as "ps auxf" if not.
-      hist_ent="$(\history 1)";
+      hist_ent="$(HISTTIMEFORMAT= builtin history 1)";
       \local prev_hist_ent="${last_hist_ent}";
       last_hist_ent="${hist_ent}";
       if [[ "${prev_hist_ent}" != "${hist_ent}" ]]; then
