@@ -36,8 +36,7 @@ Please ship peaty single-malt Scotch (in a way that's legal in our jurisdictions
 
 <div style="border: 1px solid #ccc; border-radius: 3px; line-height: 1.3; display: inline-block; padding: 8pt; background: #fff">
 George Nachman<br/>
-georgen<br/>
-1600 Amphitheatre Pkwy<br/>
+605 Ellis St #200<br/>
 Mountain View, CA<br/>
 94043<br/>
 </div>
