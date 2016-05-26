@@ -69,7 +69,6 @@ When attaching to a tmux session with the tmux integration, windows are normally
 
 #### Automatically hide the tmux client session after connecting
 When the tmux integration is entered by running tmux -CC, the window in which that command was run will miniaturize into the dock if this option is enabled.
-<hr>
 
 ### Appearance
 <hr>
@@ -134,7 +133,6 @@ If selected, scrollbars will be hidden in terminal windows.
 
 #### Disable transparency for fullscreen windows by default
 If enabled, entering fullscreen mode will automatically turn off transparency for that window.
-<hr>
 
 ### Profiles > General
 <hr>
@@ -171,7 +169,6 @@ You can configure a profile to handle a URL scheme, such as ssh. When a hyperlin
       <li>$$PATH$$ The path portion of a url like scheme://host/path</li>
       <li>$$RES$$ The portion of a url following the scheme.</li>
 </ul>
-<hr>
 
 ### Profiles > Colors
 <hr>
@@ -194,7 +191,6 @@ The cursor guide is a horizontal rule that indicates the vertical position of th
 
 #### Color Presets...
 iTerm2 ships with some color presets, which you may load from this popup menu. You can import and export color presets to files with the extension "itermcolors". There is an online color gallery where users may share color presets, and a link to it is provided in this menu. When importing a color preset, the name it is assigned is based on the filename imported.
-<hr>
 
 ### Profiles > Text
 <hr>
@@ -231,7 +227,6 @@ Some characters (e.g., Chinese ideograms) are double-width, and take two cells t
 
 #### Use HFS+ Unicode Normalization
 Use HFS+ normalization instead of NFC. This helps preserve the fullwidth attribute of composed characters. 
-<hr>
 
 ### Profiles > Window
 <hr>
@@ -271,7 +266,6 @@ You can specify that profile names are shown in window and tab titles under Pref
 
 #### Force this profile to open in a new window, never in a tab
 If you ask for a new tab with this profile, it will just open in a window instead. This is for people who hate tabs.
-<hr>
 
 ### Profiles > Terminal
 <hr>
@@ -336,8 +330,6 @@ If you have <a href="shell_integration.html">Shell Integration</a> installed and
 #### Show mark indicators
 If you have <a href="shell_integration.html">Shell Integration</a> and this setting is selected then a blue or red arrow appears next to each shell prompt. Turn this off to hide the arrow.
 
-<hr>
-
 ### Profiles > Session
 <hr>
 
@@ -358,7 +350,6 @@ If selected, the specified ASCII code "X" (a number from 0 to 255) will be trans
 
 #### Avoid repainting while cursor is hidden to reduce flicker while scrolling
 When selected, the screen will slightly delay redraws while the cursor is hidden. This improves the visual appearance of scrolling in many programs but might introduce noticeable delays for some users.
-<hr>
 
 ### Profiles > Keys
 <hr>
@@ -445,7 +436,6 @@ It is common to use a modifier to send so-called "meta keys". For most users, se
 
 #### Delete sends ^H
 If you are on a legacy system that does not accept ^? for backspace, select this and it will add a key mapping for you.
-<hr>
 
 ### Profiles > Advanced
 <hr>
@@ -461,7 +451,6 @@ Semantic history is used to open a file when you Cmd-Click on it. The current wo
 #### Automatic Profile Switching
 You can specify rules that, when satisified, changes any session's profile to this one. See <a href="automatic-profile-switching.html">Automatic Profile Switching</a> for all the details.
 </p>
-<hr>
 
 ### Keys
 <hr>
@@ -486,7 +475,6 @@ If enabled, the hotkey window will stay open even when another window gains keyb
 
 #### Global shortcut keys
 This interface works like the keyboard shortcut system in profiles (described above) but it affects all profiles. Settings here are overridden by those in a profile's key mappings.
-<hr>
 
 ### Arrangements
 <hr>

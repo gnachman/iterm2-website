@@ -10,7 +10,7 @@ active-state: documentation
 {% include toc_list.html hashmark="#" %}
 </UL>
 
-{% include subdoc.md title="Highlights for new Users" anchor="documentation-highlights.html" %}
+{% include subdoc.md title="Highlights for New Users" anchor="documentation-highlights.html" %}
 {% include documentation-highlights.md %}
 
 {% include subdoc.md title="General Usage" anchor="documentation-general-usage.html" %}
@@ -40,11 +40,17 @@ active-state: documentation
 {% include subdoc.md title="Fonts" anchor="documentation-fonts.html" %}
 {% include documentation-fonts.md %}
 
+{% include subdoc.md title="Inline Images" anchor="documentation-images.html" %}
+{% include documentation-images.md %}
+
 {% include subdoc.md title="Badges" anchor="documentation-badges.html" %}
 {% include documentation-badges.md %}
 
 {% include subdoc.md title="Dynamic Profiles" anchor="documentation-dynamic-profiles.html" %}
 {% include documentation-dynamic-profiles.md %}
+
+{% include subdoc.md title="Profile Search Syntax" anchor="documentation-search-syntax.html" %}
+{% include documentation-search-syntax.md %}
 
 {% include subdoc.md title="Automatic Profile Switching" anchor="documentation-automatic-profile-switching.html" %}
 {% include documentation-automatic-profile-switching.md %}
@@ -54,6 +60,9 @@ active-state: documentation
 
 {% include subdoc.md title="Session Restoration" anchor="documentation-restoration.html" %}
 {% include documentation-restoration.md %}
+
+{% include subdoc.md title="Utilities" anchor="documentation-utilities.html" %}
+{% include documentation-utilities.md %}
 
 {% include subdoc.md title="Proprietary Escape Codes" anchor="documentation-escape-codes.html" %}
 {% include documentation-escape-codes.md %}

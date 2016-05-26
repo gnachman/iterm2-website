@@ -1,7 +1,3 @@
----
-layout: default
-title: Utilities - iTerm2 - Mac OS Terminal Replacement
----
 iTerm2 has a collection of shell scripts that help you take advantage of some of its unique features. When you install <a href="shell_integration.html">Shell Integration</a>, you're asked if you'd like to install the Utilities Package as well. This page describes these utilities.
 
 ### Availability
@@ -41,3 +37,4 @@ it2dl filename
 ### Location
 
 The Utilities Package places shell scripts in `$HOME/.iterm2/` and creates aliases to them at the bottom of `$HOME/.iterm2_shell_integration.$SHELL`.
+

@@ -1,7 +1,3 @@
----
-layout: default
-title: Images - iTerm2 - Mac OS Terminal Replacement
----
 iTerm2 is able to display images within the terminal. Using a similar mechanism, it can also facilitate file transfers over any transport (such as ssh or telnet), even in a non-8-bit-clean environment.
 
 ### Availability
@@ -87,3 +83,4 @@ Downloads a file, but does not display it inline.
 Draws a full-width, one line-tall graphical divider.
 
 <img src="images/inline_images_divider.png">
+
