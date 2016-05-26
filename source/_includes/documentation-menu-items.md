@@ -49,6 +49,9 @@ Logging saves all input received in a session to a file on disk.
 
 # Edit Menu
 
+#### Edit > Copy (With Styles)
+Hold down Option to turn Copy into Copy With Styles, which includes fonts and color information in the copied text.
+
 #### Edit > Undo Close Session/Tab/Window
 After you close a session, tab, or window then you have five seconds to undo it. The amount of time is configurable in PReferences > Profiles > Session.
 
@@ -177,7 +180,7 @@ This toggles the visibility of the Paste History tool, which shows recently past
 This toggles the visibility of the Profiles tool, which lets you select profiles to open new windows, tabs, and split panes.
 
 #### Toolbelt > Recent Directories
-This toggles the visibility of the Recent Directories tool. It shows recently used directories sorted by a combination of recency and frequency of use. You must install <a href="shell_integration.html">Shell Integration</a> for this to know your directory history.
+This toggles the visibility of the Recent Directories tool. It shows recently used directories sorted by a combination of recency and frequency of use. You must install <a href="shell_integration.html">Shell Integration</a> for this to know your directory history. You can right click a directory to open a context menu that allows you to "start" a directory. This keeps it pinned at the bottom of the list so it's easy to find.
 
 # Window Menu
 

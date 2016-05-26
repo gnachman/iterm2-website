@@ -146,7 +146,7 @@ Gives the name of the profile which is shown in menus, preferences, and the prof
 This shortcut can be used to open a new window or tab. By default, it opens a new tab, but if you hold down the option key while pressing the shortcut, a new window will be opened instead.
 
 #### Tags
-Tags are a collection of words or phrases that annotate a profile. When you search your profiles (for instance, in the profiles window), the tag names are searched in addition to the profile name.
+Tags are a collection of words or phrases that annotate a profile. When you search your profiles (for instance, in the profiles window), the tag names are searched in addition to the profile name. If a tag name contains a slash that defines a hierarchy of menu items in the **Profiles** menu.
 
 #### Badge
 The badge is a large label visible in the top right of a terminal session behind its text. For more information see <a href="badges.html">Badges</a>.

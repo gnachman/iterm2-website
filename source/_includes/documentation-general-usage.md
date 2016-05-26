@@ -14,7 +14,7 @@ The *Edit Current Session* panel lets you modify the appearance of a single sess
 #### Pointer
 The primary use of the mouse in iTerm2 is to select text, and (by default) text is copied to the clipboard immediately upon being selected. You can click and drag to perform a normal selection. Double-clicking selects a whole word. Triple-clicking selects an entire line. Quadruple-clicking performs a "smart select", matching recognized strings such as URLs and email addresses. You can add custom pointer actions in Preferences > Pointer. I recommend using three-finger tap for smart selection, but you must ensure that *System Preferences > Trackpad* does not have any other action already assigned to three-finger tap.
 
-If you hold shift while clicking the existing selection is extended.
+If you hold shift while clicking the existing selection is extended. In fact, you can single click in one location and shift click in an other location to make a selection: no dragging needed.
 
 If you hold cmd while dragging it will create a noncontinguous selection.
 
@@ -28,9 +28,15 @@ If mouse reporting is enabled (in Preferences > Profile > Terminal) and the curr
 
 If you hold the control key and click, that simulates a right click. If you'd prefer to send this combination to applications using mouse reporting, check "^-Click reported to apps, does not appear in menu" in Preferences > Pointer.
 
+Right clicking on a number shows its conversion to or from hex, or if it looks like a unix timestamp its representation in local time will be shown.
+
 Moving the mouse's scroll wheel scrolls up and down. You can configure it to send arrow keys in interactive programs by turning on Preferences > Advanced > Scroll wheel sends arrow keys when in alternate screen mode, but it will only work if Preferences > Terminal > Disable save/restore alternate screen is turned off.
 
 A three-finger swipe left or right on a trackpad (if configured to "navigate") will select an adjacent tab.
+
+Middle clicking on a tab (if your pointing device has a middle button) closes it.
+
+Hold Control while resizing a window to temporarily disable snap-to-grid. You can permanently disable snap-to-grid in Prefs > Advanced > Terminal windows resize smoothly.
 
 #### Keyboard
 Every aspect of the keyboard can be configured in iTerm2. These keystrokes may be useful to remember:
