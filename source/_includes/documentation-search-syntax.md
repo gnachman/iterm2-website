@@ -1,6 +1,4 @@
-### Availability
-
-This search syntax is available in nightly builds beginning with 2.9.20150514. It is not in 2.1.x.
+When iTerm2 presents a list of profiles, it usually includes a search box. The search box uses a special syntax that letes you tailor your searches to quickly find what you're looking for.
 
 ### Searching Profiles
 
