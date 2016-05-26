@@ -159,7 +159,7 @@ The badge has custom escape sequences described at <a href="badges.html">.
 
 For information on file downloads and inline images, see <a href="images.html">.
 
-#### Shell Integration/FinalTerm
+## Shell Integration/FinalTerm
 
 iTerm2's <a href="shell_integration.html">Shell Integration</a> feature is made
 possible by proprietary escape sequences pioneered by the FinalTerm emulator.
