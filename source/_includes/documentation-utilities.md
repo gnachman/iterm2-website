@@ -1,9 +1,5 @@
 iTerm2 has a collection of shell scripts that help you take advantage of some of its unique features. When you install <a href="shell_integration.html">Shell Integration</a>, you're asked if you'd like to install the Utilities Package as well. This page describes these utilities.
 
-### Availability
-
-The Utilities Package and Shell Integration are only available in iTerm2 version 2.9.20160405 and later.
-
 ### Components
 
 The Utilities Package contains the following programs:
