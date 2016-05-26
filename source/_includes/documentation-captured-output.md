@@ -6,6 +6,9 @@ iTerm2 has a feature called "Captured Output" which helps you find and track imp
 
 Captured Output is a tool may be added to iTerm2's toolbelt (a view on the right side of terminal windows). It works in conjunction with user-defined <a href="https://www.iterm2.com/triggers.html">Triggers</a>. A Trigger whose action is *Capture Output* looks for lines of output that match its regular expression. When one is found, the entire line is added to the Captured Output tool. When the user clicks on a line in the Captured Output tool, iTerm2 scrolls to reveal that line. Double-clicking on a line in the Captured Output tools run a user-defined <a href="https://www.iterm2.com/coprocesses.html">Coprocess</a>.
 
+### Shell Integration Required
+<a href="https://www.iterm2.com/shell_integration.html">Shell Integration</a> must be installed because Captured Output ties in to command history.
+
 ### Example
 
 One way to use Captured Output is to view compiler output. Suppose you run *make* and get thousands of lines of output, some of which may contain errors or warnings. You'd like to examine each one and take some action on it. Here's how you would use Captured Output to assist with this task:
