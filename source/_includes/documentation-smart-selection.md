@@ -16,39 +16,10 @@ Under Preferences>Profiles>Advanced, you may edit the smart selection rules. In 
 
 When editing rules, it is advised that you experiment with different precision levels and different kinds of strings to find one that works well. A collection of test cases may be found at smart_selection_cases.txt.
 
-When Smart Selection is activated, iTerm2 tries each regular expression. For a given regex, various strings on the screen are tested until the longest match is found. Only matches that include the character under the cursor are of interest. The longest such match is added to a pool of "selection candidates". Each candidate is assigned a score equal to its length in characters times its precision coefficient. The precision coefficient is defined as follows:
-<table>
-        <thead>
-                <tr>
-                        <th>Precision</th>
-                        <th>Coefficient</th>
-                </tr>
-        </thead>
-        <tbody>
-                <tr>
-                        <td>Very Low</td>
-                        <td>0.000001</td>
-                </tr>
-                <tr>
-                        <td>Low</td>
-                        <td>0.001</td>
-                </tr>
-                <tr>
-                        <td>Normal</td>
-                        <td>1.0</td>
-                </tr>
-                <tr>
-                        <td>High</td>
-                        <td>1000.0</td>
-                </tr>
-                <tr>
-                        <td>Very High</td>
-                        <td>1000000.0</td>
-                </tr>
-        </tbody>
-</table>
-The highest-scoring candidate is then used as the selection.
+When Smart Selection is activated, iTerm2 tries each regular expression. For a given regex, various strings on the screen are tested until the longest match is found. Only matches that include the character under the cursor are of interest. The longest such match is added to a pool of "selection candidates". Each candidate is assigned a score equal to its length in characters. Among the candidates in the highest precision class (where Very High is the highest class and Very Low is the lowest) with any matches, the higheset scoring one is used as the selection.
+
 #### Actions
-Actions may be associated with smart selection rules. When you right click in a terminal, smart selection is performed at the cursor's location. Any smart selection rule that matches that location will be searched for associated actions, and those actions will be added to the context menu. Actions may open a file, open a URL, run a command, or start a coprocess.
+Actions may be associated with smart selection rules. When you right click in a terminal, smart selection is performed at the cursor's location. Any smart selection rule that matches that location will be searched for associated actions, and those actions will be added to the context menu. Actions may open a file, open a URL, run a command, or start a coprocess. A cmd-click on text matching a smart selection rule will invoke the first rule.
+
 #### Regular Expressions
 Regular expressions conform to the <a href="http://userguide.icu-project.org/strings/regexp">ICU regular expressions</a> rules.
