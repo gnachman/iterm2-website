@@ -4,5 +4,5 @@ title: Session Restoration - Documentation - iTerm2 - Mac OS Terminal Replacemen
 active-state: documentation
 subhead: Session Restoration
 ---
-{% include documentation-session-restoration.md %}
+{% include documentation-restoration.md %}
 

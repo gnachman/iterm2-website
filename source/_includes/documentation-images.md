@@ -1,17 +1,7 @@
----
-layout: default
-title: Images - iTerm2 - Mac OS Terminal Replacement
----
 iTerm2 is able to display images within the terminal. Using a similar mechanism, it can also facilitate file transfers over any transport (such as ssh or telnet), even in a non-8-bit-clean environment.
 
-### Availability
-
-Inline images and file transfers are only available in iTerm2 version 2.9 and later. It is not in 2.1.1.
-
 <div style="border: 1px solid black; margin: 8px; padding: 4px">
-Just want to try it out? imgcat is a tool that prints an image in your terminal in iTerm2 2.9 and later.
-
-<a href="https://raw.github.com/gnachman/iTerm2/master/tests/imgcat">Download imgcat here</a>
+Just want to try it out and don't care about the protocol? Use the imgcat tool. <a href="https://raw.github.com/gnachman/iTerm2/master/tests/imgcat">Download imgcat here</a>
 </div>
 
 
@@ -87,3 +77,4 @@ Downloads a file, but does not display it inline.
 Draws a full-width, one line-tall graphical divider.
 
 <img src="images/inline_images_divider.png">
+

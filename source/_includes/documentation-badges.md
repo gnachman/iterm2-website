@@ -8,8 +8,6 @@ function show(name) {
 }
 </script>
 
-## Badges
-
 A *badge* is a large text label that appears in the top right of a terminal session to provide dynamic status, such as the current host name or git branch. Its initial value is defined in <strong>Preferences&gt;Profiles&gt;General&gt;Badge</strong> and it can be changed by an iTerm2-proprietary escape sequence. It may also reference iTerm2- and user-defined variables.
 
 Here is an example of a session with a badge indicating the current user and host name.

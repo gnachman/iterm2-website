@@ -1,7 +1,7 @@
 iTerm2 can use information it knows about your current path, host name, and user name to change profiles. For example, your window's background color or the terminal's character encoding could change when connecting to different hosts.
 
-### Prerequisites
-This feature is only available in iTerm2 version 2.9 and later (known as the beta release of version 3). You must install <a href="/shell_integration.html">Shell Integration</a> on all machines and all user accounts where you plan to use Automatic Profile Siwtching.
+### Shell Integration Required
+You must install <a href="/shell_integration.html">Shell Integration</a> on all machines and all user accounts where you plan to use Automatic Profile Switching (either by using the scripts or the Triggers workaround described in the Shell Integration docs).
 
 #### Rule Syntax
 In *Preferences&gt;Profiles&gt;Advanced*, you may specify a set of rules.
@@ -12,7 +12,7 @@ When any session satisfies a rule in a given profile, it will switch to that pro
 
 A user name is a unix accont name (e.g., *root*) followed by an `@`.
 
-A path always begins with a `/`. Any time a hostname is followed by a path, they are separated by a `:`. For example, `iterm2.com:/users/george`.
+A path always begins with a `/`. Any time a hostname is followed by a path, they are separated by a `:`. For example, `iterm2.com:/users/george`. It may include `*` wildcards.
 
 A hostname can be a DNS name, like `iterm2.com` or an IP address like `127.0.0.1`. A hostname may contain one or more `*` characters, which act as a wildcard (like globbing in Unix).
 
@@ -28,6 +28,7 @@ Some examples:
   * george@
   * iterm2.com:/users/george
   * /users/george
+  * /users/*
 
 Because more than one rule may match at any given time, more complex rules will take priority over less complex rules. The priority order is defined like this:
 
@@ -53,10 +54,6 @@ Each session maintains a stack of profiles. Initially, the stack contains the pr
   * Failing that, the profile will be pushed on the stack and the session will switch to that profile.
 
 If no profile has a matching rule, the stack is emptied (except for the first entry, the original profile for the session) and the session reverts to its original profile.
-
-### Unreleased Features
-
-For releases of iTerm2 from March 28, 2016 on, the path may contain wildcards such as /Users/\* or /Users/\*/Applications. Longer matches paths outrank shorter paths, if all else is equal.
 
 Rules may begin with ! to indicate "stickiness". A sticky rule causes its profile to stay even after the rule no longer applies, so long as no other rule matches.
 

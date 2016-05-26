@@ -1,4 +1,4 @@
-# iTerm2 Menu
+### iTerm2 Menu
 
 #### iTerm2 > Secure Keyboard Entry
 When this is enabled, the operating system will prevent other programs running on your computer from being able to see what you are typing. If you're concerned that untrusted programs might try to steal your passwords, you can turn this on, but it may disable global hotkeys in other programs.
@@ -15,7 +15,8 @@ This saves helpful debugging information in memory. When it is toggled off it is
 #### iTerm2 > Install Shell Integration
 Runs a shell script that modifies your .bash_profile (or other startup script) and enables the <a href="/shell_integration.html">Shell Integration</a> features.
 
-# Shell Menu
+<hr/>
+### Shell Menu
 
 #### Shell > New Tab with Current Profile
 This creates a new tab using the same profile as the current session rather than the default profile.
@@ -47,7 +48,8 @@ These commands let you interact with the tmux integration. The tmux dashboard is
 #### Shell > Log > Start/Stop
 Logging saves all input received in a session to a file on disk.
 
-# Edit Menu
+<hr/>
+### Edit Menu
 
 #### Edit > Copy (With Styles)
 Hold down Option to turn Copy into Copy With Styles, which includes fonts and color information in the copied text.
@@ -109,7 +111,8 @@ Adds an annotation to the word beginning at the cursor. An annotation is a scrat
 #### Edit > Marks and Annotations > Alerts > Alert on Next Mark
 When a mark is set (typically by <a href="shell_integration.html">Shell Integration</a> when the currently running shell command terminates) then show an alert. 
 
-# View Menu
+<hr/>
+### View Menu
 
 #### View > Show Tabs in Fullscreen
 If enabled, tabs are shown in fullscreen windows.
@@ -147,16 +150,19 @@ Stepping through time allows you to see what was on the screen at a previous tim
 #### View > Tab Color
 Allows you to select a tint color for the tab, to make it easier to distinguish. You can also change the tab color in Profiles > Preferences > Colors.
 
-# Profiles Menu
+<hr/>
+### Profiles Menu
 
 #### Profiles > Open Profiles...
 This opens the "Profiles Window" which allows you to create new windows, tabs, or panes from one or more profiles. You can perform a search by entering text in the search field. Profile names and tags are searched, and the listed profiles are filtered as you type. You can use the up and down arrow keys to make a selection. Pressing enter will open a new tab, while shift-enter will open a new window. You can make multiple selections by holding down shift or cmd and clicking on profiles. The "New Tabs in New Window" button is enabled only when more than one profile is selected: it will open a new window and create a new tab for each profile selected.
 
-# Scripts Menu
+<hr/>
+### Scripts Menu
 
 If you have scripts located in `$HOME/Library/Application Support/iTerm/Scripts` they'll be added to this menu. The menu will not exist if there are no scripts.
 
-# Toolbelt Menu
+<hr/>
+### Toolbelt Menu
 
 #### Tolbelt > Captured Output
 This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="captured_output.html">Captured Output</a> fo r more information.
@@ -182,7 +188,8 @@ This toggles the visibility of the Profiles tool, which lets you select profiles
 #### Toolbelt > Recent Directories
 This toggles the visibility of the Recent Directories tool. It shows recently used directories sorted by a combination of recency and frequency of use. You must install <a href="shell_integration.html">Shell Integration</a> for this to know your directory history. You can right click a directory to open a context menu that allows you to "start" a directory. This keeps it pinned at the bottom of the list so it's easy to find.
 
-# Window Menu
+<hr/>
+### Window Menu
 
 #### Window > Exposé All Tabs
 All iTerm2 tabs will be shown tiled on the main screen. You can mouse over a tab to see it larger, and clicking on it will restore the windows and select that tab and bring its window to the front. You can search the contents of all tabs by typing in the search field that appears on the left. Making a selection from the results below it will highlight the tab that contains that text. This is useful when you have many tabs open and can't find the one you're looking for.
