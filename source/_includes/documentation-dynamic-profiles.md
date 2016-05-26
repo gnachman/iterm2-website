@@ -13,7 +13,7 @@ When iTerm2 starts, it creates a folder:
 
 While iTerm2 runs, it monitors the contents of that folder. Any time the folder's contents change, all files in it are reloaded.
 
-Files in this folder are expected to be formatted as Apple <a href="http://en.wikipedia.org/wiki/Property_list">Property Lists</a>. No particular file extension is required. All files in the folder must be valid property lists. If any is malformed, then no changes will be processed.
+Files in this folder are expected to be formatted as Apple <a href="https://en.wikipedia.org/wiki/Property_list">Property Lists</a>. No particular file extension is required. All files in the folder must be valid property lists. If any is malformed, then no changes will be processed.
 
 ### Property List Format
 
