@@ -109,7 +109,7 @@ You can view and search the command history with *Edit&gt;Open Command History..
 Commands in command history are also added to Autocomplete (Cmd-;). If *Preferences&gt;General&gt;Save copy/paste history and command history to disk* is enabled, then command history will be preserved across runs of iTerm2 (up to 200 commands per user/hostname).
 
 ##### Toolbelt
-A commmand history tool may be added to the toolbelt by selecting *Toolbelt&gt;Command History*.
+A command history tool may be added to the toolbelt by selecting *Toolbelt&gt;Command History*.
 
 <img src="/images/CommandHistory.png" width=207 height=301>
 
@@ -177,7 +177,7 @@ Make sure both triggers have their *Instant* checkbox enabled so they'll take ef
 newline is received.
 
 ##### Update
-As of February 29 (version 2.9.20160229 and later), you may specify a user name or host name alone to *Report Host &amp; User*. If you give just a user name then the previous host name will be preserved; if you give just a host name then the previous user name will be preserved. To change the user name only, give a value like `user@`. To change the host name only, give a value like `example.com`. This is useful for changing the user to `root` when using `sudo`, for example, since you wouldn't want to change root's prompt to expose the host name for the convenience of writting a trigger.
+As of February 29 (version 2.9.20160229 and later), you may specify a user name or host name alone to *Report Host &amp; User*. If you give just a user name then the previous host name will be preserved; if you give just a host name then the previous user name will be preserved. To change the user name only, give a value like `user@`. To change the host name only, give a value like `example.com`. This is useful for changing the user to `root` when using `sudo`, for example, since you wouldn't want to change root's prompt to expose the host name for the convenience of writing a trigger.
 
 #### A Note on SCP
 iTerm2 can do uploads and downloads with scp as described above. There are a few things you should know.
