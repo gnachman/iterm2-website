@@ -180,8 +180,10 @@ Some programs (such as vim or tmux) keep a status bar at the bottom of the scree
 When in alternate screen mode, lines that scroll off the top of the screen will be saved to the scrollback buffer only if this option is enabled.
 #### Character encoding
 The encoding to send and receive in. For most people, "Unicode (UTF-8)" is the right choice.
-#### Report terminal type
-The TERM variable will be set to this value by default. If xterm-256color is selected and your system is missing the terminfo file, you will be prompted to install it when you open a new session.
+#### Terminal type
+iTerm2's emulation mode, and the TERM environment variable, will be set to this value. If xterm-256color is selected and your system is missing the terminfo file, you will be prompted to install it when you open a new session.
+#### ENQ Answer Back
+Upon recieving a Terminal ENQ character from the host, iTerm2 will send this string back as a response.
 #### Enable xterm mouse reporting
 If selected, applications may choose to receive information about the mouse. This can be temporarily disabled by holding down Option.
 #### Allow terminal to report window title
@@ -211,8 +213,8 @@ If selected, a session's pane, tab, or window will automatically close when the 
 When a session will close, you can choose when to be prompted with a modal alert.
 #### Automatically log session input to files in:
 If enabled, every session's output will be logged to a file in the specified directory. File names are formatted as Date_Time.ProfileName.TerminalID.ProcessId.RandomNumber.log.
-#### When idle, send ASCII code
-If selected, the specified ASCII code will be transmitted every 30 seconds while nothing is happening. Don't use this unless you know what you're doing as it can have unexpected consequences.
+#### When idle, send ASCII code __ every __ seconds
+If selected, the specified ASCII code (default 0, aka NUL) will be transmitted every specified number of seconds (default 60), whever nothing else is happening. Don't use this unless you know what you're doing as it can have unexpected consequences.
 <hr>
 ### Profiles > Keys
 <hr>
