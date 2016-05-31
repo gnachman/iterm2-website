@@ -12,7 +12,7 @@ There are dozens of new features. Many bugs have been fixed. Performance is sign
 
 ### Where do I get it?
 
-<a href="https://iterm2.com/downloads/beta/iTerm2-2_9_20160523.zip">Download the beta version here.</a>
+<a href="https://iterm2.com/downloads/beta/iTerm2-3_0_0.zip">Download the beta version here.</a>
 
 ### Major New Features
 
@@ -25,6 +25,12 @@ iTerm2 has been updated for the modern Mac OS X "flat" look and is stunningly be
 #### Shell Integration
 
 Shell Integration is a modification to your shell's login script that informs iTerm2 of which commands you're running, which host you're logged in to, what your user name is, and what your current directory is. This enables all kinds of cool features, such as easily navigating to preceding shell prompts, getting a notification when a long-running job finishes, drag-dropping files to upload and download on remote hosts, and much more. All the details are at the <a href="/shell_integration.html">Shell Integration</a> document.
+
+#### Command History
+When Shell Integration is installed, iTerm2 records the commands you've used. You can see a list of them in the Toolbelt and easily navigate to them in your history or re-run them. You can even see which directory you were in when you ran a command.
+
+#### Recent Directories
+When Shell Integration is installed, iTerm2 records the directories you use most often. You can see a list of them in the Toolbelt ordered by a combination of frequency and recency of use.
 
 #### Automatic Profile Switching
 
