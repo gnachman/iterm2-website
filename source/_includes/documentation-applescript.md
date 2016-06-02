@@ -1,6 +1,8 @@
-This is an example of the new Applescript syntax available in versions 2.9 and up.
+This is an example of the new Applescript syntax available in version 3.0.
 
-Please note that as of 2.9.20150414, "terminal window" has been replaced with "window" to improve compliance with standard Applescript conventions.
+**Note:** in iTerm2 3.0.0, sessions had a property called *contents*. That
+conflicted with a reserved word, and has been renamed to *text*. The example
+below reflects proper usage for version 3.0.1 and up.
 
 <pre>
 tell application iTerm2
@@ -56,11 +58,11 @@ tell application iTerm2
   tell current session of first window
     write text "cat > /dev/null"
     write text "cat > /dev/null" newline NO
-    write contents of file "/etc/passwd"
+    write text of file "/etc/passwd"
     -- Get the path to the current session's tty and write it
     write text (tty)
     -- Get the content of the session and write it back
-    write text (contents)
+    write text (text)
     -- Get the session's unique identifier and write it back
     write text (unique ID)
 
