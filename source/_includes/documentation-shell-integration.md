@@ -125,6 +125,17 @@ Double-clicking a directory will type its path for you into the current terminal
 #### Automatic Profile Switching
 Please see the documentation at <a href="/automatic-profile-switching.html">Automatic Profile Switching</a>.
 
+#### Shell Integration for root
+If you'd like to be able to use shell integration as root, you have two
+options. The first option, presuming you use bash, is to become root with `sudo
+-s` (which loads your `.bashrc` as root) and add this to your `.bashrc`:
+
+<pre>
+test $(whoami) == root && source "${HOME}/.iterm2_shell_integration.bash"
+</pre>
+
+The alternative is to use Triggers to emulate shell integration as described in the following section.
+
 #### Triggers
 For some users, installing a login script on every host they connect to is not
 an option. To be sure, modifying root's login script is usually a bad idea. In these cases
