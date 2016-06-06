@@ -108,7 +108,7 @@ A command history tool may be added to the toolbelt by selecting *Toolbelt&gt;Co
 Bold commands are from the current session. Clicking on one will scroll to reveal it. Double-clicking enters the command for you. Option-double-clicking will output a "cd" command to go to the directory you were in when it was last run.
 
 ##### Command Completion
-iTerm2 will present command completion suggestions automatically when *View&gt;Toggle Command Completion* is selected.
+iTerm2 will present command completion suggestions automatically when *View&gt;Auto Command Completion* is selected.
 
 #### Recent Directories
 With shell integration, iTerm2 will remember which directories you have used recently. The list of preferred directories is stored separately for each username+hostname combination. It is sorted by "frencency" (frequency and recency of use). There are two places it is exposed in the UI:
