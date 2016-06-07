@@ -108,7 +108,7 @@ A command history tool may be added to the toolbelt by selecting *Toolbelt&gt;Co
 Bold commands are from the current session. Clicking on one will scroll to reveal it. Double-clicking enters the command for you. Option-double-clicking will output a "cd" command to go to the directory you were in when it was last run.
 
 ##### Command Completion
-iTerm2 will present command completion suggestions automatically when *View&gt;Toggle Command Completion* is selected.
+iTerm2 will present command completion suggestions automatically when *View&gt;Auto Command Completion* is selected.
 
 #### Recent Directories
 With shell integration, iTerm2 will remember which directories you have used recently. The list of preferred directories is stored separately for each username+hostname combination. It is sorted by "frencency" (frequency and recency of use). There are two places it is exposed in the UI:
@@ -124,6 +124,17 @@ Double-clicking a directory will type its path for you into the current terminal
 
 #### Automatic Profile Switching
 Please see the documentation at <a href="/automatic-profile-switching.html">Automatic Profile Switching</a>.
+
+#### Shell Integration for root
+If you'd like to be able to use shell integration as root, you have two
+options. The first option, presuming you use bash, is to become root with `sudo
+-s` (which loads your `.bashrc` as root) and add this to your `.bashrc`:
+
+<pre>
+test $(whoami) == root && source "${HOME}/.iterm2_shell_integration.bash"
+</pre>
+
+The alternative is to use Triggers to emulate shell integration as described in the following section.
 
 #### Triggers
 For some users, installing a login script on every host they connect to is not
