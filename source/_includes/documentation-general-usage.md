@@ -30,7 +30,7 @@ If you hold the control key and click, that simulates a right click. If you'd pr
 
 Right clicking on a number shows its conversion to or from hex, or if it looks like a unix timestamp its representation in local time will be shown.
 
-Moving the mouse's scroll wheel scrolls up and down. You can configure it to send arrow keys in interactive programs by turning on Preferences > Advanced > Scroll wheel sends arrow keys when in alternate screen mode, but it will only work if Preferences > Terminal > Disable save/restore alternate screen is turned off.
+Moving the mouse's scroll wheel scrolls up and down. You can configure it to send arrow keys in interactive programs by turning on Preferences > Advanced > Scroll wheel sends arrow keys when in alternate screen mode, but it will only work if **Preferences > Profiles > Terminal > Disable save/restore alternate screen** is turned off.
 
 A three-finger swipe left or right on a trackpad (if configured to "navigate") will select an adjacent tab.
 
