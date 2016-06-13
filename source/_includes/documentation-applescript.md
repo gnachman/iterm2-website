@@ -92,6 +92,7 @@ tell application iTerm2
     set cursor text color to {65535, 0, 0, 0}
     set selected text color to {65535, 0, 0, 0}
     set selection color to {65535, 0, 0, 0}
+    set underline color to {65535, 0, 0, 0}
     set ANSI black color to {65535, 0, 0, 0}
     set ANSI red color to {65535, 0, 0, 0}
     set ANSI green color to {65535, 0, 0, 0}
