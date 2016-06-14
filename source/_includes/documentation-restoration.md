@@ -13,3 +13,5 @@ tl;dr watch this:
 
  * A session that has had only its window contents restored and not the running processes will get a reverse video *Session Restored* banner. A properly restored session will pick up right where you left it.
 
+ * If you reboot, your jobs will terminate and not be restored. The window contents should be restored.
+
