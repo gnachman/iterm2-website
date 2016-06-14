@@ -58,7 +58,7 @@ tell application iTerm2
   tell current session of first window
     write text "cat > /dev/null"
     write text "cat > /dev/null" newline NO
-    write text of file "/etc/passwd"
+    write contents of file "/etc/passwd"
     -- Get the path to the current session's tty and write it
     write text (tty)
     -- Get the content of the session and write it back
