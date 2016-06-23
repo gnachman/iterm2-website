@@ -114,7 +114,7 @@ iTerm2 will present command completion suggestions automatically when *View&gt;A
 With shell integration, iTerm2 will remember which directories you have used recently. The list of preferred directories is stored separately for each username+hostname combination. It is sorted by "frencency" (frequency and recency of use). There are two places it is exposed in the UI:
 
 ##### Recent Directories popup
-You can view and search your recently and frequently used directories in *Edit&gt;Open Recent Directories...* (Cmd-Opt-;).
+You can view and search your recently and frequently used directories in *Edit&gt;Open Recent Directories...* (Cmd-Opt-/).
 
 ##### Toolbelt
 A *Recent Directories* tool may be added to the toolbelt by selecting *Toolbelt&gt;Recent Directories*.
