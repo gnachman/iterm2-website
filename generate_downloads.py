@@ -15,6 +15,21 @@ active-state: downloads
 
 # Compare version numbers of iTerm2 filenames.
 def CompareZipFileNames(x, y):
+  origX = x
+  origY = y
+  preview = "-preview"
+  x = x.replace(preview, "")
+  y = y.replace(preview, "")
+  #print "Compare",x,"and",y,"originals:",origX,"and",origY
+  if x == y and preview in origX and not preview in origY:
+    # Non-preview succeeds preview. x < y
+    #print "lhs is preview, rhs is not"
+    return -1
+  elif x == y and not preview in origX and preview in origY:
+    # x > y
+    #print "lhs is not preview, rhs is preview"
+    return 1
+
   xname = os.path.basename(os.path.normpath(x))
   yname = os.path.basename(os.path.normpath(y))
   xversion = re.sub(r"iTerm2.*?([0-9_*]+(-[^.]+)?)\.zip", r"\1", xname)
