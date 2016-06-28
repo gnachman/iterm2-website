@@ -12,7 +12,7 @@ There are dozens of new features. Many bugs have been fixed. Performance is sign
 
 ### Where do I get it?
 
-<a href="https://iterm2.com/downloads/beta/iTerm2-3_0_2.zip">Download the beta version here.</a>
+<a href="https://iterm2.com/downloads/beta/iTerm2-3_0_3.zip">Download the beta version here.</a>
 
 ### Major New Features
 
