@@ -17,141 +17,126 @@ iTerm2 also supports launching of user defined scripts from the "Scripts" menu. 
 
 The basic objects are: window, tab, and session. The application has zero or more windows, each window has one or more tabs, and each tab has one or more sessions. Multiple sessions in a tab happen when there are split panes.
 
+<hr/>
 ### Application
 
 The application exposes various properties and provides functions that are described in this section. For example:
 
-````
-tell application "iTerm2"
-    create window with default profile
-end tell
-````
+    tell application "iTerm2"
+      create window with default profile
+    end tell
 
-#### windows
-
-A `windows` property exposes an array of terminal windows. Other windows, like the preferences panel, are not included.
-The following are standard Applescript idioms for accessing elements of an array of objects:
-
-````
-  tell first window
-  ...
-  end tell
-````
-
-````
-  repeat with aWindow in windows
-  ...
-  end repeat
-````
-
-#### create window with default profile
-#### create window with default profile command "*command*"
+<p class="script-entry">create window with default profile<br/>
+create window with default profile command "<i>command</i>"</p>
 
 These commands create a window with the default profile. If you specify a command, it overrides the profile's command (which by default is to invoke `login`).
 
 Examples:
-````
-set newWindow to (create window with default profile)
-set newWindow to (create window with default profile command "ls -l -R /")
-````
 
-#### create window with profile "*name*"
-#### create window with profile "*name*" command "*command*"
+    set newWindow to (create window with default profile)
+    set newWindow to (create window with default profile command "ls -l -R /")
+
+<p class="script-entry">create window with profile "<i>name</i>"<br/>
+create window with profile "<i>name</i>" command "<i>command</i>"</p>
 
 These commands create a window with a named profile. If you specify a command, it overrides the profile's command (which by default is to invoke `login`).
 
 Returns a reference to the new window.
 
 Examples:
-````
-set newWindow to (create window with profile "Name Of Some Profile")
-set newWindow to (create window with profile "Name Of Some Profile" command "ls -l -R /")
-````
+
+    set newWindow to (create window with profile "Name Of Some Profile")
+    set newWindow to (create window with profile "Name Of Some Profile" command "ls -l -R /")
 
 
-#### select *window*
-Selecting a window brings it front and gives it keyboard focus.
-````
-  select first window
-````
-
-#### current window
+<p class="script-entry">current window</p>
 
 A reference to the window that most recently had keyboard focus.
 
-````
-  tell current window
-  ...
-  end tell
-````
+    tell current window
+    ...
+    end tell
 
+<p class="script-entry">windows</p></p>
+
+A `windows` property exposes an array of terminal windows. Other windows, like the preferences panel, are not included.
+The following are standard Applescript idioms for accessing elements of an array of objects:
+
+    tell first window
+    ...
+    end tell
+
+    repeat with aWindow in windows
+    ...
+    end repeat
+
+<hr/>
 ### Windows
 
 These functions and properties are provided by windows. For example:
 
-````
-tell application "iTerm2"
-  tell current window
-    create tab with default profile
-  end tell
-end tell
-````
+    tell application "iTerm2"
+      tell current window
+        create tab with default profile
+      end tell
+    end tell
 
 There are many standard Applescript functions (e.g., to get the window's size and position) that are not documented here.
 
-#### create tab with default profile
-#### create tab with profile "*name*"
+<p class="script-entry">create tab with default profile<br/>
+create tab with profile "<i>name</i>"</p>
 
 Creates a tab with the default profile or a profile by name.
 
 Returns a reference to the new tab.
 
-#### current session
+<p class="script-entry">current session</p>
 
 The `current session` is the session that would receive keyboard input if the window had keyboard focus.
 
-#### current tab
+<p class="script-entry">current tab</p>
 
 The `current tab` is the tab that is selected in the window.
 
-#### id
+<p class="script-entry">id</p>
 
 The window ID. Useful for commands like `screencapture`.
 
-#### name
+<p class="script-entry">name</p>
 
 The window's name, as appears in the title bar.
 
-#### select
+<p class="script-entry">select</p>
 
 Gives the window keyboard focus and brings it to the front.
 
-#### tabs
+<p class="script-entry">tabs</p>
 
 An array of tabs. See the methods on Tab, below.
 
+<hr/>
 ### Sessions
 
 These functions and properties are provided by sessions. For example:
 
-````
-tell application "iTerm2"
-  tell current session of current window
-    split horizontally with default profile
-  end tell
-end tell
+    tell application "iTerm2"
+      tell current session of current window
+        split horizontally with default profile
+      end tell
+    end tell
 
-#### background image
+<p class="script-entry">background image</p>
 
 This is a string property that gives a path to the background image of the session.
 
-#### close
+<p class="script-entry">close</p>
 
 Terminates the session and closes its pane.
 
-#### Color properties
+<p class="script-entry">Color properties</p>
 
 Various properties which are readable and settable affect the session's colors:
+
   * background color
   * bold color
   * cursor color
@@ -177,147 +162,143 @@ Various properties which are readable and settable affect the session's colors:
   * ANSI bright white color
 
 An example:
-````
+
     set foreground color to {65535, 0, 0, 0}
-````
 
 Because Applescript is kind of a dumpster fire, the standard syntax for a color is `{red, green, blue, alpha}` where each value is a number between 0 and 65535.
 
-#### answerback string
+<p class="script-entry">answerback string</p>
 
 The string sent when the `ENQ` escape sequence is received.
 
-#### columns
+<p class="script-entry">columns</p>
 
 The width of the session in character cells.
 
-#### contents
+<p class="script-entry">contents</p>
 
 Returns the visible contents of the session as a string. Each row is terminated with a newline.
 
-#### id
+<p class="script-entry">id</p>
 
 Returns the session's unique identifier.
 
-#### is at shell prompt
+<p class="script-entry">is at shell prompt</p>
 
 Indicates if the session is at a shell prompt accepting a command. Only works if <a href="/shell_integration.html">Shell Integration</a> is installed; if not it will return false.
 
-#### is processing
+<p class="script-entry">is processing</p>
 
 Returns a boolean indicating if the session received output recently.
 
-#### name
+<p class="script-entry">name</p>
 
 A string property with the session's name as seen in its title bar.
 
-#### profile name
+<p class="script-entry">profile name</p>
 
 The name of the profile the session was created with. A string. Read-only.
 
-#### rows
+<p class="script-entry">rows</p>
 
 The height of the session in character cells.
 
-#### set columns to *number*
-#### set rows to *number*
+<p class="script-entry">set columns to <i>number</i><br/>
+set rows to <i>number</i></p>
 
 Changes the size of the session.
 
-#### split horizontally with default profile
-#### split vertically with default profile
-#### split horizontally with default profile command "*command*"
-#### split vertically with default profile command "*command*"
+<p class="script-entry">split horizontally with default profile<br/>
+split vertically with default profile<br/>
+split horizontally with default profile command "<i>command</i>"<br/>
+split vertically with default profile command "<i>command</i>"</p>
 
 Splits the session either horizontally or vertically. If the optional *command* is provided then it is run in place of the profile's command. A horizontal split has a horizontal divider, while a vertical split has a vertical divider.
 
 Returns a reference to a session.
 
-#### split horizontally with profile "*name*"
-#### split vertically with profile "*name*"
-#### split horizontally with profile "*name*" command "*command*"
-#### split vertically with profile "*name*" command "*command*"
+<p class="script-entry">split horizontally with profile "<i>name</i>"<br/>
+split vertically with profile "<i>name</i>"<br/>
+split horizontally with profile "<i>name</i>" command "<i>command</i>"<br/>
+split vertically with profile "<i>name</i>" command "<i>command</i>"</p>
 
 Like the "default profile" commands, but uses a named profile instead of the default profile.
 
-#### split horizontally with same profile
-#### split vertically with same profile
-#### split horizontally with same profile command "*command*"
-#### split vertically with same profile command "*command*"
+<p class="script-entry">split horizontally with same profile<br/>
+split vertically with same profile<br/>
+split horizontally with same profile command "<i>command</i>"<br/>
+split vertically with same profile command "<i>command</i>"</p>
 
 Like the "default profile" commands, but uses the current session's profile.
 
-#### select
+<p class="script-entry">select</p>
 
 Makes the session active in its tab. Does not affect which tab is selected or which window has keyboard focus.
 
-#### text
+<p class="script-entry">text</p>
 
 A synonym for `contents`.
 
-#### transparency
+<p class="script-entry">transparency</p>
 
 A floating-point value from 0 to 1 giving how transparent the session is.
 
-#### tty
+<p class="script-entry">tty</p>
 
 The name of the session's tty (e.g., /dev/ttys01). Returns a string.
 
-#### unique id
+<p class="script-entry">unique id</p>
 
 A string uniquely identifying the session.
 
-#### variable "*name*"
-#### set variable named "*name*" to "*value*"
+<p class="script-entry">variable "<i>name</i>"<br/>
+set variable named "<i>name</i>" to "<i>value</i>"</p>
 
 Gets and sets the value of a variable by name. Variables are described in <a href="/badges.html">Badges</a>. You may only set user-defined variables, whose names always begin with "user.".
 
-#### write text "*text*"
-#### write text "*text*" newline NO
+<p class="script-entry">write text "<i>text</i>"<br/>
+write text "<i>text</i>" newline NO</p>
 
 Writes text to the session, as though you had typed it. Optionally without a newline.
 
-#### write contents of file "*filename*"
+<p class="script-entry">write contents of file "<i>filename</i>"</p>
 
 Writes the contents of a file to the session as though you had typed it.
 
+<hr/>
 ### Tabs
 
 These functions and properties are provided by tabs. For example:
 
-````
-tell application "iTerm2"
-  tell current tab of current window
-    select
-  end tell
-end tell
-````
+    tell application "iTerm2"
+      tell current tab of current window
+        select
+      end tell
+    end tell
 
-#### close
+<p class="script-entry">close</p>
 
 Closes the tab.
 
-#### current session
+<p class="script-entry">current session</p>
 
 The session in this tab that most recently had keyboard focus.
 
-#### index
+<p class="script-entry">index</p>
 
 The index of the tab in the window, starting from 0.
 
-#### select
+<p class="script-entry">select</p>
 
 Selects the tab, making it the current tab for the window.
 
-#### sessions
+<p class="script-entry">sessions</p>
 
 An array of sessions.
 
-#### sessions
+<p class="script-entry">sessions</p>
 
 An array of sessions in this tab.
-
-#### index
 
 The index from 0 of the tab in its window.
 
