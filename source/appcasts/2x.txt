@@ -1,0 +1,237 @@
+iTerm2 2.1.4
+- Fixes a bug where split screen in El Capitan had black bars around the window.
+- Fixes a bug where closing a tab in tmux integration would cause the connection to close with a tmux protocol error.
+
+2.1.3
+- Bug fixes for El Capitan. Properly restore multiple fullscreen windows and avoid a flash when
+  switching spaces with split fullscreen windows.
+
+2.1.1
+
+- Change URLs for credits and bug filing. RIP Google Code.
+- Add a method to notify users when iTerm2 3.0 enters Beta so they can opt in.
+- Support multiple parameters to DECSET (fixes a bug with tmux 2.0 where the cursor disappears, among others).
+- Fix a bug where copying a string ending in a surrogate pair fails to copy at all.
+- Fix a bug where paste didn't work on 32-bit machines.
+- Change role for URL handling from editor to shell.
+
+2.0
+
+Important Features
+------------------
+- Deep tmux integration!
+  Have you ever had an ssh session lost because you had to reboot, had a network
+  failure, or the power went out? Are you tired of giving up a keystroke to tmux
+  or screen? Suffer no longer! iTerm2 and tmux are now deeply integrated. By
+  installing a special version of tmux, it gains the ability to speak directly to
+  iTerm2. When you run tmux with -CC, iTerm2 will open real, native windows or
+  tabs for each tmux window. The whole state of your tmux session is reflected in
+  native iTerm2 windows. As you interact with a window, your typing is sent back
+  to tmux. Any time you resize a window, add a split pane, close a split pane,
+  close a window, or open a window (with Shell-&gt;tmux-&gt;new window), that
+  action happens in tmux as well as in iTerm2.
+  All the details are at https://gitlab.com/gnachman/iterm2/wikis/TmuxIntegration
+
+- A "Toolbelt" has been added. It's a drawer that opens to the right of a
+  window and shows running jobs, paste history, a field for taking notes, and
+  lets you open new windows/tabs/splits. Look for the Toolbelt menu.
+
+- Add "triggers." A trigger is an action that is performed when text matching
+  some regular expression is received in a terminal session. More info here:
+  http://www.iterm2.com/triggers.html
+
+- Add "coprocesses." A coprocess is a process, such as a script, that receives
+  input from a terminal and whose output is fed into the terminal session as
+  though the user were typing it. You can use them to automate interaction with
+  scripts, download files with ZModem, and more. More info here:
+  http://iterm2.com/coprocesses.html
+
+- You can now edit the smart selection regexes in
+  Prefs&gt;Profiles&gt;Advanced. You can also assign actions that are added to
+  the context menu when you right click on text that matches a smart selection
+  rule.  More info here:
+  http://www.iterm2.com/smartselection.html
+
+- Support for OS 10.7 features including fullscreen, retina graphics, and
+  window restoration.
+
+
+New Preferences
+---------------
+- Add support for tiled background images (Foy Savas)
+- Add a preference to toggle hiding of the menu bar in non-Lion fullscreen.
+  Useful in Mavericks multi-monitor setups.
+- Make tabview toggleable in fullscreen.
+- Add option to dim background windows.
+- Add option to dim only foreground colors.
+- Add UI for adjusting dimming amount.
+- Add UI to make blur radius configurable.
+- Add hidden pref MaxPasteHistoryEntries.
+- Add preference to hide tab's activity indicator.
+- Add option to draw red stripes in the background to indicate input being sent
+  to all terminals.
+- Add preference to disable dimming animation.
+- Add option to profiles to send text to shell at startup.
+- Add option to disable session-initiated printing.
+- Add support for loading prefs from a custom folder (e.g., Dropbox) or URL.
+  This makes it easy to share a config between multiple machines or people.
+- Add auto logging of sessions. When enabled (per-profile), all input received
+  from the host in a session is saved to a file tagged with the window, tag,
+  and pane number, plus the time and date of initiation.
+- Add next/previous pane action.
+- Change around prompt-to-quit options, adding "always/never/only if jobs
+  besides ... are running" to profiles-sessions.
+- Add option to copy trailing newlines when making a selection that includes a
+  whole line at its end.
+- Add preference to disable transparency when entering fullscreen mode.
+- Improve "Terminal.app Compatibility" key preset to more accurately emulate
+  Terminal.
+- You can now configure what happens when you cmd-click on a filename in
+  Prefs&gt;Profiles&gt;Advanced.
+- Add key action to move tab left/right.
+- Add "advanced" directory settings for separate tab, window, and pane settings.
+- Add preference for setting locale vars.
+- Add preference to disable saving lines to the scrollback buffer while in
+  alternate screen mode.
+- Add option to always copy preferences to prefs stored in a custom folder.
+- Add a new panel to prefs to make mouse actions configurable.
+- Add option to make triple-click select a whole wrapped line rather than just
+  one row.
+- Add hidden option AutocompleteMaxOptions to adjust number of autocomplete
+  entries.
+- Add hidden option PasteHistoryMaxOptions to adjust number of paste history
+  entries.
+- Add hidden variable URLCharacterSet that defines characters that are part of
+  a URL.
+- Disable title reporting unless hidden pref AllowInsecureTitleReporting is set
+  to true.
+- Add general preference "Adjust window for font size change". Turn it off so
+  that the window size stays fixed as the font grows or shrinks (thanks,
+  keeyipchan!).
+- Add hidden preference PinchToChangeFontSizeDisabled to turn off pinch to
+  change font size
+- Ask for confirmation before deleting a profile.
+- Add boolean hidden pref, OpenFileInNewWindows. When you open a file (e.g., a
+  shell script) in finder with iTerm2, this controls whether it opens in a new
+window or tab.
+- Additional window styles: bottom and left of screen.
+
+New Terminal Features
+---------------------
+- Add support for italics (Stefan Schüßler)
+- Change RIS code to move the cursor to the origin (saitoha).
+- Convert text to NFC form more aggressively, which should lead to latin
+  characters with accents rendering more consistently with certain fonts like
+  Inconsolata, which lacks some combining marks.
+- Add ITERM_SESSION_ID environment variable that identifiers the window, tab,
+  and pane number of each session.
+- Add escape code "Esc c" to reset terminal.
+- Add new escape code ESC ]6;1;bg;*;default^G to restore tab color to default.
+- Add support for reporting focus lost/gained. esc[?1004h turns it on; then the
+  terminal sends esc[I when focusing, esc[O when de-focusing. Send esc[?1004l
+  to disable.
+- Implemented bracketed paste mode (this is cool, see vim script here:
+  http://stackoverflow.com/questions/5585129
+- Define VLNEXT and VDISCARD in the term by default.
+- Add support for the "screen" terminal's way of setting the window title.
+- Support SGR (1006) mouse reporting.
+- Allow OSC 4 to set color of first 16 palette entries.
+- Add support for OSC 52 (clipboard integration--thanks, saitoha!).
+- Add support for DECSCUSR which lets the terminal change the cursor shape and
+  blink.
+- Add support for DECSTR (esc [!p)
+
+Other Features
+--------------
+- Improve rendering on glyphs with multiple combining marks.
+- When you cmd-click on a filename in a diff, remove the a/ or b/ prefix and
+  replace with the real directory to open the file.
+- Cmd-opt click on a URL to open it without bringing the browser to the front.
+- Improve "send input to all sessions", adding new modes: 1) send to all panes
+  in current tab, 2) to all sessions in current window, and 3) to an arbitrary
+  collection of panes (toggled with context menu).
+- You can toggle send input to all tabs/panes by re-pressing the keystroke that
+  got you into that mode.
+- Draw a dotted line around maximized sessions.
+- Add support for multiple saved window arrangements.
+- Add decimal <-> hex conversion to right-click context menu when a number is
+  selected.
+- Add new cmd-opt-shift-H and cmd-opt-shift-v interface for opening a split
+  pane with a particular profile.
+- Allow pinch gesture to change font size.
+- Make cmd-[ and cmd-] work when a pane is maximized.
+- Add "find cursor" feature (cmd-/) that highlights the cursor location. Useful
+  when you have a huge terminal, this makes it easy to quickly find a lost
+  cursor. If activated with the shortcut cmd-/, continuing to hold cmd will keep
+  the highlighting active.
+- Add ability to drag split panes around by pressing cmd-opt-shift and drgging.
+- Add ability to split a pane by dragging a tab into a terminal session.
+- Add "move session to split pane" option to context menu.
+- Add "restore arrangement" to dock menu.
+- Add cmd-= as shortcut for duplicating a profile
+- By default, a three-finger click on a trackpad emulates the middle button
+  (which by default performs Paste).
+- Add ability to change profile from Edit Current Session.
+- Change mouse cursor to indicate that mouse reporting is on.
+- Add cmd-shift-opt-T to open a new tab using the current session's profile.
+- Change default global key bindings to cmd-shift-arrows to move tab left/right.
+- Add menu item to move tab left/right.
+- Add title bars to split panes that show the title. You can drag panes by
+  their titles, and there is a menu and a close button in it as well.
+- If no window is open, you can now select multiple items in the profiles and
+  window and choose split horizontally/vertically to open a new window with the
+  split.
+- Add tab colors to view menu and tab context menu (thanks, andreax79)
+- Add 'move session to window' context menu item.
+- When closing a session, free its scrollback buffer in a background thread to
+  avoid hanging.
+- Alt-click moves the cursor to the click position.
+- Press cmd-9 to go to the last tab.
+- Add menu item to toggle broadcasting input to the current pane (make
+  pane-by-pane toggling available to focus-follows-mouse users who couldn't
+  open a context menu in a deselected pane)
+- "Find" continues to search as new text appears.
+
+System Integration
+------------------
+- In Mavericks, when system prefs are set such that multiple screens share one
+  space, we only hide the dock and menu when a fullscreen iTerm2 window is on
+  the first screen.
+- Handle inserting emoji text in mavericks with cmd-ctrl-space.
+- Make dock and menu bar appear by moving mouse to top/bottom of screen in
+  non-Lion fullscreen mode. Remove hold-cmd-for-tabs.
+- Make it possible to launch iTerm2 from Applescript so it won't open any
+  windows automatically.
+- Add support for Growl 1.3.
+- Support Lion's Restore functionality.
+- For new users under Lion, xterm-256color will be the default terminal.
+- Add ability to open .itermcolors files by double clicking on them.
+- Add 'New Window (Default Profile)' to dock menu.
+- Make growl alerts clickable (thanks, soul.cake.tuesday.duck and bauerb).
+- Make find text typed in one tab appear in all tabs' find bars.
+- App bundle is now signed.
+- When a file or folder is dragged onto the dock icon, open it in a new tab
+  (not a new window).
+- Retina graphics
+
+Proprietary Escape Codes
+------------------------
+- Add escape code <Esc>]50;SetMark^G to perform Edit > Set Mark command.
+- Add escape code to steal focus: ESC ]50;StealFocus^G  (thanks, gordolio).
+- Add proprietary escape code esc]50;ClearScrollback^G to erase screen and
+  scrollback buffer.
+- Add proprietary escape code esc]50;CurrentDir=/Path/To/Directory^G to notify
+  iTerm2 of the current directory (so you can cmd-click on relative filenames
+  and we'll know where they are).
+- Add proprietary escape code <esc>]50;SetProfile=X^G to set the current
+  session's profile to the one named X.- Add proprietary escape code to send
+  text to clipboard. To use, send esc]50;CopyToClipboard=X^G followed by text
+  followed by esc]50;EndCopy^G, where X is a clipboard name from the set: ruler,
+  find, font, or general. If not specified, general is used.
+- Add esc]50;RequestAttention=x^G, where if x=1 the dock icon bounces and if
+  x=0 it stops.
+
+-------------------------------------------------------------------------------
+1.0.0
+The first full release of iTerm2.
+
