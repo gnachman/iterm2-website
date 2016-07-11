@@ -2,9 +2,9 @@
 layout: default
 title: Version 3 Beta - iTerm2 - Mac OS Terminal Replacement
 ---
-## iTerm2 Version 3 Now in Beta
+## iTerm2 Version 3 Released
 
-Version 3 of iTerm2 is now in Beta. There are a few things you should know before jumping in.
+Version 3 of iTerm2 is now out as a "stable" build, meaning there are no known major bugs.
 
 ### What do I need to know?
 
@@ -12,7 +12,7 @@ There are dozens of new features. Many bugs have been fixed. Performance is sign
 
 ### Where do I get it?
 
-<a href="https://iterm2.com/downloads/beta/iTerm2-3_0_4.zip">Download the beta version here.</a>
+<a href="https://iterm2.com/downloads/stable/iTerm2-3_0_4.zip">Download it here.</a>
 
 ### Major New Features
 
@@ -87,6 +87,8 @@ The good news is that iTerm2's Applescript makes a lot more sense than it used t
 The bad news is that existing Applescript won't work any more.
 
 The good news is that it's pretty easy to fix. <a href="/applescript.html">The new Applescript syntax is described here.</a>
+
+Many third-party programs have already been updated. Please ensure you have the latest version of any program that integrates with iTerm2.
 <hr>
 
 ### Alfred Support
