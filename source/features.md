@@ -87,7 +87,7 @@ Coming from a Unix world? You'll feel at home with focus follows mouse, copy on 
 <section class="feature-block">
 <a name="256-colors"></a>
 ### 256 Colors (or more!)
-With 256-color mode, Vim explodes with photorealism: the terminal is a medley of color and code comes alive. In version 3 (now in beta), 24-bit color is supported.
+With 256-color mode, Vim explodes with photorealism: the terminal is a medley of color and code comes alive. In version 3, 24-bit color is supported.
 <a href="img/screenshots/256colors.png" target="_blank"><img src="img/screenshots/256colors.png"></a>
 
 </section>
@@ -148,7 +148,7 @@ iTerm2 can perform "smart selection" to highlight URLs, email addresses, filenam
 
 <hr>
 
-## New in Version 3 (now in beta!)
+## New in Version 3
 
 <section class="feature-block">
 <a name="shell-integration"></a>

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Version 3 Beta - iTerm2 - Mac OS Terminal Replacement
+title: Version 3 - iTerm2 - Mac OS Terminal Replacement
 ---
 ## iTerm2 Version 3 Released
 
