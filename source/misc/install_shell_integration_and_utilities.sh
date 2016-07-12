@@ -54,16 +54,16 @@ fi
 FILENAME="${HOME}/.iterm2_shell_integration.${SHELL}"
 RELATIVE_FILENAME="${HOME_PREFIX}/.iterm2_shell_integration.${SHELL}"
 echo "Downloading script from ${URL} and saving it to ${FILENAME}..."
-curl -L "${URL}" > "${FILENAME}" || die "Couldn't download script from ${URL}"
+curl -SsL "${URL}" > "${FILENAME}" || die "Couldn't download script from ${URL}"
 chmod +x "${FILENAME}"
 echo "Checking if ${SCRIPT} contains iterm2_shell_integration..."
 grep iterm2_shell_integration "${SCRIPT}" > /dev/null 2>&1 || (echo "Appending source command to ${SCRIPT}..."; echo "" >> "${SCRIPT}"; echo "test -e ${QUOTE}${RELATIVE_FILENAME}${QUOTE} ${SHELL_AND} source ${QUOTE}${RELATIVE_FILENAME}${QUOTE}" >> "${SCRIPT}")
 
 test -d ~/.iterm2 || mkdir ~/.iterm2
 echo "Downloading imgcat..."
-curl -L "https://iterm2.com/imgcat" > ~/.iterm2/imgcat && chmod +x ~/.iterm2/imgcat
+curl -SsL "https://iterm2.com/imgcat" > ~/.iterm2/imgcat && chmod +x ~/.iterm2/imgcat
 echo "Downloading it2dl..."
-curl -L "https://iterm2.com/it2dl" > ~/.iterm2/it2dl && chmod +x ~/.iterm2/it2dl
+curl -SsL "https://iterm2.com/it2dl" > ~/.iterm2/it2dl && chmod +x ~/.iterm2/it2dl
 echo "Adding aliases..."
 echo "$ALIASES" >> "${FILENAME}"
 

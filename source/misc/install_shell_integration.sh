@@ -50,7 +50,7 @@ fi
 FILENAME="${HOME}/.iterm2_shell_integration.${SHELL}"
 RELATIVE_FILENAME="${HOME_PREFIX}/.iterm2_shell_integration.${SHELL}"
 echo "Downloading script from ${URL} and saving it to ${FILENAME}..."
-curl -L "${URL}" > "${FILENAME}" || die "Couldn't download script from ${URL}"
+curl -SsL "${URL}" > "${FILENAME}" || die "Couldn't download script from ${URL}"
 chmod +x "${FILENAME}"
 echo "Checking if ${SCRIPT} contains iterm2_shell_integration..."
 if ! grep iterm2_shell_integration "${SCRIPT}" > /dev/null 2>&1; then
