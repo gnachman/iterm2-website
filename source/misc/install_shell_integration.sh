@@ -30,7 +30,7 @@ then
   test -f "${HOME}/.bash_profile" && SCRIPT="${HOME}/.bash_profile" || SCRIPT="${HOME}/.profile"
   QUOTE='"'
 fi
-if [ `basename "${SHELL}"` == fish ]
+if [ "${SHELL}" == fish ]
 then
   echo "Make sure you have fish 2.2 or later. Your version is:"
   fish -v
