@@ -7,7 +7,7 @@ function die() {
 
 which printf > /dev/null 2>&1 || die "Shell integration requires the printf binary to be in your path."
 
-SHELL=$(echo "${SHELL}" | tr / "\n" | tail -1)
+SHELL=${SHELL##*/}
 URL=""
 HOME_PREFIX='${HOME}'
 SHELL_AND='&&'
