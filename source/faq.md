@@ -110,6 +110,6 @@ A: The most common cause is that "minimum contrast" (under preferences > profile
 #### Q: How can I make the tab bar visible in fullscreen mode?
 A: Toggle Show Tabs in Fullscreen under the View menu (cmd-shift-T).
 
-#### Q: When I use a third-party app like SizeUp to make an iTerm2 window fill the screen it doesn't quite fill it.
+#### Q: When I use a third-party app like SizeUp or Spectacle to make an iTerm2 window fill the screen it doesn't quite fill it.
 A: Turn on **Preferences>Advanced>Terminal windows resize smoothly**.
 
