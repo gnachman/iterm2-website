@@ -25,7 +25,7 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
   # Gives a variable accessible in a badge by \(user.currentDirectory)
   # Calls to this go in iterm2_print_user_vars.
   function iterm2_set_user_var
-    printf "\033]1337;SetUserVar=%s=%s\007" "$argv[1]" (printf "%s" "$argv[2]" | base64)
+    printf "\033]1337;SetUserVar=%s=%s\007" "$argv[1]" (printf "%s" "$argv[2]" | base64 | tr -d "\n")
   end
 
   # iTerm2 inform terminal that command starts here
@@ -97,5 +97,5 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
   end
 
   iterm2_precmd
-  printf "\033]1337;ShellIntegrationVersion=2;shell=fish\007"
+  printf "\033]1337;ShellIntegrationVersion=3;shell=fish\007"
 end
