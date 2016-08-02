@@ -9,8 +9,8 @@ When you select the *iTerm2&gt;Install Shell Integration* menu item, it types th
 
 Don't care for piping curl to bash? Do it by hand. First, download the right script for your shell:
 
-<pre>curl -L https://iterm2.com/misc/`basename $SHELL`_startup.in >> \
-~/.iterm2_shell_integration.`basename $SHELL`</pre>
+<pre>curl -L https://iterm2.com/misc/`basename $SHELL`_startup.in \
+-o ~/.iterm2_shell_integration.`basename $SHELL`</pre>
 
 Then add this to your login script (.login for tcsh, .bash_profile for bash, .zshrc for zsh, or config.fish file for fish):
 
