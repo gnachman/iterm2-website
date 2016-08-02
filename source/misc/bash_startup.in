@@ -241,7 +241,7 @@ if [[ "$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == 
   # Usage: iterm2_set_user_var key value
   function iterm2_set_user_var() {
     iterm2_begin_osc
-    printf "1337;SetUserVar=%s=%s" "$1" $(printf "%s" "$2" | base64)
+    printf "1337;SetUserVar=%s=%s" "$1" $(printf "%s" "$2" | base64 | tr -d '\n')
     iterm2_end_osc
   }
 
@@ -275,7 +275,7 @@ if [[ "$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == 
 
   function iterm2_print_version_number() {
     iterm2_begin_osc
-    printf "1337;ShellIntegrationVersion=2;shell=bash"
+    printf "1337;ShellIntegrationVersion=3;shell=bash"
     iterm2_end_osc
   }
 
