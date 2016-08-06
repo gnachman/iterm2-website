@@ -84,9 +84,12 @@ These functions and properties are provided by windows. For example:
 There are many standard Applescript functions (e.g., to get the window's size and position) that are not documented here.
 
 <p class="script-entry">create tab with default profile<br/>
-create tab with profile "<i>name</i>"</p>
+create tab with default profile command "<i>command</i>"
+create tab with profile "<i>name</i>"</br>
+create tab with profile "<i>name</i>" command "<i>command</i>"
+</p>
 
-Creates a tab with the default profile or a profile by name.
+Creates a tab with the default profile or a profile by name. If the command is specified, it is run instead of the profile's command/login shell.
 
 Returns a reference to the new tab.
 
