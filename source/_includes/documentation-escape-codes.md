@@ -280,7 +280,7 @@ the shell.
 
 #### RemoteHost
 
-`O S C 1 3 3 7 ; R e m o t e H o s t = Ps1 @ Ps2 ST`
+`OSC 1 3 3 7 ; R e m o t e H o s t = Ps1 @ Ps2 ST`
 
 Reports the user name and hostname.
 
@@ -289,7 +289,7 @@ Ps2 is fully-qualified hostname.
 
 #### CurrentDir
 
-`O S C 1 3 3 7 ; C u r r e n t D i r = Ps1 ST`
+`OSC 1 3 3 7 ; C u r r e n t D i r = Ps1 ST`
 
 Reports the current directory.
 
