@@ -116,3 +116,5 @@ A: Turn on **Preferences>Advanced>Terminal windows resize smoothly**.
 #### Q: Where is the source code?
 A: <a href="https://github.com/gnachman/iTerm2">See gnachman's Github iTerm2 project.</a>
 
+#### Q: How can I open iTerm2 to a directory from Finder?
+A: <a href="https://github.com/peterldowns/iterm2-finder-tools">iTerm2 Finder Tools</a> is excellent.
