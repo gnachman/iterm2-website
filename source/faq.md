@@ -113,3 +113,6 @@ A: Toggle Show Tabs in Fullscreen under the View menu (cmd-shift-T).
 #### Q: When I use a third-party app like SizeUp or Spectacle to make an iTerm2 window fill the screen it doesn't quite fill it.
 A: Turn on **Preferences>Advanced>Terminal windows resize smoothly**.
 
+#### Q: Where is the source code?
+A: <a href="https://github.com/gnachman/iTerm2">See gnachman's Github iTerm2 project.</a>
+
