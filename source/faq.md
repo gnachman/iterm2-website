@@ -53,7 +53,7 @@ A: If you hold down modifier keys while making a selection, the behavior changes
 
 Additionally, you can affect other mouse-related activities with modifier keys:
 
-  * Cmd+drag a selection copies and pastes it.
+  * Dragging a selection copies and pastes it. If you keep doing this by accident, turn on **Prefs > Advanced > To drag images or selected text, you must hold ⌘. This prevents accidental drags.*.
   * Cmd+click on a URL opens it.
 
 #### Q: How do I change a tab's title?
