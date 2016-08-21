@@ -153,11 +153,11 @@ Where *height* and *width* are floating point values giving the size in points o
 
 #### Badge
 
-The badge has custom escape sequences described at <a href="badges.html">.
+The badge has custom escape sequences described <a href="badges.html">here</a>.
 
 #### Downloads
 
-For information on file downloads and inline images, see <a href="images.html">.
+For information on file downloads and inline images, see <a href="images.html">here</a>.
 
 ## Shell Integration/FinalTerm
 
