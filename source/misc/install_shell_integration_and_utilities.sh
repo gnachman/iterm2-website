@@ -12,28 +12,28 @@ URL=""
 HOME_PREFIX='${HOME}'
 SHELL_AND='&&'
 QUOTE=''
-if [ "${SHELL}" == tcsh ]
+if [ "${SHELL}" = tcsh ]
 then
   URL="https://iterm2.com/misc/tcsh_startup.in"
   SCRIPT="${HOME}/.login"
   QUOTE='"'
   ALIASES='alias imgcat ~/.iterm2/imgcat; alias it2dl ~/.iterm2/it2dl'
 fi
-if [ "${SHELL}" == zsh ]
+if [ "${SHELL}" = zsh ]
 then
   URL="https://iterm2.com/misc/zsh_startup.in"
   SCRIPT="${HOME}/.zshrc"
   QUOTE='"'
   ALIASES='alias imgcat=~/.iterm2/imgcat; alias it2dl=~/.iterm2/it2dl'
 fi
-if [ "${SHELL}" == bash ]
+if [ "${SHELL}" = bash ]
 then
   URL="https://iterm2.com/misc/bash_startup.in"
   test -f "${HOME}/.bash_profile" && SCRIPT="${HOME}/.bash_profile" || SCRIPT="${HOME}/.profile"
   QUOTE='"'
   ALIASES='alias imgcat=~/.iterm2/imgcat; alias it2dl=~/.iterm2/it2dl'
 fi
-if [ "${SHELL}" == fish ]
+if [ "${SHELL}" = fish ]
 then
   echo "Make sure you have fish 2.2 or later. Your version is:"
   fish -v
@@ -45,7 +45,7 @@ then
   SHELL_AND='; and'
   ALIASES='alias imgcat=~/.iterm2/imgcat; alias it2dl=~/.iterm2/it2dl'
 fi
-if [ "${URL}" == "" ]
+if [ "${URL}" = "" ]
 then
   die "Your shell, ${SHELL}, is not supported yet. Only tcsh, zsh, bash, and fish are supported. Sorry!"
   exit 1

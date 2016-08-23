@@ -12,25 +12,25 @@ URL=""
 HOME_PREFIX='${HOME}'
 SHELL_AND='&&'
 QUOTE=''
-if [ "${SHELL}" == tcsh ]
+if [ "${SHELL}" = tcsh ]
 then
   URL="https://iterm2.com/misc/tcsh_startup.in"
   SCRIPT="${HOME}/.login"
   QUOTE='"'
 fi
-if [ "${SHELL}" == zsh ]
+if [ "${SHELL}" = zsh ]
 then
   URL="https://iterm2.com/misc/zsh_startup.in"
   SCRIPT="${HOME}/.zshrc"
   QUOTE='"'
 fi
-if [ "${SHELL}" == bash ]
+if [ "${SHELL}" = bash ]
 then
   URL="https://iterm2.com/misc/bash_startup.in"
   test -f "${HOME}/.bash_profile" && SCRIPT="${HOME}/.bash_profile" || SCRIPT="${HOME}/.profile"
   QUOTE='"'
 fi
-if [ "${SHELL}" == fish ]
+if [ "${SHELL}" = fish ]
 then
   echo "Make sure you have fish 2.2 or later. Your version is:"
   fish -v
@@ -41,7 +41,7 @@ then
   HOME_PREFIX='{$HOME}'
   SHELL_AND='; and'
 fi
-if [ "${URL}" == "" ]
+if [ "${URL}" = "" ]
 then
   die "Your shell, ${SHELL}, is not supported yet. Only tcsh, zsh, bash, and fish are supported. Sorry!"
   exit 1
