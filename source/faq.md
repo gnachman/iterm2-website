@@ -53,7 +53,7 @@ A: If you hold down modifier keys while making a selection, the behavior changes
 
 Additionally, you can affect other mouse-related activities with modifier keys:
 
-  * Cmd+drag a selection copies and pastes it.
+  * Dragging a selection copies and pastes it. If you keep doing this by accident, turn on **Prefs > Advanced > To drag images or selected text, you must hold ⌘. This prevents accidental drags.*.
   * Cmd+click on a URL opens it.
 
 #### Q: How do I change a tab's title?
@@ -113,3 +113,8 @@ A: Toggle Show Tabs in Fullscreen under the View menu (cmd-shift-T).
 #### Q: When I use a third-party app like SizeUp or Spectacle to make an iTerm2 window fill the screen it doesn't quite fill it.
 A: Turn on **Preferences>Advanced>Terminal windows resize smoothly**.
 
+#### Q: Where is the source code?
+A: <a href="https://github.com/gnachman/iTerm2">See gnachman's Github iTerm2 project.</a>
+
+#### Q: How can I open iTerm2 to a directory from Finder?
+A: <a href="https://github.com/peterldowns/iterm2-finder-tools">iTerm2 Finder Tools</a> is excellent.
