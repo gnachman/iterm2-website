@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Features - iTerm2 - Mac OS Terminal Replacement
+title: Features - iTerm2 - macOS Terminal Replacement
 active-state: features
 ---
 iTerm2 has a lot of features. Every conceivable desire a terminal user might have has been foreseen and solved. And these are just the main attractions!
@@ -113,7 +113,7 @@ You can choose to receive Growl notifications of activity, bells, and more. Feel
 <section class="feature-block">
 <a name="expose-tabs"></a>
 ### Exposé Tab
-Like OS X's Exposé feature, iTerm2 shows all your tabs on one screen. Better yet, you can search through them all at once. Go ahead and open as many tabs as you want--you can always find what you're looking for.
+Like macOS's Exposé feature, iTerm2 shows all your tabs on one screen. Better yet, you can search through them all at once. Go ahead and open as many tabs as you want--you can always find what you're looking for.
 <a href="img/screenshots/expose_full.jpg" target="_blank"><img src="img/screenshots/expose.png"></a>
 
 </section>
@@ -184,7 +184,7 @@ You can see the last-modified time of every line in the terminal. It's useful to
 <section class="feature-block">
 <a name="password-manager"></a>
 ### Password Manager
-Do you find yourself typing your password over and over again? Do you need to remember a bunch of passwords? Use iTerm2's built-in password manager. It stores your data securely encrypted in Mac OS X's keychain, protected by your user account's password. iTerm2 includes a safety mechanism that ensures your password only gets entered at a password prompt.
+Do you find yourself typing your password over and over again? Do you need to remember a bunch of passwords? Use iTerm2's built-in password manager. It stores your data securely encrypted in macOS's keychain, protected by your user account's password. iTerm2 includes a safety mechanism that ensures your password only gets entered at a password prompt.
 
 <img src="img/screenshots/v3-screen-shots/iterm2-password-manager.png" class="linkless-image">
 </section>

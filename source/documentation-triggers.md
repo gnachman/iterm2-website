@@ -1,6 +1,6 @@
 ---
 layout: subdoc
-title: Triggers - Documentation - iTerm2 - Mac OS Terminal Replacement
+title: Triggers - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Triggers
 ---

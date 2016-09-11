@@ -1,6 +1,6 @@
 ---
 layout: subdoc
-title: Search Syntax - Documentation - iTerm2 - Mac OS Terminal Replacement
+title: Search Syntax - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Search Syntax
 ---

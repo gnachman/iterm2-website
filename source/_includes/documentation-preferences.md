@@ -59,7 +59,7 @@ If enabled, a change to a session's font will cause the window to grow or shrink
 If enabled, the green "Zoom" button expands a terminal window vertically but does not affect its width. This can be overridden by holding down shift while clicking the zoom button.
 
 #### Native full screen windows
-If enabled, fullscreen windows will animate into a special desktop, as is typical in OS X 10.7 and later. If disabled, fullscreen windows will instantly go fullscreen without changing desktops.
+If enabled, fullscreen windows will animate into a special desktop, as is typical in macOS 10.7 and later. If disabled, fullscreen windows will instantly go fullscreen without changing desktops.
 
 #### tmux Integration
 The first dropdown box in the **tmux Integration** section allows you to define how tmux windows should be mapped to native constructs. When attaching to a new tmux session with the tmux integration, tmux windows not seen by iTerm2 before will open in either new windows or tabs, as specified by this preference.
@@ -555,7 +555,7 @@ If enabled, option-click will move the cursor to where the mouse pointer is. If 
 If enabled, moving the mouse over an inactive window will cause it to receive keyboard focus.
 
 #### Double-click performs smart selection
-If enabled, double click performs smart selection instead of word selection as is standard on OS X.
+If enabled, double click performs smart selection instead of word selection as is standard on macOS.
 
 #### Triple-click selects full wrapped lines
 If enabled, a triple click selects a whole line, even if it was longer than one row in the terminal. If off, then triple click selects exactly one row.

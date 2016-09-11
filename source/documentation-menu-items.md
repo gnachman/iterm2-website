@@ -1,6 +1,6 @@
 ---
 layout: subdoc
-title: Menu Items - Documentation - iTerm2 - Mac OS Terminal Replacement
+title: Menu Items - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Menu Items
 ---

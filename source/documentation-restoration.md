@@ -1,6 +1,6 @@
 ---
 layout: subdoc
-title: Session Restoration - Documentation - iTerm2 - Mac OS Terminal Replacement
+title: Session Restoration - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Session Restoration
 ---

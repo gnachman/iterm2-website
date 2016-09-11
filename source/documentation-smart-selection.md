@@ -1,6 +1,6 @@
 ---
 layout: subdoc
-title: Smart Selection - Documentation - iTerm2 - Mac OS Terminal Replacement
+title: Smart Selection - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Smart Selection
 ---

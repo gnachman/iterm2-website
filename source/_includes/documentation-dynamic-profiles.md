@@ -1,4 +1,4 @@
-*Dynamic Profiles* is a feature that allows you to store your profiles in a file outside the usual OS X preferences database. Profiles may be changed at runtime by editing one or more plist files (formatted as JSON, XML, or in binary). Changes are picked up immediately.
+*Dynamic Profiles* is a feature that allows you to store your profiles in a file outside the usual macOS preferences database. Profiles may be changed at runtime by editing one or more plist files (formatted as JSON, XML, or in binary). Changes are picked up immediately.
 
 ### Availability
 
@@ -38,7 +38,7 @@ There are two required fields for each profile:
   * Guid
   * Name
 
-The "Guid" is a globally unique identifier. It is used to track changes to the profile over time. No other profile should ever have the same guid. One easy way to generate a Guid is to use the *uuidgen* program, which comes standard with OS X.
+The "Guid" is a globally unique identifier. It is used to track changes to the profile over time. No other profile should ever have the same guid. One easy way to generate a Guid is to use the *uuidgen* program, which comes standard with macOS.
 
 The "Name" is the name, as seen in the Profiles window or in Preferences.
 
