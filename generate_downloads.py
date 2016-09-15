@@ -35,8 +35,14 @@ def CompareZipFileNames(x, y):
   xversion = re.sub(r"iTerm2.*?([0-9_*]+(-[^.]+)?)\.zip", r"\1", xname)
   yversion = re.sub(r"iTerm2.*?([0-9_*]+(-[^.]+)?)\.zip", r"\1", yname)
 
-  xnumbers = re.sub(r"[0-9_]+(-.*)", r"", xversion).split("_")
-  ynumbers = re.sub(r"[0-9_]+(-.*)", r"", yversion).split("_")
+  xsubnumbers = re.sub(r"[0-9_]+(-.*)", r"", xversion)
+  ysubnumbers = re.sub(r"[0-9_]+(-.*)", r"", yversion)
+
+  if len(xsubnumbers) == 0: xsubnumbers = "0"
+  if len(ysubnumbers) == 0: ysubnumbers = "0"
+
+  xnumbers = map(int, xsubnumbers.split("_"))
+  ynumbers = map(int, ysubnumbers.split("_"))
 
   i = 0
   while (i < len(xnumbers) and i < len(ynumbers)):
