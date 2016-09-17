@@ -5,7 +5,7 @@ tl;dr watch this:
 
 ### Notes
 
- * You must turn off **System Prefs &gt; General &gt; Close windows when quitting an app**.
+ * You must turn off **System Prefs &gt; General &gt; Close windows when quitting an app**. For more information on system window restoration, please see <a href="https://support.apple.com/en-us/HT204005">Apple's docs</a>.
 
  * You must set **Prefs &gt; General &gt; Startup** to **Use system window restoration settings**.
 
