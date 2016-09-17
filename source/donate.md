@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Donate - iTerm2 - Mac OS Terminal Replacement
+title: Donate - iTerm2 - macOS Terminal Replacement
 ---
 
 ## Donate

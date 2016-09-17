@@ -1,6 +1,6 @@
 ---
 layout: default
-title: iTerm2 - Mac OS Terminal Replacement
+title: iTerm2 - macOS Terminal Replacement
 active-state: news
 ---
 

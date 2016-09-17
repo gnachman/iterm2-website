@@ -1,6 +1,6 @@
 ---
 layout: subdoc
-title: Fonts - Documentation - iTerm2 - Mac OS Terminal Replacement
+title: Fonts - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Fonts
 ---

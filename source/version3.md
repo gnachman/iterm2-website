@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Version 3 - iTerm2 - Mac OS Terminal Replacement
+title: Version 3 - iTerm2 - macOS Terminal Replacement
 ---
 ## iTerm2 Version 3 Released
 
@@ -20,7 +20,7 @@ There are a lot of new features in 3.0. It represents about eighteen months of d
 
 #### A Fresh Look
 
-iTerm2 has been updated for the modern Mac OS X "flat" look and is stunningly beautiful.
+iTerm2 has been updated for the modern macOS "flat" look and is stunningly beautiful.
 
 #### Shell Integration
 
@@ -50,7 +50,7 @@ iTerm2 version 3 introduces the concept of a *Badge*. A badge is user-defined te
 
 #### Password Manager
 
-The built-in Password Manager saves you from having to remember lots of passwords. It uses Mac OS's keychain to securely store them, and has built-in guards to prevent them from being accidentally transmitted when not at a password prompt. You can even write a Trigger that automatically opens the Password Manager at the password prompt.
+The built-in Password Manager saves you from having to remember lots of passwords. It uses macOS's keychain to securely store them, and has built-in guards to prevent them from being accidentally transmitted when not at a password prompt. You can even write a Trigger that automatically opens the Password Manager at the password prompt.
 
 #### Undo Close
 

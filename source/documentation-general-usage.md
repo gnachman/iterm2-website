@@ -1,6 +1,6 @@
 ---
 layout: subdoc
-title: General Usage - Documentation - iTerm2 - Mac OS Terminal Replacement
+title: General Usage - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: General Usage
 ---

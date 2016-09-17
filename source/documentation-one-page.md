@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Documentation - iTerm2 - Mac OS Terminal Replacement
+title: Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 ---
 {% include documentation.md %}

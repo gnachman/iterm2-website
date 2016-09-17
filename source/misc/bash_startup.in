@@ -6,7 +6,7 @@
 # will override these and if you override one or the other this _will_ break.
 
 # This is known to support bash3, as well as *mostly* support bash2.05b.  It
-# has been tested with the default shells on MacOS X 10.4 "Tiger", Ubuntu 5.10
+# has been tested with the default shells on macOS 10.4 "Tiger", Ubuntu 5.10
 # "Breezy Badger", Ubuntu 6.06 "Dapper Drake", and Ubuntu 6.10 "Edgy Eft".
 
 # tmux and screen are not supported; even using the tmux hack to get escape

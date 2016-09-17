@@ -34,7 +34,7 @@ Sometimes interactive programs will overwrite something of interest on the scree
 Another benefit of Instant Replay is that it shows you the exact time that something appeared on your screen down to the second. This is useful when trying to figure out when an error occurred, for example.
 
 #### Full Screen
-You can press cmd-enter and iTerm2 will take up the entire screen. If you had a transparent background configured, it will be turned off upon entering full screen mode to reduce distractions. You can re-enable it with cmd-U. Unlike most OS X apps, iTerm2 can open a fullscreen window in the same desktop with no annoying animation if you disable Preferences > General > Native full screen windows.
+You can press cmd-enter and iTerm2 will take up the entire screen. If you had a transparent background configured, it will be turned off upon entering full screen mode to reduce distractions. You can re-enable it with cmd-U. Unlike most macOS apps, iTerm2 can open a fullscreen window in the same desktop with no annoying animation if you disable Preferences > General > Native full screen windows.
 
 #### High-Color Modes
 iTerm2 supports 256 color mode. To enable this for csh shells, set your terminal to xterm-256color (under Preferences > Profiles > Terminal > Report Terminal Type). Some applications may need to be configured to support this mode. In vim, add this to your .vimrc:

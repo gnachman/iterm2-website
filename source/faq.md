@@ -1,6 +1,6 @@
 ---
 layout: default
-title: FAQ - iTerm2 - Mac OS Terminal Replacement
+title: FAQ - iTerm2 - macOS Terminal Replacement
 active-state: faq
 ---
 
@@ -37,7 +37,7 @@ A: iTerm2 lets you to specify two fonts. If you only use English or western euro
 A: Go to Preferences->Profiles->Text and change the setting of "Treat ambiguous-width characters as double-width."
 
 #### Q: Why can't I set my session's shortcut key to Ctrl-Cmd-D?
-A: That key is used by OS X's dictionary program.
+A: That key is used by macOS's dictionary program.
 
 #### Q: How do I make the option/alt key act like Meta or send escape codes?
 A: Go to Preferences->Profiles tab. Select your profile on the left, and then open the Keyboard tab. At the bottom is a set of buttons that lets you select the behavior of the Option key. For most users, <i>Esc+</i> will be the best choice.

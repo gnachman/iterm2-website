@@ -1,6 +1,6 @@
 ---
 layout: subdoc
-title: Utilities - Documentation - iTerm2 - Mac OS Terminal Replacement
+title: Utilities - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Utilities
 ---
