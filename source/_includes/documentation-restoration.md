@@ -5,12 +5,13 @@ tl;dr watch this:
 
 ### Notes
 
- * You can toggle this feature with <b>Prefs&gt;Advanced&gt;Enable session restoration.</b>, but you *must restart iTerm2 after changing this setting*.
+ * You must turn off **System Prefs &gt; General &gt; Close windows when quitting an app**. For more information on system window restoration, please see <a href="https://support.apple.com/en-us/HT204005">Apple's docs</a>.
 
- * If you don't have system window restoration enabled (both in System Settings and also as iTerm2's startup mode under Prefs&gt;General) then history and screen contents will be lost.
+ * You must set **Prefs &gt; General &gt; Startup** to **Use system window restoration settings**.
 
  * Force quitting iTerm2, causing it to crash, or upgrading it when prompted should restore your sessions. *NOTE: Quitting iTerm2 with Cmd-Q will terminate your jobs and they won't be restored.* There is an advanced preference to change this behavior, though.
 
+ * You can toggle this feature with <b>Prefs&gt;Advanced&gt;Enable session restoration.</b>, but you *must restart iTerm2 after changing this setting*.
  * A session that has had only its window contents restored and not the running processes will get a reverse video *Session Restored* banner. A properly restored session will pick up right where you left it.
 
  * If you reboot, your jobs will terminate and not be restored. The window contents should be restored.
