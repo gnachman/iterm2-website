@@ -18,3 +18,6 @@ cp iterm2-website/downloads/stable/iTerm2-$UNDERSCORE_VERSION.changelog iterm2-w
 echo '<?xml version="1.0" encoding="utf-8"?>' > iterm2-website/source/appcasts/final.xml
 cat ~/final.xml >> iterm2-website/source/appcasts/final.xml
 
+echo 'Options +FollowSymlinks' > ~/htaccess
+echo "Redirect 302 /downloads/stable/latest https://iterm2.com/downloads/stable/iTerm2-$UNDERSCORE_VERSION.zip" >> ~/htaccess
+mv ~/htaccess iterm2-website/source/downloads/stable/.htaccess

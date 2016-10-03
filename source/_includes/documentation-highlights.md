@@ -5,7 +5,7 @@ There are two ways to select text to copy to the clipboard: you can use the mous
 
 To select text without using the mouse, press cmd-f to open the find field. Enter the beginning of the text you wish to copy and the find feature will select it in your window. Then press tab and the end of the selection will advance by a word. To move the beginning of the selection to the left, press shift-tab. At most one line of text can be selected this way.
 
-In Prefs > Profiles > Keys you can assign keys to move the beginning or end of the selection by a single character, word, or line. No such kes are bound by default.
+In Prefs > Profiles > Keys you can assign keys to move the beginning or end of the selection by a single character, word, or line. No such keys are bound by default.
 
 #### Split Panes
 iTerm2 allows you to divide a tab into many rectangular "panes", each of which is a different terminal session. The shortcuts cmd-d and cmd-shift-d divide an existing session vertically or horizontally, respectively. You can navigate among split panes with cmd-opt-arrow or cmd-[ and cmd-]. You can "maximize" the current pane--hiding all others in that tab--with cmd-shift-enter. Pressing the shortcut again restores the hidden panes.
