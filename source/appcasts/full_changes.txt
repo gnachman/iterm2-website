@@ -1,17 +1,18 @@
-iTerm2 3.0.10
-Bug fixes and security improvements.
+iTerm2 3.0.12
 
-- Decode images in a sandboxed process to improve security. Remove the
-  prompt before displaying an image since they no longer expose
-significant attack surface.
-- Fix a performance issue when saving state for very long lived
-  sessions.
-- Change the : in automatic session logs to a . because Finder shows :
-  in filenames as a /
-- Fix a crash when closing the "Edit current profile" window.
-- Offer to move the app if it's not in Applications or
-  $HOME/Applications.  Sierra won't allow auto-update from the Downloads
-  folder.
+- Reduce system log spam
+- Fix a bug where maximize split panes in a fullscreen window in tmux
+  integration could cause the session to be the wrong size.
+- Fix a bug where imgcat was broken on macOS 10.10 and earlier.
+- Don't send anti-idle codes to the connecting tmux session in
+  integration mode.
+- Adjust the color of the border for fullscreen tmux integration
+  windows to be less obtrusive.
+- Fix a bug where window restoration would give a "stuck" session when
+  restoring a tmux integration session.
+- Load Patreon patron names at runtime.
+- Fix a bug where session restoration failed on macOS 10.12 because
+  Apple broke syslog.
 
 SHA-256 of the zip file is
-434f52c5d554005a94e1f471018d1480a029155205644dadd65377f5eeff3624
+d500c5e376a05df6896f92504961142b7721efb9e235232d39545c7a3c5b7507
