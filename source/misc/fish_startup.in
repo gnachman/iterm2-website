@@ -83,7 +83,7 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
     end
   end
 
-  function -v _ underscore_change
+  function underscore_change -v _
     if [ x$_ = xfish ]
       iterm2_precmd
     else
