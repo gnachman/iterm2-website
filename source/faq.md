@@ -118,3 +118,10 @@ A: <a href="https://github.com/gnachman/iTerm2">See gnachman's Github iTerm2 pro
 
 #### Q: How can I open iTerm2 to a directory from Finder?
 A: <a href="https://github.com/peterldowns/iterm2-finder-tools">iTerm2 Finder Tools</a> is excellent.
+
+#### Q: How can I keep the cursor guide always visible?
+A: Turn on the **Cursor Guide** checkbox in **Preferences>Profiles>Colors**.
+
+#### Q: How can I make the toolbelt open automatically?
+A: Turn on the **Open Toolbelt** checkbox in **Preferences>Profiles>Window**.
+
