@@ -4,7 +4,7 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
   end
 
   # Mark start of prompt
-  function iterm2_prompt_start
+  function iterm2_prompt_mark
     printf "\033]133;A\007"
   end
 
@@ -48,7 +48,9 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
     function fish_mode_prompt --description 'Write out the mode prompt; do not replace this. Instead, change fish_mode_prompt before sourcing .iterm2_shell_integration.fish, or modify iterm2_fish_mode_prompt instead.'
        set -l last_status $status
        iterm2_status $last_status
-       iterm2_prompt_start
+       if not functions iterm2_fish_prompt | grep iterm2_prompt_mark > /dev/null
+         iterm2_prompt_mark
+       end
        sh -c "exit $last_status"
 
        iterm2_fish_mode_prompt
@@ -75,7 +77,9 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
       set -l last_status $status
 
       iterm2_status $last_status
-      iterm2_prompt_start
+      if not functions iterm2_fish_prompt | grep iterm2_prompt_mark > /dev/null
+        iterm2_prompt_mark
+      end
       # Restore the status
       sh -c "exit $last_status"
       iterm2_fish_prompt
@@ -83,7 +87,7 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
     end
   end
 
-  function -v _ underscore_change
+  function underscore_change -v _
     if [ x$_ = xfish ]
       iterm2_precmd
     else
@@ -97,5 +101,5 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
   end
 
   iterm2_precmd
-  printf "\033]1337;ShellIntegrationVersion=3;shell=fish\007"
+  printf "\033]1337;ShellIntegrationVersion=5;shell=fish\007"
 end

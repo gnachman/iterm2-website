@@ -96,6 +96,12 @@ if [[ "$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == 
       # Get the value of the prompt prefix, which will change $?
       \local iterm2_prompt_prefix_value="$(iterm2_prompt_prefix)"
 
+      # Add the mark unless the prompt includes '$(iterm2_prompt_mark)' as a substring.
+      if [[ $ITERM_ORIG_PS1 != *'$(iterm2_prompt_mark)'* ]]
+      then
+        iterm2_prompt_prefix_value="$iterm2_prompt_prefix_value$(iterm2_prompt_mark)"
+      fi
+
       # Reset $? to its saved value, which might be used in $ITERM_ORIG_PS1.
       sh -c "exit $s"
 
@@ -261,7 +267,9 @@ if [[ "$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == 
     iterm2_end_osc
 
     iterm2_print_state_data
+  }
 
+  function iterm2_prompt_mark() {
     iterm2_begin_osc
     printf "133;A"
     iterm2_end_osc
@@ -275,7 +283,7 @@ if [[ "$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == 
 
   function iterm2_print_version_number() {
     iterm2_begin_osc
-    printf "1337;ShellIntegrationVersion=3;shell=bash"
+    printf "1337;ShellIntegrationVersion=4;shell=bash"
     iterm2_end_osc
   }
 
