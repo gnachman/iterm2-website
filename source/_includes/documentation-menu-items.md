@@ -40,7 +40,7 @@ After a session ends (e.g., because the shell exits) this menu item becomes enab
 These options allow you to send keyboard input to more than one session. Be careful.
 
 #### Shell > Run/Stop Coprocess
-Allows you to start and stop a coprocess linked to the current session. Learn more about coprocesses.
+Allows you to start and stop a coprocess linked to the current session. <a href="/documentation-coprocesses.html">Learn more about coprocesses</a>.
 
 #### Shell > tmux > ...
 These commands let you interact with the tmux integration. The tmux dashboard is a view that lets you see all your tmux sessions and windows at a glance, adjust which are visible, rename them, and change the current tmux session.
@@ -165,7 +165,7 @@ If you have scripts located in `$HOME/Library/Application Support/iTerm/Scripts`
 ### Toolbelt Menu
 
 #### Tolbelt > Captured Output
-This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="captured_output.html">Captured Output</a> fo r more information.
+This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="captured_output.html">Captured Output</a> for more information.
 
 #### Toolbelt > Command History
 This toggles the visibility of the Command History tool. It shows recently used commands. You must install <a href="shell_integration.html">Shell Integration</a> for this to know your command history.
