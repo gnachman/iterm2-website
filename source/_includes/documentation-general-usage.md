@@ -6,7 +6,7 @@ Tabs in iTerm2 behave like tabs in other programs, most notably web browsers lik
 
 By default, the label of each tab is the name of the job that's running in that session. Some systems are configured to augment this with additional information such as the hostname you're logged in to or your current directory (this is done by sending a special code of ESC]0;string ^G).
 
-Tab labels have indicators that tell you their status. A blue dot means new input was received. An activity indicator means new out is being received. When the session ends, a  ⃠ icon appears in the tab. You can customize these indicatorsc in Preferences > Appearance.
+Tab labels have indicators that tell you their status. A blue dot means new input was received. An activity indicator means new out is being received. When the session ends, a  ⃠ icon appears in the tab. You can customize these indicators in Preferences > Appearance.
 
 #### Edit Current Session
 The *Edit Current Session* panel lets you modify the appearance of a single session. If you customize some attribute of the session (for example, by changing the default text color) then subsequent changes to that same attribute in the profile will not affect the customized session. However, changes to other attributes of the profile will affect the customized session.
