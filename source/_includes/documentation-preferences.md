@@ -2,7 +2,7 @@
 ### General
 <hr>
 #### Startup
-The first dropdown box lets you select how windows will be opened when iTerm2 is launched. Most users will want *Use Systme Window Restoration Setting* as it works best with <a href="restoration.html">Session Restoration</a>. Users who exclusively use the Hotkey Window may prefer *Don't Open Any Windows*. If you have a default window arrangement saved then *Open Default Window Arrangement* will be available.
+The first dropdown box lets you select how windows will be opened when iTerm2 is launched. Most users will want *Use System Window Restoration Setting* as it works best with <a href="restoration.html">Session Restoration</a>. Users who exclusively use the Hotkey Window may prefer *Don't Open Any Windows*. If you have a default window arrangement saved then *Open Default Window Arrangement* will be available.
 
 #### Open profiles window
 If selected, the Profiles Window will automatically open when iTerm2 is started.
@@ -235,7 +235,7 @@ Use HFS+ normalization instead of NFC. This helps preserve the fullwidth attribu
 This sets the transparency of the window background. It can be temporarily disabled with View > Use Transparency.
 
 #### Keep background colors opaque
-If selected, non-default background colors wil be opaque.
+If selected, non-default background colors will be opaque.
 
 #### Blur
 If selected, the window background is blurred provided the background has some transparency. Selecting a large radius will blur the background more, but (especially on Retina displays) comes with a performance penalty.

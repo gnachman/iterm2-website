@@ -125,3 +125,6 @@ A: Turn on the **Cursor Guide** checkbox in **Preferences>Profiles>Colors**.
 #### Q: How can I make the toolbelt open automatically?
 A: Turn on the **Open Toolbelt** checkbox in **Preferences>Profiles>Window**.
 
+#### Q: How can I prevent the window from resizing when I change the font with cmd-+ and cmd--?
+A: Turn off **Preferences>General>Adjust window when changing font size**.
+
