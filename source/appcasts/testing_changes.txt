@@ -1,3 +1,67 @@
+iTerm2 3.0.13
+Bug fixes, including fixes for a number of crashes.
+
+- When the password manager checks if you're at a password prompt,
+  accept asterisks echoed back.
+- Fix a crash when characters have a crazy number of combining marks.
+- Fix a bug with restoring minimized windows.
+- Fix a bug where row heights did not change properly in profile
+  lists.
+- Fix an exception at startup when saved state is corrupted.
+- Add an advanced preference to disable DNS lookups on text in the
+  terminal window.
+- Fix imgcat support for PDFs.
+- Fix a bug where secure input could get stuck.
+- Mitigate a leak of web views.
+- Fix a crash when using the color picker's eyedropper.
+- Prevent a crash when resizing a session.
+- Fix a crash when the prefs window is closed while the file picker is
+  open.
+- Fix a bug where a maximized tmux pane's contents would appear behind
+  a per-pane titlebar.
+- Explain why you're being prompted to confirm quitting behind a
+  disclosure triangle.
+- When closing a tmux tab that requires the kill/hide confirmation and
+  the session-closing confirmation, only show the kill/hide confirmation.
+- When creating a new tab using the default profile when the current
+  tab is a tmux tab, refer to the gateway session's current directory
+  for the purposes of recycling the working directory.
+- Fix a bug where focus reporting misbehaved when there were multiple
+  panes in a tab.
+
+iTemr2 3.0.12
+Bug fixes.
+
+- Reduce system log spam
+- Fix a bug where maximize split panes in a fullscreen window in tmux
+  integration could cause the session to be the wrong size.
+- Fix a bug where imgcat was broken on macOS 10.10 and earlier.
+- Don't send anti-idle codes to the connecting tmux session in
+  integration mode.
+- Adjust the color of the border for fullscreen tmux integration
+  windows to be less obtrusive.
+- Fix a bug where window restoration would give a "stuck" session when
+  restoring a tmux integration session.
+- Load Patreon patron names at runtime.
+- Fix a bug where session restoration failed on macOS 10.12 because
+  Apple broke syslog.
+
+
+iTerm2 3.0.11
+Bug fixes and small improvements.
+
+- Do not prompt before multiline paste unless you are at the shell
+  prompt.
+- Gracefully handle the failure to create a temp file when starting a
+  new session rather than crashing.
+- Set COLORFBG even if no ANSI color is an exact match to the
+  foreground and background colors. 0;15 or 15;0 is used to indicate
+  light or dark background.
+- Fix a bug where the ITERM_SESSION_ID environment variable would have
+  an incorrect pane number
+- Typographical improvements to the tip of the day.
+
+
 iTerm2 3.0.10
 Bug fixes and a security improvement.
 
