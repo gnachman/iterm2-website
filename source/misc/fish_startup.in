@@ -47,6 +47,7 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
     functions -c fish_mode_prompt iterm2_fish_mode_prompt
     function fish_mode_prompt --description 'Write out the mode prompt; do not replace this. Instead, change fish_mode_prompt before sourcing .iterm2_shell_integration.fish, or modify iterm2_fish_mode_prompt instead.'
        set -l last_status $status
+
        iterm2_status $last_status
        if not functions iterm2_fish_prompt | grep iterm2_prompt_mark > /dev/null
          iterm2_prompt_mark
@@ -57,16 +58,10 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
     end
 
     function fish_prompt --description 'Write out the prompt; do not replace this. Instead, change fish_prompt before sourcing .iterm2_shell_integration.fish, or modify iterm2_fish_prompt instead.'
-       # Remove the trailing newline from the original prompt. Storing a
-       # command's output to a variable loses all the newlines, causing the
-       # prompt's lines to get joined together. You also can't pass it to a
-       # shell command command. So we can only use it in something like a for
-       # loop.
-       for line in (iterm2_fish_prompt)
-         set -q last_line; and echo $last_line
-         set last_line $line
-       end
-       set -q last_line; and echo -n $last_line
+       # Remove the trailing newline from the original prompt. This is done
+       # using the string builtin from fish, but to make sure any escape codes
+       # are correctly interpreted, use %b for printf.
+       printf "%b" (string join "\n" (iterm2_fish_prompt))
 
        iterm2_prompt_end
     end
@@ -80,6 +75,7 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
       if not functions iterm2_fish_prompt | grep iterm2_prompt_mark > /dev/null
         iterm2_prompt_mark
       end
+
       # Restore the status
       sh -c "exit $last_status"
       iterm2_fish_prompt
