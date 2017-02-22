@@ -57,7 +57,7 @@ then
 fi
 if [ "${SHELL}" = fish ]
 then
-  echo "Make sure you have fish 2.2 or later. Your version is:"
+  echo "Make sure you have fish 2.3 or later. Your version is:"
   fish -v
 
   URL="https://iterm2.com/shell_integration/fish"
@@ -96,7 +96,7 @@ test -d ~/.iterm2 || mkdir ~/.iterm2
 for U in "${UTILITIES[@]}"
 do
   echo "Downloading $U..."
-  curl -SsL "https://iterm2.com/$U" > ~/.iterm2/$U && chmod +x ~/.iterm2/$U
+  curl -SsL "https://iterm2.com/utilities/$U" > ~/.iterm2/$U && chmod +x ~/.iterm2/$U
 done
 echo "Adding aliases..."
 echo "$ALIASES" >> "${FILENAME}"
@@ -109,7 +109,22 @@ echo ""
 echo "You will also have these commands:"
 echo "imgcat filename"
 echo "  Displays the image inline."
+echo "imgls"
+echo "  Shows a directory listing with image thumbnails"
+echo "it2attention start|stop|fireworks"
+echo "  Gets your attention"
+echo "it2check"
+echo "  Checks if the terminal is iTerm2"
+echo "it2copy [filename]"
+echo "  Copies to the pasteboard"
 echo "it2dl filename"
 echo "  Downloads the specified file, saving it in your Downloads folder."
-
+echo "it2setcolor ..."
+echo "  Changes individual color settings or loads a color preset"
+echo "it2setkeylabel ..."
+echo "  Changes Touch Bar function key labels"
+echo "it2ul"
+echo "  Uploads a file"
+echo "it2universion"
+echo "  Sets the current unicode version"
 

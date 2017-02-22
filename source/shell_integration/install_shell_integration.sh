@@ -32,7 +32,7 @@ then
 fi
 if [ "${SHELL}" = fish ]
 then
-  echo "Make sure you have fish 2.2 or later. Your version is:"
+  echo "Make sure you have fish 2.3 or later. Your version is:"
   fish -v
 
   URL="https://iterm2.com/shell_integration/fish"
