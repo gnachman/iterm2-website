@@ -96,7 +96,7 @@ test -d ~/.iterm2 || mkdir ~/.iterm2
 for U in "${UTILITIES[@]}"
 do
   echo "Downloading $U..."
-  curl -SsL "https://iterm2.com/$U" > ~/.iterm2/$U && chmod +x ~/.iterm2/$U
+  curl -SsL "https://iterm2.com/utilities/$U" > ~/.iterm2/$U && chmod +x ~/.iterm2/$U
 done
 echo "Adding aliases..."
 echo "$ALIASES" >> "${FILENAME}"
