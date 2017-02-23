@@ -90,7 +90,8 @@ function iterm2_print_user_vars() {
 # fish: Place this in ~/.config/fish/config.fish after the line
 # "source ~/.iterm2_shell_integration.fish".
 function iterm2_print_user_vars
-  iterm2_set_user_var gitBranch (git branch 2> /dev/null | grep \* | cut -c3-)
+  set -l git_branch (git branch ^/dev/null | sed -n '/\* /s///p')
+  iterm2_set_user_var gitBranch "$git_branch"
 end
 </pre>
 <pre id="tcsh" style="display: none">
