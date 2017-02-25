@@ -5,6 +5,7 @@ import os
 import os.path, time
 import re
 import glob
+import sys
 
 print '''---
 layout: default
@@ -12,6 +13,11 @@ title: Downloads - iTerm2 - Mac OS Terminal Replacement
 active-state: downloads
 ---
 '''
+
+def strip_end(text, suffix):
+    if not text.endswith(suffix):
+        return text
+    return text[:len(text)-len(suffix)]
 
 # Compare version numbers of iTerm2 filenames.
 def CompareZipFileNames(x, y):
@@ -32,8 +38,11 @@ def CompareZipFileNames(x, y):
 
   xname = os.path.basename(os.path.normpath(x))
   yname = os.path.basename(os.path.normpath(y))
-  xversion = re.sub(r"iTerm2.*?([0-9_*]+(-[^.]+)?)\.zip", r"\1", xname)
-  yversion = re.sub(r"iTerm2.*?([0-9_*]+(-[^.]+)?)\.zip", r"\1", yname)
+  xversion = re.sub(r"iTerm2.*?([0-9_*]+([-_][^.]+)?)\.zip", r"\1", xname)
+  yversion = re.sub(r"iTerm2.*?([0-9_*]+([-_][^.]+)?)\.zip", r"\1", yname)
+
+  xversion = xversion.replace("beta", "0")
+  yversion = yversion.replace("beta", "0")
 
   xsubnumbers = re.sub(r"[0-9_]+(-.*)", r"", xversion)
   ysubnumbers = re.sub(r"[0-9_]+(-.*)", r"", yversion)
