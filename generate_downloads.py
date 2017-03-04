@@ -102,7 +102,7 @@ DOWNLOADS_PATHS=[("Stable Releases", "stable", "Stable releases update rarely bu
                  ]
 
 LIMIT = { "stable": 1,
-          "beta": 1,
+          "beta": 2,
 	  "nightly": 5 }
 
 for sectionName,path,note in DOWNLOADS_PATHS:
