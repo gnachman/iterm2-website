@@ -97,43 +97,51 @@ def ChangeLog(zip):
 
 
 BASE=os.environ["HOME"] + "/iterm2.com/downloads"
-DOWNLOADS_PATHS=[("Stable Releases", "stable", "Stable releases update rarely but have no serious bugs."),
-                 ("Test Releases", "beta", "Test releases update many times a year and are occasionally unstable."),
-                 ]
+# Name, path component, description, array of substrings delineating tracks which always includes the empty string.
+DOWNLOADS_PATHS=[("Stable Releases", "stable", "Stable releases update rarely but have no serious bugs.", [ "" ]),
+                 ("Test Releases", "beta", "Test releases update many times a year and are occasionally unstable.", [ "", "3_1_beta" ]), ]
 
-LIMIT = { "stable": 1,
-          "beta": 2,
-	  "nightly": 5 }
-
-for sectionName,path,note in DOWNLOADS_PATHS:
+j = 0
+for sectionName,path,note,tracks in DOWNLOADS_PATHS:
     print "<h3>" + sectionName + '</h3><hr style="margin-top: 0pt; margin-bottom: 4pt" />'
     if note is not None:
       print "<p>"
       print note
       print "</p>"
 
-    modern_zips = glob.glob(BASE + "/" + path + "/*.zip")
-    modern_zips.sort(cmp=CompareZipFileNames, reverse=True)
+    all_zips = glob.glob(BASE + "/" + path + "/*.zip")
+    all_zips.sort(cmp=CompareZipFileNames, reverse=True)
+    zips_by_track = { }
 
-    if LIMIT[path] == 1:
-      zips = [ modern_zips[0] ]
-      remainder = modern_zips[1:]
-    else:
-      zips = [ modern_zips[0] ]
-      remainder = modern_zips[1:]
-    remainder.sort(cmp=CompareZipFileNames, reverse=True)
-    zips += remainder
+    # Split up zip files into tracks. Each time the set of all_zips is shrunk. Whatever's left goes in the catchall track.
+    for track in tracks:
+      if track != "":
+	filtered = filter(lambda zip: track in zip, all_zips)
+	zips_by_track[track] = list(filtered)
+	all_zips = filter(lambda zip: track not in zip, all_zips)
+    zips_by_track[""] = list(all_zips)
 
-    i = 0
-    haveArchive = False
-    for zip in zips:
-        if i == LIMIT[path]:
+    for track in tracks:
+      track_zips = zips_by_track[track]
+
+      zips = [ track_zips[0] ]
+      remainder = track_zips[1:]
+
+      remainder.sort(cmp=CompareZipFileNames, reverse=True)
+      zips += remainder
+
+      i = 0
+      haveArchive = False
+      for zip in zips:
+	if i == 1:
 	  haveArchive = True
+	  key = "older_%d" % j
+	  j += 1
 	  print '''<p><a href="javascript:showId('%s')" id='show%s'>&#x25b8; Show Older Versions</a>
-<a href="javascript:hideId('%s')" id='hide%s' style="display: none">&#x25be; Hide Older Versions</a>
-<div id="changelist%s" style="margin-left: 15pt; display: none"><h3>Older %s</h3>''' % (path, path, path, path, path, sectionName)
-        i += 1
-        name = os.path.split(zip)[1]
+  <a href="javascript:hideId('%s')" id='hide%s' style="display: none">&#x25be; Hide Older Versions</a>
+  <div id="changelist%s" style="margin-left: 15pt; display: none"><h3>Older %s</h3>''' % (key, key, key, key, key, sectionName)
+	i += 1
+	name = os.path.split(zip)[1]
 	print '<h4 style="margin-top: 4pt"><a href="https://iterm2.com/downloads/' + path + '/' + name + '"><img src="/images/Download.png" width=100 height=27 style="padding-right: 10pt">' + Summary(zip) + '</a></h4>'
 
 	descr = Description(zip)
@@ -145,8 +153,8 @@ for sectionName,path,note in DOWNLOADS_PATHS:
 	  if len(cl):
 	      print cl
 	  print "</p>"
-    if haveArchive:
-      print '''</div>'''
+      if haveArchive:
+	print '''</div>'''
 
 print '''
 <h3>Nightly Builds</h3>
