@@ -1,7 +1,7 @@
 iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more--even over ssh. This enables several useful features.
 
 ### How To Enable Shell Integration
-The easiest way to install shell integration is to select the *iTerm2&gt;Install Shell Integration* menu item. It will download and run a shell script as described below. You should do this on every host you ssh to as well as your local machine. The following shells are supported: tcsh, zsh, bash, and fish 2.2 or later. Contributions for other shells are most welcome.
+The easiest way to install shell integration is to select the *iTerm2&gt;Install Shell Integration* menu item. It will download and run a shell script as described below. You should do this on every host you ssh to as well as your local machine. The following shells are supported: tcsh, zsh, bash, and fish 2.3 or later. Contributions for other shells are most welcome.
 
 When you select the *iTerm2&gt;Install Shell Integration* menu item, it types this for you:
 
@@ -68,6 +68,19 @@ When shell integration is enabled, iTerm2 automatically adds a mark at each comm
 <img src="/images/mark.png" />
 
 You can navigate marks with Cmd-Shift-Up and Down-arrow keys.
+
+If you have a multi-line prompt and would like to customize the mark's location, add this to your PS1 at the location where the mark should appear:
+
+For zsh:
+<pre>%{$(iterm2_prompt_mark)%}</pre>
+
+For bash:
+<pre>\[$(iterm2_prompt_mark)\]</pre>
+
+Fish users can place this line somewhere in their fish_prompt function:
+<pre>iterm2_prompt_mark</pre>
+
+This feature is not supported in tcsh.
 
 #### Alert on next mark
 iTerm2 can show an alert box when a mark appears. This is useful when you start a long-running command. Select *Edit&gt;Marks and Annotations&gt;Alert on next mark* (Cmd-Opt-A) after starting a command, and you can go do something else in another window or tab. When the command prompt returns, a modal alert will appear, calling attention to the finished job.
