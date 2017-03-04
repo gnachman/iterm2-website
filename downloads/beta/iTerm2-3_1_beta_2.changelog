@@ -1,2 +1,27 @@
+Please see the changelog for 3.1.beta.1 for the new features in the 3.1 track.
+
+New features:
+- Allow opening multiple profiles from the profiles tool
+- Add an advanced setting to exclude background colors from copied
+  styles.
+- Allow switching to a pane, tab, or window by modifier+number even on
+  keyboards like AZERTY which require a modifier to press a number
+  (but you don’t need to press that modifier, just the one configured
+  in Prefs > Keys).
+  
+Bug fixes:
+- Escape newlines in tabs in various places that we escape shell
+  characters.
+- Fix main thread deadlock when getting a process list is slow.
+- Move hotkey window to screen with cursor when it's not animated.
+- Fix or prevent various crashes that I wasn’t able to reproduce.
+- Do not call syslog between fork and exec on child side. That’s a bad
+  idea.
+- Ignore a paste escape sequence with an invalid base64 block instead
+  of crashing.
+- Ignore non-latin1 input to ReportVariable instead of throwing an
+  exception.
+- Don't crash when we're sent an inline file with no or invalid data.
+
 SHA-256 of the zip file is
 734c9fe31761f5da993458e94d198f30921053bde0a0ef1bbedcdfdab07a7114
