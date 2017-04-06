@@ -1,0 +1,61 @@
+New features:
+- Add support for OSC 8 to do hypertext links. The syntax is:
+  OSC 8 ; params ; url ST
+    params is zero or more colon-delimited key=value strings. The only
+  defined key is "id". Two adjacent hyperlinks with the same URL but
+  different "id"s will not highlight together on hover. id is
+  optional.
+    As usual, OSC is 'esc ]' and st is 'esc \'.
+- Trigger highlighting colors in a dynamic profile may use #rrggbb
+  notation.
+- Semantic history can now open file:line:column in VSCode.
+- Change "Open in current space" for hotkey windows to move the hotkey
+  window to the current space if it's already open on another space
+  when the hotkey is pressed.
+- Add an advanced pref to tweak the height of the underline cursor.
+- Add an experimental feature to draw an outline around underline and
+  vertical bar cursors to improve distinction from text.
+
+Bug fixes:
+- Add a send text request to the experimental API server
+- Add an advanced pref to use full-height cursor (including vertical
+  padding area)
+- Draw underline and vertical line cursor behind text to
+  improve readability.
+- Update to Sparkle 1.17 (with iTerm2-specific patches)
+- The first time the tmux gateway is auto-buried, open the
+  sessions menu and point out how to restore it with a popover hanging
+  off an invisible high-level window.
+- Prevent marks from getting absurdly wide when margins are
+  increased well beyond their defaults.
+- Add a clear button to captured output tool.
+- Fix a truly terrible memory leak.
+- Fix a bug where double-tap of a modifier didn't work to open a
+  hotkey window if it didn't also have a regular shortcut.
+- Fix a leak of inline images.
+- Fix a bug where sessions aren't restored correctly if the number of
+  scrollback lines is small.
+- Fix a bug where the find cursor UI would not be removed if you
+  switched sessions while it was open.
+- Improve performance in neovim by ensuring the display updates more
+  regularly.
+- Give scrollers a light appearance when the window has a dark
+  appearance so they'll be visible.
+- There's a hack to make the app active when the space changes
+  to a lion fullscreen window and the app isn't active. This is needed
+  only for LSUIElement apps, where the OS gets confused. Limit the
+  hack to LSUIElement mode since you could use spaces and have two
+  monitors.
+- Use SRGB for OSC 6 ; 1 ; bg ; red ; brightness ; Pc ST. It
+  was unstable before because I'd set the value in calibrated and then
+  convert it to SRGB when modifying a different component.
+- 6f9ab24 Don't crash on OSC 7 with bad URL.
+- Fix a bug where we incorrectly removed the tab color from
+  non-tmux sessions. It should have removed the tab color from tmux
+  sessions that have one in the tmux profile but not in the saved
+  session state.
+- Handle ligatures in Firacode better if had previously turned off
+  ligatures in a different ligature font.
+
+SHA-256 of the zip file is
+f8a49c5160c9a48d1d1f5f4eb12092cb09181bcc327ef70655a65251ce0d253e
