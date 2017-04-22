@@ -102,6 +102,9 @@ if [[ "$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == 
         iterm2_prompt_prefix_value="$iterm2_prompt_prefix_value$(iterm2_prompt_mark)"
       fi
 
+      # Send escape sequences with current directory and hostname.
+      iterm2_print_state_data
+
       # Reset $? to its saved value, which might be used in $ITERM_ORIG_PS1.
       sh -c "exit $s"
 
@@ -265,8 +268,6 @@ if [[ "$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == 
     iterm2_begin_osc
     printf "133;D;\$?"
     iterm2_end_osc
-
-    iterm2_print_state_data
   }
 
   function iterm2_prompt_mark() {
@@ -283,7 +284,7 @@ if [[ "$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == 
 
   function iterm2_print_version_number() {
     iterm2_begin_osc
-    printf "1337;ShellIntegrationVersion=4;shell=bash"
+    printf "1337;ShellIntegrationVersion=5;shell=bash"
     iterm2_end_osc
   }
 
