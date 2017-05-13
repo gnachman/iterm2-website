@@ -1,0 +1,51 @@
+New features:
+- Add copy mode, like tmux's.
+  https://iterm2.com/documentation-copymode.html
+- Add an advanced preference to make auto logs filenames' formattable.
+- Use secure copy to download files selected with cmd-click on a
+  filename on a remote host and OSC 8 URLs with a file: scheme and a
+  host part.
+- You can now enable ligatures on any font, not only those in a
+  whitelist. Your font may not have ligatures, in which case this will
+  just hurt performance with no benefit.
+- New APIs for the still-experimental websocket server. Docs are in the
+  proto file.
+- Add an advanced preference to allow different tmux sessions to have
+  different profiles and to base the profile of the tmux sessions on the
+  session that attached to tmux.
+- Add a new touch bar button that reports status. Use it2setkeylabel set
+  status "message". You could use it to show the current git branch in
+  the touch bar. Pressing the button takes you to where the status was
+  set.
+
+Bug fixes:
+- Fix a bug where the screen jumped around when scrolling by dragging
+  the scroller.
+- Improve how network automounts are detected. This helps us avoid
+  stat()ing files on the network, which can cause hangs when semantic
+  history tries to discover if a file exsts.
+- Improve performance for moving line-by-line through a file by caching
+  CTLineRef's.
+- Keep process monitoring from eating too much CPU.
+- Validate secure copy hostname and user name to ensure legal characters
+  only are present.
+- Fix a crash when the font is broken and reports a 0 size.
+- When new search results appear after the find on page query is entered
+  allow them to be navigated to with find next/previous.
+- Fix a bug where non-shell integration users could not reuse the
+  current directory.
+- Force everyone to upgrade to new shell integration version because of
+  a security issue.
+- Allow the password manager to open even if another sheet is already
+  open.
+- Draw the default background color behind inline images.
+- Fix a bug where the "Edit password" button in the password manager
+  would change your password into dots.
+- Fix ligatures in Iosevka.
+- Fix a bug where the wrong job name would be shown in the titlebar when
+  there were two jobs that considered themselves foreground jobs.
+- Fix a bug where the order of windows in applescript was random, not
+  back to front.
+
+SHA-256 of the zip file is
+266745852d529cfbfdb17b839cdca03c09a8b420b2b8865a022d37830e0e89a0
