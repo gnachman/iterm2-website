@@ -11,7 +11,7 @@ if ( ! ($?iterm2_shell_integration_installed)) then
 
       # If hostname -f is slow to run on your system, set iterm2_hostname before sourcing this script.
       if ( ! ($?iterm2_hostname)) then
-          set iterm2_hostname=`hostname -f 2>/dev/null`
+          set iterm2_hostname=`hostname -f |& cat || false`
           # some flavors of BSD (i.e. NetBSD and OpenBSD) don't have the -f option
           if ( $status != 0 ) then
               set iterm2_hostname=`hostname`
