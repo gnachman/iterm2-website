@@ -291,7 +291,11 @@ if [[ "$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == 
 
   # If hostname -f is slow on your system, set iterm2_hostname before sourcing this script.
   if [ -z "${iterm2_hostname:-}" ]; then
-    iterm2_hostname=$(hostname -f)
+    iterm2_hostname=$(hostname -f 2>/dev/null)
+    # some flavors of BSD (i.e. NetBSD and OpenBSD) don't have the -f option
+    if [ $? -ne 0 ]; then
+      iterm2_hostname=$(hostname)
+    fi
   fi
   iterm2_preexec_install
 
