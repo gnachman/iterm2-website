@@ -26,6 +26,13 @@ The application exposes various properties and provides functions that are descr
       create window with default profile
     end tell
 
+<p class="script-entry">create hotkey window with profile "<i>name</i>"<br/>
+Creates a hotkey window with the specified profile. The profile must be configured to have a hotkey.
+
+Example:
+
+    create hotkey window with profile "Hotkey Window"
+
 <p class="script-entry">create window with default profile<br/>
 create window with default profile command "<i>command</i>"</p>
 
@@ -101,13 +108,29 @@ The `current session` is the session that would receive keyboard input if the wi
 
 The `current tab` is the tab that is selected in the window.
 
+<p class="script-entry">hide hotkey window</p>
+
+If this is a hotkey window, it hides it with the standard hotkey window animation and makes the previously active application active, if appropriate.
+
+<p class="script-entry">hotkey window profile</p>
+
+Returns the name of the hotkey window profile associated with this window, if any.
+
 <p class="script-entry">id</p>
 
 The window ID. Useful for commands like `screencapture`.
 
+<p class="script-entry">is hotkey window</p>
+
+Returns a boolean value which is true if the window is a hotkey window associated with a profile.
+
 <p class="script-entry">name</p>
 
 The window's name, as appears in the title bar.
+
+<p class="script-entry">reveal hotkey window</p>
+
+If this is a hotkey window, it reveals it with the standard hotkey window animation and makes it key and the application active.
 
 <p class="script-entry">select</p>
 
@@ -116,6 +139,10 @@ Gives the window keyboard focus and brings it to the front.
 <p class="script-entry">tabs</p>
 
 An array of tabs. See the methods on Tab, below.
+
+<p class="script-entry">toggle hotkey window</p>
+
+Either shows or hides the hotkey window, if this is a hotkey window, using the standard animation. May make the app active or inactive.
 
 <hr/>
 ### Sessions
