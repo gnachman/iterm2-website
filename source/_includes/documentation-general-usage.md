@@ -59,5 +59,3 @@ By right-clicking in a session a context menu opens. You can use it to open a ne
 
 #### Profiles
 Many settings are stored in profiles. A profile is a named collection of settings, and you can have as many of them as you like. Most users only have one profile, but if you find that you often connect to different servers, they may be useful for you. A key feature of a profile is that you can associate a command with it that is run when it begins. For instance, if you often ssh to a particular host, you could create a profile with the command "ssh example.com" to automate that process.
-
-
