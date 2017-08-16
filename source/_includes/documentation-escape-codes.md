@@ -4,6 +4,20 @@ A quick comment on notation: in this document, ^[ means "Escape" (hex code 0x1b)
 
 The OSC command `50` used to be used but it conflicts with xterm, so it is now `1337`.
 
+## Semi-Standard Codes
+
+VTE and iTerm2 support OSC 8 for defining hyperlinks, much like HTML's anchor tag.
+
+    ^[]8;params;url^G
+
+*params* consists of zero or more colon-delimited key-value pairs. A key-value pair is formatted as **key=value**. The only currently defined key is **id**. Two adjacent hyperlinks with the same URL but different **id**s will highlight separately when Command is pressed during hover.
+
+If the **url** is absent then that ends the hyperlink. Typical usage would look like:
+
+    ^[]8;;https://example.com/^GLink to example website^[]8;;^G
+
+To open a link, hold Command and click the link.
+
 #### Set cursor shape
 
     ^[]1337;CursorShape=N^G
