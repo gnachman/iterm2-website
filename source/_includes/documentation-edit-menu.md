@@ -48,6 +48,9 @@ Requires shell integration to be installed. Selects the output of the last comma
 #### Edit > Select Current Command
 Requires shell integration to be installed. Selects the text of the current command entered at the command prompt.
 
+#### Edit > Find > Find
+Opens or focuses the find panel. Select the down arrow to the left of the search field to open the options menu, which lets you select case insensitivity and regular expression options. The default case sensitivity option of "Smart Case Sensitivity" performs a case-sensitive search if the search query contains any upper case letters. Otherwise, a case-insensitive search is performed.
+
 #### Edit > Find > Find URLs
 Searches the current session for URLish looking strings.
 
