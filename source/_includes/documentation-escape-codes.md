@@ -99,7 +99,34 @@ For example:
     echo -e "\033]6;1;bg;*;default\a"
 
 #### Change the color palette
+
+To change the current session's colors use this code:
+
+    ^[]1337;SetColors=key=value^G
+
+`key` gives the color to change. The accepted values are: fg bg bold link selbg selfg curbg curfg underline tab" black red green yellow blue magenta cyan white br\_black br\_red br\_green br\_yellow br\_blue br\_magenta br\_cyan br\_white
+
+`value` gives the new color. The following formats are accepted:
+
+  * RGB (three hex digits, like `fff`)
+  * RRGGBB (six hex digits, like `f0f0f0`)
+  * cs:RGB (like RGB but `cs` gives a color space)
+  * cs:RRGGBB (like RRGGBB but `cs` gives a color space)
+
+If a color space is given, it should be one of:
+
+  * srgb (the standard sRGB color space)
+  * rgb (the device-specific color space)
+  * p3 (the standard P3 color space, whose gamut is supported on some newer hardware)
+
+The following alternate schemes are also supported:
+  * If `key` is `preset` then `value` should be the name of a color preset.
+  * If `key` is `tab` then a value of `default` removes the tab color and restores it to the system default.
+
+A second escape sequence is also supported, but its use is not recommended:
+
     ^[]Pnrrggbb^[\
+
 Replace "n" with:
 <ul>
         <li>0-f (hex) = ansi color</li>
@@ -143,9 +170,10 @@ The *boolean* should be *yes* or *no*. This shows or hides the cursor guide.
 
 #### Attention
 
-    ^[]1337;RequestAttention=boolean^G
+    ^[]1337;RequestAttention=value^G
 
-The boolean should be *yes* to request attention by bouncing the dock icon and *no* to cancel a previous request.
+The `value` should be *yes* to request attention by bouncing the dock icon and *no* to cancel a previous request. If it is `fireworks` then fireworks explode at the cursor's location.
+
 
 #### Background Image
 
@@ -165,6 +193,27 @@ Where *height* and *width* are floating point values giving the size in points o
 
     ^[]1337;ReportCellSize=17.50;8.00^[\
 
+#### Copy to Pasteboard
+
+You can place a string in the system's pasteboard with this sequence:
+
+    ^[]1337;Copy=;base64^G
+
+Where `base64` is the base64-encoded string to copy to the pasteboard.
+
+
+#### Report Variable
+
+Each iTerm2 session has internal variables (as described in <a href="badges.html">Badges</a>). This escape sequence reports a variable's value:
+
+    ^[]1337;ReportVariable=base64^G
+
+Where `base64` is a base64-encoded variable name, like `session.name`. It responds with;
+
+    ^[]1337;ReportVariable=base64^G
+
+Where `base64` is a base64-encoded value.
+
 #### Badge
 
 The badge has custom escape sequences described <a href="badges.html">here</a>.
@@ -172,6 +221,50 @@ The badge has custom escape sequences described <a href="badges.html">here</a>.
 #### Downloads
 
 For information on file downloads and inline images, see <a href="images.html">here</a>.
+
+#### Uploads
+
+To request the user select one or more files to upload, send:
+
+    ^[]1337;RequestUpload=format=tgz
+
+In the future the format may be configurable, but for now it must always be `tgz`, which is a tar and gzipped file.
+
+When iTerm2 receives this it will respond with a status of `ok` or `abort` followed by a newline. If the status is `ok` then it will be followed by a base-64 encoded tar.gz file.
+
+If the user selects multiple files they will be placed in a directory within the tar file.
+
+#### Set Touch Bar Key Labels
+
+You can configure touch bar key labels for function keys and for the "status" button. The code used is:
+
+    ^[]1337;SetKeyLabel=key=value^G
+
+Where `key` is one of `F1`, `F2`, ..., `F20`, to adjust a function key label; or it can be `status` to adjust the touch bar status button. You can also save and restore sets of key labels using a stack. To push the current key labels on the stack use:
+
+    ^[]1337;PushKeyLabels^G
+
+To pop them:
+
+    ^[]1337;PopKeyLabels^G
+
+You can optionally label the entry in the stack when you push so that pop will pop multiple sets of key labels if needed. This is useful if a program crashes or an ssh session exits unexpectedly. The corresponding codes with labels are:
+
+    ^[]1337;PushKeyLabels=label^G
+    ^[]1337;PopKeyLabels=label^G
+
+Where `label` is an ASCII string that works best if it is unique in the stack.
+
+#### Unicode Version
+
+iTerm2 by default uses Unicode 8's width tables. The user can opt to use Unicode 9's tables with a preference (which render emoji more nicely, but requires applications that expect Unicode 9 width tables). Since not all apps will be updated at the same time, you can tell iTerm2 to use a particular set of width tables with:
+
+    ^[]1337;UnicodeVersion=n^G
+
+Where `n` is 8 or 9
+
+You can push the current value on a stack and pop it off to return to the previous value by setting `n` to `push` or `pop`. Optionally, you may affix a label after `push` by setting `n` to something like `push mylabel`. This attaches a label to that stack entry. When you pop the same label, entries will be popped until that one is found. Set `n` to `pop mylabel` to effect this. This is useful if a program crashes or an ssh session ends unexpectedly.
+
 
 ## Shell Integration/FinalTerm
 
@@ -301,6 +394,12 @@ Reports the user name and hostname.
 Ps1 is username.
 Ps2 is fully-qualified hostname.
 
+The following synonym is available as a combination of RemoteHost and CurrentDir:
+
+    OSC 7 ; URL ST
+
+where `URL` is a file url with a hostname and a path, like `file://example.com/usr/bin`.
+
 #### CurrentDir
 
 `OSC 1 3 3 7 ; C u r r e n t D i r = Ps1 ST`
@@ -309,3 +408,8 @@ Reports the current directory.
 
 Ps1 is the current directory.
 
+The following synonym is available as a combination of RemoteHost and CurrentDir:
+
+    OSC 7 ; URL ST
+
+where `URL` is a file url with a hostname and a path, like `file://example.com/usr/bin`.
