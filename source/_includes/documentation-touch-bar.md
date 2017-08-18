@@ -30,3 +30,5 @@ If you have <a href="https://www.iterm2.com/documentation-shell-integration.html
 
 The status touch bar control shows a user-configurable message. If you install <a href="https://www.iterm2.com/documentation-shell-integration.html">Shell Integration</a> and <a href="https://www.iterm2.com/documentation-utilities.html">Utilities</a>, then you'll get a command *it2setkeylabel* that lets you configure what the status control says. For example, it could display the git branch of the current directory. Tapping it scrolls to the location where the status was last changed.
 
+#### Custom Buttons
+You can define custom touch bar buttons in **Prefs > Keys > Add Touch Bar Item**. You can then add the item to you touch bar from **View > Customize Touch Bar**.
