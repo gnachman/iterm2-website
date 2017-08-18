@@ -93,7 +93,11 @@ The *Dynamic* will automatically be added to all Dynamic Profiles.
 
 ### Troubleshooting
 
-If something goes wrong loading a Dynamic Profile, errors will be logged to /var/log/system.log, and are usually visible by running Console.app.
+If something goes wrong loading a Dynamic Profile, errors will be logged to Console.app.
+
+### Triggers
+
+By default, *Highlight* triggers save colors in a large inscrutable mess of a format. For dynamic profiles, you can use `#rrggbb` in place of the large inscrutable mess.
 
 ### Example
 

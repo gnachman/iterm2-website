@@ -16,6 +16,7 @@ The following actions are available:
         <li>Highlight Text: The text matching the regex in the trigger will change color. The parameter sets the color.</li>
         <li>Open Password Manager: Opens the password manager. You can specify which account to select by default.</li>
         <li>Post Notification: Posts a notification with Growl (if available) or Notification Center.</li>
+        <li>Prompt Detected: Informs iTerm2 that the shell prompt begins at the start of the match. Used to emulate Shell Integration features. If the prompt is one line long then use Instant.</li>
         <li>Report Directory: Tells iTerm2 what your current directory is. You can use this to enable <a href="shell_integration.html">Shell Integration</a> features without installing the scripts. The parameter is your current directory.</li>
         <li>Report User & Host: Tells iTerm2 what your user or host name is. You can use this to enable <a href="shell_integration.html">Shell Integration</a> features without installing the scripts. To specify just a user name, say `user@`. For just a host, say `@host`. For both, say `user@host`.</li>
         <li>Ring Bell: Plays the standard system bell sound once.</li>
@@ -23,6 +24,7 @@ The following actions are available:
         <li>Run Coprocess: Runs a <a href="coprocesses.html">Coprocess</a>.</li>
         <li>Send Text: Sends user-defined text back to the terminal as though the user had typed it.</li>
         <li>Set Mark: Sets a mark. You can specify whether you'd like the display to stop scrolling after the trigger fires.</li>
+        <li>Set Title: Sets the session's title.</li>
         <li>Show Alert: Shows an alert box with user-defined text.</li>
         <li>Stop Processing Triggers: When this action is invoked no triggers further down the list will be invoked for the current text.</li>
 </ul>
