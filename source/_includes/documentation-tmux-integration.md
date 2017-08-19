@@ -1,9 +1,10 @@
-iTerm2 is integrated with tmux. What does this mean?
+iTerm2 is integrated with tmux, allowing you to enjoy a native user interface with all the benefits of tmux's persistence.
 
 ### Introduction
 
 Normally, when you use tmux, multiple virtual windows are displayed in a single "physical" window. You can manipulate the environment by issuing commands to tmux. This poses a few problems:
-  * Some keystroke must be dedicated to tmux to enter its command mode (\^B, by default, which means moving the cursor to the left in emacs or an interactive shell becomes more difficult).
+
+  * Some keystroke must be dedicated to tmux to enter its command mode (&#94;B, by default, which means moving the cursor to the left in emacs or an interactive shell becomes more difficult).
   * You have to ssh to the remote host more than once to get more than one view of your tmux session's window.
   * You have to learn tmux commands.
   * To adjust split panes, you have to enable mouse reporting, even if you don't want it otherwise.
@@ -16,10 +17,12 @@ iTerm2's tmux integration solves these problems.
 When you run "tmux -CC", a new tmux session is created. An iTerm2 window opens and it acts like a normal iTerm2 window. The difference is that when iTerm2 quits or the ssh session is lost, tmux keeps running. You can return to the host you were ssh'ed into and run "tmux -CC attach" and the iTerm2 windows will reopen in the same state they were in before. A few use cases come to mind:
 
 For users who do most of their work in ssh:
+
   * Restore the environment you had at work when you get home.
   * No more anxiety about letting System Update reboot!
 
 For everyone:
+
   * Collaborate with another user by having two people attach to the same tmux session.
 
 ### Usage
@@ -30,7 +33,8 @@ You should be able to use tmux as always. Just add the -CC argument to its invoc
   * tmux -CC attach
 
 When you run tmux -CC, what you'll see on that terminal is a menu:
-````
+
+<pre>
 ** tmux mode started **
 
 Command Menu
@@ -39,7 +43,7 @@ esc    Detach cleanly.
   X    Force-quit tmux mode.
   L    Toggle logging.
   C    Run tmux command.
-````
+</pre>
 
   * If you press esc, the tmux windows will close and the tmux client will exit.
   * If you press esc and nothing happens, then the tmux client may have crashed or something else has gone wrong. Press "X" to force iTerm2 to exit tmux mode. You may need to run "stty sane" to restore your terminal's state if the tmux client did crash.
@@ -66,7 +70,7 @@ There are a few limitations of tmux integration which are related to the design 
 
 == Building tmux ==
 
-Use the latest version of tmux. The oldest version that works is 1.8, but 2.3 or later is recommended (older versions didn't handle non-ASCII input very well, or suffered from various known bugs and limitations). The easiest way to install tmux on your Mac is with homebrew:
+Use the latest version of tmux. The oldest version that works is 1.8, but 2.3 or later is recommended (older versions didn't handle non-ASCII input very well, or suffered from various known bugs and limitations). The easiest way to install tmux on your Mac is with <a href="https://brew.sh/">homebrew</a>:
 
 ````
 brew install tmux

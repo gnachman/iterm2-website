@@ -1,7 +1,7 @@
 iTerm2 can use information it knows about your current path, host name, and user name to change profiles. For example, your window's background color or the terminal's character encoding could change when connecting to different hosts.
 
 ### Shell Integration Required
-You must install <a href="/shell_integration.html">Shell Integration</a> on all machines and all user accounts where you plan to use Automatic Profile Switching (either by using the scripts or the Triggers workaround described in the Shell Integration docs).
+You must install <a href="documentation-shell-integration.html">Shell Integration</a> on all machines and all user accounts where you plan to use Automatic Profile Switching (either by using the scripts or the Triggers workaround described in the Shell Integration docs).
 
 #### Rule Syntax
 In *Preferences&gt;Profiles&gt;Advanced*, you may specify a set of rules.

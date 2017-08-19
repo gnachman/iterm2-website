@@ -1,17 +1,20 @@
 This chapter describes features of iTerm2 that go beyond basic usage and are not generally found in other terminal emulators.
 
 #### Text Selection
-There are two ways to select text to copy to the clipboard: you can use the mouse, or you can use the find feature's "mouseless copy" feature. Text selection by mouse is described later in General Usage section.
+There are several ways to select text to copy to the clipboard:
 
+  * You can <a href="documentation-general-usage.html">use the mouse</a>.
+  * You can use the find feature's "mouseless copy" feature.  
 To select text without using the mouse, press cmd-f to open the find field. Enter the beginning of the text you wish to copy and the find feature will select it in your window. Then press tab and the end of the selection will advance by a word. To move the beginning of the selection to the left, press shift-tab. At most one line of text can be selected this way.
-
+  * You can use <a href="documentation-copymode.html">Copy Mode</a>.
+  * You can bind keystrokes to create and adjust selections.  
 In Prefs > Profiles > Keys you can assign keys to move the beginning or end of the selection by a single character, word, or line. No such keys are bound by default.
 
 #### Split Panes
 iTerm2 allows you to divide a tab into many rectangular "panes", each of which is a different terminal session. The shortcuts cmd-d and cmd-shift-d divide an existing session vertically or horizontally, respectively. You can navigate among split panes with cmd-opt-arrow or cmd-[ and cmd-]. You can "maximize" the current pane--hiding all others in that tab--with cmd-shift-enter. Pressing the shortcut again restores the hidden panes.
 
 #### Hotkey Window
-iTerm2 offers a special terminal window that is always available with a single keystroke. This window is called the "hotkey window" and is most commonly used for occasional administrative tasks. To enable this feature, go to Preferences > Keys. Enable "Show/Hide iTerm2 with a system-wide hotkey". Click in the field and enter the key combination you'd like to use. Then check "hotkey toggles a dedicated window with profile:". A new profile will be created that is optimized for the feature. Pressing the hotkey will drop a terminal window down from the top of the screen, and pressing it again (or clicking in any other window) causes it to disappear.
+iTerm2 offers a special terminal window that is always available with a single keystroke. This window is called the "hotkey window" and is most commonly used for occasional administrative tasks. It is described in <a href="documentation-hotkey.html">Hotkeys</a>.
 
 #### Swap Cmd and Option
 iTerm2 allows you to remap modifiers. You have separate control over left and right command and option keys. One common need is to exchange cmd and option. To do this, go to Preferences > Keys. Set Left option key to Left command key and Left command key to Left option key (and do the same for Right command and Right option if you please). You can add exceptions if you don't want certain combinations to be remapped (for example, cmd-tab) by adding a new global shortcut with the action "Do Not Remap" and the keystroke of the (unremapped) key you wish to keep unaffected by modifier remapping.
@@ -47,7 +50,7 @@ iTerm2 also supports 24-bit color.
 This option is off by default, but can be enabled under Preferences > Pointer > Focus follows mouse. It only affects iTerm2 windows.
 
 #### Middle Button Paste
-If you have a three-button mouse, by default the middle button performs "paste".
+If you have a three-button mouse, by default the middle button performs "paste". You can configure the behavior of the middle button, as well as many other kinds of clicks and gestures, in Prefs > Pointer.
 
 #### Cursor Finery
 When using a block cursor, it's hard to pick a cursor color that's visible against every background color. If you enable Smart cursor color (under Preferences > Profiles > Colors) then the cursor color will be dynamically chosen to be visible against the text it is over and the adjacent cells.
@@ -64,8 +67,8 @@ If you've lost your cursor, press Cmd-/ or select View > Find Cursor and the cur
 #### Minimum Contrast
 Sometimes an application will display text with a color combination that is hard to read. Colorblind users in particular may find certain combinations hard to see if the colors differ only in hue and not brightness. If you enable minimum contrast (under Preferences > Profiles > Colors > Minimum contrast, then iTerm2 will guarantee a minimum level of brightness difference between the foreground and background color of every character. If you set this to its maximum value, then all text will be black or white.
 
-#### Growl and Notification Center Support
-If you enable Growl (Preferences > Profiles > Terminal > Send Growl/Notification Center alerts) then you'll receive messages when a terminal beeps, has output after a period of silence, or terminates. There's also <a href="documentation-escape-codes.html">a proprietary escape sequence</a> to send a notification. You can adjust the kinds of notifications that get posted in Preferences > Profiles > Terminal > Filter Alerts.
+#### Notification Center Support
+If you enable notifications (Preferences > Profiles > Terminal > Send Growl/Notification Center alerts) then you'll receive messages when a terminal beeps, has output after a period of silence, or terminates. There's also <a href="documentation-escape-codes.html">a proprietary escape sequence</a> to send a notification. You can adjust the kinds of notifications that get posted in Preferences > Profiles > Terminal > Filter Alerts.
 
 #### Exposé Tabs
 If you have too many tabs and are unable to find the one you're looking for, you can use the Exposé Tabs feature to find it. Press cmd-opt-E and all your tabs will be shown at once. You can then perform a search over all tabs simultaneously to find what you're looking for.
@@ -82,19 +85,19 @@ Triggers are user-configurable regular expressions with associated actions that 
 One advanced use of a trigger is to capture output matching a regex and display just those matching lines in the toolbelt. For example, you could create a trigger that matches compiler errors. When you run Make the errors will appear on the side of your window and you can click each to jump right to it. More information is available at the <a href="captured_output.html">Captured Output</a> manual.
 
 #### Tmux Integration
-iTerm2 is tightly integrated with tmux. The integration allows you to see tmux windows as native iTerm2 windows or tabs. The tmux prefix key is not needed, as native menu commands operate on tmux windows. For more information, please see the <a href="https://iterm2.com/documentation-tmux-integration.html">iTerm2-tmux Integration</a> document.
+iTerm2 is tightly integrated with tmux. The integration allows you to see tmux windows as native iTerm2 windows or tabs. The tmux prefix key is not needed, as native menu commands operate on tmux windows. For more information, please see the <a href="documentation-tmux-integration.html">iTerm2-tmux Integration</a> document.
 
 #### Coprocesses
 Coprocesses are programs that run alongside iTerm2 and are bound to a single session. All output bound for the session is also routed as input to the coprocess. The coprocess's output acts like the user typing at the keyboard. Coprocesses can be used to automate tasks. For more information, see the <a href="documentation-coprocesses.html">Coprocess</a> document.
 
 #### Dynamic Profiles
-If you have hundreds or thousands of profiles, look in to <a href="dynamic-profiles.html">Dynamic Profiles</a>. This feature allows you to define profiles in JSON.
+If you have hundreds or thousands of profiles, look in to <a href="documentation-dynamic-profiles.html">Dynamic Profiles</a>. This feature allows you to define profiles in JSON.
 
 #### Automatic Profile Switching
-You can automatically change the current session's profile using <a href="automatic-profile-switching.html">Automatic Profile Switching</a>. For example, this would allow you to change the background color when you are on a production system.
+You can automatically change the current session's profile using <a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a>. For example, this would allow you to change the background color when you are on a production system.
 
 #### Inline Images
-iTerm2 can display images inline, including animated GIFs. More information is available at the <a href="images.html">Inline Images</a> document. An extension of this feature allows you to download files from a remote host over ssh simply by running a shell script. This script can be installed for you automatically when you install Shell Integration, described below.
+iTerm2 can display images inline, including animated GIFs. The easiest way to use this feature is to install <a href="documentation-utilities.html">Shell Integration and Utilities</a>, which adds an `imgcat` script.
 
 #### Undo Close
 If you accidentally close a session, you get five seconds (by default; configurable in Preferences > Profiles > Session) to undo it by pressing Cmd-Z.
@@ -114,4 +117,6 @@ You can position the tab bar on the left side of the window. This is useful if y
 #### Open Quickly
 If you have lots of sessions you can quickly find the one you're looking for with Open Quickly. Select the View > Open Quickly menu item (cmd-shift-O) and then enter a search query. You can search by tab title, command name, host name, user name, profile name, directory name, badge label, and more. Open Quickly also lets you create new tabs, change the current session's profile, and open arrangements. If you start your query with a / then that gives you a shortcut to various commands. Enter a query of / to see them.
 
+#### Shell Integration and Utilities
+Shell integration consists of a shell script that's loaded when you create a new session or ssh to a remote host. It modifies your prompt so iTerm2 knows where it is. This enables a number of features, such as Copy Output of Last Command, Automatic Profile Switching when changing hosts, and more as described in <a href="documentation-shell-integration.html">Shell Integration</a>. When you install Shell Integration you'll be prompted to also install its Utilities. The Utilities are a collection of shell scripts that use iTerm2's unique features and maket hem easy to use. For example, you can upload or download files from a remote host, copy to the pasteboard from the command line (even over ssh!), and make fireworks explode from the cursor. It's described in <a href="documentation-utilities.html">Utilities</a>.
 
