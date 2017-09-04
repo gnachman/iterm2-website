@@ -4,7 +4,7 @@ A quick comment on notation: in this document, ^[ means "Escape" (hex code 0x1b)
 
 The OSC command `50` used to be used but it conflicts with xterm, so it is now `1337`.
 
-## Semi-Standard Codes
+#### Anchor (OSC 8)
 
 VTE and iTerm2 support OSC 8 for defining hyperlinks, much like HTML's anchor tag.
 
@@ -272,22 +272,6 @@ iTerm2's <a href="shell_integration.html">Shell Integration</a> feature is made
 possible by proprietary escape sequences pioneered by the FinalTerm emulator.
 FinalTerm is defunct, but the escape sequences are documented here.
 
-### Definitions
-
-  * `OSC` stands for *Operating System Command*. In practice it refers to this
-sequence of two ASCII characters: 27, 93 (`esc ]`).
-  * `ST` stands for *String Terminator*. It terminates an OSC sequence and
-consists either of two ASCII characters 27, 92 (`esc \`) or ASCII 7 (`bel`).
-
-OSC sequences always begin with `OSC`, are followed by a sequence of
-characters, and are terminated with `ST`.
-
-Most `OSC` codes begin with a number (one or more decimal digits), which we'll
-call the "command" in this document. If the command takes parameters it will be
-followed by a semicolon and the structure of the rest of the body of the `OSC`
-sequence is dependent on the command. Well-behaved terminal emulators ignore
-`OSC` codes with unrecognized commands.
-
 ### Concepts
 
 The goal of the FinalTerm escape sequences is to mark up a shell's output with
@@ -307,19 +291,19 @@ remaining references to these codes are in iTerm2's source code.
 
 #### FTCS_PROMPT
 
-`OSC 1 3 3 ; A ST`
+`^[]133;A^G`
 
 Sent just before start of shell prompt.
 
 #### FTCS_COMMAND_START
 
-`OSC 1 3 3 ; B ST`
+`^[]133;B^G`
 
 Sent just after end of shell prompt, before the user-entered command.
 
 #### FTCS_COMMAND_EXECUTED
 
-`OSC 1 3 3 ; C ST`
+`^[]133;C^G`
 
 Sent just before start of command output. All text between `FTCS_COMMAND_START`
 and `FTCS_COMMAND_EXECUTED` at the time `FTCS_COMMAND_EXECUTED` is received
@@ -332,9 +316,9 @@ treated as the empty string.
 
 #### FTCS_COMMAND_FINISHED
 
-`OSC 1 3 3 ; D ; Ps ST`
+`^[]133;D;Ps^G`
 
-`OSC 1 3 3 ; D ST` (for cancellation only)
+`^[]133;D^G` (for cancellation only)
 
 The interpretation of this command depends on which `FTCS` was most recently
 received prior to `FTCS_COMMAND_FINISHED`.
@@ -359,7 +343,7 @@ iTerm2 extends FinalTerm's suite of escape sequences.
 
 #### SetUserVar
 
-`OSC 1 3 3 7 ; S e t U s e r V a r = Ps1 = Ps2 ST`
+`^[]1337;SetUserVar=Ps1=Ps2^G`
 
 Sets the value of a user-defined variable. iTerm2 keeps a dictionary of
 key-value pairs which may be used within iTerm2 as string substitutions, such
@@ -371,9 +355,9 @@ Ps2 is the base64-encoded value.
 
 #### ShellIntegrationVersion
 
-`OSC 1 3 3 7 ; S h e l l I n t e g r a t i o n V e r s i o n = Pn ; Ps ST`
+`^[]1337;ShellIntegrationVersion=Pn;Ps^G`
 
-`OSC 1 3 3 7 ; S h e l l I n t e g r a t i o n V e r s i o n = Pn ST` (deprecated)
+`^[]1337;ShellIntegrationVersion=Pn^G` (deprecated)
 
 Reports the current version of the shell integration script.
 
@@ -387,7 +371,7 @@ the shell.
 
 #### RemoteHost
 
-`OSC 1 3 3 7 ; R e m o t e H o s t = Ps1 @ Ps2 ST`
+`^[]1337;RemoteHost=Ps1@Ps2^G`
 
 Reports the user name and hostname.
 
@@ -396,13 +380,13 @@ Ps2 is fully-qualified hostname.
 
 The following synonym is available as a combination of RemoteHost and CurrentDir:
 
-    OSC 7 ; URL ST
+    ^[]7;Ps^G
 
-where `URL` is a file url with a hostname and a path, like `file://example.com/usr/bin`.
+where `Ps` is a file URL with a hostname and a path, like `file://example.com/usr/bin`.
 
 #### CurrentDir
 
-`OSC 1 3 3 7 ; C u r r e n t D i r = Ps1 ST`
+`^[]1337;CurrentDir=Ps1^G`
 
 Reports the current directory.
 
@@ -410,6 +394,6 @@ Ps1 is the current directory.
 
 The following synonym is available as a combination of RemoteHost and CurrentDir:
 
-    OSC 7 ; URL ST
+    ^[]7;Ps^G
 
-where `URL` is a file url with a hostname and a path, like `file://example.com/usr/bin`.
+where `Ps` is a file URL with a hostname and a path, like `file://example.com/usr/bin`.

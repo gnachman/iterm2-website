@@ -1,13 +1,13 @@
 iTerm2 is able to display images within the terminal. Using a similar mechanism, it can also facilitate file transfers over any transport (such as ssh or telnet), even in a non-8-bit-clean environment.
 
 <div style="border: 1px solid black; margin: 8px; padding: 4px">
-Just want to try it out and don't care about the protocol? Use the imgcat tool. <a href="https://raw.github.com/gnachman/iTerm2/master/tests/imgcat">Download imgcat here</a>
+Just want to try it out and don't care about the protocol? Use the imgcat tool. <a href="/utilities/imgcat">Download imgcat here</a>
 </div>
 
 
 ### Example: imgcat
 
-Using the <a href="https://raw.github.com/gnachman/iTerm2/master/tests/imgcat">imgcat</a> script, one or more images may be displayed in a terminal session. For example:
+Using the <a href="/utilities/imgcat">imgcat</a> script, one or more images may be displayed in a terminal session. For example:
 
 <img src="images/inline_image_sparky_demo.png">
 
@@ -60,21 +60,21 @@ By omitting the <code>inline</code> argument (or setting its value to 0), files 
 
 Sample code for displaying images may be found here.
 
-####<a href="https://raw.github.com/gnachman/iTerm2/master/tests/imgls">imgls</a>
+####<a href="/utilities/imgls">imgls</a>
 
 Provides an augmented directory listing that includes a thumbnail of each image in a directory.
 
-#### <a href="https://raw.github.com/gnachman/iTerm2/master/tests/imgcat">imgcat</a>
+#### <a href="/utilities/imgcat">imgcat</a>
 
 Displays one or more images inline at their full size.
 
-#### <a href="https://raw.github.com/gnachman/iTerm2/master/tests/download.sh">download.sh</a>
+#### <a href="/utilities/it2dl">it2dl</a>
 
 Downloads a file, but does not display it inline.
 
-#### <a href="https://raw.github.com/gnachman/iTerm2/master/tests/divider">divider</a>
+#### <a href="https://raw.githubusercontent.com/gnachman/iTerm2/master/tests/divider">divider</a>
 
 Draws a full-width, one line-tall graphical divider.
 
-<img src="images/inline_images_divider.png">
+<img src="/images/inline_images_divider.png">
 

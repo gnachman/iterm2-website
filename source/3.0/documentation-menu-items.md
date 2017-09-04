@@ -4,4 +4,4 @@ title: Menu Items - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Menu Items
 ---
-{% include documentation-menu-items.md %}
+{% include 3.0/documentation-menu-items.md %}

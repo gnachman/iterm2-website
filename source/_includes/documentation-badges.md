@@ -14,10 +14,6 @@ Here is an example of a session with a badge indicating the current user and hos
 
 <img src="images/Badge.png">
 
-### Availability
-
-Support for badges is available in version 2.9 and later, currently distributed in the <a href="/nightly/latest">nightly builds</a> and is in the master branch of the <a href="https://github.com/gnachman/iTerm2">GitHub repo</a>. It is not in version 2.1.1.
-
 ### Variables
 
 A badge may reference variables. There are two kinds of variables: user-defined variables and iTerm2-defined variables. User-defined variables may be set by an escape sequence described below.

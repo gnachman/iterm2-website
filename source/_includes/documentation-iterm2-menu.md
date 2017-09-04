@@ -1,5 +1,3 @@
-### iTerm2 Menu
-
 #### iTerm2 > Show Tip of the Day
 When you start using iTerm2 it will offer to show you a daily tip describing a feature. You can show a tip immediately by selecting this item.
 

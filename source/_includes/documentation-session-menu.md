@@ -1,5 +1,3 @@
-### Session Menu
-
 #### Session > Edit Session
 This opens a window that lets you change the settings of the current session without affecting any other sessions. Changes made in this panel will not be overridden by subsequent changes to the profile. Settings *not* cahnged in this panel will be affected by changes to the profile.
 

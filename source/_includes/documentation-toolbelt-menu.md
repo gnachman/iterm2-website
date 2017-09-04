@@ -1,5 +1,3 @@
-### Toolbelt Menu
-
 #### Toolbelt > Set Default Width
 Saves the current window's toolbelt width as the default width for new windows' toolbelts.
 

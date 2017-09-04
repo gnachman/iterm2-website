@@ -1,4 +1,3 @@
-
 ---
 layout: subdoc
 title: Buried Sessions - Documentation - iTerm2 - macOS Terminal Replacement

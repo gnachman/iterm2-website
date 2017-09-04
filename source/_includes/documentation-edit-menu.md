@@ -1,5 +1,3 @@
-### Edit Menu
-
 #### Edit > Undo Close Session/Tab/Window
 After you close a session, tab, or window then you have five seconds to undo it. The amount of time is configurable in PReferences > Profiles > Session.
 

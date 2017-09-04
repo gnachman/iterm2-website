@@ -1,4 +1,4 @@
-iTerm2 has a collection of shell scripts that help you take advantage of some of its unique features. When you install <a href="shell_integration.html">Shell Integration</a>, you're asked if you'd like to install the Utilities Package as well. This page describes these utilities.
+iTerm2 has a collection of shell scripts that help you take advantage of some of its unique features. When you install <a href="documentation-shell-integration.html">Shell Integration</a>, you're asked if you'd like to install the Utilities Package as well. This page describes these utilities.
 
 ### Components
 
@@ -73,7 +73,7 @@ The `it2dl` program downloads files. This is useful when you are ssh'ed to a rem
 
 #### it2getvar
 
-Fetches a session variable. For a list of session variables, see the <a href="https://www.iterm2.com/documentation-badges.html">Badges</a> page.
+Fetches a session variable. For a list of session variables, see the <a href="documentation-badges.html">Badges</a> page.
 
 <pre>
 Example:

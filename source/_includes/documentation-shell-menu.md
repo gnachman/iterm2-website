@@ -1,5 +1,3 @@
-### Shell Menu
-
 #### Shell > New Window/Tab
 This creates a new window or tab with the default profile. If the current session is a tmux integration session, then you will be prompted for whether to create a local or tmux session.
 
