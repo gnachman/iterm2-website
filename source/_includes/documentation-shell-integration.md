@@ -197,6 +197,10 @@ give just a host name then the previous user name will be preserved. To change
 the user name only, give a parameter like `user@`. To change the host name only,
 give a parameter like `example.com`.
 
+### Limitations
+
+Shell Integration does not work tmux or screen.
+
 #### A Note on SCP
 iTerm2 can do uploads and downloads with scp as described above. There are a few things you should know.
 
@@ -219,4 +223,5 @@ The following files are parsed as ssh_config files, in order of priority:
   * /etc/ssh_config
 
 The scp code is relatively new. If you are in a high-security environment, please keep this in mind.
+
 
