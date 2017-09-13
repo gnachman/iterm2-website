@@ -175,7 +175,7 @@ It captures the username and hostname from the example prompt above. Set the tri
 \1@\2
 </pre>
 
-Then create another trigger with the action *Set Directory*. This regular expression will extract
+Then create another trigger with the action *Report Directory*. This regular expression will extract
 the directory from the example prompt:
 
 <pre>
