@@ -4,6 +4,18 @@ title: iTerm2 - macOS Terminal Replacement
 active-state: news
 ---
 
+#### iTerm2 Version 3.1 Released
+<i>Sunnyvale, CA&mdash;September 18, 2017</i>
+
+Version 3.1 of iTerm2 is now in stable release. It adds many notable features:
+
+  * Touch Bar support
+  * Ligature font support
+  * Many improvements to Hotkey Windows
+  * Copy Mode
+
+...and scores of small new features (like hyperlinks and new shell integration utilities) and bug fixes. You can see all the details in the <a href="http://iterm2.com/downloads/stable/iTerm2-3_1_0.changelog">change log</a>.
+
 #### iTerm2 Version 3 Stable Released
 <i>Sunnyvale, CA&mdash;July 4, 2016</i>
 
