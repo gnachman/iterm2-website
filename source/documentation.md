@@ -3,7 +3,9 @@ layout: docs
 title: Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 ---
-**This documentation is for version 3.0 of iTerm2. <a href="/documentation/2.1">Documentation for version 2.1.4 is here.</a>**
+<div class="version-selector">
+Version 3.1 | <a href="/3.0/documentation.html">3.0</a> | <a href="/2.1/documentation.html">2.1</a>
+</div>
 
 {% include documentation.md %}
 

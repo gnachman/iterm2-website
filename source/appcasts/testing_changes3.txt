@@ -15,6 +15,7 @@ Marquee Features
   * Use the touch bar to select tabs in full screen
   * Assign labels to function keys with a shell script
   * Create custom touch bar items in Prefs > Keys
+  * Add a custom status touch bar item
 - Add support for ligature fonts.
 - Rework how hotkey windows work:
   * You can have multiple hotkey windows. Each profile may have a
@@ -80,6 +81,32 @@ General
   window to the current space if it's already open on another space
   when the hotkey is pressed.
 - Add an advanced preference to make auto logs filenames' formattable.
+- Add an advanced pref to detect password prompts and change the
+  cursor.
+- Select and right click on dates like "Tue, 16 May 2017 06:32:33
+  UTC" to show them in local time.
+- Add an advanced pref to control which pane is focused when you
+  create a  split pane when using focus follows mouse.
+- Add an advanced pref to set the man page viewer command.
+- Add an advanced pref to keep CSI 3 J from erasing the scrollback
+  buffer.
+- Drag-drop from the jobs table into the terminal to paste the process
+  ID.
+- Add a new smart selection action to run a command in a new window.
+- Allow the window to fill the screen when zooming it rather than
+  insisting on being a multiple of cell size.
+- You can now hold option to scroll into history while in alternate
+  screen when scroll wheel is in send-arrow-keys-in-alt-screen mode.
+- Move reveal password into the password manager's right-click menu.
+  You can now safely double click on your passwords to edit them.
+- Copy images when using "Copy with Styles"
+- More options for when to use thin text strokes.
+- Add services that do not produce input and services that accept
+  text-only input to the services menu. Remove those that are not
+  generally useful to a terminal.
+- Change how "paste from selection" works to remember the last
+  selection instead of only working while the selection still exists.
+- Add an advanced pref to set the width of the vertical-bar cursor.
 
 Shell Integration
 - Offer to turn off focus reporting when host changes.
@@ -101,6 +128,8 @@ tmux Integration
 - Add an advanced preference to allow different tmux sessions to have
   different profiles and to base the profile of the tmux sessions on the
   session that attached to tmux.
+- Add a cancel button to "what kind of tab/window do you want?"
+  when in tmux integration.
 
 Semantic History
 - Allow hyphens in schemes when looking for clickable URLs so semantic
@@ -114,6 +143,9 @@ Tab Bar
 - Improve accessibility of the tab bar--tabs are now selectable with
   accessibility.
 - Make the tab bar's minimum drag distance configurable.
+- Add support for using the numeric keypad to change
+  tabs/windows/panes with modifier+numeric keypad number.
+- Improve appearance of colored tabs
 
 Terminal emulation changes:
 - Add a new proprietary escape sequence to copy embedded base64 data
@@ -181,3 +213,28 @@ Bug fixes:
   there were two jobs that considered themselves foreground jobs.
 - Fix a bug where the order of windows in applescript was random, not
   back to front.
+- Changes the order of windows as exposed to applescript so they
+  will appear on back-to-front order.
+- Fixes a bug where the app would hang when a networked file system
+  was in use.
+- Fixes a bug where tabs dragged out of the tab bar into a new
+  window caused the new window to appear in the wrong place.
+- Improve performance of double clicking on an absurdly long word or
+  long line.
+- Fix a bug where the hotkey window would hide when a local
+  authentication dialog opened.
+- Improve highlighting of search results.
+- Improve the appearance of the toolbelt with dark themes.
+- Fix a bug where the http scheme was not visible in the list of
+  schemes a profile could be the handler for.
+- Use $HOME/Library/Application Support/iTerm2/Scripts if it exists.
+  Otherwise fall back to $HOME/Library/Application
+  Support/iTerm/Scripts.
+- If you change the preferred screen of a profile with a hotkey
+  window, it will now take effect immediately (used to have to close
+  and re-create the window)
+- Fix a bug where "highlight text" triggers would highlight regex
+  lookaheads.
+- If the initial working directory ends in a slash remove it. That
+  confuses bash.
+- Fixes a bug where images got their first column truncated.

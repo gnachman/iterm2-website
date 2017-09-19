@@ -16,14 +16,60 @@ active-state: documentation
 {% include subdoc.md title="General Usage" anchor="documentation-general-usage.html" %}
 {% include documentation-general-usage.md %}
 
-{% include subdoc.md title="Menu Items" anchor="documentation-menu-items.html" %}
-{% include documentation-menu-items.md %}
-
 {% include subdoc.md title="Preferences" anchor="documentation-preferences.html" %}
 {% include documentation-preferences.md %}
 
 {% include subdoc.md title="Scripting" anchor="documentation-scripting.html" %}
 {% include documentation-scripting.md %}
+
+{% include subdoc.md title="Applescript Examples" anchor="documentation-applescript.html" %}
+{% include documentation-applescript.md %}
+
+{% include subdoc.md title="Buried Sessions" anchor="documentation-buried-sessions.html" %}
+{% include documentation-buried-sessions.md %}
+
+{% include subdoc.md title="Copy Mode" anchor="documentation-copymode.html" %}
+{% include documentation-copymode.md %}
+
+<a name="documentation-menu-items.html" />
+
+## Menu Items
+
+{% include subdoc.md title="iTerm2 Menu" anchor="documentation-iterm2-menu.md" %}
+{% include documentation-iterm2-menu.md %}
+
+{% include subdoc.md title="Shell Menu" anchor="documentation-shell-menu.md" %}
+{% include documentation-shell-menu.md %}
+
+{% include subdoc.md title="Edit Menu" anchor="documentation-edit-menu.md" %}
+{% include documentation-edit-menu.md %}
+
+{% include subdoc.md title="View Menu" anchor="documentation-view-menu.md" %}
+{% include documentation-view-menu.md %}
+
+{% include subdoc.md title="Session Menu" anchor="documentation-session-menu.md" %}
+{% include documentation-session-menu.md %}
+
+{% include subdoc.md title="Scripts Menu" anchor="documentation-scripts-menu.md" %}
+{% include documentation-scripts-menu.md %}
+
+{% include subdoc.md title="Profiles Menu" anchor="documentation-profiles-menu.md" %}
+{% include documentation-profiles-menu.md %}
+
+{% include subdoc.md title="Toolbelt Menu" anchor="documentation-toolbelt-menu.md" %}
+{% include documentation-toolbelt-menu.md %}
+
+{% include subdoc.md title="Window Menu" anchor="documentation-window-menu.md" %}
+{% include documentation-window-menu.md %}
+
+{% include subdoc.md title="Hotkeys" anchor="documentation-hotkey.html" %}
+{% include documentation-hotkey.md %}
+
+{% include subdoc.md title="tmux Integration" anchor="documentation-tmux-integration.html" %}
+{% include documentation-tmux-integration.md %}
+
+{% include subdoc.md title="Touch Bar" anchor="documentation-touch-bar.html" %}
+{% include documentation-touch-bar.md %}
 
 {% include subdoc.md title="Shell Integration" anchor="documentation-shell-integration.html" %}
 {% include documentation-shell-integration.md %}

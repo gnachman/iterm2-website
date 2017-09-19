@@ -18,25 +18,22 @@ If you hold shift while clicking the existing selection is extended. In fact, yo
 
 If you hold cmd while dragging it will create a noncontinguous selection.
 
-If you hold cmd and click on a URL it will be opened. If you hold cmd and click on a filename, it will be opened. There is special support for MacVim, TextMate, and BBEdit when you cmd-click on a text file's name: if it is followed by a colon and line number, the file will be opened at that line number. The current directory is tracked if you have your shell prompt set the window title, <a href="http://www.faqs.org/docs/Linux-mini/Xterm-Title.html#toc4">as described here</a>, or if you have <a href="shell_integration.html">Shell Integration</a> installed.
-
-If you hold cmd you can drag and drop selected text.
+If you hold cmd and click on a URL it will be opened. If you hold cmd and click on a filename, it will be opened. There is special support for MacVim, TextMate, and BBEdit when you cmd-click on a text file's name: if it is followed by a colon and line number, the file will be opened at that line number. The current directory is tracked if you have your shell prompt set the window title, <a href="http://www.faqs.org/docs/Linux-mini/Xterm-Title.html#toc4">as described here</a>, or if you have <a href="documentation-shell-integration.html">Shell Integration</a> installed.
 
 If you hold cmd and option while selecting, a rectangular selection will be made.
 
 If mouse reporting is enabled (in Preferences > Profile > Terminal) and the currently running terminal application is using it, pressing option will temporarily disable it so you can make a selection.
 
-If you hold the control key and click, that simulates a right click. If you'd prefer to send this combination to applications using mouse reporting, check "^-Click reported to apps, does not appear in menu" in Preferences > Pointer.
+Right clicking on certain values shows helpful information in the context menu:
 
-Right clicking on a number shows its conversion to or from hex, or if it looks like a unix timestamp its representation in local time will be shown.
+  * Right-clicking on a number shows its conversion to or from hex, or if it looks like a unix timestamp its representation in local time will be shown. 
+  * Right-clicking on a non-ASCII character shows its code point and UTF-8 representation.
 
-Moving the mouse's scroll wheel scrolls up and down. You can configure it to send arrow keys in interactive programs by turning on Preferences > Advanced > Scroll wheel sends arrow keys when in alternate screen mode, but it will only work if **Preferences > Profiles > Terminal > Disable save/restore alternate screen** is turned off.
+You can configure your pointing device's scroll gesture to send arrow keys in interactive programs by turning on Preferences > Advanced > Scroll wheel sends arrow keys when in alternate screen mode, but it will only work if **Preferences > Profiles > Terminal > Disable save/restore alternate screen** is turned off.
 
 A three-finger swipe left or right on a trackpad (if configured to "navigate") will select an adjacent tab.
 
 Middle clicking on a tab (if your pointing device has a middle button) closes it.
-
-Hold Control while resizing a window to temporarily disable snap-to-grid. You can permanently disable snap-to-grid in Prefs > Advanced > Terminal windows resize smoothly.
 
 #### Keyboard
 Every aspect of the keyboard can be configured in iTerm2. These keystrokes may be useful to remember:
@@ -52,12 +49,10 @@ You can configure any key combination to perform any action in two places: in Pr
 
 You can remap modifiers like Option and Cmd within iTerm2. Some users find that pressing Option frequently is uncomfortable, and configure iTerm2 to swap the function of the Option and Cmd keys. This is done in Preferences > Keys under Remap Modifier Keys. If there is some key combination that you don't want to be affected by this change (such as Cmd-tab) add a new global shortcut key with the action Do Not Remap.
 
-iTerm2 allows you to define a global hotkey. This is a single keystroke that iTerm2 listens for even when another application has keyboard focus. When it is pressed, iTerm2 comes to the front. Press it again, and iTerm2 goes away. You can choose to bind the hotkey to a single dedicated window. This feature is similar to other programs like Visor, Guake, and Yakuake.
+iTerm2 allows you to define a global hotkey. This is a single keystroke that iTerm2 listens for even when another application has keyboard focus. When it is pressed, iTerm2 comes to the front. Press it again, and iTerm2 goes away. You can choose to bind the hotkey to a single dedicated window. For more on the hotkey window and other uses of hotkeys, see <a href="documentation-hotkey.html">Hotkeys</a>.
 
 #### Context menus
 By right-clicking in a session a context menu opens. You can use it to open a new session, perform various actions on selected text, or access frequently used features to affect the clicked-on session.
 
 #### Profiles
 Many settings are stored in profiles. A profile is a named collection of settings, and you can have as many of them as you like. Most users only have one profile, but if you find that you often connect to different servers, they may be useful for you. A key feature of a profile is that you can associate a command with it that is run when it begins. For instance, if you often ssh to a particular host, you could create a profile with the command "ssh example.com" to automate that process.
-
-

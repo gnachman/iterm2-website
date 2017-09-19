@@ -2,7 +2,7 @@
 ### General
 <hr>
 #### Startup
-The first dropdown box lets you select how windows will be opened when iTerm2 is launched. Most users will want *Use System Window Restoration Setting* as it works best with <a href="restoration.html">Session Restoration</a>. Users who exclusively use the Hotkey Window may prefer *Don't Open Any Windows*. If you have a default window arrangement saved then *Open Default Window Arrangement* will be available.
+The first dropdown box lets you select how windows will be opened when iTerm2 is launched. Most users will want *Use System Window Restoration Setting* as it works best with <a href="restoration.html">Session Restoration</a>. Users who exclusively use the Hotkey Window may prefer *Only Restore Hotkey Window*, which will not restore regular windows but will restore the hotkey window. If you have a default window arrangement saved then *Open Default Window Arrangement* will be available.
 
 #### Open profiles window
 If selected, the Profiles Window will automatically open when iTerm2 is started.
@@ -17,10 +17,10 @@ If selected, commands that close one session will not be confirmed, but commands
 If selected, the Quit iTerm2 (cmd-Q) command will be confirmed if any terminal windows are open.
 
 #### Instant Replay Uses X MB per Session
-This setting specifies the maximum amount of memory allocated to instant replay for each tab or split pane. More memory means instant replay is able to go farther back into the past. You can enter instant replay with View > Step Back in Time.
+This setting specifies the maximum amount of memory allocated to instant replay for each tab or split pane. More memory means instant replay is able to go farther back into the past. You can enter instant replay with **View > Step Back in Time**.
 
 #### Save copy/paste and command history to disk
-If selected, every time text is copied or pasted in iTerm2 it will be saved to disk. The last 20 values are recorded. They can be accessed with Edit > Open Paste History.... If you use <a href="shell_integration.html">Shell Integration</a> then when this is enabled your command history, directory history, and remote hostname and usernames will also be saved to disk. Unchecking this will erase all of the saved information.
+If selected, every time text is copied or pasted in iTerm2 it will be saved to disk. The last 20 values are recorded. They can be accessed with **Edit > Open Paste History...**. If you use <a href="shell_integration.html">Shell Integration</a> then when this is enabled your command history, directory history, and remote hostname and usernames will also be saved to disk. Unchecking this will erase all of the saved information.
 
 #### Add Bonjour hosts to profiles
 If selected, all Bonjour hosts on the local network have a profile created for them as long as they're around.
@@ -37,17 +37,17 @@ If enabled, iTerm2 will load its preferences from the specified folder or URL. A
 #### Save changes to folder when iTerm2 quits
 When you've turned on *Load preferences from a custom folder* and this is on then any changes you make to your settings will be written to the custom folder.
 
-#### Copy to clipboard on selection
-If enabled, text is copied to the clipboard immediately upon selection. If not selected, you must select Edit > Copy to copy it.
+#### Copy to pasteboard on selection
+If enabled, text is copied to the clipboard immediately upon selection. If not selected, you must select **Edit > Copy** to copy it.
 
 #### Copied text includes trailing newline
 If enabled, a terminal newline will be copied to the pasteboard when the selection includes one; otherwise, no selection will ever include a terminal newline.
 
 #### Applications in terminal may access clipboard
-If enabled, clipboard access will be granted via escape code to programs running in iTerm2. They will be able to retrieve and set the contents of the system pasteboard.
+If enabled, clipboard access will be granted via escape code to programs running in iTerm2. They will be able to set the contents of the system pasteboard. For more details, see <a href="documentation-utilities.html">Shell Integration Utilities</a>.
 
 #### Characters considered part of a word for selection
-When you double-click in the terminal window, a "word" is selected. A word is defined as a string delimited by characters of a different class. The classes of characters are whitespace, word characters, and non-word characters. The characters in this field define the set of non-word characters.
+When you double-click in the terminal window, a "word" is selected. The OS's algorithm for word selection is used, but it's extended to also include characters in this set. For example, by adding `/` to this field, double-clicking on a `path/like/this` would select the entire path instead of just one component.
 
 #### Smart window placement
 If enabled, new windows will be opened where they least overlap existing windows.
@@ -67,8 +67,8 @@ The first dropdown box in the **tmux Integration** section allows you to define 
 #### Open dashboard if there are more than...tmux windows
 When attaching to a tmux session with the tmux integration, windows are normally opened automatically. If there are too many of them, then the tmux dashboard is opened instead.
 
-#### Automatically hide the tmux client session after connecting
-When the tmux integration is entered by running tmux -CC, the window in which that command was run will miniaturize into the dock if this option is enabled.
+#### Automatically bury the tmux client session after connecting
+When the tmux integration is entered by running tmux -CC, the window in which that command was run will be <a href="documentation-buried-sessions.md">buried</a>.
 
 ### Appearance
 <hr>
@@ -89,8 +89,11 @@ If selected, tabs will indicate their keyboard shortcut.
 #### Show tab close buttons
 If selected, tabs show close buttons. If not selected, the close buttons only appear when the mouse hovers over the tab.
 
-#### Show tab activity indicators
+#### Show activity indicator
 If selected, the activity indicator in each tab will be displayed when new output is recevied and the tab is not selected.
+
+#### Show new-output indicator
+If selected, non-selected tabs will indicate they have unseen output with a blue circle in the tab.
 
 #### Flash tab bar when switching tabs in fullscreen
 If selected, the tab bar will show briefly when switching tabs in a fullscreen window. It will also show briefly when the number of tabs changes.
@@ -98,11 +101,17 @@ If selected, the tab bar will show briefly when switching tabs in a fullscreen w
 #### Show tab bar in fullscreen
 If selected the tab bar will be visible in fullscreen windows.
 
+#### Stretch tabs to fill bar
+If selected, tabs will grow large enough to fill the entire tab bar, like system native tab bars.
+
 #### Show per-pane title bar with split panes
 When a tab has split panes, this option controls whether each split pane will have its own title bar.
 
 #### Auto-hide menu bar in non-native fullscreen
-When native fullscreen mode is disabled (in Prefs > General), this option is available. If you'd like the menu bar to remain visible when a fullscreen window is present on a screen with a menu bar, turn this on.
+When native fullscreen mode is disabled (in **Prefs > General**), this option is available. If you'd like the menu bar to remain visible when a fullscreen window is present on a screen with a menu bar, turn this on.
+
+#### Exclude from Dock and Cmd-Tab Application Switcher
+When this setting is enabled, iTerm2 will disappear from the dock and you won't be able to switch to it with Cmd-Tab. An icon will be added to the right side of the menu bar that lets you get back to iTerm2's preferences. This is useful if you only use hotkey windows and you want iTerm2 to keep a low profile.
 
 #### Show window number
 If selected, window titles include the window number. You can navigate to a window by pressing cmd-opt-N where N is the window number.
@@ -133,6 +142,12 @@ If selected, scrollbars will be hidden in terminal windows.
 
 #### Disable transparency for fullscreen windows by default
 If enabled, entering fullscreen mode will automatically turn off transparency for that window.
+
+#### Show line under title bar when tab bar is not visible
+Turn this off for a sleek appearance with the dark theme.
+
+#### Show proxy icon in window title bar
+When enabled, an icon representing the current directory is added to the window's title bar. You can drag it.
 
 ### Profiles > General
 <hr>
@@ -186,6 +201,9 @@ Cursor Boost dims all colors other than the cursor colors to make the cursor sta
 #### Tab Color
 If enabled, this color will decorate the tab control. Tabs indicate the color of their current session if there is more than one split pane.
 
+#### Underline Color
+If enabled, this color will be used for all underlining, independent of the color that underlined characters have themselves.
+
 #### Cursor Guide
 The cursor guide is a horizontal rule that indicates the vertical position of the cursor. You can adjust its color, including alpha value, to make it more visible against your background color.
 
@@ -214,7 +232,16 @@ If selected, text with the blink attribute set will actually blink. Oh, the huma
 If selected, text with the italic attribute set will be rendered in italics. The font you select must have an italic face.
 
 #### Use thin strokes for anti-aliased text
-Anti-aliased text will be drawn with thinner strokes by default on Retina displays. The effect may be more or less visible depending on your particular hardware and OS version. Some people prefer the older, heavier strokes, so you may customize the setting here.
+Anti-aliased text will be drawn with thinner strokes by default on Retina displays when the background color is darker than the foreground color. The effect may be more or less visible depending on your particular hardware and OS version. You can configure when thin strokes are used depending on display type and colors.
+
+#### Unicode normalization form
+This affects how text is processed on input. Most users will want no normalization. HFS+ normalization preserves the fullwidth attribute of composed characters. 
+
+#### Use Unicode Version 9 Widths
+Unicode version 9 offers better formatting for Emoji. If your applications have been updated to use these tables, you should enable this setting.
+
+#### Treat ambiguous-width characters as double width
+Some characters (e.g., Chinese ideograms) are double-width, and take two cells to display. Other characters (e.g., Latin letters) are single width and take only one cell to display. There is another category of characters known as "ambiguous width". One example of ambiguous-width characters are Greek letters. Depending on your application, you may prefer to display them as double-width or single-width. If most of the text you deal with is double-width, then you should enable this setting as it will help things to line up correctly in that context.
 
 #### Regular font
 ASCII text (latin letters, numbers, and some symbols) will be drawn using this font. Select "Anti-aliased" to draw the text with smooth edges.
@@ -222,17 +249,14 @@ ASCII text (latin letters, numbers, and some symbols) will be drawn using this f
 #### Non-ASCII font
 All non-ASCII text (many accented Latin letters, non-Latin text, less-common symbols, and thousands of miscellaneous unicode characters) will be drawn with this font. It is recommended that you use the same point size for both regular and non-ASCII fonts. Select "Anti-aliased" to draw the text with smooth edges.
 
-#### Treat ambiguous-width characters as double width
-Some characters (e.g., Chinese ideograms) are double-width, and take two cells to display. Other characters (e.g., Latin letters) are single width and take only one cell to display. There is another category of characters known as "ambiguous width". One example of ambiguous-width characters are Greek letters. Depending on your application, you may prefer to display them as double-width or single-width. If most of the text you deal with is double-width, then you should enable this setting as it will help things to line up correctly in that context.
-
-#### Use HFS+ Unicode Normalization
-Use HFS+ normalization instead of NFC. This helps preserve the fullwidth attribute of composed characters. 
+#### Ligatures
+When enabled and you have a font that supports ligatures (such as FiraCode) then text will be rendered with ligatures. This makes drawing much slower, so users on less-than-stellar hardware may not want to enable it.
 
 ### Profiles > Window
 <hr>
 
 #### Transparency
-This sets the transparency of the window background. It can be temporarily disabled with View > Use Transparency.
+This sets the transparency of the window background. It can be temporarily disabled with **View > Use Transparency**.
 
 #### Keep background colors opaque
 If selected, non-default background colors will be opaque.
@@ -249,6 +273,9 @@ If enabled, a window created with this profile will immediately miniaturize afte
 #### Open Toolbelt
 If enabled, a window created with this profile will feature an open toolbelt.
 
+#### Preserve profile name in tab title
+You can specify that profile names are shown in window and tab titles under **Preferences > Appearance > Show Profile Name**. If that is not set, then this option is irrelevant. When in use, a host may send an escape code that changes the window title. This setting causes the profile name to be preserved in that session-set title.
+
 #### Background Image
 This allows you to select an image to display behind the terminal's text. If Tile image is selected, then the image will be shown at its actual size and tessellated; otherwise, it will be stretched to fit the whole pane. The blending slider determines how strongly the image dominates over the text's background color.
 
@@ -261,10 +288,7 @@ If you have more than one screen connected, this lets you select the screen on w
 #### Space
 If you have enabled Spaces (or your OS uses Desktops instead of spaces) and have set Spaces/Mission Control to use Control+Number to switch spaces/desktops, then you can use this setting to select the initial space/desktop to open a new window using this profile.
 
-#### If showing profile name in tab title, keep it when the title is changed
-You can specify that profile names are shown in window and tab titles under Preferences > Appearance > Show Profile Name. If that is not set, then this option is irrelevant. When in use, a host may send an escape code that changes the window title. This setting causes the profile name to be preserved in that session-set title.
-
-#### Force this profile to open in a new window, never in a tab
+#### Open in a new window, never in a tab
 If you ask for a new tab with this profile, it will just open in a window instead. This is for people who hate tabs.
 
 ### Profiles > Terminal
@@ -290,6 +314,9 @@ Text to send when the ENQ sequence is received. Not normally used.
 
 #### Enable mouse reporting
 If selected, applications may choose to receive information about the mouse. This can be temporarily disabled by holding down Option.
+
+#### Enable mouse wheel events
+If disabled, the mouse will will always perform its default action (such as scrolling history) rather than being reported to an app that has enabled mouse reporting.
 
 #### Terminal may report window title
 Programs running in a terminal may send an escape code to request the current window title. You may disable this feature by enabling this option. It should be disabled if you're communicating with an untrusted party, as there are possible injection attacks.
@@ -343,7 +370,7 @@ When you close a session, window, or tab the shell is not terminated until X sec
 When a session will close, you can choose when to be prompted with a modal alert.
 
 #### Automatically log session input to files in:
-If enabled, every session's output will be logged to a file in the specified directory. File names are formatted as Date_Time.ProfileName.TerminalID.ProcessId.RandomNumber.log.
+If enabled, every session's output will be logged to a file in the specified directory. File names are formatted as Date_Time.ProfileName.TerminalID.ProcessId.RandomNumber.log. You can customize the filename in **Preferences > Advanced > Format for automatic session log filenames**.
 
 #### When idle, send ASCII code X every Y seconds.
 If selected, the specified ASCII code "X" (a number from 0 to 255) will be transmitted every Y seconds while nothing is happening. Don't use this unless you know what you're doing as it can have unexpected consequences. Seriously, it's probably not what you want.
@@ -359,16 +386,22 @@ This panel shows key mappings. You can double-click on a mapping to edit it. Whe
 The keypress will do nothing.
 
 #### Do not remap modifiers
-If modifier remapping is in effect (set under Preferences > Keys), it can be disabled for certain key combinations. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
+If modifier remapping is in effect (set under **Preferences > Keys**), it can be disabled for certain key combinations. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
 
 #### Remap modifiers in iTerm2 only
-If modifier remapping is in effect (set under Preferences > Keys), it can be set to not affect other applications that may listen for global hotkeys. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
+If modifier remapping is in effect (set under **Preferences > Keys**), it can be set to not affect other applications that may listen for global hotkeys. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
+
+#### Change Profile
+This action changes the profile of the current session.
+
+#### Load Color Preset
+This action changes the colors of the current session using the specified preset.
 
 #### Split/New Window/Tab with Profile
 These actions allow you to create a new session with a specified profile when a key is pressed.
 
 #### Start Instant Replay
-This is equivalent to the menu item View > Start Instant Replay.
+This is equivalent to the menu item **View > Start Instant Replay**.
 
 #### Cycle Tabs Forward/Backward
 This implements tab switching the same way Cmd-Tab (or Cmd-Shift-Tab) switches windows, with the most-recently-used stack.
@@ -378,6 +411,12 @@ These actions navigate among tabs, windows, and split panes.
 
 #### Move tab left/right
 Changes the tab's position in the order.
+
+#### Next/Previous Window
+Selects the next or previous window in window order.
+
+#### Next/Previous Pane
+Selects the next or previous pane in left-to-right, top-to-bottom order.
 
 #### Increase/Decrease Width/Height
 Changes the size of the current session.
@@ -406,16 +445,19 @@ This action allows you to enter a text string that will be sent when the associa
 #### Find Regular Expression
 Performs a search for a saved regular expression.
 
+#### Find Again Up/Down
+Repeats the search, finding the next result at an earlier/later position.
+
 #### Undo
 Invokes the Undo action. Could be used to undo closing a session/tab/window.
 
 #### Paste (from selection)
-Same as Edit > Paste and Edit > Paste Special > Paste Selection
+Same as **Edit > Paste and Edit > Paste Special > Paste Selection**.
 
 #### Toggle Fullscreen
 This action enters or exits full screen mode.
 
-#### Toggle Hotkey Hides When Focus Lost
+#### Toggle Pin Hotkey Window
 Toggles whether the hotkey window hides when it loses focus.
 
 #### Run Coprocess
@@ -431,11 +473,17 @@ This action allows you to enter the name of an iTerm2 menu item. It must be ente
 
 You can add a new keymapping by pressing "+". You can remove an existing mapping by selecting it and pressing "-". Three presets are provided: "Xterm defaults" is the normal key mappings, while "Xterm defaults with numeric keypad" disables the "application keypad" in favor of the numbers and symbols that the numeric keypad typically emits. "Terminal.app Compatibility" tries to emulate the way that Terminal.app sends keys by default.
 
+#### Delete sends ^H
+If you are on a legacy system that does not accept ^? for backspace, select this and it will add a key mapping for you.
+
+#### Allow Application Keypad Mode
+Some full-screen progarms (like emacs) switch the keyboard into application keypad mode, which changes how the numeric keypad behaves. Disabling this option causes iTerm2 to never enter application keypad mode.
+
 #### Left/Right Option Key Acts As
 It is common to use a modifier to send so-called "meta keys". For most users, selecting "+Esc" here is the right choice. The "Meta" option sets the high bit of the input character, and is not compatible with modern systems.
 
-#### Delete sends ^H
-If you are on a legacy system that does not accept ^? for backspace, select this and it will add a key mapping for you.
+#### A hotkey opens a dedicated window with this profile
+When enabled, a dedicated hotkey window is attached to this profile. The **Configure Hotkey Window** button lets you configure the hotkey and other attributes of the window. For more information, see <a href="documentation-hotkey.md">Hotkey Windows</a>.
 
 ### Profiles > Advanced
 <hr>
@@ -464,14 +512,14 @@ Tabs are normally navigated with cmd+number, but you can change the modifier use
 #### To switch windows
 Windows are normally navigated with cmd+opt+number, but you can change the modifier used for that function here.
 
-#### Show/Hide iTerm2 with a system-wide hotkey
-When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assistive devices in the Universal Access panel of System Preferences.
+#### Show/Hide iTerm2 all windows with a system-wide hotkey
+When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assistive devices in the Universal Access panel of System Preferences. For more information, see <a href="documentation-hotkey.md">Hotkey Windows</a>.
 
-#### Hotkey toggles a dedicated window with profile
-If enabled, the hotkey set above will toggle a single window with a specific profile. This provides an always-available terminal.
+#### Create a Dedicated Hotkey WIndow
+Sets up a new hotkey window profile if you don't already have one. For more information, see <a href="documentation-hotkey.md">Hotkey Windows</a>.
 
-#### Hotkey window hides when focus is lost
-If enabled, the hotkey window will stay open even when another window gains keyboard focus.
+#### Add Touch Bar Item
+This button is only visible if your OS version supports touch bars. By pressing this button, you can define a new custom touch bar button with any of the actions you can assign to a key (see below). You can then add the custom button to your touch bar with **View > Customize Touch Bar**.
 
 #### Global shortcut keys
 This interface works like the keyboard shortcut system in profiles (described above) but it affects all profiles. Settings here are overridden by those in a profile's key mappings.
@@ -511,7 +559,7 @@ Opens the URL under the pointer in your web browser without bringing the browser
 Opens the URL under the pointer, bringing the web browser to the foreground. If what's under the cursor is a filename on the local machine, it will be opened with Semantic History.
 
 #### Paste from Clipboard
-This is identical to Edit > Paste.
+This is identical to **Edit > Paste**.
 
 #### Paste from Selection
 Pastes the most recent selection made in iTerm2, even if it's not what's in the pasteboard.
