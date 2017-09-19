@@ -1,0 +1,179 @@
+iTerm2 version 3.1 offers a number of new features and bug fixes.
+Please see below for all the details.
+
+New features:
+-------------
+
+Marquee Features
+- Add touch bar support.
+  * Use the touch bar to select tabs in full screen
+  * Assign labels to function keys with a shell script
+  * Create custom touch bar items in Prefs > Keys
+- Add support for ligature fonts.
+- Rework how hotkey windows work:
+  * You can have multiple hotkey windows. Each profile may have a
+    hotkey window associated with it.
+  * Multiple hotkeys can be bound to a single profile.
+  * Double-tap of a modifier key can open a hotkey window.
+  * Hotkey windows can be made to float over other apps' fullscreen windows.
+- Shell integration utilities have a lot of new programs.
+  Reinstall shell integration to get the run-down.
+- Add the ability to "bury" sessions. They get hidden in Session > Buried
+  Sessions. Changes Prefs > General > Automatically hide the tmux client
+  session to automatically bury instead.
+- Add support for OSC 8 to do hypertext links. The syntax is:
+  OSC 8 ; params ; url ST
+    params is zero or more colon-delimited key=value strings. The only
+  defined key is "id". Two adjacent hyperlinks with the same URL but
+  different "id"s will not highlight together on hover. id is
+  optional.
+    As usual, OSC is 'esc ]' and st is 'esc \'.
+- Add copy mode, like tmux's.
+  https://iterm2.com/documentation-copymode.html
+
+Applescript
+- Adds new applescript support for hotkey windows.
+
+Arrangements
+- Add the ability to save a single tab as an arrangement.
+- Add the ability to restore an arrangement as one or more tabs.
+- Hotkey windows are now saved in saved arrangements.
+
+Find on Page
+- Add smart case sensitivity to find on page as the default option.
+
+General
+- Allow windows to snap to the full size of the display.
+- Add a menu item to the Toolbelt menu to save the current toolbelt's
+  width as the default.
+- Extend tip of the day to allow selection between daily or weekly tips.
+- Make the "screen with cursor" window setting update the window's
+  screen each time a hotkey window is opened.
+- Non-edge-spanning X-of-screen windows are now centered.
+- Add setting to disable mouse wheel in mouse reporting mode.
+- Add keybindings for swap pane with left/right/above/below.
+- Add keybindings for find next/previous.
+- Improve performance of deleting profiles when you have lots of them.
+- Add support for finder services. You can right click in Finder to
+  launch iTerm2 in that location.
+- Offer to abort a download when you press ^C while it's downloading.
+- Flash the tab bar on entering fullscreen.
+- Show an announcement when a session restored from an arrangement
+  can't find the profile associated with it.
+- Improve performance of creating a tab if you've increased the
+  maximum number of file descriptors.
+- Redraw windows during resize.
+- Add an optional "proxy" icon to the titlebar. Configurable in
+  Prefs > Appearance.
+- Merge captured output when successive captures are closely related.
+- Add an advanced setting to disable send text at start when launching
+  iTerm2 with a script
+- Add an off-by-default websocket server that enables advanced
+  scripting features.
+- Change "Open in current space" for hotkey windows to move the hotkey
+  window to the current space if it's already open on another space
+  when the hotkey is pressed.
+- Add an advanced preference to make auto logs filenames' formattable.
+
+Shell Integration
+- Offer to turn off focus reporting when host changes.
+- Offer to turn off paste bracketing on host change.
+- Keep track of how many lines are in the prompt so the whole thing
+  can be preserved when you clear the buffer.
+
+Terminal Emulation
+- Add support for Unicode 9 (off by default)
+- Set COLORTERM=truecolor to advertise 24-bit capability.
+- Make the unicode normalization form configurable to None, NFC, NFD,
+  or HFS+. Change the defualt to None.
+
+tmux Integration
+- Tmux integration now supports the "initial directory" setting of the
+  tmux profile.
+- Clear tmux history when you do Clear Buffer or Clear Scrollback
+  Buffer.
+- Add an advanced preference to allow different tmux sessions to have
+  different profiles and to base the profile of the tmux sessions on the
+  session that attached to tmux.
+
+Semantic History
+- Allow hyphens in schemes when looking for clickable URLs so semantic
+  history will accept chrome-devtools: schemes.
+- Semantic history can now open file:line:column in VSCode.
+- Use secure copy to download files selected with cmd-click on a
+  filename on a remote host and OSC 8 URLs with a file: scheme and a
+  host part.
+
+Tab Bar
+- Improve accessibility of the tab bar--tabs are now selectable with
+  accessibility.
+- Make the tab bar's minimum drag distance configurable.
+
+Terminal emulation changes:
+- Add a new proprietary escape sequence to copy embedded base64 data
+  to pasteboard.
+- Add a new proprietary escape sequence to report the value of system-
+  and user-defined variables (as used in badges).
+- Add a new proprietary escape sequence to show fireworks at the
+  cursor.
+- Add a new proprietary escape sequence to prompt the user to select
+  one or more files and then upload them as a base64-encoded tar.gz
+  file.
+- Add a new proprietary escape sequence to customize touch bar
+  function key labels.
+- Add a new proprietary escape sequence to set individual colors or
+  load a preset.
+- Add a new proprietary escape sequence to set unicode version.
+- Accept OSC 7 as a synonym for 1337;RemoteHost and 1337;CurrentDir.
+- Add support for CSI 12 h and CSI 12 l to set local echo on or off.
+- Move cursor to the origin on DECSET 1049.
+
+Triggers
+- Add a trigger to set the session title.
+- Add a Prompt Detected trigger action to improve shell integration
+  emulation with triggers.
+- Trigger highlighting colors in a dynamic profile may use #rrggbb
+  notation.
+
+Visuals
+- Underlines can now have a custom color.
+- Add advanced prefs to change the margins.
+- Descenders interrupt underlines.
+- Improve the appearance of dimmed sessions
+- Improve tab bar colors to look more native.
+- Add a preference to disable the line between the title bar and the tab bar.
+- Respect the current keyboard layout when showing a shortcut (e.g.,
+  the keypress for a hotkey window).
+- Windows with light backgrounds now get dark borders, if window borders are enabled.
+- Add an advanced pref to tweak the height of the underline cursor.
+- Add an experimental feature to draw an outline around underline and
+  vertical bar cursors to improve distinction from text.
+
+
+Bug fixes:
+----------
+- Fix a bug where surrogate pairs would get corrupted when pasting.
+- Use SRGB colors internally. Fixes a bug where hex values in the
+  color picker weren't stable.
+- Rate limit window size change notifications.
+- Improve performance when there is a network mount.
+- Disconnect dead ssh sessions during tmux integration.
+- Improve how focus follows mouse behaves when you split a pane.
+- Improve how network automounts are detected. This helps us avoid
+  stat()ing files on the network, which can cause hangs when semantic
+  history tries to discover if a file exsts.
+- Keep process monitoring from eating too much CPU.
+- Validate secure copy hostname and user name to ensure legal characters
+  only are present.
+- Fix a crash when the font is broken and reports a 0 size.
+- Allow the password manager to open even if another sheet is already
+  open.
+- Draw the default background color behind inline images.
+- Fix a bug where the "Edit password" button in the password manager
+  would change your password into dots.
+- Fix a bug where the wrong job name would be shown in the titlebar when
+  there were two jobs that considered themselves foreground jobs.
+- Fix a bug where the order of windows in applescript was random, not
+  back to front.
+SHA-256 of the zip file is
+2837aced993add874a5972fa36a58ead2fa1e348da63480192ea6d52f7bed5eb

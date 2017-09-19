@@ -1,8 +1,4 @@
-This is an example of the new Applescript syntax available in version 3.0.
-
-**Note:** in iTerm2 3.0.0, sessions had a property called *contents*. That
-conflicted with a reserved word, and has been renamed to *text*. The example
-below reflects proper usage for version 3.0.1 and up.
+This is an example of the Applescript syntax available in version 3.0 and later.
 
 <pre>
 tell application iTerm2
@@ -92,6 +88,7 @@ tell application iTerm2
     set cursor text color to {65535, 0, 0, 0}
     set selected text color to {65535, 0, 0, 0}
     set selection color to {65535, 0, 0, 0}
+    set underline color to {65535, 0, 0, 0}
     set ANSI black color to {65535, 0, 0, 0}
     set ANSI red color to {65535, 0, 0, 0}
     set ANSI green color to {65535, 0, 0, 0}
@@ -206,5 +203,11 @@ end tell"
 
 run script fullScript
 </pre>
+
+### Legacy Note
+
+**Note:** in iTerm2 3.0.0, sessions had a property called *contents*. That
+conflicted with a reserved word, and has been renamed to *text*. The example
+below reflects proper usage for version 3.0.1 and up.
 
 
