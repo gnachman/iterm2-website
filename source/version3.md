@@ -12,7 +12,7 @@ There are dozens of new features. Many bugs have been fixed. Performance is sign
 
 ### Where do I get it?
 
-<a href="https://iterm2.com/downloads/stable/iTerm2-3_0_4.zip">Download it here.</a>
+<a href="https://iterm2.com/downloads/stable/latest">Download it here.</a>
 
 ### Major New Features
 
