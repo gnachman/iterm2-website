@@ -4,6 +4,10 @@ title: iTerm2 - macOS Terminal Replacement
 active-state: news
 ---
 
+#### Important Security Update
+
+Version 3.1.1 of iTerm2 has been released and contains an important security update. Prior versions could leak private data over DNS requests. Please update to 3.1.1 or later. For more information, please see the <a href="https://gitlab.com/gnachman/iterm2/wikis/dnslookupissue">official statement</a>.
+
 #### iTerm2 Version 3.1 Released
 <i>Sunnyvale, CA&mdash;September 18, 2017</i>
 
