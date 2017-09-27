@@ -214,7 +214,7 @@ __bp_preexec_invoke_exec() {
     fi
 
     local this_command
-    this_command=$(HISTTIMEFORMAT= history 1 | { read -r _ this_command; echo "$this_command"; })
+    this_command=$(HISTTIMEFORMAT= builtin history 1 | { read -r _ this_command; echo "$this_command"; })
 
     # Sanity check to make sure we have something to invoke our function with.
     if [[ -z "$this_command" ]]; then
@@ -410,7 +410,7 @@ function iterm2_prompt_suffix() {
 
 function iterm2_print_version_number() {
   iterm2_begin_osc
-  printf "1337;ShellIntegrationVersion=8;shell=bash"
+  printf "1337;ShellIntegrationVersion=9;shell=bash"
   iterm2_end_osc
 }
 
