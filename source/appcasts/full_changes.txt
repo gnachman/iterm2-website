@@ -1,34 +1,40 @@
-iTerm2 3.1.2
-
-Security updates:
-- All the code to perform DNS requests on cmd+hover has been
-  removed. It is no longer an option. It had been turned off
-  by default in 3.1.1.  Please see this URL for more
-  information:
-  https://gitlab.com/gnachman/iterm2/wikis/dnslookupissue
-
-New features:
-- Add a "Copy Password" item to the password manager's
-  right-click menu
+iTerm2 3.1.3
 
 Bug fixes:
-- Prevents High Sierra's native tabs from affecting iTerm2
-  windows.
-- Restore hotkey windows to the proper screen.
-- Fix a bug where tabs would tag without the user intending
-  to drag them.
-- Recognize non-ASCII URLs as cmd-clickable. All characters
-  encodable by IDN are now considered part of a URL.
-- Fix a bug where you couldn't togle the left side of the
-  "blinking cursor" button.
-- Fix a bug where hotkey windows that had double-taps but no
-  hotkeys could be toggled by pressing "a"
+- Do not require biometric authentication for the password
+  manager: allow password input.
+- Draw arcs and diagonal lines in favor of the glyphs in the
+  typeface so everything lines up nice and pretty.
+- Fix a bug where closing a tab in applescript would always
+  close the current tab, not the one you wanted.
+- Restore native fullscreen windows on the proper screen.
+- Show fullscreen windows under the menubar when in
+  UIElement mode.
+- Treat halfwidth katakana sound marks as non-combining
+  marks to emulate Terminal's funny behavior.
+- Fix a bug where keyboard input would break after holding
+  down a key to make it repeat, for some users.
+- Fix a bug where tags weren't visible in toolbelt profiles
+  on 10.13.
+- Don't open a short-lived window when showing a manpage
+  from the touch bar.
+- Make the outline of the selected tab when colored tabs are
+  present more subtle.
+- Fix a bug that broke subpixel antialiasing for non-retina
+  users.
+- Handle reuse current directory in tmux 1.8 by ignoring it
+  instead of opening new tabs in the root directory
+- Ignore new notifications from tmux 2.5
+- Fix white-on-white buttons in the butterbar.
+- Fix a bug where the password manager wouldn't open in
+  macOS 10.11.
+- Fix a bug where stray underlines would appear.
 
-Other changes:
-- Performance improvements when there is a lot of scrollback
-  history
-- Move a bunch of advanced prefs out of the Experimental
-  category since they're now on by default.
+New features:
+- Add an advanced preference to disable the status bar icon.
+- Add an advanced preference to increase the sensitivity of
+  the scroll wheel.
+
 
 Release notes for 3.1 follow:
 -----------------------------
@@ -38,7 +44,7 @@ Please see below for all the details.
 
 Important: Older versions of iTerm2 from 3.0.0 on had a
 security issue which could leak data via DNS requests.
-Please update to 3.1.1 right away.
+Please update to 3.1.1 or later right away.
 
 Please see this URL for more information:
 https://gitlab.com/gnachman/iterm2/wikis/dnslookupissue
