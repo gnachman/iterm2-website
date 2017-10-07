@@ -99,7 +99,7 @@ def ChangeLog(zip):
 BASE=os.environ["HOME"] + "/iterm2.com/downloads"
 # Name, path component, description, array of substrings delineating tracks which always includes the empty string.
 DOWNLOADS_PATHS=[("Stable Releases", "stable", "Stable releases update rarely but have no serious bugs.", [ "" ]),
-                 ("Test Releases", "beta", "Test releases update many times a year and are occasionally unstable.", [ "3_1_beta" ]), ]
+                 ("Test Releases", "beta", "Test releases update many times a year and are occasionally unstable.", [ "3_1_" ]), ]
 
 j = 0
 for sectionName,path,note,tracks in DOWNLOADS_PATHS:
