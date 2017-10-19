@@ -60,6 +60,7 @@ function error() {
 function show_help() {
     echo "Usage: imgcat [-p] filename ..." 1>& 2
     echo "   or: cat filename | imgcat" 1>& 2
+    echo "   or: imgcat [-p] -u url ..." 1>& 2
 }
 
 ## Main
@@ -86,6 +87,15 @@ while [ $# -gt 0 ]; do
     -p|--p|--print)
         print_filename=1
         ;;
+    -u|--u|--url)
+        encoded_image=$(curl -s "$2" | base64) || (error "No such file or url $2"; exit 2)
+        has_stdin=f
+        print_image "$2" 1 "$encoded_image" "$print_filename"
+        set -- ${@:1:1} "-u" ${@:3}
+        if [ "$#" -eq 2 ]; then
+            exit
+        fi
+        ;;
     -*)
         error "Unknown option flag: $1"
         show_help
@@ -95,7 +105,7 @@ while [ $# -gt 0 ]; do
         if [ -r "$1" ] ; then
             has_stdin=f
             print_image "$1" 1 "$(base64 < "$1")" "$print_filename"
-        else
+        else    
             error "imgcat: $1: No such file or directory"
             exit 2
         fi
