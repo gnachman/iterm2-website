@@ -62,6 +62,21 @@ function show_help() {
     echo "   or: cat filename | imgcat" 1>& 2
 }
 
+# create image directory under the directory of imgcat
+function img_folder() {
+	dir_name="$(echo ~)/.iterm2/image_collection"
+	if [ ! -d dir_name ]; then
+	    mkdir -p $dir_name
+	fi
+}
+
+# create a list to check if the picture has been downloaded
+function make_list() {
+	if [ ! -f $dir_name/list.txt ]; then
+		touch $dir_name/list.txt
+	fi
+}
+
 ## Main
 
 if [ -t 0 ]; then
@@ -95,7 +110,29 @@ while [ $# -gt 0 ]; do
         if [ -r "$1" ] ; then
             has_stdin=f
             print_image "$1" 1 "$(base64 < "$1")" "$print_filename"
-        else
+        elif curl --output /dev/null --silent --head --fail "$1"; then # check if the url is downloadable
+			img_folder
+			make_list
+			# check if already downloaded from the url
+			if grep -q $1 $dir_name/list.txt; then 
+				# get file name from the list
+				md5_name=$(echo "$(grep $1 $dir_name/list.txt)" | sed 's/.* \([0-9a-f]\)/\1/')
+			else
+				# download file with temporal name called tmp
+				curl $1 -o "$dir_name/tmp" > /dev/null 2>&1
+
+				# rename tmp to its md5 value
+				md5_name=$(echo "$(md5 $dir_name/tmp)" | sed 's/MD5 (.*) = \([0-9a-f]\)/\1/')
+				mv "$dir_name/tmp" "$dir_name/$md5_name"
+
+				# add new download file into the list
+				echo "$1 $md5_name" >> $dir_name/list.txt
+			fi
+			# reset argument of url to the corresponding md5_name
+			set -- "$dir_name/$md5_name"
+            has_stdin=f
+            print_image "$1" 1 "$(base64 < "$1")" "$print_filename"
+		else	
             error "imgcat: $1: No such file or directory"
             exit 2
         fi
@@ -108,5 +145,6 @@ done
 if [ $has_stdin = t ]; then
     print_image "" 1 "$(cat | base64)" ""
 fi
+
 
 exit 0
