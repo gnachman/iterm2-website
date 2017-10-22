@@ -12,9 +12,12 @@ Don't care for piping curl to bash? Do it by hand. First, download the right scr
 <pre>curl -L https://iterm2.com/misc/`basename $SHELL`_startup.in \
 -o ~/.iterm2_shell_integration.`basename $SHELL`</pre>
 
-Then add this to your login script (.login for tcsh, .bash_profile for bash, .zshrc for zsh, or config.fish file for fish):
+If your shell is `tcsh`, `bash`, or `zsh`, add this to your login script (`.login` for tcsh, `.bash_profile` for bash, `.zshrc` for zsh):
 
 <pre>source ~/.iterm2_shell_integration.`basename $SHELL`</pre>
+
+If your shell is `fish`, add this to `$HOME/.config/fish/config.fish`:
+<pre>source ~/.iterm2_shell_integration.(basename $SHELL)</pre>
 
 Don't want to or can't install a login script? See the workaround at the end of this document using
 triggers.
