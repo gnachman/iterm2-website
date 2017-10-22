@@ -1,39 +1,33 @@
-iTerm2 3.1.3
+iTerm2 3.1.4
 
 Bug fixes:
-- Do not require biometric authentication for the password
-  manager: allow password input.
-- Draw arcs and diagonal lines in favor of the glyphs in the
-  typeface so everything lines up nice and pretty.
-- Fix a bug where closing a tab in applescript would always
-  close the current tab, not the one you wanted.
-- Restore native fullscreen windows on the proper screen.
-- Show fullscreen windows under the menubar when in
-  UIElement mode.
-- Treat halfwidth katakana sound marks as non-combining
-  marks to emulate Terminal's funny behavior.
-- Fix a bug where keyboard input would break after holding
-  down a key to make it repeat, for some users.
-- Fix a bug where tags weren't visible in toolbelt profiles
-  on 10.13.
-- Don't open a short-lived window when showing a manpage
-  from the touch bar.
-- Make the outline of the selected tab when colored tabs are
-  present more subtle.
-- Fix a bug that broke subpixel antialiasing for non-retina
-  users.
-- Handle reuse current directory in tmux 1.8 by ignoring it
-  instead of opening new tabs in the root directory
-- Ignore new notifications from tmux 2.5
-- Fix white-on-white buttons in the butterbar.
-- Fix a bug where the password manager wouldn't open in
-  macOS 10.11.
-- Fix a bug where stray underlines would appear.
+- Fix navigating to split pane above/below/left right not
+  wrapping around.
+- Prevent blur values over 24 to prevent hitting a bug in
+  high sierra (values over 26 make the blur funny colors and
+  values over 24 are too slow).
+- Fix line wrapping of multi-line badges.
+- Allow windows to be larger than a screen when displays
+  have separate spaces is turned off.
+- Reduce the impact of proc_pidinfo and statfs hanging.
+- Tweak position of paste button in advanced paste.
+- Fix bug in high sierra where eydropper in color picker
+  didn't go away after selecting a color.
+- Remember the size of a hotkey window after resizing it and
+  then adding a new tab.
+- Fix a bug where opening an autocomplete window could cause
+  a hotkey window to hide.
+- If you scroll up to the top of a window and then clear the
+  buffer and then new output arrives, it now begins
+  autoscrolling when the cursor reaches the bottom.
+- Fix some crashes, including a very frequent one because of
+  a bad interaction between Sparkle and user defaults.
+- Disable tabs in High Sierra when you've got them set to
+  Always in preferences.
 
 New features:
-- Add an advanced preference to disable the status bar icon.
-- Add an advanced preference to increase the sensitivity of
-  the scroll wheel.
+- Add an advanced preference to use the typeface's box
+  drawing glyphs instead of the custom box drawing code.
 
 
 Release notes for 3.1 follow:
@@ -133,6 +127,9 @@ General
   open on another space when the hotkey is pressed.
 - Add an advanced preference to make auto logs filenames'
   formattable.
+- Add an advanced preference to disable the status bar icon.
+- Add an advanced preference to increase the sensitivity of
+  the scroll wheel.
 
 Shell Integration
 - Offer to turn off focus reporting when host changes.
