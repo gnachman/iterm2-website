@@ -1,3 +1,21 @@
+<script>
+var selected_shell="bash";
+function show(name) {
+  document.getElementById("opt_" + selected_shell).style.color="";
+  document.getElementById("opt_" + selected_shell).style.textDecoration="";
+
+  selected_shell=name
+  document.getElementById("bash").style.display="none";
+  document.getElementById("fish").style.display="none";
+  document.getElementById("tcsh").style.display="none";
+  document.getElementById("zsh").style.display="none";
+  document.getElementById(name).style.display="";
+
+  document.getElementById("opt_" + name).style.color="black";
+  document.getElementById("opt_" + name).style.textDecoration="underline";
+}
+</script>
+
 iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more--even over ssh. This enables several useful features.
 
 ### How To Enable Shell Integration
@@ -7,17 +25,50 @@ When you select the *iTerm2&gt;Install Shell Integration* menu item, it types th
 
 <pre>curl -L https://iterm2.com/misc/install_shell_integration.sh | bash</pre>
 
-Don't care for piping curl to bash? Do it by hand. First, download the right script for your shell:
+Don't care for piping curl to bash? Do it by hand. Select your shell to see the appropriate instructions: 
 
-<pre>curl -L https://iterm2.com/misc/`basename $SHELL`_startup.in \
--o ~/.iterm2_shell_integration.`basename $SHELL`</pre>
+<a id="opt_bash" style="cursor:pointer; color:black; text-decoration:underline" onclick="show('bash')">bash</a> |
+<a id="opt_fish" style="cursor:pointer;" onclick="show('fish')">fish</a> |
+<a id="opt_tcsh" style="cursor:pointer;" onclick="show('tcsh')">tcsh</a> |
+<a id="opt_zsh" style="cursor:pointer;" onclick="show('zsh')">zsh</a>
 
-If your shell is `tcsh`, `bash`, or `zsh`, add this to your login script (`.login` for tcsh, `.bash_profile` for bash, `.zshrc` for zsh):
+<div id="bash">
+<pre>curl -L https://iterm2.com/shell_integration/bash \
+-o ~/.iterm2_shell_integration.bash</pre>
 
-<pre>source ~/.iterm2_shell_integration.`basename $SHELL`</pre>
+Next, you need to load the script at login time. You need to add the following command to ~/.bash_profile or ~/.profile. If you already have .profile then add it there, otherwise add it to .bash_profile.
 
-If your shell is `fish`, add this to `$HOME/.config/fish/config.fish`:
+<pre>source ~/.iterm2_shell_integration.bash</pre>
+</div>
+
+<div id="zsh" style="display: none">
+<pre>curl -L https://iterm2.com/shell_integration/zsh \
+-o ~/.iterm2_shell_integration.zsh</pre>
+
+Next, you need to load the script at login time. Add this to ~/.zshrc:
+
+<pre>source ~/.iterm2_shell_integration.zsh</pre>
+</div>
+
+<div id="fish" style="display: none">
+<pre>curl -L https://iterm2.com/shell_integration/fish \
+-o ~/.iterm2_shell_integration.fish</pre>
+
+Next, you need to load the script at login time. Add this to ~/.config/fish/config.fish:
+
 <pre>source ~/.iterm2_shell_integration.(basename $SHELL)</pre>
+</div>
+
+
+<div id="tcsh" style="display: none">
+<pre>curl -L https://iterm2.com/shell_integration/tcsh \
+-o ~/.iterm2_shell_integration.tcsh</pre>
+
+Next, you need to load the script at login time. Add this to ~/.login:
+
+<pre>source ~/.iterm2_shell_integration.tcsh</pre>
+</div>
+
 
 Don't want to or can't install a login script? See the workaround at the end of this document using
 triggers.
