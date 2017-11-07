@@ -24,7 +24,7 @@ function print_st() {
 #   filename: Filename to convey to client
 #   inline: 0 or 1
 #   base64contents: Base64-encoded contents
-#   print_filename: If non-empty, print the filename 
+#   print_filename: If non-empty, print the filename
 #                   before outputting the image
 function print_image() {
     print_osc
@@ -89,14 +89,14 @@ while [ $# -gt 0 ]; do
 	-u|--u|--url)
         if curl --output /dev/null --silent --head --fail "$2"; then # check if the url is downloadable
 			# create a file with unique file name
-			file=$(mktemp -t curlimg) || { echo "Failed creating file"; return; }
+			file=$(mktemp -t curlimg) || { echo "mktemp failed for url $2"; exit 1; }
 			# download file and save it into the unique file name just created
-    		curl -s "$2" > $file || { echo "Failed to curl file"; return; }
+    		curl -s "$2" > $file || { echo "curl failed for url $2"; exit 1; }
 			# reset argument of url to the corresponding unique file
             has_stdin=f
             print_image "$file" 1 "$(base64 < "$file")" "$print_filename"
 			# delete the downloaded file
-			rm $file
+			rm "$file"
 			# only modify second argument in order to keep running option "-u"
 			# shift will remove the first arguement "-u"
 			set -- ${@:1:1} "-u" ${@:3}
@@ -107,7 +107,7 @@ while [ $# -gt 0 ]; do
 		else
 			error "imgcat: $2: No such file or url"
 			exit 2
-		fi	
+		fi
 		;;
     -*)
         error "Unknown option flag: $1"
@@ -118,7 +118,7 @@ while [ $# -gt 0 ]; do
         if [ -r "$1" ] ; then
             has_stdin=f
             print_image "$1" 1 "$(base64 < "$1")" "$print_filename"
-		else	
+        else
             error "imgcat: $1: No such file or directory"
             exit 2
         fi
