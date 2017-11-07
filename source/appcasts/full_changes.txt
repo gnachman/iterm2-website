@@ -1,33 +1,52 @@
-iTerm2 3.1.4
-
-Bug fixes:
-- Fix navigating to split pane above/below/left right not
-  wrapping around.
-- Prevent blur values over 24 to prevent hitting a bug in
-  high sierra (values over 26 make the blur funny colors and
-  values over 24 are too slow).
-- Fix line wrapping of multi-line badges.
-- Allow windows to be larger than a screen when displays
-  have separate spaces is turned off.
-- Reduce the impact of proc_pidinfo and statfs hanging.
-- Tweak position of paste button in advanced paste.
-- Fix bug in high sierra where eydropper in color picker
-  didn't go away after selecting a color.
-- Remember the size of a hotkey window after resizing it and
-  then adding a new tab.
-- Fix a bug where opening an autocomplete window could cause
-  a hotkey window to hide.
-- If you scroll up to the top of a window and then clear the
-  buffer and then new output arrives, it now begins
-  autoscrolling when the cursor reaches the bottom.
-- Fix some crashes, including a very frequent one because of
-  a bad interaction between Sparkle and user defaults.
-- Disable tabs in High Sierra when you've got them set to
-  Always in preferences.
+iTerm2 3.1.5
 
 New features:
-- Add an advanced preference to use the typeface's box
-  drawing glyphs instead of the custom box drawing code.
+- When excluded from dock and app switcher, add Check for
+  Updates to status icon in menu bar.
+- Adds an advanced preference to change how line height is
+  calculated, which improves results for Input Mono
+  Condensed and acts more like Terminal.app.
+- When at a password prompt and the key icon is showing,
+  you can now click the key icon to open the password
+  manager.
+- Add support for the REP escape sequence, but it's off by
+  default.
+
+Bug fixes:
+- Fix a very frequent crash for users of the Jobs tool.
+- Fixes some crashes, including a very frequent crash caused
+  by a bad interaction between Sparkle and user defaults.
+- Prevent high sierra tabs the "right" way, by overriding a
+  method in NSWindow, rather than just setting a user
+  default.
+- Fix a bug where double-tap shift to open a hotkey window
+  didn't work.
+- Prevent a crash when the window size is incorrectly
+  reported as 0x0.
+- Allow key bindings with the action "Select Menu Item",
+  "New Window", "New Tab" and "Undo" to work when there is
+  no terminal window.
+- If the password manager is opened by a trigger but you
+  have to authenticate to open the password manager,
+  autoselect the proper account after auth.
+- Require a minimum delay between taps of a modifier key to
+  open a hotkey window.
+- Don't store more than 1000 recently used directories.
+- Prevent descenders from lines above the screen from
+  hanging down into the screen area.
+- Add opt-forward delete as a shortcut for delete word
+  forward in the Natrual Text Editing preset.
+- Accept ~ in HTTP URLs for smart selection for new
+  installs.
+- If you press Fn+Ctrl+Key send Ctrl+Key, not Key. A strange
+  behavior dating back to the old iTerm.
+- The tab control character no longer changes the background
+  color of cells it skips over.
+- Don't send two newlines when you launch iTerm2 with a
+  shell script (e.g., by double clicking one in Finder)
+- Show Services in the context menu when more than one line
+  of text is selected (up to 10k lines).
+
 
 
 Release notes for 3.1 follow:
@@ -130,6 +149,8 @@ General
 - Add an advanced preference to disable the status bar icon.
 - Add an advanced preference to increase the sensitivity of
   the scroll wheel.
+- Add an advanced preference to use the typeface's box
+  drawing glyphs instead of the custom box drawing code.
 
 Shell Integration
 - Offer to turn off focus reporting when host changes.
