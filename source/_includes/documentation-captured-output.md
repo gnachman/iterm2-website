@@ -23,7 +23,7 @@ filename.c:54:9: error: use of undeclared identifier 'foo'
 The following regular expression matches errors and warnings from Clang:
 
 <pre>
-^([a-zA-Z0-9+/.-]+):([0-9]+):[0-9]+: (?:error|warning):
+^([_a-zA-Z0-9+/.-]+):([0-9]+):[0-9]+: (?:error|warning):
 </pre>
 
 There are two capture groups defined. We'll come back to those later.
@@ -48,10 +48,10 @@ Select an entry in the tool. iTerm2 scrolls to display the line and briefly high
 The Trigger created in step 1 takes an optional parameter. It is a command for iTerm2 to exceute as a <a href="https://www.iterm2.com/coprocesses.html">Coprocess</a> when you double-click an entry in the Captured Output tool. An example command is:
 
 <pre>
-echo :e \1; sleep 0.5; echo \2G
+echo vim \1; sleep 0.5; echo \2G
 </pre>
 
-This coprocess command assumes you are in vi, and types a command to open the offending file and scrolls to the offending line. This is where the capture groups in the regular expression from step 1 become useful. For example, if the filename was "filename.c" and the error was on line 20, as in this error message:
+This coprocess command assumes you are at the command line, and it enters a command to open the offending file to the line number with an error. This is where the capture groups in the regular expression from step 1 become useful. For example, if the filename was "filename.c" and the error was on line 20, as in this error message:
 
 <pre>
 filename:c:20:9 error: use of undeclared identifier 'foo'
@@ -59,7 +59,7 @@ filename:c:20:9 error: use of undeclared identifier 'foo'
 
 The coprocess would:
 
-  * Type ":e filename.c", followed by enter, as though you were typing it at the keyboard.</li>
+  * Type "vim filename.c", followed by enter, as though you were typing it at the keyboard.</li>
   * Wait half a second.</li>
   * Type "20G".</li>
 
