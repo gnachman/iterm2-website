@@ -162,7 +162,7 @@ If you drop a file (e.g., from Finder) into iTerm2 while holding the option key,
 With shell integration, iTerm2 can track your command history. The command history is stored separately for each username+hostname combination. There are four places where this is exposed in the UI:
 
 ##### Command history popup
-You can view and search the command history with *Edit&gt;Open Command History...* (Shift-Cmd-;).
+You can view and search the command history with *Session&gt;Open Command History...* (Shift-Cmd-;).
 
 ##### Autocomplete
 Commands in command history are also added to Autocomplete (Cmd-;). If *Preferences&gt;General&gt;Save copy/paste history and command history to disk* is enabled, then command history will be preserved across runs of iTerm2 (up to 200 commands per user/hostname).
@@ -181,7 +181,7 @@ iTerm2 will present command completion suggestions automatically when *View&gt;A
 With shell integration, iTerm2 will remember which directories you have used recently. The list of preferred directories is stored separately for each username+hostname combination. It is sorted by "frencency" (frequency and recency of use). There are two places it is exposed in the UI:
 
 ##### Recent Directories popup
-You can view and search your recently and frequently used directories in *Edit&gt;Open Recent Directories...* (Cmd-Opt-/).
+You can view and search your recently and frequently used directories in *Session&gt;Open Recent Directories...* (Cmd-Opt-/).
 
 ##### Toolbelt
 A *Recent Directories* tool may be added to the toolbelt by selecting *Toolbelt&gt;Recent Directories*.
@@ -253,7 +253,7 @@ give a parameter like `example.com`.
 
 ### Limitations
 
-Shell Integration does not work tmux or screen.
+Shell Integration does not work with tmux or screen.
 
 #### A Note on SCP
 iTerm2 can do uploads and downloads with scp as described above. There are a few things you should know.
