@@ -60,7 +60,13 @@ function error() {
 function show_help() {
     echo "Usage: imgcat [-p] filename ..." 1>& 2
     echo "   or: cat filename | imgcat" 1>& 2
-    echo "   or: imgcat [-p] -u url ..." 1>& 2
+}
+
+function check_dependency() {
+  if ! (builtin command -V "$1" > /dev/null 2>& 1); then
+    echo "imgcat: missing dependency: can't find $1" 1>& 2
+    exit 1
+  fi
 }
 
 ## Main
@@ -77,6 +83,9 @@ if [ $has_stdin = f -a $# -eq 0 ]; then
     exit
 fi
 
+check_dependency awk
+check_dependency base64
+
 # Look for command line flags.
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -88,6 +97,7 @@ while [ $# -gt 0 ]; do
         print_filename=1
         ;;
     -u|--u|--url)
+        check_dependency curl
         encoded_image=$(curl -s "$2" | base64) || (error "No such file or url $2"; exit 2)
         has_stdin=f
         print_image "$2" 1 "$encoded_image" "$print_filename"
@@ -105,7 +115,7 @@ while [ $# -gt 0 ]; do
         if [ -r "$1" ] ; then
             has_stdin=f
             print_image "$1" 1 "$(base64 < "$1")" "$print_filename"
-        else    
+        else
             error "imgcat: $1: No such file or directory"
             exit 2
         fi
