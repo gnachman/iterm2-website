@@ -10,6 +10,13 @@ function print_osc() {
     fi
 }
 
+function check_dependency() {
+  if ! (builtin command -V "$1" > /dev/null 2>& 1); then
+    echo "imgcat: missing dependency: can't find $1" 1>& 2
+    exit 1
+  fi
+}
+
 # More of the tmux workaround described above.
 function print_st() {
     if [ x"$TERM" = "xscreen" ] ; then
@@ -53,6 +60,10 @@ function list_file() {
     ls -ld "$fn"
   fi
 }
+
+check_dependency php
+check_dependency base64
+check_dependency wc
 
 if [ $# -eq 0 ]; then
   for fn in *
