@@ -58,7 +58,8 @@ if ! grep iterm2_shell_integration "${SCRIPT}" > /dev/null 2>&1; then
 	cat <<-EOF >> "${SCRIPT}"
 
 	test -e ${QUOTE}${RELATIVE_FILENAME}${QUOTE} ${SHELL_AND} source ${QUOTE}${RELATIVE_FILENAME}${QUOTE}
-	EOF
+
+EOF
 fi
 echo "Done."
 echo ""
