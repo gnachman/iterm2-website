@@ -1,4 +1,4 @@
-if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ "$TERM" != screen ]; end
+if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ "$ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX""$TERM" != screen ]; end
   function iterm2_status
     printf "\033]133;D;%s\007" $argv
   end

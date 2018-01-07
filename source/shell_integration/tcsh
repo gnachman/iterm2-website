@@ -7,7 +7,11 @@ if ( ! ($?iterm2_shell_integration_installed)) then
   if ( $?loginsh) then
 
     # Define aliases for the start and end of OSC escape codes used by shell integration.
-    if ( x"$TERM" != xscreen ) then
+    if ( ! ($?ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX)) then
+      setenv ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX ""
+    endif
+
+    if ( x"$ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX""$TERM" != xscreen ) then
 
       # If hostname -f is slow to run on your system, set iterm2_hostname before sourcing this script.
       if ( ! ($?iterm2_hostname)) then
