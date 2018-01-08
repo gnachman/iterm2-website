@@ -5,7 +5,7 @@ title: Donate - iTerm2 - macOS Terminal Replacement
 
 ## Donate
 
-Thanks for supporting free software! Several forms of donation are accepted.
+Thanks for supporting free software! It's a nice way to say thanks, and it helps me buy coffee so I stay up late fixing bugs. Several forms of donation are accepted.
 
 
 <form class="paypal-donate" action="https://www.paypal.com/cgi-bin/webscr" method="post">
