@@ -492,6 +492,15 @@ function __iterm2_precmd () {
       export ITERM_ORIG_PS1="$PS1"
     fi
 
+    # If you want to generate PS1 dynamically from PROMPT_COMMAND, the best way
+    # to do it is to define a function named iterm2_generate_ps1 that sets PS1.
+    # Issue 5964. Other shells don't have this issue because they don't need
+    # such extremes to get precmd and preexec.
+    if [ -n "$(type -t iterm2_generate_ps1)" ] && [ "$(type -t iterm2_generate_ps1)" = function ]; then
+      iterm2_generate_ps1
+    fi
+
+
     if [[ "$PS1" != "$ITERM_PREV_PS1" ]]
     then
       export ITERM_ORIG_PS1="$PS1"
