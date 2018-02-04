@@ -1,0 +1,109 @@
+3.1.6beta1
+
+This release features support for a new GPU-based renderer.
+It's off by default, but if you're feeling brave, you can
+turn it on in advanced prefs. For more info, see here:
+
+https://gitlab.com/gnachman/iterm2/wikis/Metal-Renderer
+
+New Features:
+- Off-by-default high performance renderer
+- Add support for REP escape sequence. This is on by default
+  only for Beta and Nightly build users.
+- Added "Edit Session" to the tab context menu.
+- Add buried sessions to status bar icon menu.
+- Add option to suppress restart session confirmation.
+- Sort files in Scripts menu.
+- Add support for OSC 10 and OSC 11 (color querying).
+
+Other improvements:
+- Unicode 9 widths are now on by default for High Sierra
+  users. This could cause problems for you if you ssh to a
+  machine that doesn't have support for this (such as a Mac
+  with an older OS, various Linuxes, etc.)
+- Improve the touch bar icon for adding a mark.
+- Update Solarized color presets to exactly match the
+  official spec with SRGB colors.
+- Add menu item to show third party licenses.
+- Improved support for tab colors with tmux integration.
+- Don't make the window under the mouse active when focus
+  follows mouse is on and you switch to another app and then
+  back to iTerm2 and the mouse hasn't moved.
+- Improve naming of modifier+number menu items in
+  Prefs>Keys.
+- Improve support for images wider than 256 columns.
+- Only show key icon in terminal with keyboard focus.
+- Disable smart cursor color when a non-box cursor type is
+  selected.
+- Improve performance of opening a window with the Profiles
+  tool present when there are many profiles.
+- Rate limit changes to window title.
+- Limit max length of tab and window titles for performance.
+- When the window is very narrow and you are resizing it
+  show only the geometry in the title.
+- Allow focus follows mouse to select non-hotkey windows
+  when a hotkey window has focus provided it's not an
+  auto-hiding hotkey window
+
+Bug Fixes:
+- Don't crash when you delete a password manager entry that
+  is your only one and you are editing the password
+- Don't crash when saving an arrangement but one of the
+  windows somehow had 0 tabs.
+- Draw the label "Tab Color" in the tab context menu in
+  white when using the dark theme.
+- The advanced preference for suppressing the tab-to-spaces
+  conversion warning was broken. Fix it.
+- Fix a bug where Zoom on Selection lost one line.
+- Make Reset, whether user initiated or with RIS escape
+  sequence, return to the primary buffer when in alternate
+  screen mode.
+- Improve legibility of find bar with dark theme.
+- Fix a bug where the touch bar didn't update when color
+  presets changed.
+- Fix a bug where hotkey windows appearing in a different
+  display than the currently key window (in another app)
+  would not receive focus and would forget which app was
+  previously active.
+- Fix a race condition where sessions wouldn't get killed
+  before quitting, causing them to restore as dead sessions
+  on the next launch.
+- Fix a problem where second and later tabs in a window with
+  a left-side tab bar that's limited by the 1/3 * content
+  size bound will have fewer columns than it should.
+- Fix parsing of CSI 38:2 to accept a color type.
+- When opening a new window when the app isn't active, such
+  as with Applescript, wait for the app to become active
+  before making the new window key.
+- Don't offer to turn off mouse reporting, paste bracketing,
+  or focus reporting when we transition from no hostname to
+  having a hostname. Fixes a problem with fish.
+- Disable paste bracketing for uploads.
+- Don't save uploads to paste history.
+- Fix a bug where the window frame was set incorrectly when
+  the menu bar is set to hide automatically, you use
+  non-native fullscreen windows, the hotkey window is a
+  floating panel, and the app is excluded from the dock and
+  menu bar
+- Fix a bug where function keys on the touch bar could not
+  be used as shortcuts in Prefs>Keys.
+- Don't unmaximize a tab when switching to the maximized
+  session from Open Quickly.
+- Fixes a crash in the wrapper process around login when
+  it's exiting.
+- Remove "dynamic" tag when duplicating a dynamic profile.
+- Fix a bug where the tags weren't visible in the list of
+  profiles.
+- Make iTerm2 active after switching spaces.
+- Fix a bug where characters after an inline image could be
+  misaligned.
+- Show session name in tooltip for tab
+- Fix a hang when entering/exiting native fullscreen when
+  progress indicators were going.
+- Show the correct port number in the error message
+  displayed when secure copy fails.
+- Fix a bug where non-hotkey windows appear when showing the
+  hotkey window while iTerm2 is not active.
+
+SHA-256 of the zip file is
+5a414950dde2ee7733dc51018d136249fabb4140428bf740d0280167c88a4fc3
