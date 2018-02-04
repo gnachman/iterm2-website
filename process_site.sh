@@ -1,8 +1,6 @@
 #!/bin/bash
 tar cvfz ~/backup`date +%s`.tgz ~/iterm2.com
-export PATH="$HOME/bin:$HOME/.gems/bin:$PATH"
-export RUBYLIB="$HOME/lib:$RUBYLIB"
-export GEM_HOME=$HOME/.gems
+export GEM_HOME=$HOME/.inewgems
 rm -rf ~/iterm2.com_stage
 ./generate_downloads.py > source/downloads.md
 jekyll build -d ~/iterm2.com_stage
