@@ -1,5 +1,4 @@
 #!/bin/bash
-tar cvfz ~/backup`date +%s`.tgz ~/iterm2.com
 export GEM_HOME=$HOME/.newgems
 rm -rf ~/iterm2.com_stage
 ./generate_downloads.py > source/downloads.md
