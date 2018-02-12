@@ -206,8 +206,11 @@ The alternative is to use Triggers to emulate shell integration as described in 
 #### Triggers
 For some users, installing a login script on every host they connect to is not
 an option. To be sure, modifying root's login script is usually a bad idea. In these cases
-you can get the benefits of shell integration by defining triggers.  There are
-two relevant triggers: *Report Host &amp; User* and *Report Directory*
+you can get the benefits of shell integration by defining triggers. The following triggers are of interest:
+
+  * Report User &amp; Host
+  * Report Directory
+  * Prompt Detected
 
 Use these triggers to tell iTerm2 your current username,
 hostname, and directory. Suppose you have a shell prompt that looks like this:
@@ -223,7 +226,7 @@ expression. First, define a trigger with this regex:
 ^(\w+)@([\w.]+):.+%
 </pre>
 
-It captures the username and hostname from the example prompt above. Set the trigger's parameter to:
+It captures the username and hostname from the example prompt above. Select the action "Report User &amp; Host". Set the trigger's parameter to:
 
 <pre>
 \1@\2
@@ -244,6 +247,8 @@ Set this trigger's parameter to
 
 Make sure both triggers have their *Instant* checkbox enabled so they'll take effect before a
 newline is received.
+
+Finally, add a regular expression that matches the start of your prompt and give the the "Prompt Detected" action. This causes a "mark" to be added, which is a blue triangle visible to the left of this line. You can navigate from mark to mark with Cmd-Shift-Up/Down Arrow.
 
 You may specify a user name or host name alone to *Report Host &amp; User*. If
 you give just a user name then the previous host name will be preserved; if you
