@@ -240,7 +240,7 @@ You can configure touch bar key labels for function keys and for the "status" bu
 
     ^[]1337;SetKeyLabel=key=value^G
 
-Where `key` is one of `F1`, `F2`, ..., `F20`, to adjust a function key label; or it can be `status` to adjust the touch bar status button. You can also save and restore sets of key labels using a stack. To push the current key labels on the stack use:
+Where `key` is one of `F1`, `F2`, ..., `F24`, to adjust a function key label; or it can be `status` to adjust the touch bar status button. You can also save and restore sets of key labels using a stack. To push the current key labels on the stack use:
 
     ^[]1337;PushKeyLabels^G
 
