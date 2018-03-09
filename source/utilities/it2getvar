@@ -1,10 +1,5 @@
 #!/bin/bash
 
-function ctrl_c() {
-  stty "$saved_stty"
-  exit 1
-}
-
 # tmux requires unrecognized OSC sequences to be wrapped with DCS tmux;
 # <sequence> ST, and for all ESCs in <sequence> to be replaced with ESC ESC. It
 # only accepts ESC backslash for ST.
@@ -64,11 +59,12 @@ then
   exit 1
 fi
 
-# Save the tty's state.
-saved_stty=$(stty -g)
+trap clean_up EXIT
+_STTY=$(stty -g)      ## Save current terminal setup
 
-# Trap ^C to fix the tty.
-trap ctrl_c INT
+function clean_up() {
+  stty "$_STTY"            ## Restore terminal settings
+}
 
 # Enter raw mode and turn off echo so the terminal and I can chat quietly.
 stty -echo -icanon raw
