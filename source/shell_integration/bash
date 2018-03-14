@@ -33,6 +33,9 @@ ITERM_PREV_PS1="$PS1"
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+# Wrap bash-preexec.sh in a function so that, if it exits early due to having
+# been sourced elsewhere, it doesn't exit our entire script.
+_install_bash_preexec () {
 # -- BEGIN BASH-PREEXEC.SH --
 #!/bin/bash
 #
@@ -345,6 +348,9 @@ if [[ -z "$__bp_delay_install" ]]; then
     __bp_install_after_session_init
 fi;
 # -- END BASH-PREEXEC.SH --
+}
+_install_bash_preexec
+unset -f _install_bash_preexec
 
 # -- BEGIN ITERM2 CUSTOMIZATIONS --
 
@@ -412,7 +418,7 @@ function iterm2_prompt_suffix() {
 
 function iterm2_print_version_number() {
   iterm2_begin_osc
-  printf "1337;ShellIntegrationVersion=10;shell=bash"
+  printf "1337;ShellIntegrationVersion=11;shell=bash"
   iterm2_end_osc
 }
 
