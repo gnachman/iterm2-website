@@ -25,7 +25,7 @@ When you select the *iTerm2&gt;Install Shell Integration* menu item, it types th
 
 <pre>curl -L https://iterm2.com/misc/install_shell_integration.sh | bash</pre>
 
-Don't care for piping curl to bash? Do it by hand. Select your shell to see the appropriate instructions: 
+Don't care for piping curl to bash? Do it by hand. This is also what you must do if you use a shell that isn't your login shell. Select your shell to see the appropriate instructions: 
 
 <a id="opt_bash" style="cursor:pointer; color:black; text-decoration:underline" onclick="show('bash')">bash</a> |
 <a id="opt_fish" style="cursor:pointer;" onclick="show('fish')">fish</a> |
