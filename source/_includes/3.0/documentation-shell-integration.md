@@ -215,7 +215,7 @@ Settings pulled from ssh_config override the hostname and user name provided by 
 The following files are parsed as ssh_config files, in order of priority:
 
   * ~/Library/Application Support/iTerm/ssh_config
-  * ~/.ssh/ssh_config
+  * ~/.ssh/config
   * /etc/ssh_config
 
 The scp code is relatively new. If you are in a high-security environment, please keep this in mind.
