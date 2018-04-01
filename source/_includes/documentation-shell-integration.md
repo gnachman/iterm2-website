@@ -95,7 +95,7 @@ Hold down option and drag-drop a file from Finder into iTerm2 to upload it.
 It can be seen and searched in the toolbelt or quickly accessed in a popup window.
 
 #### Easy access to recently and frequently used directories.
-iTerm2 remembers the directories you use, sorting them by "frecency" and giving you access to them in the toolbelt and in a popup window.
+iTerm2 remembers the directories you use, sorting them by "frequency" and giving you access to them in the toolbelt and in a popup window.
 
 #### Assign profiles to hostnames, usernames, or username+hostname combinations.
 Sessions will automatically switch profiles as you log in and out according to rules you define.
