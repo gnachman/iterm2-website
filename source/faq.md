@@ -128,3 +128,8 @@ A: Turn on the **Open Toolbelt** checkbox in **Preferences>Profiles>Window**.
 #### Q: How can I prevent the window from resizing when I change the font with cmd-+ and cmd--?
 A: Turn off **Preferences>General>Adjust window when changing font size**.
 
+#### Q: tmux integeration and mosh don't play nice together
+A: mosh is not a reliable transport. You have a few options if ssh is driving you nuts:
+
+1. Use a <a href="https://github.com/4ast/mosh/">hacked version of mosh</a> that is a reliable transport. Instructions on building it can be found <a href="http://donnlee.com/2018/03/31/mosh-with-iterm2s-tmux-integration/">on Donn Lee's home page</a>.
+2. Use <a href="https://mistertea.github.io/EternalTerminal/">Eternal Terminal</a>.
