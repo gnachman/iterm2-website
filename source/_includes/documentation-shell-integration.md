@@ -36,7 +36,7 @@ Don't care for piping curl to bash? Do it by hand. This is also what you must do
 <pre>curl -L https://iterm2.com/shell_integration/bash \
 -o ~/.iterm2_shell_integration.bash</pre>
 
-Next, you need to load the script at login time. You need to add the following command to ~/.bash_profile or ~/.profile. If you already have .profile then add it there, otherwise add it to .bash_profile.
+Next, you need to load the script at login time. You need to add the following command to ~/.bash_profile or ~/.profile. If you already have .profile then add it there, otherwise add it to .bash_profile. Put it at the end because other scripts may overwrite the settings it needs, such as `PROMPT_COMMAND`.
 
 <pre>source ~/.iterm2_shell_integration.bash</pre>
 </div>
@@ -45,7 +45,7 @@ Next, you need to load the script at login time. You need to add the following c
 <pre>curl -L https://iterm2.com/shell_integration/zsh \
 -o ~/.iterm2_shell_integration.zsh</pre>
 
-Next, you need to load the script at login time. Add this to ~/.zshrc:
+Next, you need to load the script at login time. Add this to the end of ~/.zshrc:
 
 <pre>source ~/.iterm2_shell_integration.zsh</pre>
 </div>
@@ -54,7 +54,7 @@ Next, you need to load the script at login time. Add this to ~/.zshrc:
 <pre>curl -L https://iterm2.com/shell_integration/fish \
 -o ~/.iterm2_shell_integration.fish</pre>
 
-Next, you need to load the script at login time. Add this to ~/.config/fish/config.fish:
+Next, you need to load the script at login time. Add this to the end of ~/.config/fish/config.fish:
 
 <pre>source ~/.iterm2_shell_integration.(basename $SHELL)</pre>
 </div>
@@ -64,7 +64,7 @@ Next, you need to load the script at login time. Add this to ~/.config/fish/conf
 <pre>curl -L https://iterm2.com/shell_integration/tcsh \
 -o ~/.iterm2_shell_integration.tcsh</pre>
 
-Next, you need to load the script at login time. Add this to ~/.login:
+Next, you need to load the script at login time. Add this to the end of ~/.login:
 
 <pre>source ~/.iterm2_shell_integration.tcsh</pre>
 </div>
