@@ -134,21 +134,29 @@
 <p>The <cite>Scripts</cite> menu contains all the scripts in
 <cite>$HOME/Library/ApplicationSupport/iTerm2/Scripts</cite>. The following files are
 included:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li>Any file ending in <cite>.py</cite>. These correspond to “basic” scripts.</li>
-<li>Any folder having an <cite>itermenv</cite> folder within it. These correspond to “full
-environment” scripts.</li>
+<li>Any folder having an <cite>itermenv</cite> folder within it. These correspond to “full environment” scripts.</li>
 <li>Applescript files, which are not the concern of this document.</li>
 </ul>
-</div></blockquote>
 <p>To run a script from the menu, simply select it and it will run.</p>
 </div>
 <div class="section" id="command-line">
 <h2>Command Line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h2>
-<p>To invoke a script at the command line, you can simply run it as you would any
-other command. Scripts are stored in
-<cite>$HOME/Library/ApplicationSupport/iTerm2/Scripts</cite>.</p>
+<p>Your machine probably has many instances of Python installed in different
+places. It’s important to run your script with the right Python so that it can
+find the packages the script depends on (such as the <cite>iterm2</cite> package).</p>
+<p>The standard iTerm2 Python installation is at
+<cite>~/Library/ApplicationSupport/iTerm2/iterm2env/versions/3.6.5/bin/python3</cite>.
+This is the so-called “Basic” environment.</p>
+<p>If you create a script with the “Full Environment” its instance of Python
+will be in
+<cite>~/Library/ApplicationSupport/iTerm2/Scripts/YourScript/iterm2env/versions/3.6.5/bin/python3</cite>.</p>
+<p>Internally, iTerm2 runs a basic script by invoking:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">ApplicationSupport</span><span class="o">/</span><span class="n">iTerm2</span><span class="o">/</span><span class="n">iterm2env</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mf">3.6</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python3</span> <span class="n">YourScript</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>Scripts are stored in <cite>$HOME/Library/ApplicationSupport/iTerm2/Scripts</cite>.</p>
 <p>Make sure you don’t have a <cite>PYTHONPATH</cite> environment variable set when you run
 your script.</p>
 <div class="admonition note">
@@ -161,10 +169,26 @@ Support</cite> because shell scripts may not have spaces in their paths.</p>
 <h2>Auto-Run Scripts<a class="headerlink" href="#auto-run-scripts" title="Permalink to this headline">¶</a></h2>
 <p>If you’d like your script to launch automatically when iTerm2 starts, move it
 to <cite>$HOME/Library/ApplicationSupport/iTerm2/Scripts/AutoLaunch</cite>.</p>
-<p>Continue to the next section, <span class="xref std std-doc">daemons</span>.</p>
-</div>
-</div>
+<p>Continue to the next section, <a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a>.</p>
 <hr class="docutils" />
+<div class="section" id="other-sections">
+<h3>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="../index.html"><span class="doc">Python API</span></a></dt>
+<dd><ul class="first last">
+<li><a class="reference internal" href="index.html"><span class="doc">Python API Introduction</span></a></li>
+<li><a class="reference internal" href="example.html"><span class="doc">Example Script</span></a></li>
+<li>Running a Script</li>
+<li><a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+</div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
