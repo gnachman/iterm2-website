@@ -124,17 +124,16 @@
   <div class="section" id="example-script">
 <h1>Example Script<a class="headerlink" href="#example-script" title="Permalink to this headline">¶</a></h1>
 <p>Here’s the example script that iTerm2 provides for you, minus some comments:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/home/yourname/Library/ApplicationSupport/iTerm2/iterm2env/versions/3.6.5/bin/python3</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">await</span> <span class="n">a</span><span class="o">.</span><span class="n">async_get_key_window</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">await</span> <span class="n">w</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
+    <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">print</span><span class="p">(</span><span class="s2">&quot;No current window&quot;</span><span class="p">)</span>
 
@@ -143,27 +142,20 @@
 </pre></div>
 </div>
 <p>There’s a lot going on here. Let’s take it part by part.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/home/yourname/Library/ApplicationSupport/iTerm2/iterm2env/versions/3.6.5/bin/python3</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 </pre></div>
 </div>
-<p>Python determines where to load its modules from the location of the <cite>python3</cite>
-binary with which a script was run. This “shebang” line instructs the system to
-use iTerm2’s shared Python environment, which is used by all “simple” scripts.
-iTerm2 manages this Python installation and upgrades it periodically.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">iterm2</span>
+<p>This is standard boilerplate for a Python script. See <a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a> for
+details on how scripts are run.</p>
+<p>The next part of the template script are the imports:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 </pre></div>
 </div>
-<p>The first import is <a class="reference external" href="https://docs.python.org/3/library/asyncio.html">asyncio</a> because the iTerm2 Python
-API is based on it. You don’t need to be an expert on asyncio to write a
-simple script: this tutorial will explain enough of the basics to get you
-started.</p>
-<p>The next import is <cite>iterm2</cite>. That’s a Python module (available on PyPI) that
-provides a nice interface to communicate with iTerm2. The underlying
-implementation uses Google protobuf and websockets. For most purposes, that is
-completely abstracted away.</p>
-<p>Finally, <cite>sys</cite> is imported so that the script can parse command-line arguments.</p>
+<p><cite>iterm2</cite> is a Python module (available on PyPI) that provides a nice interface
+to communicate with iTerm2. The underlying implementation uses Google protobuf
+and websockets. For most purposes, that is completely abstracted away.</p>
+<p><cite>sys</cite> is imported so that the script can parse command-line arguments.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
 </pre></div>
 </div>
@@ -184,30 +176,33 @@ receive information from iterm2, it will have to wait for a few milliseconds.</p
 <p>The benefit of asyncio is that while the script is stopped waiting for a
 response from iTerm2, other work can happen. For example, handling of
 notifications from iTerm2. We’ll see more about that later.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The purpose of this line is to get a reference to the <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.app.App</span></code>
+<p>The purpose of this line is to get a reference to the <a class="reference internal" href="../app.html#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.App</span></code></a>
 object, which is useful for most things you’ll want to do in a simple script.
 It is a singleton that provides access to iTerm2’s global state, such as its
 windows.</p>
 <p>Note the use of <cite>await</cite>. Any function that’s defined as <cite>async</cite>, which most
 functions in the iTerm2 API are, must be called with <cite>await</cite>. It means it might
-not return immediately. In this case, it makes an RPC call to iTerm2 to get its
-state (such as the list of windows). The returned value is an
-<code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.app.App</span></code>.</p>
+not return immediately. While it waits, messages from iTerm2 or other I/O may
+be received and handled.</p>
+<p>In this case, it makes an RPC call to iTerm2 to get its state (such as the list
+of windows). The returned value is an <a class="reference internal" href="../app.html#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.App</span></code></a>.</p>
 <p>If you forget to use <cite>await</cite> you’ll get a warning in the Script Console.
-iTerm2’s library follows a naming convention to help you remember to use await:
-any function that is declared <cite>async</cite> will have a name that begins with
-<cite>async_</cite>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">await</span> <span class="n">a</span><span class="o">.</span><span class="n">async_get_key_window</span><span class="p">()</span>
+iTerm2’s library follows a naming convention to help you remember to use
+<cite>await</cite>: any function that is declared <cite>async</cite> will have a name that begins
+with <cite>async_</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
 </pre></div>
 </div>
-<p>The fetches the “key window” from the app. The key window is the window that
-receives keyboard input. If iTerm2 is not active or has no windows, then no
-window will be key and <code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.app.App.async_get_key_window()</span></code> returns <cite>None</cite>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-    <span class="n">await</span> <span class="n">w</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
+<p>The fetches the “current terminal window” from the app. The curren terminal
+window is the terminal window (and not, for example, the preferences window or
+some other non-terminal window) that receives keyboard input.</p>
+<p>If there are no terminal windows then <code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.App.async_get_key_window()</span></code>
+returns <cite>None</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>If there is a key window, add a tab to it. The new tab uses the default
@@ -230,8 +225,24 @@ as its condition will always be <cite>True</cite>.</p>
 <p>The next line establishes a websocket connection to iTerm2 and then runs your
 <cite>main</cite> function, passing it <cite>sys.argv</cite> which holds the command-line arguments.</p>
 <p>Continue to the next section, <a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a>.</p>
-</div>
 <hr class="docutils" />
+<div class="section" id="other-sections">
+<h2>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="../index.html"><span class="doc">Python API</span></a></dt>
+<dd><ul class="first last">
+<li><a class="reference internal" href="index.html"><span class="doc">Python API Introduction</span></a></li>
+<li>Example Script</li>
+<li><a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a></li>
+<li><a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
