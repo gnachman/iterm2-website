@@ -196,17 +196,18 @@ with <cite>async_</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
 </pre></div>
 </div>
-<p>The fetches the “current terminal window” from the app. The curren terminal
+<p>This fetches the “current terminal window” from the app. The current terminal
 window is the terminal window (and not, for example, the preferences window or
-some other non-terminal window) that receives keyboard input.</p>
+some other non-terminal window) that receives keyboard input when iTerm2 is
+active.</p>
 <p>If there are no terminal windows then <code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.App.async_get_key_window()</span></code>
 returns <cite>None</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
     <span class="n">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>If there is a key window, add a tab to it. The new tab uses the default
-profile.</p>
+<p>If there is a current terminal window, add a tab to it. The new tab uses the
+default profile.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">else</span><span class="p">:</span>
     <span class="k">print</span><span class="p">(</span><span class="s2">&quot;No current window&quot;</span><span class="p">)</span>
 </pre></div>
