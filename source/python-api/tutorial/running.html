@@ -123,11 +123,12 @@
 	    
   <div class="section" id="running-a-script">
 <h1>Running a Script<a class="headerlink" href="#running-a-script" title="Permalink to this headline">¶</a></h1>
-<p>There are three ways to run a script:</p>
+<p>There are four ways to run a script:</p>
 <ol class="arabic simple">
 <li>From the Scripts menu.</li>
 <li>At the command line.</li>
 <li>Auto-run scripts launched when iTerm2 starts.</li>
+<li>With an interactive interpreter called a REPL.</li>
 </ol>
 <div class="section" id="scripts-menu">
 <h2>Scripts Menu<a class="headerlink" href="#scripts-menu" title="Permalink to this headline">¶</a></h2>
@@ -143,9 +144,10 @@ included:</p>
 </div>
 <div class="section" id="command-line">
 <h2>Command Line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h2>
-<p>Your machine probably has many instances of Python installed in different
-places. It’s important to run your script with the right Python so that it can
-find the packages the script depends on (such as the <cite>iterm2</cite> package).</p>
+<p>Your machine probably has <a class="reference external" href="https://xkcd.com/1987/">many instances of Python</a>
+installed in different places. It’s important to run your script with the right
+Python so that it can find the packages the script depends on (such as the
+<cite>iterm2</cite> package).</p>
 <p>The standard iTerm2 Python installation is at
 <cite>~/Library/ApplicationSupport/iTerm2/iterm2env/versions/3.6.5/bin/python3</cite>.
 This is the so-called “Basic” environment.</p>
@@ -169,6 +171,27 @@ Support</cite> because shell scripts may not have spaces in their paths.</p>
 <h2>Auto-Run Scripts<a class="headerlink" href="#auto-run-scripts" title="Permalink to this headline">¶</a></h2>
 <p>If you’d like your script to launch automatically when iTerm2 starts, move it
 to <cite>$HOME/Library/ApplicationSupport/iTerm2/Scripts/AutoLaunch</cite>.</p>
+</div>
+<div class="section" id="repl">
+<h2>REPL<a class="headerlink" href="#repl" title="Permalink to this headline">¶</a></h2>
+<p>iTerm2 also offers a <em>REPL</em>: a <em>Read-eval-print loop</em>. This is an interactive
+Python interpreter where you can experiment with the scripting API. You can
+enter commands and immediately see their results. It’s available from the menu
+item <cite>Scripts &gt; Open Python REPL</cite>. It will open a window with an interactive
+Python interpreter.</p>
+<p>The REPL uses the <cite>apython</cite> script provided by <a class="reference external" href="https://github.com/vxgmichel/aioconsole">aioconsole</a> which extends Python
+so that you can use <cite>await</cite> without having to put it inside an <cite>async</cite>
+function. In other words, you don’t need to write
+<cite>iterm2.Connection().run(main, sys.argv)</cite> to launch a <cite>main</cite> function when in
+the REPL. Instead, a typical REPL session would begin with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="n">connection</span><span class="o">=</span><span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">async_create</span><span class="p">()</span>
+<span class="n">app</span><span class="o">=</span><span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When the REPL starts it prints a sample script so that you don’t need to
+remember this. You can just copy-paste it into the interpreter. Once you’ve got
+an <cite>app</cite> the rest is easy :).</p>
 <p>Continue to the next section, <a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a>.</p>
 <hr class="docutils" />
 <div class="section" id="other-sections">
