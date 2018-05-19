@@ -199,13 +199,32 @@ interacts with another app after the call.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">If properties is a list, returns <code class="xref py py-class docutils literal notranslate"><span class="pre">PartialProfile</span></code> with</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">If properties is a list, returns <code class="xref py py-class docutils literal notranslate"><span class="pre">PartialProfile</span></code> with only the specified properties set. If properties is <cite>None</cite> then returns <a class="reference internal" href="profile.html#iterm2.Profile" title="iterm2.Profile"><code class="xref py py-class docutils literal notranslate"><span class="pre">Profile</span></code></a>.</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>only the specified properties set. If properties is <cite>None</cite> then returns
-<a class="reference internal" href="profile.html#iterm2.Profile" title="iterm2.Profile"><code class="xref py py-class docutils literal notranslate"><span class="pre">Profile</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.App.async_register_rpc_handler">
+<code class="descname">async_register_rpc_handler</code><span class="sig-paren">(</span><em>name</em>, <em>coro</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.App.async_register_rpc_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a script-defined RPC.</p>
+<p>iTerm2 may be instructed to invoke a registered RPC, such as through a
+key binding. Only registered RPCs may be called. Use this method to
+register one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> – The RPC name. Combined with its arguments, this must be unique among all registered RPCs. It should consist of letters, numbers, and underscores and must begin with a letter.</li>
+<li><strong>coro</strong> – An async function. Its arguments are reflected upon to determine the RPC’s signature. Only the names of the arguments are used. All arguments should be keyword arguments as any may be omitted at call time.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

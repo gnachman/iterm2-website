@@ -1,0 +1,336 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>RPCs &#8212; iTerm2 Python API 0.26 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  </head><body>
+  <header >
+    <div class="row">
+      <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="text-center"><a href="/index.html"><img src="https://iterm2.com/img/logo2x.jpg" width=800 height=312></a></div>
+        <div class="sticky contain-to-grid">
+          <nav class="top-bar" data-topbar>
+            <ul class="title-area">
+              <li class="name">
+
+              </li>
+              <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+              <li class="small-screen-donate">
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+            </ul>
+
+            <section class="top-bar-section">
+              <!-- Right Nav Section -->
+              <ul class="right"> <li>
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li><a href="/index.html">Home</a></li>
+            <li ><a href="/news.html">News</a></li>
+            <li ><a href="/features.html">Features</a></li>
+            <li ><a href="/faq.html">FAQ</a></li>
+            <li class="active"><a href="/documentation.html">Documentation</a></li>
+            <li ><a href="/downloads.html">Downloads</a></li>
+          </ul>
+        </section>
+      </nav>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+    <div class="document">
+<div class="row">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
+
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">Introduction</div>
+
+	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
+	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+
+	      <div class="toc_subhead">User Interface</div>
+
+	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
+	      <li><a href="documentation-preferences.html">Preferences</a></li>
+	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
+	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
+	      <li><a href="documentation-fonts.html">Fonts</a></li>
+	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
+
+	      <div class="toc_subhead">Features</div>
+
+	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
+	      <li><a href="documentation-badges.html">Badges</a></li>
+	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
+	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
+	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
+	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
+	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
+	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
+	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
+	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
+	      <li><a href="documentation-triggers.html">Triggers</a></li>
+	      <li><a href="documentation-utilities.html">Utilities</a></li>
+
+	      <div class="toc_subhead">Advanced</div>
+
+	      <li><a href="documentation-scripting.html">Scripting</a></li>
+	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
+	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
+	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
+
+      <div class="documentwrapper">
+	<div class="bodywrapper">
+	  <div class="body" role="main">
+	    
+  <div class="section" id="rpcs">
+<h1>RPCs<a class="headerlink" href="#rpcs" title="Permalink to this headline">¶</a></h1>
+<p>iTerm2 offers a very powerful facility where a script (typically a daemon)
+registers a function as available to be invoked by iTerm2.</p>
+<p>For example, suppose you want to bind a keystroke to clear all history in all
+sessions.</p>
+<p>This script shows a working example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">clear_all_sessions</span><span class="p">():</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;]1337;ClearScrollback&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x07</span><span class="s1">&#39;</span>
+        <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">windows</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
+                    <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+    <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="s2">&quot;clear_all_sessions&quot;</span><span class="p">,</span> <span class="n">clear_all_sessions</span><span class="p">)</span>
+
+    <span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A lot of this should look familiar from the <span class="xref std std-doc">daemon</span> example. Let’s focus
+on the parts we haven’t seen before.</p>
+<p>This call registers the RPC:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="s2">&quot;clear_all_sessions&quot;</span><span class="p">,</span> <span class="n">clear_all_sessions</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The first argument gives the name of the RPC. To keep it simple, this example
+uses the same name as the function. The name you register with is the name you
+use when invoking the function. The passed-in function, <cite>clear_all_sessions</cite>,
+will be called by iTerm2 at a later time. Note that it is <cite>async</cite>. The
+registered function <em>must</em> be <cite>async</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">def</span> <span class="nf">clear_all_sessions</span><span class="p">():</span>
+</pre></div>
+</div>
+<p>This is the definition of the registered function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">code</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;]1337;ClearScrollback&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x07</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+<p>This is an iTerm2 <a class="reference external" href="https://www.iterm2.com/documentation-escape-codes.html">proprietary escape code</a> that clears the screen and erases history.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">windows</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
+            <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This iterates over every session and injects the ClearScrollback code.
+Injecting a byte array makes the session appear to receive that byte array
+as input, as though it had been output by the running app in the terminal.
+Injection is safe to use even while receiving input because it uses its own
+parser (so there’s no interaction between a half-received escape sequence in
+the true input and the injected byte array).</p>
+<div class="section" id="invocation">
+<h2>Invocation<a class="headerlink" href="#invocation" title="Permalink to this headline">¶</a></h2>
+<p>To invoke an RPC, create a key binding for it. Go to <strong>Preferences &gt; Keys</strong> and
+click the + button. Select <strong>Invoke Script Function</strong> as the action and enter a
+function call in the field beneath it. Like this:</p>
+<img alt="../_images/bind_cls.png" src="../_images/bind_cls.png" />
+<p>Then press the associated keystroke and the function will be invoked.</p>
+</div>
+<div class="section" id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
+<p>Registered RPCs may take arguments. Any argument may take a value of
+of <cite>None</cite>, so take care to handle that possibility.</p>
+<p>Here’s an example of a call with arguments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">function_name</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">session</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">favorite_number</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span> <span class="n">nickname</span><span class="p">:</span> <span class="s2">&quot;Joe&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The name of the function and the name of each argument is an <em>Identifier</em>.
+Identifiers begin with a letter and may contain letters, numbers, and
+underscore. Every character must be ASCII.</p>
+<p>Each argument must have a distinct name.</p>
+<p>The value passed to an argument can take one of three types:</p>
+<ol class="arabic simple">
+<li>A <em>path</em>, like <cite>session.id</cite>.</li>
+</ol>
+<p>Paths refer to variables. Variables are attached to a session. Some are defined
+by iTerm2 (like <cite>session.id</cite>) and others, beginning with <cite>user.</cite> are defined by
+the user.</p>
+<p>For a full list of the iTerm2-defined paths, see <a class="reference external" href="https://www.iterm2.com/documentation-badges.html">Badges</a>.</p>
+<p>To set a user-defined variable, you can use an escape sequence or call
+<a class="reference internal" href="../session.html#iterm2.Session.async_set_variable" title="iterm2.Session.async_set_variable"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.Session.async_set_variable()</span></code></a>. Variables can be strings or numbers.</p>
+<p>A reference to an unset variable raises an error, preventing the function call
+from being made. If you modify the path to end with <cite>?</cite> that signals it is
+optional. Optional variables, when unset, are passed as <cite>None</cite> to the Python
+function.</p>
+<p>If a terminal session does not have keyboard focus then no <cite>session.</cite> variables
+will be available.</p>
+<ol class="arabic simple" start="2">
+<li>A number, like <cite>123</cite>.</li>
+</ol>
+<p>Numbers are integers or floating point numbers. They can be negative, and you
+can use scientific notation.</p>
+<ol class="arabic simple" start="3">
+<li>A string, like <cite>“Joe”</cite>.</li>
+</ol>
+<p>Strings are escaped like JSON, using backslash.</p>
+</div>
+<div class="section" id="timeouts">
+<h2>Timeouts<a class="headerlink" href="#timeouts" title="Permalink to this headline">¶</a></h2>
+<p>Functions must return within five seconds. Otherwise, the user will be shown an
+error.</p>
+</div>
+<div class="section" id="composition">
+<h2>Composition<a class="headerlink" href="#composition" title="Permalink to this headline">¶</a></h2>
+<p>Functions may be composed. A registered function can return a value which the
+becomes an argument to a subsequent function call. Here’s a snippet of an
+example, which you can add to the <cite>main</cite> function of the previous example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">times</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">current_tab</span><span class="o">.</span><span class="n">current_session</span>
+    <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+
+<span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="s2">&quot;times&quot;</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+<span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span>
+<span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="s2">&quot;show&quot;</span><span class="p">,</span> <span class="n">show</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To compute 1+2*3 and inject it into the current session, use this invocation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">times</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="mi">3</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Note that if there are invocations that have no dependencies, they may run
+concurrently. There is no guarantee on the order of invocations except that an
+RPC will not be made until all its dependencies have completed without errors.</p>
+</div>
+<div class="section" id="errors-are-propagated-up-the-call-chain-and-shown-in-an-alert-with-a-traceback">
+<h2>Errors are propagated up the call chain and shown in an alert with a traceback.<a class="headerlink" href="#errors-are-propagated-up-the-call-chain-and-shown-in-an-alert-with-a-traceback" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="other-sections">
+<h3>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="../index.html"><span class="doc">Python API</span></a></dt>
+<dd><ul class="first last">
+<li><a class="reference internal" href="index.html"><span class="doc">Python API Introduction</span></a></li>
+<li><a class="reference internal" href="example.html"><span class="doc">Example Script</span></a></li>
+<li><a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a></li>
+<li><a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a></li>
+<li>RPCs</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="../genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="../search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://iterm2.com/js/scripts.js"></script>                
+<script type="text/javascript">
+  function showId(id) {
+    document.getElementById("changelist" + id).style.display = 'block';
+    document.getElementById("show" + id).style.display = 'none';
+    document.getElementById("hide" + id).style.display = 'inline';
+  }
+
+  function hideId(id) {
+    document.getElementById("changelist" + id).style.display = 'none';
+    document.getElementById("show" + id).style.display = 'inline';
+    document.getElementById("hide" + id).style.display = 'none';
+  }
+  $(document).foundation();
+</script>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, George Nachman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/tutorial/rpcs.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
