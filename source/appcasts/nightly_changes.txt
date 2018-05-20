@@ -1,3 +1,164 @@
+commit fd0cfb6ed3c463eea4e53afe973cd5addca6ea2e
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 19 15:26:20 2018 -0700
+
+    [python] Fix formatting error in docs
+
+commit 0c81cf203ead3fe76c65f79d3af7834b9d24e5c1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 19 15:10:09 2018 -0700
+
+    [api] Add CoreParse.framework. Oops
+
+commit 34fb277996e40173eabce69984eb2f6ef99d54a6
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 19 15:03:39 2018 -0700
+
+    Bump minimum pyenv version to 13 for RPC support
+
+commit 7fd88bfa0b3d11b4b378d1ae5064a62d0e041753
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 19 14:51:49 2018 -0700
+
+    Make citations look nicer
+
+commit bf702b376ebdb8d08c03401109b1e7d6929a732a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 19 14:45:28 2018 -0700
+
+    [api] Add support for function composition. Fix some warnings. Fix a bug where you couldn't reregister a function after a previous script registering it terminated
+
+commit 1eb50c390a8eb0693a645746fff35f195247e059
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 19 14:02:52 2018 -0700
+
+    [api] Accept function invocations with 0 args
+
+commit 3e547980eb4402e77972102fa7102d7a53aaa270
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 19 14:02:29 2018 -0700
+
+    Remove unused variables
+
+commit b0a75271e7f46ad3ce3968d418612588f26ef1e5
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 19 14:02:02 2018 -0700
+
+    [api] add _ to identifier characters. Ensure arguments are unique.
+
+commit e0e2f22e043e320b1455725258d8e80048747b6c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 19 13:55:40 2018 -0700
+
+    [python] update docs for rpcs
+
+commit c7610d67b4496ffb9381c6a9107623ea04b1b294
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 19 12:27:26 2018 -0700
+
+    Update docstrings and rst indexes
+
+commit 19ccf978bc30a8cf6370141f1504000f5513ddcd
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 19 12:17:55 2018 -0700
+
+    [api] Giant friggin commit to add support for iTerm2-originated RPCs.
+    
+    - Add support for registering for iTerm2-invoked RPCs in scripts.
+    - Add key binding to invoke a script function.
+    - Add CoreParse third party library
+    - Make session variables not always strings
+    - Add session.id to variables. Gives the GUID.
+    - Recognize Python as the name of a python binary. It can be distributed as an app bundle.
+    - Refactor request handling in APIServer
+    - Expose textview in disclosable view so it can be made selectable.
+    - Add support for disclosable view accessories to iTermWarning.
+    
+    Still left to do:
+    - Autocomplete for function arguments in the keybinding text field would be nice
+    - Update docs, adding app.async_register_rpc_handler, notifications.async_subscribe_to_server_originated_rpc_notification
+    - Add a tutorial on how to write one an RPC handler
+    - Allow SetVariable RPC to send non-string values. Use json to encode its value.
+    - Allow GetVariable RPC to return non-string values over JSON.
+
+commit f60814a429bb4fbcf84d965cb5cd7a401bab2967
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri May 18 10:05:59 2018 -0700
+
+    [api] Escape path to apython in case it contains spaces
+
+commit f4c288c00199cd8d6b452545dd7655f136466ea4
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 22:34:20 2018 -0700
+
+    [python] Fix rst formatting issue
+
+commit 5a767a54914bca6dcf17137211ae0f4782b6df25
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 22:28:46 2018 -0700
+
+    [api] Use aioconsole's new --banner flag
+
+commit 5f890a6670e088c8d621046e9d7923c67a731a8a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 22:25:51 2018 -0700
+
+    [api] Enforce minimum python environment version consistently
+
+commit f5278484b2f2e69973ddae1babdff7cf381bf4b6
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 22:07:05 2018 -0700
+
+    [python] bump version to 0.31
+
+commit 301aef30fa4771061bbf165f40fb4987f7cda403
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 21:59:58 2018 -0700
+
+    [api] Allow python manifests to include a min, max version, and the be an array of dicts so multiple versions can be offered. iTerm2 can also specify a minimum version it will work with.
+
+commit 2e92010a70fbefd87ca4d9a2ad87407627f657a2
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 21:59:00 2018 -0700
+
+    Fix a bug where you couldn't turn off paste bracketing from the announcement because it actually turned off reportFocus
+
+commit 542fcc5b84ec80df40d79f5b443bbb56be6ab689
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 21:23:47 2018 -0700
+
+    [python] Fix a bug in list profiles with None guids
+
+commit 6bb9818455fab1121175eb33bbcfe64d0bc03dc9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 21:23:26 2018 -0700
+
+    [python] Change async_list_profiles to return a full profile if guids=None
+
+commit 16fe375ab1127e093cb35063ca73c199c8a790e7
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 21:22:47 2018 -0700
+
+    Add list-profiles to it2api
+
+commit 867efa1bf80ed4a5add553aa55f29a54a364bcb8
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 20:57:39 2018 -0700
+
+    Add python stuff to xcode project
+
+commit 60aa10a265fac768f826a61ae2f48a3fe9ac050a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 20:30:33 2018 -0700
+
+    Add support for missing keys to api and python.
+
+commit 20bf0e3e08bc3d71fed694592096cb8e76d079c9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 17 19:56:33 2018 -0700
+
+    Add apis for listing profiles
+
 commit ff5a7df64bccbf31a4cdb794dbd8c462336866e9
 Merge: 0b370079 a554d503
 Author: George Nachman <gnachman+github@gmail.com>
