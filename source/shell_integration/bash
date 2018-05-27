@@ -18,6 +18,16 @@
 
 # -- BEGIN ITERM2 CUSTOMIZATIONS --
 if [[ "$ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX""$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == *i* ]]; then
+
+if shopt extdebug | grep on > /dev/null; then
+  echo "iTerm2 Shell Integration not installed."
+  echo ""
+  echo "Your shell has 'extdebug' turned on."
+  echo "This is incompatible with shell integration."
+  echo "Find 'shopt -s extdebug' in bash's rc scripts and remove it."
+  return 0
+fi
+
 ITERM_SHELL_INTEGRATION_INSTALLED=Yes
 # Saved copy of your PS1. This is used to detect if the user changes PS1
 # directly. ITERM_PREV_PS1 will hold the last value that this script set PS1 to

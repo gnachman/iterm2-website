@@ -128,94 +128,8 @@
 <p>Provides classes for representing, querying, and modifying iTerm2 profiles.</p>
 <dl class="class">
 <dt id="iterm2.Profile">
-<em class="property">class </em><code class="descname">Profile</code><span class="sig-paren">(</span><em>session_id</em>, <em>connection</em>, <em>profile_property_list</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents a profile.</p>
-<p>If a session_id is set then this is the profile attached to a session.
-Otherwise, it is a shared profile.</p>
-<dl class="attribute">
-<dt id="iterm2.Profile.advanced_working_directory_pane_directory">
-<code class="descname">advanced_working_directory_pane_directory</code><a class="headerlink" href="#iterm2.Profile.advanced_working_directory_pane_directory" title="Permalink to this definition">¶</a></dt>
-<dd><p>The advanced working directory pane directory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Path.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.advanced_working_directory_pane_setting">
-<code class="descname">advanced_working_directory_pane_setting</code><a class="headerlink" href="#iterm2.Profile.advanced_working_directory_pane_setting" title="Permalink to this definition">¶</a></dt>
-<dd><p>The advanced working directory pane setting.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">INITIAL_WORKING_DIRECTORY_xxx, excluding ADVANCED.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.advanced_working_directory_tab_directory">
-<code class="descname">advanced_working_directory_tab_directory</code><a class="headerlink" href="#iterm2.Profile.advanced_working_directory_tab_directory" title="Permalink to this definition">¶</a></dt>
-<dd><p>The advanced working directory tab directory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Path.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.advanced_working_directory_tab_setting">
-<code class="descname">advanced_working_directory_tab_setting</code><a class="headerlink" href="#iterm2.Profile.advanced_working_directory_tab_setting" title="Permalink to this definition">¶</a></dt>
-<dd><p>The advanced working directory tab setting.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">INITIAL_WORKING_DIRECTORY_xxx, excluding ADVANCED.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.advanced_working_directory_window_directory">
-<code class="descname">advanced_working_directory_window_directory</code><a class="headerlink" href="#iterm2.Profile.advanced_working_directory_window_directory" title="Permalink to this definition">¶</a></dt>
-<dd><p>The advanced working directory window directory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Path.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.advanced_working_directory_window_setting">
-<code class="descname">advanced_working_directory_window_setting</code><a class="headerlink" href="#iterm2.Profile.advanced_working_directory_window_setting" title="Permalink to this definition">¶</a></dt>
-<dd><p>The advanced working directory window setting.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">INITIAL_WORKING_DIRECTORY_xxx, excluding ADVANCED.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+<em class="property">class </em><code class="descname">Profile</code><span class="sig-paren">(</span><em>session_id</em>, <em>connection</em>, <em>get_profile_property_response</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a session’s current profile settings.</p>
 <dl class="attribute">
 <dt id="iterm2.Profile.allow_title_reporting">
 <code class="descname">allow_title_reporting</code><a class="headerlink" href="#iterm2.Profile.allow_title_reporting" title="Permalink to this definition">¶</a></dt>
@@ -533,90 +447,6 @@ Otherwise, it is a shared profile.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A bool</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Profile.async_set_advanced_working_directory_pane_directory">
-<code class="descname">async_set_advanced_working_directory_pane_directory</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_advanced_working_directory_pane_directory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the advanced working directory pane directory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – Path.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Profile.async_set_advanced_working_directory_pane_setting">
-<code class="descname">async_set_advanced_working_directory_pane_setting</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_advanced_working_directory_pane_setting" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the advanced working directory pane setting.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – INITIAL_WORKING_DIRECTORY_xxx, excluding ADVANCED.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Profile.async_set_advanced_working_directory_tab_directory">
-<code class="descname">async_set_advanced_working_directory_tab_directory</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_advanced_working_directory_tab_directory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the advanced working directory tab directory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – Path.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Profile.async_set_advanced_working_directory_tab_setting">
-<code class="descname">async_set_advanced_working_directory_tab_setting</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_advanced_working_directory_tab_setting" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the advanced working directory tab setting.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – INITIAL_WORKING_DIRECTORY_xxx, excluding ADVANCED.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Profile.async_set_advanced_working_directory_window_directory">
-<code class="descname">async_set_advanced_working_directory_window_directory</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_advanced_working_directory_window_directory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the advanced working directory window directory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – Path.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Profile.async_set_advanced_working_directory_window_setting">
-<code class="descname">async_set_advanced_working_directory_window_setting</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_advanced_working_directory_window_setting" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the advanced working directory window setting.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – INITIAL_WORKING_DIRECTORY_xxx, excluding ADVANCED.</td>
 </tr>
 </tbody>
 </table>
@@ -945,20 +775,6 @@ Otherwise, it is a shared profile.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="iterm2.Profile.async_set_automatic_profile_switching_rules">
-<code class="descname">async_set_automatic_profile_switching_rules</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_automatic_profile_switching_rules" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the automatic profile switching rules.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – A list of rules (strings).</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="iterm2.Profile.async_set_background_color">
 <code class="descname">async_set_background_color</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_background_color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the background color.</p>
@@ -981,20 +797,6 @@ Otherwise, it is a shared profile.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – A bool</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Profile.async_set_background_image_location">
-<code class="descname">async_set_background_image_location</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_background_image_location" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets path to the background image.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – Path.</td>
 </tr>
 </tbody>
 </table>
@@ -1337,20 +1139,6 @@ Otherwise, it is a shared profile.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="iterm2.Profile.async_set_key_mappings">
-<code class="descname">async_set_key_mappings</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_key_mappings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the keyboard shortcuts.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – Dictionary mapping keystroke to action.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="iterm2.Profile.async_set_left_option_key_sends">
 <code class="descname">async_set_left_option_key_sends</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_left_option_key_sends" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the behavior of the left option key.</p>
@@ -1457,36 +1245,6 @@ Otherwise, it is a shared profile.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – A bool</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Profile.async_set_normal_font">
-<code class="descname">async_set_normal_font</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_normal_font" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the non-ASCII font.</p>
-<p>This is used for non-ASCII characters if use_non_ascii_font is enabled.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – Font name and size as a string.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">async_set_normal_font</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets the non-ASCII font.</p>
-<p>This is used for non-ASCII characters if use_non_ascii_font is enabled.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – Font name and size as a string.</td>
 </tr>
 </tbody>
 </table>
@@ -1628,20 +1386,6 @@ integration)</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Color</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Profile.async_set_semantic_history">
-<code class="descname">async_set_semantic_history</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_semantic_history" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the semantic history prefs.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – Semantic history settings dict.</td>
 </tr>
 </tbody>
 </table>
@@ -1802,20 +1546,6 @@ integration)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="iterm2.Profile.async_set_smart_selection_rules">
-<code class="descname">async_set_smart_selection_rules</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_smart_selection_rules" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the smart selection rules.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – A list of dicts of smart selection rules</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="iterm2.Profile.async_set_sync_title">
 <code class="descname">async_set_sync_title</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_sync_title" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets whether the profile name stays in the tab title, even if changed by an escape
@@ -1859,20 +1589,6 @@ sequence.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="iterm2.Profile.async_set_touchbar_mappings">
-<code class="descname">async_set_touchbar_mappings</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_touchbar_mappings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the touchbar actions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – Dictionary mapping touch bar item to action.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="iterm2.Profile.async_set_transparency">
 <code class="descname">async_set_transparency</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_transparency" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the level of transparency.</p>
@@ -1881,20 +1597,6 @@ sequence.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – A float between 0 and 1</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Profile.async_set_triggers">
-<code class="descname">async_set_triggers</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_triggers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the triggers.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – A list of dicts of trigger definitions.</td>
 </tr>
 </tbody>
 </table>
@@ -2083,20 +1785,6 @@ sequence.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="iterm2.Profile.automatic_profile_switching_rules">
-<code class="descname">automatic_profile_switching_rules</code><a class="headerlink" href="#iterm2.Profile.automatic_profile_switching_rules" title="Permalink to this definition">¶</a></dt>
-<dd><p>The automatic profile switching rules.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of rules (strings).</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="iterm2.Profile.background_color">
 <code class="descname">background_color</code><a class="headerlink" href="#iterm2.Profile.background_color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the background color.</p>
@@ -2119,20 +1807,6 @@ sequence.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A bool</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.background_image_location">
-<code class="descname">background_image_location</code><a class="headerlink" href="#iterm2.Profile.background_image_location" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets path to the background image.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Path.</td>
 </tr>
 </tbody>
 </table>
@@ -2405,35 +2079,6 @@ sequence.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="iterm2.Profile.dynamic_profile_file_name">
-<code class="descname">dynamic_profile_file_name</code><a class="headerlink" href="#iterm2.Profile.dynamic_profile_file_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>If the profile is a dynamic profile, returns the path to the file
-from which it came.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">String file name</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.dynamic_profile_parent_name">
-<code class="descname">dynamic_profile_parent_name</code><a class="headerlink" href="#iterm2.Profile.dynamic_profile_parent_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>If the profile is a dynamic profile, returns the name of the parent profile.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">String name</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="iterm2.Profile.flashing_bell">
 <code class="descname">flashing_bell</code><a class="headerlink" href="#iterm2.Profile.flashing_bell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether the bell should flash the screen</p>
@@ -2456,20 +2101,6 @@ from which it came.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <code class="xref py py-class docutils literal notranslate"><span class="pre">Color</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.guid">
-<code class="descname">guid</code><a class="headerlink" href="#iterm2.Profile.guid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns globally unique ID for this profile.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A string identifying this profile</td>
 </tr>
 </tbody>
 </table>
@@ -2512,20 +2143,6 @@ from which it came.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A float at least 0</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.key_mappings">
-<code class="descname">key_mappings</code><a class="headerlink" href="#iterm2.Profile.key_mappings" title="Permalink to this definition">¶</a></dt>
-<dd><p>The keyboard shortcuts.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary mapping keystroke to action.</td>
 </tr>
 </tbody>
 </table>
@@ -2630,21 +2247,6 @@ from which it came.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="iterm2.Profile.non_ascii_font">
-<code class="descname">non_ascii_font</code><a class="headerlink" href="#iterm2.Profile.non_ascii_font" title="Permalink to this definition">¶</a></dt>
-<dd><p>The non-ASCII font.</p>
-<p>This is used for non-ASCII characters if use_non_ascii_font is enabled.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Font name and size as a string.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="iterm2.Profile.non_ascii_ligatures">
 <code class="descname">non_ascii_ligatures</code><a class="headerlink" href="#iterm2.Profile.non_ascii_ligatures" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether ligatures should be used for non-ASCII text.</p>
@@ -2659,22 +2261,6 @@ from which it came.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="iterm2.Profile.normal_font">
-<code class="descname">normal_font</code><a class="headerlink" href="#iterm2.Profile.normal_font" title="Permalink to this definition">¶</a></dt>
-<dd><p>The normal font.</p>
-<p>The normal font is used for either ASCII or all characters depending on
-whether a separate font is used for non-ascii.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Font name and size as a string.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="iterm2.Profile.only_the_default_bg_color_uses_transparency">
 <code class="descname">only_the_default_bg_color_uses_transparency</code><a class="headerlink" href="#iterm2.Profile.only_the_default_bg_color_uses_transparency" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether window transparency shows through non-default background colors.</p>
@@ -2683,22 +2269,6 @@ whether a separate font is used for non-ascii.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A bool</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.original_guid">
-<code class="descname">original_guid</code><a class="headerlink" href="#iterm2.Profile.original_guid" title="Permalink to this definition">¶</a></dt>
-<dd><p>The GUID of the original profile from which this one was derived.</p>
-<p>Used for sessions whose profile has been modified from the underlying
-profile. Otherwise not set.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Guid</td>
 </tr>
 </tbody>
 </table>
@@ -2826,20 +2396,6 @@ integration)</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <code class="xref py py-class docutils literal notranslate"><span class="pre">Color</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.semantic_history">
-<code class="descname">semantic_history</code><a class="headerlink" href="#iterm2.Profile.semantic_history" title="Permalink to this definition">¶</a></dt>
-<dd><p>The semantic history prefs.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Semantic history settings dict.</td>
 </tr>
 </tbody>
 </table>
@@ -3001,20 +2557,6 @@ notifications</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="iterm2.Profile.smart_selection_rules">
-<code class="descname">smart_selection_rules</code><a class="headerlink" href="#iterm2.Profile.smart_selection_rules" title="Permalink to this definition">¶</a></dt>
-<dd><p>The smart selection rules.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of dicts of smart selection rules</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="iterm2.Profile.sync_title">
 <code class="descname">sync_title</code><a class="headerlink" href="#iterm2.Profile.sync_title" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether the profile name stays in the tab title, even if changed by an escape
@@ -3058,20 +2600,6 @@ sequence.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="iterm2.Profile.touchbar_mappings">
-<code class="descname">touchbar_mappings</code><a class="headerlink" href="#iterm2.Profile.touchbar_mappings" title="Permalink to this definition">¶</a></dt>
-<dd><p>The touchbar actions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary mapping touch bar item to action.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="iterm2.Profile.transparency">
 <code class="descname">transparency</code><a class="headerlink" href="#iterm2.Profile.transparency" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the level of transparency.</p>
@@ -3080,20 +2608,6 @@ sequence.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A float between 0 and 1</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.Profile.triggers">
-<code class="descname">triggers</code><a class="headerlink" href="#iterm2.Profile.triggers" title="Permalink to this definition">¶</a></dt>
-<dd><p>The triggers.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of dicts of trigger definitions.</td>
 </tr>
 </tbody>
 </table>
@@ -3276,27 +2790,6 @@ sequence.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A bool</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="iterm2.profile.PartialProfile">
-<em class="property">class </em><code class="descname">PartialProfile</code><span class="sig-paren">(</span><em>session_id</em>, <em>connection</em>, <em>profile_property_list</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.profile.PartialProfile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents a profile that has only a subset of fields available for reading.</p>
-<dl class="method">
-<dt id="iterm2.profile.PartialProfile.async_get_full_profile">
-<code class="descname">async_get_full_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.profile.PartialProfile.async_get_full_profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Requests a full profile and returns it.</p>
-<p>Raises BadGUIDException if the Guid is not set or does not match a profile.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <code class="xref py py-class docutils literal notranslate"><span class="pre">Profile</span></code>.</td>
 </tr>
 </tbody>
 </table>

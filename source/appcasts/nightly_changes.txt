@@ -1,3 +1,302 @@
+commit 0cb75b5f9317deea10282e9b0d1a9fa54e054c7d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 17:59:08 2018 -0700
+
+    Add an advanced pref to prefer the integrated gpu. Issue 6587. DO NOT CHERRY PICK INTO 3.2.0beta2 - wait and see if this causes more crashes on wake from suspend.
+
+commit 77fcaf5bcd79c9ad13319edbea8b17b20bef67c2
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 17:44:37 2018 -0700
+
+    Strip all private use characters in ScreenCharArrayToString. This affects find and triggers. It makes tabs searchable and fixes cases where DWC_SKIP would interrupt find/triggers. Issue 6728
+
+commit 7788dd91cd23c3a4ac73705dc645dbaeeecc5f07
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 17:40:10 2018 -0700
+
+    Remove dead code
+
+commit 8eeb17ac140a4bbc1e340c80972001ea727a4569
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 17:39:31 2018 -0700
+
+    Remove dead code
+
+commit 887090f0da6c766ca022dbf3c9d25b0501aed86a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 16:04:35 2018 -0700
+
+    Fix a bug where rounding could push an underline (as in pragmata pro mono) one point below the bottom of a cell, making it invisible in the Metal renderer. See comment by @akio in issue 6689.
+
+commit a505d00ce6f8726033f34d8b7991ccf0d7fa14b9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 15:45:56 2018 -0700
+
+    Center underlines vertically in the pixel grid in the drawRect renderer
+
+commit eb4e53fbc097692f3f0536442958b333c5a44942
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 15:03:14 2018 -0700
+
+    [api] When listing variables return the result as a list, not newline delimited
+
+commit 91edf5fc81774218aacb3f592df5ae0eb80edeb9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 15:02:43 2018 -0700
+
+    [python] make utilities support None for formatting
+
+commit dd8eceb76c106b3068b2ff25104529ac6bf12cb7
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 15:02:20 2018 -0700
+
+    [python] set grid_size, frame to None in summary sessions
+
+commit 5fde027c10fd899ca038b285ef697bbc6803d3b1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 15:01:57 2018 -0700
+
+    [python] default alpha on get-color to 255
+
+commit 5c166265b2649587de1b6fc2b4a2c216c7d6418c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 15:01:31 2018 -0700
+
+    Fix it2api and write a little test for it
+
+commit 6b23f6bc2b3c68270306daee342f90d8c500fb04
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat May 26 13:47:32 2018 -0700
+
+    [api, python] Add support for buried sessions
+
+commit 665161ac1975fb41323d937e809c7df4bda3197e
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 24 23:45:02 2018 -0700
+
+    Remove obsolete comment
+
+commit 185cb0578aca8c6a690b27dd95d16c3d99f26a62
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 24 23:44:33 2018 -0700
+
+    Fix a bug where search kept starting over. Unsigned comparison is evil
+
+commit 4c17c6f21942d78e8c9c182b4b676bf7db0cd7d7
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 24 23:23:04 2018 -0700
+
+    Bump min pyenv version to 15 to make people upgrade
+
+commit 8d9944b20b771064aa9c5f6d1de3c6fc0340a1f0
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 24 23:21:19 2018 -0700
+
+    [python] bump version to 0.33
+
+commit d32282744790885c9cfb8aa23c114cb96632eeaa
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 24 23:20:34 2018 -0700
+
+    [python] bump version to 0.32
+
+commit 4911c70a1078339925c4239668cba4a009ebf564
+Merge: 57f004ea e505c388
+Author: George Nachman <gnachman+github@gmail.com>
+Date:   Thu May 24 23:19:01 2018 -0700
+
+    Merge pull request #360 from yilei/select
+    
+    Update the command range when the cursor moves.
+
+commit 57f004ead7d35ad99f595096a9f96f6636ec271a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu May 24 22:53:42 2018 -0700
+
+    [api, python] Add support for invoking and querying state of menu items
+
+commit adfa7129db9cc323834be05fe945b8b76ef4c207
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed May 23 20:38:33 2018 -0700
+
+    Try to fix a crash in converting a double to ascii.
+
+commit 729d86fdcf882eb602aace740a449fe06741ef1d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue May 22 22:47:35 2018 -0700
+
+    Guard the broken low-power GPU code with an #if. I am at a loss as to why the advanced pref didn't prevent crashes but commenting out the code did.
+
+commit 86fd19d69f3df2ad0c1a61570b29696857b2f2f2
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue May 22 22:46:55 2018 -0700
+
+    Fix a warning
+
+commit f0be4b1911b7845225c57b5bcde3f1ef39055052
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue May 22 22:09:15 2018 -0700
+
+    Add a trigger than runs an RPC. Requires major heroics to glue all the bits together.
+
+commit b43c5bb68f169c0630a8eff8601cf65cecf7934d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue May 22 18:00:14 2018 -0700
+
+    [api] Add support for restarting the session. Fix up some naming issues in session.py
+
+commit c886c4ae9cd96874e955682f9120db723c71bd45
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue May 22 17:58:27 2018 -0700
+
+    [python] Rename App.windows to App.terminal_windows. Fix a bug where async_refresh() would forget the selected tab/session.
+
+commit 0df1312b4fb147cf76d0c9b1ad37742c675d008e
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue May 22 17:56:13 2018 -0700
+
+    [api] When restarting the REPL the cookie will be invalid but it should still be able to connect. Allow connections with bad cookies to proceed through the usual auth path.
+
+commit 0f8c405f11e84b6078a113abfde9ba954efff723
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue May 22 17:55:35 2018 -0700
+
+    [python] Remove hierarchy.py which is no longer used.
+
+commit 0e5b0697bfab855c78223d7a90dada32b7c1a6fb
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed May 23 23:53:56 2018 -0700
+
+    Fix merge oopsie
+
+commit 82339d3dedc46eb01fc5206713a17b7c125527d5
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed May 23 23:05:12 2018 -0700
+
+    arcify prefs
+    
+    Fixes a bug where 10.11 and earlier crashed because weak iboutlets are stillborn.
+
+commit 50b34dc6875209dfe640580bcf51393d6016a7a1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed May 23 23:19:19 2018 -0700
+
+    Fix a bug where the text prefs pane doesn't expand on 10.13.2 and perhaps other versions too because the presence of preferredContentSize made it decide to use constraints
+
+commit e505c3886654a0397387f9629ab4bb805dc0acfe
+Author: Yilei Yang <yileiyang9@gmail.com>
+Date:   Tue May 22 11:22:24 2018 -0700
+
+    Use screenCommandDidChangeWithRange instead of screenCommandDidEndWithRange in terminalCarriageReturn.
+
+commit ffd29a88889b9d6675cbce3ceecebedf213df224
+Author: Yilei Yang <yileiyang9@gmail.com>
+Date:   Wed May 16 17:03:49 2018 -0700
+
+    Update the command range when the cursor moves.
+
+commit 7f6f434473089e892355194384986bc8567a010a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon May 21 22:49:55 2018 -0700
+
+    Try to prevent the crash in issue 6724. It's pretty common. I wasn't able to repro.
+
+commit 43a47e09594da9fff3da55de7459e3400fa5cbd2
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon May 21 22:04:10 2018 -0700
+
+    A most delightful hack to detect the emoji panel and adjust floating hotkey windows' levels.
+    
+    Issue 6730 observes that when floating hotkey windows are at the status window
+    level they obscure the emoji panel.
+    
+    If they are at a reasonable level then the dock obscures full-width hotkey
+    windows, which people love because they are human and I can't help that.
+    
+    This thing detects when the emoji panel is gonna open and drops the level of
+    floating hotkey windows. Then it polls once a second to wait for the emoji
+    panel to close.
+    
+    As a safeguard, it must detect it open within 1 second (configurable) before
+    deciding that it's actually open. If that doesn't happen then flip the level
+    back.
+    
+    The way we test if the emoji panel is open is by looking at all the open
+    windows and seeing if there's a level 20 one owned by Emoji & Symbols.
+    
+    I am both proud of and ashamed by this commit.
+
+commit 0edf5cfa97626eb291bd680d260271ef15610dfa
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon May 21 21:40:22 2018 -0700
+
+    [api] Fix a bug where the rpc ID was not incremented. Handle errors better.
+
+commit 2ea563d04e6320c3d5082fb5a57652b90711924e
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon May 21 21:20:30 2018 -0700
+
+    Use SLR instead of LR1 parser
+
+commit 7e8a3cd09bbb78c9d0c2e92336a023e1fd0e120d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon May 21 21:16:06 2018 -0700
+
+    Add iTermGrammarProcessor to make compilers cleaner
+
+commit 0b144dacc783d16f3965fe906aa7c8cdc4deb357
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon May 21 17:57:55 2018 -0700
+
+    [api] preauthorize RPL with cookie
+
+commit 69c02e9d22583467b58fe2453491ecd32968bc22
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon May 21 17:57:40 2018 -0700
+
+    [api, python] Use JSON to get/set variables
+
+commit 3aadd9fa7029ad4d1c17a0383ab67c8ec0e18b2a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun May 20 22:30:07 2018 -0700
+
+    [api] Turn off noncontiguous layout in console text views to improve scrolling behavior
+
+commit 88fa53d405504e2409089c07a3a39e686874b150
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun May 20 22:29:50 2018 -0700
+
+    [api] Recognize the REPL and authorize it automatically
+
+commit a267b9e1ae30aaf0169668d33c240a961a2d838b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun May 20 21:45:46 2018 -0700
+
+    [api] Make RPC timeouts settable at registrationtime
+
+commit 73ab9b082ddead697d480fa2f33f51670395f6be
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun May 20 13:09:32 2018 -0700
+
+    Add autocomplete for function invocations.
+    
+    Details:
+    - Add iTermFunctionCallTextFieldDelegate to hide the awful
+      details of implementing autocomplete on macOS
+    - Add iTermTruncatedQuotedRecognizer to tokenize
+      unterminated strings, needed for suggestions.
+    - Move function call parser into
+      iTermFunctionCallParser.[hm]
+    - Add iTermFunctionCallSuggester that implements a similar
+      grammar to the parser but allows it to be cut off anywhere
+      in the middle.
+    - Move the constants defining built-in variable names to
+      iTermVariables and add machinery to track the addition of
+      user-defined variables.
+    - Rename variables from kVariable... to iTermVariable....
+    - Refactor iTermEditKeyActionWindowController to be
+      maintainable and sane
+
 commit fd0cfb6ed3c463eea4e53afe973cd5addca6ea2e
 Author: George Nachman <gnachman@gmail.com>
 Date:   Sat May 19 15:26:20 2018 -0700
