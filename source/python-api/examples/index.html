@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Running a Script &#8212; iTerm2 Python API 0.26 documentation</title>
+    <title>Example Scripts &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../_static/documentation_options.js"></script>
@@ -121,97 +121,19 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="running-a-script">
-<h1>Running a Script<a class="headerlink" href="#running-a-script" title="Permalink to this headline">¶</a></h1>
-<p>There are four ways to run a script:</p>
-<ol class="arabic simple">
-<li>From the Scripts menu.</li>
-<li>At the command line.</li>
-<li>Auto-run scripts launched when iTerm2 starts.</li>
-<li>With an interactive interpreter called a REPL.</li>
-</ol>
-<div class="section" id="scripts-menu">
-<h2>Scripts Menu<a class="headerlink" href="#scripts-menu" title="Permalink to this headline">¶</a></h2>
-<p>The <cite>Scripts</cite> menu contains all the scripts in
-<cite>$HOME/Library/ApplicationSupport/iTerm2/Scripts</cite>. The following files are
-included:</p>
+  <span class="target" id="examples-index"></span><div class="section" id="example-scripts">
+<h1>Example Scripts<a class="headerlink" href="#example-scripts" title="Permalink to this headline">¶</a></h1>
+<p>Here are a collection of working scripts for you to crib from.</p>
 <ul class="simple">
-<li>Any file ending in <cite>.py</cite>. These correspond to “basic” scripts.</li>
-<li>Any folder having an <cite>itermenv</cite> folder within it. These correspond to “full environment” scripts.</li>
-<li>Applescript files, which are not the concern of this document.</li>
+<li><a class="reference internal" href="georges_title.html"><span class="doc">George’s Title Algorithm</span></a></li>
+<li>More TBD</li>
 </ul>
-<p>To run a script from the menu, simply select it and it will run.</p>
-</div>
-<div class="section" id="command-line">
-<h2>Command Line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h2>
-<p>Your machine probably has <a class="reference external" href="https://xkcd.com/1987/">many instances of Python</a>
-installed in different places. It’s important to run your script with the right
-Python so that it can find the packages the script depends on (such as the
-<cite>iterm2</cite> package).</p>
-<p>The standard iTerm2 Python installation is at
-<cite>~/Library/ApplicationSupport/iTerm2/iterm2env/versions/3.6.5/bin/python3</cite>.
-This is the so-called “Basic” environment.</p>
-<p>If you create a script with the “Full Environment” its instance of Python
-will be in
-<cite>~/Library/ApplicationSupport/iTerm2/Scripts/YourScript/iterm2env/versions/3.6.5/bin/python3</cite>.</p>
-<p>Internally, iTerm2 runs a basic script by invoking:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">ApplicationSupport</span><span class="o">/</span><span class="n">iTerm2</span><span class="o">/</span><span class="n">iterm2env</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mf">3.6</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python3</span> <span class="n">YourScript</span><span class="o">.</span><span class="n">py</span>
-</pre></div>
-</div>
-<p>Scripts are stored in <cite>$HOME/Library/ApplicationSupport/iTerm2/Scripts</cite>.</p>
-<p>Make sure you don’t have a <cite>PYTHONPATH</cite> environment variable set when you run
-your script.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">iTerm2 creates the <cite>ApplicationSupport</cite> symlink to <cite>Application
-Support</cite> because shell scripts may not have spaces in their paths.</p>
-</div>
-</div>
-<div class="section" id="auto-run-scripts">
-<h2>Auto-Run Scripts<a class="headerlink" href="#auto-run-scripts" title="Permalink to this headline">¶</a></h2>
-<p>If you’d like your script to launch automatically when iTerm2 starts, move it
-to <cite>$HOME/Library/ApplicationSupport/iTerm2/Scripts/AutoLaunch</cite>.</p>
-</div>
-<div class="section" id="repl">
-<h2>REPL<a class="headerlink" href="#repl" title="Permalink to this headline">¶</a></h2>
-<p>iTerm2 also offers a <em>REPL</em>: a <em>Read-eval-print loop</em>. This is an interactive
-Python interpreter where you can experiment with the scripting API. You can
-enter commands and immediately see their results. It’s available from the menu
-item <cite>Scripts &gt; Open Python REPL</cite>. It will open a window with an interactive
-Python interpreter.</p>
-<p>The REPL uses the <cite>apython</cite> script provided by <a class="reference external" href="https://github.com/vxgmichel/aioconsole">aioconsole</a> which extends Python
-so that you can use <cite>await</cite> without having to put it inside an <cite>async</cite>
-function. In other words, you don’t need to write
-<cite>iterm2.Connection().run(main, sys.argv)</cite> to launch a <cite>main</cite> function when in
-the REPL. Instead, a typical REPL session would begin with:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
-<span class="n">connection</span><span class="o">=</span><span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">async_create</span><span class="p">()</span>
-<span class="n">app</span><span class="o">=</span><span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>When the REPL starts it prints a sample script so that you don’t need to
-remember this. You can just copy-paste it into the interpreter. Once you’ve got
-an <cite>app</cite> the rest is easy :).</p>
-<p>Continue to the next section, <a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a>.</p>
 <hr class="docutils" />
 <div class="section" id="other-sections">
-<h3>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h3>
+<h2>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="../index.html"><span class="doc">Python API</span></a></dt>
-<dd><ul class="first last">
-<li><a class="reference internal" href="index.html"><span class="doc">Python API Introduction</span></a></li>
-<li><a class="reference internal" href="example.html"><span class="doc">Example Script</span></a></li>
-<li>Running a Script</li>
-<li><a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a></li>
-<li><a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a></li>
-<li><a class="reference internal" href="hooks.html"><span class="doc">Hooks</span></a></li>
+<li><a class="reference internal" href="../index.html"><span class="doc">Python API</span></a></li>
 </ul>
-</dd>
-</dl>
-</li>
-</ul>
-</div>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
@@ -255,7 +177,7 @@ an <cite>app</cite> the rest is easy :).</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="../_sources/tutorial/running.rst.txt"
+      <a href="../_sources/examples/index.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

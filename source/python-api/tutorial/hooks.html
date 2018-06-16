@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Example Script &#8212; iTerm2 Python API 0.26 documentation</title>
+    <title>Hooks &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../_static/documentation_options.js"></script>
@@ -121,111 +121,68 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="example-script">
-<h1>Example Script<a class="headerlink" href="#example-script" title="Permalink to this headline">¶</a></h1>
-<p>Here’s the example script that iTerm2 provides for you, minus some comments:</p>
+  <div class="section" id="hooks">
+<h1>Hooks<a class="headerlink" href="#hooks" title="Permalink to this headline">¶</a></h1>
+<p>iTerm2 provides a mechanism called <em>hooks</em> that allows your Python code to modify the app’s default behavior.</p>
+<p>The following hooks are defined:</p>
+<ul class="simple">
+<li>Custom session title</li>
+<li>(More TBD)</li>
+</ul>
+<p>To define a hook, you must register an RPC as described in <a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a>. There are a few things to do in addition:</p>
+<ol class="arabic simple">
+<li>Pass a <cite>role</cite> argument to <cite>async_register_rpc_handler</cite> that describes the hook you wish to implement.</li>
+<li>Pass a <cite>defaults</cite> argument to <cite>async_register_rpc_handler</cite> that describes the variables you depend on.</li>
+<li>Pass a <cite>display_name</cite> argument to <cite>async_register_rpc_handler</cite> that gives the name to show in the UI.</li>
+</ol>
+<p>To implement a custom session title hook, use <cite>role=RPC_ROLE_SESSION_TITLE</cite>.</p>
+<p>The <cite>defaults</cite> argument is a dictionary mapping an argument name to a variable.
+The argument names in <cite>defaults</cite> correspond to argument names in the function
+you register to handle the RPC.</p>
+<p>In the case of the custom session title hook, all arguments to your function
+must have corresponding default values.</p>
+<p>The values in the <cite>defaults</cite> dictionary refer to variables. When the value of
+any named variable changes, the function may be re-evaluated. If some variable
+might not be defined, you should put a <cite>?</cite> after its name to signify that a
+null value is allowed. The function will be called with <cite>None</cite> for such
+undefined variables. Variables are detailed in
+<a class="reference external" href="https://www.iterm2.com/documentation-badges.html">Badges</a>.</p>
+<p>Here’s an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 
+<span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-    <span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
-    <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;No current window&quot;</span><span class="p">)</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">custom_title</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">hostname</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;😀 {}@{}:{} 😀&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">hostname</span><span class="p">)</span>
+
+    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;pwd&quot;</span><span class="p">:</span> <span class="s2">&quot;session.path?&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;session.username?&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;hostname&quot;</span><span class="p">:</span> <span class="s2">&quot;session.hostname?&quot;</span> <span class="p">}</span>
+    <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="s2">&quot;custom_title&quot;</span><span class="p">,</span>
+                                         <span class="n">custom_title</span><span class="p">,</span>
+                                         <span class="n">role</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">RPC_ROLE_SESSION_TITLE</span><span class="p">,</span>
+                                         <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">,</span>
+                                         <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;My Custom Title&quot;</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>There’s a lot going on here. Let’s take it part by part.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
-</pre></div>
-</div>
-<p>This is standard boilerplate for a Python script. See <a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a> for
-details on how scripts are run.</p>
-<p>The next part of the template script are the imports:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-</pre></div>
-</div>
-<p><cite>iterm2</cite> is a Python module (available on PyPI) that provides a nice interface
-to communicate with iTerm2. The underlying implementation uses Google protobuf
-and websockets. For most purposes, that is completely abstracted away.</p>
-<p><cite>sys</cite> is imported so that the script can parse command-line arguments.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
-</pre></div>
-</div>
-<p>Your code goes inside <cite>main</cite>. The first argument is a <cite>connection</cite> that holds
-the link to a running iTerm2 process. <cite>main</cite> gets called only after a
-connection is established.  If the connection terminates (e.g., if you quit
-iTerm2) then any attempt to use it will raise an exception and terminate your
-script.</p>
-<p>The second argument, <cite>argv</cite>, gives the command-line arguments passed to the
-script. When you launch a script from iTerm2, it does not receive any
-arguments. But you can also run this script manually and pass it command-line
-arguments.</p>
-<p>The <cite>async</cite> keyword may be unfamiliar if you haven’t used asyncio before. It
-signifies that this function can be interrupted, for example to perform a
-remote procedure call over a network. Because iTerm2 communicates with the
-script over a websocket connection, any time the script wishes to send or
-receive information from iterm2, it will have to wait for a few milliseconds.</p>
-<p>The benefit of asyncio is that while the script is stopped waiting for a
-response from iTerm2, other work can happen. For example, handling of
-notifications from iTerm2. We’ll see more about that later.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The purpose of this line is to get a reference to the <a class="reference internal" href="../app.html#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.App</span></code></a>
-object, which is useful for most things you’ll want to do in a simple script.
-It is a singleton that provides access to iTerm2’s global state, such as its
-windows.</p>
-<p>Note the use of <cite>await</cite>. Any function that’s defined as <cite>async</cite>, which most
-functions in the iTerm2 API are, must be called with <cite>await</cite>. It means it might
-not return immediately. While it waits, messages from iTerm2 or other I/O may
-be received and handled.</p>
-<p>In this case, it makes an RPC call to iTerm2 to get its state (such as the list
-of windows). The returned value is an <a class="reference internal" href="../app.html#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.App</span></code></a>.</p>
-<p>If you forget to use <cite>await</cite> you’ll get a warning in the Script Console.
-iTerm2’s library follows a naming convention to help you remember to use
-<cite>await</cite>: any function that is declared <cite>async</cite> will have a name that begins
-with <cite>async_</cite>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
-</pre></div>
-</div>
-<p>This fetches the “current terminal window” from the app. The current terminal
-window is the terminal window (and not, for example, the preferences window or
-some other non-terminal window) that receives keyboard input when iTerm2 is
-active.</p>
-<p>If there are no terminal windows then <code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.App.async_get_key_window()</span></code>
-returns <cite>None</cite>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-    <span class="n">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>If there is a current terminal window, add a tab to it. The new tab uses the
-default profile.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">else</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;No current window&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>This prints a diagnostic message. You can view these messages in the Script
-Console. Select <em>Scripts &gt; Script Console</em> in iTerm2 to view the output of
-your scripts. If something’s not working right, you can usually find the
-problem in the Script Console. You can also use it to terminate a misbehaving
-script.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The <cite>if</cite> statement is a bit of standard Python boilerplate; you can ignore it
-as its condition will always be <cite>True</cite>.</p>
-<p>The next line establishes a websocket connection to iTerm2 and then runs your
-<cite>main</cite> function, passing it <cite>sys.argv</cite> which holds the command-line arguments.</p>
-<p>Continue to the next section, <a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a>.</p>
+<p>As this script is a long-running daemon, you’ll want to put it in the
+<cite>AutoLaunch</cite> folder. If a hook is not registered then it acts as though it
+returned an empty value. Tab labels will show a default value in place of the
+empty string.</p>
+<p>Next, you need to configure your session’s profile to use the hook. Once it’s been registered properly it will appear as an option in <strong>Preferences &gt; Profiles &gt; General &gt; Title</strong>. Select it there:</p>
+<img alt="../_images/choose_custom_session_title.png" src="../_images/choose_custom_session_title.png" />
+<p>If anything goes wrong, remember to check the Script Console. Pick your script
+on the left to view its output. Some errors are also logged to the <em>iTerm2 App</em>
+history in the script console.</p>
 <hr class="docutils" />
 <div class="section" id="other-sections">
 <h2>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h2>
@@ -234,11 +191,11 @@ as its condition will always be <cite>True</cite>.</p>
 <dt><a class="reference internal" href="../index.html"><span class="doc">Python API</span></a></dt>
 <dd><ul class="first last">
 <li><a class="reference internal" href="index.html"><span class="doc">Python API Introduction</span></a></li>
-<li>Example Script</li>
+<li><a class="reference internal" href="example.html"><span class="doc">Example Script</span></a></li>
 <li><a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a></li>
 <li><a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a></li>
 <li><a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a></li>
-<li><a class="reference internal" href="hooks.html"><span class="doc">Hooks</span></a></li>
+<li>Hooks</li>
 </ul>
 </dd>
 </dl>
@@ -287,7 +244,7 @@ as its condition will always be <cite>True</cite>.</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="../_sources/tutorial/example.rst.txt"
+      <a href="../_sources/tutorial/hooks.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

@@ -352,6 +352,22 @@ brought to the front and given keyboard focus.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="iterm2.Session.async_set_buried">
+<code class="descname">async_set_buried</code><span class="sig-paren">(</span><em>buried</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_set_buried" title="Permalink to this definition">¶</a></dt>
+<dd><p>Buries or disinters a session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>buried</strong> – If <cite>True</cite>, bury the session. If <a href="#id1"><span class="problematic" id="id2">`</span></a>False, disinter it.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="iterm2.Session.async_set_grid_size">
 <code class="descname">async_set_grid_size</code><span class="sig-paren">(</span><em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_set_grid_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the visible size of a session.</p>
@@ -392,7 +408,7 @@ brought to the front and given keyboard focus.</li>
 
 <dl class="method">
 <dt id="iterm2.Session.async_split_pane">
-<code class="descname">async_split_pane</code><span class="sig-paren">(</span><em>vertical=False</em>, <em>before=False</em>, <em>profile=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_split_pane" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_split_pane</code><span class="sig-paren">(</span><em>vertical=False</em>, <em>before=False</em>, <em>profile=None</em>, <em>profile_customizations=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_split_pane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits the pane, creating a new session.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -402,6 +418,7 @@ brought to the front and given keyboard focus.</li>
 <li><strong>vertical</strong> – Bool. If true, the divider is vertical, else horizontal.</li>
 <li><strong>before</strong> – Bool, whether the new session should be left/above the existing one.</li>
 <li><strong>profile</strong> – The profile name to use. None for the default profile.</li>
+<li><strong>profile_customizations</strong> – LocalWriteOnlyProfile giving changes to make in profile.</li>
 </ul>
 </td>
 </tr>
