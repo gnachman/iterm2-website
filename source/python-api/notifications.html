@@ -171,7 +171,7 @@ a notifications your async callback will be run when the event occurs.</p>
 
 <dl class="function">
 <dt id="iterm2.notifications.async_subscribe_to_keystroke_notification">
-<code class="descname">async_subscribe_to_keystroke_notification</code><span class="sig-paren">(</span><em>connection</em>, <em>callback</em>, <em>session=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.notifications.async_subscribe_to_keystroke_notification" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_subscribe_to_keystroke_notification</code><span class="sig-paren">(</span><em>connection</em>, <em>callback</em>, <em>session=None</em>, <em>patterns_to_ignore=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.notifications.async_subscribe_to_keystroke_notification" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers a callback to be run when a key is pressed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -182,6 +182,7 @@ a notifications your async callback will be run when the event occurs.</p>
 <li><strong>callback</strong> – A coroutine taking two arguments: an <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> and
 iterm2.api_pb2.KeystrokeNotification.</li>
 <li><strong>session</strong> – The session to monitor, or None.</li>
+<li><strong>patterns_to_ignore</strong> – A list of keystroke patterns that iTerm2 should not handle, expecting the script will handle it alone. Objects are class <code class="xref py py-class docutils literal notranslate"><span class="pre">KeystrokePattern</span></code>.</li>
 </ul>
 </td>
 </tr>

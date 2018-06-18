@@ -4,19 +4,37 @@ performance. Its availability is subject to some
 configuration settings. For details, see
 https://gitlab.com/gnachman/iterm2/wikis/Metal-Renderer.
 
-Changes from 3.2.0beta2 to 3.2.0beta3:
+Changes from 3.2.0beta3 to 3.2.0beta4:
 
-- Disable Metal renderer on OS X 10.11. It crashes a lot.
-  Seems like something outside my control is stepping on
-  memory.
-- Fix a bug where enormous windows could cause a crash.
-- Don't prefill user name and email for EU users.
-- Don't create ~/Library/ApplicationSupport symlink.
-- Show a directory listing when asking you to clean up the
-  legacy iTerm application support folder (since hidden
-  files are hard to see in Finder).
-- Fix a bug where "Send text with vim shortcuts" didn't work
-  with C-Z.
+Bug fixes:
+- Fix a bug where the tab bar was not visible in full screen.
+- Fix numerous crashes.
+- Do not report mouse clicks in a window that doesn't have
+  keyboard focus.
+- Fix a bug where opening a popup window (like autocomplete)
+  sometimes caused a hotkey window to close.
+- Fix a bug where the badge got squished when scrolling up
+  and using the Metal renderer.
+- Fix a bug where copying a session's setting to a profile
+  showed the wrong name in the confirmation alert.
+- Fix a bug where the app would use 100% CPU while idle.
+
+Enhacements:
+- Improvements to adaptive frame rate. It is now off by
+  default in interactive applications. This is controlled by
+  a new advanced setting.
+- Add an advanced setting to adjust how much bolder a font
+  must be to be considered the bold version of a regular
+  font.
+- Enable Metal renderer when top and bottom margins are less
+  than two point when in full screen mode.
+- Allow side margins of 0 points (previously they had a
+  minimum of one point).
+- Add an option to share the tip of the day.
+- Enable adaptive framerate for Metal when not in an
+  interactive app to improve overall throughput. The frame
+  rate will drop to 30fps when receiving more than 1k/sec of
+  data.
 
 Release notes for 3.2:
 

@@ -1,3 +1,806 @@
+commit c1f5a8bd585a91667b4400a473c68146c78f574b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 23:42:20 2018 -0700
+
+    Fix bug where prefs didn't resize properly on Profiles tab. Increase max height so general prefs don't scroll
+
+commit 032d7efec7acccfd2401ba7c1642ff030d6f251a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 23:18:48 2018 -0700
+
+    Bump the minimum python environment verison to 18
+
+commit f0dd40270d72eb9523200381ff1bef83a86827ee
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 23:10:23 2018 -0700
+
+    Bump python library version
+
+commit 4c37476f84ad9048d6bcdc6a7bcfed99bbc6c51b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 23:09:54 2018 -0700
+
+    [api] Fix a bug with subscriptions to all sessions where it didn't take effect for new sessions.
+
+commit a97e50c67ba815d074540cdbcb9a743ce1324ce2
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 23:02:14 2018 -0700
+
+    [python] Add example for function key to select tab
+
+commit 6383befbf4f69ec60f727b5181becf911095f1be
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 22:52:22 2018 -0700
+
+    [api, python] When registering for keystroke notifications API clients can specify keystroke patterns for the app to ignore. Issue 6780
+    
+    Note these are only ignored as input to a session, not (e.g.) main menu shortcuts.
+
+commit fcd450450399c61ed0293ea09803cbabab1e4f3c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 12:31:24 2018 -0700
+
+    Implement variable scopes. Change all reading and writing to go through them.
+    
+    Record all seen variables for autocomplete.
+    
+    Record seen variable names per context so suggestions can be more relevant.
+    
+    Get rid of all the legacy dictionary code.
+    
+    Pass around sets of paths instead of arrays.
+    
+    Fix a bug where suggestions had two colons after the argument name.
+
+commit d7d9392cf697717eaaafcc569c32ae501b5c3aa4
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 09:04:49 2018 -0700
+
+    Fix signing
+
+commit efeee061f1f03a9905fca058996e38fe01fe6490
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 00:03:21 2018 -0700
+
+    [python] remove duplicate subtitle
+
+commit 0919e23b602a585d151f0c867db3d09d808cb858
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 00:02:15 2018 -0700
+
+    [python] fix bug in example
+
+commit f795d1f348959da409822e24e0d6c9333435ee98
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 00:01:05 2018 -0700
+
+    [python]Fix typo
+
+commit 1c176b9fbe94703b205cc43d237b75b0af521395
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 00:00:45 2018 -0700
+
+    [python] bump version
+
+commit 48ecd5aad06801bb51447adb943a700de4ebe2b6
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 15 23:58:20 2018 -0700
+
+    [python] Link to examples in python api docs
+
+commit 742bc113599ba8e51e490db22bc456c8907c85e8
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 15 23:57:49 2018 -0700
+
+    [python] Add George's Title Algorithm as example script
+
+commit 74a9f8b4dc4b4533d2d7800709a768883c01a445
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 15 23:28:52 2018 -0700
+
+    Fix a bug where iTermAPIDidRegisterSessionTitleFunctionNotification was not posted. When a session title needs an unregistered function show an ellipsis instead of a ladybug.
+
+commit 5e703f914a14d158faf24759c3c9db009a3f0eea
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 15 23:21:39 2018 -0700
+
+    Add a restart button to the script console. Do not post a notification on manual termination of a script
+
+commit 77a8b78e7376e8a5b0a903690cb65fa382472921
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 15 23:07:45 2018 -0700
+
+    Change RPC registry to hold tuples, not dictionaries that always have a single value. Rename connection to connectionKey and specify that it's a string. Remove some dead code that sent an RPC synchronously on the main thread. Try hard to direct scripting errors to the proper history entry.
+
+commit a551819bffa6daf85d2f87546b0c64e614a41b8b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 15 23:06:01 2018 -0700
+
+    [python] catch errors in json decoding RPC arguments. Control characters are not allowed but cna sneak in.
+
+commit d9f2d7869db3b6c04d14df8db95ff6b7d9bd5bb4
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 15 22:50:06 2018 -0700
+
+    Improve NSMutableDictionary's removeObjectsPassingTest
+
+commit d93e53f70d71fd595b50e5492795ffe0e2725c3d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 15 20:20:42 2018 -0700
+
+    Set title settings popup button's title properly when a custom function is in use
+
+commit a8ad4335787d5ffff5adea884362f5bde2dd3fff
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 15 20:14:25 2018 -0700
+
+    [session titles] Fixes for tmux names. Use utf8 encoding for Python IO so you can print nonascii in your scripts. When a custom title fails show a bug in the title. Fix a bug where tab titles didn't update when the active session changes
+
+commit b2b5fc434064553dbb5fe69f8184f98776b07494
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 15 18:50:47 2018 -0700
+
+    Update session name controller immediately in setNeedsUpdate so its cached value isn't left as nil. Fixes a bug where session names didn't change when the title components changed.
+
+commit 675b3c3896a754ee423306143abaa0cfe6cd65b6
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 15 18:50:08 2018 -0700
+
+    Update badge when variables change.
+
+commit fd7df125f8855b542569c4e8ac5f4f60e410254b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 21:50:36 2018 -0700
+
+    Add adaptive framerate for metal. It defaults to 30 fps via a separate setting than nonmetal adaptive framerate. Mitigates throughput issues in issue 6767.
+
+commit 21ceb05a0694cc1230dd6f28cc99159c14d1140d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 20:56:31 2018 -0700
+
+    Typecheck tags in dynamic profiles. Issue 6776
+
+commit 11f037c42c5296a04cacad7ac9a53086d06c42ee
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 19:56:57 2018 -0700
+
+    Fix a bug when copying a divorced session's profile to shared profiles in Edit Session would show the wrong name in the alert. Do error checking before asking the user.
+
+commit 8285a3e320893c181db1302e9d1d661209ed407b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 18:02:07 2018 -0700
+
+    Fix a bug where the badge is squished when you've scrolled up and it should be partially off the bottom of the screen
+
+commit a3c284d196c039ac6fe53a506620435348a6b5d3
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 21:44:50 2018 -0700
+
+    Handle ENOENT specially when forking fails, as that's probably the most common failure mode. Note this code path is not taken when session restoration is enabled.
+
+commit a2207e1cfc273e90a32f4402c08edc7a70ec1698
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 17:35:45 2018 -0700
+
+    Allow 0 side margins. Fix drawing of marks for this case. Issue 6769
+
+commit 2b41cf990bde3ec74f87fe9d74bed9d501cd91a5
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 21:41:56 2018 -0700
+
+    Fix a race condition where you try to draw a metal frame synchronously, it fails, you switch tabs or disable metal for some other reason, and it never quits trying even though it is doomed to failure. Issue 6781
+
+commit c475c0cfed391c4b5e53fbf720138a1aef2bef97
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 21:16:08 2018 -0700
+
+    Make PTYSplitView's delegate weak to try to fix 6784
+
+commit aecb70f49c3dd8bb58beda1ae13c743d9b255833
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 20:06:04 2018 -0700
+
+    Make badges use swifty strings. Add support for backslash escape to swifty strings. Fix bugs where the escaped state was never exited in the swifty string parser. Make the function call text field delegate pass through controlTextDidChange:.
+
+commit a890b95ef851570f84611896bf4deb106f94e1ec
+Merge: 8af544b2 70ac7414
+Author: George Nachman <gnachman+github@gmail.com>
+Date:   Thu Jun 14 21:13:40 2018 -0700
+
+    Merge pull request #362 from Fishbowler/master
+    
+    Fix typo in Advanced Settings
+
+commit 70ac74145260f575523c2a35626cb0f9885972c9
+Author: Dan Caseley <dan@caseley.me.uk>
+Date:   Thu Jun 14 13:44:21 2018 +0100
+
+    Update iTermAdvancedSettingsModel.m
+    
+    Fix typo
+
+commit 8af544b200d35a720cc6b24fb99bd70e58515d2d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 00:15:05 2018 -0700
+
+    [api] Improve error reporting
+
+commit 5a711e4c1ae4df9007a97484f15a0fb4b0b2a304
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 00:06:53 2018 -0700
+
+    [api] Log stack traces for failed RPCs
+
+commit 2e61844d2b8812b741ce2c5bac7b926652cc3c6f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 00:06:37 2018 -0700
+
+    [api, python] Sort argument names when sending RPCS in app and looking up RPC handlers in python
+
+commit 5c4676493f83486a3d6cbb68a15ef4b56f71699a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 14 00:05:40 2018 -0700
+
+    [python] Document hooks
+
+commit 94239f3795bc41cb9ef367c72abb10356ca929be
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 13 20:59:34 2018 -0700
+
+    Add iTermSwiftyString
+    
+    This commit adds machinery for evaluating swifty strings (i.e., string
+    interpolations with a Swift-inspired syntax). The ultimate goal was to make it
+    easy to define a string, as for tab titles, that references function calls and
+    variables and updates itself when any of the variables' values changes.
+    
+    This requires properly tokenizing swifty strings, evaluating their values,
+    calling functions synchronously (when possible, for builtins; when not, note
+    the function call and treat it as returning an empty string) and
+    asynchronously with a timeout.
+    
+    Swifty strings track their dependencies: variables and not-yet-registered
+    functions.
+    
+    The function call suggester was improved to have a swifty string suggester that
+    handles truncated swifty strings.
+
+commit 497bc0cef7977d20d5ae8ef30ed46b9edfe09383
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 12 20:47:34 2018 -0700
+
+    Add user and host as options to session title.
+
+commit 85778ca9d7cad30c6842c69929830ac3fb29598b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 12 13:39:23 2018 -0700
+
+    Add share option to tip of the day
+
+commit 116aea8c582c86b78456a6276c57aefaa5bd7db8
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 12 00:13:45 2018 -0700
+
+    Add an experimental feature to defer calling currentDrawable until the last second. Issue 6767
+
+commit d17202b8695258954e2699e2a9c8f16ee1416c6f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 11 22:16:03 2018 -0700
+
+    Allow metal when top/bottom margin is less than 2 when fullscreen.
+
+commit ba068258c52e623f1c563deda99cf6c0109d75ab
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 11 17:44:24 2018 -0700
+
+    initial add of move_to_user_namesapce.c from https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard/blob/master/move_to_user_namespace.c BSD 2-clause
+
+commit eb3b9166d0f3025249bd91802e1249c15bf751f7
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 11 17:24:51 2018 -0700
+
+    Log problems invoking session title provider scripts
+
+commit 93f690f732c418f4bbbf36994e524838e3b47c35
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 11 10:32:21 2018 -0700
+
+    Add an advanced pref to tweak bold font vs regular font threshold
+
+commit 04cf784dd1f8ee5953e624578ca44bac8a4a3b14
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 11 00:00:29 2018 -0700
+
+    Add support for yaml parser style column and line numbers. Issue 6765
+
+commit bece9c30376a5c7517ac4217d26b0af3c600e58f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 23:49:48 2018 -0700
+
+    Refactor semantic history to make the process of getting line number and column number happen earlier when more info will be available for upcoming fancy techniques
+
+commit dd16af7fba51091215b26a5566a249d8191f2c53
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 22:14:24 2018 -0700
+
+    Fix some broken project file stuff
+
+commit e6fde325aea1ad3685fe5fc1bed9ef36cca033c4
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 22:12:39 2018 -0700
+
+    Keep tab's override title as a variable but don't make it a child of session. I think a better design will be for a list of evaluation scopes to be used so there don't need to be links from session to tab, etc. Doing so prevents cycles when dumping the legacy dictionary of variables.
+
+commit bf9d62a0f01b0345ec3a32244107517bfde493fb
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 13:56:55 2018 -0700
+
+    Add tab variables to session scope
+
+commit 29091a585068c769271c62503f63654c6799eeb7
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 13:50:24 2018 -0700
+
+    Change double click on tab to show an alert that lets you set a title override.
+
+commit a2f046f55b305149fff553e04712792a5eb982a8
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 13:48:46 2018 -0700
+
+    Fix a bug where the selected custom session title would not be added to the menu if it wasn't registered
+
+commit 3b1ee7cd5cb35990e52af457813140a637015a46
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 11:53:54 2018 -0700
+
+    Remove resolved todo
+
+commit f7c27e1d8202e9eb6a12a435c6e387b7f31d523a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 11:51:43 2018 -0700
+
+    Fix presentation name variable
+
+commit 9c661dd3b1542393f7a57f69337450dbf4431642
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 11:24:37 2018 -0700
+
+    Remove resolved TODO
+
+commit 94e29c6b91cc023e10bd86120b9369cc424edb63
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 11:24:30 2018 -0700
+
+    Remove resolved TODO
+
+commit 9cffa988f20d30ec7c4ddbfa3cf5e3e156782a2b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 11:23:58 2018 -0700
+
+    Tolerate calling the default session title callback when it's set to custom because it can happen in synthesized sessions (like DVR mode)
+
+commit a54e80074b54ae361f1b81a1f818e110e7280413
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 11:19:50 2018 -0700
+
+    Add some polish to custom title name stuff.
+    
+    Remove titleFormat from PTYSession's initializer.
+    
+    Add a delegate method to provide the invocation to the session name controller.
+    
+    Clean up prefs VC for session titles to udpate itself properly and show but
+    disable functions that aren't available.
+    
+    Store custom func in user defaults as a tuple of (invocation, display name)
+    
+    Make it easy to convert a tuple to/from a plist value.
+    
+    Hack the API helper to convert NSNull in the root of a json dict to nil. There
+    can still be NSNulls that aren't at the root, but that's a less pathological
+    case.
+    
+    Allow synchronous evaluation of an RPC to call source on each of its
+    dependencies.
+    
+    Clean up the names of things in the session name controller.
+
+commit 96b98f34a2dfaecd867a8672525a59a9d8e5d61c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 11:06:26 2018 -0700
+
+    Add method to get unchecked value from array. Out of bounds indexes return nil.
+
+commit 9c34e7933f3930380d1122344d6b02622d735fad
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 11:05:59 2018 -0700
+
+    Fix signing BS
+
+commit 7ca9241bd55a7258933f8bab557714e2288ba4a2
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 23:58:33 2018 -0700
+
+    Add support for custom session title functions
+
+commit c1f8f40c73dedbf3ec59213f2f8ba28b7f9d3ffa
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 22:01:22 2018 -0700
+
+    Remove unnceessary todo. I can improve the suggester when there's a need to such as per tab titles
+
+commit 8fb8908375ddf0d06d286788a63b198472d435fc
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 21:56:03 2018 -0700
+
+    Remove todo. I think I'm happy with the migration story. If someone complains I can look into polishing it some more.
+
+commit 69717bc2c146de4d8a9933e89ac1b270080c0b02
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 21:55:25 2018 -0700
+
+    Handle migration to new session title settings
+
+commit 8ce6dfead9ca741e8612c1c1f435f4bbf861967a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 19:30:11 2018 -0700
+
+    Remove todo. I don't want to change the suggester to accept paths until there are functions that people should call that take them. ATM there's only one and it's private
+
+commit 39c4604286386f623b196fa564b0d54fef5d77ee
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 19:20:58 2018 -0700
+
+    Remove session.backingProfileName which was not used or tested
+
+commit 0decc6ff1722085142e8ed55ba2a0d1beba8daf4
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 19:19:50 2018 -0700
+
+    Implement state restoration for session name. It seems to work well enough for legacy arrangements which have enough info in the profile to recover a proper name; the only exception is migration of the title format which is yet to be done.
+
+commit 82fb64d3edc71cf55fcb02bbba29fce680f27d89
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 19:13:45 2018 -0700
+
+    Set unused attribute on deprecated arrangement keys and add a todo to use them for migration, at which time the unused attribute may be removed
+
+commit 8b52e00102c7180704e0099d0c901542d9ac77a8
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 19:09:20 2018 -0700
+
+    Remove unused parameter from setupSession, remove obsolete todos
+
+commit 1359978dea401ed684585b200e530c5d69be58ec
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 19:07:58 2018 -0700
+
+    Tested that willRemoveSubview hack in PTYSplitView to update variables works
+
+commit f2bdb2308bf8367b78bb29af4005bdd7bdc7f888
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 19:06:41 2018 -0700
+
+    Use functions, not swifty strings, for the title format
+
+commit 52599a7e814f155b30127385f92b948cd186bfe1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 9 19:03:40 2018 -0700
+
+    Get session titles working and semi-tested.
+    
+    Summary:
+    Update prefs to allow selecting one of three kinds of
+    session names.
+    
+    Add support for builtin functions.
+    
+    Remove custom title support. It needs to be redone.
+    
+    Replace bogus setValue:forKey: with
+    setValue:forVariableNamed:
+    
+    Implement support for legacy title formats.
+    
+    Redefine session.name as the computed name. autoName is the
+    most recently set session name (via manual, escape, or
+    trigger), or if never set, the profile name.
+    
+    Fix bug in iTermFocusReportingTextField assuming its
+    delegate implements its protocol. TriggerController blindly
+    sets itself as the delegate and it does not implement the
+    protocol.
+    
+    Accept paths for function names so there can be a private
+    namespace.
+    
+    Hack script function calls to be synchronous. This works
+    fine for carefully written builtin functions. Others
+    evaluate to empty string.
+
+commit 05e7dfcbbf5c1dd843a39630329d89700f507042
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 8 13:22:34 2018 -0700
+
+    Clean up titleFormatForProfile to use constants
+
+commit d680a13281b4c51532f25a92c0d1ac0e1f1356e2
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 7 21:50:23 2018 -0700
+
+    Beat variable-based session titles into sort of working. * DO NOT MERGE WITHOUT EXTENSIVE TESTING *
+    
+    Fix prefs.xib linkage for custom title
+    Remove name from PTYSession's initializer
+    SImplify the session name controller to just evaluate the title format against the variables and store minimal state.
+    Finally do away with updateVarabiels completely.
+    Test things out and get them working at a first glance. Still needs a lot more testing.
+    Deprecate SESSION_ARRANGEMENT_BOOKMARK_NAME. I'm not sure what it was for and I need to investigate.
+    Add a bunch of new variables that are needed for titles.
+
+commit 20ea6067ae292bf6894ad72ac0e2a55e51bdff4c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 7 20:00:04 2018 -0700
+
+    Fix a few little bugs
+
+commit b282dcd4720e77861c9959e4255fef9007b71b92
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 7 19:09:00 2018 -0700
+
+    Move variables into a treelike structure. Remove all calls to updateVariables and instead update them from delegate callbacks.
+
+commit 1757ca282b99b1e9ea9193061d2b0af76ea135f3
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 7 00:09:12 2018 -0700
+
+    Remove a bunch of old and broken title code. Actually evaluate expressions in the title format. Fix the function call code to accept any expression, not just function calls. This is not very tested and it kinda doesn't work so well because titles don't get reevaluated when a variable changes. I also have a theory that it's going to evaluate functions way too many times. It should be smart about managing dependencies (i.e., its variable inputs) and then rate limit function calls when they don't change.
+
+commit 180374aa8090a8449df737eb0e641078b0fc0b08
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 6 23:07:08 2018 -0700
+
+    Initial commit of session name controller. Still a lot to do:
+    
+    Actually use the title format
+    Provide some kind of legacy-ish title
+    Run unit tests
+    Add migration path for current users
+    save/restore of name state
+    Call updateVariables when variable changes
+    Make sure variables exist for everything relevant
+    Try to prune down the size of the name controller's interface
+
+commit e96bc7d01e131a6566595697b7e0deeb463cfb61
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 6 22:16:50 2018 -0700
+
+    Add a proper completion block for when restoring a saved arrangement.
+
+commit b3db2fb1e217ccf029f2b5c8e5eb7927b2ba40a8
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 6 21:32:44 2018 -0700
+
+    Add missing completion blocks when restoring a saved arrangement
+
+commit 9ecd039f645b2e6e6b9949b26ae0318fb36327d8
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 22:08:18 2018 -0700
+
+    Revert "Move a bunch of session title logic into its own class. It still doesn't make any sense but at least the toxic mess is more contained."
+    
+    This reverts commit e5cc090410821356b9be134fd48c509e6b3e908e.
+
+commit f1f7e33fae1b34f6ebf0f7e148f45155dd904774
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 22:00:01 2018 -0700
+
+    Don't roll out hotkey window when it resigns key if it's in the process of opening a popup window. Issue 6763
+
+commit 082ca2a37a6a03d71ee0ba16eac74533923823ff
+Merge: 8b9f979e 668a8986
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 22:01:14 2018 -0700
+
+    Merge branch 'master' of https://github.com/gnachman/iTerm2
+
+commit 8b9f979ec0b20dafbcf734e7423129526f2852a6
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 10 14:16:29 2018 -0700
+
+    Make character width fraction offset an advanced pref for issue 6760
+
+commit 668a8986b2fd1ed43240ad56044e69443ed740e7
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 8 23:29:56 2018 -0700
+
+    Add an advanced pref to disable adaptive framerate in alternate screen mode. On by default in beta only. Issue 6758
+    
+    Conflicts:
+            sources/iTermAdvancedSettingsModel.h
+
+commit f7d9e2560a405d02c9941af6c4b82e15e0ad28be
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 8 23:19:41 2018 -0700
+
+    Left clicks while not first responder do not get xterm mouse reporting. Makes it easier to change focus. Issue 6753
+
+commit 5a1e9a38c0c1a97380048770f47550df776ab14a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 8 22:54:59 2018 -0700
+
+    Fix bug where disclosable view's textview can be very narrow
+
+commit d011349a6a56697463d207dac7698dcf5d925335
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 8 22:43:35 2018 -0700
+
+    Remove text prefs notification observer when the window closes to avoid a crash when changing unicode version
+
+commit 77007d2af131ac623cc945c28ef9ca1ed0a4ac45
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 8 22:32:11 2018 -0700
+
+    Try to prevent a crash when selecting a row from an empty profile list view. Not sure how that ever happened.
+
+commit 5a53f0cb95c8c52a9ca4c3eea7ef7b34f458aee6
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 8 22:29:33 2018 -0700
+
+    Synchronize crashlog messages to try to get more useful info for sanity check failures
+
+commit 984d05f3f9208cc0d5a2cd18276679a24641bbf6
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 8 22:22:48 2018 -0700
+
+    Prevent a crash where the file browser somehow had a nil directory
+
+commit 643f1e8411668e8de40e40c462a19f6f2ffb95a5
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 8 22:20:54 2018 -0700
+
+    Prevent a crash new to 3.2.0beta3 where a tab has a nil represented object
+
+commit e5cc090410821356b9be134fd48c509e6b3e908e
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed May 16 23:05:20 2018 -0700
+
+    Move a bunch of session title logic into its own class. It still doesn't make any sense but at least the toxic mess is more contained.
+    
+    - Move title stack code into session name controller
+    - More refactoring. Rename profileName to firstSessionName. Move defaultName to the name controller and rename it to originalName. Add comments. This really needs to be burned to the ground and rewritten.
+    - Fix bug where setting the original name reset the window title
+    
+    Conflicts:
+            sources/iTermSessionNameController.m
+    
+    Add support for radio buttons that aren't matrixes in prefs. Convert the prompt before closing pref to a nonmatrix so it takes less space.
+    
+    Add a halfbaked title components UI setting that isn't hooked up to anything
+    
+    Add some infrastructure for custom title format strings.
+    
+    Conflicts:
+            iTerm2.xcodeproj/project.pbxproj
+            sources/PTYSession.m
+            sources/PseudoTerminal.m
+
+commit 6ad059938c61d7b2f5243c7820087078201e7510
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 4 23:45:41 2018 -0700
+
+    [api] Add the ability to evaluate expressions as well as functions. Add off-by-default experimental feature to allow swifty expressions in profile names. The suggester was updated to suggest expressions but that's not well tested.
+
+commit dcf1ac09ee624d413969b12c4e9ec782e7466191
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 4 21:47:47 2018 -0700
+
+    [api] Add a method to async notify when an RPC is registered.
+
+commit 6d470a46954ac909332d865689d8b85a353daf03
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 4 21:08:03 2018 -0700
+
+    Add support for parsing 'Swifty' strings. That is, string sthat have embedded expressions using a kind of Swift like syntax. This will be used later for evaluating function calls in various places such as session name.
+
+commit c81b2c342e92352bf20a0fa8bf1253c7a41cfca3
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 23:24:13 2018 -0700
+
+    Disable metal when flashing tabbar in fullscreen since it can't composite over the text
+
+commit 28cd7a6b330384bd43f0f53c97c3f006e177aed1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 22:58:11 2018 -0700
+
+    Make async nature of eval explicit in evaluating substitutions for startProgram.
+
+commit 55e2179772562c5f76964a741368a2d9859871ad
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 22:36:02 2018 -0700
+
+    Use a proper completion block for startProgram: in sessionFromArrangement.
+    
+    Start wiring up completion blocks to the session factory
+
+commit 1d147146bf5111c2440773a02d0ab589ca18e66a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 22:20:14 2018 -0700
+
+    Reorder everything in PTYTask so it is more organized
+
+commit 5c2b99908f041df9e2a7497be3d533b3f45cf5a9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 22:05:45 2018 -0700
+
+    Fix use of fprintf between after fork
+
+commit 9b21c6c7304a0945230d9703e14d81f1a7ef2b0c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 21:45:06 2018 -0700
+
+    More refactoring of launchWithPath
+
+commit 2f01a30e660bd4f887a047ffcf7449370bdff066
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 21:34:23 2018 -0700
+
+    Refactor PTYTask's fork and exec and handshake code
+
+commit 69bc02d5e591ebcf68eff2419c534a28f9b763cd
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 20:50:56 2018 -0700
+
+    Refactor startProgram to be reasonable
+
+commit 22bf2840874ee9d83b8b90438f7492392adf5b68
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 20:41:12 2018 -0700
+
+    Remove substitutionsForCommand from interface
+
+commit 099d101fcab9eeb3d3e56465d8bda00ed86eb800
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 15:45:45 2018 -0700
+
+    Fix parameter panel to show the name properly
+
+commit 1c4008666d8e8a339aa814f56f09d26386a98191
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 15:43:10 2018 -0700
+
+    Make createTabWithProfile use the session factory instead of creating a session and massaging the profile itself
+
+commit 934f772a1b9e3e244db7d7c5f6959d7ee6028989
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 15:33:40 2018 -0700
+
+    Get rid of PTYSession's runCommandWithOldCWD. It had a bunch of near duplicate code.
+
+commit 45edaeb3dc0ef4eaca7db2c70715b279c146d928
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 15:33:09 2018 -0700
+
+    Modernize ITAddressBookMgr use of dicts
+
+commit 873fecc48df5ca583dfeb26d2b1810c4532b8a1e
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 15:02:15 2018 -0700
+
+    Reduce duplicate code in session factory
+
+commit 5b91a6bc9b5cebc3fae5862596b1f4e4755185da
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 14:43:19 2018 -0700
+
+    Minor refactor of session factory
+
+commit f0245740b286f23a95b6bc88a63ae335c451ff3d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 3 14:38:59 2018 -0700
+
+    Move session creation code out of PseudoTerminal.m
+
 commit 8b5f8f41134cb27281042b289d88548463a04926
 Author: George Nachman <gnachman@gmail.com>
 Date:   Sat Jun 2 15:47:21 2018 -0700
