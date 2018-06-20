@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Targeted Input &#8212; iTerm2 Python API 0.26 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  </head><body>
+  <header >
+    <div class="row">
+      <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="text-center"><a href="/index.html"><img src="https://iterm2.com/img/logo2x.jpg" width=800 height=312></a></div>
+        <div class="sticky contain-to-grid">
+          <nav class="top-bar" data-topbar>
+            <ul class="title-area">
+              <li class="name">
+
+              </li>
+              <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+              <li class="small-screen-donate">
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+            </ul>
+
+            <section class="top-bar-section">
+              <!-- Right Nav Section -->
+              <ul class="right"> <li>
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li><a href="/index.html">Home</a></li>
+            <li ><a href="/news.html">News</a></li>
+            <li ><a href="/features.html">Features</a></li>
+            <li ><a href="/faq.html">FAQ</a></li>
+            <li class="active"><a href="/documentation.html">Documentation</a></li>
+            <li ><a href="/downloads.html">Downloads</a></li>
+          </ul>
+        </section>
+      </nav>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+    <div class="document">
+<div class="row">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
+
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">Introduction</div>
+
+	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
+	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+
+	      <div class="toc_subhead">User Interface</div>
+
+	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
+	      <li><a href="documentation-preferences.html">Preferences</a></li>
+	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
+	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
+	      <li><a href="documentation-fonts.html">Fonts</a></li>
+	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
+
+	      <div class="toc_subhead">Features</div>
+
+	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
+	      <li><a href="documentation-badges.html">Badges</a></li>
+	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
+	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
+	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
+	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
+	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
+	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
+	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
+	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
+	      <li><a href="documentation-triggers.html">Triggers</a></li>
+	      <li><a href="documentation-utilities.html">Utilities</a></li>
+
+	      <div class="toc_subhead">Advanced</div>
+
+	      <li><a href="documentation-scripting.html">Scripting</a></li>
+	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
+	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
+	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
+
+      <div class="documentwrapper">
+	<div class="bodywrapper">
+	  <div class="body" role="main">
+	    
+  <div class="section" id="targeted-input">
+<h1>Targeted Input<a class="headerlink" href="#targeted-input" title="Permalink to this headline">¶</a></h1>
+<p>iTerm2 has a “broadcast input” feature that lets you send keyboard input to
+multiple sessions. The purpose of this script is to send a different string to
+each session to which input is broadcast.</p>
+<p>This script demonstrates a few things:</p>
+<ul class="simple">
+<li>Running a web server in the script process</li>
+<li>Registering a custom toolbelt tool</li>
+<li>Using broadcast domains</li>
+<li>Scripts with external dependenices</li>
+</ul>
+<p>The web server provides the user interface that allows you to enter the text to
+send to each session. The web page is rendered in a custom toolbelt tool the
+user can choose to enable.</p>
+<p><em>Broadcast domains</em> are the abstraction that describes how keyboard input is
+broadcast. Any keypress in a session belonging to a particular broadcast domain
+goes to all sessions in that domain. A broadcast domain is a collection of
+sessions, and all broadcast domains are disjoint.</p>
+<p>This script depends on the aiohttp package. To install it, you must create this
+script as a “full environment” script. When you select the <strong>New Python Script</strong>
+menu item, choose <strong>Full Environment</strong> at the first prompt. After it is
+created, run the following command (supposing you named it <strong>TargetedInput</strong>;
+if it has a different name, modify the path below appropriately):</p>
+<p>Then, replace <cite>main.py</cite> with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># NOTE: This script depends on aiohttp.</span>
+<span class="c1"># To create this script, use &quot;Full Environment&quot;. Then run</span>
+<span class="c1"># ~/Library/ApplicationSupport/iTerm2/Scripts/SCRIPT_NAME_HERE/iterm2env/versions/*/bin/pip3 install aiohttp</span>
+<span class="kn">import</span> <span class="nn">aiohttp</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">send_html</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">binary</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">StreamResponse</span><span class="p">()</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">content_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="s1">&#39;text/html&#39;</span>
+        <span class="n">await</span> <span class="n">resp</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="n">await</span> <span class="n">resp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resp</span>
+
+    <span class="k">def</span> <span class="nf">html_for_domain</span><span class="p">(</span><span class="n">domain</span><span class="p">):</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="s1">&#39;&lt;hr/&gt;&lt;form action=&quot;/send&quot; method=&quot;POST&quot;&gt;&#39;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">domain</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
+            <span class="n">txt</span> <span class="o">+=</span> <span class="s1">&#39;{}: &lt;input name=&quot;{}&quot; type=&quot;text&quot; value=&quot;Value to send to session {}&quot; /&gt;&lt;br/&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">txt</span> <span class="o">+=</span> <span class="s1">&#39;&lt;input type=&quot;Submit&quot;&gt;&lt;/form&gt;&#39;</span>
+        <span class="k">return</span> <span class="n">txt</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">main_page</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;/&quot;&gt;Refresh&lt;/a&gt;&lt;br/&gt;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">app</span><span class="o">.</span><span class="n">broadcast_domains</span><span class="p">:</span>
+            <span class="n">txt</span> <span class="o">+=</span> <span class="s2">&quot;Turn on broadcast input and click refresh&quot;</span>
+        <span class="k">for</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">broadcast_domains</span><span class="p">:</span>
+            <span class="n">txt</span> <span class="o">+=</span> <span class="n">html_for_domain</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">await</span> <span class="n">send_html</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">await</span> <span class="n">request</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">session_id</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="n">session_id</span><span class="p">]</span>
+            <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">session</span><span class="p">:</span>
+                <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_send_text</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">suppress_broadcast</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">await</span> <span class="n">main_page</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+        <span class="n">webapp</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
+        <span class="n">webapp</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">main_page</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">webapp</span>
+
+    <span class="c1"># Set up a web server on port 9999. The web pages give the script a user interface.</span>
+    <span class="n">webapp</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
+    <span class="n">webapp</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">main_page</span><span class="p">)</span>
+    <span class="n">webapp</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">&#39;/send&#39;</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">AppRunner</span><span class="p">(</span><span class="n">webapp</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">runner</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+    <span class="n">site</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">TCPSite</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">site</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="c1"># Register a custom toolbelt tool that shows the web pages served by the server in this script.</span>
+    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">tool</span><span class="o">.</span><span class="n">async_register_web_view_tool</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Targeted Input&quot;</span><span class="p">,</span> <span class="s2">&quot;com.iterm2.example.targeted-input&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="s2">&quot;http://localhost:9999/&quot;</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Run the script and then open the “Targeted Input” tool. It will appear in the
+<strong>Toolbelt</strong> menu. Turn on broadcast input on a few sessions and hit the
+<em>Refresh</em> link. Then you can enter a value for each session and press <em>Submit</em>
+to see it in action.</p>
+</div>
+
+
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://iterm2.com/js/scripts.js"></script>                
+<script type="text/javascript">
+  function showId(id) {
+    document.getElementById("changelist" + id).style.display = 'block';
+    document.getElementById("show" + id).style.display = 'none';
+    document.getElementById("hide" + id).style.display = 'inline';
+  }
+
+  function hideId(id) {
+    document.getElementById("changelist" + id).style.display = 'none';
+    document.getElementById("show" + id).style.display = 'inline';
+    document.getElementById("hide" + id).style.display = 'none';
+  }
+  $(document).foundation();
+</script>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, George Nachman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/examples/targeted_input.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

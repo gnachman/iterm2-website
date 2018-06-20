@@ -144,7 +144,7 @@ its docstring for more info.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An iterm2.api_pb2.KeystrokeNotification.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of iterm2.api_pb2.KeystrokeNotification objects.</td>
 </tr>
 </tbody>
 </table>
@@ -291,7 +291,7 @@ brought to the front and given keyboard focus.</li>
 <dt id="iterm2.Session.async_get_variable">
 <code class="descname">async_get_variable</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_get_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches a session variable.</p>
-<p>See Badges documentation for more information on user-defined variables.</p>
+<p>See Badges documentation for more information on variables.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -339,13 +339,17 @@ brought to the front and given keyboard focus.</li>
 
 <dl class="method">
 <dt id="iterm2.Session.async_send_text">
-<code class="descname">async_send_text</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_send_text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_send_text</code><span class="sig-paren">(</span><em>text</em>, <em>suppress_broadcast=False</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_send_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send text as though the user had typed it.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>text</strong> – The text to send.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>text</strong> – The text to send.</li>
+<li><strong>suppress_broadcast</strong> – If True, input goes only to the specified session even if broadcasting is on.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -359,7 +363,7 @@ brought to the front and given keyboard focus.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>buried</strong> – If <cite>True</cite>, bury the session. If <a href="#id1"><span class="problematic" id="id2">`</span></a>False, disinter it.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>buried</strong> – If <cite>True</cite>, bury the session. If <cite>False</cite>, disinter it.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
 </tr>
@@ -418,14 +422,14 @@ brought to the front and given keyboard focus.</li>
 <li><strong>vertical</strong> – Bool. If true, the divider is vertical, else horizontal.</li>
 <li><strong>before</strong> – Bool, whether the new session should be left/above the existing one.</li>
 <li><strong>profile</strong> – The profile name to use. None for the default profile.</li>
-<li><strong>profile_customizations</strong> – LocalWriteOnlyProfile giving changes to make in profile.</li>
+<li><strong>profile_customizations</strong> – A <a class="reference internal" href="profile.html#iterm2.LocalWriteOnlyProfile" title="iterm2.LocalWriteOnlyProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalWriteOnlyProfile</span></code></a> giving changes to make in profile.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New iterm.session.Session.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New <a class="reference internal" href="#iterm2.Session" title="iterm2.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last">SplitPaneException if something goes wrong.</p>
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">SplitPaneException</span></code> if something goes wrong.</p>
 </td>
 </tr>
 </tbody>
@@ -454,7 +458,7 @@ brought to the front and given keyboard focus.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a keystroke reader, a <a class="reference internal" href="#iterm2.Session.KeystrokeReader" title="iterm2.Session.KeystrokeReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session.KeystrokeReader</span></code></a>.</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <a class="reference internal" href="#iterm2.Session.KeystrokeReader" title="iterm2.Session.KeystrokeReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session.KeystrokeReader</span></code></a>.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"><dl class="first last docutils">
@@ -536,6 +540,12 @@ scrollback history).</p>
 <dt id="iterm2.session.InvalidSessionId">
 <em class="property">class </em><code class="descname">InvalidSessionId</code><a class="headerlink" href="#iterm2.session.InvalidSessionId" title="Permalink to this definition">¶</a></dt>
 <dd><p>The specified session ID is not allowed in this method.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.session.SplitPaneException">
+<em class="property">class </em><code class="descname">SplitPaneException</code><a class="headerlink" href="#iterm2.session.SplitPaneException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Something went wrong when trying to split a pane.</p>
 </dd></dl>
 
 <dl class="class">

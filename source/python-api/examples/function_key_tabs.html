@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Function Key Tabs &#8212; iTerm2 Python API 0.26 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  </head><body>
+  <header >
+    <div class="row">
+      <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="text-center"><a href="/index.html"><img src="https://iterm2.com/img/logo2x.jpg" width=800 height=312></a></div>
+        <div class="sticky contain-to-grid">
+          <nav class="top-bar" data-topbar>
+            <ul class="title-area">
+              <li class="name">
+
+              </li>
+              <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+              <li class="small-screen-donate">
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+            </ul>
+
+            <section class="top-bar-section">
+              <!-- Right Nav Section -->
+              <ul class="right"> <li>
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li><a href="/index.html">Home</a></li>
+            <li ><a href="/news.html">News</a></li>
+            <li ><a href="/features.html">Features</a></li>
+            <li ><a href="/faq.html">FAQ</a></li>
+            <li class="active"><a href="/documentation.html">Documentation</a></li>
+            <li ><a href="/downloads.html">Downloads</a></li>
+          </ul>
+        </section>
+      </nav>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+    <div class="document">
+<div class="row">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
+
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">Introduction</div>
+
+	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
+	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+
+	      <div class="toc_subhead">User Interface</div>
+
+	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
+	      <li><a href="documentation-preferences.html">Preferences</a></li>
+	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
+	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
+	      <li><a href="documentation-fonts.html">Fonts</a></li>
+	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
+
+	      <div class="toc_subhead">Features</div>
+
+	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
+	      <li><a href="documentation-badges.html">Badges</a></li>
+	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
+	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
+	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
+	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
+	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
+	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
+	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
+	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
+	      <li><a href="documentation-triggers.html">Triggers</a></li>
+	      <li><a href="documentation-utilities.html">Utilities</a></li>
+
+	      <div class="toc_subhead">Advanced</div>
+
+	      <li><a href="documentation-scripting.html">Scripting</a></li>
+	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
+	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
+	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
+
+      <div class="documentwrapper">
+	<div class="bodywrapper">
+	  <div class="body" role="main">
+	    
+  <div class="section" id="function-key-tabs">
+<h1>Function Key Tabs<a class="headerlink" href="#function-key-tabs" title="Permalink to this headline">¶</a></h1>
+<p>The script makes it possible to select a tab by pressing a function key. F1 chooses the first tab, F2 the second, etc.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="c1"># Keycodes for f1 through f10. See here for a list:</span>
+    <span class="c1"># https://stackoverflow.com/questions/3202629/where-can-i-find-a-list-of-mac-virtual-key-codes</span>
+    <span class="n">keycodes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">122</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">109</span> <span class="p">]</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">keystroke_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">notification</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">modifiers</span> <span class="o">==</span> <span class="p">[</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">api_pb2</span><span class="o">.</span><span class="n">Modifiers</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="s2">&quot;FUNCTION&quot;</span><span class="p">)</span> <span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+              <span class="n">fkey</span> <span class="o">=</span> <span class="n">keycodes</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">notification</span><span class="o">.</span><span class="n">keyCode</span><span class="p">)</span>
+              <span class="k">if</span> <span class="n">fkey</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">fkey</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">tabs</span><span class="p">):</span>
+                  <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">tabs</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span><span class="o">.</span><span class="n">async_select</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+              <span class="k">pass</span>
+
+    <span class="n">patterns</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokePattern</span><span class="p">()</span>
+    <span class="n">patterns</span><span class="o">.</span><span class="n">forbidden_modifiers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_CONTROL</span><span class="p">,</span>
+                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_OPTION</span><span class="p">,</span>
+                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_COMMAND</span><span class="p">,</span>
+                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_SHIFT</span><span class="p">,</span>
+                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_NUMPAD</span><span class="p">])</span>
+    <span class="n">patterns</span><span class="o">.</span><span class="n">required_modifiers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_FUNCTION</span><span class="p">])</span>
+    <span class="n">patterns</span><span class="o">.</span><span class="n">keycodes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">keycodes</span><span class="p">)</span>
+
+    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">async_subscribe_to_keystroke_notification</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">keystroke_handler</span><span class="p">,</span> <span class="n">patterns_to_ignore</span><span class="o">=</span><span class="p">[</span><span class="n">patterns</span><span class="p">])</span>
+    <span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://iterm2.com/js/scripts.js"></script>                
+<script type="text/javascript">
+  function showId(id) {
+    document.getElementById("changelist" + id).style.display = 'block';
+    document.getElementById("show" + id).style.display = 'none';
+    document.getElementById("hide" + id).style.display = 'inline';
+  }
+
+  function hideId(id) {
+    document.getElementById("changelist" + id).style.display = 'none';
+    document.getElementById("show" + id).style.display = 'inline';
+    document.getElementById("hide" + id).style.display = 'none';
+  }
+  $(document).foundation();
+</script>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, George Nachman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/examples/function_key_tabs.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
