@@ -1,3 +1,339 @@
+commit 359d5b82e265b19215d18c5e707660796d0b7784
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 23 17:23:15 2018 -0700
+
+    Return scale in ReportCellSize to ease computations for imgcat now that it respects Retina. See mailing list thread subject 'images and retina display'
+
+commit 98c237f29fab55eb111adf7787d816bc5354f24f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 23 17:09:16 2018 -0700
+
+    [api] Fix typo (I also fixed it in iterm2-pyenv)
+
+commit 7b6574903aeead1ae3363f9c9c487cc1a63a4734
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 23 16:52:27 2018 -0700
+
+    Fix a bug where sessions with a suspended job did not have a foreground job name
+
+commit 29cb8a5c0a1976a1d71568ad2d1de560e21b8329
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 23 16:47:52 2018 -0700
+
+    [api, python] Add support for tmux to the API
+
+commit ea6c2ed5b79d7230be18d76a3a9645faaa0ce13e
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 22 09:56:50 2018 -0700
+
+    [api] Disable the path watcher while installing a new script with full environment
+
+commit 77f2353bc849d6cb0db08677e9ce4f074cbd15c0
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 22 09:53:22 2018 -0700
+
+    [api] Add iterm2 as a dependency in setup.py always
+
+commit ddfffe66632f93d56408b52c3bfe621f83f7694a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 22 09:52:12 2018 -0700
+
+    Use setuptools instead of distutils.core in setup.py because it supports dependencies properly
+
+commit 54f6555ffb790798934e2c5aebf1d51660b22061
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 22 09:40:27 2018 -0700
+
+    [api] Put full environment scripts in Scripts/Foo/Foo/Foo.bar so there can be Scripts/Foo/iterm2env and Scripts/Foo/setup.py and everything is nicely separate.
+
+commit 1b3e26a45693d5cfa9d36fc2dc40e52f4d17cfd2
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 22 09:27:15 2018 -0700
+
+    [api] Use autolayout for the save panel when creating a python script so the dependency chooser can be the right size
+
+commit 36e49a53476405acf42fa46be559ff347d29229e
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 22 00:08:21 2018 -0700
+
+    Fix a comment
+
+commit 7adb14c0503ed6d62fd1d4510a40e3e43336985c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 21 23:53:15 2018 -0700
+
+    Remove debuglog spam
+
+commit 0e9a1e9284c542122522915a109d5fa214bb8fd7
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 21 23:47:46 2018 -0700
+
+    Check if tab/window button is enabled before emulating the key equivalent in the profiles window
+
+commit d9cd8e80acb7f2662f73f6d7582626b9557fdd36
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 21 23:31:36 2018 -0700
+
+    Fix fake bold shift to match nonmetal renderer
+
+commit 4c261b8afe04d41d1fed7244f4b4c32723b0f71f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 21 23:20:48 2018 -0700
+
+    Fix missing argument to log statement
+
+commit 7ec430fa64afa249dfeaaa35ee3bd88eb51120a4
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 21 23:17:36 2018 -0700
+
+    Fix a bug where a missing image would cause endless redraws in Metal
+
+commit b1c4aee0a3c774a74b6c1db587b0ca3fc2e6dcef
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 21 22:28:35 2018 -0700
+
+    Fix typo
+
+commit c859cc508b71a8a151d883b8058bc02a0350df4b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 21 22:24:47 2018 -0700
+
+    Don't create an iTermAPIHelper when opening prefs
+
+commit c63af336844f2546694b31b73a3f0afd128de228
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 21 22:24:33 2018 -0700
+
+    Remove logspam
+
+commit f5d8f37a4b4d617e4e210c0cc27bc375acaa4ab0
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 21 22:24:19 2018 -0700
+
+    Disable deferred currentDrawable because it was causing a crash/assertion-like error.
+
+commit 2a391abfb4ebfdd1aae13b1ea95d07ac20a30c2f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 21 09:39:41 2018 -0700
+
+    Deal with openUntitledFile: being called before applicationWillFinishLaunching:. For some reason I can reproduce this with 3.2.0beta4 but not when it's run from the debugger. Must be a race condition in appkit? Issue 6804
+
+commit 9eca14be5f95eb1f220eb042bc028d650aa79273
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 21 09:05:41 2018 -0700
+
+    When lineblock gets width=1, do not try to rewrap double-width characters. It could cause you to get stuck in NumberOfFullLines. I meant for this to be impossible, but when plugging in an external monitor you get weird window sizes. Issue 6800.
+
+commit 5e9952f2cd59a14b5d40198ba3c60fe487cd5b63
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 20 21:48:08 2018 -0700
+
+    Release pooled textures when metal is disabled to try to let go of the discrete gpu
+
+commit e14f1bb33935b5565aa7a7080e80ef54cbe3edb2
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 20 20:22:48 2018 -0700
+
+    Don't let insertTab make a hotkey window key while it is being restored from an arrangement. Issue 6790.
+
+commit 336173fd828cde72d2f213545a2d6ae317485880
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 20 19:46:31 2018 -0700
+
+    Remove __weak from IBOutlets. macOS 10.11 is not cool with it.
+
+commit c7759a86d60d0134444397b0d7696daca16ae205
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 20 19:24:34 2018 -0700
+
+    Add experimental support for ssh URIs with a path. Issue 5813
+
+commit 5db5ff8e69c921bb5f1bdbf050b2c239f214d3e3
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 20 19:11:43 2018 -0700
+
+    Refactor parsing of URLs. Add the ability to specify a path to ftp and telnet since those don't come with the OS any more.
+
+commit 398084abe2612f0bdc00bd120414ef1130eb6e43
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 20 18:36:31 2018 -0700
+
+    [api] Create setup.py. Allow specification of dependencies in save panel when creating a full-environment script and run pip3 for you.
+
+commit 6ad51b33dde801edc96d52fa39379b6f63d60725
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 19 23:31:36 2018 -0700
+
+    [python, api] Allow sending text without broadcast. Fix a typo. Make custom tools reload when their script is registered. Link the targeted_input example.
+
+commit cab02dc5f8e759f5e3ce3e10568a934bada60029
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 19 22:34:25 2018 -0700
+
+    [api] Ask before enabling API server. Try to enable it before running a script. If it's enabled, start listening when the app launches.
+
+commit ad4e242edf2e0e32297d184b4c6065d88659de88
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 19 22:33:52 2018 -0700
+
+    [python] Handle exceptions in dispatch_until_future
+
+commit 4c989f31777730d30f304c6c88a25c67880d9ab7
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 19 22:04:43 2018 -0700
+
+    Allow HTTP connections to localhost to enable local webview tools
+
+commit 2656eb0dfab09c462f43ad1c214065a9a346648a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 19 22:02:11 2018 -0700
+
+    [api] Fix resizing of webview tools
+
+commit c4167f42e252b992044747e59d3f58dd15c2f76d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 19 22:01:24 2018 -0700
+
+    [python] Support reentrant dispatches
+
+commit b2e242d8afc98ce06d137b728b48263872daa592
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 19 18:57:51 2018 -0700
+
+    [api, python] Add support for broadcast domains
+
+commit 2fa2dcce4b2893e7d50aa576347ef15dd1f4a4e3
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 19 09:07:13 2018 -0700
+
+    Don't show tmux in title preview in prefs
+
+commit ec5bcb52ac0236dedb044a0dbdcba6042c842286
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 19 09:07:04 2018 -0700
+
+    Remove bogus delegate in session title menu item
+
+commit 8931f358cc8ecdfe87f1ca53a5f2f3c288a962c1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 23:46:23 2018 -0700
+
+    Make maximize metal throughput defer getdrawable
+
+commit 95955de121115c2c3fe040b8818a7f7fd4571925
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 23:43:06 2018 -0700
+
+    Add advanced GPU prefs. Issue 6541
+
+commit fe3d6947dce76659879e87928f86409265e7f805
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 22:51:26 2018 -0700
+
+    Fix session.name to show the unformatted session title.
+
+commit 222fd0568863831f82c12fbb06c82540b5a3b19b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 22:21:28 2018 -0700
+
+    Sort editors in semantic history popup menu
+
+commit e7b4254c9a7a64d6d24c3acdaf67e4624a24e3cb
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 22:14:02 2018 -0700
+
+    Add support for VS Code Insiders (VSCode's nightly build). Issue 6789
+
+commit a3d01b6b4d07b367d94ce7f28fa471af828ba460
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 22:13:32 2018 -0700
+
+    Fix a synchronization oopsie that may have caused crashes in the metal histograms code. I saw a dictionary with a nil key and nil value, and it threw an exception in allKeys.
+
+commit a6e27c00bb05900927df77d5ff6076139486f85b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 21:59:22 2018 -0700
+
+    Fix support for 0 width margins. Disable metal when horizontal margins are 0 since it would stomp on the corners in a bad way.
+
+commit 87c278217a914afb944e4120bdc882af933c3ed9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 21:50:11 2018 -0700
+
+    Make a cheesy shortcut in the profiles window to handle enter and shift enter shortcuts since they mysteriously stopped working for some people in issue 6770
+
+commit f94b82bf37726928c13e5380d5a6e8ac8ca70e87
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 21:11:11 2018 -0700
+
+    Fix a bug where non-homedir initial working directories was broken. Issue 6797
+
+commit db3e20b6162158d82d962dd8b377a39400e4c9e9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 20:59:15 2018 -0700
+
+    [api] Rather than removing the install runtime menu item, change it to check for updates.
+
+commit 503d3352d522063ede741fe028b72c5249abfbe2
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 20 20:39:53 2018 -0700
+
+    [api] Install runtime before creating a script with a private environment
+
+commit 6a63a8dd5cf9d631b9cd898d09af4eef10e32b62
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 20 20:25:26 2018 -0700
+
+    Ask before downloading python runtime
+
+commit 7755a5a7811f7075fef8d237bf329d263692ac52
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 20 16:24:59 2018 -0700
+
+    Arcify PTYSplitView
+
+commit c43ced7e9a4ea3af4910bcb70984db4ae1f4ba4d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 19:08:52 2018 -0700
+
+    Add new docs
+
+commit a973e8bae28122c3ae35533cf24a5f1e60d03dbe
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 19:08:45 2018 -0700
+
+    Add alternates to script menu to reveal scripts in finder
+
+commit 91e8e7e412bc6acbb68adaee7fad7099999ee750
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 19:08:21 2018 -0700
+
+    Fix a bug in the optional component downloader that cancel didn't always work
+
+commit 1cd49aa11788fab94aa829e1f958fb4e93c70e40
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 18:04:06 2018 -0700
+
+    FIx a crash when maximizing a pane.
+
+commit d4957de94ab9ecf9ec0eca62a2b3d570b9c332cb
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 18 18:04:07 2018 -0700
+
+    [python] Improvements to docs
+
+commit c324379e4fe7fc78b9c7a3869a5fbbaca47b1568
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 17 10:22:43 2018 -0700
+
+    Add keybinding action to duplicate tab. Issue 6733
+
+commit aefe0e596ec4303223902102eeeb9dd6f958d6f7
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 16 23:55:01 2018 -0700
+
+    [api] Show running scripts in the menu with a checkmark. Reselecting it kills it.
+
 commit c1f5a8bd585a91667b4400a473c68146c78f574b
 Author: George Nachman <gnachman@gmail.com>
 Date:   Sat Jun 16 23:42:20 2018 -0700
