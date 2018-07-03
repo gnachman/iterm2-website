@@ -1,3 +1,153 @@
+commit 5e195e4e1af0ba62e8f9bb74d8a8a34d0a1944ef
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 2 23:11:32 2018 -0700
+
+    Add fastpaths for non-underlined text rendering that uses a much smaller vertex function output
+
+commit 2a9e04a1bdf1ba9614ec6634bcf5640196dbbf36
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 2 22:59:32 2018 -0700
+
+    Refactor metal code a bit to prepare for reducing the amount of vector function output in the typical case.
+
+commit 6d9f424667301d30438ea2b3555a478fe01a8769
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 2 22:54:01 2018 -0700
+
+    Use a separate render pipeline for emoji. This allows me to make the fragment functions simpler (albeit much more numerous)
+
+commit cab7bd54405da5a6b682c458d5de7dbcabbfa801
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 2 21:56:58 2018 -0700
+
+    Get rid of disableIndividualColorModels. It's faster to change fragment functions than to do a comparison in the fragment function. As it happens blending will always be on, anyway, because of pretty ascii overlap
+
+commit a1da992a10a807607e88b4bfd3ff495e907b9847
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 2 21:51:40 2018 -0700
+
+    Break underlining fragment shaders into their own functions to avoid what is either a compiler bug or the consequences of undefined behavior I cannot find. Issue 6779.
+
+commit 7cfc9e3fe2d32a0d7dcb0b1fa2907730665b619d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 2 10:44:16 2018 -0700
+
+    Make beta-only experimental features on permanently so I don't forget to turn them on when 3.2 is released. Cherry picked from 3.2 branch
+
+commit 3e3470a638b2c9de7a7a4f52c06bb4e1d6e4a1c8
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jun 28 11:45:14 2018 -0700
+
+    [metal] Fix fake bold to use three different shifts for antialiased, like the nonmetal renderer
+
+commit 6718fd7b6f6a25c46b2fff6261ff8a7edea581fe
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jun 27 22:34:58 2018 -0700
+
+    Add menu item to arrange split panes evenly. In tmux, this uses the tiled layout.
+
+commit 069494a9b1f71dea3d3ec2c309ee5858ba570c55
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 26 23:52:44 2018 -0700
+
+    Fix crash when selecting vs code insiders for semantic history
+
+commit 072c3a1b248893cacbd452ae9c501f121c6157fb
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 26 23:42:42 2018 -0700
+
+    Add debug logging to track down initial PWD bugs
+
+commit ddda3332f8998c224b0736039524f7d1f3dc6b81
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 26 22:13:16 2018 -0700
+
+    Add a second way of getting strings from the pasteboard, which appears to work better in some weird edge cases like TIFFs that somehow have text. Issue 6811
+
+commit b53cae6c21dda8dfe0199ccacf4ea8ec3c5bfbef
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 26 21:41:46 2018 -0700
+
+    Fix a crash: avoid passing nil to hasPrefix:
+
+commit 889d90960a76d13b74278b631d8beb5d76d70baf
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 26 21:39:01 2018 -0700
+
+    Catch exceptions when writing log data and close the file handle instead of crashing
+
+commit e0a78a8229647df22b9df75d97c52819cf55d5a3
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 26 21:32:42 2018 -0700
+
+    Fix a bug where the window and icon title stacks were immutable after restoration
+
+commit 67607a293d7c2803935cab7fed6abf8971354efa
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 26 19:58:32 2018 -0700
+
+    Fix a bug where NSNull got into a tab arrangement which can't go in a plist. Issue 6812
+
+commit d65577ce8100ed2c91c412649d1aaff5b0e5124c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 26 19:23:53 2018 -0700
+
+    Don't allow ssh url with path if it looks fishy
+
+commit aaa55f59b7e19dcb600113b2ab01fe9cde31f36b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 26 19:12:29 2018 -0700
+
+    Allow ssh://host/~/foo URLs to cd to ~/foo. Issue 5813
+
+commit c228db9a6656beab4a0dfe92cfc4f574e8a7df12
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 26 00:04:25 2018 -0700
+
+    Log debug description of textures to metal frame capture
+
+commit 07a1931316672c7b2a044a900d1bdda9356a7c4b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 25 17:29:59 2018 -0700
+
+    Try really hard to avoid getting into an infinite loop of sync metal drawing. Issue 6781
+
+commit f17b4ebe4586a365419000e5e316320975ca3873
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jun 25 00:17:27 2018 -0700
+
+    Don't make autocomplete suggestions in swifty text fields during various native editing operations
+
+commit 8865263704ba2b017e55f5b197952817f9be9370
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 24 23:23:30 2018 -0700
+
+    [api, python] Add support for app and tab variables in API. Update it2api, python lib, and docs.
+
+commit 0dfc0fda1f872fcc87d905c9685edf4da55a36ac
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 24 15:10:02 2018 -0700
+
+    Bump version since I had forgotten to add tmux
+
+commit 2b084fe2aa03728b7df8d9b99ee033823bf87a1b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 24 14:10:54 2018 -0700
+
+    Add tmux.rst and tmux.py
+
+commit 0a089cef146ef4274a9d31358207df0a2f5ddd6e
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 24 13:23:43 2018 -0700
+
+    Move script management stuff into a submenu. Fix a bug when importing basic scripts
+
+commit 437b2fbe040d043c62e54022dd3cc0781aa94534
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jun 24 13:12:31 2018 -0700
+
+    [api] Add support for importing and exporting scripts
+
 commit 359d5b82e265b19215d18c5e707660796d0b7784
 Author: George Nachman <gnachman@gmail.com>
 Date:   Sat Jun 23 17:23:15 2018 -0700
