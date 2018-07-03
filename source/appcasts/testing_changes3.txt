@@ -4,33 +4,41 @@ performance. Its availability is subject to some
 configuration settings. For details, see
 https://gitlab.com/gnachman/iterm2/wikis/Metal-Renderer.
 
-Changes from 3.2.0beta4 to 3.2.0beta5:
-
-New features:
-- Add support for VS Code Insiders to semantic history's
-  editors.
-- Add an advanced preference to prefer the integrated GPU
-  over the discrete GPU.
-- Change ReportCellSize to include a scale factor, which
-  gives how much images will be downscaled by because of
-  Retina support.
+Changes from 3.2.0beta5 to 3.2.0beta6:
 
 Bug fixes:
-- Fix a bug where keyboard shortcuts stopped working for
-  some users in the profiles panel.
-- Fix support for 0-width side margins.
-- Fix a few crash bugs.
-- Fix a bunch of broken things on macOS 10.10 and 10.11.
-- Fix a bug where a hotkey window would sometimes be open
-  but invisible.
-- Fix a hang while changing displays.
-- Fix a bug where a window created automatically at launch
-  could have the wrong settings.
-- Fix a bug where CPU usage gets stuck at 100%.
-- Fix rendering of double-struck bold text in Metal
-  renderer.
-- Fix a bug in detecting the name of the current job when
-  there is a suspended job in the same session.
+- Fix a bug where passwords in the password manager could be
+  revealed during editing by clicking on another row.
+- Drop support for macOS 10.10 and 10.11 (see announcement
+  on mailing list).
+- Fix a case where the Metal renderer would eat 100% cpu
+- Fix a bug where clicking on the dock icon would not open a
+  window
+- Fix a bug where a hotkey window could be onscreen but
+  invisible, blocking clicks.
+- Fix rendering of double-struck bold.
+- Fix incorrectly rendered Emoji on new MBPs with discrete
+  GPUs.
+- Fix a few crashes.
+- Expand the kinds of pasteboard strings that are recognized
+  for pasting.
+- Fix a crash when selecting VS Code Insiders in semantic
+  history as the default editor.
+- Fix F20-F24 in touch bar.
+- Fix a bug where miniaturized windows could be restored
+  incorrectly if your system is set to have apps miniaturize
+  into the dock icon.
+
+New features:
+- Adds an advanced preference to setting where the threshold
+  for selecting a character begins left-to-right.
+
+Other improvements:
+- Remove the fade in animation for Find Cursor
+- Tweak icon shadow to be a little darker.
+- Require an app restart to switch between integrated and
+  discrete GPU because macOS doesn't let you change it at
+  runtime.
 
 
 Release notes for 3.2:
@@ -57,6 +65,11 @@ New Features
   "filename[line, column]" references.
 - There's a new type of trigger that turns text into a
    hyperlink.
+- Add support for VS Code Insiders to semantic history's
+  editors.
+- Change ReportCellSize to include a scale factor, which
+  gives how much images will be downscaled by because of
+  Retina support.
 
 Bug Fixes
 - Triggers and Find now match tabs.
