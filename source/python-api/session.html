@@ -132,7 +132,7 @@
 <dd><p>Represents an iTerm2 session.</p>
 <dl class="class">
 <dt id="iterm2.Session.KeystrokeReader">
-<em class="property">class </em><code class="descname">KeystrokeReader</code><span class="sig-paren">(</span><em>connection</em>, <em>session_id</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.KeystrokeReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">KeystrokeReader</code><span class="sig-paren">(</span><em>connection</em>, <em>session_id</em>, <em>patterns_to_ignore</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.KeystrokeReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager for reading keystrokes.</p>
 <p>Don’t create this yourself. Use Session.get_keystroke_reader() instead. See
 its docstring for more info.</p>
@@ -452,31 +452,32 @@ brought to the front and given keyboard focus.</li>
 
 <dl class="method">
 <dt id="iterm2.Session.get_keystroke_reader">
-<code class="descname">get_keystroke_reader</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.get_keystroke_reader" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_keystroke_reader</code><span class="sig-paren">(</span><em>patterns_to_ignore=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.get_keystroke_reader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides a nice interface for observing a sequence of keystrokes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <a class="reference internal" href="#iterm2.Session.KeystrokeReader" title="iterm2.Session.KeystrokeReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session.KeystrokeReader</span></code></a>.</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>patterns_to_ignore</strong> – A list of :class`KeystrokePattern` objects giving keystrokes that should not be handled normally by iTerm2 and only sent to the keystroke reader for processing in the script.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"><dl class="first last docutils">
-<dt>async with session.get_keystroke_reader() as reader:</dt>
-<dd><dl class="first last docutils">
-<dt>while condition():</dt>
-<dd><p class="first last">handle_keystrokes(reader.async_get())</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.Session.KeystrokeReader" title="iterm2.Session.KeystrokeReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session.KeystrokeReader</span></code></a>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get_keystroke_reader</span><span class="p">()</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
+  <span class="n">done</span> <span class="o">=</span> <span class="bp">False</span>
+  <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">keystroke</span> <span class="ow">in</span> <span class="n">await</span> <span class="n">reader</span><span class="o">.</span><span class="n">async_get</span><span class="p">():</span>
+      <span class="n">done</span> <span class="o">=</span> <span class="n">my_function</span><span class="p">(</span><span class="n">keystroke</span><span class="p">)</span>  <span class="c1"># Returns True to finish the keystroke reading loop</span>
+      <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
+        <span class="k">break</span>
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Each call to reader.async_get() returns an array of new keystrokes.</p>
+<p class="last">The <cite>async with</cite> statement will not finish until the while loop exits.</p>
 </div>
 </dd></dl>
 

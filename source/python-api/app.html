@@ -206,6 +206,25 @@ interacts with another app after the call.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="iterm2.App.async_get_variable">
+<code class="descname">async_get_variable</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.App.async_get_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches an application variable.</p>
+<p>See Badges documentation for more information on variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – The variable’s name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The variable’s value or empty string if it is undefined.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="iterm2.App.async_list_profiles">
 <code class="descname">async_list_profiles</code><span class="sig-paren">(</span><em>guids=None, properties=['Guid', 'Name']</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.App.async_list_profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches a list of profiles.</p>
@@ -298,6 +317,28 @@ through a key binding. Use this method to register one.</p>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">Throws MenuItemException:</th></tr>
 <tr class="field-even field"><td>&#160;</td><td class="field-body">if something goes wrong.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.App.async_set_variable">
+<code class="descname">async_set_variable</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.App.async_set_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a user-defined variable in the application.</p>
+<p>See Badges documentation for more information on user-defined variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – The variable’s name.</li>
+<li><strong>value</strong> – The new value to assign.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</td>
 </tr>
 </tbody>
 </table>

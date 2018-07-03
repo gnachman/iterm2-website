@@ -131,6 +131,25 @@
 <em class="property">class </em><code class="descname">Tab</code><span class="sig-paren">(</span><em>connection</em>, <em>tab_id</em>, <em>root</em>, <em>tmux_window_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a tab.</p>
 <dl class="method">
+<dt id="iterm2.Tab.async_get_variable">
+<code class="descname">async_get_variable</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab.async_get_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches a tab variable.</p>
+<p>See Badges documentation for more information on variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – The variable’s name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The variable’s value or empty string if it is undefined.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="iterm2.Tab.async_select">
 <code class="descname">async_select</code><span class="sig-paren">(</span><em>order_window_front=True</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab.async_select" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects this tab.</p>
@@ -140,6 +159,28 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>order_window_front</strong> – Whether the window this session is in should be
 brought to the front and given keyboard focus.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Tab.async_set_variable">
+<code class="descname">async_set_variable</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab.async_set_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a user-defined variable in the tab.</p>
+<p>See Badges documentation for more information on user-defined variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – The variable’s name.</li>
+<li><strong>value</strong> – The new value to assign.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</td>
 </tr>
 </tbody>
 </table>
