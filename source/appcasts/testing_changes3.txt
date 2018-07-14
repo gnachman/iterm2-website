@@ -4,41 +4,32 @@ performance. Its availability is subject to some
 configuration settings. For details, see
 https://gitlab.com/gnachman/iterm2/wikis/Metal-Renderer.
 
-Changes from 3.2.0beta5 to 3.2.0beta6:
+Changes from 3.2.0beta6 to 3.2.0beta7:
 
-Bug fixes:
-- Fix a bug where passwords in the password manager could be
-  revealed during editing by clicking on another row.
-- Drop support for macOS 10.10 and 10.11 (see announcement
-  on mailing list).
-- Fix a case where the Metal renderer would eat 100% cpu
-- Fix a bug where clicking on the dock icon would not open a
-  window
-- Fix a bug where a hotkey window could be onscreen but
-  invisible, blocking clicks.
-- Fix rendering of double-struck bold.
-- Fix incorrectly rendered Emoji on new MBPs with discrete
-  GPUs.
-- Fix a few crashes.
-- Expand the kinds of pasteboard strings that are recognized
-  for pasting.
-- Fix a crash when selecting VS Code Insiders in semantic
-  history as the default editor.
-- Fix F20-F24 in touch bar.
-- Fix a bug where miniaturized windows could be restored
-  incorrectly if your system is set to have apps miniaturize
-  into the dock icon.
+3.2.0beta7
 
-New features:
-- Adds an advanced preference to setting where the threshold
-  for selecting a character begins left-to-right.
+Bug Fixes
+- Memory leaks fixed.
+- Fix an occasional crash that happened after using "new tab
+  with current profile".
+- Fix a hang due to proc_pidinfo not returning.
+- Fix a bug where badges rendered improperly on nonretina
+  screens in Metal when a retina display was also attached.
 
-Other improvements:
-- Remove the fade in animation for Find Cursor
-- Tweak icon shadow to be a little darker.
-- Require an app restart to switch between integrated and
-  discrete GPU because macOS doesn't let you change it at
-  runtime.
+Other Improvements
+- URL escaping has changed in various places because the old
+  API was deprecated. Various edge cases have changed.
+- Don't allow "auto-hide menu bar" to be selected when
+  "exclude from dock and cmd-tab app switcher" is enabled.
+  They don't play nice together.
+- When a split pane in tmux integration mode closes the
+  nearest neighbor gets keyboard focus rather than the first
+  split pane in the tab.
+- Warn if the terminal tries to access the clipboard when it
+  lacks permission.
+- Remove deprecated app support folder automatically if it
+  contains only the automatically created version.txt file.
+- Improve reliability of entering native full screen.
 
 
 Release notes for 3.2:
@@ -70,6 +61,8 @@ New Features
 - Change ReportCellSize to include a scale factor, which
   gives how much images will be downscaled by because of
   Retina support.
+- Adds an advanced preference to setting where the threshold
+  for selecting a character begins left-to-right.
 
 Bug Fixes
 - Triggers and Find now match tabs.
@@ -134,3 +127,5 @@ Other improvements
   must be to be considered the bold version of a regular
   font.
 - Add an option to share the tip of the day.
+
+

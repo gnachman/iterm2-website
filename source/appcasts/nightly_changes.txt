@@ -1,3 +1,302 @@
+commit 7ec9c8e4afe48a49fa954dde6a0de2188006613f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jul 11 22:21:44 2018 -0700
+
+    Remove old app support folder if it contains only version.txt
+
+commit 97f95205e805f35077cf4ff383d35ee5eca048f4
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jul 11 20:30:17 2018 -0700
+
+    Remove unnecessary dealloc. destroyPooledObject is called by super's dealloc. It's not so good an idea to invoke overridden methods in dealloc, but pooled objects is full of bad ideas.
+
+commit 742f5ed7ac67bb39f4d25546539575c6b6552e87
+Author: George Nachman <gln@whatsapp.com>
+Date:   Wed Jul 11 11:41:46 2018 -0700
+
+    Add a timeout to proc_pidinfo in LSOF. Issue 6110
+
+commit 88e24d8880d912cbf7d989cf1ebe52c966eef674
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jul 11 09:34:24 2018 -0700
+
+    Fix a leak of VT100Tokens when they were queued. Issue 6647
+    
+    The bug could be reproduced by running yes, close the session, and undo close.
+    
+    This also fixes a bug where the fields of VT100Token were double freed when it got deallocated because destroyPooledObject was called after each field was released by dealloc. It was never noticed because they got nilled out and I didn't hit the queued token code path with zombies on.
+
+commit 1e957e7a666677665f8ed251c4eb8a004d4c7614
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 23:03:35 2018 -0700
+
+    [python] fix indentation in example
+
+commit e150a7c88f8fb9255655b476c7c5ffd0287a1c3a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 22:59:46 2018 -0700
+
+    [python] Add sort-tabs example code
+
+commit ef2f2debf164905348b0cd3f08c74571eec5c099
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 22:57:23 2018 -0700
+
+    Bump version
+
+commit 308a32506667a18994d8424b4193536bda4561f4
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 22:57:02 2018 -0700
+
+    Fix some bugs in it2api and add sort_tabs
+
+commit 3d23a0278131fdc2d91178540b9450733460d26c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 22:35:54 2018 -0700
+
+    [python] Add async_set_tabs to doc
+
+commit d722f739ad0f9fd929d63c3989fa2e074017887b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 22:32:54 2018 -0700
+
+    [api] Add API to reorder tabs. Issue 5671
+
+commit 23503344bb516467814f3fe8740a63afb38a7382
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 22:32:07 2018 -0700
+
+    For some reason the MTLDevice was getting over-released. Just keep it forever.
+
+commit da83f3c04f5298488afd0aac78d79b2530f0c105
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 8 11:13:52 2018 -0700
+
+    Retry entering lion fullscreen if it fails. Issue 6840
+
+commit 23a6b6d0f4a30d77e3281f549aa191e52f285a49
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 8 11:13:38 2018 -0700
+
+    Warn if terminal tried to copy to pasteboard but it was denied
+
+commit 5675233762c76bc12e0431a4468c59f2241ad96c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 8 09:32:12 2018 -0700
+
+    Fix a very long standing bug where PTYSession fails its sanity test. The bug was that 'new tab with current profile' would create a session that had a sessionsInstance profile but was not divorced. When you then did edit session on that new one it would delete its profile from sessionsInstance, leaving the original session in a bad state
+
+commit 8c9edf3e188e9ff0f359cba929b45337c1a5b152
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 7 09:39:50 2018 -0700
+
+    When a split pane in tmux integration closes move focus to its nearest neighbor. Issue 6551
+
+commit 8cfe2a1f6827f6b84f41d425fab84df6e8b1c83b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jul 6 22:47:47 2018 -0700
+
+    Fix a lot of analyzer issues, including quite a few memory leaks.
+
+commit e562098b3adcab487e394f11ccfa0eace473c617
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jul 6 08:51:43 2018 -0700
+
+    Fix a leak of touch bar buttons
+
+commit 0bb522e7fd4260a712a8ae3fe790e7370085bd47
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jul 5 23:59:51 2018 -0700
+
+    [python] Fix various documentation issues
+
+commit f5deb1adc1eed26412892ab15658ebe09ef31c2c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jul 5 23:59:06 2018 -0700
+
+    [python] Fix some makefile bugs
+
+commit 0224dfe2eda91c08fba1fc537a5c1cec1ba31e63
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jul 5 23:48:21 2018 -0700
+
+    [python] Bump version to .41
+
+commit f8dfa7e8e77a0f7080980b34e8212308044d0530
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jul 5 23:40:55 2018 -0700
+
+    Add Point and Frame. Change window to use them instead of the protobuf
+
+commit 9c4219e22df1191d6b6af4206690222ebe63d7c1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jul 5 23:40:41 2018 -0700
+
+    [api] Fix a bug where setting a window's frame returned the wrong status
+
+commit c292c3e3e40ee2cffe3f6dfca8f0434d698cd88c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jul 5 21:40:22 2018 -0700
+
+    Enforce that autohide menubar in fullscreen and LSUIElement are mutually exclusive. Issue 6829
+
+commit a9f5bce5180d7b9c2915fb257d3d7fdde43d7f5d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 17:46:08 2018 -0700
+
+    Add missing duplicate tab method to fake window
+
+commit d8da925a3c614f0d895c2b600ef068082c0fdc2c
+Merge: 64aba36b 632d8e41
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 17:43:04 2018 -0700
+
+    Merge branch 'master' of https://github.com/gnachman/iTerm2
+
+commit 64aba36b5f340655de48825f7cd125e036f343d3
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 17:43:00 2018 -0700
+
+    Fix duplicate menu identifier
+
+commit 887490a71e06974d8015529c76a500362d7394f8
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 17:42:31 2018 -0700
+
+    Fix up deprecated stuff in master branch only
+
+commit e812493d14ffaaeb647bbbd20bb231d7f9241fe0
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 16:42:23 2018 -0700
+
+    Replace deprecated constants with more regularly named ones in 10.12
+
+commit 8515400378d0419a1ffdafef4655d75dc0ce70d1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 17:36:28 2018 -0700
+
+    Update UKCrashReporter to not use deprecated APIs for URL fetching
+
+commit be160d55fcfd0385a6819c68fa6071f94981ebe8
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 17:27:30 2018 -0700
+
+    Replace more deprecated APIs
+
+commit d3a102ae5784c86b3c8b6829157ff29dc7ad9e71
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 17:11:37 2018 -0700
+
+    Update RegexKitLite with https://github.com/inquisitiveSoft/RegexKitLite to modernize it
+
+commit 31e576145c58f0fb1d14465234f30fa1da999980
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 16:58:25 2018 -0700
+
+    Replace CFURLCreateStringByAddingPercentEscapes with stringByAddingPercentEncodingWithAllowedCharacters
+
+commit b9838601c6d6403265d5985fe970fc4da8052a0f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 16:51:37 2018 -0700
+
+    Replace OSAtomicIncrement32 with atomic_fetch_add_explicity(&value, addend, memory_order_relaxed) per xcode's recommendation
+
+commit 0eaccedea3cf7c224b1a51f89dfe180f5e19d9d6
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 16:49:34 2018 -0700
+
+    Replace stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding with stringByAddingPercentEncodingWithAllowedCharacters allowing host characters. I am 99% sure this won't change anything
+
+commit 632d8e417f71b99b3877601b1758b7532a112024
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 15:38:37 2018 -0700
+
+    Move advanced gpu prefs into a sheet because popovers don't work in full screen windows
+
+commit 08f3d7fb3672f597ac9ba6f13cd3e36cff255eb9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 15:09:43 2018 -0700
+
+    [Metal] Require an app restart to change integerated/discrete GPU setting
+
+commit 45ab446156c93e5e66fbad30672ec3d20def2e53
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 14:46:20 2018 -0700
+
+    Do not show the password in the password manager unless it's the same row index being edited. Issue 6818
+
+commit 80eb3e8f35f39d108166cc29f3cad26e248f19c1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 14:25:29 2018 -0700
+
+    Make icon shadow a little darker. Issue 6783.
+
+commit c7c2c0a4d898c375e9eea09cd232d47c3e370fcf
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jun 26 19:42:20 2018 -0700
+
+    Allow opening an untitled window more than once. Issue 6808
+
+commit 326bdecf557109db75b56514900c2cc796b02ac3
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 12:52:39 2018 -0700
+
+    Bump the deployment target to 10.12. Unfortunately 10.11 seems to have a lot of bugs around autozeroing weak references which I pretty much need to live. See issue 6784 for the bloodbath that led to this decision.
+
+commit fc5d0f6cfb04c80df6d6309a8fa67468bee6c189
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 12:43:10 2018 -0700
+
+    Arcify PTYTab. It was a vain attempt to fix the crash in issue 6784, but 10.11 is just too broken wrt weak pointers.
+
+commit 869389c3796c3380229399ae580623bc7438491c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 11:18:50 2018 -0700
+
+    Don't make a window current if it is miniaturized and apps miniaturize into their dock icon. Issue 6748
+
+commit 429acb00dfb5c11d5b837b248e9b895825881858
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 10:39:30 2018 -0700
+
+    Fix broken f21-24. It was always swallowed up without doing anything. Now it's ignored when a shortcut input view would get the keypress and otherwise passed through.
+
+commit 8ac6a244e1348fa0d0767ca01dccebc2a40a80ac
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 10:11:58 2018 -0700
+
+    [python] Add broadcast example
+
+commit 6f65dcb4f872ce3bfcd243f9ad3309a80338afcc
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 10:11:33 2018 -0700
+
+    [python] Fix formatting of sample code
+
+commit bfa5335f48f2ef0261834dcf7afebdfb9b8b41d5
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 10:04:20 2018 -0700
+
+    [python] Bump version to 40
+
+commit eed49e60a99282f87980869f62e0d444a3badfd1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 10:04:02 2018 -0700
+
+    [python] Improve comments on get_keystroke_reader
+
+commit f275a7addf5df0665e9c902e274ba68331678c1a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 10:00:08 2018 -0700
+
+    [python] Expose patterns to ignore in Session's KeystrokeReader
+
+commit 2f93781eb213bf19cafa53dff79061619df036a3
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 3 09:26:08 2018 -0700
+
+    Get rid of fade-in animation on find cursor
+
 commit 5e195e4e1af0ba62e8f9bb74d8a8a34d0a1944ef
 Author: George Nachman <gnachman@gmail.com>
 Date:   Mon Jul 2 23:11:32 2018 -0700
