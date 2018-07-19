@@ -124,3 +124,9 @@ A: mosh is not a reliable transport. You have a few options if ssh is driving yo
 
 #### Q: The "Download with scp" context menu item does not work
 A: Did you install shell integration on the remote host? It's necessary to know what the hostname and user name are. If that doesn't fix it, you might need to give it a hint about which port or hostname to use. See <a href="https://gitlab.com/gnachman/iterm2/wikis/scp-not-connecting">SCP not connecting</a> for more.
+
+#### Q: The keyboard shortcuts for find next/previous and for toggle full screen are not standard. How can I fix it?
+A: Next and previous are intentionally inverted to make typical use more convenient. Toggle full screen is not cmd-ctrl-F because all cmd-ctrl shortcuts are reserved because they can be bound to opening a profile. This predates the existence of full screen in macOS.
+
+You can change any shortcut in **Prefs > Keys**. The actions in question are **Find Again Up**, **Find Again Down**, and **Toggle Fullscreen**.
+
