@@ -4,32 +4,26 @@ performance. Its availability is subject to some
 configuration settings. For details, see
 https://gitlab.com/gnachman/iterm2/wikis/Metal-Renderer.
 
-Changes from 3.2.0beta6 to 3.2.0beta7:
+Changes from 3.2.0beta7 to 3.2.0beta8:
 
-3.2.0beta7
+3.2.0beta8
 
-Bug Fixes
-- Memory leaks fixed.
-- Fix an occasional crash that happened after using "new tab
-  with current profile".
-- Fix a hang due to proc_pidinfo not returning.
-- Fix a bug where badges rendered improperly on nonretina
-  screens in Metal when a retina display was also attached.
+This build is a release candidate for 3.2.0. If something is
+broken please file a bug!
 
-Other Improvements
-- URL escaping has changed in various places because the old
-  API was deprecated. Various edge cases have changed.
-- Don't allow "auto-hide menu bar" to be selected when
-  "exclude from dock and cmd-tab app switcher" is enabled.
-  They don't play nice together.
-- When a split pane in tmux integration mode closes the
-  nearest neighbor gets keyboard focus rather than the first
-  split pane in the tab.
-- Warn if the terminal tries to access the clipboard when it
-  lacks permission.
-- Remove deprecated app support folder automatically if it
-  contains only the automatically created version.txt file.
-- Improve reliability of entering native full screen.
+Bug fixes
+- You can now save empty window arrangements
+- Fixed a crash when a session closes while dragging a split
+  pane divider.
+- Fixed a crash when using the eyedropper while screen size
+  changes.
+- Fix a crash in the highlight trigger.
+
+Other improvements
+- Rename advanced pref "Should the directional focus hotkeys
+  wrap" to "Should split pane navigation by direction wrap
+  around?"
+- Consider { and } as shell characters to escape
 
 
 Release notes for 3.2:
@@ -63,6 +57,14 @@ New Features
   Retina support.
 - Adds an advanced preference to setting where the threshold
   for selecting a character begins left-to-right.
+- Don't allow "auto-hide menu bar" to be selected when
+  "exclude from dock and cmd-tab app switcher" is enabled.
+  They don't play nice together.
+- When a split pane in tmux integration mode closes the
+  nearest neighbor gets keyboard focus rather than the first
+  split pane in the tab.
+- Warn if the terminal tries to access the clipboard when it
+  lacks permission.
 
 Bug Fixes
 - Triggers and Find now match tabs.
@@ -107,6 +109,7 @@ Bug Fixes
   didn't actually turn off paste bracketing.
 - Fix a bug where a floating hotkey window overlapped the
   emoji panel.
+- Improve reliability of entering native full screen.
 
 Other improvements
 - When not in alternate screen mode, tab will change the

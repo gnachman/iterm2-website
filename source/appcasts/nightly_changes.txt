@@ -1,3 +1,420 @@
+commit b7b2eb49a7478af3661b28b30f0382b82cadb29f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 21 21:09:19 2018 -0700
+
+    Fix a bug in uniq. Add uniqWithComparator to improve status bar view section deduping
+
+commit d62872c038cfad38958d72ca4a976f0e2b9ff393
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 21 20:57:23 2018 -0700
+
+    Fix up clock component bugs
+
+commit 9850225a457493a7f4b02a852b686cf0cfc4e59d
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 21 20:49:00 2018 -0700
+
+    Refactor status bar vertical offset and retinaRound
+
+commit 12b68224e9dafb5a46b865df55773716774c5e26
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 21 20:37:32 2018 -0700
+
+    Add dividers between status bar components. Draw their colors in the superview so it fills all the way to the dividers, including margin area not belonging to the component's view. Misc. other improvements, including fixing vertical alignment of CPU and Memory utilization compoentns
+
+commit 26112a9b50de71efff7905ce8ebcfd8b1fd58e1c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 21 17:56:46 2018 -0700
+
+    Add memory utilization statusbar component. Fix miscellaneous bugs with CPU util component.
+
+commit b0ea76544529bd744c311173810fe718f348a465
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 21 16:46:44 2018 -0700
+
+    Remove todo for resolved issue
+
+commit 39454279bc9d04ce45b72a3fb0150e9dbe599108
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 21 16:46:07 2018 -0700
+
+    Fix an oops
+
+commit e039815764e6766278a4ed86d03ffcf7c53e21f5
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 21 16:45:33 2018 -0700
+
+    Fix iTermPublisher not not use NSMapTable, as it is 💩
+
+commit ac0e0af2463b884e48687a923f9a219b2217d52b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 21 16:01:22 2018 -0700
+
+    Fix some memory leaks introduced by the session factory abstraction. Mixing ARC and MRR is hard :(
+
+commit dbc28d59eb6b31cff41048f7f6939e4d2a908aa7
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 21 15:14:46 2018 -0700
+
+    Remove sparklines demo component
+
+commit b5ec477f146b5f2cf381db62fa242a7e369ff0ac
+Author: George Nachman <gln@whatsapp.com>
+Date:   Fri Jul 20 17:22:10 2018 -0700
+
+    Add a pub-sub mechanism for CPU utilization statusbar component to use that the memory use one will also use. At the moment it seems that PTYSession leaks so it's not 100% tested.
+
+commit 0b1c88df0a56920355392781a4004e44c00d4b25
+Author: George Nachman <gln@whatsapp.com>
+Date:   Fri Jul 20 14:02:29 2018 -0700
+
+    Polish up CPU utilization statusbar component
+
+commit f6a9451e3f394def45664742222ca7368fa26abe
+Author: George Nachman <gln@whatsapp.com>
+Date:   Fri Jul 20 11:10:14 2018 -0700
+
+    Add CPU utilization status bar component
+
+commit 4d4918da9ff252048ef772bfc9861184f9871f33
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jul 20 10:22:46 2018 -0700
+
+    Fix how status bar text component emptiness is tested for to avoid repeated updates
+
+commit 713543183db667a795a83f10ddf97a5dea7ed135
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jul 20 10:22:26 2018 -0700
+
+    Fix performance problem where main thread would block on process cache sleeping
+
+commit 1ed0fdc46846d691eab94cda3119d938f194078c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jul 20 10:06:58 2018 -0700
+
+    Add support for sparklines status bar components
+
+commit 0749ccd7ef7dc9be903d1feebc1110dc06bc5d8f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 17 19:44:27 2018 -0700
+
+    [statusbar] fixes for nil string
+
+commit 50ffa48697e3da792486cc836cfefbaa6b73d6e4
+Author: George Nachman <gln@whatsapp.com>
+Date:   Thu Jul 19 21:54:30 2018 -0700
+
+    Add zero-prefix suggest for functions and swifty strings. Fix a bug where tab- and session-context suggestsions did not include the iterm2 scope
+
+commit 001b4a36c285aefcc5dab63ecef711873cbb9f46
+Author: George Nachman <gln@whatsapp.com>
+Date:   Thu Jul 19 20:04:02 2018 -0700
+
+    Add some debug logging for session titles
+
+commit 12c02066893f7d3a8d2b70fb9a8dc3d2f9bad545
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jul 18 21:58:04 2018 -0700
+
+    Fix bug in how metal transparency was checked
+
+commit 63f057980cadf41f0272f82ab401ed56936fdd47
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jul 18 21:48:25 2018 -0700
+
+    Fix undefined behavior and a nil string in status bar that was assigned to a text field
+
+commit bde5749c06a21d40485990c8d0acd0111ee4dca5
+Author: George Nachman <gln@whatsapp.com>
+Date:   Wed Jul 18 17:16:18 2018 -0700
+
+    Untested update of process cache code to add a status bar with job chain
+
+commit 17c219ebc89a115e1914089709e967518f5c3ec7
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 17 22:29:08 2018 -0700
+
+    [metal] Premultiply only if there is transparency
+
+commit 70a93885b1f67bda843ba546aca0eca67b750088
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 17 22:20:17 2018 -0700
+
+    [metal] Enable transparency with metal on Mojave. Add a premultiply alpha render pass to make it blend.
+
+commit f63e5a261373023a52b17acef7d3d81a1a199c3c
+Author: George Nachman <gln@whatsapp.com>
+Date:   Tue Jul 17 17:37:20 2018 -0700
+
+    Misc cleanup of status bar merge
+
+commit 4664eea321e6e98a3b290731ba3e75808aa05ff5
+Author: George Nachman <gln@whatsapp.com>
+Date:   Tue Jul 17 17:23:35 2018 -0700
+
+    [statusbar] fix size of knobs view controller for long checkboxes
+
+commit 59b961e19600db72806e966fa0ba4607cd0730b8
+Author: George Nachman <gln@whatsapp.com>
+Date:   Tue Jul 17 17:16:43 2018 -0700
+
+    Remove extraneous animation when opening edit current session panel
+
+commit b7024506a8849252b428adfce708a531cc38954c
+Author: George Nachman <gln@whatsapp.com>
+Date:   Tue Jul 17 17:11:34 2018 -0700
+
+    Fix bad merge of project file from statusbar branch
+
+commit bc7aac604ff477a0c3c6259cdb3414dd7c9ed9ce
+Author: George Nachman <gln@whatsapp.com>
+Date:   Tue Jul 17 17:10:44 2018 -0700
+
+    [statusbar] Immediately update layout when status bar is enabled/disabled
+
+commit 24c572428fc2ad824a3f4ed22f22dd46cbb093fd
+Author: George Nachman <gln@whatsapp.com>
+Date:   Tue Jul 17 11:02:41 2018 -0700
+
+    [api. python] Polish up script-provided status bar components a bit. They can now return a list of strings.
+
+commit 76e7b7b47f8ddc344561374fb4ac4d1548ad6673
+Author: George Nachman <gln@whatsapp.com>
+Date:   Tue Jul 17 10:27:56 2018 -0700
+
+    Fix formatting of MB
+
+commit 8c90ad4db8f2028ea4f680397b08681f90be44d5
+Author: George Nachman <gln@whatsapp.com>
+Date:   Tue Jul 17 10:27:43 2018 -0700
+
+    [python] Fix statusbar example and remove some terminal whitespace
+
+commit e7780aff80c113a7b8cd118546a08f95a57e66cd
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 17 10:03:30 2018 -0700
+
+    Add missing files
+
+commit 060f4fd1b5385381e806ab203167fc334b018682
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 17 08:50:24 2018 -0700
+
+    [statusbar] Rework how text components work. They can provide a list of strings and the base class figures out which one to use. This hasn't been exposed to the API yet. There are a few python files that need to be added still.
+
+commit ebd71a951e49acf7ab43f7bc94ae255db0bbbbd2
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 16 21:55:08 2018 -0700
+
+    Fix some merge conflicts and status bar flakiness
+
+commit 419e1db5adb8bbdf95f00155233536d24b259c09
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 16 21:11:21 2018 -0700
+
+    Rebuild protos
+
+commit 47f1df941da6d248e1e5441f59439558ffeac8b5
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 14 00:00:52 2018 -0700
+
+    [status bar] Add support for custom status bar components.
+
+commit 10daa7120728cacfa12c34a1b851ca4090f4c88a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 23:56:19 2018 -0700
+
+    Add a function invocation status bar button
+
+commit acc3f37a541da33783130361824bb845c9027afd
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 22:35:00 2018 -0700
+
+    Fix location and linkage of goback and goforward
+
+commit 7639d8a75e4a87c89ecf84d22d6b1823632c8424
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 22:33:33 2018 -0700
+
+    Add go back/go forward images
+
+commit 627d40cd948957a345c7c64901dd5da7ecc455da
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 09:57:59 2018 -0700
+
+    Fix permanent find bar
+
+commit f1d0ad678f847c62fa0b8d3aed96d8e62c336527
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 09:55:27 2018 -0700
+
+    Deal with closing the temporary find component
+
+commit 2c7e7ea6ef227a482454c5ce86aea16e713717a9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Mon Jul 9 09:42:07 2018 -0700
+
+    Get the temporary find panel in the status bar to work
+
+commit 5670537f8add52237f7b6aab6ebb9230404d7f0f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 8 21:46:57 2018 -0700
+
+    Reduce minimium size of a spring to 0 so they will work well for right-aligning a statusbar component
+
+commit 0530f1aff4ca45b750e9d631e5f14df6674bc7fb
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 8 17:58:27 2018 -0700
+
+    Improve handling of margins in the status bar
+
+commit 80b936eb15190d4d5094e2976b933b3736e5931b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 8 15:35:03 2018 -0700
+
+    Make status bar colors optional
+
+commit dbfac17be6235f958c5d946ac907ec4e1e7438ad
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 8 15:30:51 2018 -0700
+
+    Expose compression resistance. Make it work better.
+
+commit b217f2f2da9d6dac38a8e7299cace7dea71866c9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 8 00:03:24 2018 -0700
+
+    Make the built in status bar strings compressible by abbreviating increasingly relevant parts as the available space shrinks
+
+commit de97f9e185f74b90f6ff6196b1f50b8196a2035c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 7 23:05:38 2018 -0700
+
+    Show status bar when there's only one pane in a tab
+
+commit 5a2769aa6876a7fd5a6a3e5cd847b66933a14142
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 7 22:55:58 2018 -0700
+
+    Hook up search field in status bar. Finish implementing it. Fix longstanding redraw bug in tabbar when search field is opening.
+
+commit fed0a279c3b924f6cccba11ac373ae9a7cce16a3
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jul 5 21:12:55 2018 -0700
+
+    Add support for colors on component knobs. Move component configuration to a sheet since I want a color popover.
+
+commit 0419b19365335a6f230f2ba9a496aa5174d1b5f1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jul 5 19:26:53 2018 -0700
+
+    Move status bar component configuration into a panel
+
+commit bbc4d9c8039d693dfe5d11a69793af7f58eb8e7c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Thu Jul 5 18:26:32 2018 -0700
+
+    Refactor search code so the find view controller is split between search-related logic and the mechanics of the view. This will make it possible to put a search field in the status bar
+
+commit e1e61535b5bbfdbbf430460237a643078a34ea9f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 1 22:21:10 2018 -0700
+
+    Add some easy variable-based components
+
+commit 5aaf8e4ddb05e027cb02138f570a929b4c00972f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 1 21:55:26 2018 -0700
+
+    Add a clock status bar component
+
+commit d1a4f752f5527eb859eb23ad664f1197e1323f35
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 30 22:13:16 2018 -0700
+
+    Add status bar to prefs. Get it basically working. There are still bugs, like the initial layout, but the basic functionality is there.
+
+commit b5c2a961a02a1efc635d3a3ad2f544267cbb0031
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 30 17:07:28 2018 -0700
+
+    Refactor and get knobs working
+
+commit a26e3240011047a02aac692d850fe563e30d4e0f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jun 30 09:51:13 2018 -0700
+
+    Add springs
+
+commit 4317c4a13d72d5949358bc13a7bde3984b32f6b8
+Author: George Nachman <gnachman@gmail.com>
+Date:   Fri Jun 29 23:36:21 2018 -0700
+
+    Initial start on a ui for building a status bar
+
+commit 247b1071bd9fce7036b72fe1a663b084646be693
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 15 23:01:45 2018 -0700
+
+    Add link to radar
+
+commit 7ce65347493c699c4eab288e37f97d0cac98fe92
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 15 22:45:55 2018 -0700
+
+    Put in a hack to fix scrolling with legacy renderer in macOS 10.14
+
+commit ccd56bf2d148815eb21537eb072458c7997a4561
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 15 22:20:53 2018 -0700
+
+    Fix transparent selected tab with light theme on Mojave
+
+commit 16509fd9c7f5c0b04e2b6668f70146f901cf9b4f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 15 22:14:20 2018 -0700
+
+    Get rid of a bogus warning, must be left over from a merge from 3.2
+
+commit cae052124fc9559304793e5af6a5ff96d62a077a
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 15 22:11:59 2018 -0700
+
+    [metal] Fix a bug where +iTermTextFragmentShaderMonochrome expected iTermTextVertexFunctionOutputBlending but was actually getting iTermTextVertexFunctionOutputMonochrome. Somehow it appeared to work. Also use a half4 for the text color in this case.
+
+commit f9c1134cf9563e77773bc9ab7865366b49e97086
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 15 22:05:19 2018 -0700
+
+    Fix various xcode 10 warnings
+
+commit 36b3a373d5f825ca44ef8a96d2fc77876a55e2b9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 15 22:00:56 2018 -0700
+
+    Remove various TODOs that were tested and are OK (actual testing done on the 3.2 branch but it's the same)
+
+commit ad41e809ae121ad89a1e2453e0ad05d4bdd030d9
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 15 21:58:31 2018 -0700
+
+    [metal] macOS 10.14 improvements
+    - Remove subpixel antialiasing code for macOS 10.14. This should give a little speedup.
+    - MTKView does not need to be inset since it no longer overlaps window corners
+    - Add ifdefed out support for transparent windows with metal. Sadly it doesn't work because the os doesn't composite it right.
+
+commit 87ac5d886d5346fb5c536f9c8595380ecfb47894
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 14 22:42:38 2018 -0700
+
+    [metal] Keep metal enabled much more of the time on 10.14. Apparently view compositing works now. I am slightly less mad at Apple now.
+
+commit c37cc53af66aed98a872a1228e52965f57dde176
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Jul 14 22:31:12 2018 -0700
+
+    [metal] Remove subpixel antialiasing support for 10.14 :(
+
 commit 7ec9c8e4afe48a49fa954dde6a0de2188006613f
 Author: George Nachman <gnachman@gmail.com>
 Date:   Wed Jul 11 22:21:44 2018 -0700
