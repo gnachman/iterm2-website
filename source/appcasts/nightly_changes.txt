@@ -1,3 +1,137 @@
+commit 321ac583019ceef1e3f804317326e4f657832895
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jul 25 23:58:32 2018 -0700
+
+    Adjust minimum interval for process cache updates depending on whether iTerm2 is active. Simply reducing the cadence to 0.5 sec from 0.1 makes a significant difference in throughput, surprisingly
+
+commit 4da809abad03f488e7f7a31d13afab19e1f45d83
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jul 25 23:30:05 2018 -0700
+
+    Optimize getting the current session's name
+    
+    Also, fix a bug in rate limited updates that two blocks would run back to back when the timer fires.
+
+commit 1b7bb4e1672527afcdcaee60c7fa708bda181947
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jul 25 09:33:51 2018 -0700
+
+    Save settings to XML plist file. Issue 6868
+
+commit 301c405ecea74ecb57310d812059e4ff5c5b4c73
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jul 25 09:10:15 2018 -0700
+
+    Allow extending a synchronous update
+
+commit fd8d3004e8e271f1a949e77a62ac12debbd13f14
+Author: George Nachman <gnachman@gmail.com>
+Date:   Wed Jul 25 00:19:49 2018 -0700
+
+    Add partial support for synchronized updates (I still don't sync colors)
+
+commit 2836817134980ef1781bc830fcde74c0f1354122
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 24 23:46:28 2018 -0700
+
+    Remove close button from permanent statusbar search component. Temporary search components will still have them.
+
+commit 0f1fe84c1e3e0fc4a1c7fe24849c12a8f5ce739b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 24 23:37:09 2018 -0700
+
+    Only show push/pull arrows in git statusbar component if the count is positive
+
+commit b172d1d2513c26e4a186f11185e278bb12bb22fd
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 24 23:33:43 2018 -0700
+
+    Update Licenses.txt with MIT license for hyperline, from which some git commands and images were borrowed
+
+commit b3faa8d33af4535758b03ccbfdfd2d6ae69a425c
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 24 23:32:01 2018 -0700
+
+    Fix dark theme support for status bar
+
+commit 6cbdd678f54beef1d2eb1498e5cecba43c08c22b
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 24 23:01:28 2018 -0700
+
+    Fix a crash when closing prefs panel
+
+commit c7bad3d04635be8c57928777d3391faa2c156353
+Author: George Nachman <gnachman@gmail.com>
+Date:   Tue Jul 24 23:00:59 2018 -0700
+
+    [status bar] Add a git status bar that shows branch, number of commits vs remote, and dirty status.
+
+commit 5ff26a1f6718eeeadb72775d971195aa177cae9f
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 22 14:50:48 2018 -0700
+
+    Fix divide by zero in sparklines with all 0 values
+
+commit 9c88a638f134cfb7abef545cdb7a35a0fe0364a1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 22 14:47:02 2018 -0700
+
+    Fix a bug where restored windows with history don't scroll with the wheel prior to using a keyboard shortcut to scroll, provided the scroller style is inline. This is a hack which I'd like to remove if I can ever figure out the real solution.
+
+commit 61c1e21d85bf74b67f26dfc04dcb62282e91d6fb
+Author: George Nachman <gln@whatsapp.com>
+Date:   Thu Jul 19 20:52:19 2018 -0700
+
+    Improve naming of advanced pref to control split pane nav wrap
+
+commit 9c38ca54a01dbe6e162e2ba9b091ac042ed8bc4f
+Author: George Nachman <gln@whatsapp.com>
+Date:   Thu Jul 19 20:42:29 2018 -0700
+
+    Consider { and } shell characters worthy of escaping. Issue 6864
+
+commit 8ade4b14704a43e39c89ddd040afe680dcd40228
+Author: George Nachman <gln@whatsapp.com>
+Date:   Thu Jul 19 20:18:55 2018 -0700
+
+    Allow saving empty window arrangements. Issue 6857
+
+commit aa5426b5a964d9c1ed4c27dd7a0a81b0284840a7
+Author: George Nachman <gln@whatsapp.com>
+Date:   Thu Jul 19 19:15:02 2018 -0700
+
+    Try to prevent a crash when a session ends during drag. rdar://42411126
+
+commit 4966db930f041885b5a799133f410f1fee1b260f
+Author: George Nachman <gln@whatsapp.com>
+Date:   Thu Jul 19 18:41:17 2018 -0700
+
+    Fix a possible out-of-bounds read in the eyedropper. I think it could happen if the screen changes size at the wrong time.
+
+commit 6613f13258d29251f489914977c62071b8431acb
+Author: George Nachman <gln@whatsapp.com>
+Date:   Thu Jul 19 18:34:21 2018 -0700
+
+    Fix a silly bug in converting grid ranges to grid runs that didn't handle negative values properly that caused an assertion in highlight trigger
+
+commit 8b54e6a451c53db5caf1e41a5654d22421d21e91
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 22 11:19:18 2018 -0700
+
+    Improve compact byte size formatting to always have the same number of characters
+
+commit ad4b40a6fed1369bd17ba9c68301cdc0bb73dfe1
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 22 00:05:09 2018 -0700
+
+    Bump version
+
+commit 04f428cb18e98411045fc1a0c5de75e16cce13d0
+Author: George Nachman <gnachman@gmail.com>
+Date:   Sun Jul 22 00:04:46 2018 -0700
+
+    Add network utilization status bar component
+
 commit b7b2eb49a7478af3661b28b30f0382b82cadb29f
 Author: George Nachman <gnachman@gmail.com>
 Date:   Sat Jul 21 21:09:19 2018 -0700

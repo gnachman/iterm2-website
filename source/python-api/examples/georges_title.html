@@ -9,7 +9,7 @@
     <title>George’s Title Algorithm &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -123,7 +123,7 @@
 	    
   <div class="section" id="george-s-title-algorithm">
 <h1>George’s Title Algorithm<a class="headerlink" href="#george-s-title-algorithm" title="Permalink to this headline">¶</a></h1>
-<p>This code combines user-defined variables from Shell Integration with a custom session title function. The end result is a snazzy title that includes your git branch:</p>
+<p>This code combines user-defined variables from Shell Integration with a custom session title function. It demonstrates <code class="xref py py-meth docutils literal notranslate"><span class="pre">App.async_register_session_title_provider()</span></code>. The end result is a snazzy title that includes your git branch:</p>
 <a class="reference internal image-reference" href="../_images/georgesalgo.png"><img alt="../_images/georgesalgo.png" src="../_images/georgesalgo.png" style="width: 375px; height: 32px;" /></a>
 <div class="line-block">
 <div class="line"><br /></div>
@@ -214,12 +214,10 @@
                  <span class="s2">&quot;profile_name&quot;</span><span class="p">:</span> <span class="s2">&quot;session.profileName?&quot;</span><span class="p">,</span>
                  <span class="s2">&quot;tmux_title&quot;</span><span class="p">:</span>   <span class="s2">&quot;session.tmuxWindowTitle?&quot;</span><span class="p">,</span>
                  <span class="s2">&quot;user_home&quot;</span><span class="p">:</span>    <span class="s2">&quot;user.home?&quot;</span> <span class="p">}</span>
-    <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="s2">&quot;georges_title&quot;</span><span class="p">,</span>
-                                         <span class="n">georges_title</span><span class="p">,</span>
-                                         <span class="n">role</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">RPC_ROLE_SESSION_TITLE</span><span class="p">,</span>
-                                         <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">,</span>
-                                         <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;George&#39;s Title Algorithm&quot;</span><span class="p">)</span>
-    <span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
+    <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_register_session_title_provider</span><span class="p">(</span><span class="s2">&quot;georges_title&quot;</span><span class="p">,</span>
+                                                    <span class="n">georges_title</span><span class="p">,</span>
+                                                    <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;George&#39;s Title Algorithm&quot;</span><span class="p">,</span>
+                                                    <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span>    <span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
@@ -257,8 +255,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="../_sources/examples/georges_title.rst.txt"

@@ -9,7 +9,7 @@
     <title>App &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -247,7 +247,7 @@ interacts with another app after the call.</li>
 
 <dl class="method">
 <dt id="iterm2.App.async_register_rpc_handler">
-<code class="descname">async_register_rpc_handler</code><span class="sig-paren">(</span><em>name</em>, <em>coro</em>, <em>timeout=None</em>, <em>defaults={}</em>, <em>role=1</em>, <em>display_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.App.async_register_rpc_handler" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_register_rpc_handler</code><span class="sig-paren">(</span><em>name</em>, <em>coro</em>, <em>timeout=None</em>, <em>defaults={}</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.App.async_register_rpc_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register a script-defined RPC.</p>
 <p>iTerm2 may be instructed to invoke a script-registered RPC, such as
 through a key binding. Use this method to register one.</p>
@@ -260,16 +260,11 @@ through a key binding. Use this method to register one.</p>
 <li><strong>coro</strong> – An async function. Its arguments are reflected upon to determine the RPC’s signature. Only the names of the arguments are used. All arguments should be keyword arguments as any may be omitted at call time.</li>
 <li><strong>timeout</strong> – How long iTerm2 should wait before giving up on this function’s ever returning. <cite>None</cite> means to use the default timeout.</li>
 <li><strong>defaults</strong> – Gives default values. Names correspond to argument names in <cite>arguments</cite>. Values are in-scope variables at the callsite.</li>
-<li><strong>role</strong> – Defines the special purpose of this RPC.</li>
-<li><strong>display_name</strong> – Used by the <cite>RPC_ROLE_SESSION_TITLE</cite> role to give the name of the function to show in preferences.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>The following roles are recognized:</p>
-<p><cite>RPC_ROLE_GENERIC</cite>: Has no special purpose. Can be invoked in key bindings or triggers.
-<cite>RPC_ROLE_SESSION_TITLE</cite>: Shows as an option to provide session titles in Preferences.</p>
 </dd></dl>
 
 <dl class="method">
@@ -513,8 +508,8 @@ when iTerm2 is the active application.</p>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="_sources/app.rst.txt"
