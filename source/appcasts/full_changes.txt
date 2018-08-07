@@ -1,6 +1,108 @@
-iTerm2 3.1.7
+iTerm2 3.2.0
 
-This version patches a security issue in 3.1.6 where a
-password in the password manager could be displayed in
-the clear during editing when you click on another row in
-the table.
+The big new feature in iTerm2 version 3.2 is a new rendering
+engine that uses Metal. It provides much higher drawing
+performance. Its availability is subject to some
+configuration settings. For details, see
+https://gitlab.com/gnachman/iterm2/wikis/Metal-Renderer.
+
+New Features
+------------
+- Metal renderer
+- Show inline images in Retina resolution.
+- There is a new key binding action to toggle mouse
+  reporting.
+- Semantic history now recognizes visual studio code-style
+  "filename[line, column]" references.
+- There's a new type of trigger that turns text into a
+  hyperlink.
+- Add support for VS Code Insiders to semantic history's
+  editors.
+- Warn if the terminal tries to access the clipboard when it
+  lacks permission rather than silently denying it.
+- Change ReportCellSize to include a scale factor, which
+  gives how much images will be downscaled by because of
+  Retina support.
+- New advanced pref: Fraction of character’s width on its
+  right side that can be used to select the character to its
+  right.
+- New advanced pref: Open a new window when you click the
+  dock icon and no windows are already open?
+- New advanced pref: When Focus Follows Mouse is enabled,
+  activate the window under the cursor when iTerm2 becomes
+  active?
+- New advanced pref: Underline Semantic History-selectable
+  items under the cursor while holding cmd?
+- You can now escape $$ in an Applescript profile command
+  with $$$$
+- New advanced pref (affecting semantic history's URL
+  detection): URLs must contain a scheme?
+- New advanced pref: Minimum weight difference between
+  regular and bold font.
+
+Bug Fixes
+---------
+- Triggers and Find now recognize tab characters.
+- Fix a bug where Triggers and Find would sometimes not see
+  past a double-width character that was wrapped to the next
+  line.
+- When you drag a session onto itself in a window with split
+  panes, do not move the window.
+- Don't allow fullscreen or edge-attached windows to be
+  moved with cmd-opt-shift-drag.
+- Fix the color picker's eyedropper feature to respect color
+  spaces.
+- If multiple hotkey windows are open, do not return to the
+  previously active app when one is closed.
+- When changing the number of lines of scrollback, do not
+  apply the change until focus leaves the text field. This
+  solves a problem where erasing the value would erase your
+  history.
+- Scrolling with wheel mice is no longer oversensitive.
+- Change behavior of prompt-before-closing for tmux
+  integration. Since the list of jobs is not visible, always
+  prompt when a whitelist of jobs is specified.
+- Fix a bug where changing the cursor shape by escape
+  sequence could be reverted by changing any profile
+  property.
+- When the password manager fails to get a password because
+  the system Keychain denied access, show an alert
+  explaining what happened.
+- Ignore modifier+number when there's no matching
+  pane/tab/window to switch to rather than passing it to the
+  terminal as a keypress.
+- Fix a bug where cmd-0 did not restore the original font
+  size in tmux integration.
+- Ignore malformed OSC 11.
+- Fixes a bug where images could be drawn in the wrong
+  column.
+- Improved behavior of Yen key sending backslash for
+  Japanese keyboards.
+- "Select Current Command" works while the command
+   is running
+- Fix a bug where the offer to turn off paste bracketing
+  didn't actually turn off paste bracketing.
+- Fix a bug where a floating hotkey window overlapped the
+  emoji panel.
+- Improve reliability of entering native full screen.
+
+Other improvements
+------------------
+- When a split pane in tmux integration mode closes the
+  nearest neighbor gets keyboard focus rather than the first
+  split pane in the tab.
+- When not in alternate screen mode, tab will change the
+  background color of cells the cursor skipped over. This
+  violates tradition but is more sensible behavior for
+  printing syntax-highlighted code with tabs.
+- Inset marks by one pixel on the left margin.
+- The rendering of faint text has been changed to take the
+  background color into account.
+- The toolbelt tools look nicer in the dark schemes.
+- The pointing hand cursor will show only while over a
+  clickable item while holding cmd.
+- Tab name truncation no longer takes a parenthesized (job)
+  name at the end into account when deciding whether to
+  truncate the head or tail.
+- Add an option to share the tip of the day.
+- Treat { and } as shell characters to escape.
