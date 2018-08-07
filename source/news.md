@@ -4,6 +4,11 @@ title: iTerm2 - macOS Terminal Replacement
 active-state: news
 ---
 
+#### iTerm2 GPU Renderer Released
+<i>Sunnyvale, CA&mdash;August 7, 2018</i>
+
+iTerm2 version 3.2 has been released, featuring a new drawing engine that uses Metal to improve rendering performance by using the GPU. Screen updates are much faster, leaving your CPU free to do more. Scrolling is buttery smooth! Many new features and bug fixes are also included. Read the <a href="https://iterm2.com/downloads/stable/iTerm2-3_2_0.changelog">change log</a> for details.
+
 #### Important Security Update
 
 Version 3.1.1 of iTerm2 has been released and contains an important security update. Prior versions could leak private data over DNS requests. Please update to 3.1.1 or later. For more information, please see the <a href="https://gitlab.com/gnachman/iterm2/wikis/dnslookupissue">official statement</a>.
@@ -18,7 +23,7 @@ Version 3.1 of iTerm2 is now in stable release. It adds many notable features:
   * Many improvements to Hotkey Windows
   * Copy Mode
 
-...and scores of small new features (like hyperlinks and new shell integration utilities) and bug fixes. You can see all the details in the <a href="http://iterm2.com/downloads/stable/iTerm2-3_1_0.changelog">change log</a>.
+...and scores of small new features (like hyperlinks and new shell integration utilities) and bug fixes. You can see all the details in the <a href="https://iterm2.com/downloads/stable/iTerm2-3_1_0.changelog">change log</a>.
 
 #### iTerm2 Version 3 Stable Released
 <i>Sunnyvale, CA&mdash;July 4, 2016</i>
