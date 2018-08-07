@@ -22,6 +22,18 @@ This setting specifies the maximum amount of memory allocated to instant replay 
 #### Save copy/paste and command history to disk
 If selected, every time text is copied or pasted in iTerm2 it will be saved to disk. The last 20 values are recorded. They can be accessed with **Edit > Open Paste History...**. If you use <a href="shell_integration.html">Shell Integration</a> then when this is enabled your command history, directory history, and remote hostname and usernames will also be saved to disk. Unchecking this will erase all of the saved information.
 
+#### GPU rendering
+Starting in iTerm2 version 3.2.0, text may be drawn with GPU acceleration. This should improve performance. You can turn it off with this control. Most users will want to leave it on.
+
+##### Advanced GPU Settings > Disable GPU renderer when disconnected from power
+The GPU renderer uses more energy than the legacy renderer so you may prefer not to use it when your laptop is not charging.
+
+##### Advanced GPU Settings > Maximize Throughput
+This reduces the frame rate to 30 fps when a lot of text is being printed (such as when you `cat` a large file). It reduces the time it takes to process such input.
+
+##### Advanced GPU Settings > Prefer integrated to discrete GPU
+If your machine has two GPUs, this setting lets you pick which one to use. The integrated GPU is slower but uses less energy. You must restart iTerm2 after changing this setting.
+
 #### Add Bonjour hosts to profiles
 If selected, all Bonjour hosts on the local network have a profile created for them as long as they're around.
 

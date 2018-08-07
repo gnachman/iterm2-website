@@ -14,6 +14,7 @@ The following actions are available:
         <li>Bounce Dock Icon: Makes the dock icon bounce until the iTerm2 window becomes key.</li>
         <li>Capture Output: Save the line to the Captured Output toolbelt tool. See <a href="documentation-captured-output.html">Captured Output</a>. The parameter is text to send (as though it had been typed) when you double-click on an entry in the Captured Output tool.</li>
         <li>Highlight Text: The text matching the regex in the trigger will change color. The parameter sets the color.</li>
+        <li>Make Hyperlink: The text matching the regex in the trigger will become a hyperlink which you can open with Cmd-Click. The parameter sets the URL.</li>
         <li>Open Password Manager: Opens the password manager. You can specify which account to select by default.</li>
         <li>Post Notification: Posts a notification with Growl (if available) or Notification Center.</li>
         <li>Prompt Detected: Informs iTerm2 that the shell prompt begins at the start of the match. Used to emulate Shell Integration features. If the prompt is one line long then use Instant.</li>

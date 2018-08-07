@@ -10,6 +10,12 @@ Checks to see if a new version of iTerm2 is available. If Preferences > General 
 #### iTerm2 > Toggle Debug Logging
 This saves helpful debugging information in memory. When it is toggled off it is saved to /tmp/debuglog.txt.
 
+#### iTerm2 > Copy Performance Stats
+This copies information about drawing speed to the pasteboard. This is useful when reporting issues relating to poor performance.
+
+#### iTerm2 > Capture GPU Frame
+This saves information about how the current session is drawn. This is useful when reporting issues relating to drawing errors in the GPU renderer.
+
 #### iTerm2 > Secure Keyboard Entry
 When this is enabled, the operating system will prevent other programs running on your computer from being able to see what you are typing. If you're concerned that untrusted programs might try to steal your passwords, you can turn this on, but it may disable global hotkeys in other programs.
 

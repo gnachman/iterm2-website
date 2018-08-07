@@ -13,6 +13,10 @@ Using the <a href="/utilities/imgcat">imgcat</a> script, one or more images may 
 
 Critically, animated GIFs are supported as of version 2.9.20150512.
 
+### Retina
+
+Starting in iTerm2 version 3.2.0, Retina displays are properly supported. Previously, they would be double-size (one display "point" per image pixel rather than one display pixel per image pixel). If you prefer the old behavior, change **Prefs > Advanced > Show inline images at Retina resolution**.
+
 ### Protocol
 
 iTerm2 extends the xterm protocol with a set of proprietary escape sequences. In general, the pattern is:
