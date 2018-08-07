@@ -9,6 +9,8 @@ active-state: news
 
 iTerm2 version 3.2 has been released, featuring a new drawing engine that uses Metal to improve rendering performance by using the GPU. Screen updates are much faster, leaving your CPU free to do more. Scrolling is buttery smooth! Many new features and bug fixes are also included. Read the <a href="https://iterm2.com/downloads/stable/iTerm2-3_2_0.changelog">change log</a> for details.
 
+Get it from <a href="/downloads.html">the Downloads page</a> in the "Stable Releases" section.
+
 #### Important Security Update
 
 Version 3.1.1 of iTerm2 has been released and contains an important security update. Prior versions could leak private data over DNS requests. Please update to 3.1.1 or later. For more information, please see the <a href="https://gitlab.com/gnachman/iterm2/wikis/dnslookupissue">official statement</a>.
