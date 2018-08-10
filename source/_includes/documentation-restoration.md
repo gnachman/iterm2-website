@@ -16,3 +16,5 @@ tl;dr watch this:
 
  * If you reboot, your jobs will terminate and not be restored. The window contents should be restored.
 
+If you prefer for sessions not to be terminated when you quit iTerm2, turn off **Prefs>Advanced>User-initiated quit (cmd-q) of iTerm2 will kill all running jobs.**
+
