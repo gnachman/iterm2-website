@@ -80,7 +80,7 @@ The first dropdown box in the **tmux Integration** section allows you to define 
 When attaching to a tmux session with the tmux integration, windows are normally opened automatically. If there are too many of them, then the tmux dashboard is opened instead.
 
 #### Automatically bury the tmux client session after connecting
-When the tmux integration is entered by running tmux -CC, the window in which that command was run will be <a href="documentation-buried-sessions.md">buried</a>.
+When the tmux integration is entered by running tmux -CC, the window in which that command was run will be <a href="documentation-buried-sessions.html">buried</a>.
 
 ### Appearance
 <hr>
