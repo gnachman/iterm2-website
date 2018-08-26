@@ -1,177 +1,28 @@
-3.2.1beta1
-
-This release contains bug fixes for 3.2.0 and adds support
-for macOS 10.14 (Mojave).
-
-Mojave-specific Changes
------------------------
-
-- The GPU renderer supports transparent windows.
-- The GPU renderer is no longer disabled temporarily while
-  other views (such as the find bar) are visible.
-- Your theme will be changed to "Automatic" and will follow
-  the system's light/dark theme. You can change it back to
-  Light or Dark if you prefer.
+iTerm2 3.2.1beta2
 
 Bug Fixes
 ---------
-- Fixes a number of crashes.
-- Fixes cases hotkey windows would be overlapped by the
-  menu.
-- Improves rendering of box drawing characters on non-retina
-  displays with GPU renderer.
-- Fixes a bug where a modal dialog could be overlapped by a
-  floating hotkey window.
-- Reduced CPU usage when blinking text exists but blinking
-  is disabled and the GPU renderer is on.
-- Fix appearance of copy mode cursor with GPU renderer.
-- Fix a problem where tmux window panes might not always
-  have per-pane title bars when they ought to.
-- Fix a bug where terminal side margins could not exceed 100
-  points.
-- Fixes a bug where the frame right could be double what it
-  ought to be during scrolling.
-- Fixes cases where non-hotkey windows would be raised above
-  other apps' windows when activating the hotkey window.
-
-New Features
-------------
-- Add support for macOS 10.14.
-- Add support for CSI CHT control sequence.
-- New advanced pref to set the prominence of the outline on
-  the selected tab when there is a colored tab present.
-- New advanced pref to adjust the prominence of text in
-  non-selected tabs when a colored tab is present.
-- New advanced pref to adjust the prominence the outline of
-  the current tab when colored tabs are present.
+- Fix a performance issue when using fast user switching and
+  a hotkey window is registered.
+- Fix a bug where the line under the title bar could
+  disappear.
+- Fix a bug where you couldn't change the theme on macOS
+  10.13.
+- Fix a bug where the scrollbar couldn't be seen when using
+  the metal renderer on macOS 10.13 with a light background
+  color and the dark theme.
+- Fix a use-after-free crash.
+- Fix a bug where tabs that wrap around would leave a hard
+  newline behind.
+- Fix transparency with background images in Mojave.
+- Fix support for high contrast themes in Mojave.
+- Fix an occasional hang when using the Metal renderer.
+- Fix a bug where programs that need to ask for permission
+  (e.g., osascript) could not run on Mojave.
+- Fix a bug where window borders did not draw on Mojave.
+- Fix a bug where announcements' frames could be wrong.
 
 Other Improvements
 ------------------
-- When focus reporting is set or unset, the announcement
-  asking if you want to turn it off is removed.
-- Improved performance for memory-starved GPUs with GPU
-  renderer.
-- Performance improvents when there is a badge and GPU
-  renderer is on.
-- Show "key" cursor icon at password prompt when GPU
-  renderer is on.
-- Confirm before running a script that iTerm2 handles (e.g.,
-  by double clicking a .sh file)
-- Improve vertical alignment of new-output indicator in
-  tabs.
-- Improve contrast of tab titles in non-selected tabs when a
-  colored tab is present.
+- Ignore trailing ] on URLs for semantic history.
 
-
-Release notes for 3.2:
-----------------------
-
-The big new feature in iTerm2 version 3.2 is a new rendering
-engine that uses Metal 2. It provides much higher drawing
-performance. Its availability is subject to some
-configuration settings. For details, see
-https://gitlab.com/gnachman/iterm2/wikis/Metal-Renderer.
-
-New Features
-- Metal renderer
-- New advanced pref: Open a new window when you click the
-  dock icon and no windows are already open?
-- New advanced pref: When Focus Follows Mouse is enabled,
-  activate the window under the cursor when iTerm2 becomes
-  active?
-- New advanced pref: Underline Semantic History-selectable
-  items under the cursor while holding cmd?
-- You can now escape $$ in an Applescript profile command
-  with $$$$
-- New advanced pref (affecting semantic history's URL
-  detection): URLs must contain a scheme?
-- Show inline images in retina resolution. On by default in
-  beta. In release, enable advanced pref "Show inline images
-  at Retina resolution".
-- There is a new key binding action to toggle mouse
-  reporting.
-- Semantic history now recognizes visual studio code-style
-  "filename[line, column]" references.
-- There's a new type of trigger that turns text into a
-   hyperlink.
-- Add support for VS Code Insiders to semantic history's
-  editors.
-- Change ReportCellSize to include a scale factor, which
-  gives how much images will be downscaled by because of
-  Retina support.
-- Adds an advanced preference to setting where the threshold
-  for selecting a character begins left-to-right.
-- Don't allow "auto-hide menu bar" to be selected when
-  "exclude from dock and cmd-tab app switcher" is enabled.
-  They don't play nice together.
-- When a split pane in tmux integration mode closes the
-  nearest neighbor gets keyboard focus rather than the first
-  split pane in the tab.
-- Warn if the terminal tries to access the clipboard when it
-  lacks permission.
-
-Bug Fixes
-- Triggers and Find now match tabs.
-- Fix a bug where Triggers and Find would sometimes not see
-  past a double-width character that was wrapped to the next
-  line.
-- When you drag a session onto itself in a window with split
-  panes, do not move the window.
-- Don't allow fullscreen or edge-attached windows to be
-  moved with cmd-opt-shift-drag.
-- Fix the color picker's eyedropper feature to respect color
-  spaces.
-- If multiple hotkey windows are open, do not return to the
-  previously active app when one is closed.
-- When changing the number of lines of scrollback, do not
-  apply the change until focus leaves the text field. This
-  solves a problem where erasing the value would erase your
-  history.
-- Scrolling with wheel mice is no longer oversensitive.
-- Change behavior of prompt-before-closing for tmux
-  integration. Since the list of jobs is not visible, always
-  prompt when a whitelist of jobs is specified.
-- Fix a bug where changing the cursor shape by escape
-  sequence could be reverted by changing any profile
-  property.
-- When the password manager fails to get a password because
-  the system Keychain denied access, show an alert
-  explaining what happened.
-- Ignore modifier+number when there's no matching
-  pane/tab/window to switch to rather than passing it to the
-  terminal as a keypress.
-- Fix a bug where cmd-0 did not restore the original font
-  size in tmux integration.
-- Ignore malformed OSC 11.
-- Fixes a bug where images could be drawn in the wrong
-  column.
-- Improved behavior of Yen key sending backslash for
-  Japanese keyboards.
-- "Select Current Command" works while the command
-   is running
-- Fix a bug where the offer to turn off paste bracketing
-  didn't actually turn off paste bracketing.
-- Fix a bug where a floating hotkey window overlapped the
-  emoji panel.
-- Improve reliability of entering native full screen.
-
-Other improvements
-- When not in alternate screen mode, tab will change the
-  background color of cells the cursor skipped over. This
-  violates tradition but is more sensible behavior for
-  printing syntax-highlighted code with tabs.
-- Inset marks by one pixel on the left margin.
-- The rendering of faint text has been changed to take the
-  background color into account.
-- The toolbelt tools look nicer in the dark schemes.
-- The pointing hand cursor will show only while over a
-  clickable item while holding cmd.
-- Tab name truncation no longer takes a parenthesized (job)
-  name at the end into account when deciding whether to
-  truncate the head or tail.
-- Performance improvements.
-- Add an advanced setting to adjust how much bolder a font
-  must be to be considered the bold version of a regular
-  font.
-- Add an option to share the tip of the day.
-- Consider { and } as shell characters to escape
