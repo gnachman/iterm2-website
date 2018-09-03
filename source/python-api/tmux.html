@@ -9,7 +9,7 @@
     <title>Tmux &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -142,6 +142,27 @@
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="iterm2.async_get_tmux_connection_by_connection_id">
+<code class="descname">async_get_tmux_connection_by_connection_id</code><span class="sig-paren">(</span><em>connection</em>, <em>connection_id</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_get_tmux_connection_by_connection_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a tmux connection by its ID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>connection</strong> – An existing <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Connection</span></code>.</li>
+<li><strong>connection_id</strong> – A connection ID for a <a class="reference internal" href="#iterm2.TmuxConnection" title="iterm2.TmuxConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">TmuxConnection</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Either a <a class="reference internal" href="#iterm2.TmuxConnection" title="iterm2.TmuxConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">TmuxConnection</span></code></a> or <cite>None</cite>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="class">
 <dt id="iterm2.TmuxException">
 <em class="property">class </em><code class="descname">TmuxException</code><a class="headerlink" href="#iterm2.TmuxException" title="Permalink to this definition">¶</a></dt>
@@ -152,6 +173,20 @@
 <dt id="iterm2.TmuxConnection">
 <em class="property">class </em><code class="descname">TmuxConnection</code><span class="sig-paren">(</span><em>connection_id</em>, <em>owning_session_id</em>, <em>app</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TmuxConnection" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
+<dt id="iterm2.TmuxConnection.async_create_window">
+<code class="descname">async_create_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TmuxConnection.async_create_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new tmux window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A new <a class="reference internal" href="window.html#iterm2.Window" title="iterm2.Window"><code class="xref py py-class docutils literal notranslate"><span class="pre">Window</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="iterm2.TmuxConnection.async_send_command">
 <code class="descname">async_send_command</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TmuxConnection.async_send_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends a command to the tmux server.</p>
@@ -261,8 +296,8 @@ attached to a tmux session, then it may be hidden. Use
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
       <a href="_sources/tmux.rst.txt"

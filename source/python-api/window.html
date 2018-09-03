@@ -9,7 +9,7 @@
     <title>Window &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -136,7 +136,7 @@
 
 <dl class="method">
 <dt id="iterm2.Window.async_create_tab">
-<code class="descname">async_create_tab</code><span class="sig-paren">(</span><em>profile=None</em>, <em>command=None</em>, <em>index=None</em>, <em>profile_customizations=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_create_tab" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_create_tab</code><span class="sig-paren">(</span><em>profile=None</em>, <em>command=None</em>, <em>index=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_create_tab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new tab in this window.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -144,9 +144,9 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>profile</strong> – The profile name to use or None for the default profile.</li>
-<li><strong>command</strong> – The command to run in the new session, or None for the default for the profile. Mutually exclusive with profile_customizations.</li>
+<li><strong>command</strong> – The command to run in the new session, or None for the
+default for the profile.</li>
 <li><strong>index</strong> – The index in the window where the new tab should go (0=first position, etc.)</li>
-<li><strong>profile_customizations</strong> – LocalWriteOnlyProfile giving changes to make in profile. Mutually exclusive with command.</li>
 </ul>
 </td>
 </tr>
@@ -169,7 +169,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">api_pb2.Frame</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#iterm2.GetPropertyException" title="iterm2.GetPropertyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetPropertyException</span></code></a> if something goes wrong.</td>
 </tr>
@@ -231,7 +231,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> – api_pb2.Frame</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#iterm2.SetPropertyException" title="iterm2.SetPropertyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">SetPropertyException</span></code></a> if something goes wrong.</td>
 </tr>
@@ -250,24 +250,6 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fullscreen</strong> – True to make fullscreen, False to make not-fullscreen</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#iterm2.SetPropertyException" title="iterm2.SetPropertyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">SetPropertyException</span></code></a> if something goes wrong.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Window.async_set_tabs">
-<code class="descname">async_set_tabs</code><span class="sig-paren">(</span><em>tabs</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_set_tabs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Changes the tabs and their order.</p>
-<p>The provided tabs may belong to any window. They will be moved if needed. Windows entirely denuded of tabs will be closed.</p>
-<p>All provided tabs will be inserted in the given order starting at the first positions. Any tabs already belonging to this window not in the list will remain after the provided tabs.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tabs</strong> – a list of <a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Tab</span></code></a> objects</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body">RPCException if something goes wrong.</td>
 </tr>
 </tbody>
 </table>
@@ -390,8 +372,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
       <a href="_sources/window.rst.txt"
