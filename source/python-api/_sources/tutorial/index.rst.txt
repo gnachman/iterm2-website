@@ -52,6 +52,8 @@ Other Sections
     * :doc:`example`
     * :doc:`running`
     * :doc:`daemons`
+    * :doc:`rpcs`
+    * :doc:`hooks`
 
 Indices and tables
 ==================

@@ -9,7 +9,7 @@
     <title>Daemons &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -125,8 +125,12 @@
 <h1>Daemons<a class="headerlink" href="#daemons" title="Permalink to this headline">¶</a></h1>
 <p>A daemon in the Unix tradition is a computer program that runs as a background
 process, rather than being under the direct control of an interactive user.</p>
-<p>An iTerm2 daemon would ordinarily be an autolaunch script that provides some
-service, such as listening for notifications and reacting to them.</p>
+<p>An iTerm2 daemon would ordinarily be an AutoLaunch script that provides some
+service, such as listening for notifications and reacting to them. Autolaunch
+scripts should be placed in <cite>~/Library/Application Support/iTerm2/Scripts/AutoLaunch</cite>.</p>
+<p>AutoLaunch scripts are launched at startup. When you create a new one it does
+not get launched until iTerm2 is restarted, but you can always run it by
+selecting it from the <strong>Scripts</strong> menu.</p>
 <p>When you create a new script and choose to make it a “Long-Running Daemon” (as
 opposed to a “Simple” script), iTerm2 will provide a sample program to help you
 get started:</p>
@@ -134,23 +138,21 @@ get started:</p>
 
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
     <span class="n">async</span> <span class="k">def</span> <span class="nf">on_custom_esc</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">notification</span><span class="p">):</span>
         <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Received a custom escape sequence&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">sender_identity</span> <span class="o">==</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">payload</span> <span class="o">==</span> <span class="s2">&quot;create-window&quot;</span><span class="p">:</span>
-                <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_create_window</span><span class="p">()</span>
+                <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">()</span>
 
     <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">async_subscribe_to_custom_escape_sequence_notification</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">on_custom_esc</span><span class="p">)</span>
 
     <span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Let’s examine it line by line.</p>
@@ -169,9 +171,8 @@ complex things it will become more important. This script uses an
 <a class="reference external" href="https://docs.python.org/dev/library/asyncio-task.html#asyncio.Future" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncio.Future</span></code></a> to get it to run indefinitely, which you’ll see
 later.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -214,7 +215,7 @@ expect in a notification callback.</p>
 <p>Let’s see what the callback does:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">sender_identity</span> <span class="o">==</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">payload</span> <span class="o">==</span> <span class="s2">&quot;create-window&quot;</span><span class="p">:</span>
-        <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_create_window</span><span class="p">()</span>
+        <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>First, it checks that the sender identity is correct. Next, it selects the
@@ -234,6 +235,7 @@ custom escape sequence is received in any session.</p>
 <p>This tells the <cite>connection</cite> to handle incoming messages until the passed-in
 future has its result set. The future will never have its result set, so the
 script will run until iTerm2 terminates.</p>
+<p>Continue to the next section, <a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a>.</p>
 <hr class="docutils" />
 <div class="section" id="other-sections">
 <h2>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h2>
@@ -245,6 +247,8 @@ script will run until iTerm2 terminates.</p>
 <li><a class="reference internal" href="example.html"><span class="doc">Example Script</span></a></li>
 <li><a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a></li>
 <li>Daemons</li>
+<li><a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a></li>
+<li><a class="reference internal" href="hooks.html"><span class="doc">Hooks</span></a></li>
 </ul>
 </dd>
 </dl>
@@ -289,8 +293,8 @@ script will run until iTerm2 terminates.</p>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
       <a href="../_sources/tutorial/daemons.rst.txt"
