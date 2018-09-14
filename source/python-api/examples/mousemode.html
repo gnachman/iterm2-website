@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Status Bar Component &#8212; iTerm2 Python API 0.26 documentation</title>
+    <title>Status Bar Component: Mouse Mode &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../_static/documentation_options.js"></script>
@@ -121,50 +121,43 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="status-bar-component">
-<h1>Status Bar Component<a class="headerlink" href="#status-bar-component" title="Permalink to this headline">¶</a></h1>
-<p>This example demonstrates registering a Python function to provide the content of a custom status bar component. It features a “knob” that allows configuration: in this case, whether to show a demonstration of variable-length values, or to show the size of the current session.</p>
-<p>After starting this script, navigate to <strong>Preferences &gt; Profiles &gt; Session</strong>. Turn on <strong>Status Bar Enabled</strong> and select <strong>Configure Status Bar</strong>. Drag the <strong>Status Bar Demo</strong> component into the bottom section. Select it and then click <strong>Configure Component</strong>. You’ll see a “Variable-Length Demo” setting that can be toggled to change the component’s behavior. Other standard knobs, like color adjustments, are also present.</p>
-<p>When the <strong>Variable-Length Demo</strong> knob is on, try making the window narrower and observer that the text changes as the amount of available space changes.</p>
-<p>This script is a long-running daemon since the registered function gets called whenever the size of a session changes. As such, it should go in the AutoLaunch folder.</p>
+  <div class="section" id="status-bar-component-mouse-mode">
+<h1>Status Bar Component: Mouse Mode<a class="headerlink" href="#status-bar-component-mouse-mode" title="Permalink to this headline">¶</a></h1>
+<p>Like <a class="reference internal" href="statusbar.html"><span class="doc">Status Bar Component</span></a>, this demonstrates a custom status bar component. The
+difference is that this one displays the value of a variable: the mouse
+reporting status.</p>
+<p>After starting this script, navigate to <strong>Preferences &gt; Profiles &gt; Session</strong>.
+Turn on <strong>Status Bar Enabled</strong> and select <strong>Configure Status Bar</strong>. Drag the
+<strong>Mouse Mode</strong> component into the bottom section.</p>
+<p>This script is a long-running daemon since the registered function gets called
+whenever the size of a session changes. As such, it should go in the AutoLaunch
+folder.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span><span class="o">=</span><span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-    <span class="c1"># Define the configuration knobs:</span>
-    <span class="n">vl</span> <span class="o">=</span> <span class="s2">&quot;variable_length_demo&quot;</span>
-    <span class="n">knobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterm2</span><span class="o">.</span><span class="n">CheckboxKnob</span><span class="p">(</span><span class="s2">&quot;Variable-Length Demo&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="n">vl</span><span class="p">)]</span>
     <span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
-        <span class="s2">&quot;StatusBarDemo&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Status Bar Demo&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Tests script-provided status bar components&quot;</span><span class="p">,</span>
-        <span class="n">knobs</span><span class="p">,</span>
-        <span class="s2">&quot;row x cols&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;MouseMode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Mouse Mode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Indicates if mouse reporting is enabled&quot;</span><span class="p">,</span>
+        <span class="p">[],</span>
+        <span class="s2">&quot;[mouse on]&quot;</span><span class="p">,</span>
         <span class="bp">None</span><span class="p">)</span>
 
     <span class="c1"># This function gets called whenever any of the paths named in defaults (below) changes</span>
     <span class="c1"># or its configuration changes.</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">knobs</span><span class="p">):</span>
-      <span class="k">if</span> <span class="n">vl</span> <span class="ow">in</span> <span class="n">knobs</span> <span class="ow">and</span> <span class="n">knobs</span><span class="p">[</span><span class="n">vl</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;This is an example of variable-length status bar components&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;This is a demo of variable-length status bar components&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;This demo status bar component has variable length&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Demonstrate variable-length status bar component&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Shows variable-length status bar component&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Shows variable-length text in status bar&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Variable-length text in status bar&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Variable-length text demo&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Var. length text demo&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;It&#39;s getting tight&quot;</span> <span class="p">]</span>
-      <span class="k">return</span> <span class="s2">&quot;{}x{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">reporting</span><span class="p">,</span> <span class="n">knobs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">reporting</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot; &quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;🐭&quot;</span>
 
     <span class="c1"># Defaults specify paths to external variables (like session.rows) and binds them to</span>
     <span class="c1"># arguments to the registered function (coro). When any of those variables&#39; values</span>
     <span class="c1"># change the function gets called.</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;rows&quot;</span><span class="p">:</span> <span class="s2">&quot;session.rows&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;cols&quot;</span><span class="p">:</span> <span class="s2">&quot;session.columns&quot;</span> <span class="p">}</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;reporting&quot;</span><span class="p">:</span> <span class="s2">&quot;session.mouseReportingMode&quot;</span> <span class="p">}</span>
 
     <span class="c1"># Register the component.</span>
     <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_status_bar_component</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span> <span class="n">coro</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">)</span>
@@ -211,7 +204,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="../_sources/examples/statusbar.rst.txt"
+      <a href="../_sources/examples/mousemode.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
