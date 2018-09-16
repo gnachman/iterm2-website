@@ -34,8 +34,6 @@ ITERM_SHELL_INTEGRATION_INSTALLED=Yes
 # (including various custom escape sequences).
 ITERM_PREV_PS1="$PS1"
 
-# -- END ITERM2 CUSTOMIZATIONS --
-
 # The following chunk of code, bash-preexec.sh, is licensed like this:
 # The MIT License
 #
@@ -65,6 +63,21 @@ _install_bash_preexec () {
 # -- BEGIN BASH-PREEXEC.SH --
 #!/bin/bash
 #
+# bash-preexec.sh -- Bash support for ZSH-like 'preexec' and 'precmd' functions.
+# https://github.com/rcaloras/bash-preexec
+#
+#
+# 'preexec' functions are executed before each interactive command is
+# executed, with the interactive command as its argument. The 'precmd'
+# function is executed before each prompt is displayed.
+#
+# Author: Ryan Caloras (ryan@bashhub.com)
+# Forked from Original Author: Glyph Lefkowitz
+#
+# V0.3.7
+#
+# -- END ITERM2 CUSTOMIZATIONS --
+
 # bash-preexec.sh -- Bash support for ZSH-like 'preexec' and 'precmd' functions.
 # https://github.com/rcaloras/bash-preexec
 #
@@ -112,6 +125,17 @@ __bp_last_argument_prev_command="$_"
 
 __bp_inside_precmd=0
 __bp_inside_preexec=0
+
+# Fails if any of the given variables are readonly
+# Reference https://stackoverflow.com/a/4441178
+__bp_require_not_readonly() {
+  for var; do
+    if ! ( unset "$var" 2> /dev/null ); then
+      echo "iTerm2 Shell Integration: bash-preexec requires write access to ${var}" >&2
+      return 1
+    fi
+  done
+}
 
 # Remove ignorespace and or replace ignoreboth from HISTCONTROL
 # so we can accurately invoke preexec with a command from our
@@ -341,7 +365,7 @@ __bp_install() {
 }
 
 # Sets our trap and __bp_install as part of our PROMPT_COMMAND to install
-# after our session has started. This allows bash-preexec to be inlucded
+# after our session has started. This allows bash-preexec to be included
 # at any point in our bash profile. Ideally we could set our trap inside
 # __bp_install, but if a trap already exists it'll only set locally to
 # the function.
@@ -351,6 +375,10 @@ __bp_install_after_session_init() {
     if [[ -z "$BASH_VERSION" ]]; then
         return 1;
     fi
+
+    # bash-preexec needs to modify these variables in order to work correctly
+    # if it can't, just stop the installation
+    __bp_require_not_readonly PROMPT_COMMAND HISTCONTROL HISTTIMEFORMAT || return
 
     # If there's an existing PROMPT_COMMAND capture it and convert it into a function
     # So it is preserved and invoked during precmd.
@@ -444,7 +472,7 @@ function iterm2_prompt_suffix() {
 
 function iterm2_print_version_number() {
   iterm2_begin_osc
-  printf "1337;ShellIntegrationVersion=11;shell=bash"
+  printf "1337;ShellIntegrationVersion=12;shell=bash"
   iterm2_end_osc
 }
 
