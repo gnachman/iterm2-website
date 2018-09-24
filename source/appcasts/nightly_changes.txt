@@ -1,3 +1,89 @@
+2018-09-23: [python] Bump version
+
+2018-09-23: [python] Move ScreenStreamer into its own
+submodule
+
+2018-09-23: [api] Fix failing tests in test_it2api.sh
+
+2018-09-23: [api] Improve how current directory is returned.
+Fix a bug where the compmletion handler for the activate api
+was called twice.
+
+2018-09-23: [python] Remove uses of deprecated dispatch
+functions. Remove deprecated dispatch functions from
+Connection
+
+2018-09-23: [python] Add color preset commands to it2api
+
+2018-09-23: [python] Update docs
+
+2018-09-23: [api] Update scripting templates for the new
+regime
+
+2018-09-23: [python] Cancel the dispatch_forever task to
+avoid a noisy exception when a script terminates
+
+2018-09-23: [python] Remove async_gather. Begin updating
+code to use run_until_complete and run_forever.
+
+2018-09-23: [python] Simplify how messages are dispatched
+and how programs are run. Use run_until_complete or
+run_forever. Dispatching happens in an infinite async loop
+now.
+
+2018-09-23: Remove bogus reference in prefs xib
+
+2018-09-23: [status bar] Remove bogus draw calls
+
+2018-09-23: Update docs to add variables and example of
+changing color preset when theme changes
+
+2018-09-23: [python] Fix up variable monitoring:
+
+Move variable scope enum to variables submodule.
+
+Allow async_recv_message to be cancelled without breaking
+message dispatching forever.
+
+Fix subscribing to app scope variable changes.
+
+Add docs to VariableMonitor.
+
+2018-09-22: [python, api] Add color presets to API.
+
+Refactor Color into its own submodule.
+
+Add gather to connection. Change how waiting on the
+websocket works to support the case where two receivers
+exist and the first one finishes before the second one.
+Before, the second one would never await the websocket
+leading to deadlock.
+
+2018-09-22: Add advanced pref that excludes certain
+characters from belonging to a URL. Issue 4842
+
+2018-09-21: Move where the window background color is set to
+after its last assignment to fix breakage of the dark theme
+on 10.12. Issue 7068
+
+2018-09-21: Fix dark theme on 10.12 and 10.13. it_tabStyle
+was confused because the appearance was light prior to its
+being set so it rewrote the theme to light. This preserves
+the preexisting bug with the toolbelt when there's a dark
+tab color and no tab bar, which is too complex to fix for
+3.2.1. Issue 7054
+
+2018-09-19: Improve text rendering on Mojave + non retina
+
+2018-09-19: Make traditional fullscreen window
+miniaturizable on 10.13 and up. The 10.12 behavior, based on
+a suggestion in #4402 doesn't make much sense to me but I'm
+going to leave it alone since I don't have time to
+investigate it now.
+
+2018-09-19: [python] Expose theme through variable. Add
+python binding for it.
+
 2018-09-18: Allow hotkey windows to align to the top of the
 screen when the menu bar is hidden, as when over a lion
 fullscreen window. Issue 7044
