@@ -13,9 +13,7 @@ This script shows a working example:
 
     #!/usr/bin/env python3
 
-    import asyncio
     import iterm2
-    import time
 
     async def main(connection):
 	app = await iterm2.async_get_app(connection)
@@ -29,11 +27,9 @@ This script shows a working example:
 
 	await iterm2.Registration.async_register_rpc_handler(connection, "clear_all_sessions", clear_all_sessions)
 
-	await connection.async_dispatch_until_future(asyncio.Future())
+    iterm2.run_forever(main)
 
-    iterm2.run(main)
-
-A lot of this should look familiar from the :doc:`daemon` example. Let's focus
+A lot of this should look familiar from the :doc:`daemons` example. Let's focus
 on the parts we haven't seen before.
 
 This call registers the RPC:

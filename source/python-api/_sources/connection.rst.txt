@@ -1,10 +1,10 @@
 Connection
 ----------
 .. automodule:: iterm2.connection
+.. autofunction:: iterm2.run_until_complete
+.. autofunction:: iterm2.run_forever
 .. autoclass:: iterm2.connection.Connection
-   :members: run, async_create, async_dispatch_for_duration, async_dispatch_until_future
-
-
+   :members: async_create
 
 ----
 
