@@ -1,3 +1,53 @@
+2018-09-27: Make it possible to specify a custom tab icon
+
+2018-09-27: Remove tab icon button from prefs>appearance
+
+2018-09-27: Only draw the area behind the legacy scroller if
+scroll bars are not hidden. Issue 7072
+
+2018-09-27: Add a drop shadow to the app icon
+
+2018-09-27: Remove an extra word
+
+2018-09-27: Draw under legacy scrollers on 10.14 when metal
+is off. Issue 7101
+
+2018-09-27: Change how text is drawn to look better on
+Mojave.
+
+Mojave changes stroke thickness depending on color.
+Generally, black is thick and white is thin. The actual
+thickness is a function of the red and green channels of the
+text color. It is constant for values less than 50%. That
+is, r=0.4, g=.4 produces the same stroke as r=0, g=0. Above
+50% the stroke thickness changes; it's hard to quantify
+stroke thickness, so let's talk about alpha instead. I
+believe the difference only affects antialiasing (at least
+at small point sizes, which is all that really matters to
+us). Alpha values change nonlinearly as the green value or
+red value of the text color increases. The rate of changes
+depends on the pixel. Some pixels hardly change at all
+between black and white; others change from clear to opaque.
+All this is described in more detail at:
+
+https://gitlab.com/gnachman/iterm2/wikis/macOS-Mojave-Regression-Challenge
+
+This commit does not attempt to tackle the regression
+problem; it simply aims to stem the bleeding. We now render
+each non-Emoji character four times: in black, red, green,
+and yellow. The alpha value of each rendering is packed into
+the red, green, blue, and alpha channels of the texture. The
+fragment shader selects one of these channels (and exactly
+one) to use for its alpha value. The fragment shader chooses
+the text color's rgb values for the rgb channels. This
+works! It is perfect for pure white, black, red, green, and
+yellow. It is also perfect for all values that are <50% red
+and < 50% green. Midtones exhibit noticeable differences.
+For reasons I do not comprehend light values look pretty
+close, too.
+
+Issue 7032
+
 2018-09-24: Change confirm quit to confirm even when there
 are no terminal windows. Issue 7051
 
