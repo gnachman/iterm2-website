@@ -1,3 +1,49 @@
+2018-09-29: [python] Update status bar example
+
+2018-09-29: Fix a bug where the hotkey window would always
+be opened when opening a file with iTerm2. The problem was
+that a nil term would return a profileHotkey when passed to
+profileHotKeyForWindowController. Issue 7087.
+
+2018-09-29: Fix a bug where tab icons weren't updated right
+away
+
+2018-09-29: Add macvim to the list of vims
+
+2018-09-29: Don't show the monitor emoji when there is no
+title. It is easily confused with the tab icon. Issue 7103
+
+2018-09-29: Support notification triggers created in 3.2.1
+
+2018-09-29: Force textview to redraw when transparency is
+toggled. I don't know why telling its superview to draw did
+not do the job, except that AppKit is weird. Issue 7114
+
+2018-09-29: Refactor postprocessing into its own method and
+have it write into a buffer it owns instead of the bitmap
+data, which might not be safe to write to.
+
+2018-09-29: Use an enum instead of passing strings around in
+gpuRendererAvailability to try to fix a crash (which I think
+is not actually this, but it's a better design anyway)
+
+2018-09-29: Add some assertions to the 10.14 character
+bitmap postprocessing to detect buffer overruns before they
+happen
+
+2018-09-29: Use grid width, not visible width, for
+determining how much space exists for the IME's marked text.
+This should fix an assertion.
+
+2018-09-29: Move checkForOverrun around to get a better fix
+on what's happening
+
+2018-09-29: Fix leak of texture pages
+
+2018-09-29: Fix a bug where a new texture was created every
+time a nonascii glyph was shown because the glyph size was
+being compared to the cell size. :(
+
 2018-09-27: Make it possible to specify a custom tab icon
 
 2018-09-27: Remove tab icon button from prefs>appearance
