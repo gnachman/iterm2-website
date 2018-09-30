@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Status Bar &#8212; iTerm2 Python API 0.26 documentation</title>
+    <title>Color &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -16,6 +16,8 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Color Presets" href="colorpresets.html" />
+    <link rel="prev" title="Arrangement" href="arrangement.html" />
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -122,106 +124,43 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="module-iterm2.statusbar">
-<span id="status-bar"></span><h1>Status Bar<a class="headerlink" href="#module-iterm2.statusbar" title="Permalink to this headline">¶</a></h1>
-<p>Status bar customization interfaces.</p>
+  <div class="section" id="module-iterm2.color">
+<span id="color"></span><h1>Color<a class="headerlink" href="#module-iterm2.color" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="iterm2.StatusBarComponent">
-<em class="property">class </em><code class="descname">StatusBarComponent</code><span class="sig-paren">(</span><em>name</em>, <em>short_description</em>, <em>detailed_description</em>, <em>knobs</em>, <em>exemplar</em>, <em>update_cadence</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Describes a script-provided status bar component showing a text value provided by a user-provided coroutine.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – A unique name for this component.</li>
-<li><strong>short_description</strong> – Short description shown below the component in the picker UI.</li>
-<li><strong>detailed_description</strong> – Tool tip for th component in the picker UI.</li>
-<li><strong>knobs</strong> – List of configuration knobs. See the various Knob classes for details.</li>
-<li><strong>exemplar</strong> – Example value to show in the picker UI as the sample content of the component.</li>
-<li><strong>update_cadence</strong> – How frequently in seconds to reload the value, or <cite>None</cite> if it does not need to be reloaded on a timer.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dt id="iterm2.Color">
+<em class="property">class </em><code class="descname">Color</code><span class="sig-paren">(</span><em>r=0</em>, <em>g=0</em>, <em>b=0</em>, <em>a=255</em>, <em>color_space='sRGB'</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a color.</p>
+<dl class="attribute">
+<dt id="iterm2.Color.alpha">
+<code class="descname">alpha</code><a class="headerlink" href="#iterm2.Color.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>The color’s alpha component.</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.CheckboxKnob">
-<em class="property">class </em><code class="descname">CheckboxKnob</code><span class="sig-paren">(</span><em>name</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.CheckboxKnob" title="Permalink to this definition">¶</a></dt>
-<dd><p>A status bar configuration knob to select a checkbox.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – Description of the knob.</li>
-<li><strong>default_value</strong> – Default value (Boolean).</li>
-<li><strong>key</strong> – A unique string key identifying this knob.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="attribute">
+<dt id="iterm2.Color.blue">
+<code class="descname">blue</code><a class="headerlink" href="#iterm2.Color.blue" title="Permalink to this definition">¶</a></dt>
+<dd><p>The color’s blue component.</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.StringKnob">
-<em class="property">class </em><code class="descname">StringKnob</code><span class="sig-paren">(</span><em>name</em>, <em>placeholder</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StringKnob" title="Permalink to this definition">¶</a></dt>
-<dd><p>A status bar configuration knob to select a string.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – Description of the knob.</li>
-<li><strong>placeholder</strong> – Placeholder value (shown in gray) for the text field when it has no content.</li>
-<li><strong>default_value</strong> – Default value.</li>
-<li><strong>key</strong> – A unique string key identifying this knob.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="attribute">
+<dt id="iterm2.Color.color_space">
+<code class="descname">color_space</code><a class="headerlink" href="#iterm2.Color.color_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>The color’s color space.</p>
+<p>Recognized values are: <cite>iterm2.Color.COLOR_SPACE_NAME_SRGB</cite> and <cite>iterm2.Color.COLOR_SPACE_NAME_CALIBRATED</cite>.</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.PositiveFloatingPointKnob">
-<em class="property">class </em><code class="descname">PositiveFloatingPointKnob</code><span class="sig-paren">(</span><em>name</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PositiveFloatingPointKnob" title="Permalink to this definition">¶</a></dt>
-<dd><p>A status bar configuration knob to select a positive floating point value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – Description of the knob.</li>
-<li><strong>default_value</strong> – Default value.</li>
-<li><strong>key</strong> – A unique string key identifying this knob.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="attribute">
+<dt id="iterm2.Color.green">
+<code class="descname">green</code><a class="headerlink" href="#iterm2.Color.green" title="Permalink to this definition">¶</a></dt>
+<dd><p>The color’s green component.</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.ColorKnob">
-<em class="property">class </em><code class="descname">ColorKnob</code><span class="sig-paren">(</span><em>name</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ColorKnob" title="Permalink to this definition">¶</a></dt>
-<dd><p>A status bar configuration knob to select color.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – Description of the knob.</li>
-<li><strong>default_value</strong> – Default value (a <a class="reference internal" href="color.html#iterm2.Color" title="iterm2.Color"><code class="xref py py-class docutils literal notranslate"><span class="pre">Color</span></code></a>)</li>
-<li><strong>key</strong> – A unique string key identifying this knob</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="attribute">
+<dt id="iterm2.Color.red">
+<code class="descname">red</code><a class="headerlink" href="#iterm2.Color.red" title="Permalink to this definition">¶</a></dt>
+<dd><p>The color’s red component.</p>
+</dd></dl>
+
 </dd></dl>
 
 <hr class="docutils" />
@@ -267,7 +206,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
-      <a href="_sources/statusbar.rst.txt"
+      <a href="_sources/color.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

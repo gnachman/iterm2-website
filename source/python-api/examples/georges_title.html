@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -193,7 +194,6 @@
     <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="n">localhome</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;HOME&quot;</span><span class="p">)</span>
     <span class="n">localhost</span> <span class="o">=</span> <span class="n">hostname_dash_f</span><span class="p">()</span>
 
@@ -218,9 +218,9 @@
                                                                     <span class="s2">&quot;georges_title&quot;</span><span class="p">,</span>
                                                                     <span class="n">georges_title</span><span class="p">,</span>
                                                                     <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;George&#39;s Title Algorithm&quot;</span><span class="p">,</span>
-                                                                    <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span>    <span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
+                                                                    <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">)</span>
 
-<span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Finally, select <em>George’s Title Algorithm</em> in <strong>Prefs &gt; Profiles &gt; General &gt; Title</strong>.</p>
@@ -255,7 +255,7 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |

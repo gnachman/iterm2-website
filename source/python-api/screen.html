@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Status Bar &#8212; iTerm2 Python API 0.26 documentation</title>
+    <title>Screen &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -16,6 +16,8 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Session" href="session.html" />
+    <link rel="prev" title="Registration" href="registration.html" />
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -122,106 +124,139 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="module-iterm2.statusbar">
-<span id="status-bar"></span><h1>Status Bar<a class="headerlink" href="#module-iterm2.statusbar" title="Permalink to this headline">¶</a></h1>
-<p>Status bar customization interfaces.</p>
+  <div class="section" id="module-iterm2.screen">
+<span id="screen"></span><h1>Screen<a class="headerlink" href="#module-iterm2.screen" title="Permalink to this headline">¶</a></h1>
+<p>Provides access to screen contents.</p>
 <dl class="class">
-<dt id="iterm2.StatusBarComponent">
-<em class="property">class </em><code class="descname">StatusBarComponent</code><span class="sig-paren">(</span><em>name</em>, <em>short_description</em>, <em>detailed_description</em>, <em>knobs</em>, <em>exemplar</em>, <em>update_cadence</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Describes a script-provided status bar component showing a text value provided by a user-provided coroutine.</p>
+<dt id="iterm2.ScreenStreamer">
+<em class="property">class </em><code class="descname">ScreenStreamer</code><span class="sig-paren">(</span><em>connection</em>, <em>session_id</em>, <em>want_contents=True</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenStreamer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An asyncio context manager for monitoring the screen contents.</p>
+<p>Don’t create this yourself. Use Session.get_screen_streamer() instead. See
+its docstring for more info.</p>
+<dl class="method">
+<dt id="iterm2.ScreenStreamer.async_get">
+<code class="descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenStreamer.async_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the screen contents, waiting until they change if needed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – A unique name for this component.</li>
-<li><strong>short_description</strong> – Short description shown below the component in the picker UI.</li>
-<li><strong>detailed_description</strong> – Tool tip for th component in the picker UI.</li>
-<li><strong>knobs</strong> – List of configuration knobs. See the various Knob classes for details.</li>
-<li><strong>exemplar</strong> – Example value to show in the picker UI as the sample content of the component.</li>
-<li><strong>update_cadence</strong> – How frequently in seconds to reload the value, or <cite>None</cite> if it does not need to be reloaded on a timer.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.ScreenContents" title="iterm2.ScreenContents"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenContents</span></code></a></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
+</dd></dl>
+
 <dl class="class">
-<dt id="iterm2.CheckboxKnob">
-<em class="property">class </em><code class="descname">CheckboxKnob</code><span class="sig-paren">(</span><em>name</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.CheckboxKnob" title="Permalink to this definition">¶</a></dt>
-<dd><p>A status bar configuration knob to select a checkbox.</p>
+<dt id="iterm2.ScreenContents">
+<em class="property">class </em><code class="descname">ScreenContents</code><span class="sig-paren">(</span><em>proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenContents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes screen contents.</p>
+<dl class="attribute">
+<dt id="iterm2.ScreenContents.cursor_coord">
+<code class="descname">cursor_coord</code><a class="headerlink" href="#iterm2.ScreenContents.cursor_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the locaiton of the cursor.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – Description of the knob.</li>
-<li><strong>default_value</strong> – Default value (Boolean).</li>
-<li><strong>key</strong> – A unique string key identifying this knob.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Point</span></code></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.StringKnob">
-<em class="property">class </em><code class="descname">StringKnob</code><span class="sig-paren">(</span><em>name</em>, <em>placeholder</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StringKnob" title="Permalink to this definition">¶</a></dt>
-<dd><p>A status bar configuration knob to select a string.</p>
+<dl class="attribute">
+<dt id="iterm2.ScreenContents.first_line">
+<code class="descname">first_line</code><a class="headerlink" href="#iterm2.ScreenContents.first_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>The line number of the first line in this object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.ScreenContents.line">
+<code class="descname">line</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenContents.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the LineContents at the given index.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – Description of the knob.</li>
-<li><strong>placeholder</strong> – Placeholder value (shown in gray) for the text field when it has no content.</li>
-<li><strong>default_value</strong> – Default value.</li>
-<li><strong>key</strong> – A unique string key identifying this knob.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> – should be at least 0 and less than <cite>number_of_lines</cite>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.LineContents" title="iterm2.LineContents"><code class="xref py py-class docutils literal notranslate"><span class="pre">LineContents</span></code></a> object.</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.PositiveFloatingPointKnob">
-<em class="property">class </em><code class="descname">PositiveFloatingPointKnob</code><span class="sig-paren">(</span><em>name</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PositiveFloatingPointKnob" title="Permalink to this definition">¶</a></dt>
-<dd><p>A status bar configuration knob to select a positive floating point value.</p>
+<dl class="attribute">
+<dt id="iterm2.ScreenContents.number_of_lines">
+<code class="descname">number_of_lines</code><a class="headerlink" href="#iterm2.ScreenContents.number_of_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of lines in this object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.ScreenContents.number_of_lines_above_screen">
+<code class="descname">number_of_lines_above_screen</code><a class="headerlink" href="#iterm2.ScreenContents.number_of_lines_above_screen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of lines before the screen including scrollback history and lines lost from the head of scrolllback history.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – Description of the knob.</li>
-<li><strong>default_value</strong> – Default value.</li>
-<li><strong>key</strong> – A unique string key identifying this knob.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The number of lines ever received before the top line of the screen.</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
+</dd></dl>
+
 <dl class="class">
-<dt id="iterm2.ColorKnob">
-<em class="property">class </em><code class="descname">ColorKnob</code><span class="sig-paren">(</span><em>name</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ColorKnob" title="Permalink to this definition">¶</a></dt>
-<dd><p>A status bar configuration knob to select color.</p>
+<dt id="iterm2.LineContents">
+<em class="property">class </em><code class="descname">LineContents</code><span class="sig-paren">(</span><em>proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.LineContents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes the contents of a line.</p>
+<dl class="attribute">
+<dt id="iterm2.LineContents.hard_eol">
+<code class="descname">hard_eol</code><a class="headerlink" href="#iterm2.LineContents.hard_eol" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if the line has a hard newline. If False, the text of a longer line wraps onto the next line.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.LineContents.string">
+<code class="descname">string</code><a class="headerlink" href="#iterm2.LineContents.string" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The line’s contents as a string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.LineContents.string_at">
+<code class="descname">string_at</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.LineContents.string_at" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the string of the cell at index <cite>x</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – Description of the knob.</li>
-<li><strong>default_value</strong> – Default value (a <a class="reference internal" href="color.html#iterm2.Color" title="iterm2.Color"><code class="xref py py-class docutils literal notranslate"><span class="pre">Color</span></code></a>)</li>
-<li><strong>key</strong> – A unique string key identifying this knob</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> – The index to look up.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string giving the contents of the cell at that index, or empty string if none.</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
 </dd></dl>
 
 <hr class="docutils" />
@@ -267,7 +302,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
-      <a href="_sources/statusbar.rst.txt"
+      <a href="_sources/screen.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
