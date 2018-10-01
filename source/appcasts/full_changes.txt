@@ -1,123 +1,30 @@
-iTerm2 3.2.1
+iTerm2 version 3.2.2
 
-This version adds support for macOS Mojave.
+This release fixes serious bugs in 3.2.1. All users are urged to upgrade.
 
-Mojave-specific Changes
------------------------
+Critical Bug Fixes:
+- Fix various crashing bugs.
+- Fix a serious memory leak when displaying
+  non-ASCII characters.
+- Fix a bug that caused notification triggers not
+  to work.
 
-- The GPU renderer supports transparent windows.
-- The GPU renderer is no longer disabled
-  temporarily while other views (such as the find
-  bar) are visible.
-- Your theme will be changed to "Automatic" and
-  will follow the system's light/dark theme. You
-  can change it back to Light or Dark if you
-  prefer.
-
-Bug Fixes
----------
-- Fixes a number of crashes.
-- Fixes cases hotkey windows would be overlapped
-  by the menu.
-- Improves rendering of box drawing characters on
-  non-retina displays with GPU renderer.
-- Fixes a bug where a modal dialog could be
-  overlapped by a floating hotkey window.
-- Reduced CPU usage when blinking text exists but
-  blinking is disabled and the GPU renderer is on.
-- Fix appearance of copy mode cursor with GPU
+Other Bug Fixes:
+- Improve legibility of text on Mojave with GPU
   renderer.
-- Fix a problem where tmux window panes might not
-  always have per-pane title bars when they ought
-  to.
-- Fix a bug where terminal side margins could not
-  exceed 100 points.
-- Fixes a bug where the frame right could be
-  double what it ought to be during scrolling.
-- Fixes cases where non-hotkey windows would be
-  raised above other apps' windows when activating
-  the hotkey window.
-- Fix a performance issue when using fast user
-  switching and a hotkey window is registered.
-- Fix a bug where announcements' frames could be
-  wrong.
-- Do not use virtual keycodes to detect digits
-  because it causes problems with certain
-  keyboards.
-- Fix a bug where the split pane panel did not
-  resize properly.
-- Improve menu detection so non-native full screen
-  windows can adjust their vertical position
-  properly.
-- Escape the user name for compatibility with
-  active directory usernames that have a
-  backslash.
-- Fix a bug where mouse reporting of the scroll
-  wheel would sometimes reverse direction for one
-  line when scrolling ends.
-- Fix a bug where hotkey windows would sometimes
-  hide when a modal alert was presented. Many
-  modal alerts are now window-modal rather than
-  app-modal.
-- Fix a crash when dragging a color well.
-- Fix a bug where the wrong text could be used
-  when you right click on an existing selection,
-  the text under that selection changes, and then
-  you pick an action from the menu.
-
-
-New Features
-------------
-- Add support for macOS 10.14.
-- Add support for CSI CHT control sequence.
-- New advanced pref to set the prominence of the
-  outline on the selected tab when there is a
-  colored tab present.
-- New advanced pref to adjust the prominence of
-  text in non-selected tabs when a colored tab is
-  present.
-- New advanced pref to adjust the prominence the
-  outline of the current tab when colored tabs are
-  present.
-- New advanced preference to set fallback value of
-  LC_CTYPE when LANG can't be set because it would
-  be an unrecognized locale.
-
-Other Improvements
-------------------
-- When focus reporting is set or unset, the
-  announcement asking if you want to turn it off
-  is removed.
-- Improved performance for memory-starved GPUs
-  with GPU renderer.
-- Performance improvents when there is a badge and
-  GPU renderer is on.
-- Show "key" cursor icon at password prompt when
-  GPU renderer is on.
-- Confirm before running a script that iTerm2
-  handles (e.g., by double clicking a .sh file)
-- Improve vertical alignment of new-output
-  indicator in tabs.
-- Improve contrast of tab titles in non-selected
-  tabs when a colored tab is present.
-- Ignore trailing ] on URLs for semantic history.
-- Minimum Contrast no longer applies to box- and
-  block-drawing characters.
-- Improve how advanced preferences are implemented
-  for better performance.
-- Releases are now notarized for offline initial
-  launch on macOS Mojave.
-- Performance improvements for long scrollback
-  history.
-- Move "use bright colors for bold text" to Colors
-  pane to make its true purpose clear: it actually
-  has always controlled whether the bold color you
-  specify gets used.
-
-Things Made Worse
------------------
-- Support for Growl has been removed because it
-  cannot be notarized under macOS Mojave and it
-  was holding back improvements for native
-  notifications.
+- Fix a bug where scrollbars could be transparent.
+- Fix a bug where the title bar was not opaque on
+  Mojave.
+- Fix a bug where toggling transparency did not
+  take effect immediately.
+- Fix a bug where the hotkey window would always
+  be opened when opening a file with iTerm2.
+- Fix temporarily incorrect drawing in new
+  sessions on Mojave.
+- Fix resizing split panes on Mojave via menu or
+  keyboard shortcut.
+- Add a usage description for Apple Events so
+  programs run within iTerm2 can use Applescript.
+- Fix a bug where a "ghost" of text would remain
+  behind in transparent windows.
 
