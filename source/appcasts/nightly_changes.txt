@@ -1,3 +1,37 @@
+2018-10-02: Improve background color of tmux integration
+windows on 10.14. The flexible view used to draw under all
+the session views and they would punch a hole through the
+window. In 10.14, compositing works, so they now overlap and
+appear to have a less opaque background color. Issue 7147
+
+2018-10-02: [python] Add docs for the new focus module
+
+2018-10-02: Really draw two frames before showing metal
+view. Seems to either fix or mostly prevent the issue where
+the metal view is transparent
+
+2018-10-02: Pool bitmap contexts. It was extremely slow to
+create and destroy them all the time.
+
+2018-10-02: Update release_stable to get improvements made
+to release_beta
+
+2018-10-02: [Python] Add focus monitor
+
+2018-10-02: Add a currently off by default advanced setting
+to invalidate the window shadow once a second for
+transparent windows. It's ungodly slow.
+
+2018-10-02: [Python] Hold on to tasks until they're done. I
+retract my previous comment about understanding asyncio.
+
+2018-10-02: [Python] Greatly simplify how we use asyncio and
+websockets.
+
+I think I finally understand how asyncio is supposed to
+work! This design is a million times better, and fixes a
+deadlock that the previous design had. Ahhhh
+
 2018-10-01: Fix support for subpixel AA on Mojave. This
 reverts to the 10.13 code paths when
 CGFontRenderingFontSmoothingDisabled is set to NO regardless
