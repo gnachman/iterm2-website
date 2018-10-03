@@ -15,6 +15,8 @@ This script keeps tabs in most-recently used order, with the current tab always 
 
 	async def focus_callback(connection, notification):
 	  window = app.current_terminal_window
+          if not window:
+              return
 	  if window.current_tab != window.tabs[0]:
 	      tabs = list(window.tabs)
 	      i = tabs.index(window.current_tab)
