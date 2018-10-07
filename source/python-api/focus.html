@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Focus &#8212; iTerm2 Python API 0.26 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MainMenu" href="mainmenu.html" />
+    <link rel="prev" title="Connection" href="connection.html" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  </head><body>
+  <header >
+    <div class="row">
+      <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="text-center"><a href="/index.html"><img src="https://iterm2.com/img/logo2x.jpg" width=800 height=312></a></div>
+        <div class="sticky contain-to-grid">
+          <nav class="top-bar" data-topbar>
+            <ul class="title-area">
+              <li class="name">
+
+              </li>
+              <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+              <li class="small-screen-donate">
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+            </ul>
+
+            <section class="top-bar-section">
+              <!-- Right Nav Section -->
+              <ul class="right"> <li>
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li><a href="/index.html">Home</a></li>
+            <li ><a href="/news.html">News</a></li>
+            <li ><a href="/features.html">Features</a></li>
+            <li ><a href="/faq.html">FAQ</a></li>
+            <li class="active"><a href="/documentation.html">Documentation</a></li>
+            <li ><a href="/downloads.html">Downloads</a></li>
+          </ul>
+        </section>
+      </nav>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+    <div class="document">
+<div class="row">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
+
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">Introduction</div>
+
+	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
+	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+
+	      <div class="toc_subhead">User Interface</div>
+
+	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
+	      <li><a href="documentation-preferences.html">Preferences</a></li>
+	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
+	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
+	      <li><a href="documentation-fonts.html">Fonts</a></li>
+	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
+
+	      <div class="toc_subhead">Features</div>
+
+	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
+	      <li><a href="documentation-badges.html">Badges</a></li>
+	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
+	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
+	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
+	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
+	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
+	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
+	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
+	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
+	      <li><a href="documentation-triggers.html">Triggers</a></li>
+	      <li><a href="documentation-utilities.html">Utilities</a></li>
+
+	      <div class="toc_subhead">Advanced</div>
+
+	      <li><a href="documentation-scripting.html">Scripting</a></li>
+	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
+	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
+	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
+
+      <div class="documentwrapper">
+	<div class="bodywrapper">
+	  <div class="body" role="main">
+	    
+  <div class="section" id="module-iterm2.focus">
+<span id="focus"></span><h1>Focus<a class="headerlink" href="#module-iterm2.focus" title="Permalink to this headline">¶</a></h1>
+<p>Provides interfaces relating to keyboard focus.</p>
+<dl class="class">
+<dt id="iterm2.focus.FocusMonitor">
+<em class="property">class </em><code class="descname">FocusMonitor</code><span class="sig-paren">(</span><em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusMonitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>An asyncio context manager for monitoring keyboard focus changes.</p>
+<dl class="method">
+<dt id="iterm2.focus.FocusMonitor.async_get_next_update">
+<code class="descname">async_get_next_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusMonitor.async_get_next_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>When focus changes, returns an update.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.focus.FocusUpdate" title="iterm2.focus.FocusUpdate"><code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdate</span></code></a> object.</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">FocusMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">monitor</span><span class="p">:</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">update</span> <span class="o">=</span> <span class="n">await</span> <span class="n">monitor</span><span class="o">.</span><span class="n">async_get_next_update</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">update</span><span class="o">.</span><span class="n">selected_tab_changed</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;The active tab is now {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">selected_tab_changed</span><span class="o">.</span><span class="n">tab_id</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.focus.FocusUpdate">
+<em class="property">class </em><code class="descname">FocusUpdate</code><span class="sig-paren">(</span><em>application_active=None</em>, <em>window_changed=None</em>, <em>selected_tab_changed=None</em>, <em>active_session_changed=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a change to keyboard focus.</p>
+<p>Up to one of <cite>application_active</cite>, <cite>window_changed</cite>, <cite>selected_tab_changed</cite>, or <cite>active_session_changed</cite> will not be None.</p>
+<dl class="attribute">
+<dt id="iterm2.focus.FocusUpdate.active_session_changed">
+<code class="descname">active_session_changed</code><a class="headerlink" href="#iterm2.focus.FocusUpdate.active_session_changed" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None if no change to active sessino, otherwise <a class="reference internal" href="#iterm2.focus.FocusUpdateActiveSessionChanged" title="iterm2.focus.FocusUpdateActiveSessionChanged"><code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateActiveSessionChanged</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.focus.FocusUpdate.application_active">
+<code class="descname">application_active</code><a class="headerlink" href="#iterm2.focus.FocusUpdate.application_active" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None if no change to whether the app is active, otherwise <code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateApplicationActive</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.focus.FocusUpdate.selected_tab_changed">
+<code class="descname">selected_tab_changed</code><a class="headerlink" href="#iterm2.focus.FocusUpdate.selected_tab_changed" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None if no change to selected tab, otherwise <a class="reference internal" href="#iterm2.focus.FocusUpdateSelectedTabChanged" title="iterm2.focus.FocusUpdateSelectedTabChanged"><code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateSelectedTabChanged</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.focus.FocusUpdate.window_changed">
+<code class="descname">window_changed</code><a class="headerlink" href="#iterm2.focus.FocusUpdate.window_changed" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None if no change to the current window, otherwise <a class="reference internal" href="#iterm2.focus.FocusUpdateWindowChanged" title="iterm2.focus.FocusUpdateWindowChanged"><code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateWindowChanged</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.focus.FocusUpdateActiveSessionChanged">
+<em class="property">class </em><code class="descname">FocusUpdateActiveSessionChanged</code><span class="sig-paren">(</span><em>session_id</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdateActiveSessionChanged" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a change to the active session within a tab.</p>
+<dl class="attribute">
+<dt id="iterm2.focus.FocusUpdateActiveSessionChanged.session_id">
+<code class="descname">session_id</code><a class="headerlink" href="#iterm2.focus.FocusUpdateActiveSessionChanged.session_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the active session ID within its tab.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A session ID, which is a string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.focus.FocusUpdateSelectedTabChanged">
+<em class="property">class </em><code class="descname">FocusUpdateSelectedTabChanged</code><span class="sig-paren">(</span><em>tab_id</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdateSelectedTabChanged" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a change in the selected tab.</p>
+<dl class="attribute">
+<dt id="iterm2.focus.FocusUpdateSelectedTabChanged.tab_id">
+<code class="descname">tab_id</code><a class="headerlink" href="#iterm2.focus.FocusUpdateSelectedTabChanged.tab_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A tab ID, which is a string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.focus.FocusUpdateWindowChanged">
+<em class="property">class </em><code class="descname">FocusUpdateWindowChanged</code><span class="sig-paren">(</span><em>window_id</em>, <em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdateWindowChanged" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a change in which window is focused.</p>
+<p>This class defines three static constants:</p>
+<p><cite>TERMINAL_WINDOW_BECAME_KEY</cite>: A terminal window received keyboard focus.
+<cite>TERMINAL_WINDOW_IS_CURRENT</cite>: A terminal window is current but some non-terminal window (such as Preferences) has keyboard focus.
+<cite>TERMINAL_WINDOW_RESIGNED_KEY</cite>: A terminal window no longer has keyboard focus.</p>
+<dl class="attribute">
+<dt id="iterm2.focus.FocusUpdateWindowChanged.event">
+<code class="descname">event</code><a class="headerlink" href="#iterm2.focus.FocusUpdateWindowChanged.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes how the window’s focus changed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">One of <cite>FocusUpdateWindowChanged.TERMINAL_WINDOW_BECAME_KEY</cite>, <cite>FocusUpdateWindowChanged.TERMINAL_WINDOW_IS_CURRENT</cite>, or <cite>FocusUpdateWindowChanged.TERMINAL_WINDOW_RESIGNED_KEY</cite>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.focus.FocusUpdateWindowChanged.window_id">
+<code class="descname">window_id</code><a class="headerlink" href="#iterm2.focus.FocusUpdateWindowChanged.window_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the window ID of the window that changed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.FocusUpdateApplicationActive">
+<em class="property">class </em><code class="descname">FocusUpdateApplicationActive</code><span class="sig-paren">(</span><em>active</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdateApplicationActive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a change in whether the application is active.</p>
+<dl class="attribute">
+<dt id="iterm2.FocusUpdateApplicationActive.application_active">
+<code class="descname">application_active</code><a class="headerlink" href="#iterm2.FocusUpdateApplicationActive.application_active" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><cite>True</cite> if the application is active or <cite>False</cite> if not.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+</div>
+
+
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://iterm2.com/js/scripts.js"></script>                
+<script type="text/javascript">
+  function showId(id) {
+    document.getElementById("changelist" + id).style.display = 'block';
+    document.getElementById("show" + id).style.display = 'none';
+    document.getElementById("hide" + id).style.display = 'inline';
+  }
+
+  function hideId(id) {
+    document.getElementById("changelist" + id).style.display = 'none';
+    document.getElementById("show" + id).style.display = 'inline';
+    document.getElementById("hide" + id).style.display = 'none';
+  }
+  $(document).foundation();
+</script>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, George Nachman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="_sources/focus.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
