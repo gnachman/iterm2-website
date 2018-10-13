@@ -1,25 +1,14 @@
 iTerm2 version 3.2.4beta1
 
-Bug fixes:
-----------
-- Fix a bug where the local variables would not be
-  set correctly for non-English users. I blame
-  Apple.
-- Fix a problem where iTerm2 would not request
-  permission for camera, mic, etc. on behalf of
-  terminal applications.
-- Fix a bug where non-ASCII text would not be
-  antialiased if there was no non-ASCII font
-  specified. This affected the GPU renderer.
-- Reduce the amount of "ghost" text visible in
-  windows with transparency. The use of
-  transparency is discouraged for large windows
-  because of performance problems in macOS 10.14.
-  The frequency of updating the window shadow is
-  configurable by a new advanced setting.
-- Improve the drawing of underlines in the GPU
-  renderer.
-- Fix a bug where the prefs panel would appear
-  beneath another app's window when using a
-  floating hotkey window.
-- Fix various crashes.
+- Hide window shadow for windows with transparent
+  sessions in the current tab on Mojave. Apple
+  broke transparent windows so this workaround is
+  necessary for acceptable performance.
+- Fix how LANG is computed on Mojave. Apple broke
+  locales.
+- Fix viewing PDFs on Mojave with imgcat. This one
+  isn't Apple's fault!
+- Improve performance when blinking text is
+  enabled (even if none is visible).
+
+
