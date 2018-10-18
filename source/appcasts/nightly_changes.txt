@@ -1,3 +1,158 @@
+2018-10-17: [python, api] Add APIs for setting broadcast
+domains
+
+2018-10-17: Add iTermAdjustFontSizeHelper files
+
+2018-10-16: Add a toggle to make font size changes by cmd-+
+and cmd-- adjust the profile. Move the font tweaking code to
+its own class. Attach the menu items to the first responder,
+not the app delegate, since they shouldn't be available when
+there is no window. Issue 7222
+
+2018-10-16: fix: Free environment if tempPath is nil
+
+Identified using the Xcode analysis tools
+
+2018-10-16: fix: Use __bridge_transfer to move ownership to
+ARC
+
+2018-10-16: fix: Use autorelease to ensure objects are freed
+
+2018-10-16: Add an assertion to ensure CGContext is not
+leaking.
+
+2018-10-16: Reparent NSScroller to improve drawing
+performance on Mojave
+
+2018-10-16: Change how LANG is computed. Try
+language+country+encoding, then language+country, then
+language. Use same algorithm regardless of OS version.
+Ignore everything after the first - in the language since
+locales do not look like zh-Hans_CN.UTF-8, but do look like
+zh_CN.UTF-8
+
+2018-10-16: Hide window shadow in mojave when there is a
+transparent session. Thanks apple
+
+2018-10-16: Improve peformance when blinking text is enabled
+and scrollback history is enormous. Fetching the lines was
+the bottleneck. This avoids walking the whole block array
+for each line.
+
+2018-10-16: Only use the nonascii antialias flag when
+nonascii font is enabled; otherwise it defaults to NO. Issue
+7187
+
+2018-10-16: Add ITAssertWithMessage and use it in
+iTermCharacterSource
+
+2018-10-16: Seems like sessionDidBecomeActive: can be called
+without a preceding call to sessionDidResignActive:. Or
+maybe didBecome gets called twice? Who knows.
+
+2018-10-16: Fix a bunch of bugs in the IME. First, it
+crashed if the marked text had a double width character
+starting at the end of a line. The colors were wrong. The
+cursor was to narrow. It drew garbage on the last lines when
+the marked text caused the screen contents to scroll up.
+
+2018-10-16: Add some sanity checks to track down a crash
+where a context is nil when drawing ascii characters for the
+metal renderer
+
+2018-10-16: Fix a crash where
+setSilentlyIgnoreErrors:fromCommand: was called with a nil
+command
+
+2018-10-16: Don't use NSLocale.currentLocale on macOS 10.14
+because it always returns a langauge that has a localization
+for the app. Use first available preferred locale instead
+
+2018-10-16: Activate iterm2 when opening the profiles window
+(for when you're using a floating hotkey window and another
+app is active)
+
+2018-10-16: Make the close session confirmation into a sheet
+
+2018-10-16: Make app active before opening prefs panel. If
+you're in a floating hotkey window this fixes a bug where it
+would open under the currently active app (since iTerm2 is
+not activated when you open a floating hotkey window)
+
+2018-10-16: Use normal window background color on Mojave
+unless the window is transparent
+
+2018-10-16: [metal] Don't draw underline past right boundary
+of cell. This requires passing the cell size to the fragment
+shader. It previously received the glyph size, but it was
+incorrectly named cellSize. Issue 7093.
+
+2018-10-16: Make shadow update frequency configurable and
+bump it to 15 fps
+
+2018-10-16: Remove test binary
+
+2018-10-16: Update tabbar text and background colors for
+Mojave. Issue 7155
+
+2018-10-16: set version to 3.3.x
+
+2018-10-16: Fix minimum signature size
+
+2018-10-16: Bring back support for thin strokes on 10.14
+
+2018-10-16: Fix fake bold support in GPU renderer. It was
+drawing the background over the glyph for the second pass.
+
+2018-10-16: Bring back the call to
+CGContextSetShouldSmoothFonts in the traditional renderer.
+Interestingly this affects stroke thickness.
+
+2018-10-16: Fix a leak of CGContextREf's in the character
+source. It allocated them in init and in
+initializeStateIfNeededWithFont but only dealloced the ones
+in init.
+
+2018-10-16: Always use font smoothing on 10.13 and earlier.
+This fixes a bug where subpixel AA was broken in 10.13 and
+earlier.
+
+2018-10-16: Don't draw indicators when measuring them
+because there's no graphics context and that causes a
+warning
+
+2018-10-16: Update goldens. Goodbye subpixel antialiasing.
+Fix a few other tests: change how swizzling user defaults
+works for the new caching advanced settings, and on 10.14
+skin tone modifiers combine with the letter g for some
+reason.
+
+2018-10-16: Add usage descriptions for everything I can
+find. Fixes issues like 7132
+
+2018-10-16: Use the right frame (ignoring a hidden menu bar)
+for edge-spanning windows. Issue 7149
+
+2018-10-16: Add a preference to turn on subpixel AA on
+Mojave. When enabled, thin strokes can be changed.
+
+2018-10-16: Disable thin strokes UI in Mojave when subpixel
+AA is off
+
+2018-10-16: Reduce duplicated code
+
+2018-10-16: Enable font smoothing on Mojave only if subpixel
+AA is enabled globallhy
+
+2018-10-16: For some insane reason the way you get thin
+strokes in 10.14 is the opposite of 10.13. Issue 7142
+
+2018-10-16: Move useVirtualKeyCodesForDetectingDigits from
+advanced pref to prefs>keys
+
+2018-10-16: Rename useVirtualKeyCodesForDetectingDigits
+advanced pref
+
 2018-10-13: [python] add jsonpretty exmaple
 
 2018-10-13: [python] Bump version
