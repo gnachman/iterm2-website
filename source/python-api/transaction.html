@@ -124,36 +124,8 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="module-iterm2.transaction">
-<span id="transaction"></span><h1>Transaction<a class="headerlink" href="#module-iterm2.transaction" title="Permalink to this headline">¶</a></h1>
-<p>Provides a class to facilitate atomic transactions.</p>
-<dl class="class">
-<dt id="iterm2.Transaction">
-<em class="property">class </em><code class="descname">Transaction</code><span class="sig-paren">(</span><em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Transaction" title="Permalink to this definition">¶</a></dt>
-<dd><p>An asyncio context manager for transactions.</p>
-<p>A transaction is a sequence of API calls that occur without anything else
-happening in between. If you’re worried about state mutating between reading
-the screen contents and then sending text, for example, do it in a
-transaction and you’ll know the state of the terminal will remain unchanged
-during it.</p>
-<p>Be really careful with this. No user interaction is possible during a
-transaction. If you try to do something that requires UI work, such as
-creating a new window via an API call, it will hang.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><dl class="first last docutils">
-<dt>async with iterm2.transaction.Transaction():</dt>
-<dd><p class="first last">do stuff</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+  <div class="section" id="transaction">
+<h1>Transaction<a class="headerlink" href="#transaction" title="Permalink to this headline">¶</a></h1>
 <hr class="docutils" />
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
@@ -194,7 +166,7 @@ creating a new window via an API call, it will hang.</p>
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/transaction.rst.txt"

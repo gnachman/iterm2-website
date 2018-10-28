@@ -124,60 +124,8 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="module-iterm2.selection">
-<span id="selection"></span><h1>Selection<a class="headerlink" href="#module-iterm2.selection" title="Permalink to this headline">¶</a></h1>
-<p>Provides interfaces for interacting with selected text regions.</p>
-<dl class="class">
-<dt id="iterm2.SelectionMode">
-<em class="property">class </em><code class="descname">SelectionMode</code><a class="headerlink" href="#iterm2.SelectionMode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enumerated list of selection modes.</p>
-<p><cite>CHARACTER</cite>, <cite>WORD</cite>, <cite>LINE</cite>, <cite>WHOLE_LINE</cite>, or <cite>BOX</cite>.</p>
-<p>These determine how the selection is extended, and how to interpret its coordinate range.</p>
-<p><cite>CHARACTER</cite> means character-by-character selection.</p>
-<p><cite>WORD</cite> means word-by-word selection.</p>
-<p><cite>LINE</cite> means row-by-row selection.</p>
-<p><cite>WHOLE_LINE</cite> means entire wrapped lines, which could occupy many rows.</p>
-<p><cite>BOX</cite> is a rectangular region.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="iterm2.SubSelection">
-<em class="property">class </em><code class="descname">SubSelection</code><span class="sig-paren">(</span><em>windowedCoordRange</em>, <em>mode</em>, <em>connected</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.SubSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Describes a continguous block of selected characters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>windowedCoordRange</strong> – A <a class="reference internal" href="util.html#iterm2.util.WindowedCoordRange" title="iterm2.util.WindowedCoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.util.WindowedCoordRange</span></code></a> describing the range.</li>
-<li><strong>mode</strong> – A <a class="reference internal" href="#iterm2.SelectionMode" title="iterm2.SelectionMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionMode</span></code></a> describing how the selection is interpreted and extended.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="iterm2.SubSelection.async_get_string">
-<code class="descname">async_get_string</code><span class="sig-paren">(</span><em>connection</em>, <em>session_id</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.SubSelection.async_get_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the text belonging to this subselection.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="iterm2.Selection">
-<em class="property">class </em><code class="descname">Selection</code><span class="sig-paren">(</span><em>subSelections</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Selection" title="Permalink to this definition">¶</a></dt>
-<dd><p>A collection of <a class="reference internal" href="#iterm2.SubSelection" title="iterm2.SubSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubSelection</span></code></a> objects, describing all the selections in a session.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>subSelections</strong> – An array of <a class="reference internal" href="#iterm2.SubSelection" title="iterm2.SubSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubSelection</span></code></a> objects.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+  <div class="section" id="selection">
+<h1>Selection<a class="headerlink" href="#selection" title="Permalink to this headline">¶</a></h1>
 <hr class="docutils" />
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
@@ -218,7 +166,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/selection.rst.txt"
