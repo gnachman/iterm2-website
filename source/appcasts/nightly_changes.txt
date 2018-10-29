@@ -1,3 +1,24 @@
+2018-10-28: Add the option to span background image across
+multiple panes.
+
+This commit refactors the background drawing code and
+implements it separately in the GPU and traditional
+renderer.
+
+2018-10-28: Fix bugs in background image drawing scale to
+fill/fit. The source rectangle has to be clipped to the
+legal image rect. Any coordinates outside the image rect
+will be drawn by the boxes.
+
+2018-10-28: [python docs]Add merge all windows to menu ids
+
+2018-10-28: [python docs] Update mouse mode
+
+2018-10-28: [status bar] Show ~ for working directory
+component. Fix a bug where small changes in status bar
+preferred width weren't properly respected because the
+icon's size was not used consistently in width measurments.
+
 2018-10-27: [status bar] Hide the git component when it has
 nothing to say
 
