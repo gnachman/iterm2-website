@@ -1,3 +1,111 @@
+2018-11-04: Cache the size of blocks in the line buffer to
+make large history faster. Also, refactor session resizing.
+
+2018-11-04: Change the default behavior to stretch tabs
+horizontally. Two reasons: it gets us closer to looking like
+system tabs at first glance; second, minimal/compact looks
+awful without this and I expect this will be a popular
+configuration
+
+2018-11-04: Change how the password manager reveals and
+edits passwords. Trying to do it inline in the table view
+doesn't work, so do it in modal alerts instead. Fixes issue
+7290
+
+2018-11-04: Improve colors of tab bar outlines and dividers.
+Tweak the frames of tab bar outlines, dividers, and fills so
+everything lines up perfectly in mojave
+
+2018-11-04: Fix how disable animations for password manager
+window works. Do it the right way instead of by gross hacks.
+Issue 7283.
+
+2018-11-04: Temporarily unmaximize a tab while it is a
+dragging destination. Issue 7279
+
+2018-11-04: Fix how horizontal lines in the tab bar are
+drawn. The default compositing mode punches a hole rather
+than blending. Issue 7282
+
+2018-11-04: [metal] Get rid of vestigial
+postmultpliedRenderer and code to apply premultiplication
+
+2018-11-04: Oops, I forgot to fix up the callsite and
+declaration of temporarilyDisableMetal when it was renamed
+to bounceMetal due to a cherrypick
+
+2018-11-04: Use premultiplied alpha in transparent windows
+with monochrome text on Mojave when using metal renderer.
+This blends background colors closer to how the traditional
+renderer does it. It's still slightly different which I
+cannot yet account for.
+
+2018-11-04: Fix wrong alpha when the tmux integration view
+is just slightly smaller than the tab. In that case we try
+to use the session's default background color for the
+flexible view's color. The alpha computation was incorrect
+making it appear transparent. Issue 7225
+
+2018-11-04: Only consider the first language. Issue 7265
+
+2018-11-04: Fix drawing non-black box drawing characters in
+Mojave without subpixel AA. Issue 7275
+
+2018-11-04: Add emacs to semantic history editors. Issue
+5543
+
+2018-11-04: Try to fix the crash due to not being able to
+allocate a graphics context. This commit forces the context
+to be allocated on the main thread before metal is enabled.
+Failures to allocate a graphics context will lead to a once
+a second retry. It seems to fail due to waking from sleep,
+per issue 7267.
+
+2018-11-04: Fix analyzer-found issues. A leak in
+linesInRange (issue 7264) and an uninitialized rect
+(harmless in practice, but annoys the analyzer)
+
+2018-11-04: Avoid changing the window size while
+miniaturized. After deminiaturization make sure the window
+fits on the screen. Issue 7213
+
+2018-11-04: Remove the screen anchor when the user drags the
+window from one screen to another. See a detailed
+investigation in issue 7099.
+
+2018-11-04: Do not start remapping event taps when secure
+input is enabled
+
+2018-11-04: Quit asking about full disk access after opening
+system prefs
+
+2018-11-04: Fix misuse of debug log lock for pinned
+messages. It could be nil.
+
+2018-11-04: Disable metal renderer for windows that are
+mostly occluded
+
+2018-11-04: Only allocate one bitmap context per character
+rendered, not 4.
+
+2018-11-04: Fix some discrepancies in box drawing between
+metal and traditional. When vertical spacing was added the
+metal version was shifted up by half the shift. Also,
+retinaRound was wrong and was responsible for 1-pixel errors
+in Metal on retina displays. Issue 7152
+
+2018-11-04: Trim spaces from background image filenames. Add
+logging for issue 7138.
+
+2018-11-04: Beg for full disk access.
+
+2018-11-04: Fix bug where alerts with disclosable views
+would grow when toggling the disclosure. Issue 7243
+
+2018-11-04: Destroy and re-create MTKViews after the screen
+configuration changes. It seems to be left in a broken state
+if you have disconnect and reconnect a display.
+
 2018-11-03: Don't crash when setting the current directory
 to nil and using the git status bar tool
 
