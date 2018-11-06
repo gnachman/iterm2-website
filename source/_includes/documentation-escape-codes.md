@@ -172,7 +172,7 @@ The *boolean* should be *yes* or *no*. This shows or hides the cursor guide.
 
     ^[]1337;RequestAttention=value^G
 
-The `value` should be *yes* to request attention by bouncing the dock icon and *no* to cancel a previous request. The dock icon will bounce only if iTerm2 is the active application. If `value` is `fireworks` then fireworks explode at the cursor's location.
+The `value` should be *yes* to request attention by bouncing the dock icon and *no* to cancel a previous request. The dock icon will bounce only if iTerm2 is not the active application. If `value` is `fireworks` then fireworks explode at the cursor's location.
 
 
 #### Background Image
