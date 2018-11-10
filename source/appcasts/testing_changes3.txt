@@ -1,11 +1,20 @@
-iTerm2 version 3.2.6beta2
+iTerm2 version 3.2.6beta3
 
-Bug fixes:
+Note: this build has Address Sanitizer enabled to
+try to catch a memory corruption bug that has
+eluded me. It may be slower than usual. Logic
+clearly dictates that the needs of the many
+outweigh the needs of the few, so please hang in
+there :)
 
-- Fix missing tab bar on macOS 10.13.
-- Fix a bug where the dock would not reappear when
-  exiting non-native full screen mode when the
-  appearance is set to dark and the system
-  appearance is light.
-- Fix a bug where windows didn't have shadows when
-  the visual effect view advanced setting was on.
+- Improve performance of toggling GPU renderer,
+  which will make switching tabs faster.
+- Fix a crash when saving a window arrangement
+  when a pane is maximized.
+- Fix rendering of ASCII text with the GPU
+  renderer for fonts whose descenders go unusually
+  low, like Iosevka Light.
+- Fix rendering of images > 256 columns wide with
+  GPU renderer.
+- Don't resize window vertically when scroller
+  style changes.
