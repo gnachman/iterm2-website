@@ -179,7 +179,7 @@ The `value` should be *yes* to request attention by bouncing the dock icon indef
 
     ^[]1337;SetBackgroundImageFile=base64^G
 
-The value of *base64* is a base64-encoded filename to display as a background image. If it is an empty string then the background image iwll be removed. User confirmation is required as a security measure.
+The value of *base64* is a base64-encoded filename to display as a background image. If it is an empty string then the background image will be removed. User confirmation is required as a security measure.
 
 #### Report Cell Size
 
