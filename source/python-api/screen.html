@@ -77,41 +77,15 @@
 	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
 	  <div class="inner-menu">
 	    <ul class="sub-nav">
-	      <div class="toc_subhead">Introduction</div>
+	      <div class="toc_subhead">iTerm2</div>
 
-	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
-	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
 
-	      <div class="toc_subhead">User Interface</div>
+	      <div class="toc_subhead">Python API</div>
 
-	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
-	      <li><a href="documentation-preferences.html">Preferences</a></li>
-	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
-	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
-	      <li><a href="documentation-fonts.html">Fonts</a></li>
-	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
-
-	      <div class="toc_subhead">Features</div>
-
-	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
-	      <li><a href="documentation-badges.html">Badges</a></li>
-	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
-	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
-	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
-	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
-	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
-	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
-	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
-	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
-	      <li><a href="documentation-triggers.html">Triggers</a></li>
-	      <li><a href="documentation-utilities.html">Utilities</a></li>
-
-	      <div class="toc_subhead">Advanced</div>
-
-	      <li><a href="documentation-scripting.html">Scripting</a></li>
-	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
-	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
-	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
 
 	    </ul>
 	  </div>
@@ -124,8 +98,135 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="screen">
-<h1>Screen<a class="headerlink" href="#screen" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-iterm2.screen">
+<span id="screen"></span><h1>Screen<a class="headerlink" href="#module-iterm2.screen" title="Permalink to this headline">¶</a></h1>
+<p>Provides access to screen contents.</p>
+<dl class="class">
+<dt id="iterm2.ScreenStreamer">
+<em class="property">class </em><code class="descname">ScreenStreamer</code><span class="sig-paren">(</span><em>connection</em>, <em>session_id</em>, <em>want_contents=True</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenStreamer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An asyncio context manager for monitoring the screen contents.</p>
+<p>Don’t create this yourself. Use Session.get_screen_streamer() instead. See
+its docstring for more info.</p>
+<dl class="method">
+<dt id="iterm2.ScreenStreamer.async_get">
+<code class="descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenStreamer.async_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the screen contents, waiting until they change if needed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.ScreenContents" title="iterm2.ScreenContents"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenContents</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.ScreenContents">
+<em class="property">class </em><code class="descname">ScreenContents</code><span class="sig-paren">(</span><em>proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenContents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes screen contents.</p>
+<dl class="attribute">
+<dt id="iterm2.ScreenContents.cursor_coord">
+<code class="descname">cursor_coord</code><a class="headerlink" href="#iterm2.ScreenContents.cursor_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the locaiton of the cursor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Point</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.ScreenContents.line">
+<code class="descname">line</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenContents.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the LineContents at the given index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> – should be at least 0 and less than <cite>number_of_lines</cite>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.LineContents" title="iterm2.LineContents"><code class="xref py py-class docutils literal notranslate"><span class="pre">LineContents</span></code></a> object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.ScreenContents.number_of_lines">
+<code class="descname">number_of_lines</code><a class="headerlink" href="#iterm2.ScreenContents.number_of_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of lines in this object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.ScreenContents.number_of_lines_above_screen">
+<code class="descname">number_of_lines_above_screen</code><a class="headerlink" href="#iterm2.ScreenContents.number_of_lines_above_screen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of lines before the screen including scrollback history and lines lost from the head of scrolllback history.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The number of lines ever received before the top line of the screen.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.LineContents">
+<em class="property">class </em><code class="descname">LineContents</code><span class="sig-paren">(</span><em>proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.LineContents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes the contents of a line.</p>
+<dl class="attribute">
+<dt id="iterm2.LineContents.hard_eol">
+<code class="descname">hard_eol</code><a class="headerlink" href="#iterm2.LineContents.hard_eol" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if the line has a hard newline. If False, the text of a longer line wraps onto the next line.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.LineContents.string">
+<code class="descname">string</code><a class="headerlink" href="#iterm2.LineContents.string" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The line’s contents as a string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.LineContents.string_at">
+<code class="descname">string_at</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.LineContents.string_at" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the string of the cell at index <cite>x</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> – The index to look up.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string giving the contents of the cell at that index, or empty string if none.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <hr class="docutils" />
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>

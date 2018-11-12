@@ -77,41 +77,15 @@
 	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
 	  <div class="inner-menu">
 	    <ul class="sub-nav">
-	      <div class="toc_subhead">Introduction</div>
+	      <div class="toc_subhead">iTerm2</div>
 
-	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
-	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
 
-	      <div class="toc_subhead">User Interface</div>
+	      <div class="toc_subhead">Python API</div>
 
-	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
-	      <li><a href="documentation-preferences.html">Preferences</a></li>
-	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
-	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
-	      <li><a href="documentation-fonts.html">Fonts</a></li>
-	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
-
-	      <div class="toc_subhead">Features</div>
-
-	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
-	      <li><a href="documentation-badges.html">Badges</a></li>
-	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
-	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
-	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
-	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
-	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
-	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
-	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
-	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
-	      <li><a href="documentation-triggers.html">Triggers</a></li>
-	      <li><a href="documentation-utilities.html">Utilities</a></li>
-
-	      <div class="toc_subhead">Advanced</div>
-
-	      <li><a href="documentation-scripting.html">Scripting</a></li>
-	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
-	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
-	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
 
 	    </ul>
 	  </div>
@@ -124,14 +98,245 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="utilities">
-<h1>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-iterm2.util">
+<span id="utilities"></span><h1>Utilities<a class="headerlink" href="#module-iterm2.util" title="Permalink to this headline">¶</a></h1>
+<p>Provides handy functions.</p>
+<dl class="function">
+<dt id="iterm2.util.frame_str">
+<code class="descname">frame_str</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.util.frame_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats an api_pb2.Frame or <a class="reference internal" href="#iterm2.util.Frame" title="iterm2.util.Frame"><code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></a> as a human-readable string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> – An api_pb2.Frame or <a class="reference internal" href="#iterm2.util.Frame" title="iterm2.util.Frame"><code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A human-readable string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="iterm2.util.size_str">
+<code class="descname">size_str</code><span class="sig-paren">(</span><em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.util.size_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats an api_pb2.Size or <a class="reference internal" href="#iterm2.util.Size" title="iterm2.util.Size"><code class="xref py py-class docutils literal notranslate"><span class="pre">Size</span></code></a> as a human-readable string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> – An api_pb2.Size or <a class="reference internal" href="#iterm2.util.Size" title="iterm2.util.Size"><code class="xref py py-class docutils literal notranslate"><span class="pre">Size</span></code></a>:</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A human-readable string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <hr class="docutils" />
+<dl class="class">
+<dt id="iterm2.util.Size">
+<em class="property">class </em><code class="descname">Size</code><span class="sig-paren">(</span><em>width</em>, <em>height</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.util.Size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a 2D size.</p>
+<p>Can be used where api_pb2.Size is accepted.</p>
+<dl class="attribute">
+<dt id="iterm2.util.Size.json">
+<code class="descname">json</code><a class="headerlink" href="#iterm2.util.Size.json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives a JSON representation of the size.</p>
+</dd></dl>
+
+</dd></dl>
+
 <hr class="docutils" />
+<dl class="class">
+<dt id="iterm2.util.Point">
+<em class="property">class </em><code class="descname">Point</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.util.Point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a 2D coordinate.</p>
+<p>Can be used where api_pb2.Point is accepted.</p>
+<dl class="attribute">
+<dt id="iterm2.util.Point.json">
+<code class="descname">json</code><a class="headerlink" href="#iterm2.util.Point.json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a JSON representation of the point.</p>
+</dd></dl>
+
+</dd></dl>
+
 <hr class="docutils" />
+<dl class="class">
+<dt id="iterm2.util.Frame">
+<em class="property">class </em><code class="descname">Frame</code><span class="sig-paren">(</span><em>origin=(0</em>, <em>0)</em>, <em>size=&lt;iterm2.util.Size object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.util.Frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a bounding rectangle. 0,0 is the bottom left coordinate.</p>
+<dl class="attribute">
+<dt id="iterm2.util.Frame.json">
+<code class="descname">json</code><a class="headerlink" href="#iterm2.util.Frame.json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a JSON representation of the frame.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.util.Frame.origin">
+<code class="descname">origin</code><a class="headerlink" href="#iterm2.util.Frame.origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>The top-left coordinate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.util.Point" title="iterm2.util.Point"><code class="xref py py-class docutils literal notranslate"><span class="pre">Point</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.util.Frame.size">
+<code class="descname">size</code><a class="headerlink" href="#iterm2.util.Frame.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The size.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.util.Size" title="iterm2.util.Size"><code class="xref py py-class docutils literal notranslate"><span class="pre">Size</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <hr class="docutils" />
+<dl class="class">
+<dt id="iterm2.util.CoordRange">
+<em class="property">class </em><code class="descname">CoordRange</code><span class="sig-paren">(</span><em>start</em>, <em>end</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.util.CoordRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a range of contiguous cells.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>start</strong> – A <a class="reference internal" href="#iterm2.util.Point" title="iterm2.util.Point"><code class="xref py py-class docutils literal notranslate"><span class="pre">Point</span></code></a> giving the start point.</li>
+<li><strong>end</strong> – A <a class="reference internal" href="#iterm2.util.Point" title="iterm2.util.Point"><code class="xref py py-class docutils literal notranslate"><span class="pre">Point</span></code></a> giving the first point after the start point not in the range.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="iterm2.util.CoordRange.end">
+<code class="descname">end</code><a class="headerlink" href="#iterm2.util.CoordRange.end" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The first <a class="reference internal" href="#iterm2.util.Point" title="iterm2.util.Point"><code class="xref py py-class docutils literal notranslate"><span class="pre">Point</span></code></a> after <cite>self.start</cite> not in the range.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.util.CoordRange.start">
+<code class="descname">start</code><a class="headerlink" href="#iterm2.util.CoordRange.start" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The start <a class="reference internal" href="#iterm2.util.Point" title="iterm2.util.Point"><code class="xref py py-class docutils literal notranslate"><span class="pre">Point</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <hr class="docutils" />
+<dl class="class">
+<dt id="iterm2.util.Range">
+<em class="property">class </em><code class="descname">Range</code><span class="sig-paren">(</span><em>location</em>, <em>length</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.util.Range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a range of integers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>location</strong> – The first value in the range.</li>
+<li><strong>length</strong> – The number of values in the range.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="iterm2.util.Range.length">
+<code class="descname">length</code><a class="headerlink" href="#iterm2.util.Range.length" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The length of the range.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.util.Range.location">
+<code class="descname">location</code><a class="headerlink" href="#iterm2.util.Range.location" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The first location of the range.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <hr class="docutils" />
+<dl class="class">
+<dt id="iterm2.util.WindowedCoordRange">
+<em class="property">class </em><code class="descname">WindowedCoordRange</code><span class="sig-paren">(</span><em>coordRange</em>, <em>columnRange=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.util.WindowedCoordRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a range of coordinates, optionally constrained to a continugous range of columns.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>coordRange</strong> – The <a class="reference internal" href="#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of cells.</li>
+<li><strong>columnRange</strong> – The <a class="reference internal" href="#iterm2.util.Range" title="iterm2.util.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a> of columns, or None if unwindowed.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="iterm2.util.WindowedCoordRange.columnRange">
+<code class="descname">columnRange</code><a class="headerlink" href="#iterm2.util.WindowedCoordRange.columnRange" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The range of columns, a <a class="reference internal" href="#iterm2.util.Range" title="iterm2.util.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a>, or an empty range if unconstrained.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.util.WindowedCoordRange.coordRange">
+<code class="descname">coordRange</code><a class="headerlink" href="#iterm2.util.WindowedCoordRange.coordRange" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The range of coordinates, a <a class="reference internal" href="#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <hr class="docutils" />
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>

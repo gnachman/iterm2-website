@@ -77,41 +77,15 @@
 	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
 	  <div class="inner-menu">
 	    <ul class="sub-nav">
-	      <div class="toc_subhead">Introduction</div>
+	      <div class="toc_subhead">iTerm2</div>
 
-	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
-	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
 
-	      <div class="toc_subhead">User Interface</div>
+	      <div class="toc_subhead">Python API</div>
 
-	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
-	      <li><a href="documentation-preferences.html">Preferences</a></li>
-	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
-	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
-	      <li><a href="documentation-fonts.html">Fonts</a></li>
-	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
-
-	      <div class="toc_subhead">Features</div>
-
-	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
-	      <li><a href="documentation-badges.html">Badges</a></li>
-	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
-	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
-	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
-	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
-	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
-	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
-	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
-	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
-	      <li><a href="documentation-triggers.html">Triggers</a></li>
-	      <li><a href="documentation-utilities.html">Utilities</a></li>
-
-	      <div class="toc_subhead">Advanced</div>
-
-	      <li><a href="documentation-scripting.html">Scripting</a></li>
-	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
-	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
-	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
 
 	    </ul>
 	  </div>
@@ -124,8 +98,37 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="tool">
-<h1>Tool<a class="headerlink" href="#tool" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-iterm2.tool">
+<span id="tool"></span><h1>Tool<a class="headerlink" href="#module-iterm2.tool" title="Permalink to this headline">¶</a></h1>
+<p>Provides functions to register toolbelt webivew tools.</p>
+<dl class="function">
+<dt id="iterm2.tool.async_register_web_view_tool">
+<code class="descname">async_register_web_view_tool</code><span class="sig-paren">(</span><em>connection</em>, <em>display_name</em>, <em>identifier</em>, <em>reveal_if_already_registered</em>, <em>url</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.tool.async_register_web_view_tool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a toolbelt tool that shows a webview.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>connection</strong> – A connected iterm2.connection.Connection.</li>
+<li><strong>display_name</strong> – The name of the tool. User-visible.</li>
+<li><strong>identifier</strong> – A unique ID that prevents duplicate registration.</li>
+<li><strong>reveal_if_already_registered</strong> – Bool. If True, shows the tool on a duplicate registration
+attempt.</li>
+<li><strong>url</strong> – The URL to show in the webview.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">iterm2.api_pb2.RegisterToolResponse on success</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">iterm2.rpc.RPCException if something goes wrong</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <hr class="docutils" />
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>

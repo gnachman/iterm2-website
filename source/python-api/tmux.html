@@ -77,41 +77,15 @@
 	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
 	  <div class="inner-menu">
 	    <ul class="sub-nav">
-	      <div class="toc_subhead">Introduction</div>
+	      <div class="toc_subhead">iTerm2</div>
 
-	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
-	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
 
-	      <div class="toc_subhead">User Interface</div>
+	      <div class="toc_subhead">Python API</div>
 
-	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
-	      <li><a href="documentation-preferences.html">Preferences</a></li>
-	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
-	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
-	      <li><a href="documentation-fonts.html">Fonts</a></li>
-	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
-
-	      <div class="toc_subhead">Features</div>
-
-	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
-	      <li><a href="documentation-badges.html">Badges</a></li>
-	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
-	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
-	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
-	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
-	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
-	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
-	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
-	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
-	      <li><a href="documentation-triggers.html">Triggers</a></li>
-	      <li><a href="documentation-utilities.html">Utilities</a></li>
-
-	      <div class="toc_subhead">Advanced</div>
-
-	      <li><a href="documentation-scripting.html">Scripting</a></li>
-	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
-	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
-	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
 
 	    </ul>
 	  </div>
@@ -124,8 +98,140 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="tmux">
-<h1>Tmux<a class="headerlink" href="#tmux" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-iterm2.tmux">
+<span id="tmux"></span><h1>Tmux<a class="headerlink" href="#module-iterm2.tmux" title="Permalink to this headline">¶</a></h1>
+<p>Represents tmux integration objects.</p>
+<dl class="function">
+<dt id="iterm2.async_get_tmux_connections">
+<code class="descname">async_get_tmux_connections</code><span class="sig-paren">(</span><em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_get_tmux_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches a list of tmux connections.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> – An existing <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Connection</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of <a class="reference internal" href="#iterm2.TmuxConnection" title="iterm2.TmuxConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">TmuxConnection</span></code></a> objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="iterm2.async_get_tmux_connection_by_connection_id">
+<code class="descname">async_get_tmux_connection_by_connection_id</code><span class="sig-paren">(</span><em>connection</em>, <em>connection_id</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_get_tmux_connection_by_connection_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a tmux connection by its ID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>connection</strong> – An existing <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Connection</span></code>.</li>
+<li><strong>connection_id</strong> – A connection ID for a <a class="reference internal" href="#iterm2.TmuxConnection" title="iterm2.TmuxConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">TmuxConnection</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Either a <a class="reference internal" href="#iterm2.TmuxConnection" title="iterm2.TmuxConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">TmuxConnection</span></code></a> or <cite>None</cite>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.TmuxException">
+<em class="property">class </em><code class="descname">TmuxException</code><a class="headerlink" href="#iterm2.TmuxException" title="Permalink to this definition">¶</a></dt>
+<dd><p>A problem was encountered in a Tmux request.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.TmuxConnection">
+<em class="property">class </em><code class="descname">TmuxConnection</code><span class="sig-paren">(</span><em>connection_id</em>, <em>owning_session_id</em>, <em>app</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TmuxConnection" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="iterm2.TmuxConnection.async_create_window">
+<code class="descname">async_create_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TmuxConnection.async_create_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new tmux window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A new <a class="reference internal" href="window.html#iterm2.Window" title="iterm2.Window"><code class="xref py py-class docutils literal notranslate"><span class="pre">Window</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.TmuxConnection.async_send_command">
+<code class="descname">async_send_command</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TmuxConnection.async_send_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a command to the tmux server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>command</strong> – The command to send to tmux (e.g., “list-sessions”)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The command’s output as a string.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Throws TmuxException:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">If the command fails for any reason or the RPC fails such as from an invalid ID.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.TmuxConnection.async_set_tmux_window_visible">
+<code class="descname">async_set_tmux_window_visible</code><span class="sig-paren">(</span><em>tmux_window_id</em>, <em>visible</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TmuxConnection.async_set_tmux_window_visible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hides or shows a tmux window.</p>
+<p>Tmux windows are represented as tabs in iTerm2. You can get a
+tmux_window_id from <a class="reference internal" href="tab.html#iterm2.Tab.tmux_window_id" title="iterm2.Tab.tmux_window_id"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.Tab.tmux_window_id()</span></code></a>. If this tab is
+attached to a tmux session, then it may be hidden. Use
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.tmux.async_open_window()</span></code> to make it visible again.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tmux_window_id</strong> – The window to show or hide.</li>
+<li><strong>visible</strong> – <cite>True</cite> to show a window, <cite>False</cite> to hide a window.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.TmuxConnection.connection_id">
+<code class="descname">connection_id</code><a class="headerlink" href="#iterm2.TmuxConnection.connection_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the unique identifier of the connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A connection ID (a string), which is also a human-readable description of the connection.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.TmuxConnection.owning_session">
+<code class="descname">owning_session</code><a class="headerlink" href="#iterm2.TmuxConnection.owning_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the “gateway” session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The <a class="reference internal" href="session.html#iterm2.Session" title="iterm2.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> where <cite>tmux -CC</cite> was run, or None if it cannot be found.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <hr class="docutils" />
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>

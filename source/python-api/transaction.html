@@ -77,41 +77,15 @@
 	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
 	  <div class="inner-menu">
 	    <ul class="sub-nav">
-	      <div class="toc_subhead">Introduction</div>
+	      <div class="toc_subhead">iTerm2</div>
 
-	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
-	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
 
-	      <div class="toc_subhead">User Interface</div>
+	      <div class="toc_subhead">Python API</div>
 
-	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
-	      <li><a href="documentation-preferences.html">Preferences</a></li>
-	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
-	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
-	      <li><a href="documentation-fonts.html">Fonts</a></li>
-	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
-
-	      <div class="toc_subhead">Features</div>
-
-	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
-	      <li><a href="documentation-badges.html">Badges</a></li>
-	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
-	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
-	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
-	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
-	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
-	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
-	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
-	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
-	      <li><a href="documentation-triggers.html">Triggers</a></li>
-	      <li><a href="documentation-utilities.html">Utilities</a></li>
-
-	      <div class="toc_subhead">Advanced</div>
-
-	      <li><a href="documentation-scripting.html">Scripting</a></li>
-	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
-	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
-	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
 
 	    </ul>
 	  </div>
@@ -124,8 +98,36 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="transaction">
-<h1>Transaction<a class="headerlink" href="#transaction" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-iterm2.transaction">
+<span id="transaction"></span><h1>Transaction<a class="headerlink" href="#module-iterm2.transaction" title="Permalink to this headline">¶</a></h1>
+<p>Provides a class to facilitate atomic transactions.</p>
+<dl class="class">
+<dt id="iterm2.Transaction">
+<em class="property">class </em><code class="descname">Transaction</code><span class="sig-paren">(</span><em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>An asyncio context manager for transactions.</p>
+<p>A transaction is a sequence of API calls that occur without anything else
+happening in between. If you’re worried about state mutating between reading
+the screen contents and then sending text, for example, do it in a
+transaction and you’ll know the state of the terminal will remain unchanged
+during it.</p>
+<p>Be really careful with this. No user interaction is possible during a
+transaction. If you try to do something that requires UI work, such as
+creating a new window via an API call, it will hang.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><dl class="first last docutils">
+<dt>async with iterm2.transaction.Transaction():</dt>
+<dd><p class="first last">do stuff</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <hr class="docutils" />
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
