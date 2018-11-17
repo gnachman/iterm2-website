@@ -1,3 +1,76 @@
+2018-11-16: Add Proxy Icon for files (not only directories)
+(#373)
+
+* Add PTYSession.userDesiredProxyIcon
+
+* Add VT100Screen.terminalSetProxyIcon
+
+* Implement VT100Screen.setProxyIcon
+
+* Add VT100ScreenDelegate.setProxyIcon
+
+* Add WindowControllerInterface.updateProxyIcon
+
+* Change PseudoTerminal.updateCurrentLocation to
+updateProxyIcon
+
+* Add comments
+
+* Change url scheme
+
+* Rename userDesiredProxyIcon->preferredProxyIcon
+
+* Rename setProxyIcon->screenSetPreferredProxyIcon
+
+* Fix typo and coding style
+
+* Remove PseudoTerminal.updateCurrentLocation since it's no
+longer needed
+
+* Rename PseudoTerminal.currentLocationDidChange ->
+proxyIconDidChange
+
+* Change updateProxyIcon message path
+
+* Fix coding style
+
+* Fix coding style
+
+* Remove url check in PTYSession.screenSetPreferredProxyIcon
+
+This way if `url` is nil the proxy icon is removed
+
+* Remove dead code
+
+* Check empty string in screenSetPreferredProxyIcon
+
+* Change escape sequence 1337 -> 6
+
+* Add comments
+
+* Rename sessionSetProxyIcon->sessionProxyIconDidChange
+
+* Check for empty path
+
+* Fix typo
+
+* Fix typo
+
+* Add terminal trust check
+
+* Add proxy icon to Disable potentially insecure escape
+sequences description
+
+* Fix Typo
+
+* Change empty check location
+
+* Add NSStringITerm.startsWithDigit
+
+* Change proxy icon escape seq logic
+
+* Implement startsWithDigit
+
 2018-11-15: Sanitize profiles before saving them to JSON.
 Status bar components have infinities, and JSON can't
 represent infinity.
