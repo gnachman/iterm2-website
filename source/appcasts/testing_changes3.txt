@@ -1,18 +1,61 @@
-iTerm2 version 3.2.6beta4
+iTerm2 version 3.2.6
 
 Bug fixes:
-- Fix a memory leak.
-- Fix mark highlighting in the GPU renderer (the
+
+- Improve the tab bar colors.
+- Fix a bug where the password manager would
+  reveal a password when you switch to another app
+  and back while editing the password. The table
+  view no longer has the ability to show a
+  password; all editing and revealing is done in
+  modal alerts to avoid the complexity of table
+  views.
+- Fix some crashes.
+- Improve the appearance of background color
+  blending with the GPU renderer.
+- Improve appearance of per-pane title bars when
+  subpixel antialiasing is on.
+- Fix a bug where a window changes screen when
+  entering full screen mode.
+- Improve disable animations for password manager
+  (it didn't always work).
+- Fix a bug where the dock would not reappear when 
+  exiting non-native full screen mode when the
+  appearance is set to dark and the system
+  appearance is light.
+- Fix a bug where windows didn't have shadows when
+  the visual effect view advanced setting was on.
+- Fix a crash when saving a window arrangement
+  when a pane is maximized.
+- Fix rendering of ASCII text with the GPU
+  renderer for fonts whose descenders go unusually
+  low, like Iosevka Light.
+- Fix rendering of images > 256 columns wide with
+  GPU renderer.
+- Don't resize window vertically when scroller
+  style changes.
+- Fix mark highlighting in the GPU renderer (the 
   highlight was drawn slightly off vertically).
 - Improve the appearance of dragging a tab.
-- Performance improvements.
 - Fix a bug where blinking text might stop
   blinking.
-- Fix a bug where window size would change too
-  much when adjusting font size when there were
+- Fix a bug where window size would change too 
+  much when adjusting font size when there were 
   multiple tabs.
 
-Other Improvements:
+Other improvements:
+
+- Do not use any language but the most preferred
+  system language in LANG
+- Performance improvements.
+- Add emacs to the supported editors for semantic
+  history.
+- Improve the appearance of the no-man's land
+  between panes in tmux integration in some cases.
+- Temporarily unmaximize tab while dragging
+  another session in to it.
+- Improve performance of toggling GPU renderer,
+  which will make switching tabs faster.
 - Update libssh to version 1.8.
 - Improve launch time when using the GPU renderer.
 
