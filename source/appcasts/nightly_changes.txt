@@ -1,3 +1,56 @@
+2018-12-01: [python] Add colorhost example
+
+2018-12-01: Fix a retain cycle between iTermVariables.owner
+and PTYSession that had the awful side effect of keeping
+MTKView alive and drawing infinitely fast for
+incomprehensible reasons (aside from MTKView being a
+steaming ). Issue 7369
+
+2018-12-01: [api] Freeze scripts at their initial Python
+version forever.
+
+My experience going from 3.6.5 to 3.7.0 was that backward
+compatibility is going to be a serious problem for user
+scripts. I don't want things to just break, so instead let's
+keep scripts at their initial python version forever. This
+seems to be keeping in the spirit of having a squillion
+versions of Python installed because nobody wants to
+maintain software because software is terrible. I'm sorry
+for making it worse.
+
+Details:
+
+ARCify NSFileManager+iTerm
+
+Respect python version in setup.py.
+
+For basic scripts, change shebang to give 2-part python
+version. When running a basic script, use that version.
+
+If a particular python version is needed but is not present
+download the newest runtime that includes it.
+
+Change semantics of runtimes in the app support directory.
+iterm2env is the latest, iterm2env-N is runtime version N,
+and iterm2env-X.Y is python version X.Y (latest downloaded
+bugfix) and iterm2env-X.Y.Z is python version X.Y.Z. They
+are trees of hard links so they can survive deletion of each
+other as upgrades happen.
+
+When installing a python runtime for a full environment
+script create hard links, don't unzip. This saves disk
+space. This means the zip files don't need to be saved (so
+they are not saved)
+
+Write out setup.py files for full environment scripts
+including python_requires='=x.y.z'. Scripts will be frozen
+at their initial python version to avoid nasty surprises
+when upgrading.
+
+Update the basic script templates to specify Python 3.7.
+I'll need to keep these up to date as new versions of Python
+come out.
+
 2018-11-29: Correct "Terminal.app Compatibility" keyboard
 mapping preset to match   and   functionality. (#378)
 
