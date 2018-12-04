@@ -1,3 +1,28 @@
+2018-12-03: Remove window appearance when theme changes to
+minimal. Issue 7370
+
+2018-12-03: Fix the tab context menu in native full screen
+in Mojave. Issue 7366. Mouse coordintaes were a lie when
+gotten with mouseLocationOutsideOfEventStream. I have no
+idea why this weird method was used. Also, the responder
+chain is broken in this case, so just specify the target
+directly.
+
+2018-12-03: Only write out two parts of the Python version
+in setup.py. We don't want to pin to dot releases
+
+2018-12-03: Fix a bug where creating full environment
+scripts failed because the directory was not created.
+Improve logging when linking the environment in this case.
+
+2018-12-03: Do not try to download a python runtime when
+launching a full environment script. When launching a basic
+script, if the python version specified only has one part
+(e.g., python3) ignore it and use the latest.
+
+2018-12-03: Ensure stanard window buttons in compact windows
+have targets. Issue 7360
+
 2018-12-02: [python] Add escindicator example
 
 2018-12-01: [python] Add colorhost example
