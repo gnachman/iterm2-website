@@ -1,3 +1,40 @@
+2018-12-05: [python] Add movetab example
+
+2018-12-05: [python] Fix a race condition where python would
+send an request registering an RPC, iTerm2 would ack it and
+immediately perform the RPC. The local registration happened
+after the response was handled, but the RPC call beat it in
+the race. This commit registers the RPC locally before
+sending the request (which may or may not succeed). If the
+request fails, it then unregisters it. This leaves the
+script in a bit of a funny place while waiting for the
+response. The RPC is registered from Python's POV but not
+necessarily iTerm2's. I think this is safe, though. The
+script reasonably expects the RPC to be called. The worst
+case is there's some race and it gets called before it's
+officially registered, but that would be a bug in iTerm2.
+Issue 7232.
+
+2018-12-05: Fix a bug where the gpu renderer didn't use
+minimum contrast if the preceding character was a box
+drawing character (or wrongly did use it when a box drawing
+characters follows a non-boxdrawing character)
+
+2018-12-05: Oops, forgot to include the code for the
+previous commit.
+
+2018-12-05: Add support for natively drawn powerline glyphs.
+This fixes two annoying things: minimum contrast is not
+applied to native box drawing glyphs, so now the powerline
+arrows look right next to the solid background color when
+minimum contrast is in use and; when you have extra vertical
+spacing everything lines up properly. Issue 7372.
+
+2018-12-05: Clean up prefs>keys. Make options in select
+lists consistent and right align navigation shortcut labels
+
+2018-12-05: [python] Add movetab example
+
 2018-12-04: [api] Update cadence was not respected for
 rpc-provided status bar components. Issue 7382.
 
