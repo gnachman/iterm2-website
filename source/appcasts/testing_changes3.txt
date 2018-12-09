@@ -1,18 +1,36 @@
-iTerm2 version 3.2.6beta4
+iTerm2 version 3.2.7beta1
 
 Bug fixes:
-- Fix a memory leak.
-- Fix mark highlighting in the GPU renderer (the
-  highlight was drawn slightly off vertically).
-- Improve the appearance of dragging a tab.
-- Performance improvements.
-- Fix a bug where blinking text might stop
-  blinking.
-- Fix a bug where window size would change too
-  much when adjusting font size when there were
-  multiple tabs.
+- Fix funny behavior of the text field where you
+  enter the number of lines of scrollback history.
+- Fix a bug where the GPU renderer wasn't used
+  when there was a maximized pane.
+- Fix a bug when exiting tmux integration mode
+  with a buried gateway session in a hotkey
+  window. It no longer forgets it is a hotkey
+  window.
+- Ensure the session title background and the
+  title bar have the same color when navigating
+  among split panes.
+- Accept surrogate pairs as keyboard input so you
+  can use the Unicode Hex Input keyboard to enter
+  codes from supplemental planes.
+- Fix a bug where the gpu renderer didn't use
+  minimum contrast if the preceding character was
+  a box drawing character
+- Fix the appearance of non-antialiased Pragmata
+  Pro when subpixel antialiasing is off on macOS
+  10.14.
+- Fix a bug where control+page up/down would move
+  the wrong scrollview when there are split
+  panes.
+- Fix a bug where the "you must restart" alert
+  shown when you toggle discrete GPU was not
+  dismissable.
 
-Other Improvements:
-- Update libssh to version 1.8.
-- Improve launch time when using the GPU renderer.
-
+Other improvements:
+- Add code to validate a faster scrollback history
+  algorithm.
+- Support filename(line, column) for semantic history.
+- Remember the setting of "use transparency" when
+  restoring a window.
