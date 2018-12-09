@@ -246,6 +246,9 @@ If selected, text with the italic attribute set will be rendered in italics. The
 #### Use thin strokes for anti-aliased text
 Anti-aliased text will be drawn with thinner strokes by default on Retina displays when the background color is darker than the foreground color. The effect may be more or less visible depending on your particular hardware and OS version. You can configure when thin strokes are used depending on display type and colors.
 
+#### Enable sub-pixel antialiasing (available on macOS 10.14+)
+Sub-pixel antialiasing is a technique that enhances the readability of text. It improves the smoothness of curves and seems to make text appear a bit thicker. The benefit is especially visible on non-retina displays. Prior to macOS 10.14, it was on by default and controlled by the system preference named "font smoothing". Beginning with macOS 10.14, it was disabled by default system-wide. iTerm2 offers the option to re-enable it for the iTerm2 app. All text in the app will be affected; no other applications will be changed. Note that turning this feature on incurs a performance penalty. The GPU renderer has to use a more complex blending algorithm and GPU rendering becomes unavailable in concert with transparent windows.
+
 #### Unicode normalization form
 This affects how text is processed on input. Most users will want no normalization. HFS+ normalization preserves the fullwidth attribute of composed characters. 
 
