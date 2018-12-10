@@ -1,3 +1,159 @@
+2018-12-09: Pinned, visible hotkey windows participate in
+window cycle by default. Issue 7374
+
+2018-12-09: Fix a bug where 'you must restart' alert shown
+when toggling integrated/discrete GPU can't be dismissed.
+
+2018-12-09: Don't scroll on control+page up/down in
+performKeyEquivalent: if the receiver is not the first
+responder. I don't know why macOS routes this event to a
+view that isn't in the responder chain. Issue 7407
+
+2018-12-09: Turn on font smoothing for non-antialiased text.
+Fixes a bug in rendering PragmataPro on macOS 10.14. Issue
+7394
+
+2018-12-09: [cherrypick from 3.2] Record the use
+transparency setting in the window's arrangement. Issue 7390
+
+2018-12-09: [cherrypick from 3.2] Improve logging for event
+taps
+
+2018-12-09: [cherrypick from 3.2] Support filename(line,
+column) for semantic history. Issue 7378
+
+2018-12-09: Accept surrogate pairs as keyboard input. Issue
+7337
+
+2018-12-09: Ensure the session titlebar background and label
+have the same color. Issue 7368
+
+2018-12-09: When detaching from tmux and the gateway session
+is automatically buried, restore it before closing the other
+tmux tabs. This fixes a bug where it would forget it was a
+hotkey window. Issue 7384.
+
+2018-12-09: Fix a bug where the GPU renderer was never used
+when a split pane was maximized.
+
+2018-12-09: Run line buffer fast-vs-slow path sanity tests
+1% of the time. Otherwise use only the slow path. Fix a
+failing unit tests.
+
+2018-12-09: [cherrypick from 3.2] Refactor a bunch of code
+to help implement delta updates in metal. Add a per-line
+generation that uniquely identifies it. Move per-frame state
+into its own file.
+
+2018-12-09: Tolerate illegal characters in integer profile
+files (like scrollback lines) because they'll be removed
+when editing ends
+
+2018-12-09: [cherrypick from 3.2] When reloading a profile,
+wait until all sessions have updated their copy of the
+profile before resizing the window to fit the new session
+size. This fixes a bug where a window with multiple tabs
+would shrink too much when reducing the font size. It would
+shrink for the first tab, and then again for the second, and
+so on. By having all sessions' fonts up to date before doing
+fitWindowToTab, all sessions whose font sizes changed in
+concert will request the same size.
+
+2018-12-09: Change NSLog to DLog
+
+2018-12-09: Synchronize creation of ASCII textures so you
+don't create more than one of the same concurrently.
+Synchronize access to shared ASCII texture cache (oops!).
+
+2018-12-09: Update NMSSH to the latest version of my fork,
+including libssh 1.8 and openssl 1.1.1. At commit
+430310826b056b4cc53596c786fa6b7a8eb04bee of
+https://githug.com/gnachman/NMSSH (the 'george' branch)
+
+2018-12-09: [cherrypick from 3.2] Fix some analyzer
+complaints
+
+2018-12-09: Fix a retain cycle. Creation block -> framedata
+-> dictionary -> text transient state -> creation block
+
+2018-12-09: [cherrypick from 3.2] Fix a bug where
+wrappedLinesFromIndex:width:count: would return an empty
+array when the index equaled the start of a block other than
+the first. Issue 7323
+
+2018-12-09: Avoid calling
+iTermUpdateCadenceController.description
+
+2018-12-09: [cherrypick from 3.2] Add a fast path for
+frequently accessed user defaults keys that sacrifices
+thread safety for better speed on the main thread only
+
+2018-12-09: [cherrypick from 3.2] Disable metal while a tab
+drag is in progress so that its snapshot may be taken. Also,
+fix a bug where we'd keep retrying to create a graphics
+context for sessions without windows (such as those
+belonging to non-current tabs) once a second. Not having a
+window now causes metalAllowed: to return NO.
+
+2018-12-09: [cherrypick from 3.2] Fix frames of dragged tabs
+and windows
+
+2018-12-09: Fix frame of dragged tab (as long as it doesn't
+leave the tab bar)
+
+2018-12-09: When the window size changes because scroller
+appearance changed, preserve its height and adjust only the
+width. Issue 7318 and 6198.
+
+2018-12-09: Rename _scrollerStyleChanged and
+refreshTmuxLayoutsAndWindow to make sense. Add comments and
+logging.
+
+2018-12-09: Fix a bug where images > 255 columns repeated.
+Add the hack from commit be6ca89 to the GPU renderer. Issue
+7316
+
+2018-12-09: Fix GPU renderer for ASCII characters in fonts
+that have a bounding box with a negative origin. In other
+words, characters that draw excessively low. Issue 7299.
+
+2018-12-09: [cherrypick from 3.2] Fix a bug where saving an
+arrangement with a maximized pane also saves its contents.
+Issue 7003. Also fix a bug where VT100Screen did not strip
+NSNulls properly from its content. AFAICT this never gets
+turned into a plist but it is poor form.
+
+2018-12-09: [cherrypick from 3.2] Cache and re-use ASCII
+textures to reduce time taken to switch tabs
+
+2018-12-09: Log bounding boxes of characters to debug log
+
+2018-12-09: [cherrypick from 3.2] Fix missing tabbar in
+10.13
+
+2018-12-09: [cherrypick from 3.2] When exiting traditional
+full screen mode show the menu bar after updating the
+window's style mask. Changing the style mask causess
+refreshTerminal: to be called, and that changes the
+dock/menubar visibility. Issue 7300
+
+2018-12-09: [cherrypick from 3.2] Refactor toggle
+traditional full screen mode code
+
+2018-12-09: [cherrypick from 3.2] Move all calls to
+setHasShadow: to one method. Gives shadows to windows
+without a title bar. Do not give shadows to full screen
+windows (that logic was kind of there before but not done
+consistently). See comment in issue 2057
+
+2018-12-09: For compact+minimal: update colors when
+switching panes and use good label colors in session title
+views.
+
+2018-12-09: Draw the background color on tab title labels
+because macOS can't composite views correctly when subpixel
+AA is on in Mojave. Issue 7176
+
 2018-12-08: Add session>log>save contents. Issue 7404
 
 2018-12-08: [python] bump version
