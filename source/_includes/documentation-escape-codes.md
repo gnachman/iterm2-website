@@ -191,7 +191,9 @@ The terminal responds with:
 
 Where *height* and *width* are floating point values giving the size in points of a single character cell. For example:
 
-    ^[]1337;ReportCellSize=17.50;8.00^[\
+    ^[]1337;ReportCellSize=17.50;8.00;2.0^[\
+
+The third value gives the scale. This is the number of pixels (physical units) to points (logical units). 1.0 means non-retina, 2.0 means retina.
 
 #### Copy to Pasteboard
 
