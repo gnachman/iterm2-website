@@ -1,3 +1,62 @@
+2018-12-22: Add RequestAttention=flash. Issue 7388.
+
+2018-12-22: Don't show the size in the transient window
+title bar when a new window is created or when the window
+resizes but the grid size does not change. Issue 7434
+
+2018-12-22: Fix a bug where the badge was stretched when the
+window gets moved from a retina to a non-retina display.
+Issue 7232.
+
+2018-12-22: [python] Change RPCs to use decorators
+
+2018-12-22: Fix a crash after invalidating a swifty string.
+I have a feeling there is a memory leak in here somewhere
+because it should have been evaluated again.
+
+2018-12-22: Update the session title in setProfile rather
+than setPreferencesFromAddressBookProfile because the
+profile is sometimes set after that and the session title
+provider goes through a delegate and therefore needs the
+_profile to be up to date. fixes a bug where setting the
+session title seemed to have no effect.
+
+2018-12-22: [python] Change how you register for RPCs to use
+@RPC; async def func(); func.async_register(connection)
+
+2018-12-22: [python] Documentation improvements
+
+2018-12-22: [python] Fix typo, docstring formatting
+
+2018-12-22: [python] Remove notifications module
+
+2018-12-22: [python] Remove
+async_subscribe_to_focus_change_notification from the public
+api
+
+2018-12-22: [python, api] Improvements to NewSessionMonitor
+
+1. Move it to the lifecycle module 2. Rename
+uniqueIdentifier to session_id in the proto
+
+2018-12-22: [python] Move layout changed to a context
+manager
+
+2018-12-22: [python] Fix comment indentation
+
+2018-12-22: [python, api] Improvements to session
+termination notifications
+
+1. Move the python code into the lifecycle module. Add docs
+for it.  2. Change the proto to use the more standard
+session_id field name.  3. Change the semantics to
+communicate when a session's command exits rather than when
+its window closes. Now a session can only terminate once,
+which is much nicer.  4. Use a context manager instead of a
+callback.
+
+2018-12-22: [python] Reduce comment width so it looks better
+
 2018-12-21: [python] Add customcontrol module, remove
 notification for registering a custom control sequence.
 Update docs and tutorial.
