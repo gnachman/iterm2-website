@@ -1,4 +1,4 @@
-While iTerm2 does not require monospaced fonts, they look much better than proportionately spaced fonts. If you want to use Consolas, you'll need to correct its baseline offset as described at <a href="http://mbauman.net/geek/2009/03/15/minor-truetype-font-editing-on-a-mac/">how to fix Consolas baseline</a>.
+While iTerm2 does not require monospaced fonts, they look much better than proportionately spaced fonts. If you want to use Consolas, you'll need to correct its baseline offset as described at <a href="https://wincent.com/wiki/Fixing_the_baseline_on_the_Consolas_font_on_OS_X">how to fix Consolas baseline</a>.
 
 iTerm2 has the capability of rendering text with thin strokes to improve readability. You can change how this works in the **Text** panel of the **Profiles** tab of **Preferences**.
 
