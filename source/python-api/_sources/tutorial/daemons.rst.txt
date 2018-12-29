@@ -20,75 +20,44 @@ get started:
 .. code-block:: python
 
     #!/usr/bin/env python3
-
-    import asyncio
     import iterm2
 
     async def main(connection):
-        async def on_custom_esc(connection, notification):
-            print("Received a custom escape sequence")
-            if notification.sender_identity == "shared-secret":
-                if notification.payload == "create-window":
-                    await iterm2.Window.async_create()
-
-        await iterm2.notifications.async_subscribe_to_custom_escape_sequence_notification(connection, on_custom_esc)
+        async with iterm2.CustomControlSequenceMonitor(
+                connection, "shared-secret", r'^create-window$') as mon:
+            while True:
+                match = await mon.async_get()
+                await iterm2.Window.async_create(connection)
 
     iterm2.run_forever(main)
 
-Let's examine it line by line.
+Skipping the boilerplate we've seen before, let's look at the meat of the `main`
+function.
 
 .. code-block:: python
 
-    #!/usr/bin/env python3
+        async with iterm2.CustomControlSequenceMonitor(
+                connection, "shared-secret", r'^create-window$') as mon:
 
-This is standard boilerplate for a Python script. See :doc:`running` for
-details on how scripts are run.
+This is how you use an asyncio context manager.
 
-The next part of the template script are the imports:
+`iterm2.CustomControlSequenceMonitor` is a special kind of class that defines
+a context manager. That means it can perform an asyncio operation when it is
+created and when the context ends.
 
-.. code-block:: python
+This particular context manager registers a hook for custom control sequences.
+Terminal emulators work by processing out-of-band messages called control
+sequences to perform actions such as to move the cursor, clear the screen, or
+change the current text color. Custom control sequences allow you to define your
+own actions to perform when a control sequence you define is received.
 
-    import asyncio
+When you use a context manager this way the flow of control enters the body of
+the context manager (beginning with `while True`).
 
-The `iterm2` module is based on the Python :py:mod:`asyncio` framework. For
-simple scripts, you don't need to know about it at all, but as you do more
-complex things it will become more important.
-
-.. code-block:: python
-
-        async def on_custom_esc(connection, notification):
-            print("Received a custom escape sequence")
-
-This is a callback that gets invoked when iTerm2 receives a custom escape
-sequence.
-
-A custom escape sequence is a special escape sequence that performs a
-user-defined action. In contradistinction to a standard escape sequence, such
-as those that position the cursor or change the current color, a custom escape
-sequence is proprietary to iTerm2. When one is received, iTerm2 sends a
-notification to any script that has subscribed to custom escape sequence
-notifications. The `iterm2` python module invokes the script's registered
-callback, which in this case is `on_custom_esc`.
-
-The first argument is a `connection`, which you have seen before.
-
-The second argument is a `notification`, which contains details about the
-notification. In the case of a custom escape sequence, it has a
-`sender_identity` and a `payload`. The `sender_identity` is intended to be a
-secret shared between your daemon and the program that produces a custom escape
-sequence. This is a security measure to prevent untrusted programs from using a
-daemon to control iTerm2 in ways you don't want.
-
-The `payload` is an arbitrary string provided in the custom escape sequence.
-
-.. note::
-    The `notification` is a Python representation of a Google protobuf message.
-    You can find the protobuf description in the `api.proto
-    <https://raw.githubusercontent.com/gnachman/iTerm2/master/proto/api.proto>`_
-    file.
-
-    The :doc:`/notifications` documentation describes which protobuf message to
-    expect in a notification callback.
+The `async_get` call blocks until a control sequence matching the requested
+identity and payload are received. It returns a `re.Match` object, which is
+the result of searching the control sequence's payload with the regular
+expression that the `CustomControlSequenceMonitor` was initialized with.
 
 To produce a custom escape sequence, you could run this at the command line:
 
@@ -97,40 +66,59 @@ To produce a custom escape sequence, you could run this at the command line:
     printf "\033]1337;Custom=id=%s:%s\a" "shared-secret" "create-window"
 
 The first argument, `shared-secret` is the identity and the second argument,
-`create-window` is the payload.
-
-Let's see what the callback does:
+`create-window` is the payload. Here's the body of the context manager:
 
 .. code-block:: python
 
-            if notification.sender_identity == "shared-secret":
-                if notification.payload == "create-window":
-                    await iterm2.Window.async_create()
+        while True:
+            match = await mon.async_get()
+            await iterm2.Window.async_create(connection)
 
-First, it checks that the sender identity is correct. Next, it selects the
-action to perform based on the payload. This daemon only knows how to create
-windows, but a more sophisticated daemon could handle many different payloads.
+After receiving a matching control sequence, this example creates a new window.
 
-That's it for the callback. Let's see how we register for custom escape
-sequence notifications:
+If you wanted the payload to take more information, such as the number of
+windows to create, you could use the regular expression matcher to capture
+that value in a capture group and retrieve it from the matcher in the callback.
 
-.. code-block:: python
+The control sequence remains registered even after `main` returns.
 
-    await iterm2.notifications.async_subscribe_to_custom_escape_sequence_notification(connection, on_custom_esc)
-
-That's all you have to do to request that `on_custom_esc` be called any time a
-custom escape sequence is received in any session.
-
-This tells the `connection` to handle incoming messages until the passed-in
-future has its result set. The future will never have its result set, so the
-script will run until iTerm2 terminates.
+Finally, we get to the last line of the script:
 
 .. code-block:: python
 
     iterm2.run_forever(main)
 
 This starts the script and keeps it running even after `main` returns so it can
-continue to process custom control sequences until iTerm2 terminates.
+continue to process custom control sequences until iTerm2 terminates. This is
+what makes it a long-running daemon.
+
+If you want to run multiple context managers concurrently, such as to register
+two different custom control sequences, you need to create tasks that run in the
+background. Otherwise, the flow of control will get stuck in the first one since
+its body has a `while True` infinite loop. Here's how you do that:
+
+.. code-block:: python
+
+    async def wrapper():
+        async with iterm2.CustomControlSequenceMonitor(
+                connection, identity, regex) as mon:
+            while True:
+                DoSomething(await mon.async_get())
+
+    asyncio.create_task(wrapper())
+    # Define more wrappers and create more tasks
+
+As you browse the documentation you will find many different context managers
+that allow you to perform actions when something hapens. For example:
+
+* :class:`iterm2.focus.FocusMonitor`
+* :class:`iterm2.keyboard.KeystrokeMonitor`
+* :class:`iterm2.lifecycle.LayoutChangeMonitor`
+* :class:`iterm2.lifecycle.NewSessionMonitor`
+* :class:`iterm2.prompt.PromptMonitor`
+* :class:`iterm2.screen.ScreenStreamer`
+* :class:`iterm2.lifecycle.SessionTerminationMonitor`
+* :class:`iterm2.variables.VariableMonitor`
 
 Continue to the next section, :doc:`rpcs`.
 

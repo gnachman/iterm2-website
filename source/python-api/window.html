@@ -102,15 +102,59 @@
 <dl class="class">
 <dt id="iterm2.Window">
 <em class="property">class </em><code class="descname">Window</code><span class="sig-paren">(</span><em>connection</em>, <em>window_id</em>, <em>tabs</em>, <em>frame</em>, <em>number</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Represents a terminal window.</p>
+<p>Do not create this yourself. Instead, use <code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code>.</p>
+<dl class="method">
 <dt id="iterm2.Window.async_activate">
-<code class="descname">async_activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_activate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Window.async_activate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the window keyboard focus and orders it to the front.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="iterm2.Window.async_close">
+<code class="descname">async_close</code><span class="sig-paren">(</span><em>force: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the user will not be prompted for a confirmation.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="iterm2.Window.async_create">
+<em class="property">static </em><code class="descname">async_create</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>profile: str = None</em>, <em>command: str = None</em>, <em>profile_customizations: iterm2.profile.LocalWriteOnlyProfile = None</em><span class="sig-paren">)</span> &#x2192; iterm2.window.Window<a class="headerlink" href="#iterm2.Window.async_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – A <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>.</li>
+<li><strong>profile</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name of the profile to use for the new window.</li>
+<li><strong>command</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A command to run in lieu of the shell in the new session. Mutually exclusive with profile_customizations.</li>
+<li><strong>profile_customizations</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">LocalWriteOnlyProfile</span></code>) – LocalWriteOnlyProfile giving changes to make in profile. Mutually exclusive with command.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A new <a class="reference internal" href="#iterm2.Window" title="iterm2.Window"><code class="xref py py-class docutils literal notranslate"><span class="pre">Window</span></code></a>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last">CreateWindowException if something went wrong.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="iterm2.Window.async_create_tab">
-<code class="descname">async_create_tab</code><span class="sig-paren">(</span><em>profile=None</em>, <em>command=None</em>, <em>index=None</em>, <em>profile_customizations=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_create_tab" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_create_tab</code><span class="sig-paren">(</span><em>profile: Optional[str] = None</em>, <em>command: Optional[str] = None</em>, <em>index: Optional[int] = None</em>, <em>profile_customizations: Optional[iterm2.profile.LocalWriteOnlyProfile] = None</em><span class="sig-paren">)</span> &#x2192; Optional[iterm2.tab.Tab]<a class="headerlink" href="#iterm2.Window.async_create_tab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new tab in this window.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -136,15 +180,16 @@
 
 <dl class="method">
 <dt id="iterm2.Window.async_create_tmux_tab">
-<code class="descname">async_create_tmux_tab</code><span class="sig-paren">(</span><em>tmux_connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_create_tmux_tab" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_create_tmux_tab</code><span class="sig-paren">(</span><em>tmux_connection: iterm2.tmux.TmuxConnection</em><span class="sig-paren">)</span> &#x2192; Optional[iterm2.tab.Tab]<a class="headerlink" href="#iterm2.Window.async_create_tmux_tab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new tmux tab in this window.</p>
+<p>This may not be called from within a <code class="xref py py-class docutils literal notranslate"><span class="pre">Transaction</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tmux_connection</strong> – A <a class="reference internal" href="tmux.html#iterm2.TmuxConnection" title="iterm2.TmuxConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">TmuxConnection</span></code></a> that owns the new tab.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tmux_connection</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TmuxConnection</span></code>) – The tmux connection to own the new tab.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A newly created tab, or <cite>None</cite> if it could not be created.</td>
 </tr>
 </tbody>
 </table>
@@ -152,14 +197,14 @@
 
 <dl class="method">
 <dt id="iterm2.Window.async_get_frame">
-<code class="descname">async_get_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_get_frame" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_get_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.util.Frame<a class="headerlink" href="#iterm2.Window.async_get_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the window’s frame.</p>
-<p>0,0 is the <em>bottom</em> right of the main screen.</p>
+<p>The origin (0,0) is the <em>bottom</em> right of the main screen.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">This window’s frame. This includes window decoration such as the title bar.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#iterm2.GetPropertyException" title="iterm2.GetPropertyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetPropertyException</span></code></a> if something goes wrong.</td>
 </tr>
@@ -169,13 +214,13 @@
 
 <dl class="method">
 <dt id="iterm2.Window.async_get_fullscreen">
-<code class="descname">async_get_fullscreen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_get_fullscreen" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_get_fullscreen</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#iterm2.Window.async_get_fullscreen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the window is full-screen.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True (fullscreen) or False (not fullscreen)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Whether the window is full screen.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#iterm2.GetPropertyException" title="iterm2.GetPropertyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetPropertyException</span></code></a> if something goes wrong.</td>
 </tr>
@@ -185,15 +230,15 @@
 
 <dl class="method">
 <dt id="iterm2.Window.async_restore_window_arrangement">
-<code class="descname">async_restore_window_arrangement</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_restore_window_arrangement" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_restore_window_arrangement</code><span class="sig-paren">(</span><em>name: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Window.async_restore_window_arrangement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restore a window arrangement as tabs in this window.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – The name to restore.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name to restore.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#iterm2.SavedArrangementException" title="iterm2.SavedArrangementException"><code class="xref py py-class docutils literal notranslate"><span class="pre">SavedArrangementException</span></code></a> if the named arrangement does not exist.</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="arrangement.html#iterm2.arrangement.SavedArrangementException" title="iterm2.arrangement.SavedArrangementException"><code class="xref py py-class docutils literal notranslate"><span class="pre">SavedArrangementException</span></code></a> if the named arrangement does not exist.</td>
 </tr>
 </tbody>
 </table>
@@ -201,13 +246,13 @@
 
 <dl class="method">
 <dt id="iterm2.Window.async_save_window_as_arrangement">
-<code class="descname">async_save_window_as_arrangement</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_save_window_as_arrangement" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_save_window_as_arrangement</code><span class="sig-paren">(</span><em>name: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Window.async_save_window_as_arrangement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the current window as a new arrangement.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – The name to save as. Will overwrite if one already exists with this name.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name to save as. Will overwrite if one already exists with this name.</td>
 </tr>
 </tbody>
 </table>
@@ -215,13 +260,13 @@
 
 <dl class="method">
 <dt id="iterm2.Window.async_set_frame">
-<code class="descname">async_set_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_set_frame" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_set_frame</code><span class="sig-paren">(</span><em>frame: iterm2.util.Frame</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Window.async_set_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the window’s frame.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<a class="reference internal" href="util.html#iterm2.util.Frame" title="iterm2.util.Frame"><code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></a>) – The desired frame.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#iterm2.SetPropertyException" title="iterm2.SetPropertyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">SetPropertyException</span></code></a> if something goes wrong.</td>
 </tr>
@@ -231,13 +276,13 @@
 
 <dl class="method">
 <dt id="iterm2.Window.async_set_fullscreen">
-<code class="descname">async_set_fullscreen</code><span class="sig-paren">(</span><em>fullscreen</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_set_fullscreen" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_set_fullscreen</code><span class="sig-paren">(</span><em>fullscreen: bool</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_set_fullscreen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Changes the window’s full-screen status.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fullscreen</strong> – True to make fullscreen, False to make not-fullscreen</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fullscreen</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether you wish the window to be full screen.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#iterm2.SetPropertyException" title="iterm2.SetPropertyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">SetPropertyException</span></code></a> if something goes wrong.</td>
 </tr>
@@ -247,7 +292,7 @@
 
 <dl class="method">
 <dt id="iterm2.Window.async_set_tabs">
-<code class="descname">async_set_tabs</code><span class="sig-paren">(</span><em>tabs</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_set_tabs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_set_tabs</code><span class="sig-paren">(</span><em>tabs: List[iterm2.tab.Tab]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_set_tabs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Changes the tabs and their order.</p>
 <p>The provided tabs may belong to any window. They will be moved if needed. Windows entirely denuded of tabs will be closed.</p>
 <p>All provided tabs will be inserted in the given order starting at the first positions. Any tabs already belonging to this window not in the list will remain after the provided tabs.</p>
@@ -255,7 +300,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tabs</strong> – a list of <a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Tab</span></code></a> objects</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tabs</strong> – a list of tabs, forming the new set of tabs in this window.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body">RPCException if something goes wrong.</td>
 </tr>
@@ -270,7 +315,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The current iterm2.Tab in this window or None if it could not be determined.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The current tab in this window or <cite>None</cite> if it could not be determined.</td>
 </tr>
 </tbody>
 </table>
@@ -278,7 +323,7 @@
 
 <dl class="method">
 <dt id="iterm2.Window.pretty_str">
-<code class="descname">pretty_str</code><span class="sig-paren">(</span><em>indent=''</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.pretty_str" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pretty_str</code><span class="sig-paren">(</span><em>indent: str = ''</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.Window.pretty_str" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -338,7 +383,7 @@
 <dl class="class">
 <dt id="iterm2.SavedArrangementException">
 <em class="property">class </em><code class="descname">SavedArrangementException</code><a class="headerlink" href="#iterm2.SavedArrangementException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Something went wrong saving or restoring a saved arrangement.</p>
+<dd><p>A problem was encountered while saving or restoring an arrangement.</p>
 </dd></dl>
 
 <hr class="docutils" />

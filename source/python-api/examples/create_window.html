@@ -101,21 +101,14 @@
 <p>This demonstrates handling a custom escape sequence to perform an action. In
 this case, the action is to create a new window. This script is meant to be a
 starting point for developing your own custom escape sequence handler.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">iterm2</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">on_custom_esc</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">notification</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Received a custom escape sequence&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">sender_identity</span> <span class="o">==</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">payload</span> <span class="o">==</span> <span class="s2">&quot;create-window&quot;</span><span class="p">:</span>
-                <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">()</span>
-
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">async_subscribe_to_custom_escape_sequence_notification</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">on_custom_esc</span><span class="p">)</span>
+    <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">CustomControlSequenceMonitor</span><span class="p">(</span>
+            <span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;^create-window$&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+            <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
@@ -126,7 +119,7 @@ starting point for developing your own custom escape sequence handler.</p>
 </div>
 <p>The <em>shared-secret</em> string is used to prevent untrusted code from invoking your
 function. For example, if you <cite>cat</cite> a text file, it could include escape
-sequences.</p>
+sequences, but they won’t work unless they contain the proper secret string.</p>
 </div>
 
 

@@ -126,14 +126,12 @@
         <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_set_variable</span><span class="p">(</span><span class="s2">&quot;user.showEscIndicator&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">keystroke_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">notification</span><span class="p">):</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">keystroke_handler</span><span class="p">(</span><span class="n">keystroke</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;This function is called every time a key is pressed.&quot;&quot;&quot;</span>
-        <span class="c1"># https://stackoverflow.com/questions/3202629/where-can-i-find-a-list-of-mac-virtual-key-codes</span>
-        <span class="n">ESC</span> <span class="o">=</span> <span class="mh">0x35</span>
-        <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">keyCode</span> <span class="o">!=</span> <span class="n">ESC</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">keystroke</span><span class="o">.</span><span class="n">keycode</span> <span class="o">!=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">ESCAPE</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="c1"># There might not be a current session, so ther emight be an exception</span>
+        <span class="c1"># There might not be a current session, so there might be an exception</span>
         <span class="c1"># while trying to get it.</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">current_tab</span><span class="o">.</span><span class="n">current_session</span>
@@ -172,9 +170,10 @@
     <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">)</span>
 
     <span class="c1"># Monitor the keyboard</span>
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">async_subscribe_to_keystroke_notification</span><span class="p">(</span>
-            <span class="n">connection</span><span class="p">,</span>
-            <span class="n">keystroke_handler</span><span class="p">)</span>
+    <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokeMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">keystroke</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+            <span class="n">await</span> <span class="n">keystroke_handler</span><span class="p">(</span><span class="n">keystroke</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>

@@ -107,6 +107,7 @@
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 
+<span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
@@ -120,30 +121,41 @@
     <span class="n">await</span> <span class="n">bottomLeft</span><span class="o">.</span><span class="n">async_activate</span><span class="p">()</span>
     <span class="n">broadcast_to</span> <span class="o">=</span> <span class="p">[</span> <span class="n">topLeft</span><span class="p">,</span> <span class="n">topRight</span><span class="p">,</span> <span class="n">bottomRight</span> <span class="p">]</span>
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">async_handle_keystroke</span><span class="p">(</span><span class="n">notification</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Called on each keystroke with iterm2.api_pb2.KeystrokeNotification&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">keyCode</span> <span class="o">==</span> <span class="mh">0x35</span><span class="p">:</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">async_handle_keystroke</span><span class="p">(</span><span class="n">keystroke</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">keystroke</span><span class="o">.</span><span class="n">keycode</span> <span class="o">==</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">ESCAPE</span><span class="p">:</span>
             <span class="c1"># User pressed escape. Terminate script.</span>
-            <span class="c1"># A list of keycodes is here: https://stackoverflow.com/a/16125341/321984</span>
             <span class="k">return</span> <span class="bp">True</span>
         <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">broadcast_to</span><span class="p">:</span>
-            <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_send_text</span><span class="p">(</span><span class="n">notification</span><span class="o">.</span><span class="n">characters</span><span class="p">)</span>
+            <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_send_text</span><span class="p">(</span><span class="n">keystroke</span><span class="o">.</span><span class="n">characters</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">False</span>
 
     <span class="c1"># Construct a pattern that matches all keystrokes except those with a Command modifier.</span>
     <span class="c1"># This prevents iTerm2 from handling them when the bottomLeft session has keyboard focus.</span>
     <span class="n">pattern</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokePattern</span><span class="p">()</span>
-    <span class="n">pattern</span><span class="o">.</span><span class="n">keycodes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">65536</span><span class="p">))</span>
-    <span class="n">pattern</span><span class="o">.</span><span class="n">forbidden_modifiers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_COMMAND</span><span class="p">])</span>
+    <span class="n">pattern</span><span class="o">.</span><span class="n">keycodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">keycode</span> <span class="k">for</span> <span class="n">keycode</span> <span class="ow">in</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="p">]</span>
+    <span class="n">pattern</span><span class="o">.</span><span class="n">forbidden_modifiers</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Modifier</span><span class="o">.</span><span class="n">COMMAND</span><span class="p">]</span>
+
+    <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
+
+    <span class="c1"># Swallow all keystrokes matching the pattern</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">filter_all_keystrokes</span><span class="p">():</span>
+      <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokeFilter</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="p">[</span><span class="n">pattern</span><span class="p">],</span> <span class="n">bottomLeft</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+          <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait</span><span class="p">([</span><span class="n">future</span><span class="p">])</span>
+
+    <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">filter_all_keystrokes</span><span class="p">())</span>
+
 
     <span class="c1"># This will block until async_handle_keystroke returns True.</span>
-    <span class="n">async</span> <span class="k">with</span> <span class="n">bottomLeft</span><span class="o">.</span><span class="n">get_keystroke_reader</span><span class="p">(</span><span class="n">patterns_to_ignore</span><span class="o">=</span><span class="p">[</span><span class="n">pattern</span><span class="p">])</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
+    <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokeMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">bottomLeft</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
         <span class="n">done</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">keystroke</span> <span class="ow">in</span> <span class="n">await</span> <span class="n">reader</span><span class="o">.</span><span class="n">async_get</span><span class="p">():</span>
-                <span class="n">done</span> <span class="o">=</span> <span class="n">await</span> <span class="n">async_handle_keystroke</span><span class="p">(</span><span class="n">keystroke</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
-                    <span class="k">break</span>
+            <span class="n">keystroke</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+            <span class="n">done</span> <span class="o">=</span> <span class="n">await</span> <span class="n">async_handle_keystroke</span><span class="p">(</span><span class="n">keystroke</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="n">future</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">await</span> <span class="n">task</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>

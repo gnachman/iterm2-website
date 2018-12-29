@@ -105,7 +105,10 @@
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="n">badge</span><span class="p">,</span> <span class="n">auto_name</span><span class="p">):</span>
+    <span class="nd">@iterm2.TitleProviderRPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">badge_title</span><span class="p">(</span>
+        <span class="n">badge</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;session.badge?&quot;</span><span class="p">),</span>
+        <span class="n">auto_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;session.autoName?&quot;</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">badge</span> <span class="ow">and</span> <span class="n">auto_name</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">auto_name</span> <span class="o">+</span> <span class="sa">u</span><span class="s2">&quot; </span><span class="se">\u2014</span><span class="s2"> &quot;</span> <span class="o">+</span> <span class="n">badge</span>
         <span class="k">elif</span> <span class="n">auto_name</span><span class="p">:</span>
@@ -114,15 +117,7 @@
             <span class="k">return</span> <span class="n">badge</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;Shell&quot;</span>
-
-    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;badge&quot;</span><span class="p">:</span> <span class="s2">&quot;session.badge?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;auto_name&quot;</span><span class="p">:</span> <span class="s2">&quot;session.autoName?&quot;</span> <span class="p">}</span>
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_session_title_provider</span><span class="p">(</span>
-            <span class="n">connection</span><span class="p">,</span>
-            <span class="s2">&quot;nameandbadge&quot;</span><span class="p">,</span>
-            <span class="n">title</span><span class="p">,</span>
-            <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;name + badge&quot;</span><span class="p">,</span>
-            <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">badge_title</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Name + Badge&quot;</span><span class="p">,</span> <span class="s2">&quot;com.iterm2.example.name-and-badge&quot;</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
@@ -136,7 +131,10 @@ but some users prefer to see the window title in both places.</p>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="n">window_name</span><span class="p">,</span> <span class="n">auto_name</span><span class="p">):</span>
+    <span class="nd">@iterm2.TitleProviderRPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">window_title_in_tab</span><span class="p">(</span>
+        <span class="n">window_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;session.terminalWindowName?&quot;</span><span class="p">),</span>
+        <span class="n">auto_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;session.autoName?&quot;</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">window_name</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">window_name</span>
         <span class="k">elif</span> <span class="n">auto_name</span><span class="p">:</span>
@@ -144,14 +142,7 @@ but some users prefer to see the window title in both places.</p>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;Shell&quot;</span>
 
-    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;window_name&quot;</span><span class="p">:</span> <span class="s2">&quot;session.terminalWindowName?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;auto_name&quot;</span><span class="p">:</span> <span class="s2">&quot;session.autoName?&quot;</span> <span class="p">}</span>
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_session_title_provider</span><span class="p">(</span>
-            <span class="n">connection</span><span class="p">,</span>
-            <span class="s2">&quot;window_name&quot;</span><span class="p">,</span>
-            <span class="n">title</span><span class="p">,</span>
-            <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;Window Name&quot;</span><span class="p">,</span>
-            <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">window_title_in_tab</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Window Name&quot;</span><span class="p">,</span> <span class="s2">&quot;com.iterm2.example.window-name&quot;</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>

@@ -119,12 +119,12 @@
               <span class="k">pass</span>
 
     <span class="n">patterns</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokePattern</span><span class="p">()</span>
-    <span class="n">patterns</span><span class="o">.</span><span class="n">forbidden_modifiers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_CONTROL</span><span class="p">,</span>
-                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_OPTION</span><span class="p">,</span>
-                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_COMMAND</span><span class="p">,</span>
-                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_SHIFT</span><span class="p">,</span>
-                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_NUMPAD</span><span class="p">])</span>
-    <span class="n">patterns</span><span class="o">.</span><span class="n">required_modifiers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">iterm2</span><span class="o">.</span><span class="n">MODIFIER_FUNCTION</span><span class="p">])</span>
+    <span class="n">patterns</span><span class="o">.</span><span class="n">forbidden_modifiers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">iterm2</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">,</span>
+                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">OPTION</span><span class="p">,</span>
+                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">COMMAND</span><span class="p">,</span>
+                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">SHIFT</span><span class="p">,</span>
+                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">NUMPAD</span><span class="p">])</span>
+    <span class="n">patterns</span><span class="o">.</span><span class="n">required_modifiers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">iterm2</span><span class="o">.</span><span class="n">FUNCTION</span><span class="p">])</span>
     <span class="n">patterns</span><span class="o">.</span><span class="n">keycodes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">keycodes</span><span class="p">)</span>
 
     <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">async_subscribe_to_keystroke_notification</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">keystroke_handler</span><span class="p">,</span> <span class="n">patterns_to_ignore</span><span class="o">=</span><span class="p">[</span><span class="n">patterns</span><span class="p">])</span>

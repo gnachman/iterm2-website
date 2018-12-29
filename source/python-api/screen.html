@@ -105,17 +105,19 @@
 <dt id="iterm2.ScreenStreamer">
 <em class="property">class </em><code class="descname">ScreenStreamer</code><span class="sig-paren">(</span><em>connection</em>, <em>session_id</em>, <em>want_contents=True</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenStreamer" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager for monitoring the screen contents.</p>
+<p>You can use this to be notified when screen contents change. Optionally, you can receive the actual contents of the screen.</p>
 <p>Don’t create this yourself. Use Session.get_screen_streamer() instead. See
 its docstring for more info.</p>
 <dl class="method">
 <dt id="iterm2.ScreenStreamer.async_get">
-<code class="descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenStreamer.async_get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the screen contents, waiting until they change if needed.</p>
+<code class="descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.screen.ScreenContents]<a class="headerlink" href="#iterm2.ScreenStreamer.async_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blocks until the screen contents change.</p>
+<p>If this <cite>ScreenStreamer</cite> has been configured to provide screen contents, then they will be returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.ScreenContents" title="iterm2.ScreenContents"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenContents</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.ScreenContents" title="iterm2.ScreenContents"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenContents</span></code></a> (if so configured), otherwise <cite>None</cite>.</td>
 </tr>
 </tbody>
 </table>
@@ -135,7 +137,7 @@ its docstring for more info.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Point</span></code></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <code class="xref py py-class docutils literal notranslate"><span class="pre">Point</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -143,15 +145,17 @@ its docstring for more info.</p>
 
 <dl class="method">
 <dt id="iterm2.ScreenContents.line">
-<code class="descname">line</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenContents.line" title="Permalink to this definition">¶</a></dt>
+<code class="descname">line</code><span class="sig-paren">(</span><em>index: int</em><span class="sig-paren">)</span> &#x2192; iterm2.screen.LineContents<a class="headerlink" href="#iterm2.ScreenContents.line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the LineContents at the given index.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> – should be at least 0 and less than <cite>number_of_lines</cite>.</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">LineContents</span></code></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.LineContents" title="iterm2.LineContents"><code class="xref py py-class docutils literal notranslate"><span class="pre">LineContents</span></code></a> object.</td>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – should be at least 0 and less than <cite>number_of_lines</cite>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.LineContents" title="iterm2.LineContents"><code class="xref py py-class docutils literal notranslate"><span class="pre">LineContents</span></code></a> object.</td>
 </tr>
 </tbody>
 </table>
@@ -211,15 +215,17 @@ its docstring for more info.</p>
 
 <dl class="method">
 <dt id="iterm2.LineContents.string_at">
-<code class="descname">string_at</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.LineContents.string_at" title="Permalink to this definition">¶</a></dt>
+<code class="descname">string_at</code><span class="sig-paren">(</span><em>x: int</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.LineContents.string_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the string of the cell at index <cite>x</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> – The index to look up.</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">str</span></code></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string giving the contents of the cell at that index, or empty string if none.</td>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The index to look up.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A string giving the contents of the cell at that index, or empty string if none.</td>
 </tr>
 </tbody>
 </table>

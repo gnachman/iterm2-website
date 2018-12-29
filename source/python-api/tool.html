@@ -103,26 +103,22 @@
 <p>Provides functions to register toolbelt webivew tools.</p>
 <dl class="function">
 <dt id="iterm2.tool.async_register_web_view_tool">
-<code class="descname">async_register_web_view_tool</code><span class="sig-paren">(</span><em>connection</em>, <em>display_name</em>, <em>identifier</em>, <em>reveal_if_already_registered</em>, <em>url</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.tool.async_register_web_view_tool" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_register_web_view_tool</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>display_name: str</em>, <em>identifier: str</em>, <em>reveal_if_already_registered: bool</em>, <em>url: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.tool.async_register_web_view_tool" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers a toolbelt tool that shows a webview.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>connection</strong> – A connected iterm2.connection.Connection.</li>
-<li><strong>display_name</strong> – The name of the tool. User-visible.</li>
-<li><strong>identifier</strong> – A unique ID that prevents duplicate registration.</li>
-<li><strong>reveal_if_already_registered</strong> – Bool. If True, shows the tool on a duplicate registration
-attempt.</li>
-<li><strong>url</strong> – The URL to show in the webview.</li>
+<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</li>
+<li><strong>display_name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name of the tool. User-visible.</li>
+<li><strong>identifier</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A unique ID for this tool. Only one tool with a given identifier may be registered at a time.</li>
+<li><strong>reveal_if_already_registered</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, shows the tool on a duplicate registration attempt.</li>
+<li><strong>url</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The URL to show in the webview.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">iterm2.api_pb2.RegisterToolResponse on success</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">iterm2.rpc.RPCException if something goes wrong</p>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong</p>
 </td>
 </tr>
 </tbody>

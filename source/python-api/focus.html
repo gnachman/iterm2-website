@@ -16,7 +16,7 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="MainMenu" href="mainmenu.html" />
+    <link rel="next" title="Keyboard" href="keyboard.html" />
     <link rel="prev" title="Connection" href="connection.html" />
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
@@ -103,11 +103,19 @@
 <p>Provides interfaces relating to keyboard focus.</p>
 <dl class="class">
 <dt id="iterm2.focus.FocusMonitor">
-<em class="property">class </em><code class="descname">FocusMonitor</code><span class="sig-paren">(</span><em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusMonitor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FocusMonitor</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager for monitoring keyboard focus changes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> – A connection to iTerm2.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="iterm2.focus.FocusMonitor.async_get_next_update">
-<code class="descname">async_get_next_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusMonitor.async_get_next_update" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_get_next_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.focus.FocusUpdate<a class="headerlink" href="#iterm2.focus.FocusMonitor.async_get_next_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>When focus changes, returns an update.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -131,9 +139,9 @@
 
 <dl class="class">
 <dt id="iterm2.focus.FocusUpdate">
-<em class="property">class </em><code class="descname">FocusUpdate</code><span class="sig-paren">(</span><em>application_active=None</em>, <em>window_changed=None</em>, <em>selected_tab_changed=None</em>, <em>active_session_changed=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FocusUpdate</code><span class="sig-paren">(</span><em>application_active: iterm2.focus.FocusUpdateApplicationActive = None</em>, <em>window_changed: iterm2.focus.FocusUpdateWindowChanged = None</em>, <em>selected_tab_changed: iterm2.focus.FocusUpdateSelectedTabChanged = None</em>, <em>active_session_changed: iterm2.focus.FocusUpdateActiveSessionChanged = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a change to keyboard focus.</p>
-<p>Up to one of <cite>application_active</cite>, <cite>window_changed</cite>, <cite>selected_tab_changed</cite>, or <cite>active_session_changed</cite> will not be None.</p>
+<p>Up to one of <cite>application_active</cite>, <cite>window_changed</cite>, <cite>selected_tab_changed</cite>, or <cite>active_session_changed</cite> will not be <cite>None</cite>.</p>
 <dl class="attribute">
 <dt id="iterm2.focus.FocusUpdate.active_session_changed">
 <code class="descname">active_session_changed</code><a class="headerlink" href="#iterm2.focus.FocusUpdate.active_session_changed" title="Permalink to this definition">¶</a></dt>
@@ -141,7 +149,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None if no change to active sessino, otherwise <a class="reference internal" href="#iterm2.focus.FocusUpdateActiveSessionChanged" title="iterm2.focus.FocusUpdateActiveSessionChanged"><code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateActiveSessionChanged</span></code></a>.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><cite>None</cite> if no change to active session, otherwise <a class="reference internal" href="#iterm2.focus.FocusUpdateActiveSessionChanged" title="iterm2.focus.FocusUpdateActiveSessionChanged"><code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateActiveSessionChanged</span></code></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -154,7 +162,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None if no change to whether the app is active, otherwise <code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateApplicationActive</span></code></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><cite>None</cite> if no change to whether the app is active, otherwise <code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateApplicationActive</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -167,7 +175,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None if no change to selected tab, otherwise <a class="reference internal" href="#iterm2.focus.FocusUpdateSelectedTabChanged" title="iterm2.focus.FocusUpdateSelectedTabChanged"><code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateSelectedTabChanged</span></code></a>.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><cite>None</cite> if no change to selected tab, otherwise <a class="reference internal" href="#iterm2.focus.FocusUpdateSelectedTabChanged" title="iterm2.focus.FocusUpdateSelectedTabChanged"><code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateSelectedTabChanged</span></code></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -180,7 +188,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None if no change to the current window, otherwise <a class="reference internal" href="#iterm2.focus.FocusUpdateWindowChanged" title="iterm2.focus.FocusUpdateWindowChanged"><code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateWindowChanged</span></code></a>.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><cite>None</cite> if no change to the current window, otherwise <a class="reference internal" href="#iterm2.focus.FocusUpdateWindowChanged" title="iterm2.focus.FocusUpdateWindowChanged"><code class="xref py py-class docutils literal notranslate"><span class="pre">FocusUpdateWindowChanged</span></code></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -190,7 +198,7 @@
 
 <dl class="class">
 <dt id="iterm2.focus.FocusUpdateActiveSessionChanged">
-<em class="property">class </em><code class="descname">FocusUpdateActiveSessionChanged</code><span class="sig-paren">(</span><em>session_id</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdateActiveSessionChanged" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FocusUpdateActiveSessionChanged</code><span class="sig-paren">(</span><em>session_id: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdateActiveSessionChanged" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a change to the active session within a tab.</p>
 <dl class="attribute">
 <dt id="iterm2.focus.FocusUpdateActiveSessionChanged.session_id">
@@ -210,7 +218,7 @@
 
 <dl class="class">
 <dt id="iterm2.focus.FocusUpdateSelectedTabChanged">
-<em class="property">class </em><code class="descname">FocusUpdateSelectedTabChanged</code><span class="sig-paren">(</span><em>tab_id</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdateSelectedTabChanged" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FocusUpdateSelectedTabChanged</code><span class="sig-paren">(</span><em>tab_id: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdateSelectedTabChanged" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a change in the selected tab.</p>
 <dl class="attribute">
 <dt id="iterm2.focus.FocusUpdateSelectedTabChanged.tab_id">
@@ -229,7 +237,7 @@
 
 <dl class="class">
 <dt id="iterm2.focus.FocusUpdateWindowChanged">
-<em class="property">class </em><code class="descname">FocusUpdateWindowChanged</code><span class="sig-paren">(</span><em>window_id</em>, <em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdateWindowChanged" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FocusUpdateWindowChanged</code><span class="sig-paren">(</span><em>window_id: str</em>, <em>event: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.focus.FocusUpdateWindowChanged" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a change in which window is focused.</p>
 <p>This class defines three static constants:</p>
 <p><cite>TERMINAL_WINDOW_BECAME_KEY</cite>: A terminal window received keyboard focus.

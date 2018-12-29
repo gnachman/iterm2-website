@@ -101,63 +101,101 @@
 <p>iTerm2 provides a mechanism called <em>hooks</em> that allows your Python code to modify the app’s default behavior.</p>
 <p>The following hooks are defined:</p>
 <ul class="simple">
-<li>Custom session title</li>
-<li>(More TBD)</li>
+<li>Session title provider</li>
+<li>Status bar provider</li>
 </ul>
-<p>To define a hook, you must register an RPC as described in <a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a>. There are a few things to do in addition:</p>
-<ol class="arabic simple">
-<li>Pass a <cite>role</cite> argument to <cite>async_register_rpc_handler</cite> that describes the hook you wish to implement.</li>
-<li>Pass a <cite>defaults</cite> argument to <cite>async_register_rpc_handler</cite> that describes the variables you depend on.</li>
-<li>Pass a <cite>display_name</cite> argument to <cite>async_register_rpc_handler</cite> that gives the name to show in the UI.</li>
-</ol>
-<p>To implement a custom session title hook, use <cite>role=RPC_ROLE_SESSION_TITLE</cite>.</p>
-<p>The <cite>defaults</cite> argument is a dictionary mapping an argument name to a variable.
-The argument names in <cite>defaults</cite> correspond to argument names in the function
-you register to handle the RPC.</p>
-<p>In the case of the custom session title hook, all arguments to your function
-must have corresponding default values.</p>
-<p>The values in the <cite>defaults</cite> dictionary refer to variables. When the value of
-any named variable changes, the function may be re-evaluated. If some variable
-might not be defined, you should put a <cite>?</cite> after its name to signify that a
+<p>Begin by reading about RPCs as described in <a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a>. Hooks are similar, but each uses a different decorator.</p>
+<div class="section" id="session-title-provider">
+<h2>Session Title Provider<a class="headerlink" href="#session-title-provider" title="Permalink to this headline">¶</a></h2>
+<p>A session title provider is an RPC that accepts information about the current session as input and returns a string to be shown in the tab bar or window title.</p>
+<p>Here’s a minimal example that takes the “auto name” of the session and converts it to upper case. The auto name is the “normal” session name. It defaults to the profile name and can be changed by the control sequence that sets the title, by a trigger that sets the title, or by the user editing the session name in the <em>Edit Session</em> window. In other words, this simply causes the title to be the upper-case version of the session name.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@iterm2.TitleProviderRPC</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">upper_case_title</span><span class="p">(</span><span class="n">auto_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;session.autoName?&quot;</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">auto_name</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">auto_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+<span class="c1"># Remember to call async_register!</span>
+<span class="n">await</span> <span class="n">upper_case_title</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Upper-case Title&quot;</span><span class="p">,</span> <span class="s2">&quot;com.iterm2.example.upper-case-title&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <cite>async_register</cite> call takes a second argument which is the display name of the title provider and a third argument that gives the title provider a unique ID. When this script is running and the user navigates to <strong>Prefs &gt; Profiles &gt; General</strong> and opens the <strong>Title</strong> menu, your title provider will appear there with this name.</p>
+<p>When does the RPC get run? It is always run once when it gets attached to a session. Thereafter, it is run when any variable with an <cite>iterm2.Reference</cite> as a default value of an argument of your RPC changes.</p>
+<p>If some variable might not be defined, you should put a <cite>?</cite> after its name to signify that a
 null value is allowed. The function will be called with <cite>None</cite> for such
 undefined variables. Variables are detailed in
 <a class="reference external" href="https://www.iterm2.com/documentation-badges.html">Badges</a>.</p>
-<p>Here’s an example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="kn">import</span> <span class="nn">asyncio</span>
+</div>
+<div class="section" id="force-reevaluation">
+<h2>Force Reevaluation<a class="headerlink" href="#force-reevaluation" title="Permalink to this headline">¶</a></h2>
+<p>If you want to change the title in response to some external action, such as a timer, network request, or user action, you must cause a user-defined variable to change. Here is a full working example that sets the session title to its age in seconds:</p>
+<p>import asyncio
+import iterm2
+import traceback</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">custom_title</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">hostname</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;😀 {}@{}:{} 😀&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">hostname</span><span class="p">)</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;pwd&quot;</span><span class="p">:</span> <span class="s2">&quot;session.path?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;session.username?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;hostname&quot;</span><span class="p">:</span> <span class="s2">&quot;session.hostname?&quot;</span> <span class="p">}</span>
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span>
-                                                         <span class="s2">&quot;custom_title&quot;</span><span class="p">,</span>
-                                                         <span class="n">custom_title</span><span class="p">,</span>
-                                                         <span class="n">role</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">RPC_ROLE_SESSION_TITLE</span><span class="p">,</span>
-                                                         <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">,</span>
-                                                         <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;My Custom Title&quot;</span><span class="p">)</span>
-    <span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">redraw_title_provider_periodically</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+       <span class="k">try</span><span class="p">:</span>
+            <span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># When the session ends, this will raise an exception.</span>
+                <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_set_variable</span><span class="p">(</span><span class="s2">&quot;user.session_age_in_seconds&quot;</span><span class="p">,</span> <span class="n">age</span><span class="p">)</span>
+                <span class="n">age</span> <span class="o">+=</span> <span class="mi">1</span>
+       <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+           <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+       <span class="k">finally</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">tasks</span><span class="p">[</span><span class="n">session_id</span><span class="p">]</span>
+
+    <span class="nd">@iterm2.TitleProviderRPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">age_in_seconds_title</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;session.id&quot;</span><span class="p">),</span>
+            <span class="n">age</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;user.session_age_in_seconds?&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">session_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+            <span class="n">wake_coro</span> <span class="o">=</span> <span class="n">redraw_title_provider_periodically</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+            <span class="n">tasks</span><span class="p">[</span><span class="n">session_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">wake_coro</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+
+    <span class="n">await</span> <span class="n">age_in_seconds_title</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Age in Seconds&quot;</span><span class="p">,</span> <span class="s2">&quot;com.iterm2.example.age-in-seconds&quot;</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>As this script is a long-running daemon, you’ll want to put it in the
-<cite>AutoLaunch</cite> folder. If a hook is not registered then it acts as though it
-returned an empty value. Tab labels will show a default value in place of the
-empty string.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>As this script is a long-running daemon, you’ll want to put it in
+<cite>~/Library/Application Support/iTerm2/Scripts/AutoLaunch</cite> folder.</p>
 <p>Next, you need to configure your session’s profile to use the hook. Once it’s been registered properly it will appear as an option in <strong>Preferences &gt; Profiles &gt; General &gt; Title</strong>. Select it there:</p>
 <img alt="../_images/choose_custom_session_title.png" src="../_images/choose_custom_session_title.png" />
-<p>If anything goes wrong, remember to check the Script Console. Pick your script
-on the left to view its output. Some errors are also logged to the <em>iTerm2 App</em>
-history in the script console.</p>
+</div>
+<div class="section" id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>If anything goes wrong, remember to check the Script Console (<strong>Scripts &gt;
+Manager &gt; Console</strong>). Pick your script on the left to view its output. Some
+errors are also logged to the <em>iTerm2 App</em> history in the script console if
+they cannot be tied to a running script.</p>
+<p>Use print statements to write to the console. This is an essential technique
+for debugging script issues.</p>
+<p>If a session title provider is not registered, the title will show an ellipsis: <cite>…</cite>.</p>
+<p>If a status bar provider is not registered or has some other problem (such as
+an exception), it will show a ladybug: <cite>🐞</cite>. You can click on the ladybug to
+get more details about the error.</p>
+<p>Always catch exceptions in an async task. One of Python’s rough edges is that
+these exceptions are silently swallowed and you will pull all your hair out
+trying to understand what is wrong.</p>
+<p>Take care to mark references optional by suffixing them with a <cite>?</cite> when they
+might not exist, as is the case for <cite>user.update_my_title_provider?</cite> the
+example above.</p>
 <hr class="docutils" />
 <div class="section" id="other-sections">
-<h2>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h2>
+<h3>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><dl class="first docutils">
 <dt><a class="reference internal" href="../index.html"><span class="doc">Python API</span></a></dt>
@@ -173,6 +211,7 @@ history in the script console.</p>
 </dl>
 </li>
 </ul>
+</div>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
