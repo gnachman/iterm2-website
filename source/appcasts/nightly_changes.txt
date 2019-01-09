@@ -1,3 +1,75 @@
+2019-01-08: Add Stop status icon
+
+2019-01-08: [cherrypick from 3.2] When you open system prefs
+show a second alert reminding you of the steps. Issue 7458
+
+2019-01-08: Don't closedir on null if the Safari directory
+doesn't exist yet
+
+2019-01-08: Log more info on buffer overrun for bitmap data
+
+2019-01-08: [cherrypicked from 3.2] Do not send SIGWINCH
+during drag over maximized pane. Issue 7279
+
+2019-01-08: Make secure keyboard entry menu item more sane.
+
+1. Selecting it toggles whether iTerm2 wants secure keyboard
+entry.  2. The menu item shows a "mixed" state if it's on
+but we don't desired it to be on. Presumably if we desired
+it on then it's on, so no need for a mixed state there.
+
+Issue 2078.
+
+2019-01-08: Avoid needless NSUserDefaults calls that are
+quite slow in cadence controller delegate
+
+2019-01-08: [cherrypick from 3.2] Add a CPU profiler to
+track down issues like 7421
+
+2019-01-08: [cherrypick from 3.2 of 2 commits] Enable
+fastpath underlines in the legacy renderer. Issue 7437
+
+After years of frustration I finally figured this one out!
+It was trying not to set the font on the graphics context if
+the font hasn't changed becaues it's slow. That was wrong
+because the *context* changed, which is why the alpha mask
+wasn't getting drawn into. This absolutely sucked to debug
+both this time and in 2014, mostly because the CG APIs are
+such a bloody mess of state and implicit dependencies.
+
+2019-01-08: [cherrypick from 3.2] Refactor underline drawing
+code so it makes sense
+
+2019-01-08: [cherrypick from 3.2] Fix a bug where the
+password manager won't open except by a trigger. Issue 7429
+
+2019-01-07: Add more debug logging to paste to show
+everything in the pasteboard for issue 1428
+
+2019-01-07: Add a raw key mapper as an experiment
+
+2019-01-06: Add support for application (keypad and cursor)
+keys to CSI u.
+
+2019-01-06: Add buried sessions to script inspector. Update
+icons.
+
+2019-01-06: Add a picker to the scripting inspector
+
+2019-01-05: Add menu to variables table in script inspector
+
+2019-01-05: Add context menu, mess around with auto layout
+
+2019-01-05: Add refresh button to scripting inspector
+
+2019-01-05: Fine tune scripting inspector look
+
+2019-01-05: Polish up the script inspector
+
+2019-01-05: Bravely use auto layout
+
+2019-01-05: Begin adding scripting inspector
+
 2019-01-05: Refactor variables, splitting classes into
 separate files. Fix a bug where the tab child was restored
 from an arrangement overwriting the real one.
