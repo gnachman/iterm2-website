@@ -21,6 +21,34 @@ function print_st() {
     fi
 }
 
+function load_version() {
+    if [ -z ${IMGCAT_BASE64_VERSION+x} ]; then
+        export IMGCAT_BASE64_VERSION=$(base64 --version 2>&1)
+    fi
+}
+
+function b64_encode() {
+    load_version
+    if [[ "$IMGCAT_BASE64_VERSION" =~ GNU ]]; then
+        # Disable line wrap
+        base64 -w0
+    else
+        base64
+    fi
+}
+
+function b64_decode() {
+    load_version
+    if [[ "$IMGCAT_BASE64_VERSION" =~ fourmilab ]]; then
+      BASE64ARG=-d
+    elif [[ "$IMGCAT_BASE64_VERSION" =~ GNU ]]; then
+      BASE64ARG=-di
+    else
+      BASE64ARG=-D
+    fi
+    base64 $BASE64ARG
+}
+
 # print_image filename inline base64contents print_filename
 #   filename: Filename to convey to client
 #   inline: 0 or 1
@@ -31,19 +59,10 @@ function print_image() {
     print_osc
     printf '1337;File='
     if [[ -n "$1" ]]; then
-      printf 'name='`printf "%s" "$1" | base64`";"
+      printf 'name='`printf "%s" "$1" | b64_encode`";"
     fi
 
-    VERSION=$(base64 --version 2>&1)
-    if [[ "$VERSION" =~ fourmilab ]]; then
-      BASE64ARG=-d
-    elif [[ "$VERSION" =~ GNU ]]; then
-      BASE64ARG=-di
-    else
-      BASE64ARG=-D
-    fi
-
-    printf "%s" "$3" | base64 $BASE64ARG | wc -c | awk '{printf "size=%d",$1}'
+    printf "%s" "$3" | b64_decode | wc -c | awk '{printf "size=%d",$1}'
     printf ";inline=$2"
     printf ":"
     printf "%s" "$3"
@@ -100,7 +119,7 @@ while [ $# -gt 0 ]; do
         ;;
     -u|--u|--url)
         check_dependency curl
-        encoded_image=$(curl -s "$2" | base64) || (error "No such file or url $2"; exit 2)
+        encoded_image=$(curl -s "$2" | b64_encode) || (error "No such file or url $2"; exit 2)
         has_stdin=f
         print_image "$2" 1 "$encoded_image" "$print_filename"
         set -- ${@:1:1} "-u" ${@:3}
@@ -116,7 +135,7 @@ while [ $# -gt 0 ]; do
     *)
         if [ -r "$1" ] ; then
             has_stdin=f
-            print_image "$1" 1 "$(base64 < "$1")" "$print_filename"
+            print_image "$1" 1 "$(b64_encode < "$1")" "$print_filename"
         else
             error "imgcat: $1: No such file or directory"
             exit 2
@@ -128,7 +147,7 @@ done
 
 # Read and print stdin
 if [ $has_stdin = t ]; then
-    print_image "" 1 "$(cat | base64)" ""
+    print_image "" 1 "$(cat | b64_encode)" ""
 fi
 
 exit 0
