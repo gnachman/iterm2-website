@@ -21,34 +21,6 @@ function print_st() {
     fi
 }
 
-# Read some bytes from stdin. Pass the number of bytes to read as the first argument.
-function read_bytes() {
-  numbytes=$1
-  dd bs=1 count=$numbytes 2>/dev/null
-}
-
-function read_osc() {
-  boilerplate=$(read_bytes 2)
-  result=''
-  b=""
-  while :
-  do
-    last="$b"
-    b=$(read_bytes 1)
-    if [[ "$b" == "" ]]
-    then
-        break
-    fi
-    result="$result$b"
-  done
-  echo -n "$result"
-}
-
-function read_ack() {
-  body=$(read_osc)
-  echo -n ${body:1}
-}
-
 # print_image filename inline base64contents print_filename
 #   filename: Filename to convey to client
 #   inline: 0 or 1
@@ -56,21 +28,8 @@ function read_ack() {
 #   print_filename: If non-empty, print the filename 
 #                   before outputting the image
 function print_image() {
-    if [[ $TERM == screen* ]] ; then
-        print_fragmented_image $*
-        return
-    fi
     print_osc
     printf '1337;File='
-    print_payload $*
-    print_st
-    printf '\n'
-    if [[ -n "$4" ]]; then
-      echo $1
-    fi
-}
-
-function print_payload() {
     if [[ -n "$1" ]]; then
       printf 'name='`printf "%s" "$1" | base64`";"
     fi
@@ -88,56 +47,11 @@ function print_payload() {
     printf ";inline=$2"
     printf ":"
     printf "%s" "$3"
-}
-
-function ctrl_c() {
-  stty "$saved_stty"
-  exit 1
-}
-
-function print_fragmented_image() {
-    PAYLOAD=$(print_payload $*)
-    IDENTIFIER="$RANDOM""$RANDOM""$RANDOM""$RANDOM"
-    saved_stty=$(stty -g)
-  # Trap ^C to fix the tty.
-    trap ctrl_c INT
-    stty -echo -icanon raw
-    print_fragments "$IDENTIFIER" "$PAYLOAD" 
+    print_st
     printf '\n'
     if [[ -n "$4" ]]; then
       echo $1
     fi
-}
-
-# print_fragments identifier payload
-function print_fragments() {
-    LENGTH=$(printf "%s" "$2" | wc -c)
-    MAX_CHUNK_SIZE=8192
-    CHUNKS=$(($LENGTH / $MAX_CHUNK_SIZE))
-    OFFSET=0
-    I=0
-    while (($OFFSET < $LENGTH)); do
-        echo "Here comes fragment $I"
-        if (($OFFSET + $MAX_CHUNK_SIZE > $LENGTH)); then
-            CHUNK_SIZE=$(($LENGTH - $OFFSET))
-        else
-            CHUNK_SIZE=$MAX_CHUNK_SIZE
-        fi
-        if (($OFFSET + $CHUNK_SIZE == 0)); then
-            FLAGS="end"
-        else
-            FLAGS=""
-        fi
-        I=$(($I + 1))
-        print_osc
-        printf '1337;Fragment='
-        printf "%s:%s:%s;%s" "$1" "$I" "$FLAGS" ${2:$OFFSET:$CHUNK_SIZE}
-        print_st
-        OFFSET=$(($OFFSET + $MAX_CHUNK_SIZE))
-        echo "Waiting for ack"
-        read_ack
-        echo "Got ACK"
-    done
 }
 
 function error() {
