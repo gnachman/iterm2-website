@@ -68,6 +68,10 @@ There are a few limitations of tmux integration which are related to the design 
   * All tabs and windows belonging to a particular tmux session must be the same size and use the same font.
   * A tab with split panes may have "empty" areas. This is because tmux wants every tmux window to be the same size, but our split pane dividers are not exactly one cell by one cell in size.
 
+### Shell Integration
+
+Shell integration works well with tmux integration mode (`tmux -CC`) but does not work with plain-old tmux. For that reason, it will not work when the `$TERM` is `screen`. You can enable shell integration within tmux by doing `export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=1` prior to sourcing shell integration in your shell's login script.
+
 == Building tmux ==
 
 Use the latest version of tmux. The oldest version that works is 1.8, but 2.3 or later is recommended (older versions didn't handle non-ASCII input very well, or suffered from various known bugs and limitations). The easiest way to install tmux on your Mac is with <a href="https://brew.sh/">homebrew</a>:
