@@ -121,14 +121,14 @@
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">MonitorSession</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Called when a new session is created.&quot;&quot;&quot;</span>
-    <span class="n">hostname</span> <span class="o">=</span> <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_variable</span><span class="p">(</span><span class="s2">&quot;session.hostname&quot;</span><span class="p">)</span>
+    <span class="n">hostname</span> <span class="o">=</span> <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_variable</span><span class="p">(</span><span class="s2">&quot;hostname&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">hostname</span> <span class="ow">in</span> <span class="n">colormap</span><span class="p">:</span>
         <span class="n">await</span> <span class="n">SetPresetInSession</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">colormap</span><span class="p">[</span><span class="n">hostname</span><span class="p">])</span>
 
     <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span>
             <span class="n">connection</span><span class="p">,</span>
             <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableScopes</span><span class="o">.</span><span class="n">SESSION</span><span class="p">,</span>
-            <span class="s2">&quot;session.hostname&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;hostname&quot;</span><span class="p">,</span>
             <span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="n">hostname</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>

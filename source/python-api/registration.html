@@ -108,14 +108,14 @@
 <p>An RPC is a function in a script that iTerm2 can invoke in response to some action, such a a keypress or a trigger. You use this decorator to register a coroutine as an RPC.</p>
 <p>Every RPC must have a unique signature. The signature is composed of two parts: first, the name, which comes from the name of the coroutine being decorated; second, the names of its arguments. The order of arguments is not important.</p>
 <p>The decorated coroutine will have a <cite>async_register</cite> value that you must call to complete the registration. <cite>async_register</cite> takes one required argument, the <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>. It also takes one optional argument, which is a timeout. The <cite>timeout</cite> is a value in seconds. If not given, the default timeout will be used. When waiting for an RPC to return, iTerm2 will stop waiting for the RPC after the timeout elapses.</p>
-<p>Do not use default values for arguments in your decorated coroutine, with one exception: a special kind of default value of type <code class="xref py py-class docutils literal notranslate"><span class="pre">Reference</span></code>. It names a variable that is visible in the context of the invocation. It will be transformed to the current value of that variable. This is the only way to get information about the current context. For example, a value of <cite>~iterm2.Reference(“session.id”)</cite> will give you the session ID of the context where the RPC was invoked. If the RPC is run from a keyboard shortcut, that is the ID of the session that had keyboard focus at the time of invocation.</p>
+<p>Do not use default values for arguments in your decorated coroutine, with one exception: a special kind of default value of type <code class="xref py py-class docutils literal notranslate"><span class="pre">Reference</span></code>. It names a variable that is visible in the context of the invocation. It will be transformed to the current value of that variable. This is the only way to get information about the current context. For example, a value of <cite>~iterm2.Reference(“id”)</cite> will give you the session ID of the context where the RPC was invoked. If the RPC is run from a keyboard shortcut, that is the ID of the session that had keyboard focus at the time of invocation.</p>
 <p>That’s complicated, but an example will make it clearer:</p>
 <p>Example:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
 <span class="nd">@iterm2.RPC</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">split_current_session_n_times</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;session.id&quot;</span><span class="p">),</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">split_current_session_n_times</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">),</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
         <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_split_pane</span><span class="p">()</span>
@@ -138,7 +138,7 @@
 <p>Example:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@iterm2.TitleProviderRPC</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">upper_case_title</span><span class="p">(</span><span class="n">auto_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;session.autoName?&quot;</span><span class="p">)):</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">upper_case_title</span><span class="p">(</span><span class="n">auto_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;autoName?&quot;</span><span class="p">)):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">auto_name</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
     <span class="k">return</span> <span class="n">auto_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
@@ -175,7 +175,7 @@
 <span class="nd">@iterm2.StatusBarRPC</span>
 <span class="n">async</span> <span class="k">def</span> <span class="nf">session_id_status_bar_coro</span><span class="p">(</span>
         <span class="n">knobs</span><span class="p">,</span>
-        <span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;session.id&quot;</span><span class="p">)):</span>
+        <span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)):</span>
     <span class="c1"># This status bar component shows the current session ID, which</span>
     <span class="c1"># is useful for debugging scripts.</span>
     <span class="k">return</span> <span class="n">session_id</span>

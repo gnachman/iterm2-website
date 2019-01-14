@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Example Scripts &#8212; iTerm2 Python API 0.26 documentation</title>
+    <title>Modify Background Image Blending &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -96,48 +96,35 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <span class="target" id="examples-index"></span><div class="section" id="example-scripts">
-<h1>Example Scripts<a class="headerlink" href="#example-scripts" title="Permalink to this headline">¶</a></h1>
-<p>Here are a collection of working scripts for you to crib from.</p>
-<ul class="simple">
-<li><a class="reference internal" href="current_preset.html"><span class="doc">Get Selected Color Preset</span></a></li>
-<li><a class="reference internal" href="georges_title.html"><span class="doc">George’s Title Algorithm</span></a></li>
-<li><a class="reference internal" href="badgetitle.html"><span class="doc">Badge or Window Name in Tab Title</span></a></li>
-<li><a class="reference internal" href="function_key_tabs.html"><span class="doc">Function Key Tabs</span></a></li>
-<li><a class="reference internal" href="cls.html"><span class="doc">Clear All Sessions</span></a></li>
-<li><a class="reference internal" href="blending.html"><span class="doc">Modify Background Image Blending</span></a></li>
-<li><a class="reference internal" href="close_to_the_right.html"><span class="doc">Close Tabs to the Right</span></a></li>
-<li><a class="reference internal" href="movetab.html"><span class="doc">Move Tab To Next/Previous Window</span></a></li>
-<li><a class="reference internal" href="create_window.html"><span class="doc">Create Window — Custom Escape Sequence</span></a></li>
-<li><a class="reference internal" href="random_color.html"><span class="doc">Random Color Preset</span></a></li>
-<li><a class="reference internal" href="colorhost.html"><span class="doc">Per-Host Colors</span></a></li>
-<li><a class="reference internal" href="targeted_input.html"><span class="doc">Targeted Input</span></a></li>
-<li><a class="reference internal" href="enable_broadcasting.html"><span class="doc">Enable Broadcasting Input</span></a></li>
-<li><a class="reference internal" href="broadcast.html"><span class="doc">Asymmetric Broadcast Input</span></a></li>
-<li><a class="reference internal" href="sorttabs.html"><span class="doc">Sort Tabs</span></a></li>
-<li><a class="reference internal" href="mrutabs.html"><span class="doc">MRU Tabs</span></a></li>
-<li><a class="reference internal" href="statusbar.html"><span class="doc">Status Bar Component</span></a></li>
-<li><a class="reference internal" href="escindicator.html"><span class="doc">Escape Key Indicator</span></a></li>
-<li><a class="reference internal" href="jsonpretty.html"><span class="doc">JSON Pretty Printer Status Bar Component</span></a></li>
-<li><a class="reference internal" href="mousemode.html"><span class="doc">Status Bar Component: Mouse Mode</span></a></li>
-<li><a class="reference internal" href="theme.html"><span class="doc">Change Color Presets On Theme Change</span></a></li>
-<li><a class="reference internal" href="tmux.html"><span class="doc">Tmux Integration</span></a></li>
-<li><a class="reference internal" href="zoom_on_screen.html"><span class="doc">Zoom on Screen</span></a></li>
-</ul>
-<hr class="docutils" />
-<div class="section" id="other-sections">
-<h2>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference internal" href="../index.html"><span class="doc">Python API</span></a></li>
-</ul>
+  <div class="section" id="modify-background-image-blending">
+<h1>Modify Background Image Blending<a class="headerlink" href="#modify-background-image-blending" title="Permalink to this headline">¶</a></h1>
+<p>This script demonstrates registering an RPC to adjust the image blending level of the current session. You can bind it to a keystroke by adding a new key binding in <strong>Prefs &gt; Keys</strong>, selecting the action <strong>Invoke Script Function</strong>, and giving it the invocation <cite>blend_more(session_id: session.id)</cite> or <cite>blend_less(session_id: session.id)</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.7</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">iterm2</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">get_profile_for_session</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_profile</span><span class="p">()</span>
+
+    <span class="nd">@iterm2.RPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">blend_more</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="n">await</span> <span class="n">get_profile_for_session</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="n">await</span> <span class="n">profile</span><span class="o">.</span><span class="n">async_set_blend</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">profile</span><span class="o">.</span><span class="n">blend</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">))</span>
+    <span class="n">await</span> <span class="n">blend_more</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+    <span class="nd">@iterm2.RPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">blend_less</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="n">await</span> <span class="n">get_profile_for_session</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="n">await</span> <span class="n">profile</span><span class="o">.</span><span class="n">async_set_blend</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">profile</span><span class="o">.</span><span class="n">blend</span> <span class="o">-</span> <span class="mf">0.1</span><span class="p">))</span>
+    <span class="n">await</span> <span class="n">blend_less</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
 </div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="../genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="../search.html"><span class="std std-ref">Search Page</span></a></li>
-</ul>
 </div>
 
 
@@ -173,7 +160,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
-      <a href="../_sources/examples/index.rst.txt"
+      <a href="../_sources/examples/blending.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
