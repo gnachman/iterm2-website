@@ -1,3 +1,23 @@
+2019-01-16: Fix underline masking in traditional renderer.
+Underlined text not beginning at column 0 was masked
+incorrectly.
+
+2019-01-15: [statusbar] Show colors in components in status
+bar setup
+
+2019-01-15: Fixes a bug where underline offsets were
+computed incorrectly. The INSANELY confusing
+NSFontAttributeName and NSFontNameAttribute got me. F7U12
+
+2019-01-15: [statusbar] Run four concurrent git poll
+workers. Each takes a separate shard of paths so that if one
+hangs others have a chance to work on non-network file
+systems. Also don't update them when not visible, but do
+update immediately when one becomes visible.
+
+2019-01-15: [statusbar] Tweak spacing of git component. Move
+dirty flag to be next to branch name.
+
 2019-01-14: Introduce iTermLaunchExperienceController, which
 coordinates the various cold-launch activities to avoid
 spamming the user too much.
