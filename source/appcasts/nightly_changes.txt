@@ -1,3 +1,217 @@
+2019-01-21: Merge branch 'master' of
+https://github.com/gnachman/iTerm2
+
+2019-01-20: [statusbar] Fix autoresizing mask of popover
+button in composer component
+
+2019-01-20: [statusbar] Various improvements to knobs. Fix
+entry of floating point values and labels.
+
+2019-01-20: [statusbar] Close the composer popover when the
+combobox gets keyboard focus
+
+2019-01-20: [statusbar] Rename standard layout algorithm to
+tightly packed layout algorithm
+
+2019-01-20: [statusbar] Use 'size multiplier' instead of
+'compression resistance' in stable layout
+
+2019-01-20: [statusbar] Fix background colors in setup UI
+
+2019-01-20: Don't draw search field progress bar when it's
+at 0
+
+2019-01-20: [statusbar] Update UI when changing layout
+algorithm.
+
+2019-01-20: [statusbar] Change appearance of fixed and
+variable spacers in setup UI depending on layout algorithm
+
+2019-01-20: Fix a warning
+
+2019-01-20: Fix a bug where theroot terminal view would
+layout incorrectly when the tab bar was hidden and the
+division view was visible. The division view's height was
+not accounted for and the top decoration height was used
+where it should've been the bottom. Cocoa's upside down
+coordinate system will never stop causing bugs.
+
+2019-01-20: Refactor the status bar view controller a bit
+and simplify things. Fix a bug where status bar background
+colors weren't drawn to the edge
+
+2019-01-20: [statusbar] Allow fixed width spacers to specify
+their width and priority. Fix how the stable layout
+algorithm handles priority
+
+2019-01-20: Make it possible to reset the status bar's font
+to the system default
+
+2019-01-20: Make the statusbar layout algorith selectable
+
+2019-01-20: Refactor status bar layout algorithm to one
+class per file
+
+2019-01-20: Fix viewsExcludingFixdedSpacers
+
+2019-01-20: [statusbar] Make fixed-size spacers really fixed
+size in stable layout algo
+
+2019-01-20: [statusbar] Improve the stable layout algorithm
+to mostly work right. Still some work to do on fixed size
+spacers.
+
+2019-01-20: Merge branch 'master' of
+https://github.com/gnachman/iTerm2
+
+2019-01-19: [statusbar] Refactor layout algorithm into its
+own file. Begin working on one that has stable offsets
+instead of tight packing
+
+2019-01-19: Tweak the look of the job tree popover
+
+2019-01-19: [statusbar] Clicking the job component shows a
+popover with a tree of running jobs.
+
+2019-01-19: Merge branch 'master' of
+https://github.com/gnachman/iTerm2
+
+2019-01-18: Update find driver when status bar's components
+may have changed. Fixes a bug where a permanent status bar
+find component didn't work because it had no driver.
+
+2019-01-18: Add a new window type of accessory for
+single-use windows. It is a floating panel so it can share a
+space with a full screen window.
+
+2019-01-18: [statusbar] Make directory component click open
+a menu of ten top directories
+
+2019-01-18: Merge branch 'master' of
+github.com:gnachman/iTerm2
+
+2019-01-18: [status bar] Improve the composer to make it
+usable
+
+2019-01-18: Add menu to git statusbar
+
+2019-01-18: Rename statusBarComponentCreateView
+
+2019-01-18: Change advanced settings to use a view-based
+tableview. Implement an insane amount of disgusting hacks
+because macOS is Apple's unloved stepchild. SRSLY BAD
+
+2019-01-18: Check the width of subselections to avoid
+running off the end of the array. Fixes a longstanding crash
+that seems to repro when you restore a session with a
+windowed selection whose right bounds is greater than the
+width of the session.
+
+2019-01-18: Add a bunch of logging for tabbar color
+
+2019-01-17: Change advanced settings to use a view-based
+tableview. Implement an insane amount of disgusting hacks
+because macOS is Apple's unloved stepchild. SRSLY BAD
+
+2019-01-17: Check the width of subselections to avoid
+running off the end of the array. Fixes a longstanding crash
+that seems to repro when you restore a session with a
+windowed selection whose right bounds is greater than the
+width of the session.
+
+2019-01-17: Add a bunch of logging for tabbar color
+
+2019-01-17: Add a completion block to toggle full screen.
+Delay responding the API RPC to toggle full screen until
+it's actually done/failed. Issue 7438
+
+2019-01-17: [status bar] Update composer icon. Improve
+appearance of composer and mini search bar in minimal.
+
+2019-01-17: [statusbar] Improve legibility of network
+component lines
+
+2019-01-17: [statusbar] Improve the appearance of the
+composer in minimal theme + dark background
+
+2019-01-17: Fix the shared status bar's autoresizing mask
+
+2019-01-17: Fix status bar color in Minimal. Used the
+non-selected tab color and didn't update when the bg color
+changed.
+
+2019-01-17: Improve autorainbow for light background colors
+
+2019-01-17: [status bar] Add Auto-rainbow easter egg
+
+2019-01-16: [status bar] Polish the composer a bit. Make it
+look nicer and more usable.
+
+2019-01-16: Fix underline masking in traditional renderer.
+Underlined text not beginning at column 0 was masked
+incorrectly.
+
+2019-01-15: [statusbar] Show colors in components in status
+bar setup
+
+2019-01-15: Fixes a bug where underline offsets were
+computed incorrectly. The INSANELY confusing
+NSFontAttributeName and NSFontNameAttribute got me. F7U12
+
+2019-01-15: [statusbar] Run four concurrent git poll
+workers. Each takes a separate shard of paths so that if one
+hangs others have a chance to work on non-network file
+systems. Also don't update them when not visible, but do
+update immediately when one becomes visible.
+
+2019-01-15: [statusbar] Tweak spacing of git component. Move
+dirty flag to be next to branch name.
+
+2019-01-14: Introduce iTermLaunchExperienceController, which
+coordinates the various cold-launch activities to avoid
+spamming the user too much.
+
+Remove check for incompatible software, which is outdated
+and was never very useful.
+
+Fix a bug in the onboarding window where clicking a page
+indicator not adjacent to the current page would animate
+wrong. NSPageController lived up to my expectations,
+unfortunately.
+
+Improve appVersionBeforeThisLaunch to work before
+initializeUserDefaults is called.
+
+Revamp about box and link it to onboarding window.
+
+2019-01-14: Add onboarding UI to show off features of 3.3.
+Not yet enabled.
+
+2019-01-13: [api docs] Remove session. in variablenames
+
+2019-01-13: [api] Deprecate session. namespace in session
+variable context. Add it as an alias to the session
+variables for backward compatibility.
+
+2019-01-13: [api] enable closing the scripting inspector
+with cmd-w
+
+2019-01-13: [python] Change session.foo to foo in examples
+in code comments
+
+2019-01-13: [api docs] Change session.foo to foo
+
+2019-01-13: Improve error reporting when downloading the
+python runtime fails
+
+2019-01-13: [api] Tweak wording in optional component
+downloader to say Installing instead of Finished.
+
+2019-01-13: Fix a bunch of warnings
+
+2019-01-13: [api] Add dependency editor. Fix various bugs
+with using the proper python version.
+
 2019-01-12: [statusbar] Make it possible to have a single
 status bar per window rather than per-pane, by a preference.
 This makes status bars with tmux make a lot more sense.

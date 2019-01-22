@@ -13,7 +13,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 if [[ -o interactive ]]; then
-  if [ "$ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX""$TERM" != "screen" -a "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" ]; then
+  if [ "$ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX""$TERM" != "screen" -a "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" -a "$TERM" != linux -a "$TERM" != dumb ]; then
     ITERM_SHELL_INTEGRATION_INSTALLED=Yes
     ITERM2_SHOULD_DECORATE_PROMPT="1"
     # Indicates start of command output. Runs just before command executes.
@@ -147,6 +147,6 @@ if [[ -o interactive ]]; then
     preexec_functions=($preexec_functions iterm2_preexec)
 
     iterm2_print_state_data
-    printf "\033]1337;ShellIntegrationVersion=7;shell=zsh\007"
+    printf "\033]1337;ShellIntegrationVersion=8;shell=zsh\007"
   fi
 fi

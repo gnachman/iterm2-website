@@ -17,7 +17,7 @@
 
 
 # -- BEGIN ITERM2 CUSTOMIZATIONS --
-if [[ "$ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX""$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == *i* ]]; then
+if [[ "$ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX""$TERM" != screen && "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" && "$-" == *i* && "$TERM" != linux && "$TERM" != dumb ]]; then
 
 if shopt extdebug | grep on > /dev/null; then
   echo "iTerm2 Shell Integration not installed."
@@ -472,7 +472,7 @@ function iterm2_prompt_suffix() {
 
 function iterm2_print_version_number() {
   iterm2_begin_osc
-  printf "1337;ShellIntegrationVersion=12;shell=bash"
+  printf "1337;ShellIntegrationVersion=13;shell=bash"
   iterm2_end_osc
 }
 
