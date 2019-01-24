@@ -1,3 +1,59 @@
+2019-01-24: Merge branch 'master' of
+https://github.com/gnachman/iTerm2
+
+2019-01-23: [python] Bump verison
+
+2019-01-23: [python] Remove stray single quotes. Issue 6764,
+comment from 1/23
+
+2019-01-23: When a tmux window opens, do not set the local
+window's origin unless it's the first tab in the window.
+Issue 7484
+
+2019-01-23: Fix double counting of division view when laying
+out the root terminal view with a hidden top tab bar. This
+caused tmux window sizes to become unstable. The root cause
+of this bug which I keep hitting is that the client size is
+based on the tabview's height divided by the height of a
+cell; we then set the window's height to accommodate a
+tabview that will fit that height in cells. When those two
+cacluations are not inverses it becomes unstable. In this
+instance the instability was that the root terminal view was
+setting the tabview height one point smaller than it should
+have been for the window height. That is possible because
+the calculations are relatively distant. The root terminal
+view, in its rather complicated layout method, calculates
+tabview height as a function of window height. The inverse
+calculation, 'f(tabview height)->window height', is done in
+PTYTab.tmuxSize. It is further complicated by the fact that
+tmuxSize is a mind-bendingly complex algorithm because it
+has to deal with split panes. I don't see a sane way to put
+these two functions next to each other, unfortunately. It
+would be nice to add some tests, but even that is a hairy
+mess because of all the dependencies on NSWindow and
+NSScrollBar that would need to be injected. At least I'll
+have this commit message to jog my memory next time... Issue
+7483
+
+2019-01-23: [statusbar] Disable jobs component popover in
+10.13 because it looks bad. The text views and disclosure
+triangles have a 50% alpha gray background. It looks like a
+compositing bug to me because modifying the textfield's
+alpha value does not fade it out but hiding the textfield
+hides the background. And besides it is also on the
+disclosure triangles so even if I beat the textfield into
+submission I'd also have to make my own disclosure triangle
+and honestly just F it Apple gives me nothing and I'm tired
+of fighting
+
+2019-01-23: Prevent the open quickly window from tricking
+focus follows mouse into closing itself when it shrinks
+while the mouse was over it
+
+2019-01-23: Improve status bar popovers for 10.13
+
+2019-01-23: Add Pin Edit Session feature. Issue 7476
+
 2019-01-22: Merge branch 'master' of
 https://github.com/gnachman/iTerm2
 
