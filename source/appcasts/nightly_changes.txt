@@ -1,5 +1,41 @@
-2019-02-02: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
+2019-02-02: Add support for legacy/traditional/modern to
+beta and stable build scripts
+
+2019-02-02: Update nightly build to use
+legacy/transitional/modern appcasts
+
+2019-02-02: Modernize app update a bit.
+
+- Update sparkle to version 1.21.2, with my local changes
+from https://github.com/gnachman/Sparkle.git (commit
+2d63dd11408fda8e18fc60202143806f73ffed01) - Switch to
+ED25519 signing - Modify appcast generation to use ED
+signatures as well as legacy DSA signatures.  - Enable
+signing for the nightly build (TBD if this actually works) -
+Change nightly build to always update to nightly build,
+irrespective of the 'beta' setting in prefs - Point all
+builds at new appcasts, which will have only EdDSA keys.
+
+The next beta, stable, and nightly build will be
+"transitional" and will have both keys. Eventually, I will
+stop distributing builds with DSA keys. Users on older
+builds that have only DSA keys will need to upgrade to a
+transitional build before they can upgrade to an EdDSA-only
+build. The reasoning is documented here:
+https://github.com/sparkle-project/Sparkle/issues/1355
+
+2019-02-02: Make window title colors respond to key/not key
+and match the shortcut accessory color
+
+2019-02-02: Dim the window shortcut accessory when not key
+
+2019-02-02: Tweak window number label font.
+
+2019-02-02: Remove the menu opener. It was buggy and
+annoying. Use notification instead.
+
+2019-02-02: Make default scheme configurable and change it
+from http to https. Issue 7507
 
 2019-02-01: Rename advanced pref for disabling shadows pre
 mojave
@@ -45,18 +81,12 @@ if it works.
 2019-02-01: Assign key equivalents to buttons in alerts. Add
 an advanced pref to underline them. Issue 7505
 
-2019-02-01: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
-
 2019-01-31: Fix C-b and C-f in copy mode. Issue 7501
 
 2019-01-31: Fix various bugs with setting the badge font
 
 2019-01-31: Improve instructions on granting full disk
 access
-
-2019-01-31: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
 
 2019-01-31: Add advanced pref to disable modifier remapping
 event tap. Issue 3316
@@ -67,9 +97,6 @@ more likely to be visible when space is tight. Fix various
 bugs with showing and hiding the find component, when it is
 both permanent (but invisible) and temporary.
 
-2019-01-30: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
-
 2019-01-29: Add option to reveal contents of .its file when
 opening it with the app, but not when selecting it from
 Import
@@ -77,9 +104,6 @@ Import
 2019-01-29: Move iTerm-server daemon to per-user namespace.
 Issue 4147 (#381)
 
-
-2019-01-29: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
 
 2019-01-28: remove dead code
 
@@ -129,9 +153,6 @@ Also indicate range to be exported.
 2019-01-28: Allow exporting a recording with a range of
 times
 
-2019-01-28: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
-
 2019-01-27: Offer to reveal errors in script console instead
 of showing traceback of a failed invocation in an alert
 
@@ -147,9 +168,6 @@ console. Reading a traceback in an alert is too hard
 2019-01-27: [python] Add __repr__ to Frame
 
 2019-01-27: Add force detach to tmux menu. Issue 7380
-
-2019-01-27: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
 
 2019-01-26: Improve SIG verify command line program
 
@@ -179,9 +197,6 @@ them all
 
 2019-01-26: Change archived script extension from
 itermscript to its, which seems to make it work.
-
-2019-01-24: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
 
 2019-01-23: [python] Bump verison
 
@@ -236,9 +251,6 @@ while the mouse was over it
 
 2019-01-23: Add Pin Edit Session feature. Issue 7476
 
-2019-01-22: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
-
 2019-01-21: [statusbar] Add git log to the git component
 
 2019-01-21: Remove some code that set
@@ -253,9 +265,6 @@ under the menu bar. Issue 7108
 
 2019-01-21: Add advanced pref to swap find next/find
 previous everywhere except keybinding actions. Issue 2049
-
-2019-01-21: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
 
 2019-01-20: [statusbar] Fix autoresizing mask of popover
 button in composer component
@@ -317,9 +326,6 @@ size in stable layout algo
 to mostly work right. Still some work to do on fixed size
 spacers.
 
-2019-01-20: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
-
 2019-01-19: [statusbar] Refactor layout algorithm into its
 own file. Begin working on one that has stable offsets
 instead of tight packing
@@ -328,9 +334,6 @@ instead of tight packing
 
 2019-01-19: [statusbar] Clicking the job component shows a
 popover with a tree of running jobs.
-
-2019-01-19: Merge branch 'master' of
-https://github.com/gnachman/iTerm2
 
 2019-01-18: Update find driver when status bar's components
 may have changed. Fixes a bug where a permanent status bar
@@ -364,18 +367,6 @@ windowed selection whose right bounds is greater than the
 width of the session.
 
 2019-01-18: Add a bunch of logging for tabbar color
-
-2019-01-17: Change advanced settings to use a view-based
-tableview. Implement an insane amount of disgusting hacks
-because macOS is Apple's unloved stepchild. SRSLY BAD
-
-2019-01-17: Check the width of subselections to avoid
-running off the end of the array. Fixes a longstanding crash
-that seems to repro when you restore a session with a
-windowed selection whose right bounds is greater than the
-width of the session.
-
-2019-01-17: Add a bunch of logging for tabbar color
 
 2019-01-17: Add a completion block to toggle full screen.
 Delay responding the API RPC to toggle full screen until
