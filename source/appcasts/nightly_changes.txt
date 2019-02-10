@@ -1,3 +1,58 @@
+2019-02-10: Add the ability for scripts to invoke registered
+functions. Register a move-tab-to-window builtin function.
+Add APIs to call it and to invoke functions in the various
+contexts. Still needs more testing.
+
+2019-02-09: Fix a bug where the text view wrapper always
+drew a top margin of 2, not the configured value. Issue 7520
+
+2019-02-09: Work around bug in Mojave where the profiles
+tabview didn't get all its labels drawn when the window
+resizes. It really doesn't like being too small to fit all
+the tabs, and when it grows it forgets to redraw itself. The
+solution is to parent it in a view that refuses to make it
+smaller than the safe minimum, which I simply hardcoded in
+the interest of simplicity.
+
+2019-02-09: Fix vertical alignment problem in appearance
+prefs panes and dimming subtabs
+
+2019-02-09: Add the option to preserve window size when the
+tab bar shows/hides. Issue 5768
+
+2019-02-09: Add an inner tabview to appearance prefs so I
+can add to it without making it look uneven. It also looks
+less intimidating now.
+
+2019-02-09: Add git.sb
+
+2019-02-07: Fix various inconsistencies in retain/release in
+SIG code, and rename ivars not starting with _
+
+2019-02-07: Add sanity checks to diagnose interval tree
+entry with negative limit. Issue 7519
+
+2019-02-07: Fix a bug where swifty strings didn't capture
+their referenced variables
+
+2019-02-07: Make trigger evaluation async so it can call out
+to script-provided RPCs. Issue 7523
+
+2019-02-07: Add an advanced pref to show a hint about split
+pane direction in menu items. Issue 7524
+
+2019-02-07: [statusbar] Run git in a sandbox to avoid
+touching lock files. This is a cheaper solution than using a
+modern version of git that includes --no-optional-locks,
+since I'd have to distribute my own git binary because macOS
+is (shocker) out of date. I also have more confidence that
+this actually won't write anything.
+
+2019-02-07: Update README.md
+
+2019-02-07: Properly center window title on compact windows.
+Issue 7528
+
 2019-02-05: Ensure glyphSize is an integer. Should fix the
 buffer overflow in performPostProcessing
 
@@ -659,5 +714,3 @@ capitalization * Sort accessors
 backward compatibility.
 
 2019-01-01: Remove bad key mappings when enabling CSI u
-
-2019-01-01: Send esc+ when only option is pressed.
