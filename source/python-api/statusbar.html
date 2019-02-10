@@ -69,30 +69,14 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper">
+                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -121,6 +105,14 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li>Example “<a class="reference internal" href="examples/escindicator.html#escindicator-example"><span class="std std-ref">Escape Key Indicator</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/jsonpretty.html#jsonpretty-example"><span class="std std-ref">JSON Pretty Printer Status Bar Component</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/mousemode.html#mousemode-example"><span class="std std-ref">Status Bar Component: Mouse Mode</span></a>”</li>
+</ul>
+</div>
 <dl class="method">
 <dt id="iterm2.StatusBarComponent.async_open_popover">
 <code class="descname">async_open_popover</code><span class="sig-paren">(</span><em>session_id: str</em>, <em>html: str</em>, <em>size: iterm2.util.Size</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.async_open_popover" title="Permalink to this definition">¶</a></dt>
@@ -138,6 +130,10 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Example “<a class="reference internal" href="examples/jsonpretty.html#jsonpretty-example"><span class="std std-ref">JSON Pretty Printer Status Bar Component</span></a>”</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -158,6 +154,40 @@
 </tr>
 </tbody>
 </table>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
+    <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;Session ID&quot;</span><span class="p">,</span>
+    <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Show the session&#39;s identifier&quot;</span><span class="p">,</span>
+    <span class="n">knobs</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;[session ID]&quot;</span><span class="p">,</span>
+    <span class="n">update_cadence</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.statusbar-rpc&quot;</span><span class="p">)</span>
+
+<span class="nd">@iterm2.StatusBarRPC</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">session_id_status_bar_coro</span><span class="p">(</span>
+        <span class="n">knobs</span><span class="p">,</span>
+        <span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)):</span>
+    <span class="c1"># This status bar component shows the current session ID, which</span>
+    <span class="c1"># is useful for debugging scripts.</span>
+    <span class="k">return</span> <span class="n">session_id</span>
+
+<span class="nd">@iterm2.RPC</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">my_status_bar_click_handler</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+    <span class="c1"># When you click the status bar it opens a popover with the</span>
+    <span class="c1"># message &quot;Hello World&quot;</span>
+    <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_open_popover</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="p">,</span>
+            <span class="s2">&quot;Hello world&quot;</span><span class="p">,</span>
+            <span class="n">iterm2</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+
+<span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span>
+        <span class="n">connection</span><span class="p">,</span>
+        <span class="n">session_id_status_bar_coro</span><span class="p">,</span>
+        <span class="n">onclick</span><span class="o">=</span><span class="n">my_status_bar_click_handler</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
 </dd></dl>
 
 </dd></dl>
@@ -257,7 +287,7 @@
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

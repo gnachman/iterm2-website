@@ -69,30 +69,14 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper">
+                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -108,7 +92,18 @@
 <p>An RPC is a function in a script that iTerm2 can invoke in response to some action, such a a keypress or a trigger. You use this decorator to register a coroutine as an RPC.</p>
 <p>Every RPC must have a unique signature. The signature is composed of two parts: first, the name, which comes from the name of the coroutine being decorated; second, the names of its arguments. The order of arguments is not important.</p>
 <p>The decorated coroutine will have a <cite>async_register</cite> value that you must call to complete the registration. <cite>async_register</cite> takes one required argument, the <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>. It also takes one optional argument, which is a timeout. The <cite>timeout</cite> is a value in seconds. If not given, the default timeout will be used. When waiting for an RPC to return, iTerm2 will stop waiting for the RPC after the timeout elapses.</p>
-<p>Do not use default values for arguments in your decorated coroutine, with one exception: a special kind of default value of type <code class="xref py py-class docutils literal notranslate"><span class="pre">Reference</span></code>. It names a variable that is visible in the context of the invocation. It will be transformed to the current value of that variable. This is the only way to get information about the current context. For example, a value of <cite>~iterm2.Reference(“id”)</cite> will give you the session ID of the context where the RPC was invoked. If the RPC is run from a keyboard shortcut, that is the ID of the session that had keyboard focus at the time of invocation.</p>
+<p>Do not use default values for arguments in your decorated coroutine, with one exception: a special kind of default value of type <a class="reference internal" href="#iterm2.Reference" title="iterm2.Reference"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Reference</span></code></a>. It names a variable that is visible in the context of the invocation. It will be transformed to the current value of that variable. This is the only way to get information about the current context. For example, a value of <cite>~iterm2.Reference(“id”)</cite> will give you the session ID of the context where the RPC was invoked. If the RPC is run from a keyboard shortcut, that is the ID of the session that had keyboard focus at the time of invocation.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li>Example “<a class="reference internal" href="examples/badgetitle.html#badgetitle-example"><span class="std std-ref">Badge or Window Name in Tab Title</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/blending.html#blending-example"><span class="std std-ref">Modify Background Image Blending</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/close_to_the_right.html#close-to-the-right-example"><span class="std std-ref">Close Tabs to the Right</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/cls.html#cls-example"><span class="std std-ref">Clear All Sessions</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/jsonpretty.html#jsonpretty-example"><span class="std std-ref">JSON Pretty Printer Status Bar Component</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/movetab.html#movetab-example"><span class="std std-ref">Move Tab To Next/Previous Window</span></a>”</li>
+</ul>
+</div>
 <p>That’s complicated, but an example will make it clearer:</p>
 <p>Example:</p>
 <blockquote>
@@ -135,6 +130,10 @@
 <p>It is called when any of its inputs change. This will only happen if one or more of the inputs are <code class="xref py py-func docutils literal notranslate"><span class="pre">Reference()</span></code> references to variables in the session context.</p>
 <p>It must return a string.</p>
 <p>Note that the <cite>async_register</cite> function is different than in the <a class="reference internal" href="#iterm2.registration.RPC" title="iterm2.registration.RPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPC()</span></code></a> decorator: it takes three arguments. The first is the <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>. The second is a “display name”, which is the string to show in preferences that the user may select to use this title provider. Then it takes a unique identifier, a string, which must be unique among all title providers.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Example “<a class="reference internal" href="examples/georges_title.html#georges-title-example"><span class="std std-ref">George’s Title Algorithm</span></a>”</p>
+</div>
 <p>Example:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@iterm2.TitleProviderRPC</span>
@@ -162,6 +161,15 @@
 <p>The coroutine <em>must</em> take an argument named <cite>knobs</cite> that will contain a dictionary with configuration settings.</p>
 <p>It may return a string or an array of strings. In the case that it returns an array, the longest string fitting the available space will be used.</p>
 <p>Note that unlike the other RPC decorators, you use <code class="xref py py-meth docutils literal notranslate"><span class="pre">async_register()</span></code> to register it, rather than a register property added to the coroutine.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li>Example “<a class="reference internal" href="examples/escindicator.html#escindicator-example"><span class="std std-ref">Escape Key Indicator</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/jsonpretty.html#jsonpretty-example"><span class="std std-ref">JSON Pretty Printer Status Bar Component</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/mousemode.html#mousemode-example"><span class="std std-ref">Status Bar Component: Mouse Mode</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/statusbar.html#statusbar-example"><span class="std std-ref">Status Bar Component</span></a>”</li>
+</ul>
+</div>
 <p>Example:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
@@ -202,7 +210,14 @@
 <dt id="iterm2.Reference">
 <em class="property">class </em><code class="descname">Reference</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Reference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines a reference to a variable for use in the &#64;RPC decorator.</p>
-<p>See also: <a class="reference internal" href="#iterm2.registration.RPC" title="iterm2.registration.RPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPC()</span></code></a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="#iterm2.registration.RPC" title="iterm2.registration.RPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPC()</span></code></a>.</li>
+<li>Example “<a class="reference internal" href="examples/mousemode.html#mousemode-example"><span class="std std-ref">Status Bar Component: Mouse Mode</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/statusbar.html#statusbar-example"><span class="std std-ref">Status Bar Component</span></a>”</li>
+</ul>
+</div>
 </dd></dl>
 
 <hr class="docutils" />
@@ -223,7 +238,7 @@
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

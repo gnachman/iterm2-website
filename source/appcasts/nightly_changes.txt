@@ -1,3 +1,57 @@
+2019-02-05: Ensure glyphSize is an integer. Should fix the
+buffer overflow in performPostProcessing
+
+2019-02-05: Clear bell when a session becomes active, either
+by change split panes, changing tabs, or the window becoming
+key. Add an advanced pref so users can revert to the
+previous stickier behavior. Issue 7496
+
+2019-02-05: Ignore carbon hotkeys while an app modal window
+exists. Issue 7487
+
+2019-02-05: Ask for accessibility permissions after failing
+to create an event tap
+
+2019-02-05: Bump up default prominence of text of
+non-selected tabs when a tab has a colored background
+
+2019-02-05: [cherrypick] Adjust text color for non-selected
+tabs when one tab has a tab color. Because on Mojave we use
+a visual effect view with a 25% black scrim over it we can't
+be sure what the background color is. It's smarter to draw
+black or white with some alpha blending instead. The alpha
+blending level will be co ntrolled by the text prominence
+setting. This makes a big difference in dark mode. Issue
+7485
+
+2019-02-05: Remember the vertical proportions of toolbelt
+tools. Issue 7482
+
+2019-02-05: Tell xcode I like my build settings just fine
+thank you
+
+2019-02-05: [cherrypick] Try harder to respect the default
+toolbelt width. Do not constrain the toolbelt size in init,
+before the view's frame's width is known. Just before
+showing the toolbelt, constrain its width based on the size
+we are willing to make the window.  Issue 4820
+
+2019-02-05: Add downloadable archives of the tutorial
+scripts
+
+2019-02-05: Update change profile open quickly icon
+
+2019-02-05: Remove log spam
+
+2019-02-05: Remove gross hacks for open quickly window
+highlighting in 10.14. I don't have a 10.13 machine to test
+on at the moment so the change is limited to 10.14, but
+it'll probably work on older OS versions
+
+2019-02-05: Update script icon in open quickly
+
+2019-02-05: Give cask-repair no input to fix it hanging
+
 2019-02-04: When choosing a language, include all leading
 three letter language codes and the first two-letter code.
 Issue 5478

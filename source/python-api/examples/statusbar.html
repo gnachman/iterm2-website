@@ -67,37 +67,21 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper">
+                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
   <div class="section" id="status-bar-component">
-<h1>Status Bar Component<a class="headerlink" href="#status-bar-component" title="Permalink to this headline">¶</a></h1>
+<span id="statusbar-example"></span><h1>Status Bar Component<a class="headerlink" href="#status-bar-component" title="Permalink to this headline">¶</a></h1>
 <p>This example demonstrates registering a Python function to provide the content of a custom status bar component. It features a “knob” that allows configuration: in this case, whether to show a demonstration of variable-length values, or to show the size of the current session.</p>
 <p>After starting this script, navigate to <strong>Preferences &gt; Profiles &gt; Session</strong>. Turn on <strong>Status Bar Enabled</strong> and select <strong>Configure Status Bar</strong>. Drag the <strong>Status Bar Demo</strong> component into the bottom section. Select it and then click <strong>Configure Component</strong>. You’ll see a “Variable-Length Demo” setting that can be toggled to change the component’s behavior. Other standard knobs, like color adjustments, are also present.</p>
 <p>When the <strong>Variable-Length Demo</strong> knob is on, try making the window narrower and observer that the text changes as the amount of available space changes.</p>
@@ -109,42 +93,43 @@
     <span class="n">vl</span> <span class="o">=</span> <span class="s2">&quot;variable_length_demo&quot;</span>
     <span class="n">knobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterm2</span><span class="o">.</span><span class="n">CheckboxKnob</span><span class="p">(</span><span class="s2">&quot;Variable-Length Demo&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="n">vl</span><span class="p">)]</span>
     <span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
-        <span class="s2">&quot;StatusBarDemo&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Status Bar Demo&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Tests script-provided status bar components&quot;</span><span class="p">,</span>
-        <span class="n">knobs</span><span class="p">,</span>
-        <span class="s2">&quot;row x cols&quot;</span><span class="p">,</span>
-        <span class="bp">None</span><span class="p">,</span>
-        <span class="s2">&quot;com.iterm2.example.status-bar-demo&quot;</span><span class="p">)</span>
+        <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;Status Bar Demo&quot;</span><span class="p">,</span>
+        <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Tests script-provided status bar components&quot;</span><span class="p">,</span>
+        <span class="n">knobs</span><span class="o">=</span><span class="n">knobs</span><span class="p">,</span>
+        <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;row x cols&quot;</span><span class="p">,</span>
+        <span class="n">update_cadence</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.status-bar-demo&quot;</span><span class="p">)</span>
 
     <span class="c1"># This function gets called whenever any of the paths named in defaults (below) changes</span>
     <span class="c1"># or its configuration changes.</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">knobs</span><span class="p">):</span>
-      <span class="k">if</span> <span class="n">vl</span> <span class="ow">in</span> <span class="n">knobs</span> <span class="ow">and</span> <span class="n">knobs</span><span class="p">[</span><span class="n">vl</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;This is an example of variable-length status bar components&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;This is a demo of variable-length status bar components&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;This demo status bar component has variable length&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Demonstrate variable-length status bar component&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Shows variable-length status bar component&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Shows variable-length text in status bar&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Variable-length text in status bar&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Variable-length text demo&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Var. length text demo&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;It&#39;s getting tight&quot;</span> <span class="p">]</span>
-      <span class="k">return</span> <span class="s2">&quot;{}x{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
-
-    <span class="c1"># Defaults specify paths to external variables (like session.rows) and binds them to</span>
+    <span class="c1"># References specify paths to external variables (like rows) and binds them to</span>
     <span class="c1"># arguments to the registered function (coro). When any of those variables&#39; values</span>
     <span class="c1"># change the function gets called.</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;rows&quot;</span><span class="p">:</span> <span class="s2">&quot;rows&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;cols&quot;</span><span class="p">:</span> <span class="s2">&quot;columns&quot;</span> <span class="p">}</span>
+    <span class="nd">@iterm2.StatusBarRPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span>
+            <span class="n">knobs</span><span class="p">,</span>
+            <span class="n">rows</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;rows&quot;</span><span class="p">),</span>
+            <span class="n">cols</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">vl</span> <span class="ow">in</span> <span class="n">knobs</span> <span class="ow">and</span> <span class="n">knobs</span><span class="p">[</span><span class="n">vl</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;This is an example of variable-length status bar components&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;This is a demo of variable-length status bar components&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;This demo status bar component has variable length&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Demonstrate variable-length status bar component&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Shows variable-length status bar component&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Shows variable-length text in status bar&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Variable-length text in status bar&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Variable-length text demo&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Var. length text demo&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;It&#39;s getting tight&quot;</span> <span class="p">]</span>
+        <span class="k">return</span> <span class="s2">&quot;{}x{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
 
     <span class="c1"># Register the component.</span>
-    <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><a class="reference download internal" download="" href="../_downloads/2d3941c59962adc343365628b6bc9341/statusbar.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -155,7 +140,7 @@
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

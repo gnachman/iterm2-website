@@ -17,7 +17,6 @@ Menu Item                                                                       
 ======================================================================================= ==============================================================================
 iTerm2 > About iTerm2                                                                   `About iTerm2`                                                                
 iTerm2 > Show Tip of the Day                                                            `Show Tip of the Day`                                                         
-iTerm2 > Check for Incompatible Software                                                `Check for Incompatible Software`                                             
 iTerm2 > Check For Updates…                                                             `Check For Updates…`                                                          
 iTerm2 > Toggle Debug Logging                                                           `Toggle Debug Logging`                                                        
 iTerm2 > Copy Performance Stats                                                         `Copy Performance Stats`                                                      
@@ -50,6 +49,7 @@ Shell > Broadcast Input > Broadcast Input to All Panes in Current Tab           
 Shell > Broadcast Input > Toggle Broadcast Input to Current Session                     `Broadcast Input.Toggle Broadcast Input to Current Session`                   
 Shell > Broadcast Input > Show Background Pattern Indicator                             `Broadcast Input.Show Background Pattern Indicator`                           
 Shell > tmux > Detach                                                                   `tmux.Detach`                                                                 
+Shell > tmux > Force Detach                                                             `tmux.Force Detach`                                                           
 Shell > tmux > New Tmux Window                                                          `tmux.New Tmux Window`                                                        
 Shell > tmux > New Tmux Tab                                                             `tmux.New Tmux Tab`                                                           
 Shell > tmux > Dashboard                                                                `tmux.Dashboard`                                                              

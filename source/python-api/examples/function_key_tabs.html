@@ -67,37 +67,21 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper">
+                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
   <div class="section" id="function-key-tabs">
-<h1>Function Key Tabs<a class="headerlink" href="#function-key-tabs" title="Permalink to this headline">¶</a></h1>
+<span id="function-key-tabs-example"></span><h1>Function Key Tabs<a class="headerlink" href="#function-key-tabs" title="Permalink to this headline">¶</a></h1>
 <p>The script makes it possible to select a tab by pressing a function key. F1 chooses the first tab, F2 the second, etc.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 
@@ -106,32 +90,54 @@
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-    <span class="c1"># Keycodes for f1 through f10. See here for a list:</span>
-    <span class="c1"># https://stackoverflow.com/questions/3202629/where-can-i-find-a-list-of-mac-virtual-key-codes</span>
-    <span class="n">keycodes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">122</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">109</span> <span class="p">]</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">keystroke_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">notification</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">modifiers</span> <span class="o">==</span> <span class="p">[</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">api_pb2</span><span class="o">.</span><span class="n">Modifiers</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="s2">&quot;FUNCTION&quot;</span><span class="p">)</span> <span class="p">]:</span>
+    <span class="n">keycodes</span> <span class="o">=</span> <span class="p">[</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F1</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F2</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F3</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F4</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F5</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F6</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F7</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F8</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F9</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F10</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F11</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="o">.</span><span class="n">F12</span> <span class="p">]</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">keystroke_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">keystroke</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">keystroke</span><span class="o">.</span><span class="n">modifiers</span> <span class="o">==</span> <span class="p">[</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Modifier</span><span class="o">.</span><span class="n">FUNCTION</span> <span class="p">]:</span>
             <span class="k">try</span><span class="p">:</span>
-              <span class="n">fkey</span> <span class="o">=</span> <span class="n">keycodes</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">notification</span><span class="o">.</span><span class="n">keyCode</span><span class="p">)</span>
+              <span class="n">fkey</span> <span class="o">=</span> <span class="n">keycodes</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">keystroke</span><span class="o">.</span><span class="n">keycode</span><span class="p">)</span>
               <span class="k">if</span> <span class="n">fkey</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">fkey</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">tabs</span><span class="p">):</span>
                   <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">tabs</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span><span class="o">.</span><span class="n">async_select</span><span class="p">()</span>
             <span class="k">except</span><span class="p">:</span>
               <span class="k">pass</span>
 
-    <span class="n">patterns</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokePattern</span><span class="p">()</span>
-    <span class="n">patterns</span><span class="o">.</span><span class="n">forbidden_modifiers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">iterm2</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">,</span>
-                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">OPTION</span><span class="p">,</span>
-                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">COMMAND</span><span class="p">,</span>
-                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">SHIFT</span><span class="p">,</span>
-                                         <span class="n">iterm2</span><span class="o">.</span><span class="n">NUMPAD</span><span class="p">])</span>
-    <span class="n">patterns</span><span class="o">.</span><span class="n">required_modifiers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">iterm2</span><span class="o">.</span><span class="n">FUNCTION</span><span class="p">])</span>
-    <span class="n">patterns</span><span class="o">.</span><span class="n">keycodes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">keycodes</span><span class="p">)</span>
 
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">async_subscribe_to_keystroke_notification</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">keystroke_handler</span><span class="p">,</span> <span class="n">patterns_to_ignore</span><span class="o">=</span><span class="p">[</span><span class="n">patterns</span><span class="p">])</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokePattern</span><span class="p">()</span>
+    <span class="n">pattern</span><span class="o">.</span><span class="n">forbidden_modifiers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Modifier</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">,</span>
+                                        <span class="n">iterm2</span><span class="o">.</span><span class="n">Modifier</span><span class="o">.</span><span class="n">OPTION</span><span class="p">,</span>
+                                        <span class="n">iterm2</span><span class="o">.</span><span class="n">Modifier</span><span class="o">.</span><span class="n">COMMAND</span><span class="p">,</span>
+                                        <span class="n">iterm2</span><span class="o">.</span><span class="n">Modifier</span><span class="o">.</span><span class="n">SHIFT</span><span class="p">,</span>
+                                        <span class="n">iterm2</span><span class="o">.</span><span class="n">Modifier</span><span class="o">.</span><span class="n">NUMPAD</span><span class="p">])</span>
+    <span class="n">pattern</span><span class="o">.</span><span class="n">required_modifiers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Modifier</span><span class="o">.</span><span class="n">FUNCTION</span><span class="p">])</span>
+    <span class="n">pattern</span><span class="o">.</span><span class="n">keycodes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">keycodes</span><span class="p">)</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">monitor</span><span class="p">():</span>
+        <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokeMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="n">keystroke</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+                <span class="n">await</span> <span class="n">keystroke_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">keystroke</span><span class="p">)</span>
+    <span class="c1"># Run the monitor in the background</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">monitor</span><span class="p">())</span>
+
+    <span class="c1"># Block regular handling of function keys</span>
+    <span class="nb">filter</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokeFilter</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="p">[</span><span class="n">pattern</span><span class="p">])</span>
+    <span class="n">async</span> <span class="k">with</span> <span class="nb">filter</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+        <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_wait_forever</span><span class="p">()</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><a class="reference download internal" download="" href="../_downloads/7268c20d144cf6e2ccb0d7b20372c492/function_key_tabs.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -142,7 +148,7 @@
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

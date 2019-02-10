@@ -69,30 +69,14 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper">
+                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -117,6 +101,14 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li>Example “<a class="reference internal" href="examples/broadcast.html#broadcast-example"><span class="std std-ref">Asymmetric Broadcast Input</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/escindicator.html#escindicator-example"><span class="std std-ref">Escape Key Indicator</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/function_key_tabs.html#function-key-tabs-example"><span class="std std-ref">Function Key Tabs</span></a>”</li>
+</ul>
+</div>
 <p>Example:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokeMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
@@ -145,7 +137,19 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>connection</strong> – The <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> to use.</li>
 <li><strong>patterns</strong> – A list of <a class="reference internal" href="#iterm2.KeystrokePattern" title="iterm2.KeystrokePattern"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeystrokePattern</span></code></a> objects specifying keystrokes whose regular handling should be disabled.</li>
-<li><strong>session</strong> – <p>The session ID to affect, or None meaning all.</p>
+<li><strong>session</strong> – The session ID to affect, or None meaning all.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li>Example “<a class="reference internal" href="examples/broadcast.html#broadcast-example"><span class="std std-ref">Asymmetric Broadcast Input</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/function_key_tabs.html#function-key-tabs-example"><span class="std std-ref">Function Key Tabs</span></a>”</li>
+</ul>
+</div>
 <p>Example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prevent iTerm2 from handling all control-key combinations.</span>
 <span class="n">ctrl</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokePattern</span><span class="p">()</span>
@@ -157,12 +161,6 @@
     <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_wait_forever</span><span class="p">()</span>
 </pre></div>
 </div>
-</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="class">
@@ -905,7 +903,7 @@ keyboard regardless of its actual layout.</p>
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

@@ -67,30 +67,14 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper">
+                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -101,11 +85,13 @@
 <p>A daemon in the Unix tradition is a computer program that runs as a background
 process, rather than being under the direct control of an interactive user.</p>
 <p>An iTerm2 daemon would ordinarily be an AutoLaunch script that provides some
-service, such as listening for notifications and reacting to them. Autolaunch
-scripts should be placed in <cite>~/Library/Application Support/iTerm2/Scripts/AutoLaunch</cite>.</p>
-<p>AutoLaunch scripts are launched at startup. When you create a new one it does
-not get launched until iTerm2 is restarted, but you can always run it by
-selecting it from the <strong>Scripts</strong> menu.</p>
+ongoing service. For example, it might enable you to create a window when a
+special string is printed. Such a script lies dormant until it is needed, so it
+must run at all times.</p>
+<p>AutoLaunch scripts are launched at startup.  Autolaunch scripts should be placed in
+<cite>~/Library/Application Support/iTerm2/Scripts/AutoLaunch</cite>. When you create a
+new one it does not get launched until iTerm2 is restarted, but you can always
+run it by selecting it from the <strong>Scripts</strong> menu.</p>
 <p>When you create a new script and choose to make it a “Long-Running Daemon” (as
 opposed to a “Simple” script), iTerm2 will provide a sample program to help you
 get started:</p>
@@ -134,8 +120,8 @@ a context manager. That means it can perform an asyncio operation when it is
 created and when the context ends.</p>
 <p>This particular context manager registers a hook for custom control sequences.
 Terminal emulators work by processing out-of-band messages called control
-sequences to perform actions such as to move the cursor, clear the screen, or
-change the current text color. Custom control sequences allow you to define your
+sequences to perform actions such as moving the cursor, clearing the screen, or
+changing the current text color. Custom control sequences allow you to define your
 own actions to perform when a control sequence you define is received.</p>
 <p>When you use a context manager this way the flow of control enters the body of
 the context manager (beginning with <cite>while True</cite>).</p>
@@ -183,14 +169,16 @@ its body has a <cite>while True</cite> infinite loop. Here’s how you do that:<
 <p>As you browse the documentation you will find many different context managers
 that allow you to perform actions when something hapens. For example:</p>
 <ul class="simple">
-<li><a class="reference internal" href="../focus.html#iterm2.focus.FocusMonitor" title="iterm2.focus.FocusMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.focus.FocusMonitor</span></code></a></li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.keyboard.KeystrokeMonitor</span></code></li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.lifecycle.LayoutChangeMonitor</span></code></li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.lifecycle.NewSessionMonitor</span></code></li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.prompt.PromptMonitor</span></code></li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.screen.ScreenStreamer</span></code></li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.lifecycle.SessionTerminationMonitor</span></code></li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.variables.VariableMonitor</span></code></li>
+<li><a class="reference internal" href="../focus.html#iterm2.FocusMonitor" title="iterm2.FocusMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.FocusMonitor</span></code></a></li>
+<li><a class="reference internal" href="../keyboard.html#iterm2.KeystrokeFilter" title="iterm2.KeystrokeFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.KeystrokeFilter</span></code></a></li>
+<li><a class="reference internal" href="../keyboard.html#iterm2.KeystrokeMonitor" title="iterm2.KeystrokeMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.KeystrokeMonitor</span></code></a></li>
+<li><a class="reference internal" href="../lifecycle.html#iterm2.LayoutChangeMonitor" title="iterm2.LayoutChangeMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.LayoutChangeMonitor</span></code></a></li>
+<li><a class="reference internal" href="../lifecycle.html#iterm2.NewSessionMonitor" title="iterm2.NewSessionMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.NewSessionMonitor</span></code></a></li>
+<li><a class="reference internal" href="../prompt.html#iterm2.PromptMonitor" title="iterm2.PromptMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.PromptMonitor</span></code></a></li>
+<li><a class="reference internal" href="../screen.html#iterm2.ScreenStreamer" title="iterm2.ScreenStreamer"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.ScreenStreamer</span></code></a></li>
+<li><a class="reference internal" href="../lifecycle.html#iterm2.SessionTerminationMonitor" title="iterm2.SessionTerminationMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.SessionTerminationMonitor</span></code></a></li>
+<li><a class="reference internal" href="../transaction.html#iterm2.Transaction" title="iterm2.Transaction"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Transaction</span></code></a></li>
+<li><a class="reference internal" href="../variables.html#iterm2.VariableMonitor" title="iterm2.VariableMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.VariableMonitor</span></code></a></li>
 </ul>
 <p>Continue to the next section, <a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a>.</p>
 <hr class="docutils" />
@@ -229,7 +217,7 @@ that allow you to perform actions when something hapens. For example:</p>
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

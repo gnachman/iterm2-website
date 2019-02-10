@@ -67,37 +67,21 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper">
+                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
   <div class="section" id="json-pretty-printer-status-bar-component">
-<h1>JSON Pretty Printer Status Bar Component<a class="headerlink" href="#json-pretty-printer-status-bar-component" title="Permalink to this headline">¶</a></h1>
+<span id="jsonpretty-example"></span><h1>JSON Pretty Printer Status Bar Component<a class="headerlink" href="#json-pretty-printer-status-bar-component" title="Permalink to this headline">¶</a></h1>
 <p>This script demonstrates a status bar component that can get the selected text, define an on-click handler, and open a popover showing HTML.</p>
 <p>See <a class="reference internal" href="statusbar.html"><span class="doc">Status Bar Component</span></a> for instructions on installing a custom status bar component.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
@@ -117,6 +101,7 @@
     <span class="n">app</span><span class="o">=</span><span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
     <span class="c1"># Set the click handler</span>
+    <span class="nd">@iterm2.RPC</span>
     <span class="n">async</span> <span class="k">def</span> <span class="nf">onclick</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
         <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
         <span class="n">selection</span> <span class="o">=</span> <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_selection</span><span class="p">()</span>
@@ -127,20 +112,18 @@
     <span class="n">vl</span> <span class="o">=</span> <span class="s2">&quot;json_pretty_printer&quot;</span>
     <span class="n">knobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterm2</span><span class="o">.</span><span class="n">CheckboxKnob</span><span class="p">(</span><span class="s2">&quot;JSON Pretty Printer&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="n">vl</span><span class="p">)]</span>
     <span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
-        <span class="s2">&quot;JSONPrettyPrinter&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;JSON Pretty Printer&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Select JSON in the terminal, then click this status bar component to see it nicely formatted.&quot;</span><span class="p">,</span>
-        <span class="n">knobs</span><span class="p">,</span>
-        <span class="s2">&quot;{ JSON }&quot;</span><span class="p">,</span>
-        <span class="bp">None</span><span class="p">,</span>
-        <span class="s2">&quot;com.iterm2.json-pretty-printer&quot;</span><span class="p">)</span>
+        <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;JSON Pretty Printer&quot;</span><span class="p">,</span>
+        <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Select JSON in the terminal, then click this status bar component to see it nicely formatted.&quot;</span><span class="p">,</span>
+        <span class="n">knobs</span><span class="o">=</span><span class="n">knobs</span><span class="p">,</span>
+        <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;{ JSON }&quot;</span><span class="p">,</span>
+        <span class="n">update_cadence</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.json-pretty-printer&quot;</span><span class="p">)</span>
 
     <span class="c1"># This function gets called whenever any of the paths named in defaults (below) changes</span>
     <span class="c1"># or its configuration changes.</span>
+    <span class="nd">@iterm2.StatusBarRPC</span>
     <span class="n">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">knobs</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;{ JSON }&quot;</span><span class="p">]</span>
-
-    <span class="n">component</span><span class="o">.</span><span class="n">set_click_handler</span><span class="p">(</span><span class="n">onclick</span><span class="p">)</span>
 
     <span class="c1"># Register the component.</span>
     <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">,</span> <span class="n">onclick</span><span class="o">=</span><span class="n">onclick</span><span class="p">)</span>
@@ -148,6 +131,7 @@
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><a class="reference download internal" download="" href="../_downloads/6e4aeb452e8fa0f47c5e4ce5a5ddda94/jsonpretty.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -158,7 +142,7 @@
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';
