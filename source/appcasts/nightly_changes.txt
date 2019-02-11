@@ -1,3 +1,40 @@
+2019-02-10: Tweak compact title and minimal tab colors.
+
+2019-02-10: Fix how we avoid enumerating subdirs of app
+support to actually work
+
+2019-02-10: Unbreak edit session pref panel
+
+2019-02-10: When toggling traditional fullscreen for any of
+the windows without a titlebar besides compact (top of
+screen, etc.) replace the window because it has the
+compact-style window class which gives it an ugly titlebar.
+
+2019-02-10: Hackily detect when the IME window is open and
+adjust floating hotkey windows' levels down. Issue 7521
+
+2019-02-10: Avoid enumerating nested directories in
+application support at startup because the python API takes
+an eternity
+
+2019-02-10: Prevent restoring intervals into interval trees
+with negative limits. Not quite sure where they came from
+but they are definitely unwelcome.
+
+2019-02-10: [python] Bump version
+
+2019-02-10: [python] Update docstring for
+async_invoke_function in all contexts
+
+2019-02-10: Hide tabbar backing visual effect view only in
+minimal theme. Fixes a bug where the titlebar was completely
+transparent when using auto theme + macos dark mode +
+compact window + no tabbar.
+
+2019-02-10: Fix nightly build. Update sign_update to the
+version from my fork of Sparkle at commit
+d163511d43fa00d5b661b4f57b5f192b6c35df93
+
 2019-02-10: Add the ability for scripts to invoke registered
 functions. Register a move-tab-to-window builtin function.
 Add APIs to call it and to invoke functions in the various
@@ -714,3 +751,5 @@ capitalization * Sort accessors
 backward compatibility.
 
 2019-01-01: Remove bad key mappings when enabling CSI u
+
+2019-01-01: Send esc+ when only option is pressed.
