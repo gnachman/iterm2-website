@@ -1,3 +1,25 @@
+2019-02-17: Add support for arrays. Begin adding tests of
+function calls and interpolated string evaluations. This
+commit might break random things in existing scripts because
+it's not sufficiently tested yet.
+
+2019-02-17: Save window title override across restarts
+
+2019-02-17: Try using the new type-safe variables and fix a
+bunch of bugs in them. Also, discovered a horrible wart of
+Objective-C. If you invoke [MyClass<MyProtocol> foo] where
+foo is declared by some protocol other than MyProtocol (and
+is privately implemented in a category of MyClass) there's
+no compiler warning. If you give the compiler less
+information by saying id<MyProtocol> it checks it properly.
+Fun.
+
+2019-02-17: Add type-safe categories on variable scopes
+
+2019-02-17: Make it possible to set the tab and window title
+overrides from Edit Session. Plumb scopes through to the
+general prefs view controller.
+
 2019-02-16: Handle flags-changed events for the purpose of
 double-tap modifier hotkey window toggling through
 -sendEvent when secure input is enabled. Issue 7375
