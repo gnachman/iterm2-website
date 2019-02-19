@@ -1,3 +1,40 @@
+2019-02-18: Add support for DECRQM (ANSI and DEC flavors).
+Also fix up some miscellaneous issues I noticed on the way:
+
+- Fix failing tests - Fix a bug where cursorVisible was
+initialized to NO. The actual visibility of the cursor was
+initialized not based on the model in VT100Screen.  - Rename
+terminalFocusReportingEnabled to
+terminalFocusReportingAllowed to make it clearer what it
+does - Don't prompt to enable the python API in unit tests.
+Also don't create the server becase we don't want to try to
+listen on a socket during tests.
+
+2019-02-18: Make it possible to use the password manager
+from the scp keyboard interactive prompt. Issue 7554.
+
+2019-02-18: Use a visual effect view in the password manager
+
+2019-02-18: Fix bugs in edit tab window/title. Also add a
+menu item to edit tab title. Issue 7550.
+
+2019-02-18: [python] Add script to change color presets
+based on time of day
+
+2019-02-18: Update window decoration colors in root terminal
+view when main status changes
+
+2019-02-18: Use main rather than key status to decide if
+tabbar should be shown washed out. Issue 7552
+
+2019-02-18: Remove some debugging code and unsetenv
+ITERM2_DISABLE_BOOTSTRAP in shell launcher process
+
+2019-02-18: Add an advacned pref to disable bootstrapping so
+touchid for sudo can be used. Issue 7527
+
+2019-02-18: Add a few more tests
+
 2019-02-17: Add support for arrays. Begin adding tests of
 function calls and interpolated string evaluations. This
 commit might break random things in existing scripts because
