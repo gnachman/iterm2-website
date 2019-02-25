@@ -1,3 +1,42 @@
+2019-02-24: Fix some layout bugs in lion fullscreen +
+minimal + compact. Toolbelt was cut off, status bar
+overlapped it with tabs on left, and when moving from tabs
+on left to tabs on top they would be the wrong height and
+internal orientation
+
+2019-02-24: Fix duplicate identifier in main menu
+
+2019-02-24: Add a titleOverrideFormat to windows. Fix a bug
+where an empty tab title override would be used in place of
+the session's name
+
+2019-02-24: Improve how cycles among swifty strings and
+variables are detected.
+
+Construct a graph of dependencies between variables and
+swifty strings. Detect dependency cycles by doing a search
+on the graph.
+
+Simplify attaching a swify string to a variable with its
+format and a variable with its evaluation. They now take
+care of it themselves without needing hand-holding.
+
+Make swifty strings mutable so they can be long-lived to
+avoid churning references.
+
+Add iTermVariableDesignator which serves as a comparable
+reference to a variable. It is used in the graph for
+detecting cycles since a reference to a particular variable
+could be made in many ways. The designator treats equivalent
+references as equals.
+
+Add iTermDirectedGraph.  Add -[NSArray
+subarrayToIndexInclusive:].  Add -[NSString
+stringByAppendingVariablePathComponent:].  Make
+iTermVariableScope objects long-lived in PTYSession and
+PTYTab because they store dangling references. Short-lived
+scopes lose those before they can be resolved.
+
 2019-02-23: Disable proxy icon for minimal theme and window
 types without titlebars. Issue 7558
 
