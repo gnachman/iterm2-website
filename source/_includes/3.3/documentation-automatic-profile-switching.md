@@ -18,17 +18,17 @@ A hostname can be a DNS name, like `iterm2.com` or an IP address like `127.0.0.1
 
 Some examples:
 
-  * george@iterm2.com:/users/george
-  * george@*:/users/george
-  * *:/users/george
-  * *.iterm2.com:/users/george
-  * dev.*.com:/users/george
-  * george@iterm2.com
-  * iterm2.com
-  * george@
-  * iterm2.com:/users/george
-  * /users/george
-  * /users/*
+  * `george@iterm2.com:/users/george`
+  * `george@*:/users/george`
+  * `*:/users/george`
+  * `*.iterm2.com:/users/george`
+  * `dev.*.com:/users/george`
+  * `george@iterm2.com`
+  * `iterm2.com`
+  * `george@`
+  * `iterm2.com:/users/george`
+  * `/users/george`
+  * `/users/*`
 
 Because more than one rule may match at any given time, more complex rules will take priority over less complex rules. The priority order is defined like this:
 

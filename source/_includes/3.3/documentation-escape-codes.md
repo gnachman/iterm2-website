@@ -172,7 +172,7 @@ The *boolean* should be *yes* or *no*. This shows or hides the cursor guide.
 
     ^[]1337;RequestAttention=value^G
 
-The `value` should be *yes* to request attention by bouncing the dock icon and *no* to cancel a previous request. If it is `fireworks` then fireworks explode at the cursor's location.
+The `value` should be *yes* to request attention by bouncing the dock icon indefinitely, *once* to bounce it a single time, or *no* to cancel a previous request. If it is `fireworks` then fireworks explode at the cursor's location. 
 
 
 #### Background Image
@@ -265,6 +265,17 @@ Where `n` is 8 or 9
 
 You can push the current value on a stack and pop it off to return to the previous value by setting `n` to `push` or `pop`. Optionally, you may affix a label after `push` by setting `n` to something like `push mylabel`. This attaches a label to that stack entry. When you pop the same label, entries will be popped until that one is found. Set `n` to `pop mylabel` to effect this. This is useful if a program crashes or an ssh session ends unexpectedly.
 
+#### Custom Control Sequences
+
+iTerm2 allows scripts to define custom control sequences. See the <a href="https://iterm2.com/python-api/examples/create_window.html">Create Window</a> example for a working demo. The control sequence is:
+
+    ^[]1337;Custom=id=secret:pattern^G
+
+Where `secret` is a secret shared between the script implementing the control
+sequence and the program producing it, as a security measure to make it more
+difficult for untrusted text to invoke a custom control sequence. `pattern` is
+used to identify the sequence and may contain any parameters the script needs
+to handle it.
 
 ## Shell Integration/FinalTerm
 

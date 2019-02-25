@@ -16,9 +16,6 @@ Pastes the currently selected text (which may differ from the text in the pasteb
 #### Edit  > Paste Special > Paste File Base64-Encoded
 If there is a file on the pasteboard then this this is enabled. When invoked, it base64-encodes the file and pastes the encoded value.
 
-#### Edit > Paste Special > Paste Escaping Special Characters
-"Paste Escaping Special Characters" pastes the current string in the clipboard, but places a backslash before spaces and backslashes.
-
 #### Edit > Paste Special > Paste Slowly
 "Paste Slowly" pastes the current string in the clipboard, but it doesn't send the whole string at once. It is sent in batches of 16 bytes with a 125ms delay between batches.
 
@@ -49,6 +46,9 @@ Requires shell integration to be installed. Selects the text of the current comm
 #### Edit > Find > Find
 Opens or focuses the find panel. Select the down arrow to the left of the search field to open the options menu, which lets you select case insensitivity and regular expression options. The default case sensitivity option of "Smart Case Sensitivity" performs a case-sensitive search if the search query contains any upper case letters. Otherwise, a case-insensitive search is performed.
 
+#### Edit > Find > Find Next/Previous
+Note that the direction of next and previous is reversed relative to the standard macOS search direction. If you prefer for *Next* to mean down and *Previous* to mean up, set *Preferences>Advanced>Swap Find Next and Find Previous* to *No*.
+
 #### Edit > Find > Find URLs
 Searches the current session for URLish looking strings.
 
@@ -57,6 +57,9 @@ Records the current scroll position. Use Edit > Jump to Mark to restore the scro
 
 #### Edit > Marks and Annotations > Add Annotation at Cursor
 Adds an annotation to the word beginning at the cursor. An annotation is a scratchpad for you to write notes about a chunk of text in your history.
+
+#### Edit > Marks and Annotations > Jump to Mark
+Scrolls to the location of the last mark.
 
 #### Edit > Marks and Annotations > Alerts > Alert on Next Mark
 When a mark is set (typically by <a href="shell_integration.html">Shell Integration</a> when the currently running shell command terminates) then show an alert. 

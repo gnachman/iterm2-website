@@ -120,3 +120,8 @@ If you have lots of sessions you can quickly find the one you're looking for wit
 #### Shell Integration and Utilities
 Shell integration consists of a shell script that's loaded when you create a new session or ssh to a remote host. It modifies your prompt so iTerm2 knows where it is. This enables a number of features, such as Copy Output of Last Command, Automatic Profile Switching when changing hosts, and more as described in <a href="documentation-shell-integration.html">Shell Integration</a>. When you install Shell Integration you'll be prompted to also install its Utilities. The Utilities are a collection of shell scripts that use iTerm2's unique features and maket hem easy to use. For example, you can upload or download files from a remote host, copy to the pasteboard from the command line (even over ssh!), and make fireworks explode from the cursor. It's described in <a href="documentation-utilities.html">Utilities</a>.
 
+#### Python Scripting API
+iTerm2 can be customized with its <a href="/python-api">Python API</a>.
+
+#### Status Bar
+You can configure a <a href="documentation-status-bar.html">status bar</a> to show information about your environment at the top or bottom of the window.

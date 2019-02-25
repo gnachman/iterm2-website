@@ -14,13 +14,15 @@ Here is an example of a session with a badge indicating the current user and hos
 
 <img src="images/Badge.png">
 
-### Variables
+### Badge Format
 
-A badge may reference variables. See
-<a href="documentation-variables.html">iTerm2 Variables</a>
-for details on using variables.
+The badge format is an interpolated string. See <a
+href="documentation-scripting-fundamentals.md">Scripting Fundamentals</a> for
+more information on how to use interpolated strings to include information from
+the terminal state in the badge. It also describes how you can set user-defined
+variables, such as the current git branch, which may appear in the badge.
 
-The syntax for referencing a variable is to place the variable name between *\\(* and *)*. For example:
+Here are some examples of interpolated strings:
 
 <pre>
 \(session.username)@\(session.hostname)
@@ -34,9 +36,9 @@ Current git branch on \(session.hostname) is \(user.gitBranch)
 
 Undefined variables evaluate to an empty string.
 
-### Color
+### Appearance
 
-The badge's color may be set in *Preferences&gt;Profiles&gt;Colors*.
+The badge's color may be set in *Preferences&gt;Profiles&gt;Colors*. Its position and typeface may be set in *Preferences>Profiles>General*.
 
 ### Escape Sequences
 

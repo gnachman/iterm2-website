@@ -76,4 +76,7 @@ Use the latest version of tmux. The oldest version that works is 1.8, but 2.3 or
 brew install tmux
 ````
 
+### Configuration
+
+Check *Preferences > General > tmux* for configuration settings. You can also adjust whether to open the tmux Dashboard when connecting to a session with a large number of windows. You can open the tmux Dashboard by selecting the menu item *Shell > tmux > Dashboard*.
 

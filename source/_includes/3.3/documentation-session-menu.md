@@ -25,5 +25,8 @@ Resets the internal state of the emulator and clears the screen. Use this if you
 #### Session > Log > Start/Stop
 Logging saves all input received in a session to a file on disk.
 
+#### Session > Log > Import/Export Recording...
+The Instant Replay feature allows you to view the past window state. The import/export feature allows you to save that state to an `itr` file and share it with others. For more control, enter instant replay by selecting *View > Start Instant Replay* and click the *Export* button there; it will allow you to clip the recording by selecting its start and end points separately.
+
 #### Session > Bury Session/Buried Sessions
 Buries or unburies a session. See <a href="documentation-buried-sessions.html">Buried Sessions</a> for details.
