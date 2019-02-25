@@ -107,6 +107,31 @@
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="iterm2.async_invoke_function">
+<code class="descname">async_invoke_function</code><span class="sig-paren">(</span><em>self</em>, <em>invocation: str</em>, <em>timeout: float = -1</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_invoke_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoke an RPC. Could be a registered function by this or another script of a built-in function.</p>
+<p>This invokes the RPC in the global application context. Note that most user-defined RPCs expect to be invoked in the context of a session. Default variables will be pulled from that scope. If you call a function from the wrong context it may fail because its defaults will not be set properly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>invocation</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A function invocation string.</li>
+<li><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – Max number of secondsto wait. Negative values mean to use the system default timeout.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the invocation if successful.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="class">
 <dt id="iterm2.App">
 <em class="property">class </em><code class="descname">App</code><span class="sig-paren">(</span><em>connection</em>, <em>windows</em>, <em>buried_sessions</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.App" title="Permalink to this definition">¶</a></dt>

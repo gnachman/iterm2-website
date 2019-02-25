@@ -13,11 +13,13 @@ Here's the example script that iTerm2 provides for you, minus some comments:
         app = await iterm2.async_get_app(connection)
         window = app.current_terminal_window
         if window is not None:
-            await iterm2.Window.async_create(connection)
+            await window.async_create_tab()
         else:
             print("No current window")
 
     iterm2.run_until_complete(main)
+
+:Download:`Download<tutorial_example.its>`
 
 There's a lot going on here. Let's take it part by part.
 
@@ -95,7 +97,7 @@ returns `None`.
 .. code-block:: python
 
         if window is not None:
-            await window.async_create_tab(connection)
+            await window.async_create_tab()
 
 If there is a current terminal window, add a tab to it. The new tab uses the
 default profile.
