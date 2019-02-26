@@ -1,5 +1,5 @@
 ---
-layout: subdoc
+layout: subdoc33
 title: Scripting - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Applescript
