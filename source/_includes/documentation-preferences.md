@@ -498,7 +498,7 @@ Some full-screen progarms (like emacs) switch the keyboard into application keyp
 It is common to use a modifier to send so-called "meta keys". For most users, selecting "+Esc" here is the right choice. The "Meta" option sets the high bit of the input character, and is not compatible with modern systems.
 
 #### A hotkey opens a dedicated window with this profile
-When enabled, a dedicated hotkey window is attached to this profile. The **Configure Hotkey Window** button lets you configure the hotkey and other attributes of the window. For more information, see <a href="documentation-hotkey.md">Hotkey Windows</a>.
+When enabled, a dedicated hotkey window is attached to this profile. The **Configure Hotkey Window** button lets you configure the hotkey and other attributes of the window. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.
 
 ### Profiles > Advanced
 <hr>
@@ -528,10 +528,10 @@ Tabs are normally navigated with cmd+number, but you can change the modifier use
 Windows are normally navigated with cmd+opt+number, but you can change the modifier used for that function here.
 
 #### Show/Hide iTerm2 all windows with a system-wide hotkey
-When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assistive devices in the Universal Access panel of System Preferences. For more information, see <a href="documentation-hotkey.md">Hotkey Windows</a>.
+When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assistive devices in the Universal Access panel of System Preferences. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.
 
 #### Create a Dedicated Hotkey WIndow
-Sets up a new hotkey window profile if you don't already have one. For more information, see <a href="documentation-hotkey.md">Hotkey Windows</a>.
+Sets up a new hotkey window profile if you don't already have one. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.
 
 #### Add Touch Bar Item
 This button is only visible if your OS version supports touch bars. By pressing this button, you can define a new custom touch bar button with any of the actions you can assign to a key (see below). You can then add the custom button to your touch bar with **View > Customize Touch Bar**.

@@ -17,7 +17,7 @@ Here is an example of a session with a badge indicating the current user and hos
 ### Badge Format
 
 The badge format is an interpolated string. See <a
-href="documentation-scripting-fundamentals.md">Scripting Fundamentals</a> for
+href="documentation-scripting-fundamentals.html">Scripting Fundamentals</a> for
 more information on how to use interpolated strings to include information from
 the terminal state in the badge. It also describes how you can set user-defined
 variables, such as the current git branch, which may appear in the badge.

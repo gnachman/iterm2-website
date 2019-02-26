@@ -279,7 +279,7 @@ to handle it.
 
 ## Shell Integration/FinalTerm
 
-iTerm2's <a href="shell_integration.html">Shell Integration</a> feature is made
+iTerm2's <a href="documentation-shell-integration.html">Shell Integration</a> feature is made
 possible by proprietary escape sequences pioneered by the FinalTerm emulator.
 FinalTerm is defunct, but the escape sequences are documented here.
 

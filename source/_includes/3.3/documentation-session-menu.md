@@ -11,10 +11,10 @@ After a session ends (e.g., because the shell exits) this menu item becomes enab
 Shows the autocomplete window, which offers to finish typing a word that you've begun. <a href="documentation-highlights.html">Learn more about autocomplete on highlights page</a>.
 
 #### Session > Open Command History...
-If you use <a href="shell_integration.html">Shell Integration</a> then Open Command History presents a list of recently used commands to select from.
+If you use <a href="documentation-shell-integration.html">Shell Integration</a> then Open Command History presents a list of recently used commands to select from.
 
 #### Session > Open Recent Directories...
-If you use <a href="shell_integration.html">Shell Integration</a> then Open Recent Directories presents a list of recently used directories to select from.
+If you use <a href="documentation-shell-integration.html">Shell Integration</a> then Open Recent Directories presents a list of recently used directories to select from.
 
 #### Session > Open Paste History...
 "Open Paste History" opens a window showing up to the last 20 values that were copied or pasted in iTerm2. You can search its contents by typing a (non-necessarily-consecutive) subsequence of characters that appear in the value. You can use arrow keys and enter to make a selection, or you can click on an item to choose it, and it will be pasted. If you enable the Save copy/pate history to disk preference then these values will persist across sessions of iTerm2.

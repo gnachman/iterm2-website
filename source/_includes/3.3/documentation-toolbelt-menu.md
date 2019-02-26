@@ -5,7 +5,7 @@ Saves the current window's toolbelt width as the default width for new windows' 
 This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="captured_output.html">Captured Output</a> for more information.
 
 #### Toolbelt > Command History
-This toggles the visibility of the Command History tool. It shows recently used commands. You must install <a href="shell_integration.html">Shell Integration</a> for this to know your command history.
+This toggles the visibility of the Command History tool. It shows recently used commands. You must install <a href="documentation-shell-integration.html">Shell Integration</a> for this to know your command history.
 
 #### Toolbelt > Show Toolbelt
 This toggles the visibility of the Toolbelt on the right side of all windows.
@@ -23,7 +23,7 @@ This toggles the visibility of the Paste History tool, which shows recently past
 This toggles the visibility of the Profiles tool, which lets you select profiles to open new windows, tabs, and split panes.
 
 #### Toolbelt > Recent Directories
-This toggles the visibility of the Recent Directories tool. It shows recently used directories sorted by a combination of recency and frequency of use. You must install <a href="shell_integration.html">Shell Integration</a> for this to know your directory history. You can right click a directory to open a context menu that allows you to "start" a directory. This keeps it pinned at the bottom of the list so it's easy to find.
+This toggles the visibility of the Recent Directories tool. It shows recently used directories sorted by a combination of recency and frequency of use. You must install <a href="documentation-shell-integration.html">Shell Integration</a> for this to know your directory history. You can right click a directory to open a context menu that allows you to "start" a directory. This keeps it pinned at the bottom of the list so it's easy to find.
 
 ## Custom Tools
 Scripts using the <a href="/python-api">Python API</a> may register custom tools. Those will also appear in this menu. See the <a href="/python-api/examples/broadcast.html">Asymmetric Broadcast Input</a> script for a working example.

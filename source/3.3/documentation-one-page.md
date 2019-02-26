@@ -16,8 +16,49 @@ active-state: documentation
 {% include 3.3/subdoc.md title="General Usage" anchor="documentation-general-usage.html" %}
 {% include 3.3/documentation-general-usage.md %}
 
-{% include 3.3/subdoc.md title="Preferences" anchor="documentation-preferences.html" %}
-{% include 3.3/documentation-preferences.md %}
+
+{% include 3.3/subdoc.md title="General Preferences" anchor="documentation-preferences-general.html" %}
+{% include 3.3/documentation-preferences-general.md %}
+
+{% include 3.3/subdoc.md title="Appearance Preferences" anchor="documentation-preferences-appearance.html" %}
+{% include 3.3/documentation-preferences-appearance.md %}
+
+{% include 3.3/subdoc.md title="General Profile Preferences" anchor="documentation-preferences-profiles-general.html" %}
+{% include 3.3/documentation-preferences-profiles-general.md %}
+
+{% include 3.3/subdoc.md title="Color Profile Preferences" anchor="documentation-preferences-profiles-colors.html" %}
+{% include 3.3/documentation-preferences-profiles-colors.md %}
+
+{% include 3.3/subdoc.md title="Text Profile Preferences" anchor="documentation-preferences-profiles-text.html" %}
+{% include 3.3/documentation-preferences-profiles-text.md %}
+
+{% include 3.3/subdoc.md title="Window Profile Preferences" anchor="documentation-preferences-profiles-window.html" %}
+{% include 3.3/documentation-preferences-profiles-window.md %}
+
+{% include 3.3/subdoc.md title="Terminal Profile Preferences" anchor="documentation-preferences-profiles-terminal.html" %}
+{% include 3.3/documentation-preferences-profiles-terminal.md %}
+
+{% include 3.3/subdoc.md title="Session Profile Preferences" anchor="documentation-preferences-profiles-session.html" %}
+{% include 3.3/documentation-preferences-profiles-session.md %}
+
+{% include 3.3/subdoc.md title="Keys Profile Preferences" anchor="documentation-preferences-profiles-keys.html" %}
+{% include 3.3/documentation-preferences-profiles-keys.md %}
+
+{% include 3.3/subdoc.md title="Advanced Profile Preferences" anchor="documentation-preferences-profiles-advanced.html" %}
+{% include 3.3/documentation-preferences-profiles-advanced.md %}
+
+{% include 3.3/subdoc.md title="Keys Preferences" anchor="documentation-preferences-keys.html" %}
+{% include 3.3/documentation-preferences-keys.md %}
+
+{% include 3.3/subdoc.md title="Arrangement Preferences" anchor="documentation-preferences-arrangements.html" %}
+{% include 3.3/documentation-preferences-arrangements.md %}
+
+{% include 3.3/subdoc.md title="Pointer Preferences" anchor="documentation-preferences-pointer.html" %}
+{% include 3.3/documentation-preferences-pointer.md %}
+
+{% include 3.3/subdoc.md title="Advanced Preferences" anchor="documentation-preferences-advanced.html" %}
+{% include 3.3/documentation-preferences-advanced.md %}
+
 
 {% include 3.3/subdoc.md title="Scripting" anchor="documentation-scripting.html" %}
 {% include 3.3/documentation-scripting.md %}

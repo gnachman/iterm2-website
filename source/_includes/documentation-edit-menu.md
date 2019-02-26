@@ -5,7 +5,7 @@ After you close a session, tab, or window then you have five seconds to undo it.
 Hold down Option to turn Copy into Copy With Styles, which includes fonts and color information in the copied text.
 
 #### Edit > Copy Mode
-Enters *Copy Mode* which lets you make selections using the keyboard. See <a href="documentation-copymode.md">Copy Mode</a> for details.
+Enters *Copy Mode* which lets you make selections using the keyboard. See <a href="documentation-copymode.html">Copy Mode</a> for details.
 
 #### Edit > Paste Special > Advanced Paste
 This opens the Advanced Paste window which lets you select a string from the pasteboard in recent history, select different representations of the current pasteboard, and modify the string before pasting it. You can modify it by appling a regex substitution, using various built-in modifiers (such as base-64 encoding), or edit it by hand.
