@@ -88,6 +88,66 @@ interpolated strings below.
 To learn how to write your own functions, follow the
 <a href="https://iterm2.com/python-api/tutorial/index.html">Python Scripting Tutorial</a>.
 
+## Expressions
+
+The preceding discussion of function calls showed how you can pass strings or
+paths to variables as arguments. The following types of expressions are
+supported:
+
+  * Interpolated strings
+  * Integers
+  * Floating point
+  * Array literals
+  * Array dereferences
+  * Function calls
+  * Paths to variables
+
+### Interpolated Strings
+
+These are described below.
+
+### Integers
+
+These may be positive or negative integer literals. For example, `-3`, `0`, and `2`.
+
+### Floating point
+
+Floating point values look like `-1.2`, `0`, `2.3`, or `1.2e5`.
+
+### Array Literals
+
+Array literals are of the form:
+
+```
+[ expression, expression, ... ]
+```
+
+They may contain zero or more expressions.
+
+### Array dereferences
+
+Array dereferences are of the form:
+
+```
+path[index]
+```
+
+Where `path` is the path to a variable and `index` is a number. Yes, this is a
+very restrictive syntax! It is there for a very specific purpose (the `matches`
+array passed to Triggers' interpolated strings) and will be expanded in the
+future, if needed.
+
+### Function calls
+
+A function call, as described above (e.g., `foo(bar: baz)`) is an expression.
+This implies that function calls may be composed.
+
+### Paths to variables
+
+Variables in the current context can be referred to by a path like `jobName`,
+but you can also specify multi-part paths that refer to variables in different
+contexts. See the section **Following Context References**, below.
+
 ## Interpolated Strings
 
 Another way that varibles are exposed in iTerm2's user interface is through
@@ -113,9 +173,10 @@ the resulting session title:
 
 <img src="/images/interpolated-string-demo.png" width="674" height="190" />
 
-You may place function calls in interpolated strings. The function's return
-value will be converted to a string and expanded just as an expression
-referencing a variable is replaced with the variable's value.
+As a function call is a valid expression, these may also go in interpolated
+strings. The function's return value will be converted to a string and expanded
+just as an expression referencing a variable is replaced with the variable's
+value.
 
 For example, suppose you have a function `add(x,y)` that adds two numbers.
 Let's set the session name to:
