@@ -1,3 +1,58 @@
+2019-03-02: [python] Fix a bug in the
+iterm2.NewSessionMonitor where it unsubscribed incorrectly.
+Add copycolor example
+
+2019-03-02: Fix failing tests. Fix a bunch of bugs they
+found: array literals were arrays of expressions but array
+values from variables are not; the solution is to break it
+into two different kinds of arrays. Make
+iTermExpressionEvaluator return nil rather than NSNull for
+its value. Furthermore, do the right thing if you call
+iTermExpressionEvaluator.value when the value is nil (rather
+than try to evaluate it again). Also, assert that you don't
+try to get the value during evaluation.
+
+2019-03-02: [python] Bump version
+
+2019-03-02: [python] Add oneshot example
+
+2019-03-02: Many improvements to expression parsing and
+evaluation.
+
+The code was originally written only with function calls in
+mind and then expressions and interpolated strings got added
+on and it turned into a bit of a mess. This commit cleanly
+separates parsing from evaluation. It also fixes a bunch of
+bugs with namepsaced functions and array literals. The
+suggesters work a lot better now.
+
+- [python] add Alert class - When parsing expressions all
+strings are swifty strings.  - Suggest built-in non-private
+functions.  - Support string literals in suggesters.  - Use
+iTermParsedExpression consistently instead of mixing
+literals and parsed expressions in the output of parsers.  -
+Remove the evaluateSwiftyStrings advanced pref because it
+only controlled whether the session's autoNameFormat was
+evaluated before being assigned. Double-evaluating a swifty
+string is madness. The advanced pref was added before
+session names were made into swifty strings. Happily it was
+off by default.  - Simplify the interface of
+iTermScriptFunctionCall to remove all the extraneous cruft
+that didn't belong.
+
+2019-03-02: Add an alert built in function
+
+2019-03-02: [python] Change iterm2.async_invoke_function to
+take a connection as its first argument
+
+2019-03-02: Make copy_api a little more verbose and less
+error prone
+
+2019-03-02: [api] Fix a bug where you couldn't explicitly
+call a script-registered function that takes defaults
+because it searched by the signature of the function with
+only the provided arguments.
+
 2019-03-01: Do not ask to download the python runtime when
 autolaunching a script when the API is off.
 
