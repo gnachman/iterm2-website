@@ -131,6 +131,20 @@ a minimum, install the <cite>iterm2</cite> module.</p>
 <p class="last">iTerm2 creates the <cite>ApplicationSupport</cite> symlink to <cite>Application
 Support</cite> because shell scripts may not have spaces in their paths.</p>
 </div>
+<p>If you’d like your script to launch iTerm2, you’ll need to use pybobjc. To install it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install pyobjc
+</pre></div>
+</div>
+<p>Then put this in your script:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">AppKit</span>
+<span class="n">bundle</span> <span class="o">=</span> <span class="s2">&quot;com.googlecode.iterm2&quot;</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">AppKit</span><span class="o">.</span><span class="n">NSRunningApplication</span><span class="o">.</span><span class="n">runningApplicationsWithBundleIdentifier_</span><span class="p">(</span><span class="n">bundle</span><span class="p">):</span>
+    <span class="n">AppKit</span><span class="o">.</span><span class="n">NSWorkspace</span><span class="o">.</span><span class="n">sharedWorkspace</span><span class="p">()</span><span class="o">.</span><span class="n">launchApplication_</span><span class="p">(</span><span class="s2">&quot;iTerm&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <cite>iterm2.run_forever</cite> or <cite>iterm2.run_until_complete</cite> call will block until
+it is able to make a connection, so you don’t need to add any logic that waits
+for the launch to complete. Just try to connect right away.</p>
 </div>
 <div class="section" id="auto-run-scripts">
 <h2>Auto-Run Scripts<a class="headerlink" href="#auto-run-scripts" title="Permalink to this headline">¶</a></h2>

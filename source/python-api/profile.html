@@ -499,7 +499,7 @@ Otherwise, it is a shared profile.</p>
 
 <dl class="staticmethod">
 <dt id="iterm2.Profile.async_get">
-<em class="property">static </em><code class="descname">async_get</code><span class="sig-paren">(</span><em>connection</em>, <em>guids=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_get" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">async_get</code><span class="sig-paren">(</span><em>connection</em>, <em>guids=None</em><span class="sig-paren">)</span> &#x2192; List[iterm2.profile.Profile]<a class="headerlink" href="#iterm2.Profile.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches all profiles with the specified GUIDs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3340,6 +3340,16 @@ sequence.</p>
 <dt id="iterm2.LocalWriteOnlyProfile">
 <em class="property">class </em><code class="descname">LocalWriteOnlyProfile</code><a class="headerlink" href="#iterm2.LocalWriteOnlyProfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>A profile that can be modified but not read and does not send changes on each write.</p>
+<p>You can safely create this with <cite>LocalWriteOnlyProfile()</cite>. Use
+<a class="reference internal" href="session.html#iterm2.Session.async_set_profile_properties" title="iterm2.Session.async_set_profile_properties"><code class="xref py py-meth docutils literal notranslate"><span class="pre">async_set_profile_properties()</span></code></a> to update a session
+without modifying the underlying profile.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li>Example “<a class="reference internal" href="examples/copycolor.html#copycolor-example"><span class="std std-ref">Preserve Tab Color</span></a>”</li>
+<li>Example “<span class="xref std std-ref">settabcolor_example</span>”</li>
+</ul>
+</div>
 <dl class="method">
 <dt id="iterm2.LocalWriteOnlyProfile.set_advanced_working_directory_pane_directory">
 <code class="descname">set_advanced_working_directory_pane_directory</code><span class="sig-paren">(</span><em>value: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.LocalWriteOnlyProfile.set_advanced_working_directory_pane_directory" title="Permalink to this definition">¶</a></dt>

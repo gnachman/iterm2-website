@@ -17,7 +17,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Arrangement" href="arrangement.html" />
-    <link rel="prev" title="Python API" href="index.html" />
+    <link rel="prev" title="Alert" href="alert.html" />
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -109,7 +109,7 @@
 
 <dl class="function">
 <dt id="iterm2.async_invoke_function">
-<code class="descname">async_invoke_function</code><span class="sig-paren">(</span><em>self</em>, <em>invocation: str</em>, <em>timeout: float = -1</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_invoke_function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_invoke_function</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>invocation: str</em>, <em>timeout: float = -1</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_invoke_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Invoke an RPC. Could be a registered function by this or another script of a built-in function.</p>
 <p>This invokes the RPC in the global application context. Note that most user-defined RPCs expect to be invoked in the context of a session. Default variables will be pulled from that scope. If you call a function from the wrong context it may fail because its defaults will not be set properly.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -179,8 +179,8 @@ interacts with another app after the call.</li>
 <dl class="method">
 <dt id="iterm2.App.async_get_variable">
 <code class="descname">async_get_variable</code><span class="sig-paren">(</span><em>name: str</em><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#iterm2.App.async_get_variable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches an application variable.</p>
-<p>See Badges documentation for more information on variables.</p>
+<dd><p>Fetches the value of a variable from the global context.</p>
+<p>See <a class="reference external" href="https://iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a> for details on variables.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
