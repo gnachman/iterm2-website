@@ -88,6 +88,15 @@ interpolated strings below.
 To learn how to write your own functions, follow the
 <a href="https://iterm2.com/python-api/tutorial/index.html">Python Scripting Tutorial</a>.
 
+### Built-in Functions
+
+iTerm2 provides a few built-in functions. There are not many because this is a
+relatively new feature and is still under development.
+
+  * `iterm2.alert(title: str, subtitle: str, buttons: [str, ...])` - Shows a modal alert. If the buttons array is empty, OK will be shown.
+  * `iterm2.count(array: [Any])` - Returns number of items in the array.
+  * `iterm2.move_tab_to_window(tab_id: str)` - Moves the tab into its own window.
+
 ## Expressions
 
 The preceding discussion of function calls showed how you can pass strings or
