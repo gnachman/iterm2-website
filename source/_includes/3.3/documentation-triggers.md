@@ -32,6 +32,14 @@ The following actions are available:
   * **Show Alert**: Shows an alert box with user-defined text.
   * **Stop Processing Triggers**: When this action is invoked no triggers further down the list will be invoked for the current text.
 
+#### Tricks
+
+If you'd like to match more text than you highlight with the **Highlight Text** trigger, you can use look-behind and look-ahead assertions. Suppose you want to highlight the word "ipsum" only when it occurs in the phrase "lorem ipsum dolor". Then you would use this regex:
+
+<pre>
+(?<=lorem )ipsum(?= dolor)
+</pre>
+
 #### Parameter?
 Various actions (Run Command, Run Coprocess, Send Growl Alert, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. When the paramter is a text field with freeform entry, some special values are defined. The interpretation of the parameter depends on whether *Use interpolated strings for parameters* (at the bottom of the Triggers window) is enabled.
 
