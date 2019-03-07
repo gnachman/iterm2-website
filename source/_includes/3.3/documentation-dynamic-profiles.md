@@ -55,6 +55,10 @@ Here is a fully formed (but minimal) Dynamic Profiles plist:
 }
 </pre>
 
+### Editing
+
+The only way to change a dynamic profile is to modify its parent profile or to modify the property list file. If you change its properties through the preferences UI those changes will *not* be reflected in the property list.
+
 ### Attributes
 
 Every profile preference that iTerm2 supports may be an attribute of a Dynamic Profile. Since there are dozens of attributes, you usually won't specify them all. Any attribute not specified will inherit its value from the default profile, or a specified "parent" profile (see below).
