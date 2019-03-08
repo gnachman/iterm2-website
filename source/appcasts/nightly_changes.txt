@@ -1,3 +1,30 @@
+2019-03-07: Set text color of script console calls textview
+which for some reason uses black rather than textColor
+
+2019-03-07: [python] Update darknight and theme archives
+
+2019-03-07: [python, api] Fix bugs, add tests.
+
+Run mypy and fix problems it found.
+
+- Add and fix various tests in it2api and test_it2api.sh -
+Handle None in various places - Fix improper override of
+async_get in PartialProfile. Renamed that method to
+async_query. async_get will return a full profile. Updated
+it2api to use it.  - Update darknight and theme examples for
+new APIs.  - Add grid_size to Session - Cancel tasks when
+Connection.async_main returns to avoid warnings that happen
+sometimes. I was able to reproduce the warning by creating a
+window whose session immediately exited. The error was that
+a task was still pending.  - Move constants in
+FocusUpdateWindowChanged to an Enum.  - Remove some debug
+print statemsn in focus.py - Fix a typo in
+Profile.set_cursor_color that broke it - Fix screen streamer
+when requesting screen contents.  - Fix
+WindowedCoordRange.right - Fix fetching screen contents,
+which always returned nothing because PTYSession computed
+the range improperly.
+
 2019-03-06: Put the profile's command text field in single
 line mode. Let's see what breaks. Issue 7562
 
