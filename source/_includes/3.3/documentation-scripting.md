@@ -288,7 +288,7 @@ A string uniquely identifying the session.
 <p class="script-entry">variable "<i>name</i>"<br/>
 set variable named "<i>name</i>" to "<i>value</i>"</p>
 
-Gets and sets the value of a variable by name. Variables are described in <a href="/badges.html">Badges</a>. You may only set user-defined variables, whose names always begin with "user.".
+Gets and sets the value of a variable by name. Variables are described in <a href="documentation-scripting-fundamentals.html">Scripting Fundamentals</a>. You may only set user-defined variables, whose names always begin with `user.`.
 
 <p class="script-entry">write text "<i>text</i>"<br/>
 write text "<i>text</i>" newline NO</p>

@@ -75,7 +75,7 @@ The `it2dl` program downloads files. This is useful when you are ssh'ed to a rem
 
 #### it2getvar
 
-Fetches a session variable. For a list of session variables, see the <a href="documentation-badges.html">Badges</a> page.
+Fetches a session variable. For information about variables, see <a href="documentation-scripting-fundamentals.html">Scripting Fundamentals</a>.
 
 <pre>
 Example:

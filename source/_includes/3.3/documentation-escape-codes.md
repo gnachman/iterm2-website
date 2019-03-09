@@ -204,7 +204,7 @@ Where `base64` is the base64-encoded string to copy to the pasteboard.
 
 #### Report Variable
 
-Each iTerm2 session has internal variables (as described in <a href="badges.html">Badges</a>). This escape sequence reports a variable's value:
+Each iTerm2 session has internal variables (as described in <a href="documentation-scripting-fundamentals.html">Scripting Fundamentals</a>). This escape sequence reports a variable's value:
 
     ^[]1337;ReportVariable=base64^G
 
@@ -357,8 +357,9 @@ iTerm2 extends FinalTerm's suite of escape sequences.
 `^[]1337;SetUserVar=Ps1=Ps2^G`
 
 Sets the value of a user-defined variable. iTerm2 keeps a dictionary of
-key-value pairs which may be used within iTerm2 as string substitutions, such
-as in the <a href="/badges.html">Badge</a>.
+key-value pairs which may be used within iTerm2 as string substitutions.
+See <a href="documentation-scripting-fundamentals.html">Scripting
+Fundamentals</a> for more information on variables and how they can be used.
 
 Ps1 is the key.
 
