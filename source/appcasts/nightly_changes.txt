@@ -1,3 +1,48 @@
+2019-03-09: Add support for switching jobs to automatic
+profile switching.
+
+2019-03-09: Show a placeholder component in an empty status
+bar to avoid confusion seen in issue 7581
+
+2019-03-09: Refactor tabbar insets code to make it sensible
+
+2019-03-09: Don't draw an outline around the select tab in
+minimal theme.
+
+2019-03-09: Add a tabbar inset for compact windows. The
+previous commit was too aggressive.
+
+2019-03-09: Break prefs>keys up into nested tabs
+
+2019-03-09: Fix left margin of tabbar on 10.13
+
+2019-03-09: Fix some clipped views
+
+2019-03-09: Fix warnings and failing tests
+
+2019-03-09: Tweak bottom margin in prefs to be equal to the
+top margin.
+
+2019-03-09: Restore code that draws that top margin that was
+somehow lost
+
+2019-03-09: Add a UI in prefs to view and remove API access
+settings for individual apps.
+
+2019-03-09: Override the default frame saving mechanism used
+by NSWindow for preference panel because the window changes
+size and wants to preserve its top-left coordinate. The
+default mechanism preserves the bottom-left coordinate. This
+causes the window to eventually march to the bottom of the
+screen. Also, for some stupid reason panels insist on
+opening only on the main screen. I don't see a sane way of
+overriding that behavior and the new behavior is more or
+less consistent with what was done before.
+
+2019-03-09: Remove special case for REPL authentication. I
+can't find a way to make it secure enough to feel
+comfortable
+
 2019-03-08: [api] Improve authentication. Key auth on
 filesystem, inode, and hash of executable. Check that REPLs
 have the proper parentage and are registered as REPLs
