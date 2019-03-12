@@ -1,21 +1,34 @@
-iTerm2 3.2.7beta4
+iTerm2 version 3.2.8
 
-- Improve the UI when prompting for full disk
-  access to remind you of the steps after opening
-  system prefs.
+Bug fixes:
+- Fix a bug where opening a hotkey window while a
+  modal alert was open would hang the app.
+- Fix a buffer overrun.
+- Fix bug where restored sessions are unusable
+  after logging out and then back in.
+- Ignore three-letter language codes when
+  selecting the terminal language.
+- Fix a bug when switching to a minimized pane
+  with Open Quickly.
+- Ensure minimized sessions do not resize while
+  dragging a pane.
+- Fix a bug where annotations were not visible
+  with the GPU renderer enabled.
+- Fix a bug where two concurrent downloads of the
+  same file name would step on each other.
 
-- Fix a crash on first launch when Safari hasn't
-  been run yet.
-
-- When you drag a session over a tab with a
-  maximized pane, don't cause any panes to get
-  SIGWINCH.
-
-- Change how the secure keyboard input menu item
-  works: Selecting it now toggles whether iTerm2
-  *wants* secure keyboard entry to be on. Before,
-  it would consider whether other apps had it on,
-  which was just confusing. Now it shows a
-  checkmark when it is on because iTerm2 wants it
-  on, a hyphen when iTerm2 wants it off but it is
-  on anyway, and no mark when it is actually off.
+Other improvements:
+- Clear the bell icon when the session becomes
+  active, rather than waiting until a key is
+  pressed.
+- Add a warning not to use Pragmata Pro
+  non-antialiased.
+- Remember the toolbelt width and tool heights
+  more reliably.
+- Improve legibility of non-selected tab text
+  color when at least one tab has a tab color.
+- Do not prompt for full disk access on first
+  launch. Instead, show a just-in-time alert.
+- Disable window shadow for transparent windows
+  because sometimes the window contents' shadow
+  gets cached by the window server.
