@@ -16,8 +16,8 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Status Bar" href="statusbar.html" />
-    <link rel="prev" title="Selection" href="selection.html" />
+    <link rel="next" title="Tab" href="tab.html" />
+    <link rel="prev" title="Profile" href="profile.html" />
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -69,14 +69,56 @@
 
     <div class="document">
 <div class="row">
-    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-        <div class="main panel">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
 
-            <div class="doc-wrapper">
-                <a href="/documentation">&lt; iTerm2 Documentation</a>
-            </div>
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">Introduction</div>
 
-            <hr/>
+	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
+	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+
+	      <div class="toc_subhead">User Interface</div>
+
+	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
+	      <li><a href="documentation-preferences.html">Preferences</a></li>
+	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
+	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
+	      <li><a href="documentation-fonts.html">Fonts</a></li>
+	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
+
+	      <div class="toc_subhead">Features</div>
+
+	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
+	      <li><a href="documentation-badges.html">Badges</a></li>
+	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
+	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
+	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
+	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
+	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
+	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
+	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
+	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
+	      <li><a href="documentation-triggers.html">Triggers</a></li>
+	      <li><a href="documentation-utilities.html">Utilities</a></li>
+
+	      <div class="toc_subhead">Advanced</div>
+
+	      <li><a href="documentation-scripting.html">Scripting</a></li>
+	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
+	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
+	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -87,19 +129,61 @@
 <p>Provides classes for interacting with iTerm2 sessions.</p>
 <dl class="class">
 <dt id="iterm2.Session">
-<em class="property">class </em><code class="descname">Session</code><span class="sig-paren">(</span><em>connection</em>, <em>link</em>, <em>summary=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">Session</code><span class="sig-paren">(</span><em>connection</em>, <em>link</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents an iTerm2 session.</p>
+<dl class="class">
+<dt id="iterm2.Session.KeystrokeReader">
+<em class="property">class </em><code class="descname">KeystrokeReader</code><span class="sig-paren">(</span><em>connection</em>, <em>session_id</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.KeystrokeReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>An asyncio context manager for reading keystrokes.</p>
+<p>Don’t create this yourself. Use Session.get_keystroke_reader() instead. See
+its docstring for more info.</p>
+<dl class="method">
+<dt id="iterm2.Session.KeystrokeReader.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.KeystrokeReader.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the next keystroke.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An iterm2.api_pb2.KeystrokeNotification.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.Session.ScreenStreamer">
+<em class="property">class </em><code class="descname">ScreenStreamer</code><span class="sig-paren">(</span><em>connection</em>, <em>session_id</em>, <em>want_contents=True</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.ScreenStreamer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An asyncio context manager for monitoring the screen contents.</p>
+<p>Don’t create this yourself. Use Session.get_screen_streamer() instead. See
+its docstring for more info.</p>
+<dl class="method">
+<dt id="iterm2.Session.ScreenStreamer.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.ScreenStreamer.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the screen contents, waiting until they change if needed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An iterm2.api_pb2.GetBufferResponse.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="staticmethod">
 <dt id="iterm2.Session.active_proxy">
-<em class="property">static </em><code class="descname">active_proxy</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em><span class="sig-paren">)</span> &#x2192; iterm2.session.Session<a class="headerlink" href="#iterm2.Session.active_proxy" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">active_proxy</code><span class="sig-paren">(</span><em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.active_proxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use this to register notifications against the currently active session.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A proxy for the currently active session.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A proxy for the currently active session.</td>
 </tr>
 </tbody>
 </table>
@@ -107,16 +191,14 @@
 
 <dl class="staticmethod">
 <dt id="iterm2.Session.all_proxy">
-<em class="property">static </em><code class="descname">all_proxy</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.all_proxy" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">all_proxy</code><span class="sig-paren">(</span><em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.all_proxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use this to register notifications against all sessions, including those
 not yet created.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A proxy for all sessions.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A proxy for all sessions.</td>
 </tr>
 </tbody>
 </table>
@@ -124,144 +206,83 @@ not yet created.</p>
 
 <dl class="method">
 <dt id="iterm2.Session.async_activate">
-<code class="descname">async_activate</code><span class="sig-paren">(</span><em>select_tab: bool = True</em>, <em>order_window_front: bool = True</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_activate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_activate</code><span class="sig-paren">(</span><em>select_tab=True</em>, <em>order_window_front=True</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_activate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes the session the active session in its tab.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>select_tab</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the tab this session is in should be selected.</li>
-<li><strong>order_window_front</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the window this session is in should be brought to the front and given keyboard focus.</li>
+<li><strong>select_tab</strong> – Whether the tab this session is in should be selected.</li>
+<li><strong>order_window_front</strong> – Whether the window this session is in should be
+brought to the front and given keyboard focus.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/broadcast.html#broadcast-example"><span class="std std-ref">Asymmetric Broadcast Input</span></a>”</p>
-</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="iterm2.Session.async_close">
-<code class="descname">async_close</code><span class="sig-paren">(</span><em>force: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Closes the session.</p>
+<dt id="iterm2.Session.async_get_buffer_lines">
+<code class="descname">async_get_buffer_lines</code><span class="sig-paren">(</span><em>trailing_lines</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_get_buffer_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches the last lines of the session, reaching into history if needed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the user will not be prompted for a confirmation.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>trailing_lines</strong> – The number of lines to fetch.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The buffer contents, an iterm2.api_pb2.GetBufferResponse</td>
 </tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Session.async_get_line_info">
-<code class="descname">async_get_line_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.session.SessionLineInfo<a class="headerlink" href="#iterm2.Session.async_get_line_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches the number of lines that are visible, in history, and that have been removed after history became full.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Information about the session’s wrapped lines of text.</td>
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/zoom_on_screen.html#zoom-on-screen-example"><span class="std std-ref">Zoom on Screen</span></a>”</p>
-</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="iterm2.Session.async_get_profile">
-<code class="descname">async_get_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.profile.Profile<a class="headerlink" href="#iterm2.Session.async_get_profile" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_get_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_get_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches the profile of this session</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The profile for this session, including any session-local changes not in the underlying profile.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="profile.html#iterm2.Profile" title="iterm2.Profile"><code class="xref py py-class docutils literal notranslate"><span class="pre">Profile</span></code></a>.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<ul class="last simple">
-<li>Example “<a class="reference internal" href="examples/blending.html#blending-example"><span class="std std-ref">Modify Background Image Blending</span></a>”</li>
-<li>Example “<a class="reference internal" href="examples/colorhost.html#colorhost-example"><span class="std std-ref">Per-Host Colors</span></a>”</li>
-<li>Example “<a class="reference internal" href="examples/current_preset.html#current-preset-example"><span class="std std-ref">Get Selected Color Preset</span></a>”</li>
-<li>Example “<a class="reference internal" href="examples/random_color.html#random-color-example"><span class="std std-ref">Random Color Preset</span></a>”</li>
-</ul>
-</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Session.async_get_prompt">
+<code class="descname">async_get_prompt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_get_prompt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches info about the last prompt in this session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">iterm2.api_pb2.GetPromptResponse</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="iterm2.Session.async_get_screen_contents">
-<code class="descname">async_get_screen_contents</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.screen.ScreenContents<a class="headerlink" href="#iterm2.Session.async_get_screen_contents" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the contents of the mutable area of the screen.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.screen.ScreenContents</span></code>, containing the screen contents.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Session.async_get_selection">
-<code class="descname">async_get_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.selection.Selection<a class="headerlink" href="#iterm2.Session.async_get_selection" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_get_screen_contents</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_get_screen_contents" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The selected regions of this session. The selection will be empty if there is no selected text.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The screen contents, an iterm2.api_pb2.GetBufferResponse</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/georges_title.html#georges-title-example"><span class="std std-ref">George’s Title Algorithm</span></a>”</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Session.async_get_selection_text">
-<code class="descname">async_get_selection_text</code><span class="sig-paren">(</span><em>selection: iterm2.selection.Selection</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.Session.async_get_selection_text" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches the text within a selection region.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">str</span></code></td>
-</tr>
-<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>selection</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code>) – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code> defining a region in the session.</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<ul class="last simple">
-<li><a class="reference internal" href="#iterm2.Session.async_get_selection" title="iterm2.Session.async_get_selection"><code class="xref py py-func docutils literal notranslate"><span class="pre">async_get_selection()</span></code></a>.</li>
-<li>Example “<a class="reference internal" href="examples/georges_title.html#georges-title-example"><span class="std std-ref">George’s Title Algorithm</span></a>”</li>
-</ul>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A string with the selection’s contents. Discontiguous selections are combined with newlines.</td>
 </tr>
 </tbody>
 </table>
@@ -269,67 +290,45 @@ not yet created.</p>
 
 <dl class="method">
 <dt id="iterm2.Session.async_get_variable">
-<code class="descname">async_get_variable</code><span class="sig-paren">(</span><em>name: str</em><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#iterm2.Session.async_get_variable" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_get_variable</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_get_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches a session variable.</p>
-<p>See Badges documentation for more information on variables.</p>
+<p>See Badges documentation for more information on user-defined variables.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The variable’s name.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – The variable’s name.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The variable’s value or empty string if it is undefined.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
-</tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/colorhost.html#colorhost-example"><span class="std std-ref">Per-Host Colors</span></a>”</p>
-</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="iterm2.Session.async_inject">
-<code class="descname">async_inject</code><span class="sig-paren">(</span><em>data: bytes</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_inject" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_inject</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_inject" title="Permalink to this definition">¶</a></dt>
 <dd><p>Injects data as though it were program output.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – A byte array to inject.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – A byte array to inject.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/cls.html#cls-example"><span class="std std-ref">Clear All Sessions</span></a>”</p>
-</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="iterm2.Session.async_invoke_function">
-<code class="descname">async_invoke_function</code><span class="sig-paren">(</span><em>invocation: str</em>, <em>timeout: float = -1</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_invoke_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invoke an RPC. Could be a registered function by this or another script of a built-in function.</p>
-<p>This invokes the RPC in the context of this session. Most user-defined RPCs are invoked in a session context (for example, invocations attached to triggers or key bindings). Default variables will be pulled from that scope. If you call a function from the wrong context it may fail because its defaults will not be set properly.</p>
+<dt id="iterm2.Session.async_read_keystroke">
+<code class="descname">async_read_keystroke</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_read_keystroke" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blocks until a keystroke is received. Returns a KeystrokeNotification.</p>
+<p>See also get_keystroke_reader().</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>invocation</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A function invocation string.</li>
-<li><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – Max number of secondsto wait. Negative values mean to use the system default timeout.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the invocation if successful.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">api_pb2.KeystrokeNotification</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -337,197 +336,117 @@ not yet created.</p>
 
 <dl class="method">
 <dt id="iterm2.Session.async_send_text">
-<code class="descname">async_send_text</code><span class="sig-paren">(</span><em>text: str</em>, <em>suppress_broadcast: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_send_text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_send_text</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_send_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send text as though the user had typed it.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>text</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The text to send.</li>
-<li><strong>suppress_broadcast</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, text goes only to the specified session even if broadcasting is on.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>text</strong> – The text to send.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<ul class="last simple">
-<li>Example “<a class="reference internal" href="examples/broadcast.html#broadcast-example"><span class="std std-ref">Asymmetric Broadcast Input</span></a>”</li>
-<li>Example “<a class="reference internal" href="examples/targeted_input.html#targeted-input-example"><span class="std std-ref">Targeted Input</span></a>”</li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Session.async_set_buried">
-<code class="descname">async_set_buried</code><span class="sig-paren">(</span><em>buried: bool</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_set_buried" title="Permalink to this definition">¶</a></dt>
-<dd><p>Buries or disinters a session.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>buried</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, bury the session. If <cite>False</cite>, disinter it.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Session.async_set_grid_size">
-<code class="descname">async_set_grid_size</code><span class="sig-paren">(</span><em>size: iterm2.util.Size</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_set_grid_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the visible size of a session.</p>
-<p>Note: This is meant for tabs that contain a single pane. If split panes are present, use <code class="xref py py-func docutils literal notranslate"><span class="pre">async_update_layout()</span></code> instead.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> (<a class="reference internal" href="util.html#iterm2.util.Size" title="iterm2.util.Size"><code class="xref py py-class docutils literal notranslate"><span class="pre">Size</span></code></a>) – The new size for the session, in cells.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
-</tr>
-</tbody>
-</table>
-<p>Note: This will fail on fullscreen windows.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Session.async_set_profile_properties">
-<code class="descname">async_set_profile_properties</code><span class="sig-paren">(</span><em>write_only_profile: iterm2.profile.LocalWriteOnlyProfile</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_set_profile_properties" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the value of properties in this session.</p>
-<p>When you use this function the underlying profile is not modified. The session will keep a copy of its profile with these modifications.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> – The name of the property</li>
-<li><strong>write_only_profile</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">LocalWriteOnlyProfile</span></code>) – A write-only profile that has the desired changes.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<ul class="last simple">
-<li>Example “<a class="reference internal" href="examples/copycolor.html#copycolor-example"><span class="std std-ref">Preserve Tab Color</span></a>”</li>
-<li>Example “<span class="xref std std-ref">settabcolor_example</span>”</li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Session.async_set_selection">
-<code class="descname">async_set_selection</code><span class="sig-paren">(</span><em>selection: iterm2.selection.Selection</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_set_selection" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>selection</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code>) – The regions of text to select.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/zoom_on_screen.html#zoom-on-screen-example"><span class="std std-ref">Zoom on Screen</span></a>”</p>
-</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="iterm2.Session.async_set_variable">
-<code class="descname">async_set_variable</code><span class="sig-paren">(</span><em>name: str</em>, <em>value: Any</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_set_variable" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_set_variable</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_set_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets a user-defined variable in the session.</p>
 <p>See Badges documentation for more information on user-defined variables.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The variable’s name.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> – The variable’s name.</li>
 <li><strong>value</strong> – The new value to assign.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
-</td>
-</tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/escindicator.html#escindicator-example"><span class="std std-ref">Escape Key Indicator</span></a>”</p>
-</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="iterm2.Session.async_split_pane">
-<code class="descname">async_split_pane</code><span class="sig-paren">(</span><em>vertical: bool = False</em>, <em>before: bool = False</em>, <em>profile: Union[None</em>, <em>str] = None</em>, <em>profile_customizations: Union[None</em>, <em>iterm2.profile.LocalWriteOnlyProfile] = None</em><span class="sig-paren">)</span> &#x2192; iterm2.session.Session<a class="headerlink" href="#iterm2.Session.async_split_pane" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_split_pane</code><span class="sig-paren">(</span><em>vertical=False</em>, <em>before=False</em>, <em>profile=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_split_pane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits the pane, creating a new session.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>vertical</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the divider is vertical, else horizontal.</li>
-<li><strong>before</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the new session will be to the left of or above the session being split. Otherwise, it will be to the right of or below it.</li>
-<li><strong>profile</strong> – The profile name to use. <cite>None</cite> for the default profile.</li>
-<li><strong>profile_customizations</strong> – Changes to the profile that should affect only this session, or <cite>None</cite> to make no changes.</li>
+<li><strong>vertical</strong> – Bool. If true, the divider is vertical, else horizontal.</li>
+<li><strong>before</strong> – Bool, whether the new session should be left/above the existing one.</li>
+<li><strong>profile</strong> – The profile name to use. None for the default profile.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A newly created Session.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New iterm.session.Session.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">SplitPaneException</span></code> if something goes wrong.</p>
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last">SplitPaneException if something goes wrong.</p>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/broadcast.html#broadcast-example"><span class="std std-ref">Asymmetric Broadcast Input</span></a>”</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Session.async_wait_for_screen_update">
+<code class="descname">async_wait_for_screen_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_wait_for_screen_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blocks until the screen contents change.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">iterm2.api_pb2.ScreenUpdateNotification</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Session.get_keystroke_reader">
+<code class="descname">get_keystroke_reader</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.get_keystroke_reader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides a nice interface for observing a sequence of keystrokes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a keystroke reader, a <a class="reference internal" href="#iterm2.Session.KeystrokeReader" title="iterm2.Session.KeystrokeReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session.KeystrokeReader</span></code></a>.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"><dl class="first last docutils">
+<dt>async with session.get_keystroke_reader() as reader:</dt>
+<dd><dl class="first last docutils">
+<dt>while condition():</dt>
+<dd><p class="first last">handle_keystrokes(reader.get())</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Each call to reader.get() returns an array of new keystrokes.</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="iterm2.Session.get_screen_streamer">
-<code class="descname">get_screen_streamer</code><span class="sig-paren">(</span><em>want_contents: bool = True</em><span class="sig-paren">)</span> &#x2192; iterm2.screen.ScreenStreamer<a class="headerlink" href="#iterm2.Session.get_screen_streamer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides a nice interface for receiving updates to the screen.</p>
+<code class="descname">get_screen_streamer</code><span class="sig-paren">(</span><em>want_contents=True</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.get_screen_streamer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides a nice interface for receiving updates to the screne.</p>
 <p>The screen is the mutable part of a session (its last lines, excluding
 scrollback history).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenStreamer</span></code></p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>want_contents</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the screen contents will be provided. See <code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenStreamer</span></code> for details.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A new screen streamer, suitable for monitoring the contents of this session.</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"><dl class="first last docutils">
-<dt>async with session.get_screen_streamer() as streamer:</dt>
-<dd><dl class="first last docutils">
-<dt>while condition():</dt>
-<dd><p class="first last">contents = await streamer.async_get()
-do_something(contents)</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.Session.ScreenStreamer" title="iterm2.Session.ScreenStreamer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session.ScreenStreamer</span></code></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -535,7 +454,7 @@ do_something(contents)</p>
 
 <dl class="method">
 <dt id="iterm2.Session.pretty_str">
-<code class="descname">pretty_str</code><span class="sig-paren">(</span><em>indent: str = ''</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.Session.pretty_str" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pretty_str</code><span class="sig-paren">(</span><em>indent=''</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.pretty_str" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -568,44 +487,18 @@ do_something(contents)</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="iterm2.session.SplitPaneException">
-<em class="property">class </em><code class="descname">SplitPaneException</code><a class="headerlink" href="#iterm2.session.SplitPaneException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Something went wrong when trying to split a pane.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="iterm2.session.SessionLineInfo">
-<em class="property">class </em><code class="descname">SessionLineInfo</code><span class="sig-paren">(</span><em>line_info</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.session.SessionLineInfo" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
-<dt id="iterm2.session.SessionLineInfo.first_visible_line_number">
-<code class="descname">first_visible_line_number</code><a class="headerlink" href="#iterm2.session.SessionLineInfo.first_visible_line_number" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the line number of the first line currently displayed onscreen. Changes when the user scrolls.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.session.SessionLineInfo.mutable_area_height">
-<code class="descname">mutable_area_height</code><a class="headerlink" href="#iterm2.session.SessionLineInfo.mutable_area_height" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the height of the mutable area of the session.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.session.SessionLineInfo.overflow">
-<code class="descname">overflow</code><a class="headerlink" href="#iterm2.session.SessionLineInfo.overflow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the number of lines lost to overflow. These lines were removed after scrollback history became full.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.session.SessionLineInfo.scrollback_buffer_height">
-<code class="descname">scrollback_buffer_height</code><a class="headerlink" href="#iterm2.session.SessionLineInfo.scrollback_buffer_height" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the height of the immutable area of the session.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="iterm2.session.Splitter">
-<em class="property">class </em><code class="descname">Splitter</code><span class="sig-paren">(</span><em>vertical: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.session.Splitter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">Splitter</code><span class="sig-paren">(</span><em>vertical=False</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.session.Splitter" title="Permalink to this definition">¶</a></dt>
 <dd><p>A container of split pane sessions where the dividers are all aligned the same way.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><strong>vertical</strong> – Whether the split pane dividers in this Splitter are vertical
+or horizontal.</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="iterm2.session.Splitter.children">
 <code class="descname">children</code><a class="headerlink" href="#iterm2.session.Splitter.children" title="Permalink to this definition">¶</a></dt>
@@ -613,7 +506,7 @@ do_something(contents)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">This splitter’s children. A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code> or <a class="reference internal" href="#iterm2.session.Splitter" title="iterm2.session.Splitter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Splitter</span></code></a> objects.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">This splitter’s children. A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code> objects.</td>
 </tr>
 </tbody>
 </table>
@@ -621,7 +514,7 @@ do_something(contents)</p>
 
 <dl class="method">
 <dt id="iterm2.session.Splitter.pretty_str">
-<code class="descname">pretty_str</code><span class="sig-paren">(</span><em>indent: str = ''</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.session.Splitter.pretty_str" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pretty_str</code><span class="sig-paren">(</span><em>indent=''</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.session.Splitter.pretty_str" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -639,16 +532,11 @@ do_something(contents)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">All sessions in this splitter and all nested splitters. A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code> objects.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">All sessions in this splitter and all nested splitters. A list of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code> objects.</td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="iterm2.session.Splitter.vertical">
-<code class="descname">vertical</code><a class="headerlink" href="#iterm2.session.Splitter.vertical" title="Permalink to this definition">¶</a></dt>
-<dd><p>Are the dividers in this splitter vertical?</p>
 </dd></dl>
 
 </dd></dl>
@@ -671,7 +559,7 @@ do_something(contents)</p>
   </div>
 </div>
 
-<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script src="https://iterm2.com/js/scripts.js"></script>                
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

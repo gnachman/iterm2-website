@@ -67,14 +67,56 @@
 
     <div class="document">
 <div class="row">
-    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-        <div class="main panel">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
 
-            <div class="doc-wrapper">
-                <a href="/documentation">&lt; iTerm2 Documentation</a>
-            </div>
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">Introduction</div>
 
-            <hr/>
+	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
+	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+
+	      <div class="toc_subhead">User Interface</div>
+
+	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
+	      <li><a href="documentation-preferences.html">Preferences</a></li>
+	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
+	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
+	      <li><a href="documentation-fonts.html">Fonts</a></li>
+	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
+
+	      <div class="toc_subhead">Features</div>
+
+	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
+	      <li><a href="documentation-badges.html">Badges</a></li>
+	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
+	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
+	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
+	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
+	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
+	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
+	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
+	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
+	      <li><a href="documentation-triggers.html">Triggers</a></li>
+	      <li><a href="documentation-utilities.html">Utilities</a></li>
+
+	      <div class="toc_subhead">Advanced</div>
+
+	      <li><a href="documentation-scripting.html">Scripting</a></li>
+	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
+	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
+	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -84,104 +126,115 @@
 <h1>Daemons<a class="headerlink" href="#daemons" title="Permalink to this headline">¶</a></h1>
 <p>A daemon in the Unix tradition is a computer program that runs as a background
 process, rather than being under the direct control of an interactive user.</p>
-<p>An iTerm2 daemon would ordinarily be an AutoLaunch script that provides some
-ongoing service. For example, it might enable you to create a window when a
-special string is printed. Such a script lies dormant until it is needed, so it
-must run at all times.</p>
-<p>AutoLaunch scripts are launched at startup.  Autolaunch scripts should be placed in
-<cite>~/Library/Application Support/iTerm2/Scripts/AutoLaunch</cite>. When you create a
-new one it does not get launched until iTerm2 is restarted, but you can always
-run it by selecting it from the <strong>Scripts</strong> menu.</p>
+<p>An iTerm2 daemon would ordinarily be an autolaunch script that provides some
+service, such as listening for notifications and reacting to them.</p>
 <p>When you create a new script and choose to make it a “Long-Running Daemon” (as
 opposed to a “Simple” script), iTerm2 will provide a sample program to help you
 get started:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">CustomControlSequenceMonitor</span><span class="p">(</span>
-            <span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;^create-window$&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">match</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
-            <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-<span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">on_custom_esc</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">notification</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Received a custom escape sequence&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">sender_identity</span> <span class="o">==</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">payload</span> <span class="o">==</span> <span class="s2">&quot;create-window&quot;</span><span class="p">:</span>
+                <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_create_window</span><span class="p">()</span>
+
+    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">async_subscribe_to_custom_escape_sequence_notification</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">on_custom_esc</span><span class="p">)</span>
+
+    <span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/e0bbd964a3770087006803f1da6e1960/tutorial_daemon.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
-<p>Skipping the boilerplate we’ve seen before, let’s look at the meat of the <cite>main</cite>
-function.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">CustomControlSequenceMonitor</span><span class="p">(</span>
-        <span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;^create-window$&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+<p>Let’s examine it line by line.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 </pre></div>
 </div>
-<p>This is how you use an asyncio context manager.</p>
-<p><cite>iterm2.CustomControlSequenceMonitor</cite> is a special kind of class that defines
-a context manager. That means it can perform an asyncio operation when it is
-created and when the context ends.</p>
-<p>This particular context manager registers a hook for custom control sequences.
-Terminal emulators work by processing out-of-band messages called control
-sequences to perform actions such as moving the cursor, clearing the screen, or
-changing the current text color. Custom control sequences allow you to define your
-own actions to perform when a control sequence you define is received.</p>
-<p>When you use a context manager this way the flow of control enters the body of
-the context manager (beginning with <cite>while True</cite>).</p>
-<p>The <cite>async_get</cite> call blocks until a control sequence matching the requested
-identity and payload are received. It returns a <cite>re.Match</cite> object, which is
-the result of searching the control sequence’s payload with the regular
-expression that the <cite>CustomControlSequenceMonitor</cite> was initialized with.</p>
+<p>This is standard boilerplate for a Python script. See <a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a> for
+details on how scripts are run.</p>
+<p>The next part of the template script are the imports:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+</pre></div>
+</div>
+<p>The <cite>iterm2</cite> module is based on the Python <a class="reference external" href="https://docs.python.org/dev/library/asyncio.html#module-asyncio" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> framework. For
+simple scripts, you don’t need to know about it at all, but as you do more
+complex things it will become more important. This script uses an
+<a class="reference external" href="https://docs.python.org/dev/library/asyncio-future.html#asyncio.Future" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncio.Future</span></code></a> to get it to run indefinitely, which you’ll see
+later.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is the same stuff you saw in the first example.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">def</span> <span class="nf">on_custom_esc</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">notification</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Received a custom escape sequence&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is a callback that gets invoked when iTerm2 receives a custom escape
+sequence.</p>
+<p>A custom escape sequence is a special escape sequence that performs a
+user-defined action. In contradistinction to a standard escape sequence, such
+as those that position the cursor or change the current color, a custom escape
+sequence is propritary to iTerm2. When one is received, iTerm2 sends a
+notification to any script that has subscribed to custom escape sequence
+notifications. The <cite>iterm2</cite> python module invokes the script’s registered
+callback, which in this case is <cite>on_custom_esc</cite>.</p>
+<p>The first argument is a <cite>connection</cite>, which you have seen before.</p>
+<p>The second argument is a <cite>notification</cite>, which contains details about the
+notification. In the case of a custom escape sequence, it has a
+<cite>sender_identity</cite> and a <cite>payload</cite>. The <cite>sender_identity</cite> is intended to be a
+secret shared between your daemon and the program that produces a custom escape
+sequence. This is a security measure to prevent untrusted programs from using a
+daemon to control iTerm2 in ways you don’t want.</p>
+<p>The <cite>payload</cite> is an arbitrary string provided in the custom escape sequence.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The <cite>notification</cite> is a Python representation of a Google protobuf message.
+You can find the protobuf description in the <a class="reference external" href="https://raw.githubusercontent.com/gnachman/iTerm2/master/proto/api.proto">api.proto</a>
+file.</p>
+<p class="last">The <a class="reference internal" href="../notifications.html"><span class="doc">Notifications</span></a> documentation describes which protobuf message to
+expect in a notification callback.</p>
+</div>
 <p>To produce a custom escape sequence, you could run this at the command line:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">printf</span> <span class="s2">&quot;\033]1337;Custom=id=%s:%s\a&quot;</span> <span class="s2">&quot;shared-secret&quot;</span> <span class="s2">&quot;create-window&quot;</span>
 </pre></div>
 </div>
 <p>The first argument, <cite>shared-secret</cite> is the identity and the second argument,
-<cite>create-window</cite> is the payload. Here’s the body of the context manager:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="n">match</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<cite>create-window</cite> is the payload.</p>
+<p>Let’s see what the callback does:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">sender_identity</span> <span class="o">==</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">payload</span> <span class="o">==</span> <span class="s2">&quot;create-window&quot;</span><span class="p">:</span>
+        <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_create_window</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>After receiving a matching control sequence, this example creates a new window.</p>
-<p>If you wanted the payload to take more information, such as the number of
-windows to create, you could use the regular expression matcher to capture
-that value in a capture group and retrieve it from the matcher in the callback.</p>
-<p>The control sequence remains registered even after <cite>main</cite> returns.</p>
-<p>Finally, we get to the last line of the script:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+<p>First, it checks that the sender identity is correct. Next, it selects the
+action to perform based on the payload. This daemon only knows how to create
+windows, but a more sophisticated daemon could handle many different payloads.</p>
+<p>That’s it for the callback. Let’s see how we register for custom escape
+sequence notifications:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">async_subscribe_to_custom_escape_sequence_notification</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">on_custom_esc</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This starts the script and keeps it running even after <cite>main</cite> returns so it can
-continue to process custom control sequences until iTerm2 terminates. This is
-what makes it a long-running daemon.</p>
-<p>If you want to run multiple context managers concurrently, such as to register
-two different custom control sequences, you need to create tasks that run in the
-background. Otherwise, the flow of control will get stuck in the first one since
-its body has a <cite>while True</cite> infinite loop. Here’s how you do that:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">():</span>
-    <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">CustomControlSequenceMonitor</span><span class="p">(</span>
-            <span class="n">connection</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">regex</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">DoSomething</span><span class="p">(</span><span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">())</span>
-
-<span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">wrapper</span><span class="p">())</span>
-<span class="c1"># Define more wrappers and create more tasks</span>
+<p>That’s all you have to do to request that <cite>on_custom_esc</cite> be called any time a
+custom escape sequence is received in any session.</p>
+<p>The last thing the script needs to do is to keep running indefinitely:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>As you browse the documentation you will find many different context managers
-that allow you to perform actions when something hapens. For example:</p>
-<ul class="simple">
-<li><a class="reference internal" href="../focus.html#iterm2.FocusMonitor" title="iterm2.FocusMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.FocusMonitor</span></code></a></li>
-<li><a class="reference internal" href="../keyboard.html#iterm2.KeystrokeFilter" title="iterm2.KeystrokeFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.KeystrokeFilter</span></code></a></li>
-<li><a class="reference internal" href="../keyboard.html#iterm2.KeystrokeMonitor" title="iterm2.KeystrokeMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.KeystrokeMonitor</span></code></a></li>
-<li><a class="reference internal" href="../lifecycle.html#iterm2.LayoutChangeMonitor" title="iterm2.LayoutChangeMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.LayoutChangeMonitor</span></code></a></li>
-<li><a class="reference internal" href="../lifecycle.html#iterm2.NewSessionMonitor" title="iterm2.NewSessionMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.NewSessionMonitor</span></code></a></li>
-<li><a class="reference internal" href="../prompt.html#iterm2.PromptMonitor" title="iterm2.PromptMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.PromptMonitor</span></code></a></li>
-<li><a class="reference internal" href="../screen.html#iterm2.ScreenStreamer" title="iterm2.ScreenStreamer"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.ScreenStreamer</span></code></a></li>
-<li><a class="reference internal" href="../lifecycle.html#iterm2.SessionTerminationMonitor" title="iterm2.SessionTerminationMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.SessionTerminationMonitor</span></code></a></li>
-<li><a class="reference internal" href="../transaction.html#iterm2.Transaction" title="iterm2.Transaction"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Transaction</span></code></a></li>
-<li><a class="reference internal" href="../variables.html#iterm2.VariableMonitor" title="iterm2.VariableMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.VariableMonitor</span></code></a></li>
-</ul>
-<p>Continue to the next section, <a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a>.</p>
+<p>This tells the <cite>connection</cite> to handle incoming messages until the passed-in
+future has its result set. The future will never have its result set, so the
+script will run until iTerm2 terminates.</p>
 <hr class="docutils" />
 <div class="section" id="other-sections">
 <h2>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h2>
@@ -193,8 +246,6 @@ that allow you to perform actions when something hapens. For example:</p>
 <li><a class="reference internal" href="example.html"><span class="doc">Example Script</span></a></li>
 <li><a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a></li>
 <li>Daemons</li>
-<li><a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a></li>
-<li><a class="reference internal" href="hooks.html"><span class="doc">Hooks</span></a></li>
 </ul>
 </dd>
 </dl>
@@ -218,7 +269,7 @@ that allow you to perform actions when something hapens. For example:</p>
   </div>
 </div>
 
-<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script src="https://iterm2.com/js/scripts.js"></script>                
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';
