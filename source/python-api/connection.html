@@ -16,8 +16,8 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Notifications" href="notifications.html" />
-    <link rel="prev" title="App" href="app.html" />
+    <link rel="next" title="Focus" href="focus.html" />
+    <link rel="prev" title="Custom Control Sequences" href="customcontrol.html" />
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -69,56 +69,14 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">Introduction</div>
+            <div class="doc-wrapper">
+                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            </div>
 
-	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
-	      <li><a href="documentation-general-usage.html">General Usage</a></li>
-
-	      <div class="toc_subhead">User Interface</div>
-
-	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
-	      <li><a href="documentation-preferences.html">Preferences</a></li>
-	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
-	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
-	      <li><a href="documentation-fonts.html">Fonts</a></li>
-	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
-
-	      <div class="toc_subhead">Features</div>
-
-	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
-	      <li><a href="documentation-badges.html">Badges</a></li>
-	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
-	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
-	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
-	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
-	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
-	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
-	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
-	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
-	      <li><a href="documentation-triggers.html">Triggers</a></li>
-	      <li><a href="documentation-utilities.html">Utilities</a></li>
-
-	      <div class="toc_subhead">Advanced</div>
-
-	      <li><a href="documentation-scripting.html">Scripting</a></li>
-	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
-	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
-	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -127,6 +85,36 @@
   <div class="section" id="module-iterm2.connection">
 <span id="connection"></span><h1>Connection<a class="headerlink" href="#module-iterm2.connection" title="Permalink to this headline">¶</a></h1>
 <p>Manages the details of the websocket connection.</p>
+<dl class="function">
+<dt id="iterm2.run_until_complete">
+<code class="descname">run_until_complete</code><span class="sig-paren">(</span><em>coro: Callable[[iterm2.connection.Connection], Coroutine[Any, Any, None]]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.run_until_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method to run an async function taking an <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> as an argument.</p>
+<p>After <cite>coro</cite> returns this function will return.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coro</strong> – The coroutine to run. Must be an <cite>async def</cite> function. It should take one argument, a <a class="reference internal" href="#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>, and does not need to return a value.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="iterm2.run_forever">
+<code class="descname">run_forever</code><span class="sig-paren">(</span><em>coro: Callable[[iterm2.connection.Connection], Coroutine[Any, Any, None]]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.run_forever" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method to run an async function taking an <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> as an argument.</p>
+<p>This function never returns.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coro</strong> – The coroutine to run. Must be an <cite>async def</cite> function. It should take one argument, a <a class="reference internal" href="#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>, and does not need to return a value.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="class">
 <dt id="iterm2.connection.Connection">
 <em class="property">class </em><code class="descname">Connection</code><a class="headerlink" href="#iterm2.connection.Connection" title="Permalink to this definition">¶</a></dt>
@@ -135,58 +123,15 @@
 dispatching incoming messages.</p>
 <dl class="staticmethod">
 <dt id="iterm2.connection.Connection.async_create">
-<em class="property">static </em><code class="descname">async_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.connection.Connection.async_create" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">async_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.connection.Connection<a class="headerlink" href="#iterm2.connection.Connection.async_create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new connection.</p>
 <p>This is intended for use in an apython REPL. It constructs a new
 connection and returns it without creating an asyncio event loop.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.connection.Connection.async_dispatch_for_duration">
-<code class="descname">async_dispatch_for_duration</code><span class="sig-paren">(</span><em>duration</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.connection.Connection.async_dispatch_for_duration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle incoming messages for a fixed duration of time.</p>
-<p>This is typically used when you wish to receive notifications for a fixed period of time.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>duration</strong> – The minimum time to run while waiting for incoming messages.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.connection.Connection.async_dispatch_until_future">
-<code class="descname">async_dispatch_until_future</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.connection.Connection.async_dispatch_until_future" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle incoming messages until a future has a result.</p>
-<p>This is used when you wish to receive notifications indefinitely, or until
-some condition satisfied by reciving a notification is reached.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>future</strong> – An asyncio.Future that will get a result.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.connection.Connection.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>coro</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.connection.Connection.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience method to start a program.</p>
-<p>Connects to the API endpoint, begins an asyncio event loop, and runs the
-passed in coroutine. Exceptions will be caught and printed to stdout.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>coro</strong> – A coroutine (async function) to run after connecting.</li>
-<li><strong>args</strong> – Passed to coro after its first argument (this connection).</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A new connection to iTerm2.</td>
 </tr>
 </tbody>
 </table>
@@ -212,7 +157,7 @@ passed in coroutine. Exceptions will be caught and printed to stdout.</p>
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

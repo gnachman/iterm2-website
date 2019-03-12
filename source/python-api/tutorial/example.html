@@ -67,56 +67,14 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">Introduction</div>
+            <div class="doc-wrapper">
+                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            </div>
 
-	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
-	      <li><a href="documentation-general-usage.html">General Usage</a></li>
-
-	      <div class="toc_subhead">User Interface</div>
-
-	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
-	      <li><a href="documentation-preferences.html">Preferences</a></li>
-	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
-	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
-	      <li><a href="documentation-fonts.html">Fonts</a></li>
-	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
-
-	      <div class="toc_subhead">Features</div>
-
-	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
-	      <li><a href="documentation-badges.html">Badges</a></li>
-	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
-	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
-	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
-	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
-	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
-	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
-	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
-	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
-	      <li><a href="documentation-triggers.html">Triggers</a></li>
-	      <li><a href="documentation-utilities.html">Utilities</a></li>
-
-	      <div class="toc_subhead">Advanced</div>
-
-	      <li><a href="documentation-scripting.html">Scripting</a></li>
-	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
-	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
-	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -128,9 +86,8 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 
 <span class="kn">import</span> <span class="nn">iterm2</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
     <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -138,10 +95,10 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">print</span><span class="p">(</span><span class="s2">&quot;No current window&quot;</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><a class="reference download internal" download="" href="../_downloads/5e6c9b6ae24533091180e106ac03022c/tutorial_example.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 <p>There’s a lot going on here. Let’s take it part by part.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 </pre></div>
@@ -150,14 +107,12 @@
 details on how scripts are run.</p>
 <p>The next part of the template script are the imports:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 </pre></div>
 </div>
 <p><cite>iterm2</cite> is a Python module (available on PyPI) that provides a nice interface
 to communicate with iTerm2. The underlying implementation uses Google protobuf
 and websockets. For most purposes, that is completely abstracted away.</p>
-<p><cite>sys</cite> is imported so that the script can parse command-line arguments.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
 </pre></div>
 </div>
 <p>Your code goes inside <cite>main</cite>. The first argument is a <cite>connection</cite> that holds
@@ -165,10 +120,6 @@ the link to a running iTerm2 process. <cite>main</cite> gets called only after a
 connection is established.  If the connection terminates (e.g., if you quit
 iTerm2) then any attempt to use it will raise an exception and terminate your
 script.</p>
-<p>The second argument, <cite>argv</cite>, gives the command-line arguments passed to the
-script. When you launch a script from iTerm2, it does not receive any
-arguments. But you can also run this script manually and pass it command-line
-arguments.</p>
 <p>The <cite>async</cite> keyword may be unfamiliar if you haven’t used asyncio before. It
 signifies that this function can be interrupted, for example to perform a
 remote procedure call over a network. Because iTerm2 communicates with the
@@ -181,9 +132,9 @@ notifications from iTerm2. We’ll see more about that later.</p>
 </pre></div>
 </div>
 <p>The purpose of this line is to get a reference to the <a class="reference internal" href="../app.html#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.App</span></code></a>
-object, which is useful for most things you’ll want to do in a simple script.
-It is a singleton that provides access to iTerm2’s global state, such as its
-windows.</p>
+object, which is useful for many things you’ll want to do in a simple script.
+It is a singleton that provides access to iTerm2’s windows, and in turn their
+tabs and sessions.</p>
 <p>Note the use of <cite>await</cite>. Any function that’s defined as <cite>async</cite>, which most
 functions in the iTerm2 API are, must be called with <cite>await</cite>. It means it might
 not return immediately. While it waits, messages from iTerm2 or other I/O may
@@ -201,7 +152,7 @@ with <cite>async_</cite>.</p>
 window is the terminal window (and not, for example, the preferences window or
 some other non-terminal window) that receives keyboard input when iTerm2 is
 active.</p>
-<p>If there are no terminal windows then <code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.App.async_get_key_window()</span></code>
+<p>If there are no terminal windows then <a class="reference internal" href="../app.html#iterm2.App.current_terminal_window" title="iterm2.App.current_terminal_window"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.App.current_terminal_window()</span></code></a>
 returns <cite>None</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
     <span class="n">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
@@ -218,14 +169,11 @@ Console. Select <em>Scripts &gt; Script Console</em> in iTerm2 to view the outpu
 your scripts. If something’s not working right, you can usually find the
 problem in the Script Console. You can also use it to terminate a misbehaving
 script.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">iterm2</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The <cite>if</cite> statement is a bit of standard Python boilerplate; you can ignore it
-as its condition will always be <cite>True</cite>.</p>
-<p>The next line establishes a websocket connection to iTerm2 and then runs your
-<cite>main</cite> function, passing it <cite>sys.argv</cite> which holds the command-line arguments.</p>
+<p>This makes a connection to iTerm2 and invokes your <cite>main</cite> function in an
+asyncio event loop. When <cite>main</cite> returns the program terminates.</p>
 <p>Continue to the next section, <a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a>.</p>
 <hr class="docutils" />
 <div class="section" id="other-sections">
@@ -238,6 +186,8 @@ as its condition will always be <cite>True</cite>.</p>
 <li>Example Script</li>
 <li><a class="reference internal" href="running.html"><span class="doc">Running a Script</span></a></li>
 <li><a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a></li>
+<li><a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a></li>
+<li><a class="reference internal" href="hooks.html"><span class="doc">Hooks</span></a></li>
 </ul>
 </dd>
 </dl>
@@ -261,7 +211,7 @@ as its condition will always be <cite>True</cite>.</p>
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

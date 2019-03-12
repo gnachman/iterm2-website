@@ -16,8 +16,8 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Tool" href="tool.html" />
-    <link rel="prev" title="Session" href="session.html" />
+    <link rel="next" title="Tmux" href="tmux.html" />
+    <link rel="prev" title="Status Bar" href="statusbar.html" />
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -69,56 +69,14 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">Introduction</div>
+            <div class="doc-wrapper">
+                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            </div>
 
-	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
-	      <li><a href="documentation-general-usage.html">General Usage</a></li>
-
-	      <div class="toc_subhead">User Interface</div>
-
-	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
-	      <li><a href="documentation-preferences.html">Preferences</a></li>
-	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
-	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
-	      <li><a href="documentation-fonts.html">Fonts</a></li>
-	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
-
-	      <div class="toc_subhead">Features</div>
-
-	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
-	      <li><a href="documentation-badges.html">Badges</a></li>
-	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
-	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
-	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
-	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
-	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
-	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
-	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
-	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
-	      <li><a href="documentation-triggers.html">Triggers</a></li>
-	      <li><a href="documentation-utilities.html">Utilities</a></li>
-
-	      <div class="toc_subhead">Advanced</div>
-
-	      <li><a href="documentation-scripting.html">Scripting</a></li>
-	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
-	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
-	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -129,18 +87,127 @@
 <p>Provides a class that represents an iTerm2 tab.</p>
 <dl class="class">
 <dt id="iterm2.Tab">
-<em class="property">class </em><code class="descname">Tab</code><span class="sig-paren">(</span><em>connection</em>, <em>tab_id</em>, <em>root</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">Tab</code><span class="sig-paren">(</span><em>connection</em>, <em>tab_id</em>, <em>root</em>, <em>tmux_window_id=None</em>, <em>tmux_connection_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a tab.</p>
+<p>Don’t create this yourself. Instead, use <a class="reference internal" href="app.html#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a>.</p>
+<dl class="method">
+<dt id="iterm2.Tab.async_close">
+<code class="descname">async_close</code><span class="sig-paren">(</span><em>force: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Tab.async_close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the tab.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the user will not be prompted for a confirmation.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Example “<a class="reference internal" href="examples/close_to_the_right.html#close-to-the-right-example"><span class="std std-ref">Close Tabs to the Right</span></a>”</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Tab.async_get_variable">
+<code class="descname">async_get_variable</code><span class="sig-paren">(</span><em>name: str</em><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#iterm2.Tab.async_get_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches a tab variable.</p>
+<p>See Badges documentation for more information on variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The variable’s name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The variable’s value or <cite>None</cite> if it is undefined.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Example “<a class="reference internal" href="examples/sorttabs.html#sorttabs-example"><span class="std std-ref">Sort Tabs</span></a>”</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Tab.async_invoke_function">
+<code class="descname">async_invoke_function</code><span class="sig-paren">(</span><em>invocation: str</em>, <em>timeout: float = -1</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab.async_invoke_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoke an RPC. Could be a registered function by this or another script of a built-in function.</p>
+<p>This invokes the RPC in the context of this tab. Note that most user-defined RPCs expect to be invoked in the context of a session. Default variables will be pulled from that scope. If you call a function from the wrong context it may fail because its defaults will not be set properly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>invocation</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A function invocation string.</li>
+<li><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – Max number of secondsto wait. Negative values mean to use the system default timeout.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the invocation if successful.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="iterm2.Tab.async_select">
-<code class="descname">async_select</code><span class="sig-paren">(</span><em>order_window_front=True</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab.async_select" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_select</code><span class="sig-paren">(</span><em>order_window_front: bool = True</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Tab.async_select" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects this tab.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>order_window_front</strong> – Whether the window this session is in should be
-brought to the front and given keyboard focus.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>order_window_front</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the window this session is in should be brought to the front and given keyboard focus.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Example “<a class="reference internal" href="examples/function_key_tabs.html#function-key-tabs-example"><span class="std std-ref">Function Key Tabs</span></a>”</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Tab.async_set_variable">
+<code class="descname">async_set_variable</code><span class="sig-paren">(</span><em>name: str</em>, <em>value: Any</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Tab.async_set_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a user-defined variable in the tab.</p>
+<p>See Badges documentation for more information on user-defined variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The variable’s name.</li>
+<li><strong>value</strong> – The new value to assign.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Tab.async_update_layout">
+<code class="descname">async_update_layout</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Tab.async_update_layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjusts the layout of the sessions in this tab.</p>
+<p>Change the <cite>Session.preferred_size</cite> of any sessions you wish to adjust before calling this.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
 </tr>
 </tbody>
 </table>
@@ -153,7 +220,7 @@ brought to the front and given keyboard focus.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The active iterm2.Session in this tab or None if it could not be determined.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The active session in this tab or <cite>None</cite> if it could not be determined.</td>
 </tr>
 </tbody>
 </table>
@@ -161,7 +228,7 @@ brought to the front and given keyboard focus.</td>
 
 <dl class="method">
 <dt id="iterm2.Tab.pretty_str">
-<code class="descname">pretty_str</code><span class="sig-paren">(</span><em>indent=''</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab.pretty_str" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pretty_str</code><span class="sig-paren">(</span><em>indent: str = ''</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.Tab.pretty_str" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -175,7 +242,7 @@ brought to the front and given keyboard focus.</td>
 <dl class="attribute">
 <dt id="iterm2.Tab.root">
 <code class="descname">root</code><a class="headerlink" href="#iterm2.Tab.root" title="Permalink to this definition">¶</a></dt>
-<dd><p>A tab’s sessions are stored in a tree. This returns the root.</p>
+<dd><p>A tab’s sessions are stored in a tree. This returns the root of that tree.</p>
 <p>An interior node of the tree is a Splitter. That corresponds to a
 collection of adjacent sessions with split pane dividers that are all
 either vertical or horizontal.</p>
@@ -184,7 +251,7 @@ either vertical or horizontal.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An <code class="xref py py-class docutils literal notranslate"><span class="pre">Splitter</span></code> forming the root of this tab’s session tree.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The root of the session tree.</td>
 </tr>
 </tbody>
 </table>
@@ -198,7 +265,7 @@ either vertical or horizontal.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of <a class="reference internal" href="session.html#iterm2.Session" title="iterm2.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> objects belonging to this tab.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The sessions belonging to this tab, in no particular order.</td>
 </tr>
 </tbody>
 </table>
@@ -212,7 +279,21 @@ either vertical or horizontal.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The tab’s identifier.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The tab’s identifier, a string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.Tab.tmux_window_id">
+<code class="descname">tmux_window_id</code><a class="headerlink" href="#iterm2.Tab.tmux_window_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this tab’s tmux window id or None.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A tmux window id or <cite>None</cite> if this is not a tmux integration window.</td>
 </tr>
 </tbody>
 </table>
@@ -238,7 +319,7 @@ either vertical or horizontal.</p>
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';
