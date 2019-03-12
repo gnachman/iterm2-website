@@ -1,3 +1,17 @@
+2019-03-11: Add support for sixel images using libsixel.
+
+Regarding libsixel:
+
+Built at commit 2df64373e58c4f48fbb72032a66473e71fc2a6ce.
+Here's how I built it:
+
+setenv MACOSX_DEPLOYMENT_TARGET 10.12 make clean &&
+./configure --without-libcurl --without-jpeg --without-png
+--prefix=`pwd`/libsixel && make && make install
+
+Then delete everything except the include and the .a library
+and copy it over.
+
 2019-03-09: Add support for switching jobs to automatic
 profile switching.
 
@@ -696,3 +710,7 @@ if it works.
 
 2019-02-01: Assign key equivalents to buttons in alerts. Add
 an advanced pref to underline them. Issue 7505
+
+2019-01-31: Fix C-b and C-f in copy mode. Issue 7501
+
+2019-01-31: Fix various bugs with setting the badge font
