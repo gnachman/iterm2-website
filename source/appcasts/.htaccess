@@ -1,0 +1,16 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_URI}  ^/appcasts/testing.xml
+RewriteCond %{QUERY_STRING} ^shard=([0-9]*)$
+RewriteRule ^.*$ /appcasts/shard-%1/testing.xml [R=302,L]
+
+RewriteCond %{REQUEST_URI}  ^/appcasts/testing_changes.txt
+RewriteCond %{QUERY_STRING} ^shard=([0-9]*)$
+RewriteRule ^.*$ /appcasts/shard-%1/testing_changes.txt [R=302,L]
+
+RewriteCond %{REQUEST_URI}  ^/appcasts/testing_new.xml
+RewriteCond %{QUERY_STRING} ^shard=([0-9]*)$
+RewriteRule ^.*$ /appcasts/shard-%1/testing_new.xml [R=302,L]
+
+AddCharset UTF-8 .txt
+
