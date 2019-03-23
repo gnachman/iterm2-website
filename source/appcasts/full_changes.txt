@@ -1,60 +1,37 @@
-iTerm2 3.2.7
+iTerm2 3.2.8
 
 Bug fixes
 ---------
-- Fix a crash on launch if Safari has never been
-  run before. This happened because of a bug in
-  checking if full disk access was already granted.
-- Fix the alpha blending of timestamps with GPU
-  renderer.
-- Fix various crash bugs.
-- Fix a bug where the GPU renderer was not used
-  when a split pane was maximized.
-- Improve opening a password manager from a
-  trigger: it would fail if the trigger fired
-  twice quickly.
-- Improve various wrong colors in Mojave.
-- Fix a bug wher elink underlines could be
-  misaligned in the presence of double-width
-  characters.
-- Add support for detecting column and line number
-  in semantic history when formatted as:
-  filename.ext(column, line number)
-- Fix a bug where control+page up/page down
-  scrolls the wrong split pane.
-- Fix a bug where minimum contrast was not
-  respected after a box-drawing character.
-- Fix a bug where a hotkey window would forget it
-  was a hotkey window when you launched tmux -CC
-  from it.
+- Fixes a bug where sessions become unusable after
+  switching users and then switching back.
+- Ignore hotkey while an app-modal window is open
+  to prevent a hang.
+- Fix some crashes.
+- Improve how language is determined by ignoring
+  3-letter language codes.
+- Fix a bug where annotations were not visible
+  when using the GPU renderer.
+- Fix a bug where two concurrent downloads with
+  the same filename would both write to the same
+  file.
+- Disable window shadow when there's a transparent
+  pane to prevent "ghosts" of characters
+  persisting.
 
 Other improvements
 ------------------
-- Performance improvements for large history.
-- Remember the "use transparency" setting when
-  restoring a window.
-- Issue a vociferous warning when you try to use
-  non-antialiased PragmataPro, which doesn't work
-  well at all.
-- Show a second alert to remind you of the steps
-  to perform to grant full disk access.
-- When you drag a pane over a tab with a maximized
-  pane, unmaximize it temporarily but do not send
-  window-resize notifications to those
-  pseudoterminals.
-- Change how the secure keyboard entry menu item
-  works. It now indicates enabled (check) disabled
-  (no accessory view) or "another app is enablign
-  it" (a hyphen). Selecting it toggles whether
-  iTerm2 wants it set. Previously, selecting it had
-  no effect if another app was keeping it on.
-- Fix weird behavior when downgrading from 3.3 to
-  3.2.
-- Adds a CPU profiler to the iTerm2 menu to aid in
-  debugging performance issues.
-- Improve the appearance of underlines when not
-  using the GPU renderer.
-- Allow input of surrogate pairs with the hex
-  keyboard.
-- Improve editing of number of lines of scrollback
-  to tolerate invalid inputs more gracefully.
+- Don't ask for full disk access on startup.
+  Instead, request admin permissions when needed.
+- The bell icon is now cleared when a session
+  becomes active (used to require a keypress).
+- Make toolbelta width and tools' heights more
+  stable.
+- Improve tab colors in dark mode when there is a
+  colored tab.
+- If you select a hidden pane in a maximized tab
+  with open quickly switch to it without
+  unmaximizing.
+- Prevent sessions from resizing while dragging a
+  split pane over a maximized window.
+- Adds a public EdDSA key to begin the migration
+  to a more secure app update algorithm.
