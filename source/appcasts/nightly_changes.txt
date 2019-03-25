@@ -1,3 +1,75 @@
+2019-03-24: Fix a bug that caused texture thrashing when
+there were more than 4k glyphs. The limit was supposed to be
+(and now is) 64k. Issue 7610.
+
+2019-03-24: Don't start the flags-changed event tap when
+stopping the event tap when it's never been started. Issue
+7605
+
+2019-03-24: Point-align status bar components horizontally
+
+2019-03-24: Include icon width and margins into account for
+stable layout algorithm
+
+2019-03-24: Add an advanced pref to treat the area left of
+the minimal tabbar as part of the first tab. Issue 7614
+
+2019-03-24: Overhaul drawing the outline in the minimal tab
+bar and determining the background color for the tabbar and
+statusbar in minimal
+
+2019-03-24: Make tab overflow button visible in minimal
+theme with dark background by changing its appearance to
+dark when needed
+
+2019-03-24: unhide standard window buttons when becoming
+non-compact. Issue 7615
+
+2019-03-24: Treat trigger setting hostname or pwd as shell
+integration so that it will be sticky now that there's a pwd
+poller
+
+2019-03-24: Bump min version in .summary file to 10.12
+
+2019-03-24: Use an autorelease pool in iTermCommandRunner to
+avoid holding on to objects for a long time, just in case
+
+2019-03-24: Drain the task notifier's autorelease pool
+before calling select. Fixes a bug where when you close all
+sessions the last one doesn't get released because of a
+lingering reference since select won't return until there's
+something to do
+
+2019-03-24: Tweak vertical position of network status bar
+icon
+
+2019-03-24: Fix instacrash when adding fixed spacer to
+status bar because the resulting plist had a number in the
+dictionary key
+
+2019-03-23: Bump min version of ws
+
+2019-03-23: Soften the warning about Python API stability
+
+2019-03-23: Clear the selection before redrawing the screen
+after resizing the session. The call to screenNeedsRedraw
+causes PTYTextView.refresh to be called, which moves the
+selection if there are overflow lines. When the session's
+width has decreased, that causes an exception in
+-[iTermTextExtractor
+enumerateCharsInRange:charBlock:eolBlock:] because the range
+of the selection exceeds the width of the session. The fix
+is to clear the selection first since it gets re-added right
+after redrawing.
+
+2019-03-23: Bump min python version to 44
+
+2019-03-23: Restore git push
+
+2019-03-23: Fix up various python docs issues
+
+2019-03-23: 3.3.0beta1
+
 2019-03-22: Add status bar icon for actions
 
 2019-03-22: Make action status bar components have
