@@ -1,3 +1,24 @@
+2019-03-25: Change default title components to session name.
+Change migration path for users with profile name turned off
+to use session name so that OSC 0/1/2 still work for them.
+
+2019-03-25: Fix legacy renderer background image for all
+modes other than scale aspect fit
+
+2019-03-25: Draw background under bottom per-pane status
+bars since not all panes might have them.
+
+2019-03-25: Fix the main difference between legacy and GPU
+background image drawing when spanning panes. The legacy
+renderer would draw images under the titlebar and status
+bar, while the GPU renderer inset them so you could see the
+whole thing. This commit changes the legacy renderer to act
+like the GPU renderer, so no part of the image is hidden
+under the decorations. I have verified that they exactly
+match for all modes with and without per-pane backgrounds.
+
+2019-03-25: Change tap to click
+
 2019-03-24: Fix a bug that caused texture thrashing when
 there were more than 4k glyphs. The limit was supposed to be
 (and now is) 64k. Issue 7610.
