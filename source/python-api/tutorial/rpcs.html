@@ -108,7 +108,7 @@ sessions.</p>
 </div>
 <p>A lot of this should look familiar from the <a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a> example. Let’s focus
 on the parts we haven’t seen before.</p>
-<p>This call registers the RPC:</p>
+<p>This call defines the RPC:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@iterm2.RPC</span>
 <span class="n">async</span> <span class="k">def</span> <span class="nf">clear_all_sessions</span><span class="p">():</span>
 </pre></div>
@@ -116,8 +116,9 @@ on the parts we haven’t seen before.</p>
 <p>This function definition is modified by the <cite>&#64;iterm2.RPC</cite> decorator. It adds a
 <cite>register</cite> value to the function which is a coroutine that registers the
 function as an RPC. Here’s how you call it:</p>
-<blockquote>
-<div>await clear_all_sessions.async_register(connection)</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">await</span> <span class="n">clear_all_sessions</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>This exploits a quirk of Python that functions are capable of having values
 attached to them in this way.</p>
 <p>Registered RPCs like this one exist in a single global name space. An RPC is
@@ -144,6 +145,9 @@ the session ID in which an RPC was invoked. You could register it this way:</p>
 <p>The function invocation will not be made if the variable is undefined.
 If you’d prefer a value of <cite>None</cite> instead in such a case, use a question mark
 to indicate an optional value, like this: <cite>Reference(“id?”)</cite>.</p>
+<p>The “id” is a variable that exists in the session’s scope. To learn more about
+how variables work and which variables are defined, see
+<a class="reference external" href="https://www.iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a></p>
 <div class="section" id="invocation">
 <h2>Invocation<a class="headerlink" href="#invocation" title="Permalink to this headline">¶</a></h2>
 <p>To invoke an RPC, create a key binding for it. Go to <strong>Preferences &gt; Keys</strong> and
@@ -156,15 +160,16 @@ function call in the field beneath it. Like this:</p>
 </div>
 <div class="section" id="repl">
 <h2>REPL<a class="headerlink" href="#repl" title="Permalink to this headline">¶</a></h2>
-<p>To test RPCs in the REPL, you need to give the iterm2 library a chance to read
-the request from the connection to iTerm2. The simplest way is to tell it to
-watch for requests for a set period of time, like this:</p>
+<p>You can test RPCs defined in the REPL. First, define them as usual. When the
+RPC gets invoked, the REPL must allow the event loop to run so it can handle
+the request from iTerm2. The simplest way is to tell it to watch for requests
+for a set period of time, like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_for_duration</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The argument of <cite>1</cite> is how long to wait in seconds. Requests to execute
 registered functions wait in a queue until they can be handled. That means you
-can press a key in iTerm2 to call the RPC and then do
+can press a key in iTerm2 to invoke the RPC and then do
 <cite>async_dispatch_for_duration(0.1)</cite> and it will be handled immediately.</p>
 </div>
 <div class="section" id="arguments">
@@ -175,14 +180,15 @@ of <cite>None</cite>, so take care to handle that possibility.</p>
 because iTerm2’s scripting interface is meant to be language-agnostic (although
 at the time of writing there are only Python bindings).</p>
 <p>Here’s what a function invocation might look like:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">function_name</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="n">favorite_number</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span> <span class="n">nickname</span><span class="p">:</span> <span class="s2">&quot;Joe&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_function_name</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="n">favorite_number</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span> <span class="n">nickname</span><span class="p">:</span> <span class="s2">&quot;Joe&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The name of the function and the name of each argument is an <em>Identifier</em>.
 Identifiers begin with a letter and may contain letters, numbers, and
 underscore. Every character must be ASCII.</p>
 <p>Each argument must have a distinct name.</p>
-<p>The value passed to an argument can take one of four types:</p>
+<p>The value passed to an argument must be an expression. The most common types of
+expressions are:</p>
 <ol class="arabic simple">
 <li>A <em>variable reference</em>, like <cite>id</cite>.</li>
 </ol>
@@ -191,7 +197,7 @@ iTerm2 application itself. Some are defined by iTerm2, like <cite>id</cite>, whi
 takes a string value that uniquely identifies a session. Others, beginning with
 <cite>user.</cite> may be defined by the user.</p>
 <p>For a full list of the iTerm2-defined variables, see
-<a class="reference external" href="https://www.iterm2.com/documentation-badges.html">Badges</a>.</p>
+<a class="reference external" href="https://www.iterm2.com/documentation-variables.html">Variables</a>.</p>
 <p>To set a user-defined variable, you can use a control sequence or call
 <a class="reference internal" href="../session.html#iterm2.Session.async_set_variable" title="iterm2.Session.async_set_variable"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.Session.async_set_variable()</span></code></a>. Variables can take any type JSON can
 describe.</p>
@@ -209,11 +215,16 @@ can use scientific notation.</p>
 <ol class="arabic simple" start="3">
 <li>A string, like <cite>“Joe”</cite>.</li>
 </ol>
-<p>Strings are escaped like JSON, using backslash.</p>
+<p>Strings are escaped like JSON, using backslash. Strings may contain embedded
+expressions. For more information on this, see the <em>Interpolated Strings</em>
+section of
+<a class="reference external" href="https://www.iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a>.</p>
 <ol class="arabic simple" start="4">
 <li>The result of a function call.</li>
 </ol>
 <p>For more details, see <a class="reference internal" href="#composition">Composition</a>.</p>
+<p><a class="reference external" href="https://www.iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a>
+goes in to more detail on expressions.</p>
 </div>
 <div class="section" id="timeouts">
 <h2>Timeouts<a class="headerlink" href="#timeouts" title="Permalink to this headline">¶</a></h2>
@@ -223,7 +234,7 @@ The function continues to run until completion. You can pass an optional
 seconds.</p>
 </div>
 <div class="section" id="composition">
-<span id="id1"></span><h2>Composition<a class="headerlink" href="#composition" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>Composition<a class="headerlink" href="#composition" title="Permalink to this headline">¶</a></h2>
 <p>Function invocations may use composition. A registered function can return a
 value which the becomes an argument to a subsequent function call. Here’s a
 snippet of an example, which you can add to the <cite>main</cite> function of the previous

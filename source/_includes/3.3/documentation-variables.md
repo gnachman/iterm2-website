@@ -14,7 +14,7 @@ Jump to context:
 The following variables are defined in the context of a session:
 
 #### Session Name
-  * `autoNameFormat` - This is an interpolated string form which the `autoName` variable is computed. It can be modified by changing the "Session Name" field in **Edit Session…**, by a trigger that sets the session name, or by an OSC control sequence that sets the icon title. It is initialized to the profile name when a new session is created.
+  * `autoNameFormat` - This is an interpolated string from which the `autoName` variable is computed. It can be modified by changing the "Session Name" field in **Edit Session…**, by a trigger that sets the session name, or by an OSC control sequence that sets the icon title. It is initialized to the profile name when a new session is created.
   * `autoName` - The result of evaluating the `autoNameFormat` interpolated string. This attempts to match the user's intuition of the what the session's name is.
   * `name` - The session's name, which is what's shown in the tab bar (excluding tmux integration decoration).
   * `presentationName` - The session name exactly as it appears in the session title bar.

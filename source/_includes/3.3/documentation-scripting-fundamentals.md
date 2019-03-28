@@ -160,7 +160,7 @@ contexts. See the section **Following Context References**, below.
 ## Interpolated Strings
 
 Another way that varibles are exposed in iTerm2's user interface is through
-*inteprolated strings*. An interpolated string is a string of text that
+*interpolated strings*. An interpolated string is a string of text that
 contains embedded function calls or references to variables.
 
 iTerm2 borrows some of the Swift language's syntax for interpolated strings.

@@ -5,7 +5,7 @@ title: Donate - iTerm2 - macOS Terminal Replacement
 
 ## Donate
 
-Thanks for supporting free software! It's a nice way to say thanks, and it helps me buy coffee so I stay up late fixing bugs. Several forms of donation are accepted.
+Support free software! It's a nice way to say thanks, and it helps me buy coffee so I stay up late fixing bugs. Several forms of donation are accepted.
 
 
 <form class="paypal-donate" action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -25,7 +25,14 @@ Patreon is a convenient way to make monthly donations.
 
 <hr/>
 
-<a class="coinbase-button" data-code="9e256a9d5f9bb9221230aab3e690fc1a" data-button-style="custom_large" href="https://www.coinbase.com/checkouts/9e256a9d5f9bb9221230aab3e690fc1a">Donate Bitcoins</a><script src="https://www.coinbase.com/assets/button.js" type="text/javascript"></script>
+<div>
+  <a class="donate-with-crypto"
+     href="https://commerce.coinbase.com/checkout/857e5ec7-6ec4-499a-8742-64e2a22b50d6">
+    <span>Donate with Crypto</span>
+  </a>
+  <script src="https://commerce.coinbase.com/v1/checkout.js?version=201807">
+  </script>
+</div>
 
 Please send bitcoin to
 <font style="font-family: monospace">1D3tV8pvPV27JNKgB5fCA35CSpAXNvhTAH</font>

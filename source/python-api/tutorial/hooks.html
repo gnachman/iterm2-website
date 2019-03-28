@@ -119,7 +119,7 @@ to be the upper-case version of the session name.</p>
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/a1d76776bda14a77f7a18a410fb0147f/tutorial_title.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/5e10482c0ec1af7e24678b5babfec7d9/tutorial_title.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 <p>The <cite>display_name</cite> is shown to the user in Profile Preferences.</p>
 <p>The <cite>unique_identifier</cite> is a string that identifies this title provider. The
 algorithm and function signature and function name may change over time, but as
@@ -133,7 +133,7 @@ session. Thereafter, it is run when any variable with an <cite>iterm2.Reference<
 a default value of an argument of your RPC changes.</p>
 <p>If some variable might not be defined, you should put a <cite>?</cite> after its name to signify that a
 value of <cite>None</cite> is allowed. Variables are detailed in
-<a class="reference external" href="https://www.iterm2.com/documentation-badges.html">Badges</a>.</p>
+<a class="reference external" href="https://www.iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a>.</p>
 </div>
 <div class="section" id="force-reevaluation">
 <h2>Force Reevaluation<a class="headerlink" href="#force-reevaluation" title="Permalink to this headline">¶</a></h2>
@@ -177,14 +177,60 @@ value of <cite>None</cite> is allowed. Variables are detailed in
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/49f5f9a897e0ed940183463b96609213/tutorial_age.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/028f607caab574100ca2db49aa4a82a6/tutorial_age.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>As this script is a long-running daemon, you’ll want to put it in
+<p>Since a title provider is a long-running daemon, you’ll want to put it in
 <cite>~/Library/Application Support/iTerm2/Scripts/AutoLaunch</cite> folder.</p>
 <p>Next, you need to configure your session’s profile to use the hook. Once it’s been registered properly it will appear as an option in <strong>Preferences &gt; Profiles &gt; General &gt; Title</strong>. Select it there:</p>
 <img alt="../_images/choose_custom_session_title.png" src="../_images/choose_custom_session_title.png" />
+</div>
+<div class="section" id="custom-status-bar-component">
+<h2>Custom Status Bar Component<a class="headerlink" href="#custom-status-bar-component" title="Permalink to this headline">¶</a></h2>
+<p>A custom status bar component is another kind of hook. Like a title provider, it
+lives in a long-running daemon. It registers an RPC that provides the text to
+display in the status bar component. It may also register a second RPC to handle
+clicks in the status bar component.</p>
+<p>Here’s a simple status bar component that shows whether mouse reporting is on:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">iterm2</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
+        <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;Mouse Mode&quot;</span><span class="p">,</span>
+        <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Indicates if mouse reporting is enabled&quot;</span><span class="p">,</span>
+        <span class="n">knobs</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;[mouse on]&quot;</span><span class="p">,</span>
+        <span class="n">update_cadence</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.mouse-mode&quot;</span><span class="p">)</span>
+
+    <span class="c1"># This function gets called when the mouseReportingMode variable</span>
+    <span class="c1"># changes.</span>
+    <span class="nd">@iterm2.StatusBarRPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span>
+            <span class="n">knobs</span><span class="p">,</span>
+            <span class="n">reporting</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;mouseReportingMode&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">reporting</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot; &quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;🐭&quot;</span>
+
+    <span class="c1"># Register the component.</span>
+    <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">)</span>
+
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When this script is running, a new status bar component becomes available in
+<em>Prefs &gt; Profiles &gt; Session &gt; Configure Status Bar</em>.</p>
+<p>Like a title provider, the registered function will be called when its
+references change. The string it returns will go in the status bar.</p>
+<p>Status bar components can also be invoked periodically, by passing a number of
+seconds to the <cite>update_cadence</cite> argument of <cite>StatusBarComponent</cite>’s initializer.</p>
+<p>Status bar components can also define configuration settings, called knobs.</p>
+<p>For more information, see <a class="reference internal" href="../statusbar.html#iterm2.StatusBarComponent" title="iterm2.StatusBarComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.StatusBarComponent</span></code></a>. There are also a
+number of status bar components in the <a class="reference internal" href="../examples/index.html"><span class="doc">Example Scripts</span></a>.</p>
 </div>
 <div class="section" id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>

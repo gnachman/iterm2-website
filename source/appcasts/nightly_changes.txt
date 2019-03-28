@@ -1,3 +1,137 @@
+2019-03-27: Fix the background color of the end inset of the
+minimal tab bar when tabs don't stretch, or when a tab in
+the overflow button is selected. Also, fix the calculation
+for the max number of tabs in a left-side tabbar which had a
+wrong hardcoded constant
+
+2019-03-26: Draw outline above first tab when not treating
+start inset as part of first tab in minimal tabbar
+
+2019-03-26: Use non-selected color for minimal tabbar end
+inset unless an overflow tab is selected. Issue 7572
+
+2019-03-26: Hide the tabbar backing in nonnative full
+screen, minimal, top tabs. Issue 7624
+
+2019-03-26: Retina round status bar setup views. Issue 7625
+
+2019-03-26: Grid align status bar components
+
+2019-03-26: Add debug logging for promptOnCloseReason
+
+2019-03-26: Use performWindowDragWithEvent: instead of using
+my own tracking loop so that drags that go to the edge of
+the display will move to the next space. Issue 7628
+
+2019-03-26: Put a visual effect view behind the status bar
+on Mojave when not in Minimal mode, because otherwise it is
+transparent. Issue 7631
+
+2019-03-26: Fix custom window title profile setting. It
+lacked a delegate. Issue 7621, in a comment
+
+2019-03-26: Add -[PTYSession setName:], which is needed by
+applescript 'tell session to set name to x'. A comment in
+issue 7621
+
+2019-03-26: Bump project to xcode 10.2
+
+2019-03-26: Reword download/upload finished/failed notif so
+the status is visible when the filename is long
+
+2019-03-25: Change default title components to session name.
+Change migration path for users with profile name turned off
+to use session name so that OSC 0/1/2 still work for them.
+
+2019-03-25: Fix legacy renderer background image for all
+modes other than scale aspect fit
+
+2019-03-25: Draw background under bottom per-pane status
+bars since not all panes might have them.
+
+2019-03-25: Fix the main difference between legacy and GPU
+background image drawing when spanning panes. The legacy
+renderer would draw images under the titlebar and status
+bar, while the GPU renderer inset them so you could see the
+whole thing. This commit changes the legacy renderer to act
+like the GPU renderer, so no part of the image is hidden
+under the decorations. I have verified that they exactly
+match for all modes with and without per-pane backgrounds.
+
+2019-03-25: Change tap to click
+
+2019-03-24: Fix a bug that caused texture thrashing when
+there were more than 4k glyphs. The limit was supposed to be
+(and now is) 64k. Issue 7610.
+
+2019-03-24: Don't start the flags-changed event tap when
+stopping the event tap when it's never been started. Issue
+7605
+
+2019-03-24: Point-align status bar components horizontally
+
+2019-03-24: Include icon width and margins into account for
+stable layout algorithm
+
+2019-03-24: Add an advanced pref to treat the area left of
+the minimal tabbar as part of the first tab. Issue 7614
+
+2019-03-24: Overhaul drawing the outline in the minimal tab
+bar and determining the background color for the tabbar and
+statusbar in minimal
+
+2019-03-24: Make tab overflow button visible in minimal
+theme with dark background by changing its appearance to
+dark when needed
+
+2019-03-24: unhide standard window buttons when becoming
+non-compact. Issue 7615
+
+2019-03-24: Treat trigger setting hostname or pwd as shell
+integration so that it will be sticky now that there's a pwd
+poller
+
+2019-03-24: Bump min version in .summary file to 10.12
+
+2019-03-24: Use an autorelease pool in iTermCommandRunner to
+avoid holding on to objects for a long time, just in case
+
+2019-03-24: Drain the task notifier's autorelease pool
+before calling select. Fixes a bug where when you close all
+sessions the last one doesn't get released because of a
+lingering reference since select won't return until there's
+something to do
+
+2019-03-24: Tweak vertical position of network status bar
+icon
+
+2019-03-24: Fix instacrash when adding fixed spacer to
+status bar because the resulting plist had a number in the
+dictionary key
+
+2019-03-23: Bump min version of ws
+
+2019-03-23: Soften the warning about Python API stability
+
+2019-03-23: Clear the selection before redrawing the screen
+after resizing the session. The call to screenNeedsRedraw
+causes PTYTextView.refresh to be called, which moves the
+selection if there are overflow lines. When the session's
+width has decreased, that causes an exception in
+-[iTermTextExtractor
+enumerateCharsInRange:charBlock:eolBlock:] because the range
+of the selection exceeds the width of the session. The fix
+is to clear the selection first since it gets re-added right
+after redrawing.
+
+2019-03-23: Bump min python version to 44
+
+2019-03-23: Restore git push
+
+2019-03-23: Fix up various python docs issues
+
+2019-03-23: 3.3.0beta1
+
 2019-03-22: Add status bar icon for actions
 
 2019-03-22: Make action status bar components have
@@ -10,7 +144,7 @@ interpolated string titles
 2019-03-21: Add actions tool
 
 2019-03-21: Detect when git is broken because xcode doesn't
-know where it is because macOS is  for developers
+know where it is because macOS is 💩 for developers
 
 2019-03-21: Disable force quit button in jobs status bar
 component popover initially
@@ -822,7 +956,3 @@ if it works.
 
 2019-02-01: Assign key equivalents to buttons in alerts. Add
 an advanced pref to underline them. Issue 7505
-
-2019-01-31: Fix C-b and C-f in copy mode. Issue 7501
-
-2019-01-31: Fix various bugs with setting the badge font
