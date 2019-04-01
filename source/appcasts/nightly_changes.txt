@@ -1,3 +1,51 @@
+2019-03-30: Fix how changing the paragraph style of tabbar
+attribute strings works to preserve the color when there is
+an icon. This caused titles to become black when truncated.
+Issue 7646
+
+2019-03-30: When preserve window size when tab bar
+visibility changes, we did not allow the initial
+fitWindowToTabs to be called, which is what causes the
+window to respect its rows/columns setting. This commit
+remembers that we need that and allows it to be called once
+from tabViewDidChangeNumberOfTabViewItems. Issue 7647
+
+2019-03-30: Use 25% alpha label color for status bar
+separators by default. Do not initialize them to 25% black
+because that's no good in dark mode. Issue 7648
+
+2019-03-30: Enable a bunch of experiments that have been
+around for a long time
+
+2019-03-30: Do not consider 'login' as a child that can
+block closing a window. I think the algorithm for finding
+children changed which caused login to be considered. Issue
+7650.
+
+2019-03-30: Fix searching advanced prefs. Downrank it so
+it's always last
+
+2019-03-30: If the current git branch does not exist on the
+server then git rev-list --left-right --count HEAD...@'{u}'
+will return an error. Allow git push origin <branch> to be
+selected in this case
+
+2019-03-30: Add search to prefs
+
+2019-03-28: Improve error reporting for rejected API
+requests
+
+2019-03-28: Improve docs for registration. Fix source for
+George's Title Provider to match the .its file (the register
+call was wrong)
+
+2019-03-27: Remove the try it now link for minimal/compact
+pre 10.14
+
+2019-03-27: Fix a bunch of bugs, bad writing, broken links,
+etc in api docs. Replace tutorial .its files with working
+ones.
+
 2019-03-27: Fix the background color of the end inset of the
 minimal tab bar when tabs don't stretch, or when a tab in
 the overflow button is selected. Also, fix the calculation
@@ -144,7 +192,7 @@ interpolated string titles
 2019-03-21: Add actions tool
 
 2019-03-21: Detect when git is broken because xcode doesn't
-know where it is because macOS is 💩 for developers
+know where it is because macOS is  for developers
 
 2019-03-21: Disable force quit button in jobs status bar
 component popover initially
@@ -956,3 +1004,7 @@ if it works.
 
 2019-02-01: Assign key equivalents to buttons in alerts. Add
 an advanced pref to underline them. Issue 7505
+
+2019-01-31: Fix C-b and C-f in copy mode. Issue 7501
+
+2019-01-31: Fix various bugs with setting the badge font
