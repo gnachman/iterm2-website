@@ -1,3 +1,52 @@
+2019-04-11: Use the background update cadence for sessions
+that are not active AND are idle. Active means that it needs
+periodic redraws because it just became visible, it just
+finished processing a batch of tokens, refresh was called
+(usually because of user interaction), something happened
+that requires a redraw right away (like toggling alterante
+screen mode), it's time for blinking text to be redrawn, or
+various other similar things. In other words, it's pretty
+defensible. Idle means there's been no input from the PTY
+for 3 seconds (configurable down to 1 second). Refactor the
+cadence setting code to have less deep nesting. Issue 4513,
+in response to a comment on 4/8/19
+
+2019-04-11: Allow double-click on the area left of the first
+tab in a minimal+compact window to maximize the window. Move
+double-click handling in PSMTabBarControl into mouseUp so it
+plays nice with double clicking on a cell to edit its title.
+Clean up a bit of the toxic waste dump that is
+PSMTabBarControl. Issue 7682.
+
+2019-04-11: When OSC 2 has set the window title, we should
+include that among the other title components. That means
+evaluating the built-in session title provider but using the
+custom window name as the effective session name. If the
+built-in session title provider is not being used then the
+OSC 2 name will override it completely (something to revisit
+later). Issue 7672
+
+2019-04-11: Don't add 'reveal script x' to open quickly
+
+2019-04-11: Disable ping from websocket to fix timeout
+exception. Issue 7681
+
+2019-04-11: Use unordered_map instead of map for the cache
+of number of full lines. Was significantly faster in an
+informal test. Issue 6952
+
+2019-04-11: When changing a tab title override for a tmux
+session, send tmux a rename-window message. When it sends a
+window-renamed notif, update the tabTitleOverrideFormat
+
+2019-04-11: Make a session active just before maximizing it
+so that the the session whose titlebar you double clicked is
+the one that maximizes
+
+2019-04-11: Fix deployment target, add availability checks
+
+2019-04-11: Embed swift libs
+
 2019-04-11: Integrate better font picker into badge config
 UI
 
@@ -316,7 +365,7 @@ interpolated string titles
 2019-03-21: Add actions tool
 
 2019-03-21: Detect when git is broken because xcode doesn't
-know where it is because macOS is 💩 for developers
+know where it is because macOS is  for developers
 
 2019-03-21: Disable force quit button in jobs status bar
 component popover initially
