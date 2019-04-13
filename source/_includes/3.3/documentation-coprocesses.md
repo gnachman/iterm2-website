@@ -17,7 +17,7 @@ You could disappear for years before your friends discover you're gone.
 #### How Do I Start a Coprocess?
 There are two ways to start a coprocess.
 
-1. Select "Run Coprocess..." from the Shell menu. Enter the name of a command to run as a coprocess.
+1. Select "Run Coprocess..." from the Session menu. Enter the name of a command to run as a coprocess.
 
 2. Create a Trigger in Prefs>Profiles>Advanced and select Run Coprocess... as the action. Give the script to run as a parameter. Triggers also have Silent Coprocesses, which prevent any output from going to the screen. This is useful for ZModem, for example.
 
