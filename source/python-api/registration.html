@@ -72,8 +72,8 @@
     <div class="small-12 medium-12 large-10 large-centered columns wide-row">
         <div class="main panel">
 
-            <div class="doc-wrapper">
-                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
             </div>
 
             <hr/>
@@ -92,7 +92,7 @@
 <p>An RPC is a function in a script that iTerm2 can invoke in response to some action, such a a keypress or a trigger. You use this decorator to register a coroutine as an RPC.</p>
 <p>Every RPC must have a unique signature. The signature is composed of two parts: first, the name, which comes from the name of the coroutine being decorated; second, the names of its arguments. The order of arguments is not important.</p>
 <p>The decorated coroutine will have a <cite>async_register</cite> value that you must call to complete the registration. <cite>async_register</cite> takes one required argument, the <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>. It also takes one optional argument, which is a timeout. The <cite>timeout</cite> is a value in seconds. If not given, the default timeout will be used. When waiting for an RPC to return, iTerm2 will stop waiting for the RPC after the timeout elapses.</p>
-<p>Do not use default values for arguments in your decorated coroutine, with one exception: a special kind of default value of type <a class="reference internal" href="#iterm2.Reference" title="iterm2.Reference"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Reference</span></code></a>. It names a variable that is visible in the context of the invocation. It will be transformed to the current value of that variable. This is the only way to get information about the current context. For example, a value of <cite>~iterm2.Reference(“id”)</cite> will give you the session ID of the context where the RPC was invoked. If the RPC is run from a keyboard shortcut, that is the ID of the session that had keyboard focus at the time of invocation.</p>
+<p>Do not use default values for arguments in your decorated coroutine, with one exception: a special kind of default value of type <a class="reference internal" href="#iterm2.Reference" title="iterm2.Reference"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Reference</span></code></a>. It names a variable that is visible in the context of the invocation. It will be transformed to the current value of that variable. This is the only way to get information about the current context. For example, a value of <cite>iterm2.Reference(“id”)</cite> will give you the session ID of the context where the RPC was invoked. If the RPC is run from a keyboard shortcut, that is the ID of the session that had keyboard focus at the time of invocation.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <ul class="last simple">
@@ -125,11 +125,11 @@
 <dl class="function">
 <dt id="iterm2.registration.TitleProviderRPC">
 <code class="descname">TitleProviderRPC</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.registration.TitleProviderRPC" title="Permalink to this definition">¶</a></dt>
-<dd><p>A decorator (like <a class="reference internal" href="#iterm2.registration.RPC" title="iterm2.registration.RPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPC()</span></code></a>) that registers a session title provider.</p>
+<dd><p>A decorator that prepares a function for registration as a session title provider. Similar to <a class="reference internal" href="#iterm2.registration.RPC" title="iterm2.registration.RPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPC()</span></code></a>.</p>
 <p>A session title provider is a function that gets called to compute the title of a session. It may be called frequently, whenever the session title is deemed to need recomputation. Once registered, it appears as an option in the list of title settings in preferences.</p>
 <p>It is called when any of its inputs change. This will only happen if one or more of the inputs are <code class="xref py py-func docutils literal notranslate"><span class="pre">Reference()</span></code> references to variables in the session context.</p>
 <p>It must return a string.</p>
-<p>Note that the <cite>async_register</cite> function is different than in the <a class="reference internal" href="#iterm2.registration.RPC" title="iterm2.registration.RPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPC()</span></code></a> decorator: it takes three arguments. The first is the <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>. The second is a “display name”, which is the string to show in preferences that the user may select to use this title provider. Then it takes a unique identifier, a string, which must be unique among all title providers.</p>
+<p>Note that the <cite>async_register</cite> function is different than in the <a class="reference internal" href="#iterm2.registration.RPC" title="iterm2.registration.RPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPC()</span></code></a> decorator: it takes three arguments. The first is the <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>. The second is a “display name”, which is the string to show in preferences that the user may select to use this title provider. The third is a string identifier, which must be unique among all title providers. The identifier should be a reverse DNS name, like <cite>com.example.my-title-provider</cite>. As long as the identifier remains the same from one version to the next, the display name and function signature may change.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">Example “<a class="reference internal" href="examples/georges_title.html#georges-title-example"><span class="std std-ref">George’s Title Algorithm</span></a>”</p>

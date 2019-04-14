@@ -1,66 +1,87 @@
-iTerm2 version 3.3.0beta2
+iTerm2 version 3.3.0beta3
 
-Changes since beta1:
+Changes since beta2:
 
 New Features
-- You can now search preferences. There's a search
-  bar in the top right of the window.
+- Add a new utility, "it2git", which allows the
+  git status bar component to show git state on a
+  remote host. Install the utilities and then view
+  ~/.iterm2/it2git for further instructions.
+- Add touch bar mitigations: haptic feedback, key
+  click, and blink cursor when touching esc.
+- Replace the system font picker with an easier to
+  use custom one.
+- Performance improvements for long scrollback
+  history.
 
 Bug Fixes
-
-- Get 10.13 users who got stuck with compact
-  windows unstuck.
-- Fix a bug where users upgrading from 3.2 had
-  session titles that could not be changed by
-  control sequences.
-- Fix crashes, including when using fixed-size
-  spacer in status bar.
-- Fix bug where red/yellow/green window buttons
-  were hidden when a compact window goes full
-  screen.
-- Visual improvements.
-- Fix a bug where a trigger-set working directory
-  wouldn't cause automatic profile switching to
-  switch and stay switched.
-- Fix disappearing status bar items.
-- Fix blurry status bar on non-retina displays.
-- Don't ask for accessibility permission when
-  quitting.
-- Fix alignment issues with background images.
-- Fix setting session name by applescript.
-- Fix custom window title in profile prefs, which
-  did nothing.
-- Fix transparent status bar on Mojave.
-- Fix bug where minimal+compact windows could not
-  be dragged between spaces.
-- Fix bug where a gray bar could appear at the top
-  of the window in full screen.
-- Remove "try it now" links in What's New for
-  10.13 users on the minimal/compact screen, which
-  they can't use.
-- Improve error reporting for rejected API
-  connections.
-- Improve git statusbar component behavior when
-  the current branch doesn't exist on the server.
-- Fix a bug where you'd always get asked if you
-  wanted to close a session when you chose "prompt
-  unless certain jobs are running".
-- Fix default color of status bar separators
-- Fix bug where windows would be the wrong size
-  initially.
-- Fix semantic history for strings like
-  file.txt:1232:blah blah blah.
-- Hide tabbar in fullscreen on 10.14 when there's
-  one tab and the tabbar is normally hidden.
-- Make Auto-Rainbow always available.
+- Fix a bug where the tabbar would overlap content
+  in native fullscreen for minimal+compact windows
+  when adding a second tab while in fullscreen.
+- Fix a bug where double tap to open a hotkey
+  window didn't function when secure keyboard
+  entry was enabled.
+- Fix prefs search UI in macOS 10.12 and 10.13.
+- Fix a bug when tab dragging is disabled that it
+  would still appear to work.
+- Remember the next/previous pane navigation order
+  of sessions when maximizing/unmaximizing.
+- Fix a bug where the app would quit when there's
+  only one window and you toggle it to non-native
+  fullscreen and confirm to quit is disabled.I
+- Fix a bug where the shell was incorrectly
+  included as a running process when deciding
+  whether you should be prompted to close a
+  session.
+- Fix a bug where URLs were not properly passed as
+  \1 to semantic history commands.
+- Fix a bug where the Cocoa app that Apple
+  provides to wrap Python was not correctly
+  identified as a Python executable, which caused
+  excessive permissions prompts when using pyobjc.
+- Send SIGWINCH when an API client changes session
+  size.
+- Fix a bug where double-clicking on the title bar
+  of a split pane that's not active would maximize
+  the wrong pane.
+- Disable websocket ping to avoid timeout
+  disconnects.
+- Fix a bug where "reveal [script]" appeared in
+  open quickly, but tried to run a script named
+  "reveal [script]"
+- When the window title was changed by a control
+  sequence, the window's title would forget the
+  title components (e.g., job name). Now it
+  replaces the session name with the new window
+  name but keeps the other parts. 
+- Don't overwrite the 'tty' variable when
+  restoring a session.
+- Fix a bug where commas weren't accepted as
+  decimal points in status bar setup.
+- Allow Python scripts to launch even it the
+  user's shell doesn't exist.
+- Fix a bug where sessions would be stuck after
+  exiting copy mode until they received new input.
 
 Other Improvements
-
-- Add an advanced pref to treat the area left of
-  the minimal tabbar as part of the first tab
-- Reword download/upload finished notification so
-  the success or failure is visible on long file
-  names.
+- Reduce idle CPU usage when there are many split
+  panes.
+- Reduce height of minimal+compact tabbar.
+- Improve the apperance of the window when
+  dragging a tab.
+- Improve in-app docs for semantic history.
+- Python scripts can now repeatedly try connecting
+  to the app if it is not running.
+- Move "apps can change title" to the General
+  profiles prefs pane to be next to other title
+  settings.
+- Allow double-click on the area left of the first
+  tab in a minimal+compact window to maximize the
+  window
+- Add an advanced pref to warn about pastes over a
+  character limit.
+- Allow key mappings to work in copy mode (as long
+  as they use the Command key)
 
 -------------------------------------------------
 

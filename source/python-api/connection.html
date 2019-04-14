@@ -72,8 +72,8 @@
     <div class="small-12 medium-12 large-10 large-centered columns wide-row">
         <div class="main panel">
 
-            <div class="doc-wrapper">
-                <a href="/documentation">&lt; iTerm2 Documentation</a>
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
             </div>
 
             <hr/>
@@ -87,14 +87,18 @@
 <p>Manages the details of the websocket connection.</p>
 <dl class="function">
 <dt id="iterm2.run_until_complete">
-<code class="descname">run_until_complete</code><span class="sig-paren">(</span><em>coro: Callable[[iterm2.connection.Connection], Coroutine[Any, Any, None]]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.run_until_complete" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run_until_complete</code><span class="sig-paren">(</span><em>coro: Callable[[iterm2.connection.Connection], Coroutine[Any, Any, None]], retry=False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.run_until_complete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method to run an async function taking an <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> as an argument.</p>
 <p>After <cite>coro</cite> returns this function will return.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coro</strong> – The coroutine to run. Must be an <cite>async def</cite> function. It should take one argument, a <a class="reference internal" href="#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>, and does not need to return a value.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>coro</strong> – The coroutine to run. Must be an <cite>async def</cite> function. It should take one argument, a <a class="reference internal" href="#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>, and does not need to return a value.</li>
+<li><strong>retry</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Keep trying to connect until it succeeds?</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -102,14 +106,18 @@
 
 <dl class="function">
 <dt id="iterm2.run_forever">
-<code class="descname">run_forever</code><span class="sig-paren">(</span><em>coro: Callable[[iterm2.connection.Connection], Coroutine[Any, Any, None]]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.run_forever" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run_forever</code><span class="sig-paren">(</span><em>coro: Callable[[iterm2.connection.Connection], Coroutine[Any, Any, None]], retry=False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.run_forever" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method to run an async function taking an <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> as an argument.</p>
 <p>This function never returns.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coro</strong> – The coroutine to run. Must be an <cite>async def</cite> function. It should take one argument, a <a class="reference internal" href="#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>, and does not need to return a value.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>coro</strong> – The coroutine to run. Must be an <cite>async def</cite> function. It should take one argument, a <a class="reference internal" href="#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>, and does not need to return a value.</li>
+<li><strong>retry</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Keep trying to connect until it succeeds?</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
