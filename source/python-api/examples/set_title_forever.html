@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Launch iTerm2 and Set Session Title &#8212; iTerm2 Python API 0.26 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  </head><body>
+  <header >
+    <div class="row">
+      <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="text-center"><a href="/index.html"><img src="https://iterm2.com/img/logo2x.jpg" width=800 height=312></a></div>
+        <div class="sticky contain-to-grid">
+          <nav class="top-bar" data-topbar>
+            <ul class="title-area">
+              <li class="name">
+
+              </li>
+              <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+              <li class="small-screen-donate">
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+            </ul>
+
+            <section class="top-bar-section">
+              <!-- Right Nav Section -->
+              <ul class="right"> <li>
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li><a href="/index.html">Home</a></li>
+            <li ><a href="/news.html">News</a></li>
+            <li ><a href="/features.html">Features</a></li>
+            <li ><a href="/faq.html">FAQ</a></li>
+            <li class="active"><a href="/documentation.html">Documentation</a></li>
+            <li ><a href="/downloads.html">Downloads</a></li>
+          </ul>
+        </section>
+      </nav>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+    <div class="document">
+<div class="row">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
+
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
+            </div>
+
+            <hr/>
+
+      <div class="documentwrapper">
+	<div class="bodywrapper">
+	  <div class="body" role="main">
+	    
+  <div class="section" id="launch-iterm2-and-set-session-title">
+<span id="set-title-example"></span><h1>Launch iTerm2 and Set Session Title<a class="headerlink" href="#launch-iterm2-and-set-session-title" title="Permalink to this headline">¶</a></h1>
+<p>This script demonstrates two concepts:</p>
+<ol class="arabic simple">
+<li>Launching iTerm2 using PyObjC and running the script only
+after it is launched.</li>
+<li>Setting a session’s name.</li>
+</ol>
+<p>Further, it demonstrates how to change a profile setting so
+the session title can’t be later changed by a control
+sequence.</p>
+<p>Launching the app is useful when the script is run from the
+command line rather than from within iTerm2. To run this
+script from the command line you’ll need to install its
+dependencies first:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew install python3
+pip3 install iterm2
+pip3 install pyobjc
+</pre></div>
+</div>
+<p>Here’s the code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="kn">import</span> <span class="nn">AppKit</span>
+
+<span class="c1"># Launch the app</span>
+<span class="n">AppKit</span><span class="o">.</span><span class="n">NSWorkspace</span><span class="o">.</span><span class="n">sharedWorkspace</span><span class="p">()</span><span class="o">.</span><span class="n">launchApplication_</span><span class="p">(</span><span class="s2">&quot;iTerm2&quot;</span><span class="p">)</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+    <span class="c1"># Foreground the app</span>
+    <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_activate</span><span class="p">()</span>
+
+    <span class="c1"># Create a new tab or window</span>
+    <span class="n">myterm</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">myterm</span><span class="p">:</span>
+        <span class="n">myterm</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">await</span> <span class="n">myterm</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
+    <span class="n">await</span> <span class="n">myterm</span><span class="o">.</span><span class="n">async_activate</span><span class="p">()</span>
+
+    <span class="c1"># Update the name and disable future updates by</span>
+    <span class="c1"># control sequences.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Changing the name this way is equivalent to</span>
+    <span class="c1"># editing the Session Name field in</span>
+    <span class="c1"># Session&gt;Edit Session.</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">myterm</span><span class="o">.</span><span class="n">current_tab</span><span class="o">.</span><span class="n">current_session</span>
+    <span class="n">update</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">LocalWriteOnlyProfile</span><span class="p">()</span>
+    <span class="n">update</span><span class="o">.</span><span class="n">set_allow_title_setting</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">update</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s2">&quot;This is my customized session name&quot;</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_set_profile_properties</span><span class="p">(</span><span class="n">update</span><span class="p">)</span>
+
+<span class="c1"># Passing True for the second parameter means keep trying to</span>
+<span class="c1"># connect until the app launches.</span>
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that if you download and install the package below it will
+install the needed dependencies for running this script from
+within iTerm2 but your system Python configuration will not
+be modified. You still need to follow the steps above to
+install Python 3, the iterm2 Python module, and PyObjC if
+you plan to run this from the command line.</p>
+<p><a class="reference download internal" download="" href="../_downloads/3b6cad2419077581adcb60034e59c5d9/set_title_forever.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+</div>
+
+
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script type="text/javascript">
+  function showId(id) {
+    document.getElementById("changelist" + id).style.display = 'block';
+    document.getElementById("show" + id).style.display = 'none';
+    document.getElementById("hide" + id).style.display = 'inline';
+  }
+
+  function hideId(id) {
+    document.getElementById("changelist" + id).style.display = 'none';
+    document.getElementById("show" + id).style.display = 'inline';
+    document.getElementById("hide" + id).style.display = 'none';
+  }
+  $(document).foundation();
+</script>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, George Nachman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="../_sources/examples/set_title_forever.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
