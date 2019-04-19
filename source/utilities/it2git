@@ -93,6 +93,14 @@ git_poll () {
     iterm2_set_user_var gitPullCount "$PULL_COUNT"
 }
 
-git_poll "$PWD"
+"$GIT_BINARY" rev-parse --git-dir 2>/dev/null >/dev/null
+if (($?)); then
+    iterm2_set_user_var gitBranch ""
+    iterm2_set_user_var gitDirty ""
+    iterm2_set_user_var gitPushCount ""
+    iterm2_set_user_var gitPullCount ""
+else
+    git_poll "$PWD"
+fi
 
 
