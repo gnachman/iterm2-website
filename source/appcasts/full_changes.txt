@@ -1,37 +1,12 @@
-iTerm2 3.2.8
+iTerm2 3.2.9
 
-Bug fixes
----------
-- Fixes a bug where sessions become unusable after
-  switching users and then switching back.
-- Ignore hotkey while an app-modal window is open
-  to prevent a hang.
-- Fix some crashes.
-- Improve how language is determined by ignoring
-  3-letter language codes.
-- Fix a bug where annotations were not visible
-  when using the GPU renderer.
-- Fix a bug where two concurrent downloads with
-  the same filename would both write to the same
-  file.
-- Disable window shadow when there's a transparent
-  pane to prevent "ghosts" of characters
-  persisting.
+The only change in version 3.2.9 vs 3.2.8 is that
+it was built with libssh2 1.8.2 because of a
+security vulnerability. iTerm2 version 3.2.8 was
+built with libssh2 1.8.0.
 
-Other improvements
-------------------
-- Don't ask for full disk access on startup.
-  Instead, request admin permissions when needed.
-- The bell icon is now cleared when a session
-  becomes active (used to require a keypress).
-- Make toolbelta width and tools' heights more
-  stable.
-- Improve tab colors in dark mode when there is a
-  colored tab.
-- If you select a hidden pane in a maximized tab
-  with open quickly switch to it without
-  unmaximizing.
-- Prevent sessions from resizing while dragging a
-  split pane over a maximized window.
-- Adds a public EdDSA key to begin the migration
-  to a more secure app update algorithm.
+More information on the vulnerability in libssh2
+may be found here:
+
+https://nvd.nist.gov/vuln/detail/CVE-2019-3855
+
