@@ -1,3 +1,42 @@
+2019-04-19: Flip the default value of advanced pref 'In the
+minimal tab style, should the area left of the tab bar be
+treated as part of the first tab'. See if people are happy
+or angry
+
+2019-04-19: Improve search history support for old-style
+find views. Do not store queries less than three characters
+in search history
+
+2019-04-19: Add search history. Issue 7730
+
+2019-04-19: Don't call _setWebSecurityEnabled: on macOS
+10.12
+
+2019-04-19: Don't crash when appending nil to text popover
+
+2019-04-18: Make semantic history and URLAction construction
+asynchronous. Move filesystem poking into its own thread to
+avoid wedging the main thread when we encounter a network
+filesystem.
+
+- ARCify iTermURLActionFactory - Make iTermURLActionFactory
+async - Make users of URLActionFactory async - ARCify some
+PTYTextView code. Put it in its own category since ARCifying
+this whole thing at once is too much - Make open target
+async - Move updateCursor into ARC and make it async - Move
+handle drag of semantic history item into ARC and make
+async. Also fix a bug with pasting a file where it would do
+multiple pastes, some of which might prompt for permission -
+Move quicklook to ARC - Remove the last vestiges of
+URLAction from PTYTextView.m - Do semantic history in
+separate threads.  - Cache whether files exist for up to 10
+seconds to make semantic history faster - Use interpolated
+strings in semantic history instead of a gross hack. Make
+openPath: async. ARCify iTermSemanticHistoryController -
+Evaluate autolog filename asynchronously using interpolated
+strings instead of hacks. Fix how expression evaluators'
+lifetimes are handled to be sane.
+
 2019-04-17: Fix bugs with click to configure status bar. It
 didn't work with divorced profiles that had the status bar
 enabled but no layout, and it didn't order the prefs panel
