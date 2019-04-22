@@ -1,87 +1,54 @@
-iTerm2 version 3.3.0beta3
+iTerm2 version 3.3.0beta4
 
-Changes since beta2:
+Note: This version uses libssh2 version 1.8.2.
+3.3.0beta3 was built against libssh 1.8.0, which
+contained a remote code execution vulnerability
+affecting the secure copy feature. You are urged
+to upgrade.
+
+Changes since beta3:
 
 New Features
-- Add a new utility, "it2git", which allows the
-  git status bar component to show git state on a
-  remote host. Install the utilities and then view
-  ~/.iterm2/it2git for further instructions.
-- Add touch bar mitigations: haptic feedback, key
-  click, and blink cursor when touching esc.
-- Replace the system font picker with an easier to
-  use custom one.
-- Performance improvements for long scrollback
-  history.
 
-Bug Fixes
-- Fix a bug where the tabbar would overlap content
-  in native fullscreen for minimal+compact windows
-  when adding a second tab while in fullscreen.
-- Fix a bug where double tap to open a hotkey
-  window didn't function when secure keyboard
-  entry was enabled.
-- Fix prefs search UI in macOS 10.12 and 10.13.
-- Fix a bug when tab dragging is disabled that it
-  would still appear to work.
-- Remember the next/previous pane navigation order
-  of sessions when maximizing/unmaximizing.
-- Fix a bug where the app would quit when there's
-  only one window and you toggle it to non-native
-  fullscreen and confirm to quit is disabled.I
-- Fix a bug where the shell was incorrectly
-  included as a running process when deciding
-  whether you should be prompted to close a
-  session.
-- Fix a bug where URLs were not properly passed as
-  \1 to semantic history commands.
-- Fix a bug where the Cocoa app that Apple
-  provides to wrap Python was not correctly
-  identified as a Python executable, which caused
-  excessive permissions prompts when using pyobjc.
-- Send SIGWINCH when an API client changes session
-  size.
-- Fix a bug where double-clicking on the title bar
-  of a split pane that's not active would maximize
-  the wrong pane.
-- Disable websocket ping to avoid timeout
-  disconnects.
-- Fix a bug where "reveal [script]" appeared in
-  open quickly, but tried to run a script named
-  "reveal [script]"
-- When the window title was changed by a control
-  sequence, the window's title would forget the
-  title components (e.g., job name). Now it
-  replaces the session name with the new window
-  name but keeps the other parts. 
-- Don't overwrite the 'tty' variable when
-  restoring a session.
-- Fix a bug where commas weren't accepted as
-  decimal points in status bar setup.
-- Allow Python scripts to launch even it the
-  user's shell doesn't exist.
-- Fix a bug where sessions would be stuck after
-  exiting copy mode until they received new input.
+- Search now remembers your 10 most recent queries
+  and offers them as suggestions.
 
 Other Improvements
-- Reduce idle CPU usage when there are many split
-  panes.
-- Reduce height of minimal+compact tabbar.
-- Improve the apperance of the window when
-  dragging a tab.
-- Improve in-app docs for semantic history.
-- Python scripts can now repeatedly try connecting
-  to the app if it is not running.
-- Move "apps can change title" to the General
-  profiles prefs pane to be next to other title
-  settings.
-- Allow double-click on the area left of the first
-  tab in a minimal+compact window to maximize the
-  window
-- Add an advanced pref to warn about pastes over a
-  character limit.
-- Allow key mappings to work in copy mode (as long
-  as they use the Command key)
+
+- Profile initial directory is now an interpolated
+  string.
+- We now report ourselves as a VT200 supporting
+  Sixel in response to DA1.
+- Performance improvements for opening prefs
+  window.
+- Don't block the main thread when checking if the
+  text under the cursor is an existing file.
+- The area left of the tab bar is now *not*
+  treated as part of the first tab by default.
+- Avoid blocking the main thread when creating a
+  new session.
+
+Bug Fixes
+
+- Fix a bug where a gap could be visible along a
+  left-side tab bar.
+- Don't allow the git poller to stay in to network
+  mounts, preventing their unmounting.
+- Fix a bug where full screen tabs could have an
+  unused space on the left.
+- Fix a bug where shift+return did not search in
+  reverse.
+- Fix a bug where transparent windows had a
+  completely transparent title bar.
+- Fix a bug where the list of color presets was
+  not visible when binding a keystroke to change
+  the color preset.
+- Various bug fixes for clicking an empty status
+  bar to configure it.
+- Fix various crashes.
+- Python API scripts can now change the font.
+- Make upload/download menu items look good in
+  dark mode.
 
 -------------------------------------------------
 
@@ -124,6 +91,14 @@ New Features
   text.
 - You can now search preferences. There's a search
   bar in the top right of the window.
+- Add a new utility, "it2git", which allows the
+  git status bar component to show git state on a
+  remote host. Install the utilities and then view
+  ~/.iterm2/it2git for further instructions.
+- Add touch bar mitigations: haptic feedback, key
+  click, and blink cursor when touching esc.
+- Replace the system font picker with an easier to
+  use custom one.
 
 Other Improvements
 
@@ -184,3 +159,5 @@ Other Improvements
 - You can now use the password manager when
   entering a password for secure copy.
 - Adds support for the DECRQM control sequence.
+- Performance improvements for long scrollback
+  history.

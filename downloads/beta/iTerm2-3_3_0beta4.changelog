@@ -1,0 +1,166 @@
+iTerm2 version 3.3.0beta4
+
+Note: This version uses libssh2 version 1.8.2.
+3.3.0beta3 was built against libssh 1.8.0, which
+contained a remote code execution vulnerability
+affecting the secure copy feature. You are urged
+to upgrade.
+
+Changes since beta3:
+
+New Features
+
+- Search now remembers your 10 most recent queries
+  and offers them as suggestions.
+
+Other Improvements
+
+- Profile initial directory is now an interpolated
+  string.
+- We now report ourselves as a VT200 supporting
+  Sixel in response to DA1.
+- Performance improvements for opening prefs
+  window.
+- Don't block the main thread when checking if the
+  text under the cursor is an existing file.
+- The area left of the tab bar is now *not*
+  treated as part of the first tab by default.
+- Avoid blocking the main thread when creating a
+  new session.
+
+Bug Fixes
+
+- Fix a bug where a gap could be visible along a
+  left-side tab bar.
+- Don't allow the git poller to stay in to network
+  mounts, preventing their unmounting.
+- Fix a bug where full screen tabs could have an
+  unused space on the left.
+- Fix a bug where shift+return did not search in
+  reverse.
+- Fix a bug where transparent windows had a
+  completely transparent title bar.
+- Fix a bug where the list of color presets was
+  not visible when binding a keystroke to change
+  the color preset.
+- Various bug fixes for clicking an empty status
+  bar to configure it.
+- Fix various crashes.
+- Python API scripts can now change the font.
+- Make upload/download menu items look good in
+  dark mode.
+
+-------------------------------------------------
+
+Release notes for 3.3.0:
+
+New Features
+
+- A Python scripting API has been added to enable
+  extensive configuration and customization. See
+  https://iterm2.com/python-api for details.
+- A scriptable status bar has been added with 11
+  built-in configurable components.
+- A new "Minimal" theme has been added to reduce
+  visual clutter.
+- A new window type of "Compact" combines the tab
+  bar and title bar.
+- Session, tab, and window titles have been
+  revamped to be more flexible and comprehensible.
+  You can now configure them separately and select
+  what information is shown per profile. They are
+  integrated with the new Python scripting API.
+- Tabs may now have icons: either an icon
+  indicating the running app, or a fixed icon per
+  profile.
+- The display of Sixel images is now supported.
+- Add menu item to arrange split panes evenly. In
+  tmux, this uses the tiled layout.
+- Greatly improved support for background images:
+  they may now span split panes and you can adjust
+  how they are scaled to avoid stretching.
+- Add support for reporting keystrokes with CSI u.
+- New type of trigger added that turns text into a
+  hyperlink.
+- New type of trigger added that adds annotations
+  to the matching text.
+- You can now export a recording of your screen
+  from the Instant Replay panel.
+- A new toolbelt tool, Actions, provides shortcuts
+  to frequent actions like sending a snippet of
+  text.
+- You can now search preferences. There's a search
+  bar in the top right of the window.
+- Add a new utility, "it2git", which allows the
+  git status bar component to show git state on a
+  remote host. Install the utilities and then view
+  ~/.iterm2/it2git for further instructions.
+- Add touch bar mitigations: haptic feedback, key
+  click, and blink cursor when touching esc.
+- Replace the system font picker with an easier to
+  use custom one.
+
+Other Improvements
+
+- Numerous visual improvements.
+- Update app icon.
+- You can now change the color preset from the
+  Open Quickly window.
+- Added an advanced pref for the height of the
+  underline cursor.
+- The state of various terminal emulation flags is
+  now exposed in Session > Terminal State.
+- Remove the bell icon from tabs more
+  aggressively.
+- Various pages of preferences have been
+  rearranged to make more sense or be more
+  visually pleasing.
+- A new menu item lets you configure cmd-+ and
+  cmd-- to adjust the underlying profile rather
+  than only the current session.
+- By default the tab bar now stretches to fill the
+  available width so it looks more like a native
+  tab bar. You can change this in Prefs >
+  Appearance.
+- Add a new proprietary control sequence to bounce
+  the app icon only one time.
+- Add support for setting the proxy icon by
+  control sequence.
+- Add support for broadcasting passwords to
+  multiple sessions from the password manager. Off
+  by default.
+- Update "Terminal.app Compatibility" key mapping
+  for option left and right arrows.
+- Add support for natively drawn Powerline glyphs,
+  allowing you to use any font and still get the
+  fancy arrows. They also align properly with
+  other elements, which the Powerline fonts do not
+  always do.
+- Cmd-clicking on filename[line,column] will now
+  open the file to the specified line and column.
+- Add "use transparency" as a profile setting for
+  newly created windows.
+- Adjust how underlines are drawn to have a more
+  correct baseline offset.
+- Add an advanced pref to swap find next/find
+  previous behavior (since the default does not
+  conform to macOS norms)
+- Buttons in modal alerts now all have keyboard
+  shortcuts.
+- The default scheme for URLs when you cmd-click
+  is now https rather than http. You can change it
+  with an advanced pref.
+- Sparkle updates now use EdDSA signatures. DSA
+  signatures will be gradually phased out.
+- Add an advanced preference to show a hint with
+  split pane direction in menu items.
+- Add an option to preserve window size when tab
+  bar shows or hides
+- You can now use the password manager when
+  entering a password for secure copy.
+- Adds support for the DECRQM control sequence.
+- Performance improvements for long scrollback
+  history.
+
+SHA-256 of the zip file is
+dfdd7ce0bbeb39c0f3530c18fa3fe2774ba008652daf923b1e9e8b072e0b9e25
