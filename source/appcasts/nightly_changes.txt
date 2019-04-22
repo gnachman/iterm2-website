@@ -1,3 +1,28 @@
+2019-04-21: 3.3.0beta4
+
+2019-04-21: Bump python version
+
+2019-04-21: Fix a bug where the window doesn't have a title
+for a second or so after being created
+
+2019-04-21: Remove debug=YES
+
+2019-04-21: Remove synchronous process cache method in favor
+of aggregating completion blocks and notifying requesters
+asynchronously. The first time a session asks for its job's
+name and there is a process ID, this gets used. It informs
+the session at the earliest possible time what the job name
+is.
+
+2019-04-21: Fix a modify during enumeration bug. I wasn't
+able to figure out where the enumeration is, but this is
+safer at least
+
+2019-04-21: Fix a bug where PTYSession would leak if closed
+with an open announcement. Fix a bug where the process tree
+was created on the main thread. Determine the title for new
+sessions with less latency. Issue 7726.
+
 2019-04-21: Allow importing .py files
 
 2019-04-20: Fix upload/download menu items in dark mode
