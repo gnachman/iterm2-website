@@ -220,6 +220,7 @@ of the current session of the containing tab is given by:
 tab.currentSession.path
 ```
 
+<a name="setting-user-defined-variables" />
 ## Setting User-Defined Variables
 
 ### Shell Integration
@@ -276,6 +277,12 @@ User-defined variables may be set with the following escape sequence:
 
 <pre>
 OSC 1337 ; SetUserVar=<i>name</i>=<i>Base64-encoded value</i> ST
+</pre>
+
+Here's a shell command that demonstrates setting `user.foo` to the value `bar`:
+
+<pre>
+printf "\033]1337;SetUserVar=%s=%s\007" foo `echo -n bar | base64`
 </pre>
 
 This is what iterm2_set_user_var sends. Generally you should use the

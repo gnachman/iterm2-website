@@ -55,7 +55,7 @@ These values require shell integration to be installed.
 
 #### References to Other Contexts
   * `tab` - A reference to the variables belonging to the tab containing this session.
-  * `user` - A context for user-set variables. Variables may be set with a custom control sequence or by using the [Python scripting API](https://www.iterm2.com/python-api). They are often set when using shell integration. See the section on **User-Defined Variables** below.
+  * `user` - A context for user-set variables. Variables may be set with a custom control sequence or by using the [Python scripting API](https://www.iterm2.com/python-api). They are often set when using shell integration. See <a href="#user-defined-variables">**User-Defined Variables**</a> for more information.
   * `iterm2` - A reference to the variables belonging to the application (i.e., the global context)
 
 #### Other
@@ -63,6 +63,18 @@ These values require shell integration to be installed.
   * `badge` - The value of the badge. Note that the user can enter an interpolated string in the UI, but this value contains the string result of evaluating it.
   * `id` - A unique identifier for the session
   * `profileName` - The name of the current profile.
+
+<a name="user-defined-variables" />
+#### User-Defined Variables
+
+The only variables that users may directly control are those in the "user"
+scope of a session. For example, you could set a variable named "gitBranch" to
+the name of the current git branch. This value would then be available to
+display in the session title, badge, or other places, and would be available to
+Python API scripts. You'd reference it as `user.gitBranch`.
+
+See <a href="documentation-scripting-fundamentals.html#setting-user-defined-variables">"Setting User-Defined Variables" in *Scripting Fundamentals*</a>
+for details on setting them.
 
 <hr/>
 <a name="tab-context"></a>
