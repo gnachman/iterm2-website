@@ -124,5 +124,5 @@ This is the default algorithm.
 
 ### Auto-Rainbow
 
-If you have chosen the Minimal theme and the profile's window type is Compact then the **Auto Rainbow** button will be enabled. Pressing it assigns text colors to the active components in a pleasing variety of rainbow colors. No unicorns were harmed in the making of this feature.
+Pressing this buton assigns text colors to the active components in a pleasing variety of rainbow colors. No unicorns were harmed in the making of this feature.
 

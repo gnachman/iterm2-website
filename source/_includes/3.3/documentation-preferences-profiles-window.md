@@ -49,7 +49,6 @@ This defines the window style.
 
   * *Normal* - A regular window with a title bar.
   * *Full Screen* - A full screen window. See *Preferences>General>Window>Native full screen windows*.
-  * *Compact* - A window with tabs in the title bar. Looks best with the *Minimal* theme (see *Preferences>Appearance>Theme*). This is only available on macOS 10.14 and later.
   * *No title bar* - A window without a title bar. It is hard to move but is as minimal as can be.
   * *Full-width bottom/left/top/right of screen* - A window that fills the display edge-to-edge along one dimension and is stuck to one edge of the screen. The rows or columns setting will be disregarded.
   * *Bottom/left/top/right of screen* - A window that is stuck to one edge of the screen.

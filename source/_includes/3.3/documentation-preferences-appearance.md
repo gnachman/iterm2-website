@@ -10,8 +10,15 @@ On macOS 10.13 and earlier, the options are Light, Dark, Light High Contrast, an
 
 On macOS 10.14 and later, there are two additional options:
 
-  * *Minimal* - This is inspired by the appearance of Electron apps. It is modern and streamlined. It looks especially good in combination with the *Compact* window style, settable in *Prefs>Profiles>Window>Style*.
-  * *Automatic* - This switches between Light and Dark automatically based on the system theme.
+  * *Regular* - The standard macOS theme. Switches between dark and light mode automatically based on the system setting.
+  * *Minimal* - This is inspired by the appearance of Electron apps. It is modern and streamlined.
+  * *Compact* - A combination of Regular and Minimal. The standard colors are used, but the title bar is eliminated to save space.
+
+In Minimal and Compact, tabs go in the title bar if the tabs are on top. The
+area between the red, yellow, and green buttons and the first tab can be used
+to drag the window. If tabs are on the bottom or the left, you can move the
+mouse to the top left of the window to reveal the red, yellow, and green buts.
+The area around them, when revealed, can be used to drag the window.
 
 #### Tab Bar Location
 Defines whether tabs appear at the top, bottom, or left side of your windows.
