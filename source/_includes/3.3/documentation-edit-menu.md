@@ -65,8 +65,8 @@ Scrolls to the location of the last mark.
 When a mark is set (typically by <a href="documentation-shell-integration.html">Shell Integration</a> when the currently running shell command terminates) then show an alert. 
 
 #### Edit > Clear Buffer
-Clears the last screenful of the terminal.
+Clears the entire terminal history and the mutable area.
 
 ### Edit > Clear Scrollback Buffer
-Clears the entire terminal history.
+Clears scrollback history, preserving the mutable area.
 
