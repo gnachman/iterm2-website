@@ -1,61 +1,36 @@
-iTerm2 version 3.3.0beta5
+iTerm2 version 3.3.0beta6
 
-Improvements
+Note: if you use tmux 2.9 you should upgrade to
+2.9a, which fixes a crashing bug when using tmux
+integration mode (tmux -CC).
 
-- Simplify themes. Before, you could choose to use
-  the Minimal theme with the Normal window style,
-  but it looked terrible. Minimal looks good with
-  the Compact window style. Users were also
-  confused because the theme and window style are
-  tightly coupled visually but distant in prefs.
-  In this version, the compact window style is
-  gone. By selecting the Minimal theme, Normal
-  windows are automatically compact. The
-  "Automatic" theme has been renamed to "Regular",
-  and in this theme the Normal window style has a
-  title bar. A new theme, "Compact" has been added
-  which does away with the title bar but otherwise
-  looks more like a standard macOS app than does
-  Minimal.
-- Prevent repeated Print control sequences from
-  locking up a session.
-- Do not draw the area left of the first tab as
-  part of the first tab.
-- In minimal or compact theme, when the tabbar is
-  on top or bottom and tabs stretch to fit width
-  and you have one tab and you drag the tab and
-  drop it outside any window, move the window
-  instead of destroying the old one and creating a
-  new one at the new location, which had the
-  annoying side-effect of forgetting the Use
-  Transparency setting.
-- Allow fractional point sizes with new font
-  picker.
-- When restoring a window from an arrangement, try
-  to put windows fully on-screen. This is useful
-  if you have changed your displays since saving
-  the arrangement.
+New Features
+
+Other Improvements
+- Performance improvements for box drawing
+  characters when not using GPU renderer.
+- Performance improvements for opening long lists
+  of color presets.
+- Improve appearance of function call status bar
+  component.
+- Reveal script console when you click on a script
+  failure error.
+- Better error reporting for interpolated strings
+  in titles and status bar.
+- Respect system preference for double-clicking on
+  title bar in minimal theme.
 
 Bug Fixes
 
-- Fixes a problem on macOS 10.12 where sessions
-  would terminate immediately after opening.
-- Preserve both the prompt and a partially entered
-  command when clearing the screen.
-- Fix a bug where a window's title bar could
-  become transparent.
-- Fix a bug where the title bar could have the
-  wrong color.
-- Fixes a bug where the full screen tab bar could
-  be inset on the left.
-- Fixes crash on cmd-click to invoke smart
-  selection action.
-- Fixes various crashes.
-- Fix a bug where advanced initial working
-  directory prefs had the wrong defaults.
-- Fix a bug where using a session immediately
-  after creating it in AppleScript would have no
-  effect.
+- Fix substitution bugs in semantic history URLs.
+- Disable select-pane on tmux 2.9.
+- Fix small app icon.
+- Improve the appearance of status bar icons on
+  macOS 10.12.
+- Improve appearance of What's New window on macOS
+  10.12.
+- Fix text color of some status bar components.
+- Fix crashes.
 
 -------------------------------------------------
 
@@ -177,3 +152,4 @@ Other Improvements
   text under the cursor is an existing file.
 - Avoid blocking the main thread when creating a
   new session.
+
