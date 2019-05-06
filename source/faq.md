@@ -15,7 +15,7 @@ A: Go to Preferences->Profiles->Text and change the "Draw bold text in bold font
 A: Make sure you are running the latest version. Disable transparency and blur. Use a solid background color rather than an image. If you are on 3.2 or later, ensure the GPU renderer is enabled and that it can be used per the restrictions described at <a href="https://gitlab.com/gnachman/iterm2/wikis/Metal-Renderer">Metal Renderer</a>.
 
 #### Q: Why my arrow/HOME/END keys are not working?
-A: Check that the `$TERM` variable is correct. `xterm-256color` is recommended. `xterm-new` will also work. Make sure you do not have custom key bindings in **Preferences > Keys** or **Preferences > Profiles > Keys** for these keys. Disabling **Preferences > Keys > Allow application keypad mode** will prevent your terminal from getting stuck in application keypad mode, which often has the effect of breaking keys that normally work.
+A: Check that the `$TERM` variable is correct. `xterm-256color` is recommended. `xterm-new` will also work. Make sure you do not have custom key bindings in **Preferences > Keys** or **Preferences > Profiles > Keys** for these keys. Disabling **Preferences > Profiles > Keys > Allow application keypad mode** will prevent your terminal from getting stuck in application keypad mode, which often has the effect of breaking keys that normally work.
 
 #### Q: Where does iTerm2 store its settings?
 A: Preferences, including profiles, are stored in ~/Library/Preferences/com.googlecode.iterm2.plist. To modify it, use the "defaults" command. For example, to delete all settings, run:
