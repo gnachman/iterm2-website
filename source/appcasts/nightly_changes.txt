@@ -1,3 +1,63 @@
+2019-05-10: Improve docs on installing GTA
+
+2019-05-10: Parse tmux versions beginning with 'next-'
+
+2019-05-10: Fix two gnarly bugs:
+
+1. The expressions for script function calls which held the
+completion block could get dealloced before getting called.
+This could cause them not to be run at all. For example, a
+title provider that has a reference to
+tab.window.currentTab.currentSession.id has enough dangling
+references that are resolved late that the completion block
+is released before the script backing it responds. See the
+mailing list thread with subject line "How to reevaluate
+hook on window resize", may 10 2019 8:58 am
+
+2. The session name controller did not rebuild refs when a
+title provider was loaded after restoring a window with
+references to the not-yet-loaded title provider. This caused
+it to be called exactly once.
+
+This adds some extra debugging facilities. Now when you
+click on a variable in the inspector it logs its outstanding
+references to the console.
+
+2019-05-10: Force PTYSplitView to redraw itself after a
+subview is added or removed. Remember that no matter what
+problems you may have in your life, at least you're not
+responsible for maintaining NSSplitView. Issue 7798
+
+2019-05-10: Reduce floating hotkey window level to normal
+when any other window is key. Issue 6911
+
+2019-05-10: Never show a zero. Also, don't perform an
+inequality comparison between a pointer and 0
+
+2019-05-10: Hide battery time when the charging state is out
+of sync with the last sample. This means it'll take up to a
+minute to show the time, which I suppose I should fix
+eventually
+
+2019-05-10: Add status bar layout to keys to bulk copy.
+Issue 7793
+
+2019-05-10: Add knobs to battery component to show estimated
+time left and percentage. Fix time-left code in power
+manager
+
+2019-05-10: Polish the sparklines components. Make the
+current value available immediately. Store history in the
+publisher so new status bars get the history immediately.
+
+2019-05-10: When the current tab is removed select the one
+to the right, as the built-in tab bar control does. Issue
+7792
+
+2019-05-10: Add a workaround for the OS not reporting the
+numeric keypad flag. It's off by default until I can test it
+further or get follow up on issue 7780
+
 2019-05-09: Add a user scope per window and add an API to
 set values in it to Python
 
