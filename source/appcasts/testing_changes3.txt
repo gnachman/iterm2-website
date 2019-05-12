@@ -1,36 +1,49 @@
-iTerm2 version 3.3.0beta6
-
-Note: if you use tmux 2.9 you should upgrade to
-2.9a, which fixes a crashing bug when using tmux
-integration mode (tmux -CC).
+iTerm2 version 3.3.0beta7
 
 New Features
+- Battery level status bar component.
 
 Other Improvements
-- Performance improvements for box drawing
-  characters when not using GPU renderer.
-- Performance improvements for opening long lists
-  of color presets.
-- Improve appearance of function call status bar
-  component.
-- Reveal script console when you click on a script
-  failure error.
-- Better error reporting for interpolated strings
-  in titles and status bar.
-- Respect system preference for double-clicking on
-  title bar in minimal theme.
+- Improved error reporting for undefined
+  variables.
+- Add support for interpolated strings in tmux
+  window names.
+- Change natural text editing keyboard preset to
+  include cmd-left and cmd-right.
+- Improve appearance of status bar components with
+  graphs.
+- Work around a bug in tmux 2.9 that would crash
+  the tmux server when changing panes.
+- Adds support for user-defined API variables
+  per-window and globally.
+- When the current tab is closed select the one to
+  its right, like standard macOS tabs.
+- References to undefined variables in
+  interpolated strings are now treated as empty
+  string for backward compatibility with badges.
+- When a script archive is placed in the Scripts
+  folder offer to install it.
+- When the terminal type is set to VT100 report
+  device attributes of VT100, since we don't
+  support 8-bit CSI.
 
 Bug Fixes
-
-- Fix substitution bugs in semantic history URLs.
-- Disable select-pane on tmux 2.9.
-- Fix small app icon.
-- Improve the appearance of status bar icons on
-  macOS 10.12.
-- Improve appearance of What's New window on macOS
-  10.12.
-- Fix text color of some status bar components.
-- Fix crashes.
+- Show the tab's label, not the current session's
+  name, in the tabview tooltip.
+- The Tab.async_update_layout Python API now
+  works with tmux windows.
+- Fix a bug where bulk copying preferences didn't
+  copy status bar configs.
+- Fix a bug where the prefs window would be hidden
+  under a floating hotkey window.
+- Fix a bug where split pane dividers would
+  sometimes be the wrong color.
+- Fix a bug where session title provider functions
+  wouldn't always have their results displayed.
+- Fix a bug where restored windows would lose
+  their connection to the title provider.
+- Fix a bug where resource limits would be
+  different than the system default.
 
 -------------------------------------------------
 
@@ -152,4 +165,9 @@ Other Improvements
   text under the cursor is an existing file.
 - Avoid blocking the main thread when creating a
   new session.
+- Performance improvements for box drawing
+  characters when not using GPU renderer.
+- Performance improvements for opening long lists
+  of color presets.
+
 
