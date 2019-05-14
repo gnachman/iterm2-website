@@ -1,3 +1,59 @@
+2019-05-13: Work around macOS numeric keypad equals key bug.
+Issue 7780.
+
+2019-05-13: oops, forgot to git add this image
+
+2019-05-12: Fix failing
+iTermProcessCollectionTest.testCycle. I think this only ever
+passed because of an uninitialized value :O
+
+2019-05-12: Show power plug instead of battery in status bar
+for machines without batteries
+
+2019-05-12: Update travis goldens for macos 10.14, xcode
+10.2
+
+2019-05-12: Fix a bug where a CPSLRParser would have a
+dangling delegate pointer when it got reused. The fix is to
+cache many of them and nil the pointers out when they are
+explicilty released back into the cache
+
+Also fix a failing test due to the new
+sharedInstanceIfEnabled on iTermAPIHelper.
+
+2019-05-12: [python] bump version
+
+2019-05-12: Don't use I flag in dropbox uploader. Whatever
+sed Travis has doesn't like it
+
+2019-05-12: Report self as VT100 in DA when TERM=VT100.
+Issue 7803
+
+2019-05-12: Treat undefined variable refs in interpolated
+strings as empty string.
+
+Also: - Remove unneeded optional: arg from parsed
+expression's string initializer.  - Clean up errors in API
+helper - Add +[iTermAPIHelper sharedInstanceIfEnabled]. This
+was necessary because invoking a function that was not a
+builtin function would prompt you to enable the Python API,
+but the function is sure to be undefined and it could be a
+misspelling of a built-in function. So just treat that as an
+undefined function error without prompting to enable the
+API.
+
+2019-05-12: Add placeholders to expressions so you can get
+the AST.
+
+2019-05-12: Revert "Migrate non-optional variable references
+in badges when upgrading from <3.3 to >= 3.3. Issue 7795"
+
+This reverts commit
+905f0beba8442a71fce9b7c7deaf993d1adacf3c.
+
+2019-05-12: Save (at launch) and restore (before execing a
+child) resource limits. Issue 7808
+
 2019-05-11: Never change Restart to Start in script console
 
 2019-05-11: Disable hyphens in `code` in python api docs.
