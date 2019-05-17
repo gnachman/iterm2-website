@@ -1,3 +1,16 @@
+2019-05-16: Cap the number of task runners that the git
+status bar component can create to avoid runaway creation
+which I have personally experienced but don't have an
+explanation for yet
+
+2019-05-16: Prevent building process cache from blocking the
+main queue. While the work was done on another queue, it
+held a lock for a long time and processInfoForPid would
+block. Now there are two queues. lockQueue is only locked
+for a very short time to access data produced in the work
+queue. The work queue can take its time doing computation
+and then do a quick write on the lock queue
+
 2019-05-15: Fix warning
 
 2019-05-15: When tabs get small, make labels take priority
