@@ -1,3 +1,39 @@
+2019-05-18: Add set title methods to tab and window
+
+2019-05-18: Add better type checking for methods
+
+2019-05-18: Fix warnings in tests
+
+2019-05-18: Add support for method invocations from scripts.
+
+The purpose is to make it easier to add new scripting
+functionality without adding new protobuf interfaces. A
+method call is just like a function call except:
+
+1) It is marked as a method call in the RPC request 2) It
+must contain an "id" argument 3) The value of the "id"
+argument is a globally unique identifier for the receiver
+
+This commit adds support for a class creating a variables
+frame to mark one of its variables as a "primary key".
+Primary keys are added to the global index, and can be
+targeted by method calls.
+
+Varible references have been generalized not to depend on
+scopes, so that a variable may hold a reference to its own
+primary key.
+
+A class may support methods by: 1) Conforming to
+iTermObject, which is necessary to be the "owner" of an
+iTermVariables object.  2) Returning built-in functions from
+-objectMethodRegistry.
+
+Those built-in functions should be named as
+fooWithCompletion: followed by zero or more other arguments.
+Reflection is used to type check inputs, although it's
+unfortunately ineffective as it only recognizes NSObject.
+Better type checking is still needed.
+
 2019-05-16: Cap the number of task runners that the git
 status bar component can create to avoid runaway creation
 which I have personally experienced but don't have an
