@@ -1,49 +1,28 @@
-iTerm2 version 3.3.0beta7
+iTerm2 version 3.3.0beta8
 
 New Features
-- Battery level status bar component.
+- Adds support for crossed-out text (SGR 9)
 
 Other Improvements
-- Improved error reporting for undefined
-  variables.
-- Add support for interpolated strings in tmux
-  window names.
-- Change natural text editing keyboard preset to
-  include cmd-left and cmd-right.
-- Improve appearance of status bar components with
-  graphs.
-- Work around a bug in tmux 2.9 that would crash
-  the tmux server when changing panes.
-- Adds support for user-defined API variables
-  per-window and globally.
-- When the current tab is closed select the one to
-  its right, like standard macOS tabs.
-- References to undefined variables in
-  interpolated strings are now treated as empty
-  string for backward compatibility with badges.
-- When a script archive is placed in the Scripts
-  folder offer to install it.
-- When the terminal type is set to VT100 report
-  device attributes of VT100, since we don't
-  support 8-bit CSI.
+- Battery level status bar component shows a power
+  plug when running on a desktop machine.
+- Performance improvements.
+- Work around a macOS quirk where the equals sign
+  on the numeric keypad is not treated as a
+  numeric keypad key.
+- When tabs are very narrow, prefer to show the
+  tab label over the new-output/bell icon.
+- New Python APIs for setting session, tab, and
+  window name/title.
+- New Python API for prompting the user to enter
+  text.
 
 Bug Fixes
-- Show the tab's label, not the current session's
-  name, in the tabview tooltip.
-- The Tab.async_update_layout Python API now
-  works with tmux windows.
-- Fix a bug where bulk copying preferences didn't
-  copy status bar configs.
-- Fix a bug where the prefs window would be hidden
-  under a floating hotkey window.
-- Fix a bug where split pane dividers would
-  sometimes be the wrong color.
-- Fix a bug where session title provider functions
-  wouldn't always have their results displayed.
-- Fix a bug where restored windows would lose
-  their connection to the title provider.
-- Fix a bug where resource limits would be
-  different than the system default.
+- Fix crash when opening prefs on first launch.
+- Fix a bug where a lot of threads got created and
+  then the app hung.
+- Prevent git status bar component from creating
+  more than four child processes.
 
 -------------------------------------------------
 
@@ -54,7 +33,7 @@ New Features
 - A Python scripting API has been added to enable
   extensive configuration and customization. See
   https://iterm2.com/python-api for details.
-- A scriptable status bar has been added with 11
+- A scriptable status bar has been added with 12
   built-in configurable components.
 - A new "Minimal" theme has been added to reduce
   visual clutter.
@@ -169,5 +148,10 @@ Other Improvements
   characters when not using GPU renderer.
 - Performance improvements for opening long lists
   of color presets.
-
+- Change natural text editing keyboard preset to
+  include cmd-left and cmd-right.
+- Work around a bug in tmux 2.9 that would crash
+  the tmux server when changing panes.
+- When the current tab is closed select the one to
+  its right, like standard macOS tabs.
 
