@@ -1,3 +1,21 @@
+2019-05-22: Add an option for aggressive base character
+detection for issue 7788.
+
+2019-05-22: Fix some race conditions and bugs in terminating
+task runners. reset was called before terminate, which
+prevents terminate from doing anything. It was also possible
+to kill a task before it was launched, which means you think
+it's dead but it never dies.
+
+2019-05-22: Reset _numTouches aggressively since someone was
+able to get it stuck. Issue 7819
+
+2019-05-22: Update tabtitle to fix bugs.
+
+2019-05-22: Keep a reference to terminating command runners
+until the exit. Trying to fix a bug where some hang around
+but we lack pointers to them.
+
 2019-05-21: Use templates for the clock component's date
 
 2019-05-21: Fix a regression on 10.14 for background images
