@@ -1,3 +1,19 @@
+2019-05-25: Rename change default profile py to rst
+
+2019-05-25: Add test for APS accepting rule of *
+
+2019-05-25: Add change_default_profile example
+
+2019-05-25: Change how APS handles host name of '*'. Before,
+it would treat it as though there were no host rule at all.
+That worked well enough when some other component was
+provided, so *:/foo was equivalent to /foo. But it failed
+because a profile with a rule of * ought to outrank a
+profile with no rules at all.
+
+2019-05-25: Force triggers to evaluate and reset the
+triggerLine before switching profiles. Issue 7832
+
 2019-05-22: Add an option for aggressive base character
 detection for issue 7788.
 
