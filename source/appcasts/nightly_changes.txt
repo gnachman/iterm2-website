@@ -1,3 +1,58 @@
+2019-05-26: Fix failing tests. Looks like the tests were
+wrong all along :(
+
+2019-05-26: Respect system prefs>dock>prefer tabs when
+opening documents. This change is as small as possible,
+affecting only windows opened with the menu and by URL.
+
+The issue was raised here:
+https://gitlab.com/gnachman/iterm2/commit/f75987b19ec8624ca94cfa3ca31f962da9294daa#note_173974089
+
+2019-05-26: Tolerate empty iTermURLMark object. It is added
+on the line after a URL, which may be empty, but we don't
+want to lose it.
+
+2019-05-26: Don't reserve space for overflow button if none
+is visible. This will affect only 10.13 since 10.14 always
+has an add tab button. Issue 7811
+
+2019-05-26: Add gnachman.xcusersdatad to gitignore for
+better font picker
+
+2019-05-26: Remove gnachman.xcuserdatad
+
+2019-05-26: [BFP] Set more reasonable clamping boundaries
+for spacing size pickers and prevent them from wrapping
+around. Do not notify delegate of bogus values, which might
+be only transient while editing.
+
+2019-05-26: Don't change window size when switching profiles
+with APS. If an APS profile matches as soon as a new tab is
+created the window will shrink each time you create a new
+tab.
+
+2019-05-26: Fix a bug in handling APS rules with host of *.
+I was checking the actual host, not the rule, for equality
+to *.
+
+2019-05-26: Enable the add-tab button on macOS 10.14
+
+2019-05-26: Tab inset is always 0 pre-Mojave. Issue 7811.
+
+2019-05-26: Add support for spacing combining marks.
+
+A spacing combining mark is a character that combines
+(somehow) with a preceding base character. For example,
+TAMIL VOWEL SIGN E. They might combine in funny ways, like
+to the left of the base character. This commit does more or
+less what Terminal does, which is to give such a character
+its own cell but draw it in conjunction with the preceding
+character, provided the predecessor is drawable non-ascii.
+It is guarded by the advanced pref 'Detect base unicode
+characters with lookup table' which is a bit of a misnomer.
+I am not courageous enough to turn this on for 3.3, but
+perhaps a later dot release can have it by default.
+
 2019-05-25: Rename change default profile py to rst
 
 2019-05-25: Add test for APS accepting rule of *
