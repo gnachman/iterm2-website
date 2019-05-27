@@ -1,28 +1,48 @@
-iTerm2 version 3.3.0beta8
+iTerm2 version 3.3.0beta9
 
-New Features
-- Adds support for crossed-out text (SGR 9)
-
-Other Improvements
-- Battery level status bar component shows a power
-  plug when running on a desktop machine.
-- Performance improvements.
-- Work around a macOS quirk where the equals sign
-  on the numeric keypad is not treated as a
-  numeric keypad key.
-- When tabs are very narrow, prefer to show the
-  tab label over the new-output/bell icon.
-- New Python APIs for setting session, tab, and
-  window name/title.
-- New Python API for prompting the user to enter
-  text.
+Improvements
+- Change the clock component to use date templates
+  so they will always be localized properly.
+- Add an advanced setting to handle spacing
+  combining marks properly ("Detect base unicode
+  characters with lookup table").
+- The tab bar no shows an "add tab" button on the
+  right (macOS 10.14 only). On 10.13 and earlier,
+  tabs now go all the way to the right edge.
+- Don't change window size when applying an
+  automatic profile switching rule. This was
+  problematic when it would run immediately after
+  creating a tab because the window would shrink.
+- Respect System "Prefs>Dock>Prefer tabs when
+  opening documents".
 
 Bug Fixes
-- Fix crash when opening prefs on first launch.
-- Fix a bug where a lot of threads got created and
-  then the app hung.
-- Prevent git status bar component from creating
-  more than four child processes.
+- Fix a bug where triggers that post a
+  notifications did not work.
+- Fix a bug where split pane dividers do not
+  redraw correctly.
+- Fix wrong border color in full screen windows on
+  macOS 10.13 and earlier.
+- Fix the drawing of background images in macOS
+  10.13 and earlier, including geometry and
+  blending.
+- Fix drawing of background images on macOS 10.14
+  when there is a per-pane status bar on the
+  bottom.
+- Fix a bug where the git status bar component
+  could lead to hundreds of threads and an
+  eventual hang.
+- Handle missing touch-up events by resetting the
+  number of touches in various cases.
+- Fix a bug where triggers would not run when
+  switching profiles.
+- Fix how automatic profile switching handles a
+  rule with a hostname of "*". Before, it failed
+  to match.
+- Fix wrong inset in tab bar on macOS 10.13 and
+  earlier.
+- Fix various bugs in the font size and spacing
+  controls.
 
 -------------------------------------------------
 
@@ -75,6 +95,7 @@ New Features
   use custom one.
 - Search now remembers your 10 most recent queries
   and offers them as suggestions.
+- Adds support for crossed-out text (SGR 9)
 
 
 Other Improvements
@@ -154,4 +175,9 @@ Other Improvements
   the tmux server when changing panes.
 - When the current tab is closed select the one to
   its right, like standard macOS tabs.
+- Work around a macOS quirk where the equals sign
+  on the numeric keypad is not treated as a
+  numeric keypad key.
+- When tabs are very narrow, prefer to show the
+  tab label over the new-output/bell icon.
 
