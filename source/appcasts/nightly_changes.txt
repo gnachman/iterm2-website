@@ -1,3 +1,25 @@
+2019-05-29: Merge branch 'master' of
+github.com:gnachman/iTerm2
+
+2019-05-29: If you send CurrentDir but not RemoteHost,
+accept it as an old PWD when creating a new session. Issue
+5878.
+
+2019-05-29: iterm2_git_poll.sh tweaks (#385)
+
+* use `/usr/bin/env sh` for the shebang to allow a user's
+environment to dictate which `sh` is run * use locals to
+avoid leaking environment * use lowercase for locals *
+convert ~ in the received directory path to the user's HOME
+directory * use the more portable and clearer `test`
+conditional by using `[ ... ]` notation instead of the
+arithmetic expression `(( ... ))` * use `command` to locate
+the `git` binary 2019-05-29: Add a one-second delay before
+auto-restarting a session
+
+2019-05-29: Introduce a delay before restarting a session
+automatically
+
 2019-05-28: Uuse the same status-indicating text field cell
 for prefs folder as for session log folder
 
