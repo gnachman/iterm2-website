@@ -136,3 +136,5 @@ A: Paste bracketing was incorrectly left turned on. Paste bracketing is a featur
 #### Q: I can no longer change panes/tabs/windows with modifier + number.
 A: Turn on **Prefs > Keys > Emulate US Keyboard.** This change was made because some people were unable to type symbol characters that required a modifier + a key where a digit resides on a US keyboard, so the default was changed to not assume that the top row of keys were numeric.
 
+#### Q: Why can't I scroll with a Logitech mouse?
+A: Their drivers have a bug. Turn off the menu item **iTerm2 > Secure Keyboard Entry**. Complain to Logitech that their drivers are bad, or buy a mouse from a better brand.
