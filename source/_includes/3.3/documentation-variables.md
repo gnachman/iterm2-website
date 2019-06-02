@@ -24,13 +24,14 @@ The following variables are defined in the context of a session:
 
 #### Terminal
   * `columns` - Session's width in columns
-  * `rows` - The session's height in rows
-  * `tty` - The path to the local TTY device
+  * `commandLine` - Command line of the current foreground job (job name including arguments)
   * `jobName` - The name of the current foreground job (e.g., "emacs")
   * `jobPid` - The process ID of the current foreground job in this session.
   * `mouseReportingMode` - A number indicating how mouse events are reported. -1: Not reported, 0: button clicks reported, 1: not currently implemented, 2: reports clicks and drags, 3: reports clicks, drags, and movement
   * `pid` - The process ID of the root process in this session (typically `login`).
+  * `rows` - The session's height in rows
   * `termid` - Window, tab, and pane number as used in the `$TERM_SESSION_ID` environment variable.
+  * `tty` - The path to the local TTY device
 
 #### Shell Integration
 
@@ -38,8 +39,8 @@ These values require shell integration to be installed.
 
   * `hostname` - The current hostname
   * `lastCommand` - The last command run in the session
-  * `username` - The current user name
   * `path` - The current working directory (this works without shell integration, but not if you ssh elsewhere)
+  * `username` - The current user name
 
 #### Auto-Logging
   * `autoLogId` - When automatic logging is enabled, this is the random number portion of the filename.
@@ -54,12 +55,11 @@ These values require shell integration to be installed.
   * `tmuxWindowTitle` - If tmux integration is in use, this gives the name of the window title from tmux.
 
 #### References to Other Contexts
+  * `iterm2` - A reference to the variables belonging to the application (i.e., the global context)
   * `tab` - A reference to the variables belonging to the tab containing this session.
   * `user` - A context for user-set variables. Variables may be set with a custom control sequence or by using the [Python scripting API](https://www.iterm2.com/python-api). They are often set when using shell integration. See <a href="#user-defined-variables">**User-Defined Variables**</a> for more information.
-  * `iterm2` - A reference to the variables belonging to the application (i.e., the global context)
 
 #### Other
-
   * `badge` - The value of the badge. Note that the user can enter an interpolated string in the UI, but this value contains the string result of evaluating it.
   * `id` - A unique identifier for the session
   * `profileName` - The name of the current profile.
@@ -79,16 +79,15 @@ for details on setting them.
 <hr/>
 <a name="tab-context"></a>
 ### Tab Context
-
+  * `id` - The unique identifier for this tab.
   * `titleOverrideFormat` - An interpolated string giving the title to use for the tab. If not set, the session's title will be used. Note the session's title is configurable in **Prefs > Profiles > General > Title** and is not necessarily equal to the `autoName`, but may be derived from it (or not).
   * `titleOverride` - The value of `titleOverrideFormat` after evaluating it as an interpolated string.
   * `tmuxWindow` - In tmux integration, this is the tmux window number this tab represents.
-  * `id` - The unique identifier for this tab.
 
 #### References to Other Contexts
+  * `currentSession` - A reference to the context of the active session in this tab.
   * `iterm2` - A reference to the variables belonging to the application (i.e., the global context)
   * `window` - A reference to the context of the enclosing window
-  * `currentSession` - A reference to the context of the active session in this tab.
 
 <hr/>
 <a name="window-context"></a>
@@ -99,14 +98,12 @@ for details on setting them.
   * `iterm2` - A reference to the variables belonging to the application (i.e., the global context)
 
 #### Window Title
-
-  * `titleOverrideFormat` - The window's interpolated string title. If not set, the current tab's title is used.
   * `titleOverride` - The value from evaluating the interpeted string in `titleOverrideFormat`, if set.
+  * `titleOverrideFormat` - The window's interpolated string title. If not set, the current tab's title is used.
 
 <hr/>
 <a name="global-context"></a>
 ### Global Context
-
   * `effectiveTheme` - A space-delimited list of words describing the OS theme (e.g., "dark",  "light highContrast", "dark minimal")
   * `localhostName` - The best guess of what localhost's hostname is
   * `pid` - The process ID of the iTerm2 app
