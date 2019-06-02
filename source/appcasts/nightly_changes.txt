@@ -1,3 +1,40 @@
+2019-06-01: Add job with arguments as title component. Issue
+7289
+
+2019-06-01: Use suggesters for profile name text fields
+
+2019-06-01: Add commandLine variable in session scope that
+includes arguments
+
+2019-06-01: Reduce
+iTermWebSocketConnectionMinimumPythonLibraryVersion to avoid
+needlessly breaking existing full-environment scripts
+
+2019-06-01: Bump min python environment version to 50 to
+mitigate the error reporting issue
+
+2019-06-01: Bump python module version to 0.69.  Catch
+status code 406, which we use to mean the python lib is too
+old. Print a nice error.
+
+2019-06-01: Add Session.async_set_profile(). Issue 7782
+
+- Add Profile.local_write_only_copy - Add
+Session.async_set_profile - Make iTerm2 report its version
+to the websocket client - Add a capabilities check so the
+python library can be backward-compatible with older
+versions of iTerm2 by using deprecated APIs for them.  - Add
+the ability to set multiple profile properties at once from
+Python. Deprecate the one-at-a-time API.  - If you try to
+set session-specific profile values that are effectively
+equal to a shared profile, just switch to the shared
+profile. If they include a GUID matching a shared profile,
+switch to it and then divorce and modify.  - Bump the min
+library version to 0.69 - Improve validation of API requests
+to set profile properties.  - Expose the set of
+non-deprecated keys from iTermProfilePreferences.  - Remove
+default profile values for deprecated keys
+
 2019-06-01: Center the prefs panel the first time it's used
 
 2019-05-31: Fix wrong durations in paste tests since the
