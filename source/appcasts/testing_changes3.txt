@@ -1,48 +1,46 @@
-iTerm2 version 3.3.0beta9
+iTerm2 version 3.3.0beta10
+
+New Features
+- Add support for automatically restarting a
+  session when it ends.
 
 Improvements
-- Change the clock component to use date templates
-  so they will always be localized properly.
-- Add an advanced setting to handle spacing
-  combining marks properly ("Detect base unicode
-  characters with lookup table").
-- The tab bar no shows an "add tab" button on the
-  right (macOS 10.14 only). On 10.13 and earlier,
-  tabs now go all the way to the right edge.
-- Don't change window size when applying an
-  automatic profile switching rule. This was
-  problematic when it would run immediately after
-  creating a tab because the window would shrink.
-- Respect System "Prefs>Dock>Prefer tabs when
-  opening documents".
+- Improve color of line between tabbar and
+  content.
+- Don't draw window borders for opaque windows on
+  10.14, since it already draws a nicer one.
+- Reduce default fast paste speed.
+- Add support for tmux release candidates.
+- Add support for non-localized date formats in
+  the clock status bar component.
+- Add commandLine variable in session scope that
+  is the current job plus arguments.
+- Add support for showing the job with arguments
+  in the session title.
+- Close buttons for tabs are now hidden by
+  default. A new preference allows you to remove
+  them altogether. Remove the old preference for
+  hiding them by default.
 
 Bug Fixes
-- Fix a bug where triggers that post a
-  notifications did not work.
-- Fix a bug where split pane dividers do not
-  redraw correctly.
-- Fix wrong border color in full screen windows on
-  macOS 10.13 and earlier.
-- Fix the drawing of background images in macOS
-  10.13 and earlier, including geometry and
-  blending.
-- Fix drawing of background images on macOS 10.14
-  when there is a per-pane status bar on the
-  bottom.
-- Fix a bug where the git status bar component
-  could lead to hundreds of threads and an
-  eventual hang.
-- Handle missing touch-up events by resetting the
-  number of touches in various cases.
-- Fix a bug where triggers would not run when
-  switching profiles.
-- Fix how automatic profile switching handles a
-  rule with a hostname of "*". Before, it failed
-  to match.
-- Fix wrong inset in tab bar on macOS 10.13 and
-  earlier.
-- Fix various bugs in the font size and spacing
-  controls.
+- Fix discrepancy between GPU and legacy renderer
+  for marks.
+- Fix a bug where transparent no-titlebar windows
+  in regular theme would keep the tabbar backing
+  after hiding the tabbar.
+- Expand tilde in current directory in git
+  statusbar component.
+- If the current directory is set by control
+  sequence but the hostname is not, use it for
+  setting the old working directory when creating
+  a new session.
+- Fix a bug where the window shortcut would not
+  appear in the title bar after changing theme.
+- Fix a bug where the menu bar stayed open after
+  enabling input broadcasting in full screen.
+- Fix crashes.
+- Add support for title providers in tmux
+  integration mode.
 
 -------------------------------------------------
 
@@ -180,4 +178,9 @@ Other Improvements
   numeric keypad key.
 - When tabs are very narrow, prefer to show the
   tab label over the new-output/bell icon.
+- Add an advanced setting to handle spacing
+  combining marks properly ("Detect base unicode
+  characters with lookup table").
+- Respect System "Prefs>Dock>Prefer tabs when
+  opening documents".
 
