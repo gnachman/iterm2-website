@@ -1,3 +1,36 @@
+2019-06-05: Ignore shift key to force vertical zoom when
+zoom was invoked by a keystroke. Issue 7858
+
+2019-06-05: Check for double-click in tabbar on mouse up,
+not mouse down. In mousedown was bad because mouse-up would
+think you double clicked in the just-created tab. Issue 7866
+
+2019-06-05: [python] Bump version
+
+2019-06-05: [python] Add mrutabs2 example
+
+2019-06-05: [python] Rename get_tab_and_window_for_session
+to get_window_and_tab_for_session to match the order of the
+values in the returned tuple
+
+2019-06-05: Post session will terminate notification before
+focus changes so that lifecycle events occur before focus
+events in scripts
+
+2019-06-05: Improvements to API layout change handling.
+
+- Send layout change notification on window close, tab
+close, session
+  terminate, and window create.
+- Ensure layout change notification occurs before
+window-did-become-key
+  notification.
+_ [python] App should use the layout change in the layout
+change notification
+  rather than requesting one. This ensure that it can
+  complete updating the hierarchy synchronously, which means
+  focus monitors will run after its state is updated.
+
 2019-06-03: Add link to date format patterns from status bar
 clock component format knob view
 
