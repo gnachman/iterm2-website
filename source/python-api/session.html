@@ -336,6 +336,33 @@ not yet created.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="iterm2.Session.async_run_tmux_command">
+<code class="descname">async_run_tmux_command</code><span class="sig-paren">(</span><em>command: str</em>, <em>timeout: float = -1</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.Session.async_run_tmux_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoke a tmux command and return its result. Raises an exception if this session is not a tmux integration session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>command</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The tmux command to run.</li>
+<li><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – The amount of time to wait for a response, or -1 to use the default.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The output from tmux.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="iterm2.Session.async_send_text">
 <code class="descname">async_send_text</code><span class="sig-paren">(</span><em>text: str</em>, <em>suppress_broadcast: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_send_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send text as though the user had typed it.</p>
@@ -412,6 +439,25 @@ not yet created.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="iterm2.Session.async_set_profile">
+<code class="descname">async_set_profile</code><span class="sig-paren">(</span><em>profile: iterm2.profile.Profile</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_set_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes this session’s profile.</p>
+<p>The profile may be an existing profile, an existing
+profile with modifications, or a previously uknown
+profile with a unique GUID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Profile</span></code>) – The <cite>~iterm2.profile.Profile</cite> to use.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="iterm2.Session.async_set_profile_properties">
 <code class="descname">async_set_profile_properties</code><span class="sig-paren">(</span><em>write_only_profile: iterm2.profile.LocalWriteOnlyProfile</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_set_profile_properties" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the value of properties in this session.</p>
@@ -420,14 +466,9 @@ not yet created.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> – The name of the property</li>
-<li><strong>write_only_profile</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">LocalWriteOnlyProfile</span></code>) – A write-only profile that has the desired changes.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>write_only_profile</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">LocalWriteOnlyProfile</span></code>) – A write-only profile that has the desired changes.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
-</td>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
 </tr>
 </tbody>
 </table>

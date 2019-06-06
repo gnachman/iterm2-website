@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Select MRU On Close &#8212; iTerm2 Python API 0.26 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  </head><body>
+  <header >
+    <div class="row">
+      <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="text-center"><a href="/index.html"><img src="https://iterm2.com/img/logo2x.jpg" width=800 height=312></a></div>
+        <div class="sticky contain-to-grid">
+          <nav class="top-bar" data-topbar>
+            <ul class="title-area">
+              <li class="name">
+
+              </li>
+              <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+              <li class="small-screen-donate">
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+            </ul>
+
+            <section class="top-bar-section">
+              <!-- Right Nav Section -->
+              <ul class="right"> <li>
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li><a href="/index.html">Home</a></li>
+            <li ><a href="/news.html">News</a></li>
+            <li ><a href="/features.html">Features</a></li>
+            <li ><a href="/faq.html">FAQ</a></li>
+            <li class="active"><a href="/documentation.html">Documentation</a></li>
+            <li ><a href="/downloads.html">Downloads</a></li>
+          </ul>
+        </section>
+      </nav>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+    <div class="document">
+<div class="row">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
+
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
+            </div>
+
+            <hr/>
+
+      <div class="documentwrapper">
+	<div class="bodywrapper">
+	  <div class="body" role="main">
+	    
+  <div class="section" id="select-mru-on-close">
+<span id="mrutabs2-example"></span><h1>Select MRU On Close<a class="headerlink" href="#select-mru-on-close" title="Permalink to this headline">¶</a></h1>
+<p>When the current tab or session closes, this script selects the next most recently used tab or session.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.7</span>
+<span class="c1">#</span>
+<span class="c1"># This script selects the most recently used tab or split pane when the current</span>
+<span class="c1"># tab or split pane closes.</span>
+
+<span class="kn">import</span> <span class="nn">iterm2</span>
+
+<span class="n">window_id_to_tab_ids</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">tab_id_to_session_ids</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">def</span> <span class="nf">init_window</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initialize the window -&gt; tab list for one window&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">window_id_to_tab_ids</span>
+    <span class="n">window_id_to_tab_ids</span><span class="p">[</span><span class="n">window</span><span class="o">.</span><span class="n">window_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span> <span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">:</span>
+        <span class="n">init_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">init_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initialize the tab -&gt; session list for one tab&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">tab_id_to_session_ids</span>
+    <span class="n">tab_id_to_session_ids</span><span class="p">[</span><span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">init_window_if_needed</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Record the tab order in window w if it doesn&#39;t already exist.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">window_id_to_tab_ids</span>
+    <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">window_id</span> <span class="ow">in</span> <span class="n">window_id_to_tab_ids</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">init_window</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">init_tab_if_needed</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Record the tab order in tab t if it doesn&#39;t already exist.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">tab_id_to_session_ids</span>
+    <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">tab_id</span> <span class="ow">in</span> <span class="n">tab_id_to_session_ids</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">init_tab</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">refresh_window</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove defunct tabs and add new tabs to tab list for window&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">window_id_to_tab_ids</span>
+    <span class="n">tab_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span> <span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">))</span>
+
+    <span class="c1"># Remove defunct tabs</span>
+    <span class="k">if</span> <span class="n">window</span><span class="o">.</span><span class="n">window_id</span> <span class="ow">in</span> <span class="n">window_id_to_tab_ids</span><span class="p">:</span>
+        <span class="n">existing</span> <span class="o">=</span> <span class="n">window_id_to_tab_ids</span><span class="p">[</span><span class="n">window</span><span class="o">.</span><span class="n">window_id</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">existing</span>  <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">updated</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tab_ids</span><span class="p">,</span> <span class="n">existing</span><span class="p">))</span>
+
+    <span class="c1"># Add any newly discovered tabs to the end</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">tab_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">updated</span><span class="p">:</span>
+            <span class="n">updated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">tab_id</span><span class="p">)</span>
+
+    <span class="n">window_id_to_tab_ids</span><span class="p">[</span><span class="n">window</span><span class="o">.</span><span class="n">window_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated</span>
+
+<span class="k">def</span> <span class="nf">refresh_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove defunct sessions and add new sessions to session list for tab&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">tab_id_to_session_ids</span>
+    <span class="n">session_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">))</span>
+
+    <span class="c1"># Remove defunct sessions</span>
+    <span class="k">if</span> <span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span> <span class="ow">in</span> <span class="n">tab_id_to_session_ids</span><span class="p">:</span>
+        <span class="n">existing</span> <span class="o">=</span> <span class="n">tab_id_to_session_ids</span><span class="p">[</span><span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">existing</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">updated</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">session_ids</span><span class="p">,</span> <span class="n">existing</span><span class="p">))</span>
+
+    <span class="c1"># Add any newly discovered sessions to the end</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">session_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">updated</span><span class="p">:</span>
+            <span class="n">updated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
+
+    <span class="n">tab_id_to_session_ids</span><span class="p">[</span><span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated</span>
+
+<span class="k">def</span> <span class="nf">get_mru_tab_id</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the most recently used tab ID in this window&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">window_id_to_tab_ids</span>
+    <span class="k">if</span> <span class="n">window</span><span class="o">.</span><span class="n">window_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">window_id_to_tab_ids</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="n">tab_ids</span> <span class="o">=</span> <span class="n">window_id_to_tab_ids</span><span class="p">[</span><span class="n">window</span><span class="o">.</span><span class="n">window_id</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tab_ids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">tab_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">get_mru_session_id</span><span class="p">(</span><span class="n">tab</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the most recently used session ID in this tab&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">tab_id_to_session_ids</span>
+    <span class="k">if</span> <span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tab_id_to_session_ids</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="n">session_ids</span> <span class="o">=</span> <span class="n">tab_id_to_session_ids</span><span class="p">[</span><span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">session_ids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">session_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">get_successor_tab_id</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;When a tab is closed, select the next most recently used tab. Remove any defunct tabs from the MRU list.&quot;&quot;&quot;</span>
+    <span class="n">refresh_window</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="n">mru_tab_id</span> <span class="o">=</span> <span class="n">get_mru_tab_id</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mru_tab_id</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">mru_tab_id</span> <span class="o">==</span> <span class="n">tab_id</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">mru_tab_id</span>
+
+<span class="k">def</span> <span class="nf">get_successor_session_id</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">tab</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;When a session is closed, select the next most recently used session. Remove any defunct sessions from the MRU list.&quot;&quot;&quot;</span>
+    <span class="n">refresh_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+    <span class="n">mru_session_id</span> <span class="o">=</span> <span class="n">get_mru_session_id</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mru_session_id</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">mru_session_id</span> <span class="o">==</span> <span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">mru_session_id</span>
+
+<span class="k">def</span> <span class="nf">update_mru_tab</span><span class="p">(</span><span class="n">window_id</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;When a tab gets selected, move it to the head of the MRU list&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">window_id_to_tab_ids</span>
+    <span class="k">if</span> <span class="n">window_id</span> <span class="ow">in</span> <span class="n">window_id_to_tab_ids</span><span class="p">:</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">window_id_to_tab_ids</span><span class="p">[</span><span class="n">window_id</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">tab_id</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">tab_id</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">ids</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">)</span>
+    <span class="n">window_id_to_tab_ids</span><span class="p">[</span><span class="n">window_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">ids</span>
+
+<span class="k">def</span> <span class="nf">update_mru_session</span><span class="p">(</span><span class="n">tab_id</span><span class="p">,</span> <span class="n">session_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;When a session gets selected, move it to the head of the MRU list&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">tab_id_to_session_ids</span>
+    <span class="k">if</span> <span class="n">tab_id</span> <span class="ow">in</span> <span class="n">tab_id_to_session_ids</span><span class="p">:</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">tab_id_to_session_ids</span><span class="p">[</span><span class="n">tab_id</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">session_id</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">ids</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span>
+    <span class="n">tab_id_to_session_ids</span><span class="p">[</span><span class="n">tab_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">ids</span>
+
+<span class="k">def</span> <span class="nf">tab_known</span><span class="p">(</span><span class="n">tab_id</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Do we already know about this tab and window combination?&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">window_id_to_tab_ids</span>
+    <span class="k">if</span> <span class="n">window</span><span class="o">.</span><span class="n">window_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">window_id_to_tab_ids</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="n">tab_id</span> <span class="ow">in</span> <span class="n">window_id_to_tab_ids</span><span class="p">[</span><span class="n">window</span><span class="o">.</span><span class="n">window_id</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">session_known</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="n">tab</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Do we already know about this session and tab combination?&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">tab_id_to_session_ids</span>
+    <span class="k">if</span> <span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tab_id_to_session_ids</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="n">session_id</span> <span class="ow">in</span> <span class="n">tab_id_to_session_ids</span><span class="p">[</span><span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">window_has_closed_tabs</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Are there tab IDs in the MRU list not in the actual set of tabs?&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">window_id_to_tab_ids</span>
+    <span class="n">actual_tab_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span> <span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">mru_tab_id</span> <span class="ow">in</span> <span class="n">window_id_to_tab_ids</span><span class="p">[</span><span class="n">window</span><span class="o">.</span><span class="n">window_id</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">mru_tab_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">actual_tab_ids</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span>
+
+<span class="k">def</span> <span class="nf">tab_has_closed_sessions</span><span class="p">(</span><span class="n">tab</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Are there session IDs in the MRU list not in the actual set of sessions?&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">tab_id_to_session_ids</span>
+    <span class="n">actual_session_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">mru_session_id</span> <span class="ow">in</span> <span class="n">tab_id_to_session_ids</span><span class="p">[</span><span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">mru_session_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">actual_session_ids</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span>
+
+<span class="k">def</span> <span class="nf">add_tab_to_window</span><span class="p">(</span><span class="n">window_id</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add a tab ID to the MRU list for a window.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">window_id_to_tab_ids</span>
+    <span class="k">if</span> <span class="n">window_id</span> <span class="ow">in</span> <span class="n">window_id_to_tab_ids</span><span class="p">:</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">window_id_to_tab_ids</span><span class="p">[</span><span class="n">window_id</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ids</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">)</span>
+    <span class="n">window_id_to_tab_ids</span><span class="p">[</span><span class="n">window_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">ids</span>
+
+<span class="k">def</span> <span class="nf">add_session_to_tab</span><span class="p">(</span><span class="n">tab_id</span><span class="p">,</span> <span class="n">session_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add a session ID to the MRU list for a tab.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">tab_id_to_session_ids</span>
+    <span class="k">if</span> <span class="n">tab_id</span> <span class="ow">in</span> <span class="n">tab_id_to_session_ids</span><span class="p">:</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">tab_id_to_session_ids</span><span class="p">[</span><span class="n">tab_id</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ids</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span>
+    <span class="n">tab_id_to_session_ids</span><span class="p">[</span><span class="n">tab_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">ids</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">terminal_windows</span><span class="p">:</span>
+        <span class="n">init_window</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">handle_close_tab</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A tab was closed&quot;&quot;&quot;</span>
+        <span class="n">mru_tab_id</span> <span class="o">=</span> <span class="n">get_successor_tab_id</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mru_tab_id</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">tab</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_tab_by_id</span><span class="p">(</span><span class="n">mru_tab_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tab</span><span class="p">:</span>
+            <span class="n">await</span> <span class="n">tab</span><span class="o">.</span><span class="n">async_select</span><span class="p">()</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">handle_close_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">tab</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A session was closed&quot;&quot;&quot;</span>
+        <span class="n">mru_session_id</span> <span class="o">=</span> <span class="n">get_successor_session_id</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">tab</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mru_session_id</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">mru_session_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">session</span><span class="p">:</span>
+            <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_activate</span><span class="p">()</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">handle_selected_tab_changed</span><span class="p">(</span><span class="n">tab_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The selected tab changed&quot;&quot;&quot;</span>
+        <span class="n">tab</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_tab_by_id</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">selected_tab_changed</span><span class="o">.</span><span class="n">tab_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">tab</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_window_for_tab</span><span class="p">(</span><span class="n">tab_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">window</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">init_tab_if_needed</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+        <span class="n">init_window_if_needed</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">tab_known</span><span class="p">(</span><span class="n">tab_id</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+            <span class="n">add_tab_to_window</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">window_id</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">window_has_closed_tabs</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+            <span class="n">await</span> <span class="n">handle_close_tab</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">update_mru_tab</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">window_id</span><span class="p">,</span> <span class="n">tab_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">handle_window_became_key</span><span class="p">(</span><span class="n">window_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A window got keyboard focus&quot;&quot;&quot;</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_window_by_id</span><span class="p">(</span><span class="n">window_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">w</span><span class="p">:</span>
+            <span class="n">init_window_if_needed</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">handle_session_selected</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The selected session changed&quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">window</span><span class="p">,</span> <span class="n">tab</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_tab_and_window_for_session</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">tab</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">init_tab_if_needed</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+        <span class="n">init_window_if_needed</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">session_known</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="n">tab</span><span class="p">):</span>
+            <span class="n">add_session_to_tab</span><span class="p">(</span><span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">tab_has_closed_sessions</span><span class="p">(</span><span class="n">tab</span><span class="p">):</span>
+            <span class="n">await</span> <span class="n">handle_close_session</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">tab</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">update_mru_session</span><span class="p">(</span><span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
+
+    <span class="c1"># Watch for changes to keyboard focus and update state and active tab/session as needed.</span>
+    <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">FocusMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">monitor</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">update</span> <span class="o">=</span> <span class="n">await</span> <span class="n">monitor</span><span class="o">.</span><span class="n">async_get_next_update</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">update</span><span class="o">.</span><span class="n">selected_tab_changed</span><span class="p">:</span>
+                <span class="n">await</span> <span class="n">handle_selected_tab_changed</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">selected_tab_changed</span><span class="o">.</span><span class="n">tab_id</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">update</span><span class="o">.</span><span class="n">active_session_changed</span><span class="p">:</span>
+                <span class="n">await</span> <span class="n">handle_session_selected</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">active_session_changed</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">window_changed</span> <span class="ow">and</span>
+                    <span class="n">update</span><span class="o">.</span><span class="n">window_changed</span><span class="o">.</span><span class="n">event</span> <span class="o">==</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">FocusUpdateWindowChanged</span><span class="o">.</span><span class="n">Reason</span><span class="o">.</span><span class="n">TERMINAL_WINDOW_BECAME_KEY</span><span class="p">):</span>
+                <span class="n">handle_window_became_key</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">window_changed</span><span class="o">.</span><span class="n">window_id</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference download internal" download="" href="../_downloads/9a7b72788dd5dac228ba22b223f6cd87/mrutabs2.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+</div>
+
+
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script type="text/javascript">
+  function showId(id) {
+    document.getElementById("changelist" + id).style.display = 'block';
+    document.getElementById("show" + id).style.display = 'none';
+    document.getElementById("hide" + id).style.display = 'inline';
+  }
+
+  function hideId(id) {
+    document.getElementById("changelist" + id).style.display = 'none';
+    document.getElementById("show" + id).style.display = 'inline';
+    document.getElementById("hide" + id).style.display = 'none';
+  }
+  $(document).foundation();
+</script>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, George Nachman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="../_sources/examples/mrutabs2.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
