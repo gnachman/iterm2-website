@@ -1,46 +1,29 @@
-iTerm2 version 3.3.0beta10
-
-New Features
-- Add support for automatically restarting a
-  session when it ends.
+iTerm2 version 3.3.0beta11
 
 Improvements
-- Improve color of line between tabbar and
-  content.
-- Don't draw window borders for opaque windows on
-  10.14, since it already draws a nicer one.
-- Reduce default fast paste speed.
-- Add support for tmux release candidates.
-- Add support for non-localized date formats in
-  the clock status bar component.
-- Add commandLine variable in session scope that
-  is the current job plus arguments.
-- Add support for showing the job with arguments
-  in the session title.
-- Close buttons for tabs are now hidden by
-  default. A new preference allows you to remove
-  them altogether. Remove the old preference for
-  hiding them by default.
+- Git status bar component can now indicate the
+  presence of unstaged adds and deletions.
+- Add link to help page describing date format
+  strings for clock status bar component.
+- Disregard system prefs > dock > prefer tabs
+  setting by default. Adds an advanced pref to
+  allow it to be used.
 
 Bug Fixes
-- Fix discrepancy between GPU and legacy renderer
-  for marks.
-- Fix a bug where transparent no-titlebar windows
-  in regular theme would keep the tabbar backing
-  after hiding the tabbar.
-- Expand tilde in current directory in git
-  statusbar component.
-- If the current directory is set by control
-  sequence but the hostname is not, use it for
-  setting the old working directory when creating
-  a new session.
-- Fix a bug where the window shortcut would not
-  appear in the title bar after changing theme.
-- Fix a bug where the menu bar stayed open after
-  enabling input broadcasting in full screen.
-- Fix crashes.
-- Add support for title providers in tmux
-  integration mode.
+- Change how events are reported to Python scripts
+  so that focus changes will be reported after
+  layout changes so that focus change monitors
+  will have up-to-date layout info.
+- Fix a bug where double-clicking on the tab bar
+  near the last tab would open the tab name
+  dialog.
+- Ignore the shift key when using a shortcut that
+  includes the shift key to zoom the window.
+  Normally the shift key forces zoom vertically
+  only.
+- Fix a bug where pressing a modifier key between
+  clicks of a double-click caused the selection to
+  be erased.
 
 -------------------------------------------------
 
@@ -94,6 +77,8 @@ New Features
 - Search now remembers your 10 most recent queries
   and offers them as suggestions.
 - Adds support for crossed-out text (SGR 9)
+- Add support for automatically restarting a
+  session when it ends.
 
 
 Other Improvements
@@ -183,4 +168,5 @@ Other Improvements
   characters with lookup table").
 - Respect System "Prefs>Dock>Prefer tabs when
   opening documents".
+- Reduce default fast paste speed.
 
