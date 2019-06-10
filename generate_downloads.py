@@ -90,7 +90,7 @@ def ChangeLog(zip):
     if len(content):
         id = abs(hash(zip))
         content = \
-'''<p><a href="javascript:showId('%s')" id='show%s'>&#x25b8; Show Changelog</a>
+'''<p><a href="javascript:showId('%s')" id='show%s'>&#x25b8; Show Changelog</a></p>
 <a href="javascript:hideId('%s')" id='hide%s' style="display: none">&#x25be; Hide Changelog</a>
 <pre id="changelist%s" style="display: none">%s</pre></p>''' % (id, id, id, id, id, content)
     return content
@@ -137,7 +137,7 @@ for sectionName,path,note,tracks in DOWNLOADS_PATHS:
 	  haveArchive = True
 	  key = "older_%d" % j
 	  j += 1
-	  print '''<p><a href="javascript:showId('%s')" id='show%s'>&#x25b8; Show Older Versions</a>
+	  print '''<p><a href="javascript:showId('%s')" id='show%s'>&#x25b8; Show Older Versions</a></p>
   <a href="javascript:hideId('%s')" id='hide%s' style="display: none">&#x25be; Hide Older Versions</a>
   <div id="changelist%s" style="margin-left: 15pt; display: none"><h3>Older %s</h3>''' % (key, key, key, key, key, sectionName)
 	i += 1
