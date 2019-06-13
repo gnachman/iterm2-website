@@ -1,3 +1,106 @@
+2019-06-12: Don't draw division view when there is a
+transparent titlebar
+
+2019-06-12: Show window border when using light theme. Issue
+7884
+
+2019-06-12: Revamp titles in tmux integration
+
+As of tmux 2.6 and later: - Windows have names, as always -
+Panes have titles (vended with #{pane_title}) - Windows kind
+of have titles. If set-titles is on, the title is formatted
+by set-titles-string.
+
+We now use the #{pane_title} for session titles. If
+set-titles is on then we use the formatted set-titles-string
+for the tab title. The window title is the current session's
+title.
+
+In detail:
+
+- Add iTermTmuxOptionMonitor that can request tmux
+display-message either once
+  or periodically for a given format.
+
+- Add KEY_TMUX_PANE_TITLE to hold the tmux pane title. This
+allows the session
+  to communicate the tmux #{pane_title} to the Edit Session
+  dialog. It's not a "real" preference. Its only meaning is
+  to exist temporarily to solve this problem.
+
+- Eliminate support for interpolated strings in tmux window
+titles. It was
+  unnecessary complexity. It can be added later if anyone
+  cares.
+
+- Remove iTermVariableKeySessionTmuxWindowTitle and
+  iTermVariableKeySessionTmuxWindowTitleEval.
+
+- Add iTermVariableKeySessionTmuxPaneTitle.
+
+- When using tmux 2.6+, rename panes programatically when
+changing a session
+  title with Edit Session. Otherwise, rename the window as
+  before.
+
+- Pull the #{pane_title} periodicallyon initialization, and
+various other
+  times like when we get a control sequence that would
+  rename a pane.
+
+- Load set-titles and set-titles-string on connecting to
+tmux to decide how
+  window titles ought to work.
+
+- Make PTYTab add the tmux indicator  to the title just
+before setting the
+  label. It pulls the window name from the new
+  iTermVariableKeyTabTmuxWindowName variable. Use that
+  instead of the session's tmuxWindowTitleEval.
+
+- PTYTab pulls the window title periodically, such as after
+creation, when we
+  see a window was renamed, or when the active session
+  changes.
+
+- Use the title override variable to show
+iTermVariableKeyTabTmuxWindowTitle as
+  the tab title when set-title is on.
+
+- When you rename a tab with Edit Session or Edit Tab Title,
+rename the tmux
+  window. This works because the default set-title-string
+  includes the window name.
+
+- Change edit session to call iterm2.set_title on the
+session-being-edited's
+  tab rather than updating the tabTitleOverrideFormat
+  directly so it can rename the window when using tmux.
+
+- Don't crash if you call a method with a nil completion
+block.
+
+- Change the builtin session title function to prefer the
+tmux window name for
+  window titles or the pane title for session titles.
+
+- Fix the data type of iTermVariableScope.tabID to be a
+string.
+
+Here are the results of my tests
+
+		 3.2.9/2.9a       3.3/2.5          3.3/2.9a
+OSC 0            1                3                3 OSC 2
+-                -                5 esc k            1
+4                6 Edit Session     2                4
+3 Rename window    2                4                4
+
+-: No effect.  1: Session is renamed, but is not durable.
+2: All panes and tab are renamed. Durable.  3: Rename just
+session. Durable.  4: Rename tab/tmux window. Durable.  5:
+Updates pane title. Durable.  6: Causes pane title to be
+updated by iTerm2, but does not seem to affect tmux.
+
 2019-06-09: Don't release the system bold font (#386)
 
 Fixes a crash on 10.15 2019-06-09: Use a better test for
