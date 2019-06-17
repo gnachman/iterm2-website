@@ -1,29 +1,23 @@
-iTerm2 version 3.3.0beta11
+iTerm2 version 3.3.0beta12
 
 Improvements
-- Git status bar component can now indicate the
-  presence of unstaged adds and deletions.
-- Add link to help page describing date format
-  strings for clock status bar component.
-- Disregard system prefs > dock > prefer tabs
-  setting by default. Adds an advanced pref to
-  allow it to be used.
+- Revamp titles in tmux integration mode. Pane
+  titles and window names are now distinct when
+  using tmux 2.6 or later. set-titles and
+  set-titles-string is now respected. 
+- Draw window borders on macOS 10.14 when using
+  the light theme.
 
 Bug Fixes
-- Change how events are reported to Python scripts
-  so that focus changes will be reported after
-  layout changes so that focus change monitors
-  will have up-to-date layout info.
-- Fix a bug where double-clicking on the tab bar
-  near the last tab would open the tab name
-  dialog.
-- Ignore the shift key when using a shortcut that
-  includes the shift key to zoom the window.
-  Normally the shift key forces zoom vertically
-  only.
-- Fix a bug where pressing a modifier key between
-  clicks of a double-click caused the selection to
-  be erased.
+- Fix a crash on macOS 10.15 beta
+- Don't draw line under tabbar when there is a
+  transparent title bar.
+- Fix a bug where sessions would resize briefly
+  when the tabbar shows or hides.
+- Fix order of parameters for function keys in CSI
+  u mode.
+- Handle report user/hostname trigger correctly
+  when the username includes and at sign.
 
 -------------------------------------------------
 
@@ -169,4 +163,3 @@ Other Improvements
 - Respect System "Prefs>Dock>Prefer tabs when
   opening documents".
 - Reduce default fast paste speed.
-
