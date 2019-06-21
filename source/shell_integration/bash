@@ -570,7 +570,7 @@ function __iterm2_precmd () {
     \local iterm2_prompt_prefix_value="$(iterm2_prompt_prefix)"
 
     # Add the mark unless the prompt includes '$(iterm2_prompt_mark)' as a substring.
-    if [[ $ITERM_ORIG_PS1 != *'$(iterm2_prompt_mark)'* ]]
+    if [[ $ITERM_ORIG_PS1 != *'$(iterm2_prompt_mark)'* && x$ITERM2_SQUELCH_MARK = x ]]
     then
       iterm2_prompt_prefix_value="$iterm2_prompt_prefix_value$(iterm2_prompt_mark)"
     fi
