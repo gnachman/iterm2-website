@@ -1,3 +1,28 @@
+2019-06-22: Fix some bugs with window borders in minimal
+theme. When there's a fake title bar the PTYTabView doesn't
+need to be made smaller. When there is alegacy scroller, we
+still want to draw the border in the fake title bar.
+
+2019-06-22: Work around NSColorPanel holding an unsafe
+unretained reference to its target. This caused a crash if
+you use the system color picker, close the panel with a
+color well, and then make a selection in the color picker.
+
+2019-06-22: Don't crash if the power dictionary lacks values
+
+2019-06-22: Update NMSSH to include libssh2-1.9.0
+
+2019-06-22: Make path to git configurable by advanced
+setting
+
+2019-06-22: Retinaround the frame of standard window
+buttons, shortcut, and title. Issue 7897
+
+2019-06-22: Send a do-nothing command to tmux after
+connecting. If the user presses a stray key, it will cause
+the ping to be an invalid command that will be ignored.
+Issue 7895
+
 2019-06-16: Fix copying of testing3* to testing*
 
 2019-06-16: Add support for reporting user name with @.
