@@ -14,7 +14,7 @@ This opens the Advanced Paste window which lets you select a string from the pas
 Pastes the currently selected text (which may differ from the text in the pasteboard).
 
 #### Edit  > Paste Special > Paste File Base64-Encoded
-If there is a file on the pasteboard then this this is enabled. When invoked, it base64-encodes the file and pastes the encoded value.
+If there is a file on the pasteboard then this is enabled. When invoked, it base64-encodes the file and pastes the encoded value.
 
 #### Edit > Paste Special > Paste Slowly
 "Paste Slowly" pastes the current string in the clipboard, but it doesn't send the whole string at once. It is sent in batches of 16 bytes with a 125ms delay between batches.
