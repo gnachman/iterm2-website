@@ -104,7 +104,7 @@ if [[ -o interactive ]]; then
 
       # Add our escape sequences just before the prompt is shown.
       # Use ITERM2_SQUELCH_MARK for people who can't mdoify PS1 directly, like powerlevel9k users.
-      if [[ $PS1 == *"$(iterm2_prompt_mark)"* || $ITERM2_SQUELCH_MARK ]]
+      if [[ $PS1 == *"$(iterm2_prompt_mark)"* ]] || [[ $ITERM2_SQUELCH_MARK ]]
       then
         PS1="$PS1%{$(iterm2_prompt_end)%}"
       else
