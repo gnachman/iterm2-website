@@ -2,7 +2,7 @@ When iTerm2 presents a list of profiles, it usually includes a search box. The s
 
 ### Searching Profiles
 
-Each word in the search query must match at least one word in either the title or the tags of of a profile in order for that profile to be matched by the query. For a word to be a match, it must be a substring.
+Each word in the search query must match at least one word in either the title or the tags of a profile in order for that profile to be matched by the query. For a word to be a match, it must be a substring.
 
 <table style="background: white">
   <tr class="tableheader">

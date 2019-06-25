@@ -48,7 +48,7 @@ You can also write your own components in Python. See the examples section of th
 
 To add a component to the status bar, drag it from the top section to the *Active Components* section.
 
-To remove a status bar component, select and and press backspace. You can also drag it out of the *Active Components* section.
+To remove a status bar component, select and press backspace. You can also drag it out of the *Active Components* section.
 
 ### Configure Component
 

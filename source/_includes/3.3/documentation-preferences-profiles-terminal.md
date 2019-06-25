@@ -23,7 +23,7 @@ Text to send when the ENQ sequence is received. Not normally used.
 If selected, applications may choose to receive information about the mouse. This can be temporarily disabled by holding down Option.
 
 #### Enable mouse wheel events
-If disabled, the mouse will will always perform its default action (such as scrolling history) rather than being reported to an app that has enabled mouse reporting.
+If disabled, the mouse will always perform its default action (such as scrolling history) rather than being reported to an app that has enabled mouse reporting.
 
 #### Terminal may report window title
 Programs running in a terminal may send an escape code to request the current window title. You may disable this feature by enabling this option. It should be disabled if you're communicating with an untrusted party, as there are possible injection attacks.
