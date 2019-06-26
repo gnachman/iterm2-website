@@ -1,3 +1,15 @@
+2019-06-25: Add a profile preference to disable paste
+bracketing. Issue 7908
+
+2019-06-25: Try really hard to restore the cursor to the
+right coordinate. The problem was that the initial session
+size was sometimes too small so even if the cursor position
+was right it would get moved somewhere nutty after resizing.
+This commit: 1) saves the position in the arrangement, 2)
+restores it if the cursor isn't in the last line from the
+line buffer, and 3) re-restores it after fitting the window
+to its tabs. Issue 7905
+
 2019-06-24: Fix nullability annotation. PR 387
 
 2019-06-24: Ignore function key modifier flag unless the
