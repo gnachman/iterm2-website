@@ -248,7 +248,7 @@ Set this trigger's parameter to
 Make sure both triggers have their *Instant* checkbox enabled so they'll take effect before a
 newline is received.
 
-Finally, add a regular expression that matches the start of your prompt and give the the "Prompt Detected" action. This causes a "mark" to be added, which is a blue triangle visible to the left of this line. You can navigate from mark to mark with Cmd-Shift-Up/Down Arrow.
+Finally, add a regular expression that matches the start of your prompt and give the "Prompt Detected" action. This causes a "mark" to be added, which is a blue triangle visible to the left of this line. You can navigate from mark to mark with Cmd-Shift-Up/Down Arrow.
 
 You may specify a user name or host name alone to *Report Host &amp; User*. If
 you give just a user name then the previous host name will be preserved; if you
