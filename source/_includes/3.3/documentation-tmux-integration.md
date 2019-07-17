@@ -80,3 +80,7 @@ brew install tmux
 
 Check *Preferences > General > tmux* for configuration settings. You can also adjust whether to open the tmux Dashboard when connecting to a session with a large number of windows. You can open the tmux Dashboard by selecting the menu item *Shell > tmux > Dashboard*.
 
+### Best Practices
+
+For practical tips on how to configure iTerm2 for use with tmux integration in the real world, please
+see <a href="https://gitlab.com/gnachman/iterm2/wikis/tmux-Integration-Best-Practices">tmux Integration Best Practices</a>.
