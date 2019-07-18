@@ -34,7 +34,7 @@ imgls [filename...]
 
 #### it2attention
 
-Requests attention. Can bounce the dock icon or show a fireworks animation at the cursor position.
+Requests attention. Can bounce the dock icon or show a fireworks animation at the application cursor position.
 
 <pre>
 Usage:
