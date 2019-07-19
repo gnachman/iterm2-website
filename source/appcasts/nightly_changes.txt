@@ -1,3 +1,30 @@
+2019-07-18: Fix a bug when switching from regular to compact
+or minimal in a window with at least two tabs where the
+titlebar gets stuck on.
+
+2019-07-18: Make APS switcher's delegate weak
+
+2019-07-18: [python] Remove stray print statement
+
+2019-07-18: Improve APS logging
+
+2019-07-18: Improve APS logging
+
+2019-07-18: Add option to save APS logs to script console.
+Issue 7953
+
+2019-07-18: Reset inCommand when we get FTCS A. The only
+case where it would go YES->NO is when the last-received
+code was B, meaning the user was entering a command when a
+new prompt came along. I can make this happen in tcsh by
+using tab completion when ambiguous to show options. I
+tested basic functionality in bash, zsh, and fish and
+everything seemed to work with regualr use, aborted
+commands, and ambiguous tab completion. Issue 7954
+
+2019-07-18: Fix a bug where you couldn't close all tabs in a
+fullscreen window with cmd-shift-w
+
 2019-07-16: Allow polling for working directory up to once a
 second until the initial value is determined
 
