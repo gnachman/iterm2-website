@@ -39,7 +39,7 @@ When this setting is enabled, iTerm2 will disappear from the dock and you won't 
 If selected, window titles include the window number. You can navigate to a window by pressing cmd-opt-N where N is the window number. You can also change which modifiers are used in **Preferences > Keys**.
 
 #### Show border around window
-If selected, a 1-pixel border will be shown around the edges of terminal windows.
+If selected, a 1-pixel border will be shown around the edges of terminal windows. On macOS 10.14, window borders are only drawn for windows with some transparency. Opaque windows get a border drawn by the OS.
 
 #### Hide scrollbars
 If selected, scrollbars will be hidden in terminal windows.
