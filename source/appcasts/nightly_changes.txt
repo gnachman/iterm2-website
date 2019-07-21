@@ -1,3 +1,34 @@
+2019-07-20: Fix support for full-height cursor in GPU
+renderer
+
+2019-07-20: Make GPU renderer use the proper height for the
+vertical bar cursor when there is vertical spacing
+
+2019-07-20: Fix position of frame cursor in GPU renderer to
+be consistent with block cursor.
+
+2019-07-20: Fix vertical alignment of images in GPU
+renderer. The bottom margin was double counted
+
+2019-07-20: Fix vertical alignment of box-drawing characters
+when vertical spacing is enabled. Issue 7932
+
+2019-07-20: Fix text color of advanced prefs in 10.14
+
+2019-07-20: Expose window style through the "style" variable
+in the window scope. Legal values are:
+
+"normal"; "non-native full screen"; "native full screen";
+"full-width top"; "full-width bottom"; "full-height left";
+"full-height right"; "bottom"; "top"; "left"; "right";
+"no-title-bar"; "compact"; "accessory";
+
+Expose window frame as a 4-element array in variables. A
+dictionary would be better but I don't want to add syntax
+for dictionaries now.
+
+2019-07-20: 3.3.0beta14
+
 2019-07-18: Fix a bug when switching from regular to compact
 or minimal in a window with at least two tabs where the
 titlebar gets stuck on.
