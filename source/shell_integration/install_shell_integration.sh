@@ -19,7 +19,7 @@ function die() {
   exit 1
 }
 
-which printf > /dev/null 2>&1 || die "Shell integration requires the printf binary to be in your path."
+type printf > /dev/null 2>&1 || die "Shell integration requires the printf binary to be in your path."
 
 SHELL=${SHELL##*/}
 URL=""

@@ -25,7 +25,7 @@ function join {
   echo "$*"
 }
 
-which printf > /dev/null 2>&1 || die "Shell integration requires the printf binary to be in your path."
+type printf > /dev/null 2>&1 || die "Shell integration requires the printf binary to be in your path."
 
 UTILITIES=(imgcat imgls it2attention it2check it2copy it2dl it2getvar it2git it2setcolor it2setkeylabel it2ul it2universion)
 SHELL=${SHELL##*/}
