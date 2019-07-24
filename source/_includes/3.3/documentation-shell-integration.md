@@ -16,7 +16,7 @@ function show(name) {
 }
 </script>
 
-iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more--even over ssh. This enables several useful features.
+iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more&mdash;even over ssh. This enables several useful features.
 
 ### How To Enable Shell Integration
 The easiest way to install shell integration is to select the *iTerm2&gt;Install Shell Integration* menu item. It will download and run a shell script as described below. You should do this on every host you ssh to as well as your local machine. The following shells are supported: tcsh, zsh, bash, and fish 2.3 or later. Contributions for other shells are most welcome.
