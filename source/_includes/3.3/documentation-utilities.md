@@ -10,7 +10,7 @@ The Utilities Package contains the following programs:
 
 The `imgcat` program displays images inline in your terminal.
 
-<img src="images/inline_image_sparky_demo.png">
+<img src="/images/inline_image_sparky_demo.png">
 
 It supports all standard image formats, including animated GIFs.
 
