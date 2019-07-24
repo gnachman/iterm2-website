@@ -40,7 +40,7 @@ Kick off the build by running make. It spits out thousands of lines of output.
 
 Any errors or warnings that appear in the compiler output will appear in the Captured Output tool.
 
-<img src="images/CapturedOutput.png">
+<img src="/images/CapturedOutput.png">
 Select an entry in the tool. iTerm2 scrolls to display the line and briefly highlights it in blue.
 
 #### Step 5: Open the file containing the error
