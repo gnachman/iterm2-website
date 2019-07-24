@@ -83,6 +83,7 @@ for details on setting them.
   * `titleOverrideFormat` - An interpolated string giving the title to use for the tab. If not set, the session's title will be used. Note the session's title is configurable in **Prefs > Profiles > General > Title** and is not necessarily equal to the `autoName`, but may be derived from it (or not).
   * `titleOverride` - The value of `titleOverrideFormat` after evaluating it as an interpolated string.
   * `tmuxWindow` - In tmux integration, this is the tmux window number this tab represents.
+  * `tmuxWindowTitle` - In tmux integration, this is the tmux window title. It will only be set if the tmux option `set-title` is on. It comes from evaluating the tmux `set-titles-strings` option.
 
 #### References to Other Contexts
   * `currentSession` - A reference to the context of the active session in this tab.
@@ -100,6 +101,11 @@ for details on setting them.
 #### Window Title
   * `titleOverride` - The value from evaluating the interpeted string in `titleOverrideFormat`, if set.
   * `titleOverrideFormat` - The window's interpolated string title. If not set, the current tab's title is used.
+
+#### Other
+  * `id` - The window ID.
+  * `frame` - An array of integers giving the x origin, y origin, width, and height.
+  * `style` - The window style. Takes one of these values: `normal`, `non-native full screen`, `native full screen`, `full-width top`, `full-width bottom`, `full-height left`, `full-height right`, `bottom`, `top`, `left`, `right`, `no-title-bar`, `compact`, `accessory`.
 
 <hr/>
 <a name="global-context"></a>
