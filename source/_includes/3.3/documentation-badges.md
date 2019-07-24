@@ -12,7 +12,7 @@ A *badge* is a large text label that appears in the top right of a terminal sess
 
 Here is an example of a session with a badge indicating the current user and host name.
 
-<img src="images/Badge.png">
+<img src="/images/Badge.png">
 
 ### Badge Format
 
