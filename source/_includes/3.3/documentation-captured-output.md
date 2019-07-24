@@ -1,6 +1,6 @@
 iTerm2 has a feature called "Captured Output" which helps you find and track important lines of output from logs, build processes, and such.
 
-<center><img src="img/screenshots/v3-screen-shots/iterm2-captured-output.gif"></center>
+<center><img src="/img/screenshots/v3-screen-shots/iterm2-captured-output.gif"></center>
 
 ### What does it do?
 
