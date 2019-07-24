@@ -38,7 +38,7 @@ Undefined variables evaluate to an empty string.
 
 ### Appearance
 
-The badge's color may be set in *Preferences&gt;Profiles&gt;Colors*. Its position and typeface may be set in *Preferences>Profiles>General*.
+The badge's color may be set in *Preferences&gt;Profiles&gt;Colors*. Its position and typeface may be set in *Preferences>Profiles>General*. Note that the position is always relative to the top right of the session's viewport.
 
 ### Escape Sequences
 
