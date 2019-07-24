@@ -110,7 +110,7 @@ When *Use interpolated for parameters* is **on**, a local variable named `matche
 ```
 
 #### Instant
-When <i>Instant</i> is set, the trigger will fire once per line as soon as the match occurs, without waiting for a newline. This was added for the benefit of the <i>Open Password Manager</i> trigger, since password prompts usually are not followed by a newline. This may cause certain regular expressions (for example, `.*`) to match less than they otherwise might.
+When <i>Instant</i> is set, the trigger will fire once per line as soon as the match occurs, without waiting for a newline. This was added for the benefit of the <i>Open Password Manager</i> trigger, since password prompts usually are not followed by a newline. This may cause certain regular expressions (for example, `.*`) to match less than they otherwise might. Instant triggers only fire once per line, except for the Highlight action.
 
 #### Use interpolated strings for parameters
 
