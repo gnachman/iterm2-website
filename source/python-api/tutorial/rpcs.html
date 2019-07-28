@@ -134,7 +134,7 @@ session.</p>
 with the value of a variable at the time of invocation. Suppose you want to get
 the session ID in which an RPC was invoked. You could register it this way:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@iterm2.RPC</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">clear_session</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">):</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">clear_session</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)):</span>
     <span class="n">code</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;]1337;ClearScrollback&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x07</span><span class="s1">&#39;</span>
     <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">session</span><span class="p">:</span>
