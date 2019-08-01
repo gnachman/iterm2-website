@@ -1,8 +1,8 @@
 ---
-layout: subdoc
+layout: subdoc33
 title: Images - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
-subhead: Images
+subhead: Inline Images Protocol
 ---
-{% include documentation-images.md %}
+{% include 3.3/documentation-images.md %}
 

@@ -1,9 +1,9 @@
 ---
-layout: subdoc
+layout: subdoc33
 title: Copy Mode - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Copy Mode
 ---
-{% include documentation-copymode.md %}
+{% include 3.3/documentation-copymode.md %}
 
 

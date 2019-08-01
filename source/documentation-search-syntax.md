@@ -1,8 +1,8 @@
 ---
-layout: subdoc
+layout: subdoc33
 title: Search Syntax - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Search Syntax
 ---
-{% include documentation-search-syntax.md %}
+{% include 3.3/documentation-search-syntax.md %}
 

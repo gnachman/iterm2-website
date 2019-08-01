@@ -1,8 +1,8 @@
 ---
-layout: subdoc
+layout: subdoc33
 title: Dynamic Profiles - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Dynamic Profiles
 ---
-{% include documentation-dynamic-profiles.md %}
+{% include 3.3/documentation-dynamic-profiles.md %}
 

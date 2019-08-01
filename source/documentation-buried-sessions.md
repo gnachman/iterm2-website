@@ -1,8 +1,8 @@
 ---
-layout: subdoc
+layout: subdoc33
 title: Buried Sessions - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Buried Sessions
 ---
-{% include documentation-buried-sessions.md %}
+{% include 3.3/documentation-buried-sessions.md %}
 

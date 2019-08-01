@@ -1,7 +1,7 @@
 ---
-layout: subdoc
+layout: subdoc33
 title: Smart Selection - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Smart Selection
 ---
-{% include documentation-smart-selection.md %}
+{% include 3.3/documentation-smart-selection.md %}
