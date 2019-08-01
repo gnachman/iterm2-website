@@ -4,6 +4,13 @@ title: iTerm2 - macOS Terminal Replacement
 active-state: news
 ---
 
+#### iTerm2 Version 3.3 Released
+<i>Sunnyvale, CA&mdash;July 31, 2019</i>
+
+iTerm2 version 3.3 has been released, featuring two new themes, a status bar, and a very powerful Python scripting API. Many core features have been improved, such as how titles are displayed, how keyboard input is transmitted, how background images are drawn, and more. For all the details, please see the <a href="https://iterm2.com/downloads/stable/iTerm2-3_3_0.changelog">change log</a>.
+
+Get it from <a href="/downloads.html">the Downloads page</a> in the "Stable Releases" section.
+
 #### iTerm2 GPU Renderer Released
 <i>Sunnyvale, CA&mdash;August 7, 2018</i>
 
