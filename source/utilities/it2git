@@ -64,6 +64,13 @@ branch() {
     echo "$OUTPUT"
 }
 
+adds() {
+    "${GIT_BINARY}" ls-files --others --exclude-standard | wc -l
+}
+
+deletes() {
+    "${GIT_BINARY}" ls-files --deleted --exclude-standard | wc -l
+}
 function iterm2_begin_osc {
   printf "\033]"
 }
@@ -91,6 +98,8 @@ git_poll () {
     iterm2_set_user_var gitDirty "$DIRTY"
     iterm2_set_user_var gitPushCount "$PUSH_COUNT"
     iterm2_set_user_var gitPullCount "$PULL_COUNT"
+    iterm2_set_user_var gitAdds "$ADDS"
+    iterm2_set_user_var gitDeletes "$DELETES"
 }
 
 "$GIT_BINARY" rev-parse --git-dir 2>/dev/null >/dev/null
@@ -99,6 +108,8 @@ if (($?)); then
     iterm2_set_user_var gitDirty ""
     iterm2_set_user_var gitPushCount ""
     iterm2_set_user_var gitPullCount ""
+    iterm2_set_user_var gitAdds ""
+    iterm2_set_user_var gitDeletes ""
 else
     git_poll "$PWD"
 fi
