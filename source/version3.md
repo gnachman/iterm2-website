@@ -2,6 +2,29 @@
 layout: default
 title: Version 3 - iTerm2 - macOS Terminal Replacement
 ---
+
+## iTerm2 Version 3.3
+
+iTerm2 version 3.3 is now out as a "stable" build, meaning there are no known major bugs. It has a bunch of new features. This document lists the highlights.
+
+### Python Scripting
+
+There's a new Python scripting API that allows you to automate and customize many parts of iTerm2. <a href="/python-api">See the documentation for details.</a>
+
+### Status Bar
+
+The status bar is customizable and comes with thirteen different built-in components. You can also make your own in Python.
+
+### Themes
+
+A new Minimal theme reduces visual clutter, while the Compact theme saves space by combining the title bar and tab bar.
+
+### Where do I get it?
+
+<a href="https://iterm2.com/downloads/stable/latest">Download the latest version here.</a>
+
+<hr/>
+
 ## iTerm2 Version 3 Released
 
 Version 3 of iTerm2 is now out as a "stable" build, meaning there are no known major bugs.
