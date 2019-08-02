@@ -4,6 +4,9 @@ title: FAQ - iTerm2 - macOS Terminal Replacement
 active-state: faq
 ---
 
+#### Q: What operating systems are supported?
+A: iTerm2 is for macOS only. See the downloads page for which OS versions are supported by each version of the app.
+
 #### Q: I don't like the way that iTerm2 renders bold fonts.
 A: Go to Preferences->Profiles->Text and change the "Draw bold text in bold font" and "Draw bold text in bright colors" settings. Try running this command in bash to see the difference between the two behaviors:
 
