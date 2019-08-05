@@ -27,7 +27,7 @@ function join {
 
 type printf > /dev/null 2>&1 || die "Shell integration requires the printf binary to be in your path."
 
-UTILITIES=(imgcat imgls it2attention it2check it2copy it2dl it2getvar it2git it2setcolor it2setkeylabel it2ul it2universion)
+UTILITIES=(imgcat imgls it2api it2attention it2check it2copy it2dl it2getvar it2git it2setcolor it2setkeylabel it2ul it2universion)
 SHELL=${SHELL##*/}
 URL=""
 HOME_PREFIX='${HOME}'
@@ -125,21 +125,23 @@ echo "You will also have these commands:"
 echo "imgcat filename"
 echo "  Displays the image inline."
 echo "imgls"
-echo "  Shows a directory listing with image thumbnails"
+echo "  Shows a directory listing with image thumbnails."
+echo "it2api"
+echo "  Command-line utility to manipulate iTerm2."
 echo "it2attention start|stop|fireworks"
-echo "  Gets your attention"
+echo "  Gets your attention."
 echo "it2check"
-echo "  Checks if the terminal is iTerm2"
+echo "  Checks if the terminal is iTerm2."
 echo "it2copy [filename]"
-echo "  Copies to the pasteboard"
+echo "  Copies to the pasteboard."
 echo "it2dl filename"
 echo "  Downloads the specified file, saving it in your Downloads folder."
 echo "it2setcolor ..."
-echo "  Changes individual color settings or loads a color preset"
+echo "  Changes individual color settings or loads a color preset."
 echo "it2setkeylabel ..."
-echo "  Changes Touch Bar function key labels"
+echo "  Changes Touch Bar function key labels."
 echo "it2ul"
-echo "  Uploads a file"
+echo "  Uploads a file."
 echo "it2universion"
-echo "  Sets the current unicode version"
+echo "  Sets the current unicode version."
 
