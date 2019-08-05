@@ -33,6 +33,7 @@ if [[ -o interactive ]]; then
     whence -v iterm2_print_user_vars > /dev/null 2>&1
     if [ $? -ne 0 ]; then
       iterm2_print_user_vars() {
+          true
       }
     fi
 
@@ -152,6 +153,6 @@ if [[ -o interactive ]]; then
     preexec_functions=($preexec_functions iterm2_preexec)
 
     iterm2_print_state_data
-    printf "\033]1337;ShellIntegrationVersion=9;shell=zsh\007"
+    printf "\033]1337;ShellIntegrationVersion=10;shell=zsh\007"
   fi
 fi
