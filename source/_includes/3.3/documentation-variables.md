@@ -106,6 +106,7 @@ for details on setting them.
   * `id` - The window ID.
   * `frame` - An array of integers giving the x origin, y origin, width, and height.
   * `style` - The window style. Takes one of these values: `normal`, `non-native full screen`, `native full screen`, `full-width top`, `full-width bottom`, `full-height left`, `full-height right`, `bottom`, `top`, `left`, `right`, `no-title-bar`, `compact`, `accessory`.
+  * `number` - The window number. Corresponds to the keyboard shortcut that switches to the window. Begins at 1. Unlike the keyboard shortcut, this is set even if the number is larger than 9. [Available in version 3.3.2]
 
 <hr/>
 <a name="global-context"></a>
