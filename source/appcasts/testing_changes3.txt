@@ -1,30 +1,41 @@
-iTerm2 version 3.3.1beta1
+iTerm2 version 3.3.2beta1
 
 Improvements
-- Change wording of setting to choose beta
-  channel.
-- Show bezels in text fields in advanced prefs.
-- Add support for C1 control codes when the
-  encoding is ASCII or Latin-1.
-- Show window size in overlay view when there is
-  no title bar.
+- Keep the "current directory" status bar
+  component up to date in tmux integration.
+- Add setting to control whether the native or
+  tmux status bar is used in tmux integration
+  mode.
+- Adds a "number" variable to the window scope.
+- Show the tab title or tmux window name in the
+  Open Quickly UI when it difers from the session
+  name.
+- Add an advanced pref to tweak the size of the
+  window dragging area in minimal and compact
+  windows.
+- Don't offer to reset paste bracketing/mouse
+  mode when the username changes but the hostname
+  does not.
+- Changes to the status bar are now applied
+  immediately. Cancel undoes them.
 
-Bug Fixes
-- Fix a bug where closing a native fullscreen
-  window would cause a new window to be created
-- Make floating panel hotkey windows overlap the
-  menu bar.
-- Fix a bug where opening the open quickly window
-  would hide the hotkey window.
-- Fix a bug where opening the set tab title panel
-  in a floating hotkey window when another app is
-  active causes the window to disappear.
-- Make the git status bar component more reliable.
-- Fix a crash when changing the theme.
-- Don't crash when badge height set to 0.
-- Fix a bug where the badge might render at the
-  wrong size after adjusting its max size in
-  settings.
-
-
-
+Bug fixes
+- Fix a bug where automatic log files had the
+  wrong tab number in the filename.
+- Fix a bug where exiting full screen after
+  changing the theme could leave some junk behind
+  where the title bar was.
+- Python scripts that set a variable without
+  changing its value will no longer raise an
+  exception.
+- Fix a bug where the window size after exiting
+  non-native full screen was different than before
+  entering it.
+- Fix a bug where a non-native fullscreen window
+  didn't go all the way to the top of the screen.
+- Update the session "path" variable when the
+  working directory is updated (when shell
+  integration is not installed).
+- Fix a bug where a window could not be made full
+  screen twice when native full screen is enabled
+  and the app is excluded from the dock.
