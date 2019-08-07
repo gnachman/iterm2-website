@@ -87,9 +87,10 @@
 <p>Provides information about the shell prompt.</p>
 <dl class="class">
 <dt id="iterm2.PromptMonitor">
-<em class="property">class </em><code class="descname">PromptMonitor</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>session_id: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PromptMonitor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">PromptMonitor</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection, session_id: str, modes: List[iterm2.prompt.PromptMonitor.Mode] = [&lt;Mode.PROMPT: 1&gt;]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PromptMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager to watch for changes to the prompt.</p>
 <p>This requires shell integration or prompt-detecting triggers to be installed for prompt detection.</p>
+<p>Note: Older versions of the runtime do not support modes other than PROMPT. Attempting to use a mode other than PROMPT when connected to a too-old version of iTerm2 will result in an exception telling the user to upgrade.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -113,8 +114,17 @@
 </div></blockquote>
 <dl class="method">
 <dt id="iterm2.PromptMonitor.async_get">
-<code class="descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.PromptMonitor.async_get" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_get</code><span class="sig-paren">(</span><em>) -&gt; (&lt;enum 'Mode'&gt;</em>, <em>typing.Any</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PromptMonitor.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Blocks until a new shell prompt is received.</p>
+<p>Note: Older versions of the runtime that do not support modes other than PROMPT always return None.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A tuple of (PROMPT,None), (COMMAND_START,Str), or (COMMAND_END,Int) where the Str gives the command being run and the Int gives the exit status of the command.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

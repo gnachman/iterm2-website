@@ -87,7 +87,7 @@
 <p>Status bar customization interfaces.</p>
 <dl class="class">
 <dt id="iterm2.StatusBarComponent">
-<em class="property">class </em><code class="descname">StatusBarComponent</code><span class="sig-paren">(</span><em>short_description: str, detailed_description: str, knobs: List[iterm2.statusbar.Knob], exemplar: str, update_cadence: Optional[float], identifier: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">StatusBarComponent</code><span class="sig-paren">(</span><em>short_description: str, detailed_description: str, knobs: List[iterm2.statusbar.Knob], exemplar: str, update_cadence: Optional[float], identifier: str, icons: List[iterm2.statusbar.StatusBarComponent.Icon] = []</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a script-provided status bar component showing a text value provided by a user-provided coroutine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -100,6 +100,7 @@
 <li><strong>exemplar</strong> – Example value to show in the picker UI as the sample content of the component.</li>
 <li><strong>update_cadence</strong> – How frequently in seconds to reload the value, or <cite>None</cite> if it does not need to be reloaded on a timer.</li>
 <li><strong>identifier</strong> – A string uniquely identifying this component. Use a backwards domain name. For example, <cite>com.example.calculator</cite> for a calculator component provided by example.com.</li>
+<li><strong>icons</strong> – An array of <cite>StatusBarComponent.Icon</cite> objects. Should contain one with scale 1 and one with scale 2, of size 16x17 points. May be empty if you don’t want an icon.</li>
 </ul>
 </td>
 </tr>
