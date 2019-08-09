@@ -1,3 +1,36 @@
+2019-08-08: Remove the corner radius from the window size
+view because Visual Effect Views don't work right over a
+semi-transparent window.
+
+2019-08-08: Create a temporary status bar find driver when a
+session needs but does not have one. Happens after moving a
+session into a split pane when it has a temporary find
+field. Issue 8084
+
+2019-08-08: Ensure the cursor is below the 'session
+restored' banner.
+
+2019-08-08: Don't try to micromanage the composer popover's
+appearance pre-10.14. Caused white-on-white text. Not sure
+the underlying cause and not important in this case. I don't
+trust appearance stuff on 10.13. Issue 8076
+
+2019-08-08: Allow git state cache entries to live for 10
+seconds. After they reach 2 seconds of age, they'll be used
+only if the command runner fails. Issue 8075
+
+2019-08-08: Don't use black for the flexible view color. The
+status bar makes it really ugly. I hope to eliminate the
+flexible view soon, anyway. Issue 8074
+
+2019-08-08: Restrict before & after text passed to semantic
+history command to the logical window, since it is used when
+choosing the text that was clicked on. Issue 8073
+
+2019-08-08: Force session views to redraw when their window
+becomes/resigns key to make the title view's background and
+title view label's background match. Issue 8063
+
 2019-08-07: Make dark high contrast look good on 10.13 and
 10.14. Issue 7563
 
