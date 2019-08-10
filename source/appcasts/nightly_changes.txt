@@ -1,3 +1,28 @@
+2019-08-09: Eliminiate uses of half and half4 in favor of
+float and float4. Word on the street is that most GPUs don't
+support half. More importantly, the Metal compiler s with
+halfs and doesn't with floats. See issue 7941
+
+2019-08-09: Set window collection behavior when replacing
+the window at runtime. Issue 8100
+
+2019-08-09: Work around a macOS bug where windows jump to
+the main screen after you replace the window controller's
+window.
+
+2019-08-09: When entering traditional fullscreen don't
+auto-hide the dock if the dock is on a different display
+than the window. Issue 8096.
+
+2019-08-09: Automatically convert drag of a tab into a
+window drag when: 1) the theme is compact or minimal, and 2)
+the tab bar is visible, and 3) there is only one tab. Issue
+8080
+
+2019-08-09: Fix a bug where the status bar icon's tint color
+was set incorrectly in updateIconIfNeeded (didn't take the
+text color into account). Issue 8097
+
 2019-08-08: Remove the corner radius from the window size
 view because Visual Effect Views don't work right over a
 semi-transparent window.
