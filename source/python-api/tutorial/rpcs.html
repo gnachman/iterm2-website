@@ -247,13 +247,13 @@ example:</p>
 <span class="nd">@iterm2.RPC</span>
 <span class="n">async</span> <span class="k">def</span> <span class="nf">times</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
-<span class="n">await</span> <span class="n">add</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="n">await</span> <span class="n">times</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
 <span class="nd">@iterm2.RPC</span>
 <span class="n">async</span> <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">current_tab</span><span class="o">.</span><span class="n">current_session</span>
     <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
-<span class="n">await</span> <span class="n">add</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="n">await</span> <span class="n">show</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To compute 1+2*3 and inject it into the current session, use this invocation:</p>
