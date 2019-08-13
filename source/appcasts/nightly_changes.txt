@@ -1,3 +1,22 @@
+2019-08-12: Fix Applescript 'tell session to set name to x'.
+Commit 8393a4e57 tried and failed. Setting the
+autoNameFormat is not resilient because it often gets
+overwritten with the session's profile name, such as when
+you open Edit Session. I don't see any reason why
+Applescript should be different than modifying the session
+name in Edit Session. See Lorenzo's comments in issue 7621
+
+2019-08-12: Apply
+https://github.com/libssh2/libssh2/pull/368 to libssh2 to
+test the fix to escaping tildes in file paths
+
+2019-08-12: Show a dialog after not installing the python
+runtime because you already have it. Happens if you install
+after deleting the symlink and relaunching
+
+2019-08-12: Make the name of the ApplicationSupport symlink
+configurable. Issue 6746
+
 2019-08-11: Adjust left inset of stoplight buttons to match
 the top inset. Affects compact theme and Minimal theme when
 tab height is adjusted downwards. Issue 8046.
