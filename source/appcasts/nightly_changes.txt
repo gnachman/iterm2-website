@@ -1,3 +1,33 @@
+2019-08-14: Don't loan tabbar to titlebar accessory when
+it's configured to flash. Issue 8112.
+
+I considered a lot of options:
+
+1. When flashing, remove from title bar accessory and add to
+root terminal view controller. Rejected because you might
+show the title bar during a flash. Also, really freaking
+complicated.  2. Reveal the title bar and tab bar instead of
+the old flash animation. Rejected because it does not appear
+to be possible. Even if it were, it's too tall.  3. Create a
+copy of the tab bar and flash that. I like this the best,
+except the complexity is absolutely astounding. No way.  4.
+Disable flashing for non-native tab bars. Rejected because
+it doesn't make any sense for users. Breaks existing
+workflows.  5. Don't loan the tabbar to the titlebar
+accessory vc if flashing is enabled. This basically gets us
+back to the pre-3.3.0 behavior.  6. Just show an image
+instead of a real tab bar. I tried this, but it was also
+pretty complex. It will inevitably have a lot of problems
+because it's not the real thing, snapshots are flaky,
+accessibility will probably be an issue, etc.
+
+2019-08-13: Disable metal after creating an annotation
+
+2019-08-13: Don't return a hidden tab bar control from
+hitTest:. Fixes a bug where double-clicking the window
+shortcut label when there's a fake window title label didn't
+work. Issue 8110
+
 2019-08-12: Fix Applescript 'tell session to set name to x'.
 Commit 8393a4e57 tried and failed. Setting the
 autoNameFormat is not resilient because it often gets
