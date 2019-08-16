@@ -1,3 +1,30 @@
+2019-08-15: Ensure secure keyboard entry is turned on when
+app launches. Before it would not happen until the menu
+validated or the app became active.
+
+2019-08-15: Fix a bug where secure keyborad entry
+incorrectly used the Search History user default preference.
+Includes a migration path to preserve settings from the
+buggy time.
+
+2019-08-15: Change default title components to Job. I don't
+know why it was set to session name, and previous that
+profile name. Setting it to Job fixes the migration from
+3.2, where that was the default behavior. Also, job is just
+more useful than profile name which for many people is just
+"Default". Issue 8115
+
+2019-08-15: Fix escaping of control characters in JSON
+strings. Issue 6764 (@yacn's comments)
+
+2019-08-15: Allow moving tmux windows between sessions by
+holding option/command (#391)
+
+The tmux dashboard allows linking windows between different
+sessions via drag-and-drop. This change modifies that
+behaviour, such that if option or cmd are pressed during the
+drag, the window will be moved instead of linked.
+
 2019-08-14: Don't create app support symlink if the advanced
 pref is set to empty string
 
