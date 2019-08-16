@@ -117,5 +117,5 @@ When <i>Instant</i> is set, the trigger will fire once per line as soon as the m
 Prior to version 3.3 of iTerm2, parameters could use backreferences like `\1` to refer to a capture group in the regular expression. This remains the default for triggers for backward compatibility. As of version 3.3, interpolated strings became the standard way to handle strings with embedded references. By enabling the **Use interpolated strings for parameters** settings you can use the more powerful interpolated string syntax for your triggers' parameters. See the <a href="documentation-scripting-fundamentals.html">Scripting Fundamentals</a> document for more details on interpolated strings.
 
 #### Example
-The <a href="https://github.com/mmastrac/iterm2-zmodem">iTerm2-zmodem</a> project demonstrates hooking up iTerm2 to zmodem upload and download.
+The [iTerm2-zmodem](https://github.com/RobberPhex/iTerm2-zmodem) project demonstrates hooking up iTerm2 to zmodem upload and download.
 
