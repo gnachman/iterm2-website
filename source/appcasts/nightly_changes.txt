@@ -1,3 +1,44 @@
+2019-08-18: Add better logging to track down assertion in
+divorcing a session where its profile has disappeared.
+
+2019-08-18: Fix an out-of-bounds read. I'm not quite sure
+how to reproduce it, but I can tell from the crash logs and
+disassembly that it read of the end of one of the _datas
+byte arrays.
+
+The crash report with the smoking gun was
+1565202147.246087595. It performed a read at offset 0xa003,
+which was past the end of a buffer of size 0xa000. This
+could happen if there was a fractional size or the canvas
+size doesn't match the _size. I don't know the root cause,
+but at least this should stem the bleeding.
+
+2019-08-18: Don't crash if the font picker returns nil for
+one of the fonts. Not sure why that would happen, though.
+Fixes a common crash.
+
+2019-08-18: Update BetterFontPicker.framework
+
+2019-08-18: Add more BFP user data to gitignore
+
+2019-08-18: Remove user data
+
+2019-08-18: Don't use force unwrapping. I'm not sure why
+this was crashing (presumably nil) but just reload the table
+and return if things are nutty.
+
+2019-08-18: Update description of advanced pref
+URLCharacterSet to include file names and instructions to
+restart.
+
+2019-08-18: Allow top-of-screen windows to overlap the
+titlebar. Issue 8132.
+
+2019-08-18: Fix how the coordinates in AddHiddenAnnotation
+are bounded. There was a bug where they were bounded by the
+cursor position, not the bottom right of the screen. Issue
+8111
+
 2019-08-17: Make dark high-contrast more visible by default
 and add an advanced pref to make it pretty. Issue 7563
 
