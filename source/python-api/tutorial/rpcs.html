@@ -67,14 +67,30 @@
 
     <div class="document">
 <div class="row">
-    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-        <div class="main panel">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
 
-            <div class="doc-wrapper" style="text-align: right">
-                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
-            </div>
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">iTerm2</div>
 
-            <hr/>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
+
+	      <div class="toc_subhead">Python API</div>
+
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -94,60 +110,49 @@ sessions.</p>
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-    <span class="nd">@iterm2.RPC</span>
     <span class="n">async</span> <span class="k">def</span> <span class="nf">clear_all_sessions</span><span class="p">():</span>
         <span class="n">code</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;]1337;ClearScrollback&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x07</span><span class="s1">&#39;</span>
         <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">terminal_windows</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
                     <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
-    <span class="n">await</span> <span class="n">clear_all_sessions</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;clear_all_sessions&quot;</span><span class="p">,</span> <span class="n">clear_all_sessions</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>A lot of this should look familiar from the <a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a> example. Let’s focus
 on the parts we haven’t seen before.</p>
-<p>This call defines the RPC:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@iterm2.RPC</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">clear_all_sessions</span><span class="p">():</span>
+<p>This call registers the RPC:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;clear_all_sessions&quot;</span><span class="p">,</span> <span class="n">clear_all_sessions</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This function definition is modified by the <cite>&#64;iterm2.RPC</cite> decorator. It adds a
-<cite>register</cite> value to the function which is a coroutine that registers the
-function as an RPC. Here’s how you call it:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">await</span> <span class="n">clear_all_sessions</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<p>The first argument gives the name of the RPC. To keep it simple, this example
+uses the same name as the function. The name you register with is the name you
+use when invoking the function. The passed-in function, <cite>clear_all_sessions</cite>,
+will be called by iTerm2 at a later time. Note that it is <cite>async</cite>. The
+registered function <em>must</em> be <cite>async</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">def</span> <span class="nf">clear_all_sessions</span><span class="p">():</span>
 </pre></div>
 </div>
-<p>This exploits a quirk of Python that functions are capable of having values
-attached to them in this way.</p>
-<p>Registered RPCs like this one exist in a single global name space. An RPC is
-identified by the combination of its name (<cite>clear_all_sessions</cite>, in thise case)
-and its arguments’ names, ignoring their order. Keep this in mind to avoid
-naming conflicts. Python’s reflection features are used to determine the
-function’s name and argument names.</p>
-<p>Your RPC may need information about the context in which it is run. For
-example, knowing the unique identifier of the session in which a key was
-pressed that invoked the RPC would allow you to perform actions on that
-session.</p>
-<p>Your RPC may take a special kind of default parameter value that gets filled in
-with the value of a variable at the time of invocation. Suppose you want to get
-the session ID in which an RPC was invoked. You could register it this way:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@iterm2.RPC</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">clear_session</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)):</span>
-    <span class="n">code</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;]1337;ClearScrollback&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x07</span><span class="s1">&#39;</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">session</span><span class="p">:</span>
-        <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
-<span class="n">await</span> <span class="n">clear_session</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<p>This is the definition of the registered function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">code</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;]1337;ClearScrollback&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x07</span><span class="s1">&#39;</span>
 </pre></div>
 </div>
-<p>The function invocation will not be made if the variable is undefined.
-If you’d prefer a value of <cite>None</cite> instead in such a case, use a question mark
-to indicate an optional value, like this: <cite>Reference(“id?”)</cite>.</p>
-<p>The “id” is a variable that exists in the session’s scope. To learn more about
-how variables work and which variables are defined, see
-<a class="reference external" href="https://www.iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a></p>
+<p>This is an iTerm2 <a class="reference external" href="https://www.iterm2.com/documentation-escape-codes.html">proprietary escape code</a> that clears the screen and erases history.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">terminal_windows</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
+            <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This iterates over every session and injects the ClearScrollback code.
+Injecting a byte array makes the session appear to receive that byte array
+as input, as though it had been output by the running app in the terminal.
+Injection is safe to use even while receiving input because it uses its own
+parser (so there’s no interaction between a half-received escape sequence in
+the true input and the injected byte array).</p>
 <div class="section" id="invocation">
 <h2>Invocation<a class="headerlink" href="#invocation" title="Permalink to this headline">¶</a></h2>
 <p>To invoke an RPC, create a key binding for it. Go to <strong>Preferences &gt; Keys</strong> and
@@ -160,47 +165,39 @@ function call in the field beneath it. Like this:</p>
 </div>
 <div class="section" id="repl">
 <h2>REPL<a class="headerlink" href="#repl" title="Permalink to this headline">¶</a></h2>
-<p>You can test RPCs defined in the REPL. First, define them as usual. When the
-RPC gets invoked, the REPL must allow the event loop to run so it can handle
-the request from iTerm2. The simplest way is to tell it to watch for requests
-for a set period of time, like this:</p>
+<p>To test RPCs in the REPL, you need to give the iterm2 library a chance to read
+the request from the connection to iTerm2. The simplest way is to tell it to
+watch for requests for a set period of time, like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_for_duration</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The argument of <cite>1</cite> is how long to wait in seconds. Requests to execute
-registered functions wait in a queue until they can be handled. That means you
-can press a key in iTerm2 to invoke the RPC and then do
-<cite>async_dispatch_for_duration(0.1)</cite> and it will be handled immediately.</p>
+<p>The argument of <cite>1</cite> is how long to wait. Requests to execute registered
+functions wait in a queue until they can be handled. That means you can press a
+key in iTerm2 to call the RPC and then do <cite>async_dispatch_for_duration(0.1)</cite> and
+it will be handled immediately.</p>
 </div>
 <div class="section" id="arguments">
 <h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
 <p>Registered RPCs may take arguments. Any argument may take a value of
 of <cite>None</cite>, so take care to handle that possibility.</p>
-<p>When an RPC is invoked, it uses a slightly different syntax than Python. That’s
-because iTerm2’s scripting interface is meant to be language-agnostic (although
-at the time of writing there are only Python bindings).</p>
-<p>Here’s what a function invocation might look like:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_function_name</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="n">favorite_number</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span> <span class="n">nickname</span><span class="p">:</span> <span class="s2">&quot;Joe&quot;</span><span class="p">)</span>
+<p>Here’s an example of a call with arguments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">function_name</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">session</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">favorite_number</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span> <span class="n">nickname</span><span class="p">:</span> <span class="s2">&quot;Joe&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The name of the function and the name of each argument is an <em>Identifier</em>.
 Identifiers begin with a letter and may contain letters, numbers, and
 underscore. Every character must be ASCII.</p>
 <p>Each argument must have a distinct name.</p>
-<p>The value passed to an argument must be an expression. The most common types of
-expressions are:</p>
+<p>The value passed to an argument can take one of three types:</p>
 <ol class="arabic simple">
-<li>A <em>variable reference</em>, like <cite>id</cite>.</li>
+<li>A <em>path</em>, like <cite>session.id</cite>.</li>
 </ol>
-<p>A variable is a named piece of data attached to a session, tab, window, or the
-iTerm2 application itself. Some are defined by iTerm2, like <cite>id</cite>, which
-takes a string value that uniquely identifies a session. Others, beginning with
-<cite>user.</cite> may be defined by the user.</p>
-<p>For a full list of the iTerm2-defined variables, see
-<a class="reference external" href="https://www.iterm2.com/documentation-variables.html">Variables</a>.</p>
-<p>To set a user-defined variable, you can use a control sequence or call
-<a class="reference internal" href="../session.html#iterm2.Session.async_set_variable" title="iterm2.Session.async_set_variable"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.Session.async_set_variable()</span></code></a>. Variables can take any type JSON can
-describe.</p>
+<p>Paths refer to variables. Variables are attached to a session. Some are defined
+by iTerm2 (like <cite>session.id</cite>) and others, beginning with <cite>user.</cite> are defined by
+the user.</p>
+<p>For a full list of the iTerm2-defined paths, see <a class="reference external" href="https://www.iterm2.com/documentation-badges.html">Badges</a>.</p>
+<p>To set a user-defined variable, you can use an escape sequence or call
+<a class="reference internal" href="../session.html#iterm2.Session.async_set_variable" title="iterm2.Session.async_set_variable"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.Session.async_set_variable()</span></code></a>. Variables can be strings or numbers.</p>
 <p>A reference to an unset variable raises an error, preventing the function call
 from being made. If you modify the path to end with <cite>?</cite> that signals it is
 optional. Optional variables, when unset, are passed as <cite>None</cite> to the Python
@@ -215,45 +212,33 @@ can use scientific notation.</p>
 <ol class="arabic simple" start="3">
 <li>A string, like <cite>“Joe”</cite>.</li>
 </ol>
-<p>Strings are escaped like JSON, using backslash. Strings may contain embedded
-expressions. For more information on this, see the <em>Interpolated Strings</em>
-section of
-<a class="reference external" href="https://www.iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a>.</p>
-<ol class="arabic simple" start="4">
-<li>The result of a function call.</li>
-</ol>
-<p>For more details, see <a class="reference internal" href="#composition">Composition</a>.</p>
-<p><a class="reference external" href="https://www.iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a>
-goes in to more detail on expressions.</p>
+<p>Strings are escaped like JSON, using backslash.</p>
 </div>
 <div class="section" id="timeouts">
 <h2>Timeouts<a class="headerlink" href="#timeouts" title="Permalink to this headline">¶</a></h2>
 <p>By default, iTerm2 stops waiting for a function’s result after five seconds.
 The function continues to run until completion. You can pass an optional
-<cite>timeout</cite> parameter to <cite>async_register</cite> to set your own timeout value in
-seconds.</p>
+<cite>timeout</cite> parameter to <cite>iterm2.Registration.async_register_rpc_handler</cite> to set your own timeout
+value in seconds.</p>
 </div>
 <div class="section" id="composition">
-<span id="id3"></span><h2>Composition<a class="headerlink" href="#composition" title="Permalink to this headline">¶</a></h2>
-<p>Function invocations may use composition. A registered function can return a
-value which the becomes an argument to a subsequent function call. Here’s a
-snippet of an example, which you can add to the <cite>main</cite> function of the previous
-example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@iterm2.RPC</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<h2>Composition<a class="headerlink" href="#composition" title="Permalink to this headline">¶</a></h2>
+<p>Functions may be composed. A registered function can return a value which the
+becomes an argument to a subsequent function call. Here’s a snippet of an
+example, which you can add to the <cite>main</cite> function of the previous example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
-<span class="n">await</span> <span class="n">add</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-<span class="nd">@iterm2.RPC</span>
 <span class="n">async</span> <span class="k">def</span> <span class="nf">times</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
-<span class="n">await</span> <span class="n">times</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-<span class="nd">@iterm2.RPC</span>
 <span class="n">async</span> <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">current_tab</span><span class="o">.</span><span class="n">current_session</span>
     <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
-<span class="n">await</span> <span class="n">show</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+<span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;times&quot;</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+<span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span>
+<span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;show&quot;</span><span class="p">,</span> <span class="n">show</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To compute 1+2*3 and inject it into the current session, use this invocation:</p>
@@ -278,7 +263,6 @@ RPC will not be made until all its dependencies have completed without errors.</
 <li><a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a></li>
 <li>RPCs</li>
 <li><a class="reference internal" href="hooks.html"><span class="doc">Hooks</span></a></li>
-<li><a class="reference internal" href="troubleshooting.html"><span class="doc">Troubleshooting</span></a></li>
 </ul>
 </dd>
 </dl>
@@ -303,7 +287,7 @@ RPC will not be made until all its dependencies have completed without errors.</
   </div>
 </div>
 
-<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script src="https://iterm2.com/js/scripts.js"></script>                
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

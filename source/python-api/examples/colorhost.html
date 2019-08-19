@@ -67,21 +67,37 @@
 
     <div class="document">
 <div class="row">
-    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-        <div class="main panel">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
 
-            <div class="doc-wrapper" style="text-align: right">
-                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
-            </div>
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">iTerm2</div>
 
-            <hr/>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
+
+	      <div class="toc_subhead">Python API</div>
+
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
   <div class="section" id="per-host-colors">
-<span id="colorhost-example"></span><h1>Per-Host Colors<a class="headerlink" href="#per-host-colors" title="Permalink to this headline">¶</a></h1>
+<h1>Per-Host Colors<a class="headerlink" href="#per-host-colors" title="Permalink to this headline">¶</a></h1>
 <p>This script sets the color of a session based on the current hostname. For it to work, iTerm2 must know the current hostname. You can do that either by installing Shell Integration or by defining triggers that detect the hostname. More information on that is available here: <a class="reference external" href="https://www.iterm2.com/documentation-shell-integration.html">https://www.iterm2.com/documentation-shell-integration.html</a></p>
 <p>Edit the <cite>colormap</cite> variable to specify the hostname to color preset mapping you prefer.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.7</span>
@@ -105,14 +121,14 @@
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">MonitorSession</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Called when a new session is created.&quot;&quot;&quot;</span>
-    <span class="n">hostname</span> <span class="o">=</span> <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_variable</span><span class="p">(</span><span class="s2">&quot;hostname&quot;</span><span class="p">)</span>
+    <span class="n">hostname</span> <span class="o">=</span> <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_variable</span><span class="p">(</span><span class="s2">&quot;session.hostname&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">hostname</span> <span class="ow">in</span> <span class="n">colormap</span><span class="p">:</span>
         <span class="n">await</span> <span class="n">SetPresetInSession</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">colormap</span><span class="p">[</span><span class="n">hostname</span><span class="p">])</span>
 
     <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span>
             <span class="n">connection</span><span class="p">,</span>
             <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableScopes</span><span class="o">.</span><span class="n">SESSION</span><span class="p">,</span>
-            <span class="s2">&quot;hostname&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;session.hostname&quot;</span><span class="p">,</span>
             <span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="n">hostname</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
@@ -139,7 +155,6 @@
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/db0d0684dde160c219011227270da5f6/colorhost.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -150,7 +165,7 @@
   </div>
 </div>
 
-<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script src="https://iterm2.com/js/scripts.js"></script>                
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

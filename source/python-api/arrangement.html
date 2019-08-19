@@ -69,14 +69,30 @@
 
     <div class="document">
 <div class="row">
-    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-        <div class="main panel">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
 
-            <div class="doc-wrapper" style="text-align: right">
-                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
-            </div>
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">iTerm2</div>
 
-            <hr/>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
+
+	      <div class="toc_subhead">Python API</div>
+
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -90,20 +106,15 @@
 <em class="property">class </em><code class="descname">Arrangement</code><a class="headerlink" href="#iterm2.Arrangement" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="staticmethod">
 <dt id="iterm2.Arrangement.async_restore">
-<em class="property">static </em><code class="descname">async_restore</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Arrangement.async_restore" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">async_restore</code><span class="sig-paren">(</span><em>connection</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Arrangement.async_restore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restore a saved window arrangement.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The name of the arrangement.</li>
-<li><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name of the arrangement to restore.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – The name of the arrangement to restore.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last">SavedArrangementException</p>
-</td>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body">SavedArrangementException</td>
 </tr>
 </tbody>
 </table>
@@ -111,21 +122,16 @@
 
 <dl class="staticmethod">
 <dt id="iterm2.Arrangement.async_save">
-<em class="property">static </em><code class="descname">async_save</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Arrangement.async_save" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">async_save</code><span class="sig-paren">(</span><em>connection</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Arrangement.async_save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save all windows as a new arrangement.</p>
 <p>Replaces the arrangement with the given name if it already exists.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The name of the arrangement.</li>
-<li><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name of the arrangement.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – The name of the arrangement.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last">SavedArrangementException</p>
-</td>
+<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body">SavedArrangementException</td>
 </tr>
 </tbody>
 </table>
@@ -157,7 +163,7 @@
   </div>
 </div>
 
-<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script src="https://iterm2.com/js/scripts.js"></script>                
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

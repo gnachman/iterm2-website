@@ -69,14 +69,30 @@
 
     <div class="document">
 <div class="row">
-    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-        <div class="main panel">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
 
-            <div class="doc-wrapper" style="text-align: right">
-                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
-            </div>
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">iTerm2</div>
 
-            <hr/>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
+
+	      <div class="toc_subhead">Python API</div>
+
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -92,19 +108,15 @@
 <p>A user typing in a session belonging to one broadcast domain will result in
 those keystrokes being sent to all sessions in that domain.</p>
 <p>Broadcast domains are disjoint.</p>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/enable_broadcasting.html#enable-broadcasting-example"><span class="std std-ref">Enable Broadcasting Input</span></a>”</p>
-</div>
 <dl class="method">
 <dt id="iterm2.BroadcastDomain.add_session">
-<code class="descname">add_session</code><span class="sig-paren">(</span><em>session: iterm2.session.Session</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.BroadcastDomain.add_session" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_session</code><span class="sig-paren">(</span><em>session</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.BroadcastDomain.add_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a session to the broadcast domain.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>session</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code>) – The session to add.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>session</strong> – A <a class="reference internal" href="session.html#iterm2.Session" title="iterm2.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Session</span></code></a> object.</td>
 </tr>
 </tbody>
 </table>
@@ -118,7 +130,7 @@ those keystrokes being sent to all sessions in that domain.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The sessions belonging to the broadcast domain.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of <a class="reference internal" href="session.html#iterm2.Session" title="iterm2.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Session</span></code></a> objects.</td>
 </tr>
 </tbody>
 </table>
@@ -128,24 +140,16 @@ those keystrokes being sent to all sessions in that domain.</p>
 
 <dl class="function">
 <dt id="iterm2.async_set_broadcast_domains">
-<code class="descname">async_set_broadcast_domains</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection, broadcast_domains: List[iterm2.broadcast.BroadcastDomain]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_set_broadcast_domains" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_set_broadcast_domains</code><span class="sig-paren">(</span><em>connection</em>, <em>broadcast_domains</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_set_broadcast_domains" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the current set of broadcast domains.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</li>
-<li><strong>broadcast_domains</strong> – The new collection of broadcast domains.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>broadcast_domains</strong> – A list of <a class="reference internal" href="#iterm2.BroadcastDomain" title="iterm2.BroadcastDomain"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.BroadcastDomain</span></code></a> objects.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/enable_broadcasting.html#enable-broadcasting-example"><span class="std std-ref">Enable Broadcasting Input</span></a>”</p>
-</div>
 </dd></dl>
 
 <hr class="docutils" />
@@ -166,7 +170,7 @@ those keystrokes being sent to all sessions in that domain.</p>
   </div>
 </div>
 
-<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script src="https://iterm2.com/js/scripts.js"></script>                
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

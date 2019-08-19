@@ -17,7 +17,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Profile" href="profile.html" />
-    <link rel="prev" title="Connection" href="connection.html" />
+    <link rel="prev" title="MainMenu" href="mainmenu.html" />
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -77,41 +77,15 @@
 	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
 	  <div class="inner-menu">
 	    <ul class="sub-nav">
-	      <div class="toc_subhead">Introduction</div>
+	      <div class="toc_subhead">iTerm2</div>
 
-	      <li><a href="documentation-highlights.html">Highlights for New Users</a></li>
-	      <li><a href="documentation-general-usage.html">General Usage</a></li>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
 
-	      <div class="toc_subhead">User Interface</div>
+	      <div class="toc_subhead">Python API</div>
 
-	      <li><a href="documentation-menu-items.html">Menu Items</a></li>
-	      <li><a href="documentation-preferences.html">Preferences</a></li>
-	      <li><a href="documentation-touch-bar.html">Touch Bar</a></li>
-	      <li><a href="documentation-copymode.html">Copy Mode</a></li>
-	      <li><a href="documentation-fonts.html">Fonts</a></li>
-	      <li><a href="documentation-search-syntax.html">Profile Search Syntax</a></li>
-
-	      <div class="toc_subhead">Features</div>
-
-	      <li><a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a></li>
-	      <li><a href="documentation-badges.html">Badges</a></li>
-	      <li><a href="documentation-buried-sessions.html">Buried Sessions</a></li>
-	      <li><a href="documentation-captured-output.html">Captured Output</a></li>
-	      <li><a href="documentation-coprocesses.html">Coprocesses</a></li>
-	      <li><a href="documentation-hotkey.html">Hotkeys</a></li>
-	      <li><a href="documentation-restoration.html">Session Restoration</a></li>
-	      <li><a href="documentation-shell-integration.html">Shell Integration</a></li>
-	      <li><a href="documentation-smart-selection.html">Smart Selection</a></li>
-	      <li><a href="documentation-tmux-integration.html">tmux Integration</a></li>
-	      <li><a href="documentation-triggers.html">Triggers</a></li>
-	      <li><a href="documentation-utilities.html">Utilities</a></li>
-
-	      <div class="toc_subhead">Advanced</div>
-
-	      <li><a href="documentation-scripting.html">Scripting</a></li>
-	      <li><a href="documentation-dynamic-profiles.html">Dynamic Profiles</a></li>
-	      <li><a href="documentation-images.html">Inline Images Protocol</a></li>
-	      <li><a href="documentation-escape-codes.html">Proprietary Escape Codes</a></li>
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
 
 	    </ul>
 	  </div>
@@ -172,7 +146,7 @@ a notifications your async callback will be run when the event occurs.</p>
 
 <dl class="function">
 <dt id="iterm2.notifications.async_subscribe_to_keystroke_notification">
-<code class="descname">async_subscribe_to_keystroke_notification</code><span class="sig-paren">(</span><em>connection</em>, <em>callback</em>, <em>session=None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.notifications.async_subscribe_to_keystroke_notification" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_subscribe_to_keystroke_notification</code><span class="sig-paren">(</span><em>connection</em>, <em>callback</em>, <em>session=None</em>, <em>patterns_to_ignore=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.notifications.async_subscribe_to_keystroke_notification" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers a callback to be run when a key is pressed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -183,6 +157,7 @@ a notifications your async callback will be run when the event occurs.</p>
 <li><strong>callback</strong> – A coroutine taking two arguments: an <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> and
 iterm2.api_pb2.KeystrokeNotification.</li>
 <li><strong>session</strong> – The session to monitor, or None.</li>
+<li><strong>patterns_to_ignore</strong> – A list of keystroke patterns that iTerm2 should not handle, expecting the script will handle it alone. Objects are class <a class="reference internal" href="#iterm2.notifications.KeystrokePattern" title="iterm2.notifications.KeystrokePattern"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeystrokePattern</span></code></a>.</li>
 </ul>
 </td>
 </tr>
@@ -349,6 +324,50 @@ iterm2.api_pb2.FocusChangedNotification.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.notifications.KeystrokePattern">
+<em class="property">class </em><code class="descname">KeystrokePattern</code><a class="headerlink" href="#iterm2.notifications.KeystrokePattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes attributes that select keystrokes.</p>
+<p>Keystrokes contain modifiers (e.g., command or option), characters (what
+characters are generated by the keypress), and characters ignoring
+modifiers (what characters would be generated if no modifiers were pressed,
+excepting the shift key).</p>
+<dl class="attribute">
+<dt id="iterm2.notifications.KeystrokePattern.characters">
+<code class="descname">characters</code><a class="headerlink" href="#iterm2.notifications.KeystrokePattern.characters" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of characters that match the pattern. Values are strings (typically one character-long strings).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.notifications.KeystrokePattern.characters_ignoring_modifiers">
+<code class="descname">characters_ignoring_modifiers</code><a class="headerlink" href="#iterm2.notifications.KeystrokePattern.characters_ignoring_modifiers" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of characters “ignoring modifiers” that match the pattern.</p>
+<p>“Ignoring modifiers” mostly means ignoring modifiers other than Shift. It has a lot of surprising edge cases which Apple did not document, so experiment to find how it works.</p>
+<p>Values are strings (typically one character-long strings).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.notifications.KeystrokePattern.forbidden_modifiers">
+<code class="descname">forbidden_modifiers</code><a class="headerlink" href="#iterm2.notifications.KeystrokePattern.forbidden_modifiers" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of modifiers whose presence prevents the pattern from being matched.</p>
+<p>Allowed values are: <cite>MODIFIER_CONTROL</cite>, <cite>MODIFIER_OPTION</cite>, <cite>MODIFIER_COMMAND</cite>, <cite>MODIFIER_SHIFT</cite>, <cite>MODIFIER_FUNCTION</cite>, <cite>MODIFIER_NUMPAD</cite></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.notifications.KeystrokePattern.keycodes">
+<code class="descname">keycodes</code><a class="headerlink" href="#iterm2.notifications.KeystrokePattern.keycodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of numeric keycodes that match the pattern. Values are numbers.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.notifications.KeystrokePattern.required_modifiers">
+<code class="descname">required_modifiers</code><a class="headerlink" href="#iterm2.notifications.KeystrokePattern.required_modifiers" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of modifiers that are required to match the pattern.</p>
+<p>Allowed values are: <cite>MODIFIER_CONTROL</cite>, <cite>MODIFIER_OPTION</cite>, <cite>MODIFIER_COMMAND</cite>, <cite>MODIFIER_SHIFT</cite>, <cite>MODIFIER_FUNCTION</cite>, <cite>MODIFIER_NUMPAD</cite></p>
+</dd></dl>
+
 </dd></dl>
 
 <hr class="docutils" />

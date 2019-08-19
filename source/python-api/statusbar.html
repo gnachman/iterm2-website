@@ -69,14 +69,30 @@
 
     <div class="document">
 <div class="row">
-    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-        <div class="main panel">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
 
-            <div class="doc-wrapper" style="text-align: right">
-                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
-            </div>
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">iTerm2</div>
 
-            <hr/>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
+
+	      <div class="toc_subhead">Python API</div>
+
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -87,116 +103,83 @@
 <p>Status bar customization interfaces.</p>
 <dl class="class">
 <dt id="iterm2.StatusBarComponent">
-<em class="property">class </em><code class="descname">StatusBarComponent</code><span class="sig-paren">(</span><em>short_description: str, detailed_description: str, knobs: List[iterm2.statusbar.Knob], exemplar: str, update_cadence: Optional[float], identifier: str, icons: List[iterm2.statusbar.StatusBarComponent.Icon] = []</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">StatusBarComponent</code><span class="sig-paren">(</span><em>name</em>, <em>short_description</em>, <em>detailed_description</em>, <em>knobs</em>, <em>exemplar</em>, <em>update_cadence</em>, <em>identifier</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a script-provided status bar component showing a text value provided by a user-provided coroutine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> – A unique name for this component.</li>
 <li><strong>short_description</strong> – Short description shown below the component in the picker UI.</li>
-<li><strong>detailed_description</strong> – Tool tip for the component in the picker UI.</li>
+<li><strong>detailed_description</strong> – Tool tip for th component in the picker UI.</li>
 <li><strong>knobs</strong> – List of configuration knobs. See the various Knob classes for details.</li>
 <li><strong>exemplar</strong> – Example value to show in the picker UI as the sample content of the component.</li>
 <li><strong>update_cadence</strong> – How frequently in seconds to reload the value, or <cite>None</cite> if it does not need to be reloaded on a timer.</li>
 <li><strong>identifier</strong> – A string uniquely identifying this component. Use a backwards domain name. For example, <cite>com.example.calculator</cite> for a calculator component provided by example.com.</li>
-<li><strong>icons</strong> – An array of <cite>StatusBarComponent.Icon</cite> objects. Should contain one with scale 1 and one with scale 2, of size 16x17 points. May be empty if you don’t want an icon.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<ul class="last simple">
-<li>Example “<a class="reference internal" href="examples/escindicator.html#escindicator-example"><span class="std std-ref">Escape Key Indicator</span></a>”</li>
-<li>Example “<a class="reference internal" href="examples/jsonpretty.html#jsonpretty-example"><span class="std std-ref">JSON Pretty Printer Status Bar Component</span></a>”</li>
-<li>Example “<a class="reference internal" href="examples/mousemode.html#mousemode-example"><span class="std std-ref">Status Bar Component: Mouse Mode</span></a>”</li>
-<li>Example “<a class="reference internal" href="examples/statusbar.html#statusbar-example"><span class="std std-ref">Status Bar Component</span></a>”</li>
-</ul>
-</div>
 <dl class="method">
 <dt id="iterm2.StatusBarComponent.async_open_popover">
-<code class="descname">async_open_popover</code><span class="sig-paren">(</span><em>session_id: str</em>, <em>html: str</em>, <em>size: iterm2.util.Size</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.async_open_popover" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_open_popover</code><span class="sig-paren">(</span><em>session_id</em>, <em>html</em>, <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.async_open_popover" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open a popover with a webview.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The session identifier.</li>
-<li><strong>html</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A string containing HTML to show.</li>
-<li><strong>size</strong> (<a class="reference internal" href="util.html#iterm2.util.Size" title="iterm2.util.Size"><code class="xref py py-class docutils literal notranslate"><span class="pre">Size</span></code></a>) – The desired size of the popover, a <a class="reference internal" href="util.html#iterm2.util.Size" title="iterm2.util.Size"><code class="xref py py-class docutils literal notranslate"><span class="pre">Size</span></code></a>.</li>
+<li><strong>session_id</strong> – The session identifier.</li>
+<li><strong>html</strong> – A string containing HTML to show.</li>
+<li><strong>size</strong> – The desired size of the popover, a <a class="reference internal" href="util.html#iterm2.util.Size" title="iterm2.util.Size"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.util.Size</span></code></a>.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/jsonpretty.html#jsonpretty-example"><span class="std std-ref">JSON Pretty Printer Status Bar Component</span></a>”</p>
-</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="iterm2.StatusBarComponent.async_register">
-<code class="descname">async_register</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection, coro, timeout: Union[None, float] = None, onclick: Optional[Callable[[str, Any], Coroutine[Any, Any, None]]] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.async_register" title="Permalink to this definition">¶</a></dt>
+<code class="descname">async_register</code><span class="sig-paren">(</span><em>connection</em>, <em>coro</em>, <em>timeout=None</em>, <em>defaults={}</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.async_register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers the statusbar component.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code>.</li>
+<li><strong>connection</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Connection</span></code>.</li>
 <li><strong>coro</strong> – An async function. Its arguments are reflected upon to determine the RPC’s signature. Only the names of the arguments are used. All arguments should be keyword arguments as any may be omitted at call time. It should take a special argument named “knobs” that is a dictionary with configuration settings. It may return a string or a list of strings. If it returns a list of strings then the longest one that fits will be used.</li>
 <li><strong>timeout</strong> – How long iTerm2 should wait before giving up on this function’s ever returning. <cite>None</cite> means to use the default timeout.</li>
-<li><strong>onclick</strong> – A coroutine to run when the user clicks on the status bar component. It should take one argument, which is the session_id of the session owning the status bar component that was clicked on.</li>
+<li><strong>defaults</strong> – Gives default values. Names correspond to argument names in <cite>arguments</cite>. Values are in-scope variables of the session owning the status bar.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>Example:</p>
-<blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
-    <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;Session ID&quot;</span><span class="p">,</span>
-    <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Show the session&#39;s identifier&quot;</span><span class="p">,</span>
-    <span class="n">knobs</span><span class="o">=</span><span class="p">[],</span>
-    <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;[session ID]&quot;</span><span class="p">,</span>
-    <span class="n">update_cadence</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-    <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.statusbar-rpc&quot;</span><span class="p">)</span>
+</dd></dl>
 
-<span class="nd">@iterm2.StatusBarRPC</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">session_id_status_bar_coro</span><span class="p">(</span>
-        <span class="n">knobs</span><span class="p">,</span>
-        <span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)):</span>
-    <span class="c1"># This status bar component shows the current session ID, which</span>
-    <span class="c1"># is useful for debugging scripts.</span>
-    <span class="k">return</span> <span class="n">session_id</span>
-
-<span class="nd">@iterm2.RPC</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">my_status_bar_click_handler</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
-    <span class="c1"># When you click the status bar it opens a popover with the</span>
-    <span class="c1"># message &quot;Hello World&quot;</span>
-    <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_open_popover</span><span class="p">(</span>
-            <span class="n">session_id</span><span class="p">,</span>
-            <span class="s2">&quot;Hello world&quot;</span><span class="p">,</span>
-            <span class="n">iterm2</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
-
-<span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span>
-        <span class="n">connection</span><span class="p">,</span>
-        <span class="n">session_id_status_bar_coro</span><span class="p">,</span>
-        <span class="n">onclick</span><span class="o">=</span><span class="n">my_status_bar_click_handler</span><span class="p">)</span>
-</pre></div>
-</div>
-</div></blockquote>
+<dl class="method">
+<dt id="iterm2.StatusBarComponent.set_click_handler">
+<code class="descname">set_click_handler</code><span class="sig-paren">(</span><em>coro</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.set_click_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a coroutine to call when the status bar component is clicked on.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coro</strong> – A coroutine to run when the user clicks on the status bar component. It should take one argument, which is the session_id of the session owning the status bar component that was clicked on.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="iterm2.CheckboxKnob">
-<em class="property">class </em><code class="descname">CheckboxKnob</code><span class="sig-paren">(</span><em>name: str</em>, <em>default_value: bool</em>, <em>key: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.CheckboxKnob" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">CheckboxKnob</code><span class="sig-paren">(</span><em>name</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.CheckboxKnob" title="Permalink to this definition">¶</a></dt>
 <dd><p>A status bar configuration knob to select a checkbox.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -215,7 +198,7 @@
 
 <dl class="class">
 <dt id="iterm2.StringKnob">
-<em class="property">class </em><code class="descname">StringKnob</code><span class="sig-paren">(</span><em>name: str</em>, <em>placeholder: str</em>, <em>default_value: str</em>, <em>key: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StringKnob" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">StringKnob</code><span class="sig-paren">(</span><em>name</em>, <em>placeholder</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StringKnob" title="Permalink to this definition">¶</a></dt>
 <dd><p>A status bar configuration knob to select a string.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -235,7 +218,7 @@
 
 <dl class="class">
 <dt id="iterm2.PositiveFloatingPointKnob">
-<em class="property">class </em><code class="descname">PositiveFloatingPointKnob</code><span class="sig-paren">(</span><em>name: str</em>, <em>default_value: float</em>, <em>key: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PositiveFloatingPointKnob" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">PositiveFloatingPointKnob</code><span class="sig-paren">(</span><em>name</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PositiveFloatingPointKnob" title="Permalink to this definition">¶</a></dt>
 <dd><p>A status bar configuration knob to select a positive floating point value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -254,7 +237,7 @@
 
 <dl class="class">
 <dt id="iterm2.ColorKnob">
-<em class="property">class </em><code class="descname">ColorKnob</code><span class="sig-paren">(</span><em>name: str</em>, <em>default_value: iterm2.color.Color</em>, <em>key: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ColorKnob" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ColorKnob</code><span class="sig-paren">(</span><em>name</em>, <em>default_value</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ColorKnob" title="Permalink to this definition">¶</a></dt>
 <dd><p>A status bar configuration knob to select color.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -262,28 +245,8 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>name</strong> – Description of the knob.</li>
-<li><strong>default_value</strong> – Default value.</li>
+<li><strong>default_value</strong> – Default value (a <a class="reference internal" href="color.html#iterm2.Color" title="iterm2.Color"><code class="xref py py-class docutils literal notranslate"><span class="pre">Color</span></code></a>)</li>
 <li><strong>key</strong> – A unique string key identifying this knob</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="class">
-<dt id="iterm2.StatusBarComponent.Icon">
-<em class="property">class </em><code class="descname">Icon</code><span class="sig-paren">(</span><em>scale: float</em>, <em>base64_data: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.Icon" title="Permalink to this definition">¶</a></dt>
-<dd><p>Contains a status bar icon.</p>
-<p>The scale gives the ratio between pixels and points. For example, a 32x34 image with scale 2 has a size of 16x17 points.</p>
-<p>Status bar icons should be 16x17 points. Use a two point margin around the edges. The text baseline is 3.5 points up from the bottom of the image.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>scale</strong> – 2 for a retina (high-DPI) image, or 1 for a regular (low-DPI) image.</li>
-<li><strong>base64_data</strong> – Base64-encoded data with the icon’s image in PNG format.</li>
 </ul>
 </td>
 </tr>
@@ -309,7 +272,7 @@
   </div>
 </div>
 
-<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script src="https://iterm2.com/js/scripts.js"></script>                
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

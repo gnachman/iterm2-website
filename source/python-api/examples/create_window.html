@@ -67,44 +67,66 @@
 
     <div class="document">
 <div class="row">
-    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-        <div class="main panel">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
 
-            <div class="doc-wrapper" style="text-align: right">
-                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
-            </div>
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">iTerm2</div>
 
-            <hr/>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
+
+	      <div class="toc_subhead">Python API</div>
+
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
   <div class="section" id="create-window-custom-escape-sequence">
-<span id="create-window-example"></span><h1>Create Window — Custom Escape Sequence<a class="headerlink" href="#create-window-custom-escape-sequence" title="Permalink to this headline">¶</a></h1>
+<h1>Create Window — Custom Escape Sequence<a class="headerlink" href="#create-window-custom-escape-sequence" title="Permalink to this headline">¶</a></h1>
 <p>This demonstrates handling a custom escape sequence to perform an action. In
 this case, the action is to create a new window. This script is meant to be a
 starting point for developing your own custom escape sequence handler.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">iterm2</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">CustomControlSequenceMonitor</span><span class="p">(</span>
-            <span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;^create-window$&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">match</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
-            <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">on_custom_esc</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">notification</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Received a custom escape sequence&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">sender_identity</span> <span class="o">==</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">payload</span> <span class="o">==</span> <span class="s2">&quot;create-window&quot;</span><span class="p">:</span>
+                <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">()</span>
+
+    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">async_subscribe_to_custom_escape_sequence_notification</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">on_custom_esc</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/299a7b7b0dc0251a1e7080674ae706b2/create_window.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
-<p>To create a window when this script is running, invoke this command:</p>
+<p>To run the script, use:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">printf</span> <span class="s2">&quot;\033]1337;Custom=id=%s:%s\a&quot;</span> <span class="s2">&quot;shared-secret&quot;</span> <span class="s2">&quot;create-window&quot;</span>
 </pre></div>
 </div>
 <p>The <em>shared-secret</em> string is used to prevent untrusted code from invoking your
 function. For example, if you <cite>cat</cite> a text file, it could include escape
-sequences, but they won’t work unless they contain the proper secret string.</p>
+sequences.</p>
 </div>
 
 
@@ -115,7 +137,7 @@ sequences, but they won’t work unless they contain the proper secret string.</
   </div>
 </div>
 
-<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script src="https://iterm2.com/js/scripts.js"></script>                
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

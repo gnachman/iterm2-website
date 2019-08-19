@@ -17,7 +17,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Focus" href="focus.html" />
-    <link rel="prev" title="Custom Control Sequences" href="customcontrol.html" />
+    <link rel="prev" title="Color Presets" href="colorpresets.html" />
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -69,14 +69,30 @@
 
     <div class="document">
 <div class="row">
-    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-        <div class="main panel">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
 
-            <div class="doc-wrapper" style="text-align: right">
-                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
-            </div>
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">iTerm2</div>
 
-            <hr/>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
+
+	      <div class="toc_subhead">Python API</div>
+
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -87,40 +103,14 @@
 <p>Manages the details of the websocket connection.</p>
 <dl class="function">
 <dt id="iterm2.run_until_complete">
-<code class="descname">run_until_complete</code><span class="sig-paren">(</span><em>coro: Callable[[iterm2.connection.Connection], Coroutine[Any, Any, None]], retry=False, debug=False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.run_until_complete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience method to run an async function taking an <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> as an argument.</p>
-<p>After <cite>coro</cite> returns this function will return.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>coro</strong> – The coroutine to run. Must be an <cite>async def</cite> function. It should take one argument, a <a class="reference internal" href="#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>, and does not need to return a value.</li>
-<li><strong>retry</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Keep trying to connect until it succeeds?</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<code class="descname">run_until_complete</code><span class="sig-paren">(</span><em>coro</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.run_until_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method to run an async function taking an <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Connection</span></code> as an argument.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="iterm2.run_forever">
-<code class="descname">run_forever</code><span class="sig-paren">(</span><em>coro: Callable[[iterm2.connection.Connection], Coroutine[Any, Any, None]], retry=False, debug=False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.run_forever" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience method to run an async function taking an <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> as an argument.</p>
-<p>This function never returns.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>coro</strong> – The coroutine to run. Must be an <cite>async def</cite> function. It should take one argument, a <a class="reference internal" href="#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>, and does not need to return a value.</li>
-<li><strong>retry</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Keep trying to connect until it succeeds?</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<code class="descname">run_forever</code><span class="sig-paren">(</span><em>coro</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.run_forever" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method to run an async function taking an <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Connection</span></code> as an argument.</p>
 </dd></dl>
 
 <dl class="class">
@@ -131,18 +121,10 @@
 dispatching incoming messages.</p>
 <dl class="staticmethod">
 <dt id="iterm2.connection.Connection.async_create">
-<em class="property">static </em><code class="descname">async_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.connection.Connection<a class="headerlink" href="#iterm2.connection.Connection.async_create" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">async_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.connection.Connection.async_create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new connection.</p>
 <p>This is intended for use in an apython REPL. It constructs a new
 connection and returns it without creating an asyncio event loop.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A new connection to iTerm2.</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </dd></dl>
@@ -165,7 +147,7 @@ connection and returns it without creating an asyncio event loop.</p>
   </div>
 </div>
 
-<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script src="https://iterm2.com/js/scripts.js"></script>                
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

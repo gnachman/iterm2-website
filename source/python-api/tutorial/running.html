@@ -67,14 +67,30 @@
 
     <div class="document">
 <div class="row">
-    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-        <div class="main panel">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
 
-            <div class="doc-wrapper" style="text-align: right">
-                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
-            </div>
+      <div class="doc-wrapper">
+	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
+	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
+	  <div class="inner-menu">
+	    <ul class="sub-nav">
+	      <div class="toc_subhead">iTerm2</div>
 
-            <hr/>
+	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
+
+	      <div class="toc_subhead">Python API</div>
+
+	      <li><a href="/python-api">Python API</a></li>
+	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
+	      <li><a href="/python-api/examples/index.html">Examples</a></li>
+
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+<hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -82,13 +98,12 @@
 	    
   <div class="section" id="running-a-script">
 <h1>Running a Script<a class="headerlink" href="#running-a-script" title="Permalink to this headline">¶</a></h1>
-<p>There are many ways to run a script:</p>
+<p>There are four ways to run a script:</p>
 <ol class="arabic simple">
 <li>From the Scripts menu.</li>
 <li>At the command line.</li>
 <li>Auto-run scripts launched when iTerm2 starts.</li>
 <li>With an interactive interpreter called a REPL.</li>
-<li>From the Open Quickly window.</li>
 </ol>
 <div class="section" id="scripts-menu">
 <h2>Scripts Menu<a class="headerlink" href="#scripts-menu" title="Permalink to this headline">¶</a></h2>
@@ -105,46 +120,27 @@ included:</p>
 <div class="section" id="command-line">
 <h2>Command Line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h2>
 <p>Your machine probably has <a class="reference external" href="https://xkcd.com/1987/">many instances of Python</a>
-installed in different places. Each installation of Python may have different
-modules installed. Python determines the path to its modules by examining the
-location of the <cite>python3</cite> executable. For this reason, it’s important to use
-the right <cite>python3</cite> so that your script’s dependencies (such as the <cite>iterm2</cite>
-module) can be satisfied.</p>
+installed in different places. It’s important to run your script with the right
+Python so that it can find the packages the script depends on (such as the
+<cite>iterm2</cite> package).</p>
 <p>The standard iTerm2 Python installation is at
-<cite>~/Library/ApplicationSupport/iTerm2/iterm2env/versions/*/bin/python3</cite>.
+<cite>~/Library/ApplicationSupport/iTerm2/iterm2env/versions/3.7.0/bin/python3</cite>.
 This is the so-called “Basic” environment.</p>
 <p>If you create a script with the “Full Environment” its instance of Python
 will be in
-<cite>~/Library/ApplicationSupport/iTerm2/Scripts/YourScript/iterm2env/versions/*/bin/python3</cite>.</p>
+<cite>~/Library/ApplicationSupport/iTerm2/Scripts/YourScript/iterm2env/versions/3.7.0/bin/python3</cite>.</p>
 <p>Internally, iTerm2 runs a basic script by invoking:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">ApplicationSupport</span><span class="o">/</span><span class="n">iTerm2</span><span class="o">/</span><span class="n">iterm2env</span><span class="o">/</span><span class="n">versions</span><span class="o">/*/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python3</span> <span class="n">YourScript</span><span class="o">.</span><span class="n">py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">ApplicationSupport</span><span class="o">/</span><span class="n">iTerm2</span><span class="o">/</span><span class="n">iterm2env</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mf">3.7</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python3</span> <span class="n">YourScript</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
 <p>Scripts are stored in <cite>$HOME/Library/ApplicationSupport/iTerm2/Scripts</cite>.</p>
 <p>Make sure you don’t have a <cite>PYTHONPATH</cite> environment variable set when you run
 your script.</p>
-<p>If you prefer to use Python as installed by Homebrew, you can install modules
-yourself using the Homebrew-installed <cite>pip3</cite>, which should be in your path. At
-a minimum, install the <cite>iterm2</cite> module.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">iTerm2 creates the <cite>ApplicationSupport</cite> symlink to <cite>Application
 Support</cite> because shell scripts may not have spaces in their paths.</p>
 </div>
-<p>If you’d like your script to launch iTerm2, you’ll need to use pybobjc. To install it:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install pyobjc
-</pre></div>
-</div>
-<p>Then put this in your script:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">AppKit</span>
-<span class="n">bundle</span> <span class="o">=</span> <span class="s2">&quot;com.googlecode.iterm2&quot;</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">AppKit</span><span class="o">.</span><span class="n">NSRunningApplication</span><span class="o">.</span><span class="n">runningApplicationsWithBundleIdentifier_</span><span class="p">(</span><span class="n">bundle</span><span class="p">):</span>
-    <span class="n">AppKit</span><span class="o">.</span><span class="n">NSWorkspace</span><span class="o">.</span><span class="n">sharedWorkspace</span><span class="p">()</span><span class="o">.</span><span class="n">launchApplication_</span><span class="p">(</span><span class="s2">&quot;iTerm&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The <cite>iterm2.run_forever</cite> or <cite>iterm2.run_until_complete</cite> call will block until
-it is able to make a connection, so you don’t need to add any logic that waits
-for the launch to complete. Just try to connect right away.</p>
 </div>
 <div class="section" id="auto-run-scripts">
 <h2>Auto-Run Scripts<a class="headerlink" href="#auto-run-scripts" title="Permalink to this headline">¶</a></h2>
@@ -161,7 +157,7 @@ Python interpreter.</p>
 <p>The REPL uses the <cite>apython</cite> script provided by <a class="reference external" href="https://github.com/vxgmichel/aioconsole">aioconsole</a> which extends Python
 so that you can use <cite>await</cite> without having to put it inside an <cite>async</cite>
 function. In other words, you don’t need to write
-<cite>iterm2.run_until_complete(main)</cite> to launch a <cite>main</cite> function when in
+<cite>iterm2.run(main)</cite> to launch a <cite>main</cite> function when in
 the REPL. Instead, a typical REPL session would begin with:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
 <span class="n">connection</span><span class="o">=</span><span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">async_create</span><span class="p">()</span>
@@ -171,11 +167,6 @@ the REPL. Instead, a typical REPL session would begin with:</p>
 <p>When the REPL starts it prints a sample script so that you don’t need to
 remember this. You can just copy-paste it into the interpreter. Once you’ve got
 an <cite>app</cite> the rest is easy :).</p>
-</div>
-<div class="section" id="open-quickly">
-<h2>Open Quickly<a class="headerlink" href="#open-quickly" title="Permalink to this headline">¶</a></h2>
-<p>Enter the name of your script in the Open Quickly window to launch it.</p>
-<img alt="../_images/open_quickly.png" src="../_images/open_quickly.png" />
 <p>Continue to the next section, <a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a>.</p>
 <hr class="docutils" />
 <div class="section" id="other-sections">
@@ -190,7 +181,6 @@ an <cite>app</cite> the rest is easy :).</p>
 <li><a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a></li>
 <li><a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a></li>
 <li><a class="reference internal" href="hooks.html"><span class="doc">Hooks</span></a></li>
-<li><a class="reference internal" href="troubleshooting.html"><span class="doc">Troubleshooting</span></a></li>
 </ul>
 </dd>
 </dl>
@@ -215,7 +205,7 @@ an <cite>app</cite> the rest is easy :).</p>
   </div>
 </div>
 
-<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script src="https://iterm2.com/js/scripts.js"></script>                
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';
