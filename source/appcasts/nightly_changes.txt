@@ -1,3 +1,17 @@
+2019-08-19: Avoid changing window type after exiting lion
+fullscreen if unnecessary. When changing window type, remove
+the contet view from its old superview before setting it as
+the content view of the new window because macOS just can't
+seem to do anything right (you get a visual effect view
+covering everything, and it's a subview of the NSThemeView).
+Issue 7988
+
+2019-08-19: Add the option to abbreviate the hostname when
+on localhost. Issue 7705
+
+2019-08-19: Make flashing tabbar overlap content and hide
+its backing when on top. Issue 8130
+
 2019-08-18: Add better logging to track down assertion in
 divorcing a session where its profile has disappeared.
 
