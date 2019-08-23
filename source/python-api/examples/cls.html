@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Clear All Sessions &#8212; iTerm2 Python API 0.26 documentation</title>
+    <title>Clear All Sessions (all tabs or current tab) &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -67,39 +67,24 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="clear-all-sessions">
-<h1>Clear All Sessions<a class="headerlink" href="#clear-all-sessions" title="Permalink to this headline">¶</a></h1>
-<p>The script clears the buffer including scrollback history from all sessions.</p>
+  <div class="section" id="clear-all-sessions-all-tabs-or-current-tab">
+<span id="cls-example"></span><h1>Clear All Sessions (all tabs or current tab)<a class="headerlink" href="#clear-all-sessions-all-tabs-or-current-tab" title="Permalink to this headline">¶</a></h1>
+<p>The script clears the buffer including scrollback history from all sessions in all tabs.</p>
 <p>You can bind it to a keystroke in <strong>Prefs &gt; Keys</strong> by selecting the action <em>Invoke Script Function</em> and giving it the invocation <cite>clear_all_sessions()</cite>.</p>
+<p>Place it in <cite>~/Library/Application Support/iTerm2/Scripts/AutoLaunch/</cite> to start it automatically when iTerm2 is launched.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 
 <span class="kn">import</span> <span class="nn">asyncio</span>
@@ -109,6 +94,7 @@
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
+    <span class="nd">@iterm2.RPC</span>
     <span class="n">async</span> <span class="k">def</span> <span class="nf">clear_all_sessions</span><span class="p">():</span>
         <span class="n">code</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;]1337;ClearScrollback&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x07</span><span class="s1">&#39;</span>
         <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">terminal_windows</span><span class="p">:</span>
@@ -116,11 +102,31 @@
                 <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
                     <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;clear_all_sessions&quot;</span><span class="p">,</span> <span class="n">clear_all_sessions</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">clear_all_sessions</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><a class="reference download internal" download="" href="../_downloads/8ba480edc3c6a5241d49d81c8fe758c1/cls.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p>Here’s an a different version that clears panes of the current tab only:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.7</span>
+<span class="kn">import</span> <span class="nn">iterm2</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="nd">@iterm2.RPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">clear_current_tab</span><span class="p">():</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;]1337;ClearScrollback&#39;</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x07</span><span class="s1">&#39;</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
+        <span class="n">tab</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">current_tab</span>
+        <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
+            <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">clear_current_tab</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference download internal" download="" href="../_downloads/b38ae13290e18eaadf131b18e6e6fdd8/cleartab.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -131,7 +137,7 @@
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

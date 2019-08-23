@@ -69,30 +69,14 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -103,22 +87,24 @@
 <p>Provides a class to facilitate atomic transactions.</p>
 <dl class="class">
 <dt id="iterm2.Transaction">
-<em class="property">class </em><code class="descname">Transaction</code><span class="sig-paren">(</span><em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Transaction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">Transaction</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Transaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager for transactions.</p>
 <p>A transaction is a sequence of API calls that occur without anything else
 happening in between. If you’re worried about state mutating between reading
 the screen contents and then sending text, for example, do it in a
 transaction and you’ll know the state of the terminal will remain unchanged
 during it.</p>
-<p>Be really careful with this. No user interaction is possible during a
-transaction. If you try to do something that requires UI work, such as
-creating a new window via an API call, it will hang.</p>
+<p>Some APIs are noted as not being allowed during a transaction. These do not
+complete synchronously and would therefore deadlock in a transaction.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><dl class="first last docutils">
-<dt>async with iterm2.transaction.Transaction():</dt>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>connection</strong> – The connection to iTerm2.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"><dl class="first last docutils">
+<dt>async with iterm2.Transaction():</dt>
 <dd><p class="first last">do stuff</p>
 </dd>
 </dl>
@@ -146,7 +132,7 @@ creating a new window via an API call, it will hang.</p>
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

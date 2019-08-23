@@ -67,37 +67,21 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
   <div class="section" id="targeted-input">
-<h1>Targeted Input<a class="headerlink" href="#targeted-input" title="Permalink to this headline">¶</a></h1>
+<span id="targeted-input-example"></span><h1>Targeted Input<a class="headerlink" href="#targeted-input" title="Permalink to this headline">¶</a></h1>
 <p>iTerm2 has a “broadcast input” feature that lets you send keyboard input to
 multiple sessions. The purpose of this script is to send a different string to
 each session to which input is broadcast.</p>
@@ -123,11 +107,9 @@ if it has a different name, modify the path below appropriately):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>~/Library/ApplicationSupport/iTerm2/Scripts/TargetedInput/iterm2env/versions/*/bin/pip3 install aiohttp
 </pre></div>
 </div>
-<p>Then, replace <cite>main.py</cite> with:</p>
+<p>Then, replace <cite>targeted_input.py</cite> with:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># NOTE: This script depends on aiohttp.</span>
-<span class="c1"># To create this script, use &quot;Full Environment&quot;. Then run</span>
-<span class="c1"># ~/Library/ApplicationSupport/iTerm2/Scripts/SCRIPT_NAME_HERE/iterm2env/versions/*/bin/pip3 install aiohttp</span>
 <span class="kn">import</span> <span class="nn">aiohttp</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
@@ -191,6 +173,7 @@ if it has a different name, modify the path below appropriately):</p>
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><a class="reference download internal" download="" href="../_downloads/35ec4fb670c0ec6c0f3af52538c3e9a8/targeted_input.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 <p>Run the script and then open the “Targeted Input” tool. It will appear in the
 <strong>Toolbelt</strong> menu. Turn on broadcast input on a few sessions and hit the
 <em>Refresh</em> link. Then you can enter a value for each session and press <em>Submit</em>
@@ -205,7 +188,7 @@ to see it in action.</p>
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

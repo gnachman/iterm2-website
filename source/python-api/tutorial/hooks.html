@@ -67,30 +67,14 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -101,63 +85,156 @@
 <p>iTerm2 provides a mechanism called <em>hooks</em> that allows your Python code to modify the app’s default behavior.</p>
 <p>The following hooks are defined:</p>
 <ul class="simple">
-<li>Custom session title</li>
-<li>(More TBD)</li>
+<li>Session title provider</li>
+<li>Status bar provider</li>
 </ul>
-<p>To define a hook, you must register an RPC as described in <a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a>. There are a few things to do in addition:</p>
-<ol class="arabic simple">
-<li>Pass a <cite>role</cite> argument to <cite>async_register_rpc_handler</cite> that describes the hook you wish to implement.</li>
-<li>Pass a <cite>defaults</cite> argument to <cite>async_register_rpc_handler</cite> that describes the variables you depend on.</li>
-<li>Pass a <cite>display_name</cite> argument to <cite>async_register_rpc_handler</cite> that gives the name to show in the UI.</li>
-</ol>
-<p>To implement a custom session title hook, use <cite>role=RPC_ROLE_SESSION_TITLE</cite>.</p>
-<p>The <cite>defaults</cite> argument is a dictionary mapping an argument name to a variable.
-The argument names in <cite>defaults</cite> correspond to argument names in the function
-you register to handle the RPC.</p>
-<p>In the case of the custom session title hook, all arguments to your function
-must have corresponding default values.</p>
-<p>The values in the <cite>defaults</cite> dictionary refer to variables. When the value of
-any named variable changes, the function may be re-evaluated. If some variable
-might not be defined, you should put a <cite>?</cite> after its name to signify that a
-null value is allowed. The function will be called with <cite>None</cite> for such
-undefined variables. Variables are detailed in
-<a class="reference external" href="https://www.iterm2.com/documentation-badges.html">Badges</a>.</p>
-<p>Here’s an example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<p>Begin by reading about RPCs as described in <a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a>. Hooks are similar, but each uses a different decorator.</p>
+<div class="section" id="session-title-provider">
+<h2>Session Title Provider<a class="headerlink" href="#session-title-provider" title="Permalink to this headline">¶</a></h2>
+<p>A session title provider is an RPC that accepts information about the current
+session as input and returns a string to be shown in the tab bar or window
+title.</p>
+<p>Here’s a minimal example that takes the “auto name” of the session and converts
+it to upper case. The auto name is the “normal” session name. It defaults to
+the profile name and can be changed by the control sequence that sets the
+title, by a trigger that sets the title, or by the user editing the session
+name in the <em>Edit Session</em> window.
+to be the upper-case version of the session name.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.7</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">custom_title</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">hostname</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;😀 {}@{}:{} 😀&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">hostname</span><span class="p">)</span>
+    <span class="nd">@iterm2.TitleProviderRPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">upper_case_title</span><span class="p">(</span><span class="n">auto_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;autoName?&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">auto_name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">auto_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
 
-    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;pwd&quot;</span><span class="p">:</span> <span class="s2">&quot;session.path?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;session.username?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;hostname&quot;</span><span class="p">:</span> <span class="s2">&quot;session.hostname?&quot;</span> <span class="p">}</span>
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_rpc_handler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span>
-                                                         <span class="s2">&quot;custom_title&quot;</span><span class="p">,</span>
-                                                         <span class="n">custom_title</span><span class="p">,</span>
-                                                         <span class="n">role</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">RPC_ROLE_SESSION_TITLE</span><span class="p">,</span>
-                                                         <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">,</span>
-                                                         <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;My Custom Title&quot;</span><span class="p">)</span>
-    <span class="n">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">async_dispatch_until_future</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">())</span>
+    <span class="n">await</span> <span class="n">upper_case_title</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span>
+        <span class="n">connection</span><span class="p">,</span>
+        <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;Upper-case Title&quot;</span><span class="p">,</span>
+        <span class="n">unique_identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.upper-case-title&quot;</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>As this script is a long-running daemon, you’ll want to put it in the
-<cite>AutoLaunch</cite> folder. If a hook is not registered then it acts as though it
-returned an empty value. Tab labels will show a default value in place of the
-empty string.</p>
+<p><a class="reference download internal" download="" href="../_downloads/5e10482c0ec1af7e24678b5babfec7d9/tutorial_title.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p>The <cite>display_name</cite> is shown to the user in Profile Preferences.</p>
+<p>The <cite>unique_identifier</cite> is a string that identifies this title provider. The
+algorithm and function signature and function name may change over time, but as
+long as the unique identifier remains the user will not need to update their
+preferences.</p>
+<p>When this script is running and the user navigates to <strong>Prefs &gt; Profiles &gt;
+General</strong> and opens the <strong>Title</strong> menu, your title provider will appear there
+with this name.</p>
+<p>When does the RPC get run? It is always run once when it gets attached to a
+session. Thereafter, it is run when any variable with an <cite>iterm2.Reference</cite> as
+a default value of an argument of your RPC changes.</p>
+<p>If some variable might not be defined, you should put a <cite>?</cite> after its name to signify that a
+value of <cite>None</cite> is allowed. Variables are detailed in
+<a class="reference external" href="https://www.iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a>.</p>
+</div>
+<div class="section" id="force-reevaluation">
+<h2>Force Reevaluation<a class="headerlink" href="#force-reevaluation" title="Permalink to this headline">¶</a></h2>
+<p>If you want to change the title in response to some external action, such as a timer, network request, or user action, you must cause a user-defined variable to change. Here is a full working example that sets the session title to its age in seconds:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">iterm2</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">redraw_title_provider_periodically</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+       <span class="k">try</span><span class="p">:</span>
+            <span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># When the session ends, this will raise an exception.</span>
+                <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_set_variable</span><span class="p">(</span>
+                    <span class="s2">&quot;user.session_age_in_seconds&quot;</span><span class="p">,</span> <span class="n">age</span><span class="p">)</span>
+                <span class="n">age</span> <span class="o">+=</span> <span class="mi">1</span>
+       <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+           <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+       <span class="k">finally</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">tasks</span><span class="p">[</span><span class="n">session_id</span><span class="p">]</span>
+
+    <span class="nd">@iterm2.TitleProviderRPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">age_in_seconds_title</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">),</span>
+            <span class="n">age</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;user.session_age_in_seconds?&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">session_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+            <span class="n">wake_coro</span> <span class="o">=</span> <span class="n">redraw_title_provider_periodically</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+            <span class="n">tasks</span><span class="p">[</span><span class="n">session_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">wake_coro</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+
+    <span class="n">await</span> <span class="n">age_in_seconds_title</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span>
+        <span class="n">connection</span><span class="p">,</span>
+        <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;Age in Seconds&quot;</span><span class="p">,</span>
+        <span class="n">unique_identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.age-in-seconds&quot;</span><span class="p">)</span>
+
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference download internal" download="" href="../_downloads/028f607caab574100ca2db49aa4a82a6/tutorial_age.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Since a title provider is a long-running daemon, you’ll want to put it in
+<cite>~/Library/Application Support/iTerm2/Scripts/AutoLaunch</cite> folder.</p>
 <p>Next, you need to configure your session’s profile to use the hook. Once it’s been registered properly it will appear as an option in <strong>Preferences &gt; Profiles &gt; General &gt; Title</strong>. Select it there:</p>
 <img alt="../_images/choose_custom_session_title.png" src="../_images/choose_custom_session_title.png" />
-<p>If anything goes wrong, remember to check the Script Console. Pick your script
-on the left to view its output. Some errors are also logged to the <em>iTerm2 App</em>
-history in the script console.</p>
+</div>
+<div class="section" id="custom-status-bar-component">
+<h2>Custom Status Bar Component<a class="headerlink" href="#custom-status-bar-component" title="Permalink to this headline">¶</a></h2>
+<p>A custom status bar component is another kind of hook. Like a title provider, it
+lives in a long-running daemon. It registers an RPC that provides the text to
+display in the status bar component. It may also register a second RPC to handle
+clicks in the status bar component.</p>
+<p>Here’s a simple status bar component that shows whether mouse reporting is on:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">iterm2</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
+        <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;Mouse Mode&quot;</span><span class="p">,</span>
+        <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Indicates if mouse reporting is enabled&quot;</span><span class="p">,</span>
+        <span class="n">knobs</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;[mouse on]&quot;</span><span class="p">,</span>
+        <span class="n">update_cadence</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.mouse-mode&quot;</span><span class="p">)</span>
+
+    <span class="c1"># This function gets called when the mouseReportingMode variable</span>
+    <span class="c1"># changes.</span>
+    <span class="nd">@iterm2.StatusBarRPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span>
+            <span class="n">knobs</span><span class="p">,</span>
+            <span class="n">reporting</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;mouseReportingMode&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">reporting</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot; &quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;🐭&quot;</span>
+
+    <span class="c1"># Register the component.</span>
+    <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">)</span>
+
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When this script is running, a new status bar component becomes available in
+<em>Prefs &gt; Profiles &gt; Session &gt; Configure Status Bar</em>.</p>
+<p>Like a title provider, the registered function will be called when its
+references change. The string it returns will go in the status bar.</p>
+<p>Status bar components can also be invoked periodically, by passing a number of
+seconds to the <cite>update_cadence</cite> argument of <cite>StatusBarComponent</cite>’s initializer.</p>
+<p>Status bar components can also define configuration settings, called knobs.</p>
+<p>For more information, see <a class="reference internal" href="../statusbar.html#iterm2.StatusBarComponent" title="iterm2.StatusBarComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.StatusBarComponent</span></code></a>. There are also a
+number of status bar components in the <a class="reference internal" href="../examples/index.html"><span class="doc">Example Scripts</span></a>.</p>
+<p>Continue to the next section, <a class="reference internal" href="troubleshooting.html"><span class="doc">Troubleshooting</span></a>.</p>
 <hr class="docutils" />
 <div class="section" id="other-sections">
-<h2>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h2>
+<h3>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><dl class="first docutils">
 <dt><a class="reference internal" href="../index.html"><span class="doc">Python API</span></a></dt>
@@ -168,11 +245,13 @@ history in the script console.</p>
 <li><a class="reference internal" href="daemons.html"><span class="doc">Daemons</span></a></li>
 <li><a class="reference internal" href="rpcs.html"><span class="doc">RPCs</span></a></li>
 <li>Hooks</li>
+<li><a class="reference internal" href="troubleshooting.html"><span class="doc">Troubleshooting</span></a></li>
 </ul>
 </dd>
 </dl>
 </li>
 </ul>
+</div>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
@@ -191,7 +270,7 @@ history in the script console.</p>
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

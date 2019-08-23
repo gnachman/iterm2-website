@@ -67,38 +67,22 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
   <div class="section" id="george-s-title-algorithm">
-<h1>George’s Title Algorithm<a class="headerlink" href="#george-s-title-algorithm" title="Permalink to this headline">¶</a></h1>
-<p>This code combines user-defined variables from Shell Integration with a custom session title function. It demonstrates <a class="reference internal" href="../registration.html#iterm2.Registration.async_register_session_title_provider" title="iterm2.Registration.async_register_session_title_provider"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.Registration.async_register_session_title_provider()</span></code></a>. The end result is a snazzy title that includes your git branch:</p>
+<span id="georges-title-example"></span><h1>George’s Title Algorithm<a class="headerlink" href="#george-s-title-algorithm" title="Permalink to this headline">¶</a></h1>
+<p>This code combines user-defined variables from Shell Integration with a custom session title function. It demonstrates <a class="reference internal" href="../registration.html#iterm2.registration.TitleProviderRPC" title="iterm2.registration.TitleProviderRPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">iterm2.registration.TitleProviderRPC()</span></code></a>. The end result is a snazzy title that includes your git branch:</p>
 <a class="reference internal image-reference" href="../_images/georgesalgo.png"><img alt="../_images/georgesalgo.png" src="../_images/georgesalgo.png" style="width: 375px; height: 32px;" /></a>
 <div class="line-block">
 <div class="line"><br /></div>
@@ -171,7 +155,15 @@
     <span class="n">localhome</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;HOME&quot;</span><span class="p">)</span>
     <span class="n">localhost</span> <span class="o">=</span> <span class="n">hostname_dash_f</span><span class="p">()</span>
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">georges_title</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">branch</span><span class="p">,</span> <span class="n">auto_name</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">,</span> <span class="n">tmux_title</span><span class="p">,</span> <span class="n">user_home</span><span class="p">):</span>
+    <span class="nd">@iterm2.TitleProviderRPC</span>
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">georges_title</span><span class="p">(</span>
+        <span class="n">pwd</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;path?&quot;</span><span class="p">),</span>
+        <span class="n">hostname</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;hostname?&quot;</span><span class="p">),</span>
+        <span class="n">branch</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;user.gitBranch?&quot;</span><span class="p">),</span>
+        <span class="n">auto_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;autoName?&quot;</span><span class="p">),</span>
+        <span class="n">profile_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;profileName?&quot;</span><span class="p">),</span>
+        <span class="n">tmux_title</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;tmuxWindowTitle?&quot;</span><span class="p">),</span>
+        <span class="n">user_home</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;user.home?&quot;</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">tmux_title</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">tmux_title</span>
 
@@ -180,23 +172,16 @@
                  <span class="n">make_pwd</span><span class="p">(</span><span class="n">user_home</span><span class="p">,</span> <span class="n">localhome</span><span class="p">,</span> <span class="n">pwd</span><span class="p">),</span>
                  <span class="n">make_branch</span><span class="p">(</span><span class="n">branch</span><span class="p">)]</span>
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">parts</span><span class="p">)))</span>
-
-    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;pwd&quot;</span><span class="p">:</span>          <span class="s2">&quot;session.path?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;hostname&quot;</span><span class="p">:</span>     <span class="s2">&quot;session.hostname?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;branch&quot;</span><span class="p">:</span>       <span class="s2">&quot;user.gitBranch?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;auto_name&quot;</span><span class="p">:</span>    <span class="s2">&quot;session.autoName?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;profile_name&quot;</span><span class="p">:</span> <span class="s2">&quot;session.profileName?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;tmux_title&quot;</span><span class="p">:</span>   <span class="s2">&quot;session.tmuxWindowTitle?&quot;</span><span class="p">,</span>
-                 <span class="s2">&quot;user_home&quot;</span><span class="p">:</span>    <span class="s2">&quot;user.home?&quot;</span> <span class="p">}</span>
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">async_register_session_title_provider</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span>
-                                                                    <span class="s2">&quot;georges_title&quot;</span><span class="p">,</span>
-                                                                    <span class="n">georges_title</span><span class="p">,</span>
-                                                                    <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;George&#39;s Title Algorithm&quot;</span><span class="p">,</span>
-                                                                    <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">georges_title</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span>
+            <span class="n">connection</span><span class="p">,</span>
+            <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;George&#39;s Title Algorithm&quot;</span><span class="p">,</span>
+            <span class="n">unique_identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.georges-title-algorithm&quot;</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><a class="reference download internal" download="" href="../_downloads/c68c819b29db622710600e1b2e032f79/georges_title.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p>Then either restart iTerm2 or launch the script from <strong>Scripts &gt; AutoLaunch &gt; georges_title</strong>.</p>
 <p>Finally, select <em>George’s Title Algorithm</em> in <strong>Prefs &gt; Profiles &gt; General &gt; Title</strong>.</p>
 </div>
 
@@ -208,7 +193,7 @@
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';

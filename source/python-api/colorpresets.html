@@ -16,7 +16,7 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Connection" href="connection.html" />
+    <link rel="next" title="Custom Control Sequences" href="customcontrol.html" />
     <link rel="prev" title="Color" href="color.html" />
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
@@ -69,30 +69,14 @@
 
     <div class="document">
 <div class="row">
-  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
-    <div class="main panel">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
 
-      <div class="doc-wrapper">
-	<a href="#" data-dropdown="drop-menu">Table of Contents</a>
-	<div id="drop-menu" data-dropdown-content class="f-dropdown content">
-	  <div class="inner-menu">
-	    <ul class="sub-nav">
-	      <div class="toc_subhead">iTerm2</div>
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
+            </div>
 
-	      <li><a href="/documentation.html">iTerm2 Documentation</a></li>
-
-	      <div class="toc_subhead">Python API</div>
-
-	      <li><a href="/python-api">Python API</a></li>
-	      <li><a href="/python-api/tutorial/index.html">Tutorial</a></li>
-	      <li><a href="/python-api/examples/index.html">Examples</a></li>
-
-	    </ul>
-	  </div>
-	</div>
-      </div>
-
-<hr/>
+            <hr/>
 
       <div class="documentwrapper">
 	<div class="bodywrapper">
@@ -106,39 +90,55 @@
 <em class="property">class </em><code class="descname">ColorPreset</code><span class="sig-paren">(</span><em>proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ColorPreset" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="staticmethod">
 <dt id="iterm2.ColorPreset.async_get">
-<em class="property">static </em><code class="descname">async_get</code><span class="sig-paren">(</span><em>connection</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ColorPreset.async_get" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">async_get</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>name: str</em><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.colorpresets.ColorPreset]<a class="headerlink" href="#iterm2.ColorPreset.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches a color preset with the given name.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>connection</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Connection</span></code>.</li>
-<li><strong>name</strong> – The name of the preset to fetch.</li>
+<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</li>
+<li><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name of the preset to fetch.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Either a new <a class="reference internal" href="#iterm2.ColorPreset" title="iterm2.ColorPreset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ColorPreset</span></code></a> or None.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Either a new preset or <cite>None</cite>.</p>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li>Example “<a class="reference internal" href="examples/colorhost.html#colorhost-example"><span class="std std-ref">Per-Host Colors</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/current_preset.html#current-preset-example"><span class="std std-ref">Get Selected Color Preset</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/theme.html#theme-example"><span class="std std-ref">Change Color Presets On Theme Change</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/darknight.html#darknight-example"><span class="std std-ref">Change Color Preset by Time of Day</span></a>”</li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="iterm2.ColorPreset.async_get_list">
-<em class="property">static </em><code class="descname">async_get_list</code><span class="sig-paren">(</span><em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ColorPreset.async_get_list" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">async_get_list</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="headerlink" href="#iterm2.ColorPreset.async_get_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches a list of color presets.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Connection</span></code>.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – An <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of names as strings.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Names of the color presets.</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li>Example “<a class="reference internal" href="examples/current_preset.html#current-preset-example"><span class="std std-ref">Get Selected Color Preset</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/random_color.html#random-color-example"><span class="std std-ref">Random Color Preset</span></a>”</li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -149,10 +149,23 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of <a class="reference internal" href="color.html#iterm2.Color" title="iterm2.Color"><code class="xref py py-class docutils literal notranslate"><span class="pre">Color</span></code></a> objects.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The colors belonging to the preset.</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.ColorPreset.Color">
+<em class="property">class </em><code class="descname">Color</code><span class="sig-paren">(</span><em>r</em>, <em>g</em>, <em>b</em>, <em>a</em>, <em>color_space</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ColorPreset.Color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derives from <a class="reference internal" href="color.html#iterm2.Color" title="iterm2.Color"><code class="xref py py-class docutils literal notranslate"><span class="pre">Color</span></code></a>.</p>
+<p>Note this is is an inner class of <cite>ColorPreset</cite>.</p>
+<dl class="attribute">
+<dt id="iterm2.ColorPreset.Color.key">
+<code class="descname">key</code><a class="headerlink" href="#iterm2.ColorPreset.Color.key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes which property this color affects.</p>
 </dd></dl>
 
 </dd></dl>
@@ -187,7 +200,7 @@
   </div>
 </div>
 
-<script src="https://iterm2.com/js/scripts.js"></script>                
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
 <script type="text/javascript">
   function showId(id) {
     document.getElementById("changelist" + id).style.display = 'block';
