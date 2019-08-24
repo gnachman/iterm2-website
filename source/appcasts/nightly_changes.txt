@@ -1,3 +1,19 @@
+2019-08-23: Set the hotkey window type in PseudoTerminal's
+initializer prior to setting the window because otherwise it
+will set the collection behavior so that it can become full
+screen and if you're currently on a fullscreen desktop then
+it'll try to make the hotkey window lion fullscreen and it
+dies with an assertion.
+
+2019-08-23: Add advanced pref to use black for tmux filler
+area in fullscreen. Issue 8151
+
+2019-08-23: Update the session's scrollbar style just after
+creating the tab for a tmux layout and before reporting the
+session size so they'll be taken into account in
+-tmuxSizeForHeight:. This affects full screen windows only
+when the system setting is for legacy scrollers. Issue 8074
+
 2019-08-22: Make default tab stop width configurable in
 advanced prefs. Issue 8149
 
