@@ -1,3 +1,39 @@
+2019-08-24: Fix analyzer complaints, including some small
+memory leaks. Mostly nullability issues that were missing
+annotations.
+
+2019-08-24: Objective C at its very worst. I accidentally
+named a method after one that has special significance and
+the system called it with an argument of the wrong type.
+Rename it to avoid the stupid.
+
+2019-08-24: Don't crash if the smart selection rules are
+somehow out of bounds. I saw this in crash log
+1566551545.1049778259.txt. I guess this happened because
+user defaults changed out from under us, but still better
+not to crash.
+
+2019-08-24: Do not clear the selection on mouse up single
+click. This changes the behavior when clicking in a non-key
+window that has a selection: now the selection won't be
+removed. That's good because that's how macOS seems to work
+(at least 10.14, which is all I tested). Furthermore, it
+fixes issue 7871 where the OS reported click=0 for no good
+reason. The selection has always been removed in
+mouseDownImpl in .
+
+2019-08-24: ARCify NSImage+iTerm to fix a memory leak in
+it_imageWithTintColor: where the image is copied but not
+autoreleased. Issue 8163
+
+2019-08-24: Fix type annotations for Size and Point
+
+2019-08-24: Bump default git component timeout to 4 seconds
+
+2019-08-24: Add setprofile Python example
+
+2019-08-24: Option+tab drag now moves the window. Issue 8123
+
 2019-08-23: Set the hotkey window type in PseudoTerminal's
 initializer prior to setting the window because otherwise it
 will set the collection behavior so that it can become full
