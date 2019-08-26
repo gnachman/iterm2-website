@@ -1,39 +1,50 @@
-iTerm2 version 3.3.3beta1
+iTerm2 version 3.3.3beta2
 
 New Features
+- Holding Option while dragging a tab now drags
+  the window. This makes it easier to move windows
+  in the Minimal and Compact themes.
 
 Improvements
-- Tweak insets of stoplight buttons.
-- Performance improvement for non-GPU renderer.
-- You can now move tmux windows between sessions
-  in the tmux dashboard by holding Opt while
-  dragging.
-- Change the default title to show the job.
-- Replace control characters in titles with
-  caret+letter instead of ?.
-- Make dark high contrast theme more readable for
-  people with poor eyesight.
-- Allow top-of-screen hotkey windows to overlap
-  the menu bar.
+- The hostname status bar component now has the
+  ability to abbreviate the local host name to a
+  configurable string.
+- Make uploading files with it2ul much faster.
+- More process -> icon mappings.
+- "Split Horizontally/Vertically" in the context
+  menu reuses the session's profile rather than
+  always using the default profile.
+- The default tabstops are now configurable in
+  advanced prefs.
+- There's a new advanced pref to use black for the
+  filler color in tmux integration for full screen
+  windows.
+- Increased the timeout for the git status bar
+  component to four seconds.
+- Selection is not cleared on mouse-up any more.
+  When clicking on an inactive window, the
+  selection will not be removed.
 
 Bug fixes
-- Fix crashes.
-- Fix a bug where secure keyboard entry is not
-  enabled immediately after the app launches. It
-  was enabled the first time iTerm2 was activated
-  or the menu was opened.
-- Fixes crashes.
-- Improve escaping of URLs in smart selection
-  actions.
-- Fix escaping of tildes in secure copy paths.
-- Fix a bug where "set name" in Applescript didn't
-  work.
-- Fix a bug where double-clicking a window's
-  shortcut label didn't work to zoom when there
-  was no tabbar in minimal/compact.
-- Flashing tabs in full screen was broken. Fixed.
-- Fix an exception in Python when fetching a
-  profile with a hotkey with control characters.
-- Fix a bug where the coordinates in
-  the AddHiddenAnnotation control sequence were
-  not respsected.
+- Fix some memory leaks.
+- Fix a bug where a window would be covered with
+  an opaque rectangle after exiting full screen.
+- Fix a bug where the flashing full-screen tab bar
+  would leave behind an opaque rectangle.
+- Enforce a minimum left-side tabbar width so
+  stoplight buttons and window shortcut will fit.
+- Fix a bug where selecting case-insensitive regex
+  in search would incorrectly put a checkmark next
+  to "erase search history."
+- Fix a bug where the working directory wasn't
+  detected if insecure control sequences were
+  disabled.
+- Fix a bug where a full screen window in tmux
+  integration with legacy scroll bars enabled
+  would have an empty margin on the right.
+- Fix a crash when showing a hotkey from a full
+  screen window.
+- Fix various hard-to-reproduce crashes.
+- Fix a bug where blinking text might not always
+  blink.
+
