@@ -95,6 +95,7 @@ relatively new feature and is still under development.
 
   * `iterm2.alert(title: str, subtitle: str, buttons: [str, ...])` - Shows a modal alert. If the buttons array is empty, OK will be shown.
   * `iterm2.count(array: [Any])` - Returns number of items in the array.
+  * `iterm2.get_string(title: str, subtitle: str, placeholder: str, defaultValue: str, window_id: str?)` - Prompts the user for textual input.
   * `iterm2.move_tab_to_window(tab_id: str)` - Moves the tab into its own window.
 
 ## Expressions
