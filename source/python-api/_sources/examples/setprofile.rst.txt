@@ -5,7 +5,7 @@ Change Session's Profile
 
 This script changes the current session's profile to the profile named "Default". It demonstrates getting the list of profiles and changing a session's profile.
 
-Note that if the session is divorced from its underlying profile (such as by making a change in the **Session > Edit Session** panel) then those changes will survive this change. In order to override them, you should convert the partial profile `partial` into a full profile by calling `await partial.async_get_full_profile()`.
+Note that if the session is divorced from its underlying profile (such as by making a change in the **Session > Edit Session** panel) then those changes will not be affected by this script. In order to override them, you should convert the partial profile `partial` into a full profile by calling `await partial.async_get_full_profile()` and passing that to `async_set_profile`.
 
 .. code-block:: python
 

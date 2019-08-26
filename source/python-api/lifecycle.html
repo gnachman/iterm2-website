@@ -173,16 +173,78 @@
 </ul>
 </div>
 <p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">NewSessionMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="n">session_id</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Session ID {} created&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_id</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>  <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">NewSessionMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+      <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+          <span class="n">session_id</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+          <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Session ID {} created&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_id</span><span class="p">))</span>
+
+<span class="o">..</span> <span class="n">seealso</span><span class="p">::</span>
+    <span class="o">*</span> <span class="n">Example</span> <span class="s2">&quot;:ref:`autoalert`&quot;</span>
 </pre></div>
 </div>
 <dl class="method">
 <dt id="iterm2.NewSessionMonitor.async_get">
 <code class="descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.NewSessionMonitor.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the new session ID.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.EachSessionOnceMonitor">
+<em class="property">class </em><code class="descname">EachSessionOnceMonitor</code><span class="sig-paren">(</span><em>app: iterm2.app.App</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.EachSessionOnceMonitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a convenient way to do something to all sessions exactly once, including those created in the future.</p>
+<p>You can use it as a context manager to get the session_id of each session, or you can use the static method <cite>async_foreach_session_create_task</cite> to have a task created for each session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>connection</strong> – The <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> to use.</li>
+<li><strong>app</strong> – An instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="staticmethod">
+<dt id="iterm2.EachSessionOnceMonitor.async_foreach_session_create_task">
+<em class="property">static </em><code class="descname">async_foreach_session_create_task</code><span class="sig-paren">(</span><em>app</em>, <em>task</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.EachSessionOnceMonitor.async_foreach_session_create_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a task for each session. Cancels the task when the session terminates.</p>
+<p>Includes sessions in existence now and those created in the future.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>app</strong> – An instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code>.</li>
+<li><strong>task</strong> – A coro taking a single argument of session ID.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A future.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print a message to stdout when there&#39;s a new prompt in any session</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">my_task</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+    <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+        <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Prompt detected&quot;</span><span class="p">)</span>
+
+<span class="n">await</span> <span class="n">EachSessionOnceMonitor</span><span class="o">.</span><span class="n">async_foreach_session_create_task</span><span class="p">(</span><span class="n">my_task</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.EachSessionOnceMonitor.async_get">
+<code class="descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.EachSessionOnceMonitor.async_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the session ID.</p>
 </dd></dl>
 
 </dd></dl>

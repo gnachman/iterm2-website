@@ -83,7 +83,7 @@
   <div class="section" id="change-session-s-profile">
 <span id="setprofile-example"></span><h1>Change Session’s Profile<a class="headerlink" href="#change-session-s-profile" title="Permalink to this headline">¶</a></h1>
 <p>This script changes the current session’s profile to the profile named “Default”. It demonstrates getting the list of profiles and changing a session’s profile.</p>
-<p>Note that if the session is divorced from its underlying profile (such as by making a change in the <strong>Session &gt; Edit Session</strong> panel) then those changes will survive this change. In order to override them, you should convert the partial profile <cite>partial</cite> into a full profile by calling <cite>await partial.async_get_full_profile()</cite>.</p>
+<p>Note that if the session is divorced from its underlying profile (such as by making a change in the <strong>Session &gt; Edit Session</strong> panel) then those changes will not be affected by this script. In order to override them, you should convert the partial profile <cite>partial</cite> into a full profile by calling <cite>await partial.async_get_full_profile()</cite> and passing that to <cite>async_set_profile</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.7</span>
 
 <span class="kn">import</span> <span class="nn">iterm2</span>
