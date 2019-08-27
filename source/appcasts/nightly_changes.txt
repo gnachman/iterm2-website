@@ -1,3 +1,21 @@
+2019-08-26: For tmux >= 2.1 try to detect if tmux is running
+locally by checking if #{pid} matches a process named tmux.
+If so, use #{pid_pane} to enable polling for the current job
+in tmux integration.
+
+Don't call updateTitleWithProcessInfo with a nil argument.
+It causes the job name to be removed. This is very annoying
+when polling causes it to be bumped twice in quick
+succession, leading to the job name flickering in the title.
+
+PTYTask now knows about tmux process IDs and uses them just
+for this purpose.
+
+Issue 8167
+
+2019-08-26: Don't dismiss hotkey window when a Sparkle
+window becomes key. Issue 8153
+
 2019-08-25: Fix typo
 
 2019-08-25: Improve EachSessionOnceMonitor docstring
