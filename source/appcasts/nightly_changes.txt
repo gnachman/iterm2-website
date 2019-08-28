@@ -1,3 +1,22 @@
+2019-08-27: Don't throw an exception if a hostname has two
+consecutive dots or leads with a dot or some other weird
+thing
+
+2019-08-27: Set the global currentAppearance when drawing
+into an NSImage using the block-based drawing function.
+Based on the users of this function this should only affect
+graphic status bar components. Fixes a bug where they'd be
+hard to see when using system light + iTerm2 dark theme.
+
+2019-08-27: Show contextual menu when you right click on a
+fake titlebar. Issue 8173
+
+2019-08-27: Bring back a special case for control+slash and
+control+backslash keys to fix a problem with
+control-backslash on Japanese keyboard. The old code was
+some nasty spaghetti that often worked by accident, but
+there were some pearls in there. Issue 8162
+
 2019-08-26: For tmux >= 2.1 try to detect if tmux is running
 locally by checking if #{pid} matches a process named tmux.
 If so, use #{pid_pane} to enable polling for the current job
