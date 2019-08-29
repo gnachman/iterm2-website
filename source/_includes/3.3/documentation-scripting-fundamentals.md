@@ -118,7 +118,7 @@ These are described below.
 
 ### Integers
 
-These may be positive or negative integer literals. For example, `-3`, `0`, and `2`.
+These are decimal integer literals. For example, `-3`, `0`, and `2`.
 
 ### Floating point
 
