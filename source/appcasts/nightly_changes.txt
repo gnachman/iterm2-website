@@ -1,3 +1,32 @@
+2019-08-28: Don't open search history automatically. Only do
+it when the user presses the down arrow. I should implement
+my own completion because macOS's is super bad. When you
+call complete: it enters a runloop of its own so you can't
+catch esc. The problem is that you have to press esc a lot
+of times to back out of search when the completion window is
+open.
+
+2019-08-28: Append to autolog files by default. Add an
+advanced pref to revert to the previous behavior of
+overwriting. Raised as a concern in email with subject line
+'Item2 import'
+
+2019-08-28: Use the 'bottom' margin when calculating the
+min-y coordinate of images in GPU renderer. Because GPUs do
+everything upside down, the bottom margin is on the top of
+the screen. The 'top' margin varies based on the filler
+space beneath the last line. This caused images to shift
+vertically when shifting between renderers. Issue 8152
+
+2019-08-28: Don't change color of window number shortcut in
+minimal for colored tabs unless
+minimalTabStyleTreatLeftInsetAsPartOfFirstTab is enabled.
+Issue 8178
+
+2019-08-28: Link to weather script
+
+2019-08-28: Add weather example script. Issue 8179
+
 2019-08-27: Don't throw an exception if a hostname has two
 consecutive dots or leads with a dot or some other weird
 thing
