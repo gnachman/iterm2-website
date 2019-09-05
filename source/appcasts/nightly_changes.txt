@@ -1,3 +1,30 @@
+2019-09-05: Fix a bug where ascii letters that underflowed
+to the left got clipped. Issue 8185.
+
+metalImagesForGlyphKey:asciiOffset:size:Scale:emoji used
+only the center point.  It looks like a cherrypick of
+fccce19 broke support for ascii underflowed added in commit
+fd7d393. But it was further broken by commit 36d5661, which
+allows glyphSize to be different than cellSize for Mojave.
+It did not account for left-side underflow. Luckily, commit
+11050db fixed a similar issue with Iosevka, but only in the
+vertical dimension. Because vertical and horizontal overflow
+are treated differently, this change is made to affect only
+the monochrome code path. See the comment in PTYSession.m
+for more detail on this aspect of the change.
+
+This commit adapts that change to also support horizontal
+underflow.
+
+2019-09-04: Truncate git branch when it gets too long to
+fit. Issue 8198
+
+2019-09-04: Translate italic -> inverse video for tmux
+integration. Disable reverse-whole-screen mode, too. Issue
+8203
+
+2019-09-03: Fix a variety of crashes in 3.3.3beta2
+
 2019-09-03: Preserve exact dimensions of sixel images when
 possible. Issue 8191.
 
