@@ -1,3 +1,41 @@
+2019-09-05: When setting the icon title with OSC 1, enable
+the session name component unless it's using a custom title
+provider. When setting the window title with OSC 0 or OSC 2,
+always include it in the window title. If users don't want
+it, they have to disable 'Applications in terminal may
+change the title'. Issue 8211
+
+There's a bit of a hack here, which is that the icon name
+and the profile name fight for control of the tab title.
+Divorcing a session causes the icon name to be lost.
+
+2019-09-05: Use dark appearance for scrollers in minimal
+when the terminal background color is dark. Issue 8213
+
+2019-09-05: Fix resizing panes by menu item to resize by the
+proper interval. It should use the same step computation as
+splitView:constrainSplitPosition:ofSubviewAt:. By using the
+charWidth/lineHeight of the current session, sometimes
+nothing would happen because there was an adjacent session
+that had a larger font. Furthermore, the test for min/max
+constraints was wrong. If the divider is moving down/right
+then only the max coordinate constrain is interesting
+because it limits how 'large' the offset of a divider can
+be. If moving up/left, only the min coordinate constraint is
+interesting. This changes the semantics of the 'direction'
+parameter to be 1 for down/right and -1 for up/left, and
+leaves the step size computation to PTYTab. Issue 8212
+
+2019-09-05: Fix a bug where the cursor was advanced one cell
+too far after inserting an image. Top-align sixel images
+within their cells. Issue 8191
+
+2019-09-05: Run Python API scripts through the user's shell.
+Issue 8204
+
+2019-09-05: Make textview first responder after stealing key
+focus. Issue 8196
+
 2019-09-05: Fix a bug where ascii letters that underflowed
 to the left got clipped. Issue 8185.
 
