@@ -1,3 +1,26 @@
+2019-09-07: When we get a mouse-up, we would copy to the
+clipboard. The problem is that you can get the mouse-up when
+you click in a terminal window while another app is running.
+If there is a selection, it gets copied to the clipboard.
+This causes a lot of confusion. I never found this because
+apparently I have used cmd-tab exclusively for the last nine
+years, and the bug dates back to 2003. Issue 8202 (and
+dozens of others).
+
+2019-09-06: Inline images didn't properly respect pixel
+sizes, and rounded up to the next cell. Update insets so
+that the exact pixel size can be granted when possible.
+Also, fixes a bug in the GPU renderer where part of the
+texture would be clipped if the texture was limited to 4096
+pixels wide.
+
+2019-09-06: Fix misalignment of images when there is
+vertical spacing in GPU renderer vs legacy renderer. The
+image needs to be shifted up by half the difference between
+cell height with and without spacing. Issue 8191
+
+2019-09-06: Modify release_stable to push
+
 2019-09-05: When setting the icon title with OSC 1, enable
 the session name component unless it's using a custom title
 provider. When setting the window title with OSC 0 or OSC 2,
