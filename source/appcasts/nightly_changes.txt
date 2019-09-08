@@ -1,3 +1,30 @@
+2019-09-07: Fix a bug where new Session objects would be
+created when the layout updates. It was not necessary to
+update tabs and windows on every session. Doing so was
+problematic because the  call would only preserve the first
+session of the first tab; references to other old sessions
+would be replaced with references to new sessions. Issue
+8225
+
+2019-09-07: Deprecate Tab.async_select in favor of
+Tab.async_activate, which has consistent naming with other
+classes. Issue 8223
+
+2019-09-07: Don't activate the app when creating a tab with
+the API. Issue 8223
+
+2019-09-07: Make it configurable whether you get prompted to
+quit when there are no windows. Issue 7051
+
+2019-09-07: Fix the build. Make travis hide all but the last
+500 lines of build output because apparently bits are
+expensive.
+
+2019-09-07: Use namespaces for registered functions. Some
+people had problems with duplicate RPC names because they
+had multiple title providers or status bar providers that
+used the same coroutine name. Probably issue 8179.
+
 2019-09-07: When we get a mouse-up, we would copy to the
 clipboard. The problem is that you can get the mouse-up when
 you click in a terminal window while another app is running.
