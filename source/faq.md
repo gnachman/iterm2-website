@@ -138,3 +138,6 @@ A: Turn on **Prefs > Keys > Emulate US Keyboard.** This change was made because 
 
 #### Q: Why can't I scroll with a Logitech mouse?
 A: Their drivers have a bug. Turn off the menu item **iTerm2 > Secure Keyboard Entry**. Complain to Logitech that their drivers are bad, or buy a mouse from a better brand.
+
+#### Q: I use bash and sometimes my prompt draws incorrectly.
+A: If you have problems where doing a reverse search or wrapping a long command causes letters to appear in the wrong place it may be because you have non-printing characters in your PS1. Place them between `\[` and `\]`. More info <a href="https://www.tldp.org/HOWTO/Bash-Prompt-HOWTO/nonprintingchars.html">here</a>.
