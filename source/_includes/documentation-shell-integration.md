@@ -260,7 +260,13 @@ give a parameter like `example.com`.
 
 ### Limitations
 
-Shell Integration does not work with tmux or screen.
+By default, shell Integration does not work with tmux or screen. If you'd like to use it with tmux, add this to your login script prior to loading shell integration:
+
+<pre>
+export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=1
+</pre>
+
+It works well with tmux integration (`tmux -CC`) but not with the regular tmux UI.
 
 #### A Note on SCP
 iTerm2 can do uploads and downloads with scp as described above. There are a few things you should know.
