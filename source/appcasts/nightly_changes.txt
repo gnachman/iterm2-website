@@ -1,3 +1,30 @@
+2019-09-10: Show tab color in per-pane title bar. Issue
+8236.
+
+Looks like this was lost unintentionally when the theme
+class was added.
+
+2019-09-10: Hide _NSTitlebarDecorationView (beta only).
+Attempts to fix 8238. Seems like 10.14 always puts a gray
+line under the bottom titlebar accessory. I don't know why
+it's only sometimes present, but that seems to be a
+framework bug. Issue 8238
+
+2019-09-10: Replace the implementation of iTermWeakReference
+with a safer one that uses ARC. A race condition was
+discovered where you could create a new weak reference after
+-dealloc gets called but before the notification gets
+posted.
+
+2019-09-10: Remove stray NSLog
+
+2019-09-10: Fix launching tasks where the command has
+backslashes inside double quotes. The way bash handles these
+is super weird and counterintuitive. Overhaul escaping of
+commands and args for single-use windows to fix bugs where
+things didn't work when the path had spaces, such as
+changing git branch via statusbar component.
+
 2019-09-08: Update tutorial for new naming conventions
 
 2019-09-08: Deprecate current_terminal_window in favor of
