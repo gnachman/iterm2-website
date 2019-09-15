@@ -1,78 +1,85 @@
-iTerm2 version 3.3.3
+iTerm2 version 3.3.4
 
 New Features
-- Holding Option while dragging a tab now drags
-  the window. This makes it easier to move windows
-  in the Minimal and Compact themes.
+- There's a new pref for whether you want to
+  be asked to confirm quitting the app when there
+  are no windows.
 
 Improvements
-- Change the default tab/window title to show the
-  job name.
-- The hostname status bar component now has the
-  ability to abbreviate the local host name to a
-  configurable string.
-- Make uploading files with it2ul much faster.
-- More process -> icon mappings.
-- "Split Horizontally/Vertically" in the context
-  menu reuses the session's profile rather than
-  always using the default profile.
-- The default tabstops are now configurable in
-  advanced prefs.
-- There's a new advanced pref to use black for the
-  filler color in tmux integration for full screen
-  windows.
-- Increased the timeout for the git status bar
-  component data fetch to four seconds.
-- Selection is not cleared on mouse-up any more.
-  When clicking on an inactive window, the
-  selection will not be removed.
-- Tweak insets of stoplight buttons.
-- Performance improvements for non-GPU renderer.
-- You can now move tmux windows between sessions
-  in the tmux dashboard by holding Opt while
-  dragging.
-- Replace control characters in titles with
-  caret+letter instead of ?.
-- Make dark high contrast theme more readable for
-  people with poor eyesight.
-- Allow top-of-screen hotkey windows to overlap
-  the menu bar.
+- Infer current job name (for status bar, title
+  bar, etc.) when using tmux integration locally.
+- Append to automatic log output files by default,
+  instead of replacing them.
+- Search history is no longer opened by default
+  when you type in a Find field. Press the down
+  arrow to see your recent searches.
+- Control sequences that set the window or icon
+  title now cause that title to become visible.
+- Preserve the exact dimensions of sixel images
+  when possible.
+- Translate italic to reverse video in tmux
+  integration.
+- The git status bar component now truncates long
+  branch names instead of disappearing because
+  it's too big to fit.
+- Python API scripts are now run through the
+  user's shell so they'll have the right PATH,
+  in case they want to spawn subprocesses.
+- Use dark appearance for scrollbars in minimal
+  theme when the terminal background color is
+  dark.
+- When you create a tab with the Python API,
+  iTerm2 will no longer get activated
+  automatically.
+- Add "disable status bar" to the status bar
+  context menu.
 
 Bug fixes
-- Fix a crash when showing a hotkey from a full
-  screen window.
-- Fix various other crashes.
-- Fix some memory leaks.
-- Fix a bug where a window would be covered with
-  an opaque rectangle after exiting full screen.
-- Fix a bug where the flashing full-screen tab bar
-  would leave behind an opaque rectangle.
-- Enforce a minimum left-side tabbar width so
-  stoplight buttons and window shortcut will fit.
-- Fix a bug where selecting case-insensitive regex
-  in search would incorrectly put a checkmark next
-  to "erase search history."
-- Fix a bug where the working directory wasn't
-  detected if insecure control sequences were
-  disabled.
-- Fix a bug where a full screen window in tmux
-  integration with legacy scroll bars enabled
-  would have an empty margin on the right.
-- Fix a bug where blinking text might not always
-  blink.
-- Improve escaping of URLs in smart selection
-  actions.
-- Fix escaping of tildes in secure copy paths.
-- Fix a bug where "set name" in Applescript didn't
-  work.
-- Fix a bug where double-clicking a window's
-  shortcut label didn't work to zoom when there
-  was no tabbar in the minimal or compact theme.
-- Fix an exception in Python API scripts when fetching a profile with a hotkey
-  with control characters.
-- Fix a bug where the coordinates in
-  the AddHiddenAnnotation control sequence were
-  not respsected.
+- Fixes a bug when clicking on an iTerm2 window
+  with a selection while another app is active:
+  the selected text is no longer copied to the
+  pasteboard.
+- Fix many crashes.
+- Fix a bug where two custom status bar components
+  or title providers could not run concurrently if
+  their callbacks had the same signature.
+- Fix a regression where control-| stopped sending
+  control-backslash on Japenese keyboards.
+- Fix flickering job name when using tmux
+  integration locally.
+- Show a context menu when right clicking on the
+  titlebar in minimal or compact mode when there
+  is no tab bar.
+- Fix colors of graph-based status bar components
+  in dark mode.
+- Fix a crash when a shell integration-reported
+  hostname has a leading dot or two consecutive
+  dots in its name.
+- Use the right color for the window shortcut
+  number in minimal theme when the first tab is
+  colored.
+- Fix various rendering bugs with inline images in
+  both the GPU and legacy renderers.
+- Fix a bug where popping an icon or window title
+  from the stack didn't always work.
+- Fix a bug that caused hotkey windows to
+  immediately hide after showing when two of them
+  had the same shortcut.
+- Fix GPU rendering of ASCII text when the font
+  includes glyphs that spill outside their bounds
+  to the left, like AnonymousPro.
+- When stealing key focus is enabled, make the
+  session that's receiving stolen keys first
+  responder.
+- Fix a bug where the cursor was advanced one
+  position more than it should have been after
+  showing an image.
+- Fix a bug where resizing panes by the Window >
+  Resize Split Pane menu items would not always
+  work if the panes had different fonts.
+- Don't expose the existence of the placeholder
+  status bar component (used in empty status bars)
+  in the context menu.
 
 For the full release notes for version 3.3, please
 see:
