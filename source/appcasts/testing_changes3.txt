@@ -1,84 +1,40 @@
-iTerm2 version 3.3.4beta1
-
-New Features
-- There's a new pref for whether you want to
-  be asked to confirm quitting the app when there
-  are no windows.
+iTerm2 version 3.3.5beta1
 
 Improvements
-- Infer current job name (for status bar, title
-  bar, etc.) when using tmux integration locally.
-- Append to automatic log output files by default,
-  instead of replacing them.
-- Search history is no longer opened by default
-  when you type in a Find field. Press the down
-  arrow to see your recent searches.
-- Control sequences that set the window or icon
-  title now cause that title to become visible.
-- Preserve the exact dimensions of sixel images
-  when possible.
-- Translate italc to reverse video in tmux
-  integration.
-- The git status bar component now truncates long
-  branch names instead of disappearing because
-  it's too big to fit.
-- Python API scripts are now run through the
-  user's shell so they'll have the right PATH,
-  in case they want to spawn subprocesses.
-- Use dark appearance for scrollbars in minimal
-  theme when the terminal background color is
-  dark.
-- When you create a tab with the Python API,
-  iTerm2 will no longer get activated
-  automatically.
-- Add "disable status bar" to the status bar
-  context menu.
+- Clear the selection when the scroll wheel sends
+  an arrow key.
+- Improve performance of creating sessions with
+  the Python API.
+- Update the "xterm" keyboard presets to include
+  control+function keys.
+- tmux integration will now enable the "Session
+  Name" title component by default when using the
+  "tmux" profile.
 
 Bug fixes
-- Fix a 16-year-old bug: if you make a selection,
-  switch apps, copy to the pasteboard, and then
-  click in the terminal window the selected text
-  in the terminal window got copied to the
-  pasteboard causing you to lose what had been
-  copied from the other app.
-- Fix many crashes.
-- Fix a bug where two custom status bar components
-  or title providers could not run concurrently if
-  their callbacks had the same signature.
-- Fix a regression where control-| stopped sending
-  control-backslash on Japenese keyboards.
-- Fix flickering job name when using tmux
-  integration locally.
-- Show a context menu when right clicking on the
-  titlebar in minimal or compact mode when there
-  is no tab bar.
-- Fix colors of graph-based status bar components
-  in dark mode.
-- Fix a crash when a shell integration-reported
-  hostname has a leading dot or two consecutive
-  dots in its name.
-- Use the right color for the window shortcut
-  number in minimal theme when the first tab is
-  colored.
-- Fix various rendering bugs with inline images in
-  both the GPU and legacy renderers.
-- Fix a bug where popping an icon or window title
-  from the stack didn't always work.
-- Fix a bug that caused hotkey windows to
-  immediately hide after showing when two of them
-  had the same shortcut.
-- Fix GPU rendering of ASCII text when the font
-  includes glyphs that spill outside their bounds
-  to the left, like AnonymousPro.
-- When stealing key focus is enabled, make the
-  session that's receiving stolen keys first
-  responder.
-- Fix a bug where the cursor was advanced one
-  position more than it should have been after
-  showing an image.
-- Fix a bug where resizing panes by the Window >
-  Resize Split Pane menu items would not always
-  work if the panes had different fonts.
-- Don't expose the existence of the placeholder
-  status bar component (used in empty status bars)
-  in the context menu.
+- Don't open files as URLs when you cmd-click a
+  file in a network mount.
+- Fix a bug where git commands invoked by clicking
+  the git status bar component wouldn't work if
+  there was a space in the path to iTerm2.
+- Hide a gray line under the title bar that
+  occasionally appears in native full screen
+  windows with the minimal theme.
+- Show the tab color in per-pane title bars.
+- Fix a bug where the window shadow would
+  disappear after exiting native full screen.
+- Sometimes, "show next/previous tab" would appear
+  as a grayed out menu item under Window. macOS
+  kindly adds this at random for no discernable
+  reason. It is no longer grayed out.
+- The selection is now cleared on mouse-down.
+- The local copy of the profile is no longer
+  modified when the cursor shape is changed by a
+  control sequence. This fixes a bug where
+  splitting a window where the cursor shape had
+  been changed caused the new session to have that
+  cursor shape.
+- Fix a race condition that caused the initial
+  directory to sometimes be wrong when creating a
+  bunch of new sessions quickly.
+
