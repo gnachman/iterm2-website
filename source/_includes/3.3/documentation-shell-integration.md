@@ -23,7 +23,7 @@ The easiest way to install shell integration is to select the *iTerm2&gt;Install
 
 When you select the *iTerm2&gt;Install Shell Integration* menu item, it types this for you:
 
-<pre>curl -L https://iterm2.com/misc/install_shell_integration.sh | bash</pre>
+<pre>curl -L https://iterm2.com/shell_integration/install_shell_integration.sh | bash</pre>
 
 Don't care for piping curl to bash? Do it by hand. This is also what you must do if you use a shell that isn't your login shell. Select your shell to see the appropriate instructions: 
 
