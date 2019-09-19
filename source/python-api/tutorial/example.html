@@ -89,7 +89,7 @@
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-    <span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_window</span>
     <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
@@ -145,14 +145,14 @@ of windows). The returned value is an <a class="reference internal" href="../app
 iTerm2’s library follows a naming convention to help you remember to use
 <cite>await</cite>: any function that is declared <cite>async</cite> will have a name that begins
 with <cite>async_</cite>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_window</span>
 </pre></div>
 </div>
 <p>This fetches the “current terminal window” from the app. The current terminal
 window is the terminal window (and not, for example, the preferences window or
 some other non-terminal window) that receives keyboard input when iTerm2 is
 active.</p>
-<p>If there are no terminal windows then <a class="reference internal" href="../app.html#iterm2.App.current_terminal_window" title="iterm2.App.current_terminal_window"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.App.current_terminal_window()</span></code></a>
+<p>If there are no terminal windows then <code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.App.current_window()</span></code>
 returns <cite>None</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
     <span class="n">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>

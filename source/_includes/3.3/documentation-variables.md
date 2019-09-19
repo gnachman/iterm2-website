@@ -84,6 +84,7 @@ for details on setting them.
   * `titleOverride` - The value of `titleOverrideFormat` after evaluating it as an interpolated string.
   * `tmuxWindow` - In tmux integration, this is the tmux window number this tab represents.
   * `tmuxWindowTitle` - In tmux integration, this is the tmux window title. It will only be set if the tmux option `set-title` is on. It comes from evaluating the tmux `set-titles-strings` option.
+  * `title` - The fully formatted title as it appears in the tab bar. [Available in 3.3.5]
 
 #### References to Other Contexts
   * `currentSession` - A reference to the context of the active session in this tab.
