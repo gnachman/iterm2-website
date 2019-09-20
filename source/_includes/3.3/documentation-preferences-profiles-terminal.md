@@ -28,6 +28,9 @@ If disabled, the mouse will always perform its default action (such as scrolling
 #### Terminal may report window title
 Programs running in a terminal may send an escape code to request the current window title. You may disable this feature by enabling this option. It should be disabled if you're communicating with an untrusted party, as there are possible injection attacks.
 
+#### Terminal may enable paste bracketing
+Paste bracketing is a feature that can be enabled by an app running in iTerm2 by sending a control sequence. When enabled, iTerm2 transmits a control sequence before and after paste operations (e.g., pressing Cmd-V). This can be useful because editors like vim may disable auto-indenting when pasting already-indented code. Sometimes paste bracketing can be left on, causing unexpected behavior when you paste. For example, if a program running in an ssh session enables paste bracketing and then your ssh connection ends unexpectedly it won't have a chance to turn it off. Your next paste will include the bracketing control sequences, which will be mishandled by whatever program receives them. For that reason, some people prefer to disable paste bracketing. If you install Shell Integration it can detect when this occurs and automatically disable paste bracketing for you, making it safe to leave it enabled here.
+
 #### Terminal may set tab/window title
 If enabled the terminal may set the window or tab title with an escape sequence.
 
