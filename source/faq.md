@@ -101,8 +101,9 @@ A: The most common cause is that "minimum contrast" (under **Preferences > Profi
 #### Q: How can I make the tab bar visible in fullscreen mode?
 A: Toggle Show Tabs in Fullscreen under the View menu (cmd-shift-T).
 
-#### Q: When I use a third-party app like SizeUp or Spectacle to make an iTerm2 window fill the screen it doesn't quite fill it.
-A: Turn on **Preferences > Advanced > Terminal windows resize smoothly**.
+#### Q: When I use a third-party app like SizeUp, Spectacle to make an iTerm2 window fill the screen it doesn't quite fill it.
+#### Q: When I use Magnet to move iTerm2 windows they do unexpected things (like not moving where I told them to).
+A: This is a side-effect of making the window size a multiple of the size of a single character's cell. Turn on **Preferences > Advanced > Terminal windows resize smoothly** to disable this behavior and that usually fixes the issue.
 
 #### Q: Where is the source code?
 A: <a href="https://github.com/gnachman/iTerm2">See gnachman's Github iTerm2 project.</a>
