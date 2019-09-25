@@ -1,8 +1,12 @@
-iTerm2 features Applescript support which allows you to automate many aspects of its behavior. Quite a bit of customization is also possible by writing shell scripts.
+## Deprecation Warning
+
+Applescript in iTerm2 is deprecated. It will continue to receive bug fixes, but new features will not be added. Please see the <a href="/python-api">Python API docs</a> for a much better alternative.
 
 Note: Applescript support is in maintenance mode. New code should use the <a href="/python-api">Python API</a> if possible.
 
 ### Applescript
+iTerm2 features Applescript support which allows you to automate many aspects of its behavior. Quite a bit of customization is also possible by writing shell scripts.
+
 iTerm2 has sophisticated Applescript support allowing one to write stand-alone scripts to launch the application and open multiple sessions with profiles into either new tabs or new windows. You can also set some other parameters for a session such as foreground and background colors, and transparency.
 
 These scripts can then be saved as stand-alone executable applications.
@@ -29,6 +33,24 @@ The application exposes various properties and provides functions that are descr
     tell application "iTerm2"
       create window with default profile
     end tell
+
+#### Bridges to Python API
+
+<p class="script-entry">invoke API expression "<i>expression</i>"<br/>
+Invokes a Python API expression. This creates a bridge from Applescript to the <a href="/python-api">Python API</a>. You can use it to call a <a href="https://iterm2.com/python-api/tutorial/rpcs.html">registered RPC</a>, or to evaluate other kinds of expressions used in the Python API, such as <a href="documentation-variables.html">variables</a> in the global scope.
+
+Example:
+
+    invoke API expression "myRegisteredFunction()"
+
+<p class="script-entry">launch API script named "<i>name</i>"<br/>
+Runs a script. The *name* can specify any script in the **Scripts** menu. First, it searches for a script with that exact path relative to `~/Library/Application Support/iTerm2/Scripts`. Then it tries again, but ignores the path extension (like `.py`). Then it tries again, but only searches the file's base name (like `helloworld.py`). Finally, it tries again searching only the base name without path extension (like `helloworld`).
+
+Example:
+
+    launch API script named "helloworld"
+
+#### Other Application-Level Actions
 
 <p class="script-entry">create hotkey window with profile "<i>name</i>"<br/>
 Creates a hotkey window with the specified profile. The profile must be configured to have a hotkey.
