@@ -1,3 +1,186 @@
+2019-09-28: Wrap calls to malloc to make them safer in the
+event of a water landing.
+
+2019-09-28: Require x-iterm2-library-version header in
+websocket connection
+
+2019-09-28: Don't allow API access if multiple processes
+share the socket file descriptor.
+
+2019-09-28: Add support for downloads of larger files.
+Improve download performance by simplifying bytes-downloaded
+calculation.
+
+2019-09-28: Confirm very large downloads or inline images
+
+2019-09-28: Fix early unref in sixel.
+
+2019-09-28: Revert "Add a "Maximized" window type that is
+always maximized"
+
+This reverts commit
+1c30df94b6de0e902696fa802161ce99c60aa9ed.
+
+2019-09-28: Revert "Block attempts to resize Maximized
+windows in windowWillResize"
+
+This reverts commit
+2621fadc25593628490b3ca35284055052d83a1e.
+
+2019-09-28: Revert "Add support for compact-themed Maximized
+window type"
+
+This reverts commit
+af0915bdf4ab6e23bd6e6cb31cc516cd114dbcb5.
+
+2019-09-28: Revert "Block attempts to move Maximized
+windows"
+
+This reverts commit
+0c29c7191c8cd4d5ddfa7d966cd15ed83fcab4a0.
+
+2019-09-28: Ensure socket path is not too long in file
+descriptor client
+
+2019-09-28: Clean up some dev logging code
+
+2019-09-28: Check length of socket path fits.
+
+2019-09-28: Synchronize access to _cookies
+
+2019-09-28: Make prefs>profiles>advanced a bit wider to make
+room for legacy scroller. Issue 8311
+
+2019-09-28: Check for power source change after waking from
+sleep. Issue 8310
+
+2019-09-28: Save profiles to json rather than copying them
+to pasteboard. Issue 8253
+
+2019-09-28: [python] expose Prompt
+
+2019-09-28: Merge branch 'add_maximized_window_type' of
+https://github.com/zeroimpl/iTerm2
+
+2019-09-28: Modify git poll script to check for xcode
+license error
+
+2019-09-26: Update colorpicker
+
+2019-09-26: Make colorpicker use round to avoid numerical
+instability
+
+2019-09-26: Dedup unshowable tips of the day
+
+2019-09-26: Remove tip of the day about compact window
+style. Change how the next tip key is calculated to allow
+gaps. Issue 8307
+
+2019-09-26: Improve docs for preferred_size
+
+2019-09-25: Block attempts to move Maximized windows
+
+- Set NSWindow.movable=NO - Call canonicalizeWindowFrame in
+windowDidMove:
+
+2019-09-25: Add support for compact-themed Maximized window
+type
+
+2019-09-25: Block attempts to resize Maximized windows in
+windowWillResize
+
+2019-09-25: Add a "Maximized" window type that is always
+maximized
+
+This differs from the full-screen type since it does not
+hide the dock or menu bars.
+
+2019-09-24: Track touches unconditionally. If three finger
+tap has no action and does not emulate middle click then
+respect system setting for three-finger-tap causes
+quicklook. The only bug left is that you can't tell if
+quicklook was disabled in system prefs. Somehow that doesn't
+update global user defaults. Issue 8306
+
+2019-09-24: Escape strings with quotes instead of
+backslashes to support shells like xonsh
+
+Originally by CouleeApps with mods by gnachman
+
+2019-09-24: Make applescript invoke function command async
+
+2019-09-24: Add applescript 'invoke API function'
+
+2019-09-24: Add applescript 'launch API script with name'
+
+2019-09-24: Make splitting panes by Python API async. The
+API returns only after the fork is complete but if you ask
+for many splits at once they proceed in parallel.
+
+2019-09-24: Fix a bug in iTermSessionLauncher that it did
+not respect the synchronous: flag when not opening a URL or
+using a session-creation block. This primarily affects
+Applescript. Issue 8305.
+
+2019-09-23: Add advanced pref to set initial alpha of
+flashing indicators. Issue 8300
+
+2019-09-23: Disable metal when drop targets are drawn. It
+was never implemented in the metal renderer.
+
+2019-09-23: Add advanced pref to not draw bottom line of
+tabbar. Issue 8272
+
+2019-09-23: When in soft alternate screen mode, if
+disrespecting hard newlines doesn't get you an existing file
+try again with them respected. It might get you better
+results if the hard newline is legit. Issue 8297
+
+2019-09-22: [python] Bump version
+
+2019-09-22: Notarization for beta builds
+
+- Enable hardened runtime - Add entitlements to avoid
+breaking stuff (tested with ffmpeg recording from mic) -
+Udpate beta script to perform notification - Disable
+hardened runtime in debug - Add ExportOptions.plist.
+
+2019-09-22: Add hardened build of Sparkle
+
+2019-09-21: Fix failing test
+
+2019-09-21: Make text field first responder in text input
+alert that's exposed to Python API
+
+2019-09-21: Make tmux command alert textfield first
+responder. Issue 8295
+
+2019-09-21: iTermActionsDidChangeNotification: use
+initPrivate (#401)
+
+In iTermActionsDidChangeNotification, use [self initPrivate]
+instead of [self init], which is marked NS_UNAVAILABLE in
+iTermBaseNotification.
+
+2019-09-21: Fix wrapping of cells in the captured output
+table view. Issue 8245
+
+2019-09-21: Update vulnerable dep of websocket test
+
+2019-09-21: Add Stop Coprocess to textview context menu
+
+2019-09-21: Add python APIs for coprocesses. Fix broken
+support for optional arguments to built-in function calls.
+Issue 8294
+
+2019-09-21: Clear existing search state (particularly
+_lastStringSearchedFor) before doing a temporary search,
+such as for URLs. This forces a second identical search to
+start from scratch, which is desirable if the screen
+contents have changed. That's not an issue for
+interactively-initiated searches because they get tail-find
+while temporary searches do not. Issue 8274
+
 2019-09-19: Keep standard window buttons and shortcut
 titlebar accessory from becoming visible when exiting lion
 fullscreen and going to a window that doesn't have a
@@ -634,7 +817,7 @@ screen
 
 2019-08-09: Eliminiate uses of half and half4 in favor of
 float and float4. Word on the street is that most GPUs don't
-support half. More importantly, the Metal compiler s with
+support half. More importantly, the Metal compiler 💩s with
 halfs and doesn't with floats. See issue 7941
 
 2019-08-09: Set window collection behavior when replacing
