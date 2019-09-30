@@ -86,6 +86,43 @@
 <span id="prompt"></span><h1>Prompt<a class="headerlink" href="#module-iterm2.prompt" title="Permalink to this headline">¶</a></h1>
 <p>Provides information about the shell prompt.</p>
 <dl class="class">
+<dt id="iterm2.Prompt">
+<em class="property">class </em><code class="descname">Prompt</code><span class="sig-paren">(</span><em>proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Prompt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes a command prompt.</p>
+<p>Shell Integration must be installed for this to work properly.</p>
+<dl class="attribute">
+<dt id="iterm2.Prompt.command">
+<code class="descname">command</code><a class="headerlink" href="#iterm2.Prompt.command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the command entered at the prompt.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.Prompt.command_range">
+<code class="descname">command_range</code><a class="headerlink" href="#iterm2.Prompt.command_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the <a class="reference internal" href="util.html#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of the command following the shell prompt.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.Prompt.output_range">
+<code class="descname">output_range</code><a class="headerlink" href="#iterm2.Prompt.output_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the <a class="reference internal" href="util.html#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of the output of a command following a shell prompt.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.Prompt.prompt_range">
+<code class="descname">prompt_range</code><a class="headerlink" href="#iterm2.Prompt.prompt_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the <a class="reference internal" href="util.html#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of a shell prompt.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.Prompt.working_directory">
+<code class="descname">working_directory</code><a class="headerlink" href="#iterm2.Prompt.working_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the working directory at the time the prompt was printed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="iterm2.PromptMonitor">
 <em class="property">class </em><code class="descname">PromptMonitor</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection, session_id: str, modes: List[iterm2.prompt.PromptMonitor.Mode] = [&lt;Mode.PROMPT: 1&gt;]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PromptMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager to watch for changes to the prompt.</p>
