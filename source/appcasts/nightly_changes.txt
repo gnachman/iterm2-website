@@ -1,3 +1,67 @@
+2019-10-03: There was a bug that when the profile name
+changes the autoName got copied into the autoNameFormat if
+there was an icon title. That caused a problem because the
+autoNameFormat updates the autoName asynchronously. If you
+get to control sequences in the same spin of the runloop,
+the first one of which updates the autoNameFormat and the
+second one updates the profile, then the second one causes a
+profile name change that copies the now-outdated outoName
+into the autoNameFormat, overwriting the title change. I
+don't think it ever makes sense to copy the autoName to the
+autoNameFormat since the autoName is not meant to be
+evaluated. I think I probably overlooked this site when
+splitting the autoNameFormat out of the autoName. Issue 8319
+
+2019-10-03: Disable working directory poller after getting a
+control sequence that informs us of the working directory.
+Issue 5878, felixfbecker
+
+2019-10-03: Update Colorpicker.framework
+
+2019-10-03: [colorpicker] Remember the hue and saturation
+even when the color is black/white. Issue 8328
+
+2019-10-03: Add more debug logging to url actions for issue
+8244
+
+2019-10-02: Added SSKeychain as a dependency to the
+iTerm2Shared target, thus allowing `xcodebuild -target
+iTerm2 -project iTerm2.xcodeproj` to run from the command
+line without a `can't locate file for: -lSSKeychain` error
+
+2019-10-02: Prevent images from disappearing due to scaling
+
+2019-10-02: When installing an .its script with a minimum
+version number, there was an off by one bug where it would
+look for a runtime *newer* than the one in the setup file.
+Came up in issue 8318
+
+2019-09-30: Use dark knob style in dark theme with light
+background. Issue 8322
+
+2019-09-30: Better debug logging for saving restorable state
+
+2019-09-30: Don't return early on three-finger mouseDown
+when there's no action associated with it because it could
+be an accessibility three-finger drag. Issue 8321
+
+2019-09-30: Fix the frame of the hotkey window when there's
+another terminal window in lion fullscreen on a different
+desktop.
+
+Before, we'd bump the hotkey window's frame up to the top of
+the screen if there was a lion fullscreen terminal on the
+same screen because the menu bar is normally hidden for Lion
+fullscreen windows. But that would only be the case if the
+fullscreen window in question were on the current desktop.
+Issue 6209, comments around Sept 2019.
+
+2019-09-30: Fix bug where exporting a signed script from
+AutoLaunch wouldn't work if it there was a symlink in the
+path
+
+2019-09-30: Add resizeall example. Issue 8318
+
 2019-09-29: [python] Add async_get_contents
 
 2019-09-29: Improvements to minimal/compact title. Make
@@ -515,620 +579,3 @@ Issue 8190
 
 2019-09-03: Fix control-backslash on Japanese keyboards and
 Control-shift-/ on US keyboards. Issue 8162
-
-2019-08-28: Don't open search history automatically. Only do
-it when the user presses the down arrow. I should implement
-my own completion because macOS's is super bad. When you
-call complete: it enters a runloop of its own so you can't
-catch esc. The problem is that you have to press esc a lot
-of times to back out of search when the completion window is
-open.
-
-2019-08-28: Append to autolog files by default. Add an
-advanced pref to revert to the previous behavior of
-overwriting. Raised as a concern in email with subject line
-'Item2 import'
-
-2019-08-28: Use the 'bottom' margin when calculating the
-min-y coordinate of images in GPU renderer. Because GPUs do
-everything upside down, the bottom margin is on the top of
-the screen. The 'top' margin varies based on the filler
-space beneath the last line. This caused images to shift
-vertically when shifting between renderers. Issue 8152
-
-2019-08-28: Don't change color of window number shortcut in
-minimal for colored tabs unless
-minimalTabStyleTreatLeftInsetAsPartOfFirstTab is enabled.
-Issue 8178
-
-2019-08-28: Link to weather script
-
-2019-08-28: Add weather example script. Issue 8179
-
-2019-08-27: Don't throw an exception if a hostname has two
-consecutive dots or leads with a dot or some other weird
-thing
-
-2019-08-27: Set the global currentAppearance when drawing
-into an NSImage using the block-based drawing function.
-Based on the users of this function this should only affect
-graphic status bar components. Fixes a bug where they'd be
-hard to see when using system light + iTerm2 dark theme.
-
-2019-08-27: Show contextual menu when you right click on a
-fake titlebar. Issue 8173
-
-2019-08-27: Bring back a special case for control+slash and
-control+backslash keys to fix a problem with
-control-backslash on Japanese keyboard. The old code was
-some nasty spaghetti that often worked by accident, but
-there were some pearls in there. Issue 8162
-
-2019-08-26: For tmux >= 2.1 try to detect if tmux is running
-locally by checking if #{pid} matches a process named tmux.
-If so, use #{pid_pane} to enable polling for the current job
-in tmux integration.
-
-Don't call updateTitleWithProcessInfo with a nil argument.
-It causes the job name to be removed. This is very annoying
-when polling causes it to be bumped twice in quick
-succession, leading to the job name flickering in the title.
-
-PTYTask now knows about tmux process IDs and uses them just
-for this purpose.
-
-Issue 8167
-
-2019-08-26: Don't dismiss hotkey window when a Sparkle
-window becomes key. Issue 8153
-
-2019-08-25: Fix typo
-
-2019-08-25: Improve EachSessionOnceMonitor docstring
-
-2019-08-25: [python] Bump version
-
-2019-08-25: Add EachSessionOnceMonitor
-
-2019-08-25: Fix broken method for fetching a range of lines
-from history.
-
-2019-08-25: Fix the number of lines restored
-
-2019-08-25: Minor refactor to clarify some confusing names
-
-2019-08-24: Fix analyzer complaints, including some small
-memory leaks. Mostly nullability issues that were missing
-annotations.
-
-2019-08-24: Objective C at its very worst. I accidentally
-named a method after one that has special significance and
-the system called it with an argument of the wrong type.
-Rename it to avoid the stupid.
-
-2019-08-24: Don't crash if the smart selection rules are
-somehow out of bounds. I saw this in crash log
-1566551545.1049778259.txt. I guess this happened because
-user defaults changed out from under us, but still better
-not to crash.
-
-2019-08-24: Do not clear the selection on mouse up single
-click. This changes the behavior when clicking in a non-key
-window that has a selection: now the selection won't be
-removed. That's good because that's how macOS seems to work
-(at least 10.14, which is all I tested). Furthermore, it
-fixes issue 7871 where the OS reported click=0 for no good
-reason. The selection has always been removed in
-mouseDownImpl in .
-
-2019-08-24: ARCify NSImage+iTerm to fix a memory leak in
-it_imageWithTintColor: where the image is copied but not
-autoreleased. Issue 8163
-
-2019-08-24: Fix type annotations for Size and Point
-
-2019-08-24: Bump default git component timeout to 4 seconds
-
-2019-08-24: Add setprofile Python example
-
-2019-08-24: Option+tab drag now moves the window. Issue 8123
-
-2019-08-23: Set the hotkey window type in PseudoTerminal's
-initializer prior to setting the window because otherwise it
-will set the collection behavior so that it can become full
-screen and if you're currently on a fullscreen desktop then
-it'll try to make the hotkey window lion fullscreen and it
-dies with an assertion.
-
-2019-08-23: Add advanced pref to use black for tmux filler
-area in fullscreen. Issue 8151
-
-2019-08-23: Update the session's scrollbar style just after
-creating the tab for a tmux layout and before reporting the
-session size so they'll be taken into account in
--tmuxSizeForHeight:. This affects full screen windows only
-when the system setting is for legacy scrollers. Issue 8074
-
-2019-08-22: Make default tab stop width configurable in
-advanced prefs. Issue 8149
-
-2019-08-22: Don't escape command line args to tar when
-making an archive for it2ul. It is not passed through the
-shell so escaping is not necessary. Issue 8148
-
-2019-08-22: Change split in context menu to use the current
-profile. Issue 8147
-
-2019-08-21: Disable 'set title by control sequence' when
-title components don't allow the effect to be visible. Issue
-8145
-
-2019-08-21: Poll for working directory if insecure escape
-sequences are disabled. Issue 8144
-
-2019-08-21: Fix the tag on 'erase search history' to avoid
-showing a checkmark when case-insenstiive regex is selected.
-Issue 8143
-
-2019-08-21: Ensure left-side tabbar is wide enough for
-buttons and window number in compact and minimal. Issue
-7988, in the comments.
-
-2019-08-21: Add icons for Elixir and Erlang
-
-2019-08-21: More process icons
-
-2019-08-21: Add some process names for Redis and PostgreSQL
-
-2019-08-21: Specify preferences section
-
-This message confused me a bit the first time as it wasn't
-obvious which section of Preferences this would be on. This
-would make it easier for anyone to find it.  2019-08-21:
-Send encoded files for it2ul really fast. Add an advanced
-pref to disable this. Issue 8142
-
-2019-08-19: Avoid changing window type after exiting lion
-fullscreen if unnecessary. When changing window type, remove
-the contet view from its old superview before setting it as
-the content view of the new window because macOS just can't
-seem to do anything right (you get a visual effect view
-covering everything, and it's a subview of the NSThemeView).
-Issue 7988
-
-2019-08-19: Add the option to abbreviate the hostname when
-on localhost. Issue 7705
-
-2019-08-19: Make flashing tabbar overlap content and hide
-its backing when on top. Issue 8130
-
-2019-08-18: Add better logging to track down assertion in
-divorcing a session where its profile has disappeared.
-
-2019-08-18: Fix an out-of-bounds read. I'm not quite sure
-how to reproduce it, but I can tell from the crash logs and
-disassembly that it read of the end of one of the _datas
-byte arrays.
-
-The crash report with the smoking gun was
-1565202147.246087595. It performed a read at offset 0xa003,
-which was past the end of a buffer of size 0xa000. This
-could happen if there was a fractional size or the canvas
-size doesn't match the _size. I don't know the root cause,
-but at least this should stem the bleeding.
-
-2019-08-18: Don't crash if the font picker returns nil for
-one of the fonts. Not sure why that would happen, though.
-Fixes a common crash.
-
-2019-08-18: Update BetterFontPicker.framework
-
-2019-08-18: Add more BFP user data to gitignore
-
-2019-08-18: Remove user data
-
-2019-08-18: Don't use force unwrapping. I'm not sure why
-this was crashing (presumably nil) but just reload the table
-and return if things are nutty.
-
-2019-08-18: Update description of advanced pref
-URLCharacterSet to include file names and instructions to
-restart.
-
-2019-08-18: Allow top-of-screen windows to overlap the
-titlebar. Issue 8132.
-
-2019-08-18: Fix how the coordinates in AddHiddenAnnotation
-are bounded. There was a bug where they were bounded by the
-cursor position, not the bottom right of the screen. Issue
-8111
-
-2019-08-17: Make dark high-contrast more visible by default
-and add an advanced pref to make it pretty. Issue 7563
-
-2019-08-17: Replace control characters in titles with
-caret+letter instead of question mark. Issue 8124
-
-2019-08-15: Ensure secure keyboard entry is turned on when
-app launches. Before it would not happen until the menu
-validated or the app became active.
-
-2019-08-15: Fix a bug where secure keyborad entry
-incorrectly used the Search History user default preference.
-Includes a migration path to preserve settings from the
-buggy time.
-
-2019-08-15: Change default title components to Job. I don't
-know why it was set to session name, and previous that
-profile name. Setting it to Job fixes the migration from
-3.2, where that was the default behavior. Also, job is just
-more useful than profile name which for many people is just
-"Default". Issue 8115
-
-2019-08-15: Fix escaping of control characters in JSON
-strings. Issue 6764 (@yacn's comments)
-
-2019-08-15: Allow moving tmux windows between sessions by
-holding option/command (#391)
-
-The tmux dashboard allows linking windows between different
-sessions via drag-and-drop. This change modifies that
-behaviour, such that if option or cmd are pressed during the
-drag, the window will be moved instead of linked.
-
-2019-08-14: Don't create app support symlink if the advanced
-pref is set to empty string
-
-2019-08-14: Change how URLs in smart selection actions are
-escaped to be less broken. It's still kinda broken. Issue
-8088. See issue 8119 for the task to unbreak this mess in
-general
-
-2019-08-14: Don't try to CFRelease null
-
-2019-08-14: Replace the call to CGContextSelectFont with
-CGContextSetFont. Turns out it works fine and is much
-faster. Issue 8105
-
-2019-08-14: Don't loan tabbar to titlebar accessory when
-it's configured to flash. Issue 8112.
-
-I considered a lot of options:
-
-1. When flashing, remove from title bar accessory and add to
-root terminal view controller. Rejected because you might
-show the title bar during a flash. Also, really freaking
-complicated.  2. Reveal the title bar and tab bar instead of
-the old flash animation. Rejected because it does not appear
-to be possible. Even if it were, it's too tall.  3. Create a
-copy of the tab bar and flash that. I like this the best,
-except the complexity is absolutely astounding. No way.  4.
-Disable flashing for non-native tab bars. Rejected because
-it doesn't make any sense for users. Breaks existing
-workflows.  5. Don't loan the tabbar to the titlebar
-accessory vc if flashing is enabled. This basically gets us
-back to the pre-3.3.0 behavior.  6. Just show an image
-instead of a real tab bar. I tried this, but it was also
-pretty complex. It will inevitably have a lot of problems
-because it's not the real thing, snapshots are flaky,
-accessibility will probably be an issue, etc.
-
-2019-08-13: Disable metal after creating an annotation
-
-2019-08-13: Don't return a hidden tab bar control from
-hitTest:. Fixes a bug where double-clicking the window
-shortcut label when there's a fake window title label didn't
-work. Issue 8110
-
-2019-08-12: Fix Applescript 'tell session to set name to x'.
-Commit 8393a4e57 tried and failed. Setting the
-autoNameFormat is not resilient because it often gets
-overwritten with the session's profile name, such as when
-you open Edit Session. I don't see any reason why
-Applescript should be different than modifying the session
-name in Edit Session. See Lorenzo's comments in issue 7621
-
-2019-08-12: Apply
-https://github.com/libssh2/libssh2/pull/368 to libssh2 to
-test the fix to escaping tildes in file paths
-
-2019-08-12: Show a dialog after not installing the python
-runtime because you already have it. Happens if you install
-after deleting the symlink and relaunching
-
-2019-08-12: Make the name of the ApplicationSupport symlink
-configurable. Issue 6746
-
-2019-08-11: Adjust left inset of stoplight buttons to match
-the top inset. Affects compact theme and Minimal theme when
-tab height is adjusted downwards. Issue 8046.
-
-2019-08-11: Add status bar icon to docs
-
-2019-08-11: [python] Bump version
-
-2019-08-11: Don't forceFrame if the frame is on the first
-screen
-
-2019-08-09: Eliminiate uses of half and half4 in favor of
-float and float4. Word on the street is that most GPUs don't
-support half. More importantly, the Metal compiler s with
-halfs and doesn't with floats. See issue 7941
-
-2019-08-09: Set window collection behavior when replacing
-the window at runtime. Issue 8100
-
-2019-08-09: Work around a macOS bug where windows jump to
-the main screen after you replace the window controller's
-window.
-
-2019-08-09: When entering traditional fullscreen don't
-auto-hide the dock if the dock is on a different display
-than the window. Issue 8096.
-
-2019-08-09: Automatically convert drag of a tab into a
-window drag when: 1) the theme is compact or minimal, and 2)
-the tab bar is visible, and 3) there is only one tab. Issue
-8080
-
-2019-08-09: Fix a bug where the status bar icon's tint color
-was set incorrectly in updateIconIfNeeded (didn't take the
-text color into account). Issue 8097
-
-2019-08-08: Remove the corner radius from the window size
-view because Visual Effect Views don't work right over a
-semi-transparent window.
-
-2019-08-08: Create a temporary status bar find driver when a
-session needs but does not have one. Happens after moving a
-session into a split pane when it has a temporary find
-field. Issue 8084
-
-2019-08-08: Ensure the cursor is below the 'session
-restored' banner.
-
-2019-08-08: Don't try to micromanage the composer popover's
-appearance pre-10.14. Caused white-on-white text. Not sure
-the underlying cause and not important in this case. I don't
-trust appearance stuff on 10.13. Issue 8076
-
-2019-08-08: Allow git state cache entries to live for 10
-seconds. After they reach 2 seconds of age, they'll be used
-only if the command runner fails. Issue 8075
-
-2019-08-08: Don't use black for the flexible view color. The
-status bar makes it really ugly. I hope to eliminate the
-flexible view soon, anyway. Issue 8074
-
-2019-08-08: Restrict before & after text passed to semantic
-history command to the logical window, since it is used when
-choosing the text that was clicked on. Issue 8073
-
-2019-08-08: Force session views to redraw when their window
-becomes/resigns key to make the title view's background and
-title view label's background match. Issue 8063
-
-2019-08-07: Make dark high contrast look good on 10.13 and
-10.14. Issue 7563
-
-2019-08-07: Increase size of status bar setup window so you
-can see all the components at once
-
-2019-08-07: Don't use non-ascii font for non-ascii underline
-descriptor if the non-ascii font is off. Issue 8068
-
-2019-08-07: Fix a bug in the tutorial
-
-2019-08-07: Add back support for telnet: urls with ports.
-Reported by email
-
-2019-08-07: Initialize username and hostname variables with
-92694USER92694 and 92694HOST92694.
-
-2019-08-07: When a session is initializing, update its
-profile with its name after performing $$ substitution.
-Issue 8058.
-
-2019-08-07: Better logging for title function
-
-2019-08-07: More tweaks to dark high contrast tabs
-
-2019-08-07: Update how local directories are computed. When
-we update because of a window title change, update the path
-variable. When the pwd poller gets a directory, update a
-mark. Generally simplify this horrid mess. Issue 8038.
-
-2019-08-07: Don't use the tab color as the status bar
-background color in minimal theme (when per-pane status bars
-are turned off).
-
-2019-08-07: Don't order in hotkey window when restoring it
-from an arrangement. Issue 8051
-
-2019-08-07: Make unread count view's text color always white
-
-2019-08-07: Add help button to status bar setup vc
-
-2019-08-07: Set minimum size for status bar setup window
-
-2019-08-07: Add unread Python exmaple
-
-2019-08-07: Add support for custom status bar components to
-have icons
-
-2019-08-06: Add support for showing an unread count in a
-status bar component.
-
-2019-08-06: Fix up test_it2api for its new location
-
-2019-08-06: Merge branch 'master' of
-github.com:gnachman/iTerm2
-
-2019-08-06: 3.3.2beta1
-
-2019-08-06: Fix a bug where advanced prefs text fields
-became invisible if you selected them and then deselected
-without editing. CHERRY PICK INTO MASTER
-
-2019-08-06: Fixed customc typo (#390)
-
-
-2019-08-06: [python] Add Window.window_number. Issue 4899
-
-2019-08-06: Style fixes
-
-2019-08-06: Reset the collection behavior when exiting lion
-full screen in LSUIElement mode. Issue 8048
-
-2019-08-06: Set termID just before computing the autolog
-filename. Do not set it early before the tab number is
-known. The tab number is not known until the session's tab
-is added to a window. Trying to catch it at just the right
-moment is very hard, but it should be safe to defer doing
-until we are ready to fetch the autolog filename because
-that happens before the job is launched. Issue 8053
-
-2019-08-06: Apply changes to status bar immediately. The OK
-button now dismisses with no action and the cancel button
-reverts changes. Issue 8054
-
-2019-08-05: Add a comment relating the vm_stat command line
-app to the struct
-
-2019-08-05: Improve PromptMonitor to inform you when a
-command starts and ends.
-
-2019-08-05: Update cls to include example that clears the
-current tab only, by Dmitry Koterov
-
-2019-08-05: Update 'path' variable when we poll a working
-directory. Issue 8038
-
-2019-08-05: Remove accidental newline
-
-2019-08-05: Only offer to reset terminal when hostname
-changes, not user name. Issue 8030
-
-2019-08-05: Set window type after calling
-replaceWindowWithWindowOfType. Fixes a bug where traditional
-fullscreen windows didn't go all the way to the top of the
-screen
-
-2019-08-05: Fix a bug where the window size after exiting
-traditional fullscreen wasn't the same size as before
-entering fullscreen. Issue 8027
-
-2019-08-05: Fix a bug where advanced pref text values were
-not visible. CHERRY PICK INTO 3.1.1
-
-2019-08-05: Add advanced pref to increase space between
-stoplights and first tab in compact/minimal. Issue 8021
-
-2019-08-05: Include tab title/tmux window name in open
-quickly along with session name. Issue 8018
-
-2019-08-05: Add number variable to window scope.
-
-2019-08-05: When setting a variable to its current value, do
-not return an error.
-
-2019-08-05: Add disk space status bar example
-
-2019-08-05: When exiting Lion full screen, set the
-windowType after calling updatWindowForWindowType: to ensure
-the window is replaced. See comment in issue 7988
-
-2019-08-05: Move tmux status bar setting out of advanced
-prefs
-
-2019-08-05: Add support for navigating to a split pane in a
-direction. Issue 8014.
-
-Also bumps the lib version *and* protocol version to 1.0.
-
-2019-08-05: Poll tmux for the working directory in
-integration mode. Issue 8020
-
-2019-08-05: Add c1 tests
-
-2019-08-05: Remove it2api (it's now in the website repo) and
-move the test shell script into tests
-
-2019-08-05: Fix failing tests
-
-2019-08-05: Show window size in overlay view when there is
-no title bar.
-
-2019-08-05: Add support for C1 control codes.
-
-2019-08-05: Show bezels in text fields in advanced prefs.
-Issue 8003
-
-2019-08-05: Fix the badge preview. The sizes used were all
-wrong. Also indicate the the margins are in points in the
-UI.
-
-2019-08-05: Fix autoresizing mask of font picker in badge
-config window
-
-2019-08-05: Ensure the badge label size is correct when the
-badge renderer asks for it while updating a profile. Issue
-8006
-
-2019-08-05: Don't crash when badge height set to 0. Issue
-8007
-
-2019-08-05: Improve wording of advanced pref for tabbar
-height in minimal
-
-2019-08-05: Prevent setContentView: from being called
-re-entrantly when setting the window type causes the
-effective appearance to change. Issue 7995
-
-2019-08-05: Add a command runner pool to manage command
-runner lifecycles for the git poll worker. This is an
-attempt to fix the flakiness of the git status bar
-component. Issue 7705
-
-2019-08-05: Fix some docstrings because there's an enum for
-the initial working directory
-
-2019-08-05: Activate the app before showing a modal
-sheet/alert. This doesn't cover all of the many modal alerts
-because it's just too much to test right after a release. It
-fixes issue 7977 - opening the set tab title panel in a
-floating hotkey window when another app is active causes the
-window to disappear.
-
-2019-08-05: Fix docstrings for other set variables calls
-
-2019-08-05: Fix a bug where opening the open quickly window
-would hide the hotkey window
-
-2019-08-05: Make floating panel hotkey windows overlap the
-menu bar. Issue 7984
-
-2019-08-05: Fix a bug where closing a native fullscreen
-window would cause a new window to be created. Issue 7987
-
-2019-08-05: Change wording of setting to choose beta
-channel. Issue 7989
-
-2019-08-05: 3.3.0
-
-2019-08-05: Update release_stable.sh to be very similar to
-release_beta.
-
-2019-08-05: Simplify calculating text color for popup
-windows
-
-2019-08-05: Revert "Use visual effect views behind popups"
-
-This reverts commit
-40c09128189e0cdeceb532232324d2fc77be6bcc.
-
-2019-08-01: Session.async_set_variable(): Document required
-`user.` variable prefix (#388)
-
-Fix docstring for session.async_set_variable to mention that
-it must begin with `user.`
