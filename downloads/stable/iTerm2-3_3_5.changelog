@@ -1,0 +1,127 @@
+iTerm2 version 3.3.5
+
+This build uses the "hardened runtime", which makes the app
+more secure. It is also notarized so it will run on Catalina.
+
+New Features
+- You can now import and export key bindings from the
+  Presets... menu under the list of key bindings.
+- Add an advanced pref to allow paste history to work while
+  secure keyboard entry is on.
+- New advanced pref to disable bottom line of
+  tabbar for low-budget Minimal theme on 10.12 and
+  10.13.
+- New advanced pref to tweak the initial alpha
+  value of flashing indicators, like the bell.
+- New advanced pref to escape with quotes instead
+  of backslashes for xonsh users.
+- Add two new Applescript commands:
+  1. invoke API function "f()"
+  2. lauch API script with name "scriptname"
+  This gives you a bridge to the modern world.
+- New window style "Maximized" that is an
+  always-maximized window.
+
+Improvements
+- Clear the selection when the scroll wheel sends
+  an arrow key.
+- Improve performance of creating sessions with
+  the Python API.
+- Update the "xterm" keyboard presets to include
+  control+function keys.
+- tmux integration will now enable the "Session
+  Name" title component by default when using the
+  "tmux" profile.
+- Double-clicking on a profile in the panel shown when you
+  do Shell > Split Horizontally/Vertically... will now split
+  with that profile.
+- Paste history, command history, and captured output
+  toolbelt tools now use a fixed-pitch font.
+- Show a warning in Paste History UIs that it is disabled
+  when secure keyboard entry is on.
+- Don't redraw the whole window every time the mouse moves.
+- Update window and tab titles immediately after getting an
+  OSC 0, 1, or 2 control sequence.
+- Reduce CPU usage for miniaturized windows.
+- Add "Stop Coprocess" to context menu.
+- Improve reliability of semantic history in
+  interactive apps.
+- Improve performance of splitting panes with
+  Python API.
+- Improve git state status bar component's ability
+  to detect Xcode license-related issues that
+  prevent it from using git.
+- Replace "copy profile as JSON" with
+  functionality that saves it to a file.
+- Visual improvements to Prefs.
+- Require user confirmation of downloads over 1
+  gb.
+- Various security improvements to the Python API:
+  - Make it harder for a web browser to connect by
+    requiring a special HTTP header.
+  - Detect when two processes hold the file
+    descriptor to the websocket and deny the
+    connection.
+
+Bug Fixes
+- Don't open files as URLs when you cmd-click a
+  file in a network mount.
+- Fix a bug where git commands invoked by clicking
+  the git status bar component wouldn't work if
+  there was a space in the path to iTerm2.
+- Hide a gray line under the title bar that
+  occasionally appears in native full screen
+  windows with the minimal theme.
+- Show the tab color in per-pane title bars.
+- Fix a bug where the window shadow would
+  disappear after exiting native full screen.
+- Sometimes, "show next/previous tab" would appear
+  as a grayed out menu item under Window. macOS
+  kindly adds this at random for no discernable
+  reason. It is no longer grayed out.
+- The selection is now cleared on mouse-down.
+- The local copy of the profile is no longer
+  modified when the cursor shape is changed by a
+  control sequence. This fixes a bug where
+  splitting a window where the cursor shape had
+  been changed caused the new session to have that
+  cursor shape.
+- Fix a race condition that caused the initial
+  directory to sometimes be wrong when creating a
+  bunch of new sessions quickly.
+- Fix layout bug when resizing triggers window.
+- Don't treat force touch as quicklook if disabled in system
+  prefs.
+- Fix a bug in rendering inline images that are a fixed
+  number of cells tall.
+- Fix the "broken pipe" divider, which rendered incorrectly.
+- If you click on a selection, wait until mouse-up to remove
+  it so it can be dragged.
+- Fix a bug where the window buttons and window shortcut
+  titlebar accessory remained visible after exiting native
+  full screen.
+- Fix a bug when performing two consecutive searches for
+  URLs where the second search had no effect.
+- Make text field first responder when opening "send command
+  to tmux" window.
+- Fix a bug where you couldn't always write to a
+  session after creating it in applescript.
+- Fix a bug where secure copy drop targets were
+  not visible when using the GPU renderer.
+- Suport system preference for three-finger tap
+  Quicklook.
+- Fix incorrect tip of the day about compact
+  window style, which was replaced by the compact
+  theme.
+- Fix rounding error in color picker.
+- Fix various memory errors.
+- Fix a bug where blinking text didn't redraw
+  correctly when scrolled up with legacy renderer.
+
+Scripting
+- New APIs for coprocesses.
+- Adds a 'title' variable to the tab scope that has the
+  tab's actual title.
+
+SHA-256 of the zip file is
+116f5f349f08fcfac8934c43704a80a8c55c2f85be288ec176c32c9b6b58d5b9
