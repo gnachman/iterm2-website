@@ -1,4 +1,65 @@
-iTerm2 version 3.3.5
+iTerm2 version 3.3.6
+
+This build fixes a serious security issue. All
+users should upgrade.
+
+The Mozilla Foundation has generously sponsored a
+security audit of the iTerm2 source code. As part
+of this audit, a problem was discovered which
+could cause iTerm2 to issue commands in response
+to receiving certain input. This is a serious
+security issue because in some circumstances it
+could allow an attacker to execute commands on
+your machine when you view a file or otherwise
+receive input they have crafted in iTerm2.
+
+For more information, please visit the
+iterm2-discuss group.
+
+https://groups.google.com/forum/#!forum/iterm2-discuss
+
+
+Improvements
+- Visual improvements to minimal and compact
+  themes' titlebar.
+- Make overlay scrollbars dark in dark theme with
+  light terminal background so they're more
+  visible.
+- Various UI improvements to the Composer status
+  bar component.
+
+Bug Fixes
+- Fix a bug where you couldn't import an .its file
+  requiring the latest runtime version.
+- Fix a bug where exporting an autolaunch script
+  wouldn't work if there was a symlink in the
+  path.
+- Fix the frame of the hotkey window when there's
+  another terminal window in lion fullscreen on a
+  different desktop.
+- Fix a bug where three-finger drag was broken.
+- Prevent very wide/tall images from disappearing.
+- Make the color picker remember hue and
+  saturation when the color passes through pure
+  black or white.
+- Don't get confused about the working directory
+  when only a subset of the shell integration
+  control sequences are used.
+- Fix a bug where changing the badge and the title
+  in quick succession would only affect the badge.
+- Ensure all file descriptors are closed when
+  launching a coprocess (before only 0-255 were
+  closed).
+- Fixes a crash-on-launch problem for some users
+  in corporate environments.
+
+Scripting
+- Add Session.async_get_contents
+
+Version 3.3.5 was short-lived, so its release
+notes follow:
+
+-----------------------------------------------------------
 
 This build uses the "hardened runtime", which makes the app
 more secure. It is also notarized so it will run on Catalina.
@@ -126,3 +187,5 @@ Scripting
 For the full release notes for version 3.3, please
 see:
 https://iterm2.com/downloads/stable/iTerm2-3_3_0.changelog
+
+
