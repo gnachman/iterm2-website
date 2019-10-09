@@ -1,52 +1,57 @@
-iTerm2 version 3.3.5beta3
+iTerm2 version 3.3.7beta1
 
-New Features
-- New advanced pref to disable bottom line of
-  tabbar for low-budget Minimal theme on 10.12 and
-  10.13.
-- New advanced pref to tweak the initial alpha
-  value of flashing indicators, like the bell.
-- New advanced pref to escape with quotes instead
-  of backslashes for xonsh users.
-- Add two new Applescript commands:
-  1. invoke API function "f()"
-  2. lauch API script with name "scriptname"
-  This gives you a bridge to the modern world.
-- New window style "Maximized" that is an
-  always-maximized window.
+This build fixes a serious security issue. All
+users should upgrade.
+
+The Mozilla Foundation has generously sponsored a
+security audit of the iTerm2 source code. As part
+of this audit, a problem was discovered which
+could cause iTerm2 to issue commands in response
+to receiving certain input. This is a serious
+security issue because in some circumstances it
+could allow an attacker to execute commands on
+your machine when you view a file or otherwise
+receive input they have crafted in iTerm2.
+
+For more information, please visit the
+iterm2-discuss group.
+
+https://groups.google.com/forum/#!forum/iterm2-discuss
 
 Improvements
-- Improve reliability of semantic history in
-  interactive apps.
-- Improve performance of splitting panes with
-  Python API.
-- Improve git state status bar component's ability
-  to detect Xcode license-related issues that
-  prevent it from using git.
-- Replace "copy profile as JSON" with
-  functionality that saves it to a file.
-- Visual improvements to Prefs.
-- Require user confirmation of downloads over 1
-  gb.
-- Various security improvements to the Python API:
-  - Make it harder for a web browser to connect by
-    requiring a special HTTP header.
-  - Detect when two processes hold the file
-    descriptor to the websocket and deny the
-    connection.
+- Visual improvements to minimal and compact
+  themes' titlebar.
+- Make overlay scrollbars dark in dark theme with
+  light terminal background so they're more
+  visible.
+- Various UI improvements to the Composer status
+  bar component.
 
 Bug Fixes
-- Fix a bug where you couldn't always write to a
-  session after creating it in applescript.
-- Fix a bug where secure copy drop targets were
-  not visible when using the GPU renderer.
-- Suport system preference for three-finger tap
-  Quicklook.
-- Fix incorrect tip of the day about compact
-  window style, which was replaced by the compact
-  theme.
-- Fix rounding error in color picker.
-- Fix various memory errors.
-- Fix a bug where blinking text didn't redraw
-  correctly when scrolled up with legacy renderer.
+- Fix a bug where you couldn't import an .its file
+  requiring the latest runtime version.
+- Fix a bug where exporting an autolaunch script
+  wouldn't work if there was a symlink in the
+  path.
+- Fix the frame of the hotkey window when there's
+  another terminal window in lion fullscreen on a
+  different desktop.
+- Fix a bug where three-finger drag was broken.
+- Prevent very wide/tall images from disappearing.
+- Make the color picker remember hue and
+  saturation when the color passes through pure
+  black or white.
+- Don't get confused about the working directory
+  when only a subset of the shell integration
+  control sequences are used.
+- Fix a bug where changing the badge and the title
+  in quick succession would only affect the badge.
+- Ensure all file descriptors are closed when
+  launching a coprocess (before only 0-255 were
+  closed).
+- Fixes a crash-on-launch problem for some users
+  in corporate environments.
+
+Scripting
+- Add Session.async_get_contents
 
