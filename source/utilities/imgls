@@ -28,12 +28,13 @@ function print_st() {
 
 function list_file() {
   fn=$1
-  dims=$(php -r 'if (!is_file($argv[1])) exit(1); $a = getimagesize($argv[1]); if ($a==FALSE) exit(1); else { echo $a[0] . "x" .$a[1]; exit(0); }' "$fn")
+  test -f "$fn" || return 0
+  dims=$(php -r 'if (!is_file($argv[1])) exit(1); $a = getimagesize($argv[1]); if ($a==FALSE) exit(1); else { echo $a[0] . "x" .$a[1]; exit(0); }' -- "$fn")
   rc=$?
   if [[ $rc == 0 ]] ; then
     print_osc
     printf '1337;File=name='`echo -n "$fn" | base64`";"
-    wc -c "$fn" | awk '{printf "size=%d",$1}'
+    wc -c -- "$fn" | awk '{printf "size=%d",$1}'
     printf ";inline=1;height=3;width=3;preserveAspectRatio=true"
     printf ":"
     base64 < "$fn"
@@ -55,9 +56,9 @@ function list_file() {
       printf '\033[A'
     fi
     echo -n "$dims "
-    ls -ld "$fn"
+    ls -ld -- "$fn"
   else
-    ls -ld "$fn"
+    ls -ld -- "$fn"
   fi
 }
 
