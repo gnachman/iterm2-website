@@ -1,3 +1,78 @@
+2019-10-11: Add advanced pref to disable tabbar tooltips.
+Issue 8370
+
+2019-10-11: Improve wording of advanced pref for dragging
+tabbar in minimal
+
+2019-10-11: Fix an insanity where -tabviewWidth returned the
+tabbar width if it was on the left. This happened to work
+because it was only called differently depending on its
+internal checks. yikes
+
+2019-10-11: Relax limits on left-side tabbar width so that
+when you create a new window we can make sure the initial
+session has the right number of columns. Issue 8365
+
+2019-10-11: Move selection-related settings from Pointer to
+General>Selection. Issue 8364
+
+2019-10-10: Use tag: operator when selecting a tag in the
+profile list. Issue 8348
+
+2019-10-10: Improve quoting of username to avoid escaping
+spaces. Issue 8360
+
+2019-10-09: Save/restore tags table in profile toolbelt.
+Issue 8348
+
+2019-10-09: Fix background color of tags view
+
+2019-10-08: 3.3.7beta1
+
+2019-10-08: Do not send server-controlled values in tmux
+integration mode.
+
+CVE-2019-9535
+
+- Use session number everywhere rather than session name -
+Do not poll tmux for the set-titles-string, status-left, and
+status-right and
+  then request the values of the returned format strings.
+  Use ${T:} eval instead. These features are now only
+  available for tmux 2.9 and later.
+- Hex-encode options saved in the tmux server to make them
+unexploitable (e.g.,
+  hotkeys, window affinities, window origins, etc.). The old
+  values are accepted as inputs but will never be produced
+  as output.
+
+2019-10-08: Disable hardened runtime in dev builds
+
+2019-10-08: Disable git push
+
+2019-10-08: Add some entitlements to the hardened runtime
+for issue 8345
+
+2019-10-08: Add notarization to release_stable
+
+2019-10-07: Close all possible open file descriptors when
+starting a coprocess
+
+2019-10-07: Don't send text when selecting from history in
+composer
+
+2019-10-07: Another unneeded import
+
+2019-10-07: Another unused header
+
+2019-10-07: Moved PSMTabBarControl import from
+iTermPreferences header to its implementation
+
+2019-10-07: Removed unused imports
+
+2019-10-07: Clear composer combobox after sending text.
+Issue 8346
+
 2019-10-03: There was a bug that when the profile name
 changes the autoName got copied into the autoNameFormat if
 there was an icon title. That caused a problem because the
