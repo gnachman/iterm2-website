@@ -229,13 +229,14 @@
 </table>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print a message to stdout when there&#39;s a new prompt in any session</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="c1"># Print a message to stdout when there&#39;s a new prompt in any session</span>
 <span class="n">async</span> <span class="k">def</span> <span class="nf">my_task</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
     <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
         <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
         <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Prompt detected&quot;</span><span class="p">)</span>
 
-<span class="n">await</span> <span class="n">EachSessionOnceMonitor</span><span class="o">.</span><span class="n">async_foreach_session_create_task</span><span class="p">(</span><span class="n">my_task</span><span class="p">)</span>
+<span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">EachSessionOnceMonitor</span><span class="o">.</span><span class="n">async_foreach_session_create_task</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">my_task</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
