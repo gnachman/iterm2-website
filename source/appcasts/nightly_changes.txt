@@ -1,3 +1,31 @@
+2019-10-12: Disable quicklook if it's disabled systemwide.
+Issue 8384.
+
+Discovered by doing this while toggling the setting:
+  log stream --level=debug | grep "wrote the key"
+
+2019-10-12: Fix padding of broken pipe message
+
+2019-10-12: Fix a bug where setting the icon title when
+showing Profile + Session name caused the profile name to go
+away. Issue 8380
+
+2019-10-12: Reverse the order in which the API helper
+activates app/window/tab/session because activating a tab
+has the side-effect of changing which session is active
+
+2019-10-12: Update tooltip for brighten bold
+
+2019-10-12: Separate 'use custom bold color' from 'brighten
+bold colors', which previously were confusingly grouped into
+a single setting. The new Brighten feature only affects ANSI
+colors 1-8 and does not affect the default color (since it's
+not obvious whether lightening or darkening would actually
+be appropriate, and the custom bold color covers that case).
+Issue 8371
+
+2019-10-12: [python] Add stty example
+
 2019-10-11: Add advanced pref to disable tabbar tooltips.
 Issue 8370
 
