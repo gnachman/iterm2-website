@@ -1,5 +1,9 @@
-2019-10-12: Disable quicklook if it's disabled systemwide.
-Issue 8384.
+2019-10-14: Add nix support to Makefile
+
+Sets the derivedDataPath to the current directory so that
+Nix has permission to store intermediate build artefacts.
+Fixes code signing as well. (#407) 2019-10-12: Disable
+quicklook if it's disabled systemwide. Issue 8384.
 
 Discovered by doing this while toggling the setting:
   log stream --level=debug | grep "wrote the key"
