@@ -2,7 +2,7 @@ Session titles are highly configurable. There are several concepts to understand
 
 ### Session Title
 
-This is the label that is shown in split pane title bars (if present). By default the *session title* is also the tab title. You can override this default, which will be discussed later.
+This is the label that is shown in split pane title bars (if present). By default the *session title* is also the tab title. You can override this default with **Window > Edit Tab Title**.
 
 The session title may be composed of one or more built-in elements. Alternately, it may be provided by a Python script using the <a href="/python-api/registration.html#iterm2.registration.TitleProviderRPC">Session Title Provider</a> facility.
 
