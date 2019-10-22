@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Set Tab Color from Current App &#8212; iTerm2 Python API 0.26 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  </head><body>
+  <header >
+    <div class="row">
+      <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="text-center"><a href="/index.html"><img src="https://iterm2.com/img/logo2x.jpg" width=800 height=312></a></div>
+        <div class="sticky contain-to-grid">
+          <nav class="top-bar" data-topbar>
+            <ul class="title-area">
+              <li class="name">
+
+              </li>
+              <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+              <li class="small-screen-donate">
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+            </ul>
+
+            <section class="top-bar-section">
+              <!-- Right Nav Section -->
+              <ul class="right"> <li>
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li><a href="/index.html">Home</a></li>
+            <li ><a href="/news.html">News</a></li>
+            <li ><a href="/features.html">Features</a></li>
+            <li ><a href="/faq.html">FAQ</a></li>
+            <li class="active"><a href="/documentation.html">Documentation</a></li>
+            <li ><a href="/downloads.html">Downloads</a></li>
+          </ul>
+        </section>
+      </nav>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+    <div class="document">
+<div class="row">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
+
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
+            </div>
+
+            <hr/>
+
+      <div class="documentwrapper">
+	<div class="bodywrapper">
+	  <div class="body" role="main">
+	    
+  <div class="section" id="set-tab-color-from-current-app">
+<span id="app-tab-color-example"></span><h1>Set Tab Color from Current App<a class="headerlink" href="#set-tab-color-from-current-app" title="Permalink to this headline">¶</a></h1>
+<p>This script sets the tab color based on the current app.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;vi&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="s2">&quot;emacs&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">}</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">SetTabColor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+    <span class="n">change</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">LocalWriteOnlyProfile</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">color</span><span class="p">:</span>
+        <span class="n">change</span><span class="o">.</span><span class="n">set_tab_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">change</span><span class="o">.</span><span class="n">set_use_tab_color</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">change</span><span class="o">.</span><span class="n">set_use_tab_color</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_set_profile_properties</span><span class="p">(</span><span class="n">change</span><span class="p">)</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">UpdateTabColor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">r</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">command</span><span class="p">]</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">await</span> <span class="n">SetTabColor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">monitor</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run for each session, including existing sessions. Watches for</span>
+<span class="sd">        changes to the running commands.&quot;&quot;&quot;</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">session</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">alert_task</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">modes</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="o">.</span><span class="n">Mode</span><span class="o">.</span><span class="n">COMMAND_END</span><span class="p">,</span>
+                 <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="o">.</span><span class="n">Mode</span><span class="o">.</span><span class="n">COMMAND_START</span><span class="p">]</span>
+        <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="p">(</span>
+                <span class="n">connection</span><span class="p">,</span> <span class="n">session_id</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="n">modes</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="n">mode</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="o">.</span><span class="n">Mode</span><span class="o">.</span><span class="n">COMMAND_START</span><span class="p">:</span>
+                    <span class="n">prompt</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_last_prompt</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span>
+                    <span class="n">await</span> <span class="n">UpdateTabColor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">prompt</span><span class="o">.</span><span class="n">command</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">await</span> <span class="n">SetTabColor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">EachSessionOnceMonitor</span><span class="o">.</span><span class="n">async_foreach_session_create_task</span><span class="p">(</span>
+            <span class="n">app</span><span class="p">,</span> <span class="n">monitor</span><span class="p">)</span>
+
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference download internal" download="" href="../_downloads/50d6b66a187dfb0545a2fe35b908ee55/app_tab_color.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+</div>
+
+
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script type="text/javascript">
+  function showId(id) {
+    document.getElementById("changelist" + id).style.display = 'block';
+    document.getElementById("show" + id).style.display = 'none';
+    document.getElementById("hide" + id).style.display = 'inline';
+  }
+
+  function hideId(id) {
+    document.getElementById("changelist" + id).style.display = 'none';
+    document.getElementById("show" + id).style.display = 'inline';
+    document.getElementById("hide" + id).style.display = 'none';
+  }
+  $(document).foundation();
+</script>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, George Nachman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="../_sources/examples/app_tab_color.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
