@@ -1,59 +1,53 @@
-iTerm2 version 3.3.7beta1
-
-This build fixes a serious security issue. All
-users should upgrade.
-
-The Mozilla Foundation has generously sponsored a
-security audit of the iTerm2 source code. As part
-of this audit, a problem was discovered which
-could cause iTerm2 to issue commands in response
-to receiving certain input. This is a serious
-security issue because in some circumstances it
-could allow an attacker to execute commands on
-your machine when you view a file or otherwise
-receive input they have crafted in iTerm2.
-
-This issue has been assigned CVE-2019-9535.
-
-For more information, please visit the
-iterm2-discuss group.
-
-https://groups.google.com/forum/#!forum/iterm2-discuss
+iTerm2 version 3.3.7beta2
 
 Improvements
-- Visual improvements to minimal and compact
-  themes' titlebar.
-- Make overlay scrollbars dark in dark theme with
-  light terminal background so they're more
-  visible.
-- Various UI improvements to the Composer status
-  bar component.
+- Remember whether "tags" view of profile list is
+  expanded in toolbelt.
+- Move selection-related settings into General >
+  Selection.
+- Add advanced pref to disable tabbar tooltips.
+- Separate 'use custom bold color' from 'brighten
+  bold colors', which previously were confusingly
+  grouped into a single setting.
+- Set pixel size in TTY.
+- Don't show a warning when modifying a session's
+  copy of its profile, when that profile is backed
+  by a dynamic profile.
+- When prefs from a remote location fail to load
+  offer to reveal the responsible preference.
 
 Bug Fixes
-- Fix a bug where you couldn't import an .its file
-  requiring the latest runtime version.
-- Fix a bug where exporting an autolaunch script
-  wouldn't work if there was a symlink in the
-  path.
-- Fix the frame of the hotkey window when there's
-  another terminal window in lion fullscreen on a
-  different desktop.
-- Fix a bug where three-finger drag was broken.
-- Prevent very wide/tall images from disappearing.
-- Make the color picker remember hue and
-  saturation when the color passes through pure
-  black or white.
-- Don't get confused about the working directory
-  when only a subset of the shell integration
-  control sequences are used.
-- Fix a bug where changing the badge and the title
-  in quick succession would only affect the badge.
-- Ensure all file descriptors are closed when
-  launching a coprocess (before only 0-255 were
-  closed).
-- Fixes a crash-on-launch problem for some users
-  in corporate environments.
-
-Scripting
-- Add Session.async_get_contents
-
+- Fix drawing of "tags" view of profile list.
+- When selecting a tag from the "tags" view, use
+  the tag: operator to restrict the search term to
+  tags.
+- Fix bug where users with spaces in their names
+  couldn't log in.
+- Fix a bug where windows with a left-side tab bar
+  had the wrong number of columns when first
+  created.
+- Fix a bug where activating a session via API in
+  an inactive tab would activate the wrong session
+  in that tab.
+- Fix a bug where setting the icon title when
+  showing Profile + Session name caused the
+  profile name to go away.
+- Fix padding of "broken pipe" message.
+- Disable quicklook if it's disabled systemwide.
+- Fix bugs in updating session list in tmux
+  dashboard.
+- Fix a bug where window buttons were hidden when
+  entering native full screen.
+- Disable selection scroll if it begins in the
+  mutable area while reporting mouse clicks.
+- Fix a bug where option-clicking the zoom button
+  after exiting full screen doesn't zoom.
+- Fix a bug where selection by dragging three
+  fingers selects too much text.
+- Fix imgcat in Catalina.
+- Fix dragging folders to iTerm2 icon.
+- Remove a brittle performance hack for scroll
+  views that may have been causing crashes.
+- Fix a bug when changing tabs while selecting
+  text causing future selections to be wrong.
+- Fix a few crashes.
