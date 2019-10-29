@@ -1,3 +1,71 @@
+2019-10-27: Add a few small optimizations to the Metal
+renderer
+
+2019-10-27: Track clean lines so DVR can avoid trying to
+make a diff frame when it's significantly different. Do
+diffs line-by-line using only the 'clean' flag rather than
+byte-by-byte comparison to reduce time spent building diff
+frames. Saves about 4.5% of mainthread time for the spam.cc
+benchmark
+
+2019-10-27: Enable a layer on iTermRootTerminalView when
+using Metal. Seems to save about 10% of total time in
+CATransaction::commit()
+
+2019-10-27: Revert "Change SolidColorView to use layers on
+10.14+"
+
+This reverts commit
+2f6c31de442c511b5d42730870ae4fb389927011.
+
+2019-10-27: Change SolidColorView to use layers on 10.14+
+
+2019-10-26: Add fast path for selectedIndexesOnLine when
+there are no selections
+
+2019-10-26: Prevent overflow for big OSC or CSI parameter
+
+2019-10-26: Break the 'ever used shell integration' test
+into two parts since some people have triggers or scripts
+that set the pwd or the prompt mark only. Issue 8390
+
+2019-10-26: Make toolbelt dark in minimal theme + dark
+background. Issue 8259
+
+2019-10-26: Fix escaping of commands run with smart
+selection action 'run command in window'. Issue 8424
+
+2019-10-26: Add Edit Account Name and Edit User Name to
+password manager context menu. Issue 8420
+
+2019-10-26: Add 'requires tmux 2.9 or later' note to tmux
+status bar config setting
+
+2019-10-24: Add option to not convert italics to reverse
+video in tmux integration.
+
+2019-10-24: Invalidate outstanding working directory polls
+when you get CurrentDir=. Issue 8418
+
+2019-10-24: Password manager improvements.
+
+- Add support for user names - ARCify - Remove 10.11 cruft
+
+2019-10-23: Update unicode width tables for Unicode 12.
+Issue 6337.
+
+2019-10-23: Convert double-backslash in double quotes to a
+single backslash when parsing command lines. Before, it was
+left as a double-backslash. Also change how manpage commands
+from touchbar are escaped. Issue 8414.
+
+2019-10-22: 3.3.7beta2
+
+2019-10-22: 3.3.7beta2
+
+2019-10-22: Add option to reveal remote prefs setting when
+it fails to load. Issue 6826
+
 2019-10-21: Ensure endx is always less than width. Fixes a
 fairly common crash in 3.3.6.
 
