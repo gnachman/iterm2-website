@@ -17,8 +17,8 @@
 
 # Prevent the script from running twice.
 if ( ! ($?iterm2_shell_integration_installed)) then
-  # Make sure this is a login shell.
-  if ( $?loginsh) then
+  # Make sure this is an interactive shell.
+  if ($?prompt) then
 
     # Define aliases for the start and end of OSC escape codes used by shell integration.
     if ( ! ($?ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX)) then
@@ -51,7 +51,7 @@ if ( ! ($?iterm2_shell_integration_installed)) then
       alias _iterm2_current_dir "(_iterm2_start; _iterm2_print_current_dir; _iterm2_end)"
 
       # Define aliases for printing the shell integration version this script is written against
-      alias _iterm2_print_shell_integration_version 'printf "1337;ShellIntegrationVersion=4;shell=tcsh"'
+      alias _iterm2_print_shell_integration_version 'printf "1337;ShellIntegrationVersion=5;shell=tcsh"'
       alias _iterm2_shell_integration_version "(_iterm2_start; _iterm2_print_shell_integration_version; _iterm2_end)"
 
       # Define aliases for defining the boundary between a command prompt and the
