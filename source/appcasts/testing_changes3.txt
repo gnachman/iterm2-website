@@ -1,37 +1,46 @@
-iTerm2 version 3.3.7beta3
+iTerm2 version 3.3.7beta4
+
+New Features
+- Adds a preference to specify whether you want
+  each tab to control the window title
+  separately, or if all tabs in a window should
+  share a single window title. This affects window
+  title set by control sequences like OSC 2.
 
 Improvements
-- The toolbelt now uses a dark background in the
-  Minimal theme when the terminal window's
-  background is dark.
-- Add Unicode 12 width tables for emoji.
-- Password manager now has a column for user
-  names.
-- Add advanced pref to enable italic in tmux
-  integration. It uses the "screen" terminal where
-  the control sequence normally used for italics
-  instead does reverse video.
-- Add "Edit Account Name" and "Edit User Name" to
-  password manager context menu.
-- Various performance improvements.
-- Variable-size tmux windows are now pretty
-  usable. Try turning on Prefs>Advanced>Allow
-  variable window sizes in tmux integration.
+- Add support for 2-factor codes appended to
+  password in password manager.
+- When the window title is changed by a control
+  sequence, set the window title to exactly that
+  string.
+- Put a dot in the close button when there is an
+  active job running.
+- You can now drag the window using the New Tab +
+  button.
+- Performance improvements.
 
 Bug Fixes
-- Fix manpage viewer in touch bar.
-- If you use the CurrentDir control sequence
-  without the rest of shell integration, it will
-now work reliably.
-- Fix escaping of smart selection "run command in
-  window" commands.
-- Fix some integer overflow bugs.
-- In secure copy, keyboard-interactive and private
-  key passpharse input deadlocked. Fix it.
+- Preserve the selected weight when changing
+  typeface, when possible.
+- Respect the desired popover size for custom
+  status bar components. This fix may cause some
+  popovers to have different-sized popovers than
+  expected, and may require updating the script to
+  correct.
+- Fix a bug where Find Next would not navigate to
+  the very first word in history.
+- Fix a runaway CPU issue when initializing GPU
+  renderer.
+- Touch bar in full screen now shows correct tab
+  titles. Fixes a bug where they would get out of
+  sync with reality.
+- Fixes a bug where adding a new password in the
+  password manager could hang.
+- Fixes a bug introduced in the previous beta
+  where minimal-theme title bars were the wrong
+  color and window borders sometimes didn't appear.
 
 Scripting
-- Python 3.8.0 is now available. It requires
-  3.3.7beta3 or later, so keep that in mind when
-  distributing scripts.
-- Add support for delta updates of the Python
-  runtime.
+- Add Session.async_get_contents to docs.
+- Add Profile.async_get_default and
+  PartialProfile.async_get_default.
