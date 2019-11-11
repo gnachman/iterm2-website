@@ -1,3 +1,25 @@
+2019-11-10: Fix gray bar that appeared when in native full
+screen with one tab and no tab bar. Also appears when
+changing to minimal theme in native full screen. This
+happened because the style mask was not full-size content
+view. Issue 8257.
+
+Remove and re-add the tabbar titlebar accessory view when
+changing its height from 0 (one tab, hidden, minimal theme)
+to 38 (two tabs, visible tabbar, minimal theme) because
+otherwise the OS gets confused about how high it should be.
+
+Update the tab bar control's height when updating its style
+so that the transition from regular to minimal makes it
+grow. Outside full screen this happens as a side-effect of
+changing the window style or in -[iTermRootTerminalView
+layoutSubviews], but the former doesn't happen for obvious
+reasons and the latter because it doesn't consider itself
+the owner of the tabbar (it's on loan).
+
+2019-11-10: Don't set documentedEdited for child jobs named
+login or iTerm2. Issue 3139
+
 2019-11-09: Improve debug logging for hasNontrivialJob
 
 2019-11-09: Fix failing test
