@@ -50,10 +50,10 @@ OSC 1337 ; SetBadgeFormat=<i>Base-64 encoded badge format</i> ST
 
 Here's an example that works in bash:
 
-<pre style="white-space: pre">
+```
 # Set badge to show the current session name and git branch, if any is set.
 printf "\e]1337;SetBadgeFormat=%s\a" \
   $(echo -n "\(session.name) \(user.gitBranch)" | base64)
-</pre>
+```
 
 
