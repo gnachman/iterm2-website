@@ -1,3 +1,17 @@
+2019-11-13: Change how fake middle clicks are generated to
+be an OtherMouseDown rather than as LeftMouseDown with
+button=2. Tangentially related to issue 8481 because it
+makes it report the event properly.
+
+2019-11-13: Do not report left clicks with multiple fingers
+touching. This is how apple trackpads reports three finger
+clicks. See also issue 4652. Issue 8481
+
+2019-11-13: Prevent a crash when you can't get the position
+of the upload/download menu. It crashed because
+AXUIElementCopyAttributeValue set temp to NULL and then it
+was CFReleased.
+
 2019-11-12: Fix off-center traffic light buttons in native
 full screen in minimal theme. Issue 8478
 
