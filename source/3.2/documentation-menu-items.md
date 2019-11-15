@@ -1,5 +1,5 @@
 ---
-layout: subdoc
+layout: subdoc_old
 title: Menu Items - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Menu Items

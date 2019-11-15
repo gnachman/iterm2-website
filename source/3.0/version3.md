@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_old
 title: Version 3 - iTerm2 - macOS Terminal Replacement
 ---
 ## iTerm2 Version 3 Released
