@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>{{ page.title }}</title>
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="iTerm2 is a replacement for Terminal and the successor to iTerm">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/app.css" />
+
+  <script>
+    // Begin Google Analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-22363859-1', 'auto');
+    ga('send', 'pageview');
+    // End Google Analytics
+  </script>
+
+</head>
+<body>
+  <header>  
+    <div class="row">
+      <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="text-center"><a href="/index.html"><img src="/img/logo2x.jpg" width=800 height=312></a></div>
+        <div class="sticky contain-to-grid">
+          <nav class="top-bar" data-topbar>
+            <ul class="title-area">
+              <li class="name">
+
+              </li>
+              <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+              <li class="small-screen-donate">
+		  <a href="/donate.html"><img src="/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+            </ul>
+
+            <section class="top-bar-section">
+              <!-- Right Nav Section -->
+              <ul class="right">
+                <li>
+		  <a href="/donate.html"><img src="/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li {% if page.active-state == "index" %}class="active"{% endif %}><a href="/index.html">Home</a></li>
+            <li {% if page.active-state == "news" %}class="active"{% endif %}><a href="/news.html">News</a></li>
+            <li {% if page.active-state == "features" %}class="active"{% endif %}><a href="/features.html">Features</a></li>
+            <li {% if page.active-state == "faq" %}class="active"{% endif %}><a href="/faq.html">FAQ</a></li>
+            <li {% if page.active-state == "documentation" %}class="active"{% endif %}><a href="/documentation.html">Documentation</a></li>
+            <li {% if page.active-state == "downloads" %}class="active"{% endif %}><a href="/downloads.html">Downloads</a></li>
+          </ul>
+        </section>
+      </nav>
+    </div>
+  </div>
+</div>
+</header>
+<div class="row">
+  <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+    <div class="main panel">
+      <p><b>WARNING: This document is for an older version of iTerm2.</b></p>
+      {{ content }}
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="row">
+    <div class="small-12 medium-12 large-10 large-centered columns text-center">
+      <p>iTerm2 by George Nachman. Website by Matthew Freeman, George Nachman, and James A. Rosen.</p>
+      <p>Website updated and optimized by <a href="http://hexbrain.com" target="_blank">HexBrain</a></p>
+    </div>
+  </div>
+</footer>
+<script src="/js/scripts.js"></script>                
+<script type="text/javascript">
+  function showId(id) {
+    document.getElementById("changelist" + id).style.display = 'block';
+    document.getElementById("show" + id).style.display = 'none';
+    document.getElementById("hide" + id).style.display = 'inline';
+  }
+
+  function hideId(id) {
+    document.getElementById("changelist" + id).style.display = 'none';
+    document.getElementById("show" + id).style.display = 'inline';
+    document.getElementById("hide" + id).style.display = 'none';
+  }
+  $(document).foundation();
+</script>
+</body>
+</html>
