@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_old
 title: FAQ - iTerm2 - macOS Terminal Replacement
 active-state: faq
 ---
