@@ -1,3 +1,41 @@
+2019-11-16: Refactor killing of tasks to hide monoserver
+details
+
+2019-11-16: Eliminate pidIsChild
+
+2019-11-16: Reduce uses of childPid and serverChildPid
+
+2019-11-16: Don't pass fork state around where it isn't
+needed by the caller
+
+2019-11-16: Combine forkAndExec with didForkAndExec
+
+2019-11-16: Improve error reporting for fork and exec to
+simplify callsite and eventually combine forking with
+post-forking calls
+
+2019-11-16: Move fork and exec into job manager
+
+2019-11-16: Refactor fork and exec code to prep for moving
+it into the job manager
+
+2019-11-16: Replace finishLaunchingDirectChild with
+didForkParent
+
+2019-11-16: Fix a bug where didForkParent didn't call the
+completion block when using monoserver and PTYTask
+attachToServer: was not defined
+
+2019-11-16: Begin adding legacy job manager
+
+2019-11-16: Start moving session restoration functionality
+from PTYTask to iTermMonoServerJobManager
+
+2019-11-16: Simplify iTermTask interface a little to hide
+the existence of session restoration
+
+2019-11-16: Break the dependency of TaskNotifier on PTYTask.
+
 2019-11-14: Convert NSAssert to beta asserts sampled at 1%.
 NSAssert gets compiled out, so I shouldn't have been using
 it.
