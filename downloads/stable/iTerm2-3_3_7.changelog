@@ -1,0 +1,123 @@
+iTerm2 version 3.3.8
+
+New Features
+- Adds a preference to specify whether you want
+  each tab to control the window title
+  separately, or if all tabs in a window should
+  share a single window title. This affects window
+  title set by control sequences like OSC 2.
+- Separate 'use custom bold color' from 'brighten
+  bold colors', which previously were confusingly
+  grouped into a single setting.
+- Password manager now has a column for user
+  names.
+- Add support for 2-factor codes appended to
+  password in password manager.
+
+Improvements
+- Various performance improvements.
+- When the window title is changed by a control
+  sequence, set the window title to exactly that
+  string.
+- Remember whether "tags" view of profile list is
+  expanded in toolbelt.
+- Move selection-related settings into General >
+  Selection.
+- Add advanced pref to disable tabbar tooltips.
+- Set pixel size in TTY.
+- Don't show a warning when modifying a session's
+  copy of its profile when that profile is backed
+  by a dynamic profile.
+- When prefs from a remote location fail to load,
+  offer to reveal the responsible preference.
+- The toolbelt now uses a dark background in the
+  Minimal theme when the terminal window's
+  background is dark.
+- Add Unicode 12 width tables for emoji.
+- Add "Edit Account Name" and "Edit User Name" to
+  password manager context menu.
+- Variable-size tmux windows are now pretty
+  usable. Try turning on Prefs>Advanced>Allow
+  variable window sizes in tmux integration.
+- Put a dot in the close button when there is an
+  active job running.
+- You can now drag the window using the New Tab +
+  button.
+- When selecting a tag from the "tags" view, use
+  the tag: operator to restrict the search term to
+  tags.
+- Add advanced pref to enable italic in tmux
+  integration. It uses the "screen" terminal where
+  the control sequence normally used for italics
+  instead does reverse video.
+
+Bug Fixes
+- Disable quicklook if it's disabled systemwide.
+- Fix drawing of "tags" view of profile list.
+- Fix bug where users with spaces in their names
+  couldn't log in.
+- Fix a bug where windows with a left-side tab bar
+  had the wrong number of columns when first
+  created.
+- Fix a bug where activating a session via API in
+  an inactive tab would activate the wrong session
+  in that tab.
+- Fix a bug where setting the icon title when
+  showing Profile + Session name caused the
+  profile name to go away.
+- Fix padding of "broken pipe" message.
+- Fix bugs in updating session list in tmux
+  dashboard.
+- Fix a bug where window buttons were hidden when
+  entering native full screen.
+- Disable selection scroll if it begins in the
+  mutable area while reporting mouse clicks.
+- Fix a bug where option-clicking the zoom button
+  after exiting full screen doesn't zoom.
+- Fix a bug where selection by dragging three
+  fingers selects too much text.
+- Fix imgcat in Catalina.
+- Fix dragging folders to iTerm2 icon.
+- Remove a brittle performance hack for scroll
+  views that may have been causing crashes.
+- Fix a bug when changing tabs while selecting
+  text causing future selections to be wrong.
+- Fix a few crashes.
+- Fix manpage viewer in touch bar.
+- If you use the CurrentDir control sequence
+  without the rest of shell integration, it will
+  now work reliably.
+- Fix escaping of smart selection "run command in
+  window" commands.
+- Fix some integer overflow bugs.
+- In secure copy, keyboard-interactive and private
+  key passpharse input deadlocked. Fix it.
+- Preserve the selected weight when changing
+  typeface, when possible.
+- Respect the desired popover size for custom
+  status bar components. This fix may cause some
+  popovers to have different-sized popovers than
+  expected, and may require updating the script to
+  correct.
+- Fix a bug where Find Next would not navigate to
+  the very first word in history.
+- Fix a runaway CPU issue when initializing GPU
+  renderer.
+- Touch bar in full screen now shows correct tab
+  titles. Fixes a bug where they would get out of
+  sync with reality.
+- Fixes a bug where adding a new password in the
+  password manager could hang.
+
+Scripting
+- Python 3.8.0 is now available. It requires
+  3.3.7beta3 or later, so keep that in mind when
+  distributing scripts.
+- Add support for delta updates of the Python
+  runtime.
+- Add Session.async_get_contents to docs.
+- Add Profile.async_get_default and
+  PartialProfile.async_get_default.
+
+SHA-256 of the zip file is
+a993e66119b8ddf97e6b50a03a8aa6fbf3954f66a3f896a7503876c06702e724
