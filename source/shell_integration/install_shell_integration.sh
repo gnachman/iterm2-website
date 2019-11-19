@@ -25,6 +25,7 @@ SHELL=${SHELL##*/}
 URL=""
 HOME_PREFIX='${HOME}'
 SHELL_AND='&&'
+SHELL_OR='||'
 QUOTE=''
 if [ "${SHELL}" = tcsh ]
 then
@@ -54,6 +55,7 @@ then
   SCRIPT="${HOME}/.config/fish/config.fish"
   HOME_PREFIX='{$HOME}'
   SHELL_AND='; and'
+  SHELL_OR='; or'
 fi
 if [ "${URL}" = "" ]
 then
@@ -71,7 +73,7 @@ if ! grep iterm2_shell_integration "${SCRIPT}" > /dev/null 2>&1; then
 	echo "Appending source command to ${SCRIPT}..."
 	cat <<-EOF >> "${SCRIPT}"
 
-	test -e ${QUOTE}${RELATIVE_FILENAME}${QUOTE} ${SHELL_AND} source ${QUOTE}${RELATIVE_FILENAME}${QUOTE}
+	test -e ${QUOTE}${RELATIVE_FILENAME}${QUOTE} ${SHELL_AND} source ${QUOTE}${RELATIVE_FILENAME}${QUOTE} ${SHELL_OR} true
 
 EOF
 fi
