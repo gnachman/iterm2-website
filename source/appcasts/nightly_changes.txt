@@ -1,3 +1,34 @@
+2019-11-21: Don't show document edited if session has custom
+command. Issue 8507
+
+2019-11-21: Fix typo. Issue 8500
+
+2019-11-21: Initialize _textEditingRow. Fixes a bug where
+editing the regex of any row but the first and then stopping
+editing *without making changes* caused the first row to
+change.
+
+This happens because controlTextDidBeginEditing doesn't get
+called if the user doesn't actually make an edit but
+controlTextDidEndEditing is always called. To Apple's
+credit, the docs for controlTextDidEndEditing mention this.
+Plus one point for good docs, minus one million points for
+an API that has been broken long enough to go to war and
+vote.
+
+2019-11-21: Update the current window after swapping tab
+order in tmux integration. Issue 8488
+
+2019-11-21: Don't translate from screen terminal in tmux
+integration if default-terminal server option is set to
+something not including the substring 'screen'. Issue 8203
+
+2019-11-21: Use dispatch_source to know right away when a
+process is created or destroyed. Disabled by default because
+it needs optimization - it is monitoring a lot of processes,
+and I think it could do less work and just monitor those on
+the path to the current foreground job.
+
 2019-11-21: Replace the long-deprecated CFBundleTypeOSTypes
 with LSItemContentTypes for folders. Issue 8392
 
