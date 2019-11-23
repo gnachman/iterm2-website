@@ -82,8 +82,144 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="registration">
-<h1>Registration<a class="headerlink" href="#registration" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-iterm2.registration">
+<span id="registration"></span><h1>Registration<a class="headerlink" href="#module-iterm2.registration" title="Permalink to this headline">¶</a></h1>
+<p>Defines interfaces for registering functions.</p>
+<dl class="function">
+<dt id="iterm2.registration.RPC">
+<code class="descname">RPC</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.registration.RPC" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator that adds an <cite>async_register</cite> value to the coroutine it decorates. <cite>async_register</cite> is a coroutine that will register the function as an RPC.</p>
+<p>An RPC is a function in a script that iTerm2 can invoke in response to some action, such a a keypress or a trigger. You use this decorator to register a coroutine as an RPC.</p>
+<p>Every RPC must have a unique signature. The signature is composed of two parts: first, the name, which comes from the name of the coroutine being decorated; second, the names of its arguments. The order of arguments is not important.</p>
+<p>The decorated coroutine will have a <cite>async_register</cite> value that you must call to complete the registration. <cite>async_register</cite> takes one required argument, the <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>. It also takes one optional argument, which is a timeout. The <cite>timeout</cite> is a value in seconds. If not given, the default timeout will be used. When waiting for an RPC to return, iTerm2 will stop waiting for the RPC after the timeout elapses.</p>
+<p>Do not use default values for arguments in your decorated coroutine, with one exception: a special kind of default value of type <a class="reference internal" href="#iterm2.Reference" title="iterm2.Reference"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.Reference</span></code></a>. It names a variable that is visible in the context of the invocation. It will be transformed to the current value of that variable. This is the only way to get information about the current context. For example, a value of <cite>iterm2.Reference(“id”)</cite> will give you the session ID of the context where the RPC was invoked. If the RPC is run from a keyboard shortcut, that is the ID of the session that had keyboard focus at the time of invocation.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li>Example “<a class="reference internal" href="examples/badgetitle.html#badgetitle-example"><span class="std std-ref">Badge or Window Name in Tab Title</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/blending.html#blending-example"><span class="std std-ref">Modify Background Image Blending</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/close_to_the_right.html#close-to-the-right-example"><span class="std std-ref">Close Tabs to the Right</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/cls.html#cls-example"><span class="std std-ref">Clear All Sessions (all tabs or current tab)</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/jsonpretty.html#jsonpretty-example"><span class="std std-ref">JSON Pretty Printer Status Bar Component</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/movetab.html#movetab-example"><span class="std std-ref">Move Tab To Next/Previous Window</span></a>”</li>
+</ul>
+</div>
+<p>That’s complicated, but an example will make it clearer:</p>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+<span class="nd">@iterm2.RPC</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">split_current_session_n_times</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">),</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_split_pane</span><span class="p">()</span>
+
+<span class="c1"># Remember to call async_register!</span>
+<span class="n">await</span> <span class="n">split_current_session_n_times</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="iterm2.registration.TitleProviderRPC">
+<code class="descname">TitleProviderRPC</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.registration.TitleProviderRPC" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator that prepares a function for registration as a session title provider. Similar to <a class="reference internal" href="#iterm2.registration.RPC" title="iterm2.registration.RPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPC()</span></code></a>.</p>
+<p>A session title provider is a function that gets called to compute the title of a session. It may be called frequently, whenever the session title is deemed to need recomputation. Once registered, it appears as an option in the list of title settings in preferences.</p>
+<p>It is called when any of its inputs change. This will only happen if one or more of the inputs are <code class="xref py py-func docutils literal notranslate"><span class="pre">Reference()</span></code> references to variables in the session context.</p>
+<p>It must return a string.</p>
+<p>Note that the <cite>async_register</cite> function is different than in the <a class="reference internal" href="#iterm2.registration.RPC" title="iterm2.registration.RPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPC()</span></code></a> decorator: it takes three arguments. The first is the <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>. The second is a “display name”, which is the string to show in preferences that the user may select to use this title provider. The third is a string identifier, which must be unique among all title providers. The identifier should be a reverse DNS name, like <cite>com.example.my-title-provider</cite>. As long as the identifier remains the same from one version to the next, the display name and function signature may change.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Example “<a class="reference internal" href="examples/georges_title.html#georges-title-example"><span class="std std-ref">George’s Title Algorithm</span></a>”</p>
+</div>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@iterm2.TitleProviderRPC</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">upper_case_title</span><span class="p">(</span><span class="n">auto_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;autoName?&quot;</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">auto_name</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">auto_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+<span class="c1"># Remember to call async_register!</span>
+<span class="n">await</span> <span class="n">upper_case_title</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span>
+        <span class="n">connection</span><span class="p">,</span>
+        <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;Upper-case Title&quot;</span><span class="p">,</span>
+        <span class="n">unique_identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.title-provider&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="iterm2.registration.StatusBarRPC">
+<code class="descname">StatusBarRPC</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.registration.StatusBarRPC" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator (like <a class="reference internal" href="#iterm2.registration.RPC" title="iterm2.registration.RPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPC()</span></code></a>) that registers a custom status bar component.</p>
+<p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">StatusBarComponent</span></code> for details on what a status bar component is.</p>
+<p>The coroutine is called when any of its inputs change. This will only happen if one or more of the inputs are <code class="xref py py-func docutils literal notranslate"><span class="pre">Reference()</span></code> references to variables in the session context.</p>
+<p>The coroutine <em>must</em> take an argument named <cite>knobs</cite> that will contain a dictionary with configuration settings.</p>
+<p>It may return a string or an array of strings. In the case that it returns an array, the longest string fitting the available space will be used.</p>
+<p>Note that unlike the other RPC decorators, you use <code class="xref py py-meth docutils literal notranslate"><span class="pre">async_register()</span></code> to register it, rather than a register property added to the coroutine.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li>Example “<a class="reference internal" href="examples/escindicator.html#escindicator-example"><span class="std std-ref">Escape Key Indicator</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/jsonpretty.html#jsonpretty-example"><span class="std std-ref">JSON Pretty Printer Status Bar Component</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/mousemode.html#mousemode-example"><span class="std std-ref">Status Bar Component: Mouse Mode</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/statusbar.html#statusbar-example"><span class="std std-ref">Status Bar Component</span></a>”</li>
+</ul>
+</div>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
+    <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;Session ID&quot;</span><span class="p">,</span>
+    <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Show the session&#39;s identifier&quot;</span><span class="p">,</span>
+    <span class="n">knobs</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;[session ID]&quot;</span><span class="p">,</span>
+    <span class="n">update_cadence</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.statusbar-rpc&quot;</span><span class="p">)</span>
+
+<span class="nd">@iterm2.StatusBarRPC</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">session_id_status_bar_coro</span><span class="p">(</span>
+        <span class="n">knobs</span><span class="p">,</span>
+        <span class="n">session_id</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)):</span>
+    <span class="c1"># This status bar component shows the current session ID, which</span>
+    <span class="c1"># is useful for debugging scripts.</span>
+    <span class="k">return</span> <span class="n">session_id</span>
+
+<span class="nd">@iterm2.RPC</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">my_status_bar_click_handler</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+    <span class="c1"># When you click the status bar it opens a popover with the</span>
+    <span class="c1"># message &quot;Hello World&quot;</span>
+    <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_open_popover</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="p">,</span>
+            <span class="s2">&quot;Hello world&quot;</span><span class="p">,</span>
+            <span class="n">iterm2</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+
+<span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span>
+        <span class="n">connection</span><span class="p">,</span>
+        <span class="n">session_id_status_bar_coro</span><span class="p">,</span>
+        <span class="n">onclick</span><span class="o">=</span><span class="n">my_status_bar_click_handler</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.Reference">
+<em class="property">class </em><code class="descname">Reference</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Reference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines a reference to a variable for use in the &#64;RPC decorator.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="#iterm2.registration.RPC" title="iterm2.registration.RPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPC()</span></code></a>.</li>
+<li>Example “<a class="reference internal" href="examples/mousemode.html#mousemode-example"><span class="std std-ref">Status Bar Component: Mouse Mode</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/statusbar.html#statusbar-example"><span class="std std-ref">Status Bar Component</span></a>”</li>
+</ul>
+</div>
+</dd></dl>
+
 <hr class="docutils" />
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>

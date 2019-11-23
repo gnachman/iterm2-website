@@ -82,8 +82,270 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="app">
-<h1>App<a class="headerlink" href="#app" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-iterm2.app">
+<span id="app"></span><h1>App<a class="headerlink" href="#module-iterm2.app" title="Permalink to this headline">¶</a></h1>
+<p>Provides access to application-level structures.</p>
+<p>This module is the starting point for getting access to windows and other application-global data.</p>
+<dl class="function">
+<dt id="iterm2.async_get_app">
+<code class="descname">async_get_app</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>create_if_needed: bool = True</em><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.app.App]<a class="headerlink" href="#iterm2.async_get_app" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the app singleton, creating it if needed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</li>
+<li><strong>create_if_needed</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, create the global <a class="reference internal" href="#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a> instance if one does not already exists. If <cite>False</cite>, do not create it.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The global <a class="reference internal" href="#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a> instance. If <cite>create_if_needed</cite> is False this may return <cite>None</cite> if no such instance exists.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="iterm2.async_invoke_function">
+<code class="descname">async_invoke_function</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>invocation: str</em>, <em>timeout: float = -1</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_invoke_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoke an RPC. Could be a registered function by this or another script of a built-in function.</p>
+<p>This invokes the RPC in the global application context. Note that most user-defined RPCs expect to be invoked in the context of a session. Default variables will be pulled from that scope. If you call a function from the wrong context it may fail because its defaults will not be set properly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>invocation</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A function invocation string.</li>
+<li><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – Max number of secondsto wait. Negative values mean to use the system default timeout.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the invocation if successful.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.App">
+<em class="property">class </em><code class="descname">App</code><span class="sig-paren">(</span><em>connection</em>, <em>windows</em>, <em>buried_sessions</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.App" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents the application.</p>
+<p>Stores and provides access to app-global state. Holds a collection of
+terminal windows and provides utilities for them.</p>
+<p>This object keeps itself up to date by getting notifications when sessions,
+tabs, or windows change.</p>
+<dl class="method">
+<dt id="iterm2.App.async_activate">
+<code class="descname">async_activate</code><span class="sig-paren">(</span><em>raise_all_windows: bool = True</em>, <em>ignoring_other_apps: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.App.async_activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Activate the app, giving it keyboard focus.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>raise_all_windows</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Raise all windows if True, or only the key
+window. Defaults to True.</li>
+<li><strong>ignoring_other_apps</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If True, activate even if the user
+interacts with another app after the call.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.App.async_get_theme">
+<code class="descname">async_get_theme</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[str]<a class="headerlink" href="#iterm2.App.async_get_theme" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets attributes the current theme.</p>
+<p>The automatic and minimal themes will always include “dark” or “light”.</p>
+<p>On macOS 10.14, the light or dark attribute may be inferred from the system setting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of one or more strings from the set: light, dark, automatic, minimal, highContrast.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.App.async_get_variable">
+<code class="descname">async_get_variable</code><span class="sig-paren">(</span><em>name: str</em><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#iterm2.App.async_get_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches the value of a variable from the global context.</p>
+<p>See <a class="reference external" href="https://iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a> for details on variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The variable’s name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The variable’s value or empty string if it is undefined.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.App.async_set_variable">
+<code class="descname">async_set_variable</code><span class="sig-paren">(</span><em>name: str</em>, <em>value: Any</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.App.async_set_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a user-defined variable in the application.</p>
+<p>See the Scripting Fundamentals documentation for more information on user-defined variables.
+:type name: <code class="docutils literal notranslate"><span class="pre">str</span></code>
+:param name: The variable’s name. Must begin with <cite>user.</cite>.
+:param value: The new value to assign.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.App.broadcast_domains">
+<code class="descname">broadcast_domains</code><a class="headerlink" href="#iterm2.App.broadcast_domains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current broadcast domains.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li>Example “<a class="reference internal" href="examples/targeted_input.html#targeted-input-example"><span class="std std-ref">Targeted Input</span></a>”</li>
+<li>Example “<a class="reference internal" href="examples/enable_broadcasting.html#enable-broadcasting-example"><span class="std std-ref">Enable Broadcasting Input</span></a>”</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.App.buried_sessions">
+<code class="descname">buried_sessions</code><a class="headerlink" href="#iterm2.App.buried_sessions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of buried sessions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of buried <a class="reference internal" href="session.html#iterm2.Session" title="iterm2.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.App.current_terminal_window">
+<code class="descname">current_terminal_window</code><a class="headerlink" href="#iterm2.App.current_terminal_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated in favor of current_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.App.get_session_by_id">
+<code class="descname">get_session_by_id</code><span class="sig-paren">(</span><em>session_id: str</em><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.session.Session]<a class="headerlink" href="#iterm2.App.get_session_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds a session exactly matching the passed-in id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The session ID to search for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="session.html#iterm2.Session" title="iterm2.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> or <cite>None</cite>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.App.get_tab_by_id">
+<code class="descname">get_tab_by_id</code><span class="sig-paren">(</span><em>tab_id: str</em><span class="sig-paren">)</span> &#x2192; Optional[iterm2.tab.Tab]<a class="headerlink" href="#iterm2.App.get_tab_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds a tab exactly matching the passed-in id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tab_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The tab ID to search for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a> or <cite>None</cite>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.App.get_window_and_tab_for_session">
+<code class="descname">get_window_and_tab_for_session</code><span class="sig-paren">(</span><em>session: iterm2.session.Session</em><span class="sig-paren">)</span> &#x2192; Union[Tuple[None, None], Tuple[iterm2.window.Window, iterm2.tab.Tab]]<a class="headerlink" href="#iterm2.App.get_window_and_tab_for_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the tab and window that own a session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>session</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code>) – The session whose tab and window you wish to find.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A tuple of (<a class="reference internal" href="window.html#iterm2.Window" title="iterm2.Window"><code class="xref py py-class docutils literal notranslate"><span class="pre">Window</span></code></a>, <a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a>), or (<cite>None</cite>, <cite>None</cite>) if the session was not found.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.App.get_window_by_id">
+<code class="descname">get_window_by_id</code><span class="sig-paren">(</span><em>window_id: str</em><span class="sig-paren">)</span> &#x2192; Optional[iterm2.window.Window]<a class="headerlink" href="#iterm2.App.get_window_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds a window exactly matching the passed-in id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>window_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The window ID to search for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="window.html#iterm2.Window" title="iterm2.Window"><code class="xref py py-class docutils literal notranslate"><span class="pre">Window</span></code></a> or <cite>None</cite>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.App.get_window_for_tab">
+<code class="descname">get_window_for_tab</code><span class="sig-paren">(</span><em>tab_id: str</em><span class="sig-paren">)</span> &#x2192; Optional[iterm2.window.Window]<a class="headerlink" href="#iterm2.App.get_window_for_tab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the window that contains the passed-in tab id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tab_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The tab ID to search for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="window.html#iterm2.Window" title="iterm2.Window"><code class="xref py py-class docutils literal notranslate"><span class="pre">Window</span></code></a> or <cite>None</cite>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.App.pretty_str">
+<code class="descname">pretty_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.App.pretty_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the hierarchy as a human-readable string</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.App.terminal_windows">
+<code class="descname">terminal_windows</code><a class="headerlink" href="#iterm2.App.terminal_windows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated in favor of <cite>windows</cite></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.app.CreateWindowException">
+<em class="property">class </em><code class="descname">CreateWindowException</code><a class="headerlink" href="#iterm2.app.CreateWindowException" title="Permalink to this definition">¶</a></dt>
+<dd><p>A problem was encountered while creating a window.</p>
+</dd></dl>
+
 <hr class="docutils" />
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
