@@ -1,46 +1,60 @@
-iTerm2 version 3.3.7beta4
+iTerm2 version 3.3.8beta1
 
 New Features
-- Adds a preference to specify whether you want
-  each tab to control the window title
-  separately, or if all tabs in a window should
-  share a single window title. This affects window
-  title set by control sequences like OSC 2.
+- New status bar component that shows a menu of
+  Actions.
+- If you don't want to use the default shell and
+  use a custom command to launch your shell,
+  there's a new option called "custom shell" that
+  will launch it as a proper login shell.
+- Copy mode now supports W and B to move forward
+  or backward the way vim does with W and B.
 
 Improvements
-- Add support for 2-factor codes appended to
-  password in password manager.
-- When the window title is changed by a control
-  sequence, set the window title to exactly that
-  string.
-- Put a dot in the close button when there is an
-  active job running.
-- You can now drag the window using the New Tab +
-  button.
-- Performance improvements.
+- The Actions tool now allows multiple selection
+  and reordering.
+- Actions defined in the Actions tool now show up
+  in Open Quickly.
+- Speed up Open Quickly window animation.
+- Shortcuts in Open Quickly no longer require a
+  space. For example, you can now type /axyz to
+  restore an arrangement named "xyz".
+- Search history is now stored in a separate
+  preferences database for better privacy.
+- Change how font metrics are computed for
+  Consolas, which only looks good when values are
+  rounded in a particular way.
+- Duplicate Tab now respects the advanced pref
+  that opens a new tab adjacent to the curren tab.
+- If default-terminal is set to something other
+  than screen then tmux integration won't
+  translate italic to reverse video.
 
 Bug Fixes
-- Preserve the selected weight when changing
-  typeface, when possible.
-- Respect the desired popover size for custom
-  status bar components. This fix may cause some
-  popovers to have different-sized popovers than
-  expected, and may require updating the script to
-  correct.
-- Fix a bug where Find Next would not navigate to
-  the very first word in history.
-- Fix a runaway CPU issue when initializing GPU
-  renderer.
-- Touch bar in full screen now shows correct tab
-  titles. Fixes a bug where they would get out of
-  sync with reality.
-- Fixes a bug where adding a new password in the
-  password manager could hang.
-- Fixes a bug introduced in the previous beta
-  where minimal-theme title bars were the wrong
-  color and window borders sometimes didn't appear.
-
-Scripting
-- Add Session.async_get_contents to docs.
-- Add Profile.async_get_default and
-  PartialProfile.async_get_default.
+- Remove gray bar that appeared in native full
+  screen with one tab and no tab bar.
+- Fix various full-screen minimal theme artifacts.
+- Fix window title alignment bugs in Minimal
+  theme.
+- Fix off-center red/yellow/blue buttons in full
+  screen Minimal theme.
+- Fix various crashes.
+- Do not report a two-finger click as a left mouse
+  button click.
+- Fix a bug where font names were sometimes
+  right-aligned in prefs.
+- Fix a bug where the shortcuts to change
+  window/tab/pane would sometimes not be saved.
+- Fix a flash when the GPU renderer is enabled and
+  a window is transparent.
+- Fix a bug where you couldn't drag folders to the
+  iTerm2 icon when added to the Finder's toolbar.
+- Fix a bug where the triggers UI would sometimes
+  modify the first row when editing another row.
+- Don't show the "document edited" dot in the
+  close button if the session's profile has a
+  custom command.
+- Fix various bugs in libsixel.
+- Fix a bug when popping an empty title stack to
+  restore the session name rather than make it
+  and empty string.
