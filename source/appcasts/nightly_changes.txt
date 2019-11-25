@@ -1,3 +1,15 @@
+2019-11-24: Prevent the possibility of buffer overflow when
+importing a recording
+
+2019-11-24: Remove /private/var from image_decoder sandbox.
+Doesn't seem to be necessary to decode PDFs. I tested on
+10.12 and 10.14
+
+2019-11-24: Add support for moving by a vim WORD (as opposed
+to a word) in copy mode. In vim parlance, a WORD is made of
+non-whitespace characters, while a word is alphanumeric.
+Refactors the logical movement stuff into its own class.
+
 2019-11-23: Remove /private/var from image decoder sandbox.
 I tested it on PDFs, PNGs, JPGs, and GIFs. I tested 10.12
 and 10.14. Doesn't seem to be needed any more. Maybe it was
