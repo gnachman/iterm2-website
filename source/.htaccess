@@ -1,4 +1,6 @@
 Options -Indexes
+deny from 63.143.42.245
+
 Redirect 302 /imgcat https://raw.githubusercontent.com/gnachman/iTerm2/master/tests/imgcat
 Redirect 302 /coprocesses.html /documentation-coprocesses.html
 Redirect 302 /debuglog https://gitlab.com/gnachman/iterm2/wikis/DebugLogging
@@ -31,4 +33,11 @@ ErrorDocument 404 /error.html
 RewriteEngine On
 RewriteCond %{HTTPS} !=on
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301] 
+
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_USER_AGENT} uptimerobot.com [NC]
+  RewriteRule . - [R=403,L]
+</IfModule>
 
