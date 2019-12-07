@@ -1,3 +1,27 @@
+2019-12-06: Require permission to steal focus by control
+sequence. Reveal the session after stealing focus
+
+2019-12-06: Make it harder to misuse
+iTermFileDescriptorClientConnect
+
+2019-12-06: Reject archives with duplicate metadata keys
+
+2019-12-06: Expand use of safe addition function
+
+2019-12-06: Prevent possible signed integer overflow
+
+2019-12-06: Ignore metadata keys that are not understood.
+
+2019-12-06: Introduce v2 of signed archives. The signature
+goes at the end and signs everything that precedes it,
+rather than just the payload. Version 1 is still accepted as
+input. Output contains the v1 header but also contains the
+v2 signature, which is preferred when available. The
+migration path will be to ship this and rebuild all its
+files with it. Then the next version will build only v2.
+Then the version after that will accept only v2, and the
+migration code can be deleted.
+
 2019-12-05: Replace direct calls to realloc(f) with safer
 alternatives
 
