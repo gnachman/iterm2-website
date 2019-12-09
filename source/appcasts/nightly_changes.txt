@@ -1,3 +1,19 @@
+2019-12-07: Fix restoration of annotations. The screen's
+initial size during restoration is usually different than
+when it was saved. That broke restoring annotations because
+the saved coordinates are a function of screen width. This
+commit sets the screen size back to its initial value before
+loading the annotations and then the VT100Screen restoration
+function returns. PTYSession can then restore its selection
+(which is also dependent on width) and then fix the screen
+size back to what will actually fit in the physical window
+we have. That window often gets resized again later.
+
+There's still a bug with selection restoration when there
+are more than 10k lines prior to state saving. The selection
+shifts vertically because it doesn't account for the
+truncation.
+
 2019-12-07: Split navigating next/previuos mark from
 annotation navigation
 
