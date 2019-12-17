@@ -1,3 +1,19 @@
+2019-12-16: Fix bug that broke selection
+
+2019-12-15: Change colorspace of IBarCursor to sRGB. Before
+it was grayscale and that broke screen sharing. Issue 8411
+
+2019-12-15: Call scrollWheel: on momentum changed and ended
+phases. macOS does not call these for some reason. Based on
+a bit of disassembling, it's because
++NSAnimationContext.activate returns true. Issue 8538
+
+2019-12-15: Add more debug logging to character generation
+
+2019-12-15: Use secure coding for .itr files
+
+2019-12-15: Confirm control sequence-initiated downloads
+
 2019-12-14: Report three finger drags. Issue 8524
 
 2019-12-14: Hide PTYScrollView's content view when using
