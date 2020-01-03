@@ -84,8 +84,7 @@
   <div class="section" id="module-iterm2.app">
 <span id="app"></span><h1>App<a class="headerlink" href="#module-iterm2.app" title="Permalink to this headline">¶</a></h1>
 <p>Provides access to application-level structures.</p>
-<p>This module is the starting point for getting access to windows and other
-application-global data.</p>
+<p>This module is the starting point for getting access to windows and other application-global data.</p>
 <dl class="function">
 <dt id="iterm2.async_get_app">
 <em class="property">async </em><code class="sig-name descname">async_get_app</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">create_if_needed: bool = True</em><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.app.App]<a class="headerlink" href="#iterm2.async_get_app" title="Permalink to this definition">¶</a></dt>
@@ -94,13 +93,11 @@ application-global data.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</p></li>
-<li><p><strong>create_if_needed</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, create the global <a class="reference internal" href="#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a> instance
-if one does not already exists. If <cite>False</cite>, do not create it.</p></li>
+<li><p><strong>create_if_needed</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, create the global <a class="reference internal" href="#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a> instance if one does not already exists. If <cite>False</cite>, do not create it.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The global <a class="reference internal" href="#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a> instance. If <cite>create_if_needed</cite> is False
-this may return <cite>None</cite> if no such instance exists.</p>
+<dd class="field-even"><p>The global <a class="reference internal" href="#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a> instance. If <cite>create_if_needed</cite> is False this may return <cite>None</cite> if no such instance exists.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -108,18 +105,13 @@ this may return <cite>None</cite> if no such instance exists.</p>
 <dl class="function">
 <dt id="iterm2.async_invoke_function">
 <em class="property">async </em><code class="sig-name descname">async_invoke_function</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">invocation: str</em>, <em class="sig-param">timeout: float = -1</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_invoke_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invoke an RPC. Could be a registered function by this or another script of
-a built-in function.</p>
-<p>This invokes the RPC in the global application context. Note that most
-user-defined RPCs expect to be invoked in the context of a session. Default
-variables will be pulled from that scope. If you call a function from the
-wrong context it may fail because its defaults will not be set properly.</p>
+<dd><p>Invoke an RPC. Could be a registered function by this or another script of a built-in function.</p>
+<p>This invokes the RPC in the global application context. Note that most user-defined RPCs expect to be invoked in the context of a session. Default variables will be pulled from that scope. If you call a function from the wrong context it may fail because its defaults will not be set properly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>invocation</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A function invocation string.</p></li>
-<li><p><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – Max number of secondsto wait. Negative values mean to use
-the system default timeout.</p></li>
+<li><p><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – Max number of secondsto wait. Negative values mean to use the system default timeout.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -160,12 +152,10 @@ interacts with another app after the call.</p></li>
 <em class="property">async </em><code class="sig-name descname">async_get_theme</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[str]<a class="headerlink" href="#iterm2.App.async_get_theme" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets attributes the current theme.</p>
 <p>The automatic and minimal themes will always include “dark” or “light”.</p>
-<p>On macOS 10.14, the light or dark attribute may be inferred from the
-system setting.</p>
+<p>On macOS 10.14, the light or dark attribute may be inferred from the system setting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A list of one or more strings from the set: light, dark,
-automatic, minimal, highContrast.</p>
+<dd class="field-odd"><p>A list of one or more strings from the set: light, dark, automatic, minimal, highContrast.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -174,8 +164,7 @@ automatic, minimal, highContrast.</p>
 <dt id="iterm2.App.async_get_variable">
 <em class="property">async </em><code class="sig-name descname">async_get_variable</code><span class="sig-paren">(</span><em class="sig-param">name: str</em><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#iterm2.App.async_get_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches the value of a variable from the global context.</p>
-<p>See <a class="reference external" href="https://iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a> for
-details on variables.</p>
+<p>See <a class="reference external" href="https://iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a> for details on variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The variable’s name.</p>
@@ -193,17 +182,13 @@ details on variables.</p>
 <dt id="iterm2.App.async_set_variable">
 <em class="property">async </em><code class="sig-name descname">async_set_variable</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">value: Any</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.App.async_set_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets a user-defined variable in the application.</p>
-<p>See the Scripting Fundamentals documentation for more information on
-user-defined variables.</p>
+<p>See the Scripting Fundamentals documentation for more information on user-defined variables.
+:type name: <code class="docutils literal notranslate"><span class="pre">str</span></code>
+:param name: The variable’s name. Must begin with <cite>user.</cite>.
+:param value: The new value to assign.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The variable’s name. Must begin with <cite>user.</cite>.</p></li>
-<li><p><strong>value</strong> – The new value to assign.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Throws</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -275,8 +260,7 @@ user-defined variables.</p>
 <dd class="field-odd"><p><strong>session</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code>) – The session whose tab and window you wish to find.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A tuple of (<a class="reference internal" href="window.html#iterm2.Window" title="iterm2.Window"><code class="xref py py-class docutils literal notranslate"><span class="pre">Window</span></code></a>, <a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a>), or (<cite>None</cite>,
-<cite>None</cite>) if the session was not found.</p>
+<dd class="field-even"><p>A tuple of (<a class="reference internal" href="window.html#iterm2.Window" title="iterm2.Window"><code class="xref py py-class docutils literal notranslate"><span class="pre">Window</span></code></a>, <a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a>), or (<cite>None</cite>, <cite>None</cite>) if the session was not found.</p>
 </dd>
 </dl>
 </dd></dl>

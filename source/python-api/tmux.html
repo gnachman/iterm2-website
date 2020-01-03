@@ -128,10 +128,9 @@
 
 <dl class="class">
 <dt id="iterm2.TmuxConnection">
-<em class="property">class </em><code class="sig-name descname">TmuxConnection</code><span class="sig-paren">(</span><em class="sig-param">connection_id</em>, <em class="sig-param">owning_session_id</em>, <em class="sig-param">delegate</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TmuxConnection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">TmuxConnection</code><span class="sig-paren">(</span><em class="sig-param">connection_id</em>, <em class="sig-param">owning_session_id</em>, <em class="sig-param">app</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TmuxConnection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A tmux integration connection.</p>
-<p>Do not create this yourself. Use <a class="reference internal" href="#iterm2.async_get_tmux_connections" title="iterm2.async_get_tmux_connections"><code class="xref py py-func docutils literal notranslate"><span class="pre">async_get_tmux_connections()</span></code></a>,
-instead.</p>
+<p>Do not create this yourself. Use <a class="reference internal" href="#iterm2.async_get_tmux_connections" title="iterm2.async_get_tmux_connections"><code class="xref py py-func docutils literal notranslate"><span class="pre">async_get_tmux_connections()</span></code></a>, instead.</p>
 <dl class="method">
 <dt id="iterm2.TmuxConnection.async_create_window">
 <em class="property">async </em><code class="sig-name descname">async_create_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.window.Window<a class="headerlink" href="#iterm2.TmuxConnection.async_create_window" title="Permalink to this definition">¶</a></dt>
@@ -164,8 +163,7 @@ instead.</p>
 <dd class="field-odd"><p>The command’s output as a string.</p>
 </dd>
 <dt class="field-even">Throws TmuxException</dt>
-<dd class="field-even"><p>If the command fails for any reason or the RPC
-fails such as from an invalid ID.</p>
+<dd class="field-even"><p>If the command fails for any reason or the RPC fails such as from an invalid ID.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -198,8 +196,7 @@ attached to a tmux session, then it may be hidden.</p>
 <dd><p>Returns the unique identifier of the connection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A connection ID, which is also a human-readable description
-of the connection.</p>
+<dd class="field-odd"><p>A connection ID, which is also a human-readable description of the connection.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -210,8 +207,7 @@ of the connection.</p>
 <dd><p>Returns the “gateway” session.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The <a class="reference internal" href="session.html#iterm2.Session" title="iterm2.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> where <cite>tmux -CC</cite> was run, or
-<cite>None</cite> if it cannot be found.</p>
+<dd class="field-odd"><p>The <a class="reference internal" href="session.html#iterm2.Session" title="iterm2.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> where <cite>tmux -CC</cite> was run, or <cite>None</cite> if it cannot be found.</p>
 </dd>
 </dl>
 </dd></dl>

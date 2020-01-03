@@ -91,8 +91,7 @@
 <dl class="method">
 <dt id="iterm2.Session.active_proxy">
 <em class="property">static </em><code class="sig-name descname">active_proxy</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em><span class="sig-paren">)</span> &#x2192; iterm2.session.Session<a class="headerlink" href="#iterm2.Session.active_proxy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use this to register notifications against the currently active
-session.</p>
+<dd><p>Use this to register notifications against the currently active session.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</p>
@@ -106,8 +105,8 @@ session.</p>
 <dl class="method">
 <dt id="iterm2.Session.all_proxy">
 <em class="property">static </em><code class="sig-name descname">all_proxy</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.all_proxy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use this to register notifications against all sessions, including
-those not yet created.</p>
+<dd><p>Use this to register notifications against all sessions, including those
+not yet created.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</p>
@@ -125,10 +124,8 @@ those not yet created.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>select_tab</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the tab this session is in should be
-selected.</p></li>
-<li><p><strong>order_window_front</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the window this session is in should
-be brought to the front and given keyboard focus.</p></li>
+<li><p><strong>select_tab</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the tab this session is in should be selected.</p></li>
+<li><p><strong>order_window_front</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the window this session is in should be brought to the front and given keyboard focus.</p></li>
 </ul>
 </dd>
 </dl>
@@ -144,8 +141,7 @@ be brought to the front and given keyboard focus.</p></li>
 <dd><p>Closes the session.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>force</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the user will not be prompted for a
-confirmation.</p>
+<dd class="field-odd"><p><strong>force</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the user will not be prompted for a confirmation.</p>
 </dd>
 <dt class="field-even">Throws</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
@@ -155,16 +151,13 @@ confirmation.</p>
 
 <dl class="method">
 <dt id="iterm2.Session.async_get_contents">
-<em class="property">async </em><code class="sig-name descname">async_get_contents</code><span class="sig-paren">(</span><em class="sig-param">first_line: int</em>, <em class="sig-param">number_of_lines: int</em><span class="sig-paren">)</span> &#x2192; List[iterm2.screen.LineContents]<a class="headerlink" href="#iterm2.Session.async_get_contents" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">async_get_contents</code><span class="sig-paren">(</span><em class="sig-param">first_line: int</em>, <em class="sig-param">number_of_lines: int</em><span class="sig-paren">)</span> &#x2192; [&lt;class 'iterm2.screen.LineContents'&gt;]<a class="headerlink" href="#iterm2.Session.async_get_contents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the contents of the session within a given range of lines.</p>
 <p>Use <cite>async_get_line_info</cite> to determine the available line numbers.</p>
-<p><cite>first_lines</cite> should be at least as large as <cite>(await
-async_get_line_info()).overflow</cite>.</p>
-<p>If it is less, then you won’t get as many lines as you asked for.</p>
-<p>To use this reliably, you must call async_get_line_info() and this
-method in a <code class="xref py py-class docutils literal notranslate"><span class="pre">Transaction</span></code> to ensure the
-session doesn’t change between calls. See the example below.</p>
-<dl class="field-list simple">
+<p><cite>first_lines</cite> should be at least as large as <cite>(await async_get_line_info()).overflow</cite>.
+If it is less, then you won’t get as many lines as you asked for.</p>
+<p>To use this reliably, you must call async_get_line_info() and this method in a <code class="xref py py-class docutils literal notranslate"><span class="pre">Transaction</span></code> to ensure the session doesn’t change between calls. See the example below.</p>
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>first_line</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The first line number to fetch.</p></li>
@@ -172,29 +165,27 @@ session doesn’t change between calls. See the example below.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.screen.LineContents</span></code>. If some were
-unavailable then a subset is returned.</p>
+<dd class="field-even"><p>A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.screen.LineContents</span></code>. If some were unavailable then a subset is returned.</p>
 </dd>
 <dt class="field-odd">Throws</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
 </dd>
+<dt class="field-even">Example</dt>
+<dd class="field-even"><p># Prints the first ten lines of session.
+async with iterm2.Transaction(connection):</p>
+<blockquote>
+<div><p>li = await session.async_get_line_info()
+lines = await session.async_get_contents(li.overflow, 10)</p>
+</div></blockquote>
+<p>print(list(map(lambda line: line.string, lines)))</p>
+</dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Example that prints the first ten lines of <cite>session</cite>.</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Transaction</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">txn</span><span class="p">:</span>
-  <span class="n">li</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_line_info</span><span class="p">()</span>
-  <span class="n">lines</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_contents</span><span class="p">(</span><span class="n">li</span><span class="o">.</span><span class="n">overflow</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">string</span><span class="p">,</span> <span class="n">lines</span><span class="p">)))</span>
-</pre></div>
-</div>
-</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="iterm2.Session.async_get_line_info">
 <em class="property">async </em><code class="sig-name descname">async_get_line_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.session.SessionLineInfo<a class="headerlink" href="#iterm2.Session.async_get_line_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches the number of lines that are visible, in history, and that have
-been removed after history became full.</p>
+<dd><p>Fetches the number of lines that are visible, in history, and that have been removed after history became full.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Information about the session’s wrapped lines of text.</p>
@@ -212,8 +203,7 @@ been removed after history became full.</p>
 <dd><p>Fetches the profile of this session</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The profile for this session, including any session-local
-changes not in the underlying profile.</p>
+<dd class="field-odd"><p>The profile for this session, including any session-local changes not in the underlying profile.</p>
 </dd>
 <dt class="field-even">Throws</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
@@ -236,8 +226,7 @@ changes not in the underlying profile.</p>
 <dd><p>Returns the contents of the mutable area of the screen.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.screen.ScreenContents</span></code>, containing the
-screen contents.</p>
+<dd class="field-odd"><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.screen.ScreenContents</span></code>, containing the screen contents.</p>
 </dd>
 <dt class="field-even">Throws</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
@@ -250,8 +239,7 @@ screen contents.</p>
 <em class="property">async </em><code class="sig-name descname">async_get_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.selection.Selection<a class="headerlink" href="#iterm2.Session.async_get_selection" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The selected regions of this session. The selection will be
-empty if there is no selected text.</p>
+<dd class="field-odd"><p>The selected regions of this session. The selection will be empty if there is no selected text.</p>
 </dd>
 <dt class="field-even">Throws</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
@@ -272,8 +260,7 @@ empty if there is no selected text.</p>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 <dt class="field-even">Parameters</dt>
-<dd class="field-even"><p><strong>selection</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code>) – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code> defining a
-region in the session.</p>
+<dd class="field-even"><p><strong>selection</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code>) – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code> defining a region in the session.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -285,8 +272,7 @@ region in the session.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A string with the selection’s contents. Discontiguous
-selections are combined with newlines.</p>
+<dd class="field-odd"><p>A string with the selection’s contents. Discontiguous selections are combined with newlines.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -295,8 +281,7 @@ selections are combined with newlines.</p>
 <dt id="iterm2.Session.async_get_variable">
 <em class="property">async </em><code class="sig-name descname">async_get_variable</code><span class="sig-paren">(</span><em class="sig-param">name: str</em><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#iterm2.Session.async_get_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches a session variable.</p>
-<p>See the Scripting Fundamentals documentation for more information on
-variables.</p>
+<p>See the Scripting Fundamentals documentation for more information on variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The variable’s name.</p>
@@ -335,19 +320,13 @@ variables.</p>
 <dl class="method">
 <dt id="iterm2.Session.async_invoke_function">
 <em class="property">async </em><code class="sig-name descname">async_invoke_function</code><span class="sig-paren">(</span><em class="sig-param">invocation: str</em>, <em class="sig-param">timeout: float = -1</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_invoke_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invoke an RPC. Could be a function registered by this or another
-script, or a built-in function.</p>
-<p>This invokes the RPC in the context of this session. Most user-defined
-RPCs are invoked in a session context (for example, invocations
-attached to triggers or key bindings). Default variables will be pulled
-from that scope. If you call a function from the wrong context it may
-fail because its defaults will not be set properly.</p>
+<dd><p>Invoke an RPC. Could be a function registered by this or another script, or a built-in function.</p>
+<p>This invokes the RPC in the context of this session. Most user-defined RPCs are invoked in a session context (for example, invocations attached to triggers or key bindings). Default variables will be pulled from that scope. If you call a function from the wrong context it may fail because its defaults will not be set properly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>invocation</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A function invocation string.</p></li>
-<li><p><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – Max number of secondsto wait. Negative values mean to
-use the system default timeout.</p></li>
+<li><p><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – Max number of secondsto wait. Negative values mean to use the system default timeout.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -362,8 +341,7 @@ use the system default timeout.</p></li>
 <dl class="method">
 <dt id="iterm2.Session.async_run_tmux_command">
 <em class="property">async </em><code class="sig-name descname">async_run_tmux_command</code><span class="sig-paren">(</span><em class="sig-param">command: str</em>, <em class="sig-param">timeout: float = -1</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.Session.async_run_tmux_command" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invoke a tmux command and return its result. Raises an exception if
-this session is not a tmux integration session.</p>
+<dd><p>Invoke a tmux command and return its result. Raises an exception if this session is not a tmux integration session.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -371,8 +349,7 @@ this session is not a tmux integration session.</p>
 <dt class="field-even">Parameters</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>command</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The tmux command to run.</p></li>
-<li><p><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – The amount of time to wait for a response, or -1 to use
-the default.</p></li>
+<li><p><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – The amount of time to wait for a response, or -1 to use the default.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns</dt>
@@ -392,8 +369,7 @@ the default.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The text to send.</p></li>
-<li><p><strong>suppress_broadcast</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, text goes only to the specified
-session even if broadcasting is on.</p></li>
+<li><p><strong>suppress_broadcast</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, text goes only to the specified session even if broadcasting is on.</p></li>
 </ul>
 </dd>
 </dl>
@@ -424,8 +400,7 @@ session even if broadcasting is on.</p></li>
 <dt id="iterm2.Session.async_set_grid_size">
 <em class="property">async </em><code class="sig-name descname">async_set_grid_size</code><span class="sig-paren">(</span><em class="sig-param">size: iterm2.util.Size</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_set_grid_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the visible size of a session.</p>
-<p>Note: This is meant for tabs that contain a single pane. If split panes
-are present, use <code class="xref py py-func docutils literal notranslate"><span class="pre">async_update_layout()</span></code> instead.</p>
+<p>Note: This is meant for tabs that contain a single pane. If split panes are present, use <code class="xref py py-func docutils literal notranslate"><span class="pre">async_update_layout()</span></code> instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>size</strong> (<a class="reference internal" href="util.html#iterm2.util.Size" title="iterm2.util.Size"><code class="xref py py-class docutils literal notranslate"><span class="pre">Size</span></code></a>) – The new size for the session, in cells.</p>
@@ -441,8 +416,7 @@ are present, use <code class="xref py py-func docutils literal notranslate"><spa
 <dt id="iterm2.Session.async_set_name">
 <em class="property">async </em><code class="sig-name descname">async_set_name</code><span class="sig-paren">(</span><em class="sig-param">name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_set_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Changes the session’s name.</p>
-<p>This is equivalent to editing the session’s name manually in the Edit
-Session window.</p>
+<p>This is equivalent to editing the session’s name manually in the Edit Session window.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The new name to use.</p>
@@ -474,12 +448,10 @@ profile with a unique GUID.</p>
 <dt id="iterm2.Session.async_set_profile_properties">
 <em class="property">async </em><code class="sig-name descname">async_set_profile_properties</code><span class="sig-paren">(</span><em class="sig-param">write_only_profile: iterm2.profile.LocalWriteOnlyProfile</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_set_profile_properties" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the value of properties in this session.</p>
-<p>When you use this function the underlying profile is not modified. The
-session will keep a copy of its profile with these modifications.</p>
+<p>When you use this function the underlying profile is not modified. The session will keep a copy of its profile with these modifications.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>write_only_profile</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">LocalWriteOnlyProfile</span></code>) – A write-only profile that has the desired
-changes.</p>
+<dd class="field-odd"><p><strong>write_only_profile</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">LocalWriteOnlyProfile</span></code>) – A write-only profile that has the desired changes.</p>
 </dd>
 <dt class="field-even">Throws</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
@@ -516,8 +488,7 @@ changes.</p>
 <dt id="iterm2.Session.async_set_variable">
 <em class="property">async </em><code class="sig-name descname">async_set_variable</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">value: Any</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Session.async_set_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets a user-defined variable in the session.</p>
-<p>See the Scripting Fundamentals documentation for more information on
-user-defined variables.</p>
+<p>See the Scripting Fundamentals documentation for more information on user-defined variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -543,13 +514,9 @@ user-defined variables.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>vertical</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the divider is vertical, else horizontal.</p></li>
-<li><p><strong>before</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the new session will be to the left of or
-above the session being split. Otherwise, it will be to the right
-of or below it.</p></li>
-<li><p><strong>profile</strong> – The profile name to use. <cite>None</cite> for the default
-profile.</p></li>
-<li><p><strong>profile_customizations</strong> – Changes to the profile that should
-affect only this session, or <cite>None</cite> to make no changes.</p></li>
+<li><p><strong>before</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the new session will be to the left of or above the session being split. Otherwise, it will be to the right of or below it.</p></li>
+<li><p><strong>profile</strong> – The profile name to use. <cite>None</cite> for the default profile.</p></li>
+<li><p><strong>profile_customizations</strong> – Changes to the profile that should affect only this session, or <cite>None</cite> to make no changes.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -576,24 +543,22 @@ scrollback history).</p>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenStreamer</span></code></p>
 </dd>
 <dt class="field-even">Parameters</dt>
-<dd class="field-even"><p><strong>want_contents</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the screen contents will be provided.
-See <code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenStreamer</span></code> for details.</p>
+<dd class="field-even"><p><strong>want_contents</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>True</cite>, the screen contents will be provided. See <code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenStreamer</span></code> for details.</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A new screen streamer, suitable for monitoring the contents
-of this session.</p>
+<dd class="field-odd"><p>A new screen streamer, suitable for monitoring the contents of this session.</p>
+</dd>
+<dt class="field-even">Example</dt>
+<dd class="field-even"><dl class="simple">
+<dt>async with session.get_screen_streamer() as streamer:</dt><dd><dl class="simple">
+<dt>while condition():</dt><dd><p>contents = await streamer.async_get()
+do_something(contents)</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Example that calls <cite>do_something()</cite> with screen contents as
-they arrive.</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get_screen_streamer</span><span class="p">()</span> <span class="k">as</span> <span class="n">streamer</span><span class="p">:</span>
-  <span class="k">while</span> <span class="n">condition</span><span class="p">():</span>
-    <span class="n">contents</span> <span class="o">=</span> <span class="k">await</span> <span class="n">streamer</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
-    <span class="n">do_something</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -610,8 +575,7 @@ they arrive.</span><a class="headerlink" href="#id2" title="Permalink to this co
 <dl class="method">
 <dt id="iterm2.Session.preferred_size">
 <em class="property">property </em><code class="sig-name descname">preferred_size</code><a class="headerlink" href="#iterm2.Session.preferred_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>The size in cells to resize to when <cite>Tab.async_update_layout()</cite> is
-called. The size is a <a class="reference internal" href="util.html#iterm2.util.Size" title="iterm2.util.Size"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.util.Size</span></code></a>.</p>
+<dd><p>The size in cells to resize to when <cite>Tab.async_update_layout()</cite> is called. The size is a <a class="reference internal" href="util.html#iterm2.util.Size" title="iterm2.util.Size"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.util.Size</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -634,18 +598,6 @@ called. The size is a <a class="reference internal" href="util.html#iterm2.util.
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.Session.tab">
-<em class="property">property </em><code class="sig-name descname">tab</code><a class="headerlink" href="#iterm2.Session.tab" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the containing tab.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="iterm2.Session.window">
-<em class="property">property </em><code class="sig-name descname">window</code><a class="headerlink" href="#iterm2.Session.window" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the containing terminal window.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -663,12 +615,10 @@ called. The size is a <a class="reference internal" href="util.html#iterm2.util.
 <dl class="class">
 <dt id="iterm2.session.SessionLineInfo">
 <em class="property">class </em><code class="sig-name descname">SessionLineInfo</code><span class="sig-paren">(</span><em class="sig-param">line_info</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.session.SessionLineInfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Describes a session’s geometry.</p>
-<dl class="method">
+<dd><dl class="method">
 <dt id="iterm2.session.SessionLineInfo.first_visible_line_number">
 <em class="property">property </em><code class="sig-name descname">first_visible_line_number</code><a class="headerlink" href="#iterm2.session.SessionLineInfo.first_visible_line_number" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the line number of the first line currently displayed
-onscreen. Changes when the user scrolls.</p>
+<dd><p>Returns the line number of the first line currently displayed onscreen. Changes when the user scrolls.</p>
 </dd></dl>
 
 <dl class="method">
@@ -680,8 +630,7 @@ onscreen. Changes when the user scrolls.</p>
 <dl class="method">
 <dt id="iterm2.session.SessionLineInfo.overflow">
 <em class="property">property </em><code class="sig-name descname">overflow</code><a class="headerlink" href="#iterm2.session.SessionLineInfo.overflow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the number of lines lost to overflow. These lines were
-removed after scrollback history became full.</p>
+<dd><p>Returns the number of lines lost to overflow. These lines were removed after scrollback history became full.</p>
 </dd></dl>
 
 <dl class="method">
@@ -695,15 +644,13 @@ removed after scrollback history became full.</p>
 <dl class="class">
 <dt id="iterm2.session.Splitter">
 <em class="property">class </em><code class="sig-name descname">Splitter</code><span class="sig-paren">(</span><em class="sig-param">vertical: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.session.Splitter" title="Permalink to this definition">¶</a></dt>
-<dd><p>A container of split pane sessions where the dividers are all aligned the
-same way.</p>
+<dd><p>A container of split pane sessions where the dividers are all aligned the same way.</p>
 <dl class="method">
 <dt id="iterm2.session.Splitter.children">
 <em class="property">property </em><code class="sig-name descname">children</code><a class="headerlink" href="#iterm2.session.Splitter.children" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>This splitter’s children. A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code> or
-<a class="reference internal" href="#iterm2.session.Splitter" title="iterm2.session.Splitter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Splitter</span></code></a> objects.</p>
+<dd class="field-odd"><p>This splitter’s children. A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code> or <a class="reference internal" href="#iterm2.session.Splitter" title="iterm2.session.Splitter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Splitter</span></code></a> objects.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -723,8 +670,7 @@ same way.</p>
 <em class="property">property </em><code class="sig-name descname">sessions</code><a class="headerlink" href="#iterm2.session.Splitter.sessions" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>All sessions in this splitter and all nested splitters. A
-list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code> objects.</p>
+<dd class="field-odd"><p>All sessions in this splitter and all nested splitters. A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code> objects.</p>
 </dd>
 </dl>
 </dd></dl>

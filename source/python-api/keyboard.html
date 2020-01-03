@@ -124,14 +124,12 @@
 <dl class="class">
 <dt id="iterm2.KeystrokeFilter">
 <em class="property">class </em><code class="sig-name descname">KeystrokeFilter</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection, patterns: List[iterm2.keyboard.KeystrokePattern], session: Union[None, str] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.KeystrokeFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>An async context manager that disables the regular handling of keystrokes
-matching patterns during its lifetime.</p>
+<dd><p>An async context manager that disables the regular handling of keystrokes matching patterns during its lifetime.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>connection</strong> – The <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> to use.</p></li>
-<li><p><strong>patterns</strong> – A list of <a class="reference internal" href="#iterm2.KeystrokePattern" title="iterm2.KeystrokePattern"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeystrokePattern</span></code></a> objects specifying
-keystrokes whose regular handling should be disabled.</p></li>
+<li><p><strong>patterns</strong> – A list of <a class="reference internal" href="#iterm2.KeystrokePattern" title="iterm2.KeystrokePattern"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeystrokePattern</span></code></a> objects specifying keystrokes whose regular handling should be disabled.</p></li>
 <li><p><strong>session</strong> – The session ID to affect, or None meaning all.</p></li>
 </ul>
 </dd>
@@ -222,26 +220,21 @@ excepting the shift key).</p>
 <dt id="iterm2.KeystrokePattern.characters">
 <em class="property">property </em><code class="sig-name descname">characters</code><a class="headerlink" href="#iterm2.KeystrokePattern.characters" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of strings. Each string has a character.</p>
-<p>The pattern matches if the modifier constraints are satisfied and a
-keystroke has any of these characters.</p>
+<p>The pattern matches if the modifier constraints are satisfied and a keystroke has any of these characters.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="iterm2.KeystrokePattern.characters_ignoring_modifiers">
 <em class="property">property </em><code class="sig-name descname">characters_ignoring_modifiers</code><a class="headerlink" href="#iterm2.KeystrokePattern.characters_ignoring_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of strings. Each string has a character.</p>
-<p>The pattern matches if the modifier constraints are satisfied and a
-keystroke has any of these characters, ignoring modifiers.</p>
-<p>“Ignoring modifiers” mostly means ignoring modifiers other than Shift.
-It has a lot of surprising edge cases which Apple did not document, so
-experiment to find how it works.</p>
+<p>The pattern matches if the modifier constraints are satisfied and a keystroke has any of these characters, ignoring modifiers.</p>
+<p>“Ignoring modifiers” mostly means ignoring modifiers other than Shift. It has a lot of surprising edge cases which Apple did not document, so experiment to find how it works.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="iterm2.KeystrokePattern.forbidden_modifiers">
 <em class="property">property </em><code class="sig-name descname">forbidden_modifiers</code><a class="headerlink" href="#iterm2.KeystrokePattern.forbidden_modifiers" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of modifiers whose presence prevents the pattern from being
-matched.</p>
+<dd><p>List of modifiers whose presence prevents the pattern from being matched.</p>
 <p>A list of type <a class="reference internal" href="#iterm2.Modifier" title="iterm2.Modifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Modifier</span></code></a>.</p>
 </dd></dl>
 
@@ -249,8 +242,7 @@ matched.</p>
 <dt id="iterm2.KeystrokePattern.keycodes">
 <em class="property">property </em><code class="sig-name descname">keycodes</code><a class="headerlink" href="#iterm2.KeystrokePattern.keycodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of keycodes that match the pattern.</p>
-<p>The pattern matches if the modifier constraints are satisfied and a
-keystroke has any of these keycodes.</p>
+<p>The pattern matches if the modifier constraints are satisfied and a keystroke has any of these keycodes.</p>
 <p>A list of type <a class="reference internal" href="#iterm2.Keycode" title="iterm2.Keycode"><code class="xref py py-class docutils literal notranslate"><span class="pre">Keycode</span></code></a>.</p>
 </dd></dl>
 

@@ -86,25 +86,26 @@
 <span class="kn">import</span> <span class="nn">datetime</span>
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
-        <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;GMT Clock&quot;</span><span class="p">,</span>
-        <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Shows the time in jolly old England&quot;</span><span class="p">,</span>
-        <span class="n">knobs</span><span class="o">=</span><span class="p">[],</span>
-        <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;[12:00 GMT]&quot;</span><span class="p">,</span>
-        <span class="n">update_cadence</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.gmt-clock&quot;</span><span class="p">)</span>
+<span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
+    <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;GMT Clock&quot;</span><span class="p">,</span>
+    <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Shows the time in jolly old England&quot;</span><span class="p">,</span>
+    <span class="n">knobs</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;[12:00 GMT]&quot;</span><span class="p">,</span>
+    <span class="n">update_cadence</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.gmt-clock&quot;</span><span class="p">)</span>
 
-    <span class="c1"># This function gets called once per second.</span>
-    <span class="nd">@iterm2</span><span class="o">.</span><span class="n">StatusBarRPC</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">knobs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H:%M:%S GMT&quot;</span><span class="p">)</span>
+<span class="c1"># This function gets called once per second.</span>
+<span class="nd">@iterm2</span><span class="o">.</span><span class="n">StatusBarRPC</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">knobs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H:%M:%S GMT&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Register the component.</span>
-    <span class="k">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">)</span>
+<span class="c1"># Register the component.</span>
+<span class="k">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><a class="reference download internal" download="" href="../_downloads/44312bc99bd3261e6e5cb46be32e7ae7/gmtclock.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
