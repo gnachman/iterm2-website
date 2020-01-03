@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Alert on Long-Running Jobs &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -90,35 +89,35 @@
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">sleep_then_alert</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">sleep_then_alert</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Show a user notification in `session` if this task is allowed to run</span>
 <span class="sd">        for 30 seconds.&quot;&quot;&quot;</span>
-        <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
         <span class="n">code</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">]9;Alert</span><span class="se">\u001b\\</span><span class="s2">&quot;</span>
-        <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
 
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">monitor</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">monitor</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait for commands to start or stop in this session.</span>
 
 <span class="sd">        Start and cancel tasks to wait for long-running tasks.&quot;&quot;&quot;</span>
         <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">session</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="n">alert_task</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">alert_task</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">modes</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="o">.</span><span class="n">Mode</span><span class="o">.</span><span class="n">PROMPT</span><span class="p">,</span>
                  <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="o">.</span><span class="n">Mode</span><span class="o">.</span><span class="n">COMMAND_START</span><span class="p">,</span>
                  <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="o">.</span><span class="n">Mode</span><span class="o">.</span><span class="n">COMMAND_END</span><span class="p">]</span>
-        <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="p">(</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="p">(</span>
                 <span class="n">connection</span><span class="p">,</span> <span class="n">session_id</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="n">modes</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="c1"># This blocks until the status of the session changes. That</span>
                 <span class="c1"># happens when a new prompt appears, a command begins running,</span>
                 <span class="c1"># or a command finishes.</span>
-                <span class="n">mode</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+                <span class="n">mode</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">alert_task</span><span class="p">:</span>
                     <span class="c1"># Cancel an existing task.</span>
                     <span class="n">alert_task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
@@ -130,7 +129,7 @@
 
     <span class="c1"># Create a task running `monitor` for each session, including those created</span>
     <span class="c1"># in the future.</span>
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">EachSessionOnceMonitor</span><span class="o">.</span><span class="n">async_foreach_session_create_task</span><span class="p">(</span>
+    <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">EachSessionOnceMonitor</span><span class="o">.</span><span class="n">async_foreach_session_create_task</span><span class="p">(</span>
             <span class="n">app</span><span class="p">,</span> <span class="n">monitor</span><span class="p">)</span>
 
 <span class="c1"># This instructs the script to run the &quot;main&quot; coroutine and to keep running</span>
@@ -138,7 +137,7 @@
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/baf8c30d0e4aacf4ce5f171a4509ac71/autoalert.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/8c344550453399d22795cd6696c5ce3c/autoalert.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -170,8 +169,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/examples/autoalert.rst.txt"

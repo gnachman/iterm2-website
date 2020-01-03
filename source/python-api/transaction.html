@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Transaction &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Utilities" href="util.html" />
@@ -87,39 +86,34 @@
 <p>Provides a class to facilitate atomic transactions.</p>
 <dl class="class">
 <dt id="iterm2.Transaction">
-<em class="property">class </em><code class="descname">Transaction</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Transaction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">Transaction</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Transaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager for transactions.</p>
 <p>A transaction is a sequence of API calls that occur without anything else
-happening in between. If you’re worried about state mutating between reading
-the screen contents and then sending text, for example, do it in a
+happening in between. If you’re worried about state mutating between
+reading the screen contents and then sending text, for example, do it in a
 transaction and you’ll know the state of the terminal will remain unchanged
 during it.</p>
 <p>Some APIs are noted as not being allowed during a transaction. These do not
 complete synchronously and would therefore deadlock in a transaction.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>connection</strong> – The connection to iTerm2.</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"><dl class="first last docutils">
-<dt>async with iterm2.Transaction():</dt>
-<dd><p class="first last">do stuff</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>connection</strong> – The connection to iTerm2.</p>
+</dd>
+<dt class="field-even">Example</dt>
+<dd class="field-even"><dl class="simple">
+<dt>async with iterm2.Transaction():</dt><dd><p>do stuff</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <hr class="docutils" />
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 </div>
@@ -153,8 +147,8 @@ complete synchronously and would therefore deadlock in a transaction.</p>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/transaction.rst.txt"

@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Send stty Command When Session Resizes &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -92,42 +91,42 @@ and <cite>async_send_text</cite>.</p>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">stty</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">session_id</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">stty</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">session_id</span><span class="p">):</span>
         <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
-        <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_send_text</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;stty {field} {value}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_send_text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;stty </span><span class="si">{field}</span><span class="s1"> </span><span class="si">{value}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">watch_cols</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
-        <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">watch_cols</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span>
                 <span class="n">connection</span><span class="p">,</span>
                 <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableScopes</span><span class="o">.</span><span class="n">SESSION</span><span class="p">,</span>
                 <span class="s2">&quot;columns&quot;</span><span class="p">,</span>
                 <span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-                <span class="n">new_value</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
-                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;columns changed&quot;</span><span class="p">)</span>
-                <span class="n">await</span> <span class="n">stty</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="n">new_value</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">new_value</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;columns changed&quot;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">stty</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="n">new_value</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span>
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">watch_rows</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
-        <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">watch_rows</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span>
                 <span class="n">connection</span><span class="p">,</span>
                 <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableScopes</span><span class="o">.</span><span class="n">SESSION</span><span class="p">,</span>
                 <span class="s2">&quot;rows&quot;</span><span class="p">,</span>
                 <span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-                <span class="n">new_value</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
-                <span class="n">await</span> <span class="n">stty</span><span class="p">(</span><span class="s2">&quot;rows&quot;</span><span class="p">,</span> <span class="n">new_value</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">new_value</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+                <span class="k">await</span> <span class="n">stty</span><span class="p">(</span><span class="s2">&quot;rows&quot;</span><span class="p">,</span> <span class="n">new_value</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span>
 
     <span class="n">rows_task</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">EachSessionOnceMonitor</span><span class="o">.</span><span class="n">async_foreach_session_create_task</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">watch_rows</span><span class="p">)</span>
     <span class="n">cols_task</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">EachSessionOnceMonitor</span><span class="o">.</span><span class="n">async_foreach_session_create_task</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">watch_cols</span><span class="p">)</span>
-    <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">rows_task</span><span class="p">,</span> <span class="n">cols_task</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">rows_task</span><span class="p">,</span> <span class="n">cols_task</span><span class="p">)</span>
 
 <span class="c1"># This instructs the script to run the &quot;main&quot; coroutine and to keep running even after it returns.</span>
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/d8194d0d7053f030a171aacde0a10d90/stty.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/d599878260a19974d16d9c503f16fd90/stty.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -159,8 +158,8 @@ and <cite>async_send_text</cite>.</p>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/examples/stty.rst.txt"

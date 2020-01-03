@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Change Session’s Profile &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -88,24 +87,24 @@
 
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="c1"># Query for the list of profiles so we can search by name. This returns a</span>
     <span class="c1"># subset of the full profiles so it&#39;s fast.</span>
-    <span class="n">partialProfiles</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PartialProfile</span><span class="o">.</span><span class="n">async_query</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="n">partialProfiles</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PartialProfile</span><span class="o">.</span><span class="n">async_query</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="c1"># Iterate over each partial profile</span>
     <span class="k">for</span> <span class="n">partial</span> <span class="ow">in</span> <span class="n">partialProfiles</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">partial</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Default&quot;</span><span class="p">:</span>
             <span class="c1"># This is the one we&#39;re looking for. Change the current session&#39;s</span>
             <span class="c1"># profile.</span>
-            <span class="n">full</span> <span class="o">=</span> <span class="n">await</span> <span class="n">partial</span><span class="o">.</span><span class="n">async_get_full_profile</span><span class="p">()</span>
-            <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">current_tab</span><span class="o">.</span><span class="n">current_session</span><span class="o">.</span><span class="n">async_set_profile</span><span class="p">(</span><span class="n">full</span><span class="p">)</span>
+            <span class="n">full</span> <span class="o">=</span> <span class="k">await</span> <span class="n">partial</span><span class="o">.</span><span class="n">async_get_full_profile</span><span class="p">()</span>
+            <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">current_tab</span><span class="o">.</span><span class="n">current_session</span><span class="o">.</span><span class="n">async_set_profile</span><span class="p">(</span><span class="n">full</span><span class="p">)</span>
             <span class="k">return</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/7c1a63ac1851df6d8a9b3964adab4c15/setprofile.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/e57cff232b15785c36f3d63bea9eeaf5/setprofile.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -137,8 +136,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/examples/setprofile.rst.txt"

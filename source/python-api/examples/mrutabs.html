@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Persistent MRU Tabs &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -88,10 +87,10 @@
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">reorder_tabs</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">reorder_tabs</span><span class="p">():</span>
       <span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
       <span class="k">if</span> <span class="ow">not</span> <span class="n">window</span><span class="p">:</span>
           <span class="k">return</span>
@@ -100,18 +99,18 @@
           <span class="n">i</span> <span class="o">=</span> <span class="n">tabs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">current_tab</span><span class="p">)</span>
           <span class="k">del</span> <span class="n">tabs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
           <span class="n">tabs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window</span><span class="o">.</span><span class="n">current_tab</span><span class="p">)</span>
-          <span class="n">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_set_tabs</span><span class="p">(</span><span class="n">tabs</span><span class="p">)</span>
+          <span class="k">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_set_tabs</span><span class="p">(</span><span class="n">tabs</span><span class="p">)</span>
 
-    <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">FocusMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">monitor</span><span class="p">:</span>
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">update</span> <span class="o">=</span> <span class="n">await</span> <span class="n">monitor</span><span class="o">.</span><span class="n">async_get_next_update</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">FocusMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">monitor</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">update</span> <span class="o">=</span> <span class="k">await</span> <span class="n">monitor</span><span class="o">.</span><span class="n">async_get_next_update</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">update</span><span class="o">.</span><span class="n">selected_tab_changed</span><span class="p">:</span>
-                <span class="n">await</span> <span class="n">reorder_tabs</span><span class="p">()</span>
+                <span class="k">await</span> <span class="n">reorder_tabs</span><span class="p">()</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/72b84aca13c6bf392ff44f29662880ab/mrutabs.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/566ef73fc63d2be778719b9811a2c841/mrutabs.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -143,8 +142,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/examples/mrutabs.rst.txt"

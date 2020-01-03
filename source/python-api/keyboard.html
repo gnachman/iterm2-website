@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Keyboard &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Life Cycle" href="lifecycle.html" />
@@ -87,40 +86,36 @@
 <p>Provides classes for monitoring keyboard activity and modifying how iTerm2 handles keystrokes.</p>
 <dl class="class">
 <dt id="iterm2.KeystrokeMonitor">
-<em class="property">class </em><code class="descname">KeystrokeMonitor</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>session: Union[None</em>, <em>str] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.KeystrokeMonitor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">KeystrokeMonitor</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">session: Union[None</em>, <em class="sig-param">str] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.KeystrokeMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Monitors keystrokes in one or all sessions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>connection</strong> – The <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> to use.</li>
-<li><strong>session</strong> – The session ID to affect, or <cite>None</cite> meaning all sessions.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection</strong> – The <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> to use.</p></li>
+<li><p><strong>session</strong> – The session ID to affect, or <cite>None</cite> meaning all sessions.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<ul class="last simple">
-<li>Example “<a class="reference internal" href="examples/broadcast.html#broadcast-example"><span class="std std-ref">Asymmetric Broadcast Input</span></a>”</li>
-<li>Example “<a class="reference internal" href="examples/escindicator.html#escindicator-example"><span class="std std-ref">Escape Key Indicator</span></a>”</li>
-<li>Example “<a class="reference internal" href="examples/function_key_tabs.html#function-key-tabs-example"><span class="std std-ref">Function Key Tabs</span></a>”</li>
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Example “<a class="reference internal" href="examples/broadcast.html#broadcast-example"><span class="std std-ref">Asymmetric Broadcast Input</span></a>”</p></li>
+<li><p>Example “<a class="reference internal" href="examples/escindicator.html#escindicator-example"><span class="std std-ref">Escape Key Indicator</span></a>”</p></li>
+<li><p>Example “<a class="reference internal" href="examples/function_key_tabs.html#function-key-tabs-example"><span class="std std-ref">Function Key Tabs</span></a>”</p></li>
 </ul>
 </div>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokeMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="n">keystroke</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokeMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">keystroke</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
         <span class="n">DoSomething</span><span class="p">(</span><span class="n">keystroke</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
 <dl class="method">
 <dt id="iterm2.KeystrokeMonitor.async_get">
-<code class="descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.keyboard.Keystroke<a class="headerlink" href="#iterm2.KeystrokeMonitor.async_get" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.keyboard.Keystroke<a class="headerlink" href="#iterm2.KeystrokeMonitor.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait for and return the next keystroke.</p>
 </dd></dl>
 
@@ -128,26 +123,24 @@
 
 <dl class="class">
 <dt id="iterm2.KeystrokeFilter">
-<em class="property">class </em><code class="descname">KeystrokeFilter</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection, patterns: List[iterm2.keyboard.KeystrokePattern], session: Union[None, str] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.KeystrokeFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>An async context manager that disables the regular handling of keystrokes matching patterns during its lifetime.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>connection</strong> – The <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> to use.</li>
-<li><strong>patterns</strong> – A list of <a class="reference internal" href="#iterm2.KeystrokePattern" title="iterm2.KeystrokePattern"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeystrokePattern</span></code></a> objects specifying keystrokes whose regular handling should be disabled.</li>
-<li><strong>session</strong> – The session ID to affect, or None meaning all.</li>
+<em class="property">class </em><code class="sig-name descname">KeystrokeFilter</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection, patterns: List[iterm2.keyboard.KeystrokePattern], session: Union[None, str] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.KeystrokeFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>An async context manager that disables the regular handling of keystrokes
+matching patterns during its lifetime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection</strong> – The <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> to use.</p></li>
+<li><p><strong>patterns</strong> – A list of <a class="reference internal" href="#iterm2.KeystrokePattern" title="iterm2.KeystrokePattern"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeystrokePattern</span></code></a> objects specifying
+keystrokes whose regular handling should be disabled.</p></li>
+<li><p><strong>session</strong> – The session ID to affect, or None meaning all.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<ul class="last simple">
-<li>Example “<a class="reference internal" href="examples/broadcast.html#broadcast-example"><span class="std std-ref">Asymmetric Broadcast Input</span></a>”</li>
-<li>Example “<a class="reference internal" href="examples/function_key_tabs.html#function-key-tabs-example"><span class="std std-ref">Function Key Tabs</span></a>”</li>
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Example “<a class="reference internal" href="examples/broadcast.html#broadcast-example"><span class="std std-ref">Asymmetric Broadcast Input</span></a>”</p></li>
+<li><p>Example “<a class="reference internal" href="examples/function_key_tabs.html#function-key-tabs-example"><span class="std std-ref">Function Key Tabs</span></a>”</p></li>
 </ul>
 </div>
 <p>Example:</p>
@@ -157,119 +150,113 @@
 <span class="n">ctrl</span><span class="o">.</span><span class="n">keycodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">keycode</span> <span class="k">for</span> <span class="n">keycode</span> <span class="ow">in</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Keycode</span><span class="p">]</span>
 
 <span class="nb">filter</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">KeystrokeFilter</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="p">[</span><span class="n">ctrl</span><span class="p">])</span>
-<span class="n">async</span> <span class="k">with</span> <span class="nb">filter</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-    <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_wait_forever</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">with</span> <span class="nb">filter</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+    <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_wait_forever</span><span class="p">()</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="class">
 <dt id="iterm2.Keystroke">
-<em class="property">class </em><code class="descname">Keystroke</code><span class="sig-paren">(</span><em>notification</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Keystroke" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">Keystroke</code><span class="sig-paren">(</span><em class="sig-param">notification</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Keystroke" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a keystroke.</p>
 <p>Do not create instances of this class. They will be passed to you when you
 use a <a class="reference internal" href="#iterm2.KeystrokeMonitor" title="iterm2.KeystrokeMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeystrokeMonitor</span></code></a>.</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.Keystroke.characters">
-<code class="descname">characters</code><a class="headerlink" href="#iterm2.Keystroke.characters" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">characters</code><a class="headerlink" href="#iterm2.Keystroke.characters" title="Permalink to this definition">¶</a></dt>
 <dd><p>A string giving the characters that would be generated by the
 keystroke ordinarily.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A string.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A string.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.Keystroke.characters_ignoring_modifiers">
-<code class="descname">characters_ignoring_modifiers</code><a class="headerlink" href="#iterm2.Keystroke.characters_ignoring_modifiers" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">characters_ignoring_modifiers</code><a class="headerlink" href="#iterm2.Keystroke.characters_ignoring_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd><p>A string giving the characters that would be generated by the
 keystroke as if no modifiers besides shift were pressed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A string.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A string.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.Keystroke.keycode">
-<code class="descname">keycode</code><a class="headerlink" href="#iterm2.Keystroke.keycode" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">keycode</code><a class="headerlink" href="#iterm2.Keystroke.keycode" title="Permalink to this definition">¶</a></dt>
 <dd><p>The ANSI keycode that was pressed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#iterm2.Keycode" title="iterm2.Keycode"><code class="xref py py-class docutils literal notranslate"><span class="pre">Keycode</span></code></a> object.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <a class="reference internal" href="#iterm2.Keycode" title="iterm2.Keycode"><code class="xref py py-class docutils literal notranslate"><span class="pre">Keycode</span></code></a> object.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.Keystroke.modifiers">
-<code class="descname">modifiers</code><a class="headerlink" href="#iterm2.Keystroke.modifiers" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">modifiers</code><a class="headerlink" href="#iterm2.Keystroke.modifiers" title="Permalink to this definition">¶</a></dt>
 <dd><p>The modifiers that were pressed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of <a class="reference internal" href="#iterm2.Modifier" title="iterm2.Modifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Modifier</span></code></a> objects.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of <a class="reference internal" href="#iterm2.Modifier" title="iterm2.Modifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Modifier</span></code></a> objects.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="iterm2.KeystrokePattern">
-<em class="property">class </em><code class="descname">KeystrokePattern</code><a class="headerlink" href="#iterm2.KeystrokePattern" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">KeystrokePattern</code><a class="headerlink" href="#iterm2.KeystrokePattern" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes attributes that select keystrokes.</p>
 <p>Keystrokes contain modifiers (e.g., command or option), characters (what
 characters are generated by the keypress), and characters ignoring
 modifiers (what characters would be generated if no modifiers were pressed,
 excepting the shift key).</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.KeystrokePattern.characters">
-<code class="descname">characters</code><a class="headerlink" href="#iterm2.KeystrokePattern.characters" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">characters</code><a class="headerlink" href="#iterm2.KeystrokePattern.characters" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of strings. Each string has a character.</p>
-<p>The pattern matches if the modifier constraints are satisfied and a keystroke has any of these characters.</p>
+<p>The pattern matches if the modifier constraints are satisfied and a
+keystroke has any of these characters.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.KeystrokePattern.characters_ignoring_modifiers">
-<code class="descname">characters_ignoring_modifiers</code><a class="headerlink" href="#iterm2.KeystrokePattern.characters_ignoring_modifiers" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">characters_ignoring_modifiers</code><a class="headerlink" href="#iterm2.KeystrokePattern.characters_ignoring_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of strings. Each string has a character.</p>
-<p>The pattern matches if the modifier constraints are satisfied and a keystroke has any of these characters, ignoring modifiers.</p>
-<p>“Ignoring modifiers” mostly means ignoring modifiers other than Shift. It has a lot of surprising edge cases which Apple did not document, so experiment to find how it works.</p>
+<p>The pattern matches if the modifier constraints are satisfied and a
+keystroke has any of these characters, ignoring modifiers.</p>
+<p>“Ignoring modifiers” mostly means ignoring modifiers other than Shift.
+It has a lot of surprising edge cases which Apple did not document, so
+experiment to find how it works.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.KeystrokePattern.forbidden_modifiers">
-<code class="descname">forbidden_modifiers</code><a class="headerlink" href="#iterm2.KeystrokePattern.forbidden_modifiers" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of modifiers whose presence prevents the pattern from being matched.</p>
+<em class="property">property </em><code class="sig-name descname">forbidden_modifiers</code><a class="headerlink" href="#iterm2.KeystrokePattern.forbidden_modifiers" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of modifiers whose presence prevents the pattern from being
+matched.</p>
 <p>A list of type <a class="reference internal" href="#iterm2.Modifier" title="iterm2.Modifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Modifier</span></code></a>.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.KeystrokePattern.keycodes">
-<code class="descname">keycodes</code><a class="headerlink" href="#iterm2.KeystrokePattern.keycodes" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">keycodes</code><a class="headerlink" href="#iterm2.KeystrokePattern.keycodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of keycodes that match the pattern.</p>
-<p>The pattern matches if the modifier constraints are satisfied and a keystroke has any of these keycodes.</p>
+<p>The pattern matches if the modifier constraints are satisfied and a
+keystroke has any of these keycodes.</p>
 <p>A list of type <a class="reference internal" href="#iterm2.Keycode" title="iterm2.Keycode"><code class="xref py py-class docutils literal notranslate"><span class="pre">Keycode</span></code></a>.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.KeystrokePattern.required_modifiers">
-<code class="descname">required_modifiers</code><a class="headerlink" href="#iterm2.KeystrokePattern.required_modifiers" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">required_modifiers</code><a class="headerlink" href="#iterm2.KeystrokePattern.required_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of modifiers that are required to match the pattern.</p>
 <p>A list of type <a class="reference internal" href="#iterm2.Modifier" title="iterm2.Modifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Modifier</span></code></a>.</p>
 </dd></dl>
@@ -278,41 +265,41 @@ excepting the shift key).</p>
 
 <dl class="class">
 <dt id="iterm2.Modifier">
-<em class="property">class </em><code class="descname">Modifier</code><a class="headerlink" href="#iterm2.Modifier" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">Modifier</code><a class="headerlink" href="#iterm2.Modifier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enumerated list of modifier keys.</p>
 <dl class="attribute">
 <dt id="iterm2.Modifier.COMMAND">
-<code class="descname">COMMAND</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.Modifier.COMMAND" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">COMMAND</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.Modifier.COMMAND" title="Permalink to this definition">¶</a></dt>
 <dd><p>The command key modifier</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Modifier.CONTROL">
-<code class="descname">CONTROL</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.Modifier.CONTROL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">CONTROL</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.Modifier.CONTROL" title="Permalink to this definition">¶</a></dt>
 <dd><p>The control key modifier</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Modifier.FUNCTION">
-<code class="descname">FUNCTION</code><em class="property"> = 5</em><a class="headerlink" href="#iterm2.Modifier.FUNCTION" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">FUNCTION</code><em class="property"> = 5</em><a class="headerlink" href="#iterm2.Modifier.FUNCTION" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indicates the key is a function key.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Modifier.NUMPAD">
-<code class="descname">NUMPAD</code><em class="property"> = 6</em><a class="headerlink" href="#iterm2.Modifier.NUMPAD" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">NUMPAD</code><em class="property"> = 6</em><a class="headerlink" href="#iterm2.Modifier.NUMPAD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indicates the key is on the numeric keypad.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Modifier.OPTION">
-<code class="descname">OPTION</code><em class="property"> = 2</em><a class="headerlink" href="#iterm2.Modifier.OPTION" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">OPTION</code><em class="property"> = 2</em><a class="headerlink" href="#iterm2.Modifier.OPTION" title="Permalink to this definition">¶</a></dt>
 <dd><p>The option (or Alt) key modifier</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Modifier.SHIFT">
-<code class="descname">SHIFT</code><em class="property"> = 4</em><a class="headerlink" href="#iterm2.Modifier.SHIFT" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">SHIFT</code><em class="property"> = 4</em><a class="headerlink" href="#iterm2.Modifier.SHIFT" title="Permalink to this definition">¶</a></dt>
 <dd><p>The shift key modifier</p>
 </dd></dl>
 
@@ -320,567 +307,567 @@ excepting the shift key).</p>
 
 <dl class="class">
 <dt id="iterm2.Keycode">
-<em class="property">class </em><code class="descname">Keycode</code><a class="headerlink" href="#iterm2.Keycode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">Keycode</code><a class="headerlink" href="#iterm2.Keycode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enumerated list of virtual keycodes. These repesent physical keys on a
 keyboard regardless of its actual layout.</p>
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_0">
-<code class="descname">ANSI_0</code><em class="property"> = 29</em><a class="headerlink" href="#iterm2.Keycode.ANSI_0" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_0</code><em class="property"> = 29</em><a class="headerlink" href="#iterm2.Keycode.ANSI_0" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_1">
-<code class="descname">ANSI_1</code><em class="property"> = 18</em><a class="headerlink" href="#iterm2.Keycode.ANSI_1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_1</code><em class="property"> = 18</em><a class="headerlink" href="#iterm2.Keycode.ANSI_1" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_2">
-<code class="descname">ANSI_2</code><em class="property"> = 19</em><a class="headerlink" href="#iterm2.Keycode.ANSI_2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_2</code><em class="property"> = 19</em><a class="headerlink" href="#iterm2.Keycode.ANSI_2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_3">
-<code class="descname">ANSI_3</code><em class="property"> = 20</em><a class="headerlink" href="#iterm2.Keycode.ANSI_3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_3</code><em class="property"> = 20</em><a class="headerlink" href="#iterm2.Keycode.ANSI_3" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_4">
-<code class="descname">ANSI_4</code><em class="property"> = 21</em><a class="headerlink" href="#iterm2.Keycode.ANSI_4" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_4</code><em class="property"> = 21</em><a class="headerlink" href="#iterm2.Keycode.ANSI_4" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_5">
-<code class="descname">ANSI_5</code><em class="property"> = 23</em><a class="headerlink" href="#iterm2.Keycode.ANSI_5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_5</code><em class="property"> = 23</em><a class="headerlink" href="#iterm2.Keycode.ANSI_5" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_6">
-<code class="descname">ANSI_6</code><em class="property"> = 22</em><a class="headerlink" href="#iterm2.Keycode.ANSI_6" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_6</code><em class="property"> = 22</em><a class="headerlink" href="#iterm2.Keycode.ANSI_6" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_7">
-<code class="descname">ANSI_7</code><em class="property"> = 26</em><a class="headerlink" href="#iterm2.Keycode.ANSI_7" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_7</code><em class="property"> = 26</em><a class="headerlink" href="#iterm2.Keycode.ANSI_7" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_8">
-<code class="descname">ANSI_8</code><em class="property"> = 28</em><a class="headerlink" href="#iterm2.Keycode.ANSI_8" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_8</code><em class="property"> = 28</em><a class="headerlink" href="#iterm2.Keycode.ANSI_8" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_9">
-<code class="descname">ANSI_9</code><em class="property"> = 25</em><a class="headerlink" href="#iterm2.Keycode.ANSI_9" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_9</code><em class="property"> = 25</em><a class="headerlink" href="#iterm2.Keycode.ANSI_9" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_A">
-<code class="descname">ANSI_A</code><em class="property"> = 0</em><a class="headerlink" href="#iterm2.Keycode.ANSI_A" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_A</code><em class="property"> = 0</em><a class="headerlink" href="#iterm2.Keycode.ANSI_A" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_B">
-<code class="descname">ANSI_B</code><em class="property"> = 11</em><a class="headerlink" href="#iterm2.Keycode.ANSI_B" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_B</code><em class="property"> = 11</em><a class="headerlink" href="#iterm2.Keycode.ANSI_B" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_BACKSLASH">
-<code class="descname">ANSI_BACKSLASH</code><em class="property"> = 42</em><a class="headerlink" href="#iterm2.Keycode.ANSI_BACKSLASH" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_BACKSLASH</code><em class="property"> = 42</em><a class="headerlink" href="#iterm2.Keycode.ANSI_BACKSLASH" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_C">
-<code class="descname">ANSI_C</code><em class="property"> = 8</em><a class="headerlink" href="#iterm2.Keycode.ANSI_C" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_C</code><em class="property"> = 8</em><a class="headerlink" href="#iterm2.Keycode.ANSI_C" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_COMMA">
-<code class="descname">ANSI_COMMA</code><em class="property"> = 43</em><a class="headerlink" href="#iterm2.Keycode.ANSI_COMMA" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_COMMA</code><em class="property"> = 43</em><a class="headerlink" href="#iterm2.Keycode.ANSI_COMMA" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_D">
-<code class="descname">ANSI_D</code><em class="property"> = 2</em><a class="headerlink" href="#iterm2.Keycode.ANSI_D" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_D</code><em class="property"> = 2</em><a class="headerlink" href="#iterm2.Keycode.ANSI_D" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_E">
-<code class="descname">ANSI_E</code><em class="property"> = 14</em><a class="headerlink" href="#iterm2.Keycode.ANSI_E" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_E</code><em class="property"> = 14</em><a class="headerlink" href="#iterm2.Keycode.ANSI_E" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_EQUAL">
-<code class="descname">ANSI_EQUAL</code><em class="property"> = 24</em><a class="headerlink" href="#iterm2.Keycode.ANSI_EQUAL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_EQUAL</code><em class="property"> = 24</em><a class="headerlink" href="#iterm2.Keycode.ANSI_EQUAL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_F">
-<code class="descname">ANSI_F</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.Keycode.ANSI_F" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_F</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.Keycode.ANSI_F" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_G">
-<code class="descname">ANSI_G</code><em class="property"> = 5</em><a class="headerlink" href="#iterm2.Keycode.ANSI_G" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_G</code><em class="property"> = 5</em><a class="headerlink" href="#iterm2.Keycode.ANSI_G" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_GRAVE">
-<code class="descname">ANSI_GRAVE</code><em class="property"> = 50</em><a class="headerlink" href="#iterm2.Keycode.ANSI_GRAVE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_GRAVE</code><em class="property"> = 50</em><a class="headerlink" href="#iterm2.Keycode.ANSI_GRAVE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_H">
-<code class="descname">ANSI_H</code><em class="property"> = 4</em><a class="headerlink" href="#iterm2.Keycode.ANSI_H" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_H</code><em class="property"> = 4</em><a class="headerlink" href="#iterm2.Keycode.ANSI_H" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_I">
-<code class="descname">ANSI_I</code><em class="property"> = 34</em><a class="headerlink" href="#iterm2.Keycode.ANSI_I" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_I</code><em class="property"> = 34</em><a class="headerlink" href="#iterm2.Keycode.ANSI_I" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_J">
-<code class="descname">ANSI_J</code><em class="property"> = 38</em><a class="headerlink" href="#iterm2.Keycode.ANSI_J" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_J</code><em class="property"> = 38</em><a class="headerlink" href="#iterm2.Keycode.ANSI_J" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_K">
-<code class="descname">ANSI_K</code><em class="property"> = 40</em><a class="headerlink" href="#iterm2.Keycode.ANSI_K" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_K</code><em class="property"> = 40</em><a class="headerlink" href="#iterm2.Keycode.ANSI_K" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD0">
-<code class="descname">ANSI_KEYPAD0</code><em class="property"> = 82</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD0" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD0</code><em class="property"> = 82</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD0" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD1">
-<code class="descname">ANSI_KEYPAD1</code><em class="property"> = 83</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD1</code><em class="property"> = 83</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD1" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD2">
-<code class="descname">ANSI_KEYPAD2</code><em class="property"> = 84</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD2</code><em class="property"> = 84</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD3">
-<code class="descname">ANSI_KEYPAD3</code><em class="property"> = 85</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD3</code><em class="property"> = 85</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD3" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD4">
-<code class="descname">ANSI_KEYPAD4</code><em class="property"> = 86</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD4" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD4</code><em class="property"> = 86</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD4" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD5">
-<code class="descname">ANSI_KEYPAD5</code><em class="property"> = 87</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD5</code><em class="property"> = 87</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD5" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD6">
-<code class="descname">ANSI_KEYPAD6</code><em class="property"> = 88</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD6" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD6</code><em class="property"> = 88</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD6" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD7">
-<code class="descname">ANSI_KEYPAD7</code><em class="property"> = 89</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD7" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD7</code><em class="property"> = 89</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD7" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD8">
-<code class="descname">ANSI_KEYPAD8</code><em class="property"> = 91</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD8" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD8</code><em class="property"> = 91</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD8" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD9">
-<code class="descname">ANSI_KEYPAD9</code><em class="property"> = 92</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD9" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD9</code><em class="property"> = 92</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD9" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD_CLEAR">
-<code class="descname">ANSI_KEYPAD_CLEAR</code><em class="property"> = 71</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_CLEAR" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD_CLEAR</code><em class="property"> = 71</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_CLEAR" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD_DECIMAL">
-<code class="descname">ANSI_KEYPAD_DECIMAL</code><em class="property"> = 65</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_DECIMAL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD_DECIMAL</code><em class="property"> = 65</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_DECIMAL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD_DIVIDE">
-<code class="descname">ANSI_KEYPAD_DIVIDE</code><em class="property"> = 75</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_DIVIDE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD_DIVIDE</code><em class="property"> = 75</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_DIVIDE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD_ENTER">
-<code class="descname">ANSI_KEYPAD_ENTER</code><em class="property"> = 76</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_ENTER" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD_ENTER</code><em class="property"> = 76</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_ENTER" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD_EQUALS">
-<code class="descname">ANSI_KEYPAD_EQUALS</code><em class="property"> = 81</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_EQUALS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD_EQUALS</code><em class="property"> = 81</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_EQUALS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD_MINUS">
-<code class="descname">ANSI_KEYPAD_MINUS</code><em class="property"> = 78</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_MINUS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD_MINUS</code><em class="property"> = 78</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_MINUS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD_MULTIPLY">
-<code class="descname">ANSI_KEYPAD_MULTIPLY</code><em class="property"> = 67</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_MULTIPLY" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD_MULTIPLY</code><em class="property"> = 67</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_MULTIPLY" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_KEYPAD_PLUS">
-<code class="descname">ANSI_KEYPAD_PLUS</code><em class="property"> = 69</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_PLUS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_KEYPAD_PLUS</code><em class="property"> = 69</em><a class="headerlink" href="#iterm2.Keycode.ANSI_KEYPAD_PLUS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_L">
-<code class="descname">ANSI_L</code><em class="property"> = 37</em><a class="headerlink" href="#iterm2.Keycode.ANSI_L" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_L</code><em class="property"> = 37</em><a class="headerlink" href="#iterm2.Keycode.ANSI_L" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_LEFT_BRACKET">
-<code class="descname">ANSI_LEFT_BRACKET</code><em class="property"> = 33</em><a class="headerlink" href="#iterm2.Keycode.ANSI_LEFT_BRACKET" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_LEFT_BRACKET</code><em class="property"> = 33</em><a class="headerlink" href="#iterm2.Keycode.ANSI_LEFT_BRACKET" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_M">
-<code class="descname">ANSI_M</code><em class="property"> = 46</em><a class="headerlink" href="#iterm2.Keycode.ANSI_M" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_M</code><em class="property"> = 46</em><a class="headerlink" href="#iterm2.Keycode.ANSI_M" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_MINUS">
-<code class="descname">ANSI_MINUS</code><em class="property"> = 27</em><a class="headerlink" href="#iterm2.Keycode.ANSI_MINUS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_MINUS</code><em class="property"> = 27</em><a class="headerlink" href="#iterm2.Keycode.ANSI_MINUS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_N">
-<code class="descname">ANSI_N</code><em class="property"> = 45</em><a class="headerlink" href="#iterm2.Keycode.ANSI_N" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_N</code><em class="property"> = 45</em><a class="headerlink" href="#iterm2.Keycode.ANSI_N" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_O">
-<code class="descname">ANSI_O</code><em class="property"> = 31</em><a class="headerlink" href="#iterm2.Keycode.ANSI_O" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_O</code><em class="property"> = 31</em><a class="headerlink" href="#iterm2.Keycode.ANSI_O" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_P">
-<code class="descname">ANSI_P</code><em class="property"> = 35</em><a class="headerlink" href="#iterm2.Keycode.ANSI_P" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_P</code><em class="property"> = 35</em><a class="headerlink" href="#iterm2.Keycode.ANSI_P" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_PERIOD">
-<code class="descname">ANSI_PERIOD</code><em class="property"> = 47</em><a class="headerlink" href="#iterm2.Keycode.ANSI_PERIOD" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_PERIOD</code><em class="property"> = 47</em><a class="headerlink" href="#iterm2.Keycode.ANSI_PERIOD" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_Q">
-<code class="descname">ANSI_Q</code><em class="property"> = 12</em><a class="headerlink" href="#iterm2.Keycode.ANSI_Q" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_Q</code><em class="property"> = 12</em><a class="headerlink" href="#iterm2.Keycode.ANSI_Q" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_QUOTE">
-<code class="descname">ANSI_QUOTE</code><em class="property"> = 39</em><a class="headerlink" href="#iterm2.Keycode.ANSI_QUOTE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_QUOTE</code><em class="property"> = 39</em><a class="headerlink" href="#iterm2.Keycode.ANSI_QUOTE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_R">
-<code class="descname">ANSI_R</code><em class="property"> = 15</em><a class="headerlink" href="#iterm2.Keycode.ANSI_R" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_R</code><em class="property"> = 15</em><a class="headerlink" href="#iterm2.Keycode.ANSI_R" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_RIGHT_BRACKET">
-<code class="descname">ANSI_RIGHT_BRACKET</code><em class="property"> = 30</em><a class="headerlink" href="#iterm2.Keycode.ANSI_RIGHT_BRACKET" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_RIGHT_BRACKET</code><em class="property"> = 30</em><a class="headerlink" href="#iterm2.Keycode.ANSI_RIGHT_BRACKET" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_S">
-<code class="descname">ANSI_S</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.Keycode.ANSI_S" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_S</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.Keycode.ANSI_S" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_SEMICOLON">
-<code class="descname">ANSI_SEMICOLON</code><em class="property"> = 41</em><a class="headerlink" href="#iterm2.Keycode.ANSI_SEMICOLON" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_SEMICOLON</code><em class="property"> = 41</em><a class="headerlink" href="#iterm2.Keycode.ANSI_SEMICOLON" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_SLASH">
-<code class="descname">ANSI_SLASH</code><em class="property"> = 44</em><a class="headerlink" href="#iterm2.Keycode.ANSI_SLASH" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_SLASH</code><em class="property"> = 44</em><a class="headerlink" href="#iterm2.Keycode.ANSI_SLASH" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_T">
-<code class="descname">ANSI_T</code><em class="property"> = 17</em><a class="headerlink" href="#iterm2.Keycode.ANSI_T" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_T</code><em class="property"> = 17</em><a class="headerlink" href="#iterm2.Keycode.ANSI_T" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_U">
-<code class="descname">ANSI_U</code><em class="property"> = 32</em><a class="headerlink" href="#iterm2.Keycode.ANSI_U" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_U</code><em class="property"> = 32</em><a class="headerlink" href="#iterm2.Keycode.ANSI_U" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_V">
-<code class="descname">ANSI_V</code><em class="property"> = 9</em><a class="headerlink" href="#iterm2.Keycode.ANSI_V" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_V</code><em class="property"> = 9</em><a class="headerlink" href="#iterm2.Keycode.ANSI_V" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_W">
-<code class="descname">ANSI_W</code><em class="property"> = 13</em><a class="headerlink" href="#iterm2.Keycode.ANSI_W" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_W</code><em class="property"> = 13</em><a class="headerlink" href="#iterm2.Keycode.ANSI_W" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_X">
-<code class="descname">ANSI_X</code><em class="property"> = 7</em><a class="headerlink" href="#iterm2.Keycode.ANSI_X" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_X</code><em class="property"> = 7</em><a class="headerlink" href="#iterm2.Keycode.ANSI_X" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_Y">
-<code class="descname">ANSI_Y</code><em class="property"> = 16</em><a class="headerlink" href="#iterm2.Keycode.ANSI_Y" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_Y</code><em class="property"> = 16</em><a class="headerlink" href="#iterm2.Keycode.ANSI_Y" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ANSI_Z">
-<code class="descname">ANSI_Z</code><em class="property"> = 6</em><a class="headerlink" href="#iterm2.Keycode.ANSI_Z" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ANSI_Z</code><em class="property"> = 6</em><a class="headerlink" href="#iterm2.Keycode.ANSI_Z" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.CAPS_LOCK">
-<code class="descname">CAPS_LOCK</code><em class="property"> = 57</em><a class="headerlink" href="#iterm2.Keycode.CAPS_LOCK" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">CAPS_LOCK</code><em class="property"> = 57</em><a class="headerlink" href="#iterm2.Keycode.CAPS_LOCK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.COMMAND">
-<code class="descname">COMMAND</code><em class="property"> = 55</em><a class="headerlink" href="#iterm2.Keycode.COMMAND" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">COMMAND</code><em class="property"> = 55</em><a class="headerlink" href="#iterm2.Keycode.COMMAND" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.CONTROL">
-<code class="descname">CONTROL</code><em class="property"> = 59</em><a class="headerlink" href="#iterm2.Keycode.CONTROL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">CONTROL</code><em class="property"> = 59</em><a class="headerlink" href="#iterm2.Keycode.CONTROL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.DELETE">
-<code class="descname">DELETE</code><em class="property"> = 51</em><a class="headerlink" href="#iterm2.Keycode.DELETE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DELETE</code><em class="property"> = 51</em><a class="headerlink" href="#iterm2.Keycode.DELETE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.DOWN_ARROW">
-<code class="descname">DOWN_ARROW</code><em class="property"> = 125</em><a class="headerlink" href="#iterm2.Keycode.DOWN_ARROW" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DOWN_ARROW</code><em class="property"> = 125</em><a class="headerlink" href="#iterm2.Keycode.DOWN_ARROW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.END">
-<code class="descname">END</code><em class="property"> = 119</em><a class="headerlink" href="#iterm2.Keycode.END" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">END</code><em class="property"> = 119</em><a class="headerlink" href="#iterm2.Keycode.END" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.ESCAPE">
-<code class="descname">ESCAPE</code><em class="property"> = 53</em><a class="headerlink" href="#iterm2.Keycode.ESCAPE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ESCAPE</code><em class="property"> = 53</em><a class="headerlink" href="#iterm2.Keycode.ESCAPE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F1">
-<code class="descname">F1</code><em class="property"> = 122</em><a class="headerlink" href="#iterm2.Keycode.F1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F1</code><em class="property"> = 122</em><a class="headerlink" href="#iterm2.Keycode.F1" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F10">
-<code class="descname">F10</code><em class="property"> = 109</em><a class="headerlink" href="#iterm2.Keycode.F10" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F10</code><em class="property"> = 109</em><a class="headerlink" href="#iterm2.Keycode.F10" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F11">
-<code class="descname">F11</code><em class="property"> = 103</em><a class="headerlink" href="#iterm2.Keycode.F11" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F11</code><em class="property"> = 103</em><a class="headerlink" href="#iterm2.Keycode.F11" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F12">
-<code class="descname">F12</code><em class="property"> = 111</em><a class="headerlink" href="#iterm2.Keycode.F12" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F12</code><em class="property"> = 111</em><a class="headerlink" href="#iterm2.Keycode.F12" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F13">
-<code class="descname">F13</code><em class="property"> = 105</em><a class="headerlink" href="#iterm2.Keycode.F13" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F13</code><em class="property"> = 105</em><a class="headerlink" href="#iterm2.Keycode.F13" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F14">
-<code class="descname">F14</code><em class="property"> = 107</em><a class="headerlink" href="#iterm2.Keycode.F14" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F14</code><em class="property"> = 107</em><a class="headerlink" href="#iterm2.Keycode.F14" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F15">
-<code class="descname">F15</code><em class="property"> = 113</em><a class="headerlink" href="#iterm2.Keycode.F15" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F15</code><em class="property"> = 113</em><a class="headerlink" href="#iterm2.Keycode.F15" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F16">
-<code class="descname">F16</code><em class="property"> = 106</em><a class="headerlink" href="#iterm2.Keycode.F16" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F16</code><em class="property"> = 106</em><a class="headerlink" href="#iterm2.Keycode.F16" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F17">
-<code class="descname">F17</code><em class="property"> = 64</em><a class="headerlink" href="#iterm2.Keycode.F17" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F17</code><em class="property"> = 64</em><a class="headerlink" href="#iterm2.Keycode.F17" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F18">
-<code class="descname">F18</code><em class="property"> = 79</em><a class="headerlink" href="#iterm2.Keycode.F18" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F18</code><em class="property"> = 79</em><a class="headerlink" href="#iterm2.Keycode.F18" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F19">
-<code class="descname">F19</code><em class="property"> = 80</em><a class="headerlink" href="#iterm2.Keycode.F19" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F19</code><em class="property"> = 80</em><a class="headerlink" href="#iterm2.Keycode.F19" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F2">
-<code class="descname">F2</code><em class="property"> = 120</em><a class="headerlink" href="#iterm2.Keycode.F2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F2</code><em class="property"> = 120</em><a class="headerlink" href="#iterm2.Keycode.F2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F20">
-<code class="descname">F20</code><em class="property"> = 90</em><a class="headerlink" href="#iterm2.Keycode.F20" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F20</code><em class="property"> = 90</em><a class="headerlink" href="#iterm2.Keycode.F20" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F3">
-<code class="descname">F3</code><em class="property"> = 99</em><a class="headerlink" href="#iterm2.Keycode.F3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F3</code><em class="property"> = 99</em><a class="headerlink" href="#iterm2.Keycode.F3" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F4">
-<code class="descname">F4</code><em class="property"> = 118</em><a class="headerlink" href="#iterm2.Keycode.F4" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F4</code><em class="property"> = 118</em><a class="headerlink" href="#iterm2.Keycode.F4" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F5">
-<code class="descname">F5</code><em class="property"> = 96</em><a class="headerlink" href="#iterm2.Keycode.F5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F5</code><em class="property"> = 96</em><a class="headerlink" href="#iterm2.Keycode.F5" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F6">
-<code class="descname">F6</code><em class="property"> = 97</em><a class="headerlink" href="#iterm2.Keycode.F6" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F6</code><em class="property"> = 97</em><a class="headerlink" href="#iterm2.Keycode.F6" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F7">
-<code class="descname">F7</code><em class="property"> = 98</em><a class="headerlink" href="#iterm2.Keycode.F7" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F7</code><em class="property"> = 98</em><a class="headerlink" href="#iterm2.Keycode.F7" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F8">
-<code class="descname">F8</code><em class="property"> = 100</em><a class="headerlink" href="#iterm2.Keycode.F8" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F8</code><em class="property"> = 100</em><a class="headerlink" href="#iterm2.Keycode.F8" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.F9">
-<code class="descname">F9</code><em class="property"> = 101</em><a class="headerlink" href="#iterm2.Keycode.F9" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">F9</code><em class="property"> = 101</em><a class="headerlink" href="#iterm2.Keycode.F9" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.FORWARD_DELETE">
-<code class="descname">FORWARD_DELETE</code><em class="property"> = 117</em><a class="headerlink" href="#iterm2.Keycode.FORWARD_DELETE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">FORWARD_DELETE</code><em class="property"> = 117</em><a class="headerlink" href="#iterm2.Keycode.FORWARD_DELETE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.FUNCTION">
-<code class="descname">FUNCTION</code><em class="property"> = 63</em><a class="headerlink" href="#iterm2.Keycode.FUNCTION" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">FUNCTION</code><em class="property"> = 63</em><a class="headerlink" href="#iterm2.Keycode.FUNCTION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.HELP">
-<code class="descname">HELP</code><em class="property"> = 114</em><a class="headerlink" href="#iterm2.Keycode.HELP" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">HELP</code><em class="property"> = 114</em><a class="headerlink" href="#iterm2.Keycode.HELP" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.HOME">
-<code class="descname">HOME</code><em class="property"> = 115</em><a class="headerlink" href="#iterm2.Keycode.HOME" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">HOME</code><em class="property"> = 115</em><a class="headerlink" href="#iterm2.Keycode.HOME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.LEFT_ARROW">
-<code class="descname">LEFT_ARROW</code><em class="property"> = 123</em><a class="headerlink" href="#iterm2.Keycode.LEFT_ARROW" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">LEFT_ARROW</code><em class="property"> = 123</em><a class="headerlink" href="#iterm2.Keycode.LEFT_ARROW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.MUTE">
-<code class="descname">MUTE</code><em class="property"> = 74</em><a class="headerlink" href="#iterm2.Keycode.MUTE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">MUTE</code><em class="property"> = 74</em><a class="headerlink" href="#iterm2.Keycode.MUTE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.OPTION">
-<code class="descname">OPTION</code><em class="property"> = 58</em><a class="headerlink" href="#iterm2.Keycode.OPTION" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">OPTION</code><em class="property"> = 58</em><a class="headerlink" href="#iterm2.Keycode.OPTION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.PAGE_DOWN">
-<code class="descname">PAGE_DOWN</code><em class="property"> = 121</em><a class="headerlink" href="#iterm2.Keycode.PAGE_DOWN" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PAGE_DOWN</code><em class="property"> = 121</em><a class="headerlink" href="#iterm2.Keycode.PAGE_DOWN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.PAGE_UP">
-<code class="descname">PAGE_UP</code><em class="property"> = 116</em><a class="headerlink" href="#iterm2.Keycode.PAGE_UP" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PAGE_UP</code><em class="property"> = 116</em><a class="headerlink" href="#iterm2.Keycode.PAGE_UP" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.RETURN">
-<code class="descname">RETURN</code><em class="property"> = 36</em><a class="headerlink" href="#iterm2.Keycode.RETURN" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">RETURN</code><em class="property"> = 36</em><a class="headerlink" href="#iterm2.Keycode.RETURN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.RIGHT_ARROW">
-<code class="descname">RIGHT_ARROW</code><em class="property"> = 124</em><a class="headerlink" href="#iterm2.Keycode.RIGHT_ARROW" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">RIGHT_ARROW</code><em class="property"> = 124</em><a class="headerlink" href="#iterm2.Keycode.RIGHT_ARROW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.RIGHT_CONTROL">
-<code class="descname">RIGHT_CONTROL</code><em class="property"> = 62</em><a class="headerlink" href="#iterm2.Keycode.RIGHT_CONTROL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">RIGHT_CONTROL</code><em class="property"> = 62</em><a class="headerlink" href="#iterm2.Keycode.RIGHT_CONTROL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.RIGHT_OPTION">
-<code class="descname">RIGHT_OPTION</code><em class="property"> = 61</em><a class="headerlink" href="#iterm2.Keycode.RIGHT_OPTION" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">RIGHT_OPTION</code><em class="property"> = 61</em><a class="headerlink" href="#iterm2.Keycode.RIGHT_OPTION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.RIGHT_SHIFT">
-<code class="descname">RIGHT_SHIFT</code><em class="property"> = 60</em><a class="headerlink" href="#iterm2.Keycode.RIGHT_SHIFT" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">RIGHT_SHIFT</code><em class="property"> = 60</em><a class="headerlink" href="#iterm2.Keycode.RIGHT_SHIFT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.SHIFT">
-<code class="descname">SHIFT</code><em class="property"> = 56</em><a class="headerlink" href="#iterm2.Keycode.SHIFT" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">SHIFT</code><em class="property"> = 56</em><a class="headerlink" href="#iterm2.Keycode.SHIFT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.SPACE">
-<code class="descname">SPACE</code><em class="property"> = 49</em><a class="headerlink" href="#iterm2.Keycode.SPACE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">SPACE</code><em class="property"> = 49</em><a class="headerlink" href="#iterm2.Keycode.SPACE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.TAB">
-<code class="descname">TAB</code><em class="property"> = 48</em><a class="headerlink" href="#iterm2.Keycode.TAB" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">TAB</code><em class="property"> = 48</em><a class="headerlink" href="#iterm2.Keycode.TAB" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.UP_ARROW">
-<code class="descname">UP_ARROW</code><em class="property"> = 126</em><a class="headerlink" href="#iterm2.Keycode.UP_ARROW" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">UP_ARROW</code><em class="property"> = 126</em><a class="headerlink" href="#iterm2.Keycode.UP_ARROW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.VOLUME_DOWN">
-<code class="descname">VOLUME_DOWN</code><em class="property"> = 73</em><a class="headerlink" href="#iterm2.Keycode.VOLUME_DOWN" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">VOLUME_DOWN</code><em class="property"> = 73</em><a class="headerlink" href="#iterm2.Keycode.VOLUME_DOWN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.Keycode.VOLUME_UP">
-<code class="descname">VOLUME_UP</code><em class="property"> = 72</em><a class="headerlink" href="#iterm2.Keycode.VOLUME_UP" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">VOLUME_UP</code><em class="property"> = 72</em><a class="headerlink" href="#iterm2.Keycode.VOLUME_UP" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -889,8 +876,8 @@ keyboard regardless of its actual layout.</p>
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 </div>
@@ -924,8 +911,8 @@ keyboard regardless of its actual layout.</p>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/keyboard.rst.txt"

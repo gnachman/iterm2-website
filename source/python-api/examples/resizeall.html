@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Resize Font in All Sessions in Window &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -89,16 +88,16 @@
 <span class="kn">import</span> <span class="nn">iterm2</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="c1"># This regex splits the font into its name and size. Fonts always end with</span>
     <span class="c1"># their size in points, preceded by a space.</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(.* )(\d*)$&#39;</span><span class="p">)</span>
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">change_font_size_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">delta</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">change_font_size_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">delta</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Change the size of the font in a session by `delta` points.&quot;&quot;&quot;</span>
         <span class="c1"># Get the session&#39;s profile because we need to know its font.</span>
-        <span class="n">profile</span> <span class="o">=</span> <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_profile</span><span class="p">()</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_profile</span><span class="p">()</span>
 
         <span class="c1"># Extract the name and point size of the font using a regex.</span>
         <span class="n">font</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">normal_font</span>
@@ -117,10 +116,10 @@
 
         <span class="c1"># Update the session&#39;s copy of its profile without updating the</span>
         <span class="c1"># underlying profile.</span>
-        <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_set_profile_properties</span><span class="p">(</span><span class="n">change</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_set_profile_properties</span><span class="p">(</span><span class="n">change</span><span class="p">)</span>
 
-    <span class="nd">@iterm2.RPC</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">change_font_size</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="n">delta</span><span class="p">):</span>
+    <span class="nd">@iterm2</span><span class="o">.</span><span class="n">RPC</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">change_font_size</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="n">delta</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Change the font size of all sessions in the window containing the</span>
 <span class="sd">        session whose ID is `session_id` by `delta` points.&quot;&quot;&quot;</span>
         <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
@@ -130,13 +129,13 @@
         <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">tab</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
                 <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">change_font_size_session</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">delta</span><span class="p">))</span>
-        <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
-    <span class="n">await</span> <span class="n">change_font_size</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">change_font_size</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/a6b2c15a8826d0847f24315bf9f00a10/resizeall.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/96c9649077a1b2b3124a4b4f15ecbd00/resizeall.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -168,8 +167,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/examples/resizeall.rst.txt"

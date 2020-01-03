@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Main Menu &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Preferences" href="preferences.html" />
@@ -87,44 +86,40 @@
 <p>Defines interfaces for accessing menu items.</p>
 <dl class="class">
 <dt id="iterm2.MainMenu">
-<em class="property">class </em><code class="descname">MainMenu</code><a class="headerlink" href="#iterm2.MainMenu" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="staticmethod">
+<em class="property">class </em><code class="sig-name descname">MainMenu</code><a class="headerlink" href="#iterm2.MainMenu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents the app’s main menu.</p>
+<dl class="method">
 <dt id="iterm2.MainMenu.async_get_menu_item_state">
-<em class="property">static </em><code class="descname">async_get_menu_item_state</code><span class="sig-paren">(</span><em>connection</em>, <em>identifier: str</em><span class="sig-paren">)</span> &#x2192; iterm2.mainmenu.MenuItemState<a class="headerlink" href="#iterm2.MainMenu.async_get_menu_item_state" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">async_get_menu_item_state</code><span class="sig-paren">(</span><em class="sig-param">connection</em>, <em class="sig-param">identifier: str</em><span class="sig-paren">)</span> &#x2192; iterm2.mainmenu.MenuItemState<a class="headerlink" href="#iterm2.MainMenu.async_get_menu_item_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Queries a menu item for its state.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">MenuItemState</span></code></td>
-</tr>
-<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>identifier</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A string. See list of identifiers in <a class="reference internal" href="menu_ids.html"><span class="doc">Menu Item Identifiers</span></a></td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Throws MenuItemException:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">if something goes wrong.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MenuItemState</span></code></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><p><strong>identifier</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A string. See list of identifiers in <a class="reference internal" href="menu_ids.html"><span class="doc">Menu Item Identifiers</span></a></p>
+</dd>
+<dt class="field-odd">Throws MenuItemException</dt>
+<dd class="field-odd"><p>if something goes wrong.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="iterm2.MainMenu.async_select_menu_item">
-<em class="property">static </em><code class="descname">async_select_menu_item</code><span class="sig-paren">(</span><em>connection</em>, <em>identifier: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.MainMenu.async_select_menu_item" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">async_select_menu_item</code><span class="sig-paren">(</span><em class="sig-param">connection</em>, <em class="sig-param">identifier: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.MainMenu.async_select_menu_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects a menu item.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>identifier</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A string. See list of identifiers in <a class="reference internal" href="menu_ids.html"><span class="doc">Menu Item Identifiers</span></a></td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Throws MenuItemException:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body">if something goes wrong.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>identifier</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A string. See list of identifiers in <a class="reference internal" href="menu_ids.html"><span class="doc">Menu Item Identifiers</span></a></p>
+</dd>
+<dt class="field-even">Throws MenuItemException</dt>
+<dd class="field-even"><p>if something goes wrong.</p>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Example “<a class="reference internal" href="examples/zoom_on_screen.html#zoom-on-screen-example"><span class="std std-ref">Zoom on Screen</span></a>”</p>
+<p class="admonition-title">See also</p>
+<p>Example “<a class="reference internal" href="examples/zoom_on_screen.html#zoom-on-screen-example"><span class="std std-ref">Zoom on Screen</span></a>”</p>
 </div>
 </dd></dl>
 
@@ -132,24 +127,25 @@
 
 <dl class="class">
 <dt id="iterm2.MenuItemException">
-<em class="property">class </em><code class="descname">MenuItemException</code><a class="headerlink" href="#iterm2.MenuItemException" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">MenuItemException</code><a class="headerlink" href="#iterm2.MenuItemException" title="Permalink to this definition">¶</a></dt>
 <dd><p>A problem was encountered while selecting a menu item.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="iterm2.MenuItemState">
-<em class="property">class </em><code class="descname">MenuItemState</code><span class="sig-paren">(</span><em>checked: bool</em>, <em>enabled: bool</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.MenuItemState" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">MenuItemState</code><span class="sig-paren">(</span><em class="sig-param">checked: bool</em>, <em class="sig-param">enabled: bool</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.MenuItemState" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes the current state of a menu item.</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.MenuItemState.checked">
-<code class="descname">checked</code><a class="headerlink" href="#iterm2.MenuItemState.checked" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">checked</code><a class="headerlink" href="#iterm2.MenuItemState.checked" title="Permalink to this definition">¶</a></dt>
 <dd><p>Is the menu item checked? A <cite>bool</cite> property.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.MenuItemState.enabled">
-<code class="descname">enabled</code><a class="headerlink" href="#iterm2.MenuItemState.enabled" title="Permalink to this definition">¶</a></dt>
-<dd><p>Is the menu item enabled (i.e., it can be selected)? A <cite>bool</cite> property.</p>
+<em class="property">property </em><code class="sig-name descname">enabled</code><a class="headerlink" href="#iterm2.MenuItemState.enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the menu item enabled (i.e., it can be selected)? A <cite>bool</cite>
+property.</p>
 </dd></dl>
 
 </dd></dl>
@@ -158,8 +154,8 @@
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 </div>
@@ -193,8 +189,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/mainmenu.rst.txt"

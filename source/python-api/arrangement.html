@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Arrangement &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Broadcast" href="broadcast.html" />
@@ -87,55 +86,48 @@
 <p>Provides access to saved arrangements.</p>
 <dl class="class">
 <dt id="iterm2.Arrangement">
-<em class="property">class </em><code class="descname">Arrangement</code><a class="headerlink" href="#iterm2.Arrangement" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="staticmethod">
+<em class="property">class </em><code class="sig-name descname">Arrangement</code><a class="headerlink" href="#iterm2.Arrangement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides access to saved arrangements.</p>
+<dl class="method">
 <dt id="iterm2.Arrangement.async_restore">
-<em class="property">static </em><code class="descname">async_restore</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Arrangement.async_restore" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">async_restore</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Arrangement.async_restore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restore a saved window arrangement.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The name of the arrangement.</li>
-<li><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name of the arrangement to restore.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The name of the arrangement.</p></li>
+<li><p><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name of the arrangement to restore.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last">SavedArrangementException</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Throws</dt>
+<dd class="field-even"><p>SavedArrangementException</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="iterm2.Arrangement.async_save">
-<em class="property">static </em><code class="descname">async_save</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Arrangement.async_save" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">async_save</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Arrangement.async_save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save all windows as a new arrangement.</p>
 <p>Replaces the arrangement with the given name if it already exists.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The name of the arrangement.</li>
-<li><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name of the arrangement.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The name of the arrangement.</p></li>
+<li><p><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name of the arrangement.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last">SavedArrangementException</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Throws</dt>
+<dd class="field-even"><p>SavedArrangementException</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="iterm2.arrangement.SavedArrangementException">
-<em class="property">class </em><code class="descname">SavedArrangementException</code><a class="headerlink" href="#iterm2.arrangement.SavedArrangementException" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">SavedArrangementException</code><a class="headerlink" href="#iterm2.arrangement.SavedArrangementException" title="Permalink to this definition">¶</a></dt>
 <dd><p>A problem was encountered while saving or restoring an arrangement.</p>
 </dd></dl>
 
@@ -143,8 +135,8 @@
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 </div>
@@ -178,8 +170,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/arrangement.rst.txt"

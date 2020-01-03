@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Move Tab To Next/Previous Window &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -87,10 +86,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.7</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">move_current_tab_by_n_windows</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">move_current_tab_by_n_windows</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
         <span class="n">tab_to_move</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">current_tab</span>
         <span class="n">window_with_tab_to_move</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_window_for_tab</span><span class="p">(</span><span class="n">tab_to_move</span><span class="o">.</span><span class="n">tab_id</span><span class="p">)</span>
         <span class="n">i</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">terminal_windows</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">window_with_tab_to_move</span><span class="p">)</span>
@@ -99,24 +98,24 @@
         <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">terminal_windows</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-        <span class="n">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_set_tabs</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">tabs</span> <span class="o">+</span> <span class="p">[</span><span class="n">tab_to_move</span><span class="p">])</span>
+        <span class="k">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_set_tabs</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">tabs</span> <span class="o">+</span> <span class="p">[</span><span class="n">tab_to_move</span><span class="p">])</span>
 
-    <span class="nd">@iterm2.RPC</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">move_current_tab_to_next_window</span><span class="p">():</span>
-        <span class="n">await</span> <span class="n">move_current_tab_by_n_windows</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">await</span> <span class="n">move_current_tab_to_next_window</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="nd">@iterm2</span><span class="o">.</span><span class="n">RPC</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">move_current_tab_to_next_window</span><span class="p">():</span>
+        <span class="k">await</span> <span class="n">move_current_tab_by_n_windows</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">move_current_tab_to_next_window</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-    <span class="nd">@iterm2.RPC</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">move_current_tab_to_previous_window</span><span class="p">():</span>
+    <span class="nd">@iterm2</span><span class="o">.</span><span class="n">RPC</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">move_current_tab_to_previous_window</span><span class="p">():</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">terminal_windows</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">await</span> <span class="n">move_current_tab_by_n_windows</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">await</span> <span class="n">move_current_tab_to_previous_window</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">move_current_tab_by_n_windows</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">move_current_tab_to_previous_window</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/6b63bbf2d9b8e48480e9d95aa649df64/movetab.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/a8ed335adf9a2107e1ae043d243472fd/movetab.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -148,8 +147,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/examples/movetab.rst.txt"

@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>JSON Pretty Printer Status Bar Component &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -94,44 +93,44 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;Invalid JSON: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;Invalid JSON: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span><span class="o">=</span><span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span><span class="o">=</span><span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
     <span class="c1"># Set the click handler</span>
-    <span class="nd">@iterm2.RPC</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">onclick</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+    <span class="nd">@iterm2</span><span class="o">.</span><span class="n">RPC</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">onclick</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
         <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
-        <span class="n">selection</span> <span class="o">=</span> <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_selection</span><span class="p">()</span>
-        <span class="n">selectedText</span> <span class="o">=</span> <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_selection_text</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
-        <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_open_popover</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="n">tohtml</span><span class="p">(</span><span class="n">prettyprint</span><span class="p">(</span><span class="n">selectedText</span><span class="p">)),</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+        <span class="n">selection</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_selection</span><span class="p">()</span>
+        <span class="n">selectedText</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_selection_text</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_open_popover</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="n">tohtml</span><span class="p">(</span><span class="n">prettyprint</span><span class="p">(</span><span class="n">selectedText</span><span class="p">)),</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
 
     <span class="c1"># Define the configuration knobs:</span>
     <span class="n">vl</span> <span class="o">=</span> <span class="s2">&quot;json_pretty_printer&quot;</span>
-    <span class="n">knobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterm2</span><span class="o">.</span><span class="n">CheckboxKnob</span><span class="p">(</span><span class="s2">&quot;JSON Pretty Printer&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="n">vl</span><span class="p">)]</span>
+    <span class="n">knobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterm2</span><span class="o">.</span><span class="n">CheckboxKnob</span><span class="p">(</span><span class="s2">&quot;JSON Pretty Printer&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">vl</span><span class="p">)]</span>
     <span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
         <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;JSON Pretty Printer&quot;</span><span class="p">,</span>
         <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Select JSON in the terminal, then click this status bar component to see it nicely formatted.&quot;</span><span class="p">,</span>
         <span class="n">knobs</span><span class="o">=</span><span class="n">knobs</span><span class="p">,</span>
         <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;{ JSON }&quot;</span><span class="p">,</span>
-        <span class="n">update_cadence</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">update_cadence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.json-pretty-printer&quot;</span><span class="p">)</span>
 
     <span class="c1"># This function gets called whenever any of the paths named in defaults (below) changes</span>
     <span class="c1"># or its configuration changes.</span>
-    <span class="nd">@iterm2.StatusBarRPC</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">knobs</span><span class="p">):</span>
+    <span class="nd">@iterm2</span><span class="o">.</span><span class="n">StatusBarRPC</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">knobs</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;{ JSON }&quot;</span><span class="p">]</span>
 
     <span class="c1"># Register the component.</span>
-    <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">,</span> <span class="n">onclick</span><span class="o">=</span><span class="n">onclick</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">,</span> <span class="n">onclick</span><span class="o">=</span><span class="n">onclick</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/5b4a60ce4789e292d805669a06e0f7c1/jsonpretty.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/48c22e08de1aaf8f2c95b847a6448d86/jsonpretty.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -163,8 +162,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/examples/jsonpretty.rst.txt"

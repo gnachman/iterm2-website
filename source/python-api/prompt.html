@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Prompt &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Registration" href="registration.html" />
@@ -87,36 +86,40 @@
 <p>Provides information about the shell prompt.</p>
 <dl class="class">
 <dt id="iterm2.Prompt">
-<em class="property">class </em><code class="descname">Prompt</code><span class="sig-paren">(</span><em>proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Prompt" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">Prompt</code><span class="sig-paren">(</span><em class="sig-param">proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Prompt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a command prompt.</p>
-<p>Shell Integration must be installed for this to work properly.  Do not construct this object yourself. Use <a class="reference internal" href="#iterm2.async_get_last_prompt" title="iterm2.async_get_last_prompt"><code class="xref py py-func docutils literal notranslate"><span class="pre">async_get_last_prompt()</span></code></a> to get an instance.</p>
-<dl class="attribute">
+<p>Shell Integration must be installed for this to work properly.  Do not
+construct this object yourself. Use <a class="reference internal" href="#iterm2.async_get_last_prompt" title="iterm2.async_get_last_prompt"><code class="xref py py-func docutils literal notranslate"><span class="pre">async_get_last_prompt()</span></code></a> to get
+an instance.</p>
+<dl class="method">
 <dt id="iterm2.Prompt.command">
-<code class="descname">command</code><a class="headerlink" href="#iterm2.Prompt.command" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">command</code><a class="headerlink" href="#iterm2.Prompt.command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the command entered at the prompt.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.Prompt.command_range">
-<code class="descname">command_range</code><a class="headerlink" href="#iterm2.Prompt.command_range" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gives the <a class="reference internal" href="util.html#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of the command following the shell prompt.</p>
+<em class="property">property </em><code class="sig-name descname">command_range</code><a class="headerlink" href="#iterm2.Prompt.command_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the <a class="reference internal" href="util.html#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of the command following the
+shell prompt.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.Prompt.output_range">
-<code class="descname">output_range</code><a class="headerlink" href="#iterm2.Prompt.output_range" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gives the <a class="reference internal" href="util.html#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of the output of a command following a shell prompt.</p>
+<em class="property">property </em><code class="sig-name descname">output_range</code><a class="headerlink" href="#iterm2.Prompt.output_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the <a class="reference internal" href="util.html#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of the output of a command
+following a shell prompt.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.Prompt.prompt_range">
-<code class="descname">prompt_range</code><a class="headerlink" href="#iterm2.Prompt.prompt_range" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">prompt_range</code><a class="headerlink" href="#iterm2.Prompt.prompt_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the <a class="reference internal" href="util.html#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of a shell prompt.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="iterm2.Prompt.working_directory">
-<code class="descname">working_directory</code><a class="headerlink" href="#iterm2.Prompt.working_directory" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">working_directory</code><a class="headerlink" href="#iterm2.Prompt.working_directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the working directory at the time the prompt was printed.</p>
 </dd></dl>
 
@@ -124,78 +127,96 @@
 
 <dl class="class">
 <dt id="iterm2.PromptMonitor">
-<em class="property">class </em><code class="descname">PromptMonitor</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection, session_id: str, modes: List[iterm2.prompt.PromptMonitor.Mode] = [&lt;Mode.PROMPT: 1&gt;]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PromptMonitor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">PromptMonitor</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection, session_id: str, modes: List[iterm2.prompt.PromptMonitor.Mode] = [&lt;Mode.PROMPT: 1&gt;]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PromptMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager to watch for changes to the prompt.</p>
-<p>This requires shell integration or prompt-detecting triggers to be installed for prompt detection.</p>
-<p>Note: Older versions of the runtime do not support modes other than PROMPT. Attempting to use a mode other than PROMPT when connected to a too-old version of iTerm2 will result in an exception telling the user to upgrade.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>connection</strong> – The <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> to use.</li>
-<li><strong>session_id</strong> – The string session ID to monitor.</li>
+<p>This requires shell integration or prompt-detecting triggers to be
+installed for prompt detection.</p>
+<p>Note: Older versions of the runtime do not support modes other than PROMPT.
+Attempting to use a mode other than PROMPT when connected to a too-old
+version of iTerm2 will result in an exception telling the user to upgrade.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection</strong> – The <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> to use.</p></li>
+<li><p><strong>session_id</strong> – The string session ID to monitor.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">my_session</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
-        <span class="n">DoSomething</span><span class="p">()</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="p">(</span>
+    <span class="n">connection</span><span class="p">,</span> <span class="n">my_session</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+            <span class="n">DoSomething</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></blockquote>
 <dl class="method">
 <dt id="iterm2.PromptMonitor.async_get">
-<code class="descname">async_get</code><span class="sig-paren">(</span><em>) -&gt; (&lt;enum 'Mode'&gt;</em>, <em>typing.Any</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PromptMonitor.async_get" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Tuple[iterm2.prompt.PromptMonitor.Mode, Any]<a class="headerlink" href="#iterm2.PromptMonitor.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Blocks until a new shell prompt is received.</p>
-<p>Note: Older versions of the runtime that do not support modes other than PROMPT always return None.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A tuple of (PROMPT,None), (COMMAND_START,Str), or (COMMAND_END,Int) where the Str gives the command being run and the Int gives the exit status of the command.</td>
-</tr>
-</tbody>
-</table>
+<p>Note: Older versions of the runtime that do not support modes other
+than PROMPT always return None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A tuple of (PROMPT,None), (COMMAND_START,Str), or
+(COMMAND_END,Int) where the Str gives the command being run and the
+Int gives the exit status of the command.</p>
+</dd>
+</dl>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.PromptMonitor.Mode">
+<em class="property">class </em><code class="sig-name descname">Mode</code><a class="headerlink" href="#iterm2.PromptMonitor.Mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>The mode for a prompt monitor.</p>
+<dl class="attribute">
+<dt id="iterm2.PromptMonitor.Mode.COMMAND_END">
+<code class="sig-name descname">COMMAND_END</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.PromptMonitor.Mode.COMMAND_END" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.PromptMonitor.Mode.COMMAND_START">
+<code class="sig-name descname">COMMAND_START</code><em class="property"> = 2</em><a class="headerlink" href="#iterm2.PromptMonitor.Mode.COMMAND_START" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.PromptMonitor.Mode.PROMPT">
+<code class="sig-name descname">PROMPT</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.PromptMonitor.Mode.PROMPT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="iterm2.async_get_last_prompt">
-<code class="descname">async_get_last_prompt</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>session_id: str</em><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.prompt.Prompt]<a class="headerlink" href="#iterm2.async_get_last_prompt" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">async_get_last_prompt</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">session_id: str</em><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.prompt.Prompt]<a class="headerlink" href="#iterm2.async_get_last_prompt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches info about the last prompt in a session.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</li>
-<li><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The session ID for which to fetch the most recent prompt.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</p></li>
+<li><p><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The session ID for which to fetch the most recent
+prompt.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The prompt if one exists, or else <cite>None</cite>.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Throws:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The prompt if one exists, or else <cite>None</cite>.</p>
+</dd>
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <hr class="docutils" />
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 </div>
@@ -229,8 +250,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/prompt.rst.txt"

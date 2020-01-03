@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Create Window — Custom Escape Sequence &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -87,17 +86,17 @@ this case, the action is to create a new window. This script is meant to be a
 starting point for developing your own custom escape sequence handler.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">CustomControlSequenceMonitor</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">CustomControlSequenceMonitor</span><span class="p">(</span>
             <span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;^create-window$&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">match</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
-            <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+            <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/894307aa004b7b7741b2a981679531e6/create_window.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/6419772da134718f2d36070467266052/create_window.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 <p>To create a window when this script is running, invoke this command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">printf</span> <span class="s2">&quot;\033]1337;Custom=id=%s:%s\a&quot;</span> <span class="s2">&quot;shared-secret&quot;</span> <span class="s2">&quot;create-window&quot;</span>
 </pre></div>
@@ -136,8 +135,8 @@ sequences, but they won’t work unless they contain the proper secret string.</
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/examples/create_window.rst.txt"

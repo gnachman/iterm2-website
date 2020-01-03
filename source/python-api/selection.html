@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Selection &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Session" href="session.html" />
@@ -87,128 +86,143 @@
 <p>Provides interfaces for interacting with selected text regions.</p>
 <dl class="class">
 <dt id="iterm2.SelectionMode">
-<em class="property">class </em><code class="descname">SelectionMode</code><a class="headerlink" href="#iterm2.SelectionMode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">SelectionMode</code><a class="headerlink" href="#iterm2.SelectionMode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enumerated list of modes for selecting text.</p>
 <dl class="attribute">
 <dt id="iterm2.SelectionMode.BOX">
-<code class="descname">BOX</code><em class="property"> = 4</em><a class="headerlink" href="#iterm2.SelectionMode.BOX" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">BOX</code><em class="property"> = 4</em><a class="headerlink" href="#iterm2.SelectionMode.BOX" title="Permalink to this definition">¶</a></dt>
 <dd><p>rectangular region</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.SelectionMode.CHARACTER">
-<code class="descname">CHARACTER</code><em class="property"> = 0</em><a class="headerlink" href="#iterm2.SelectionMode.CHARACTER" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">CHARACTER</code><em class="property"> = 0</em><a class="headerlink" href="#iterm2.SelectionMode.CHARACTER" title="Permalink to this definition">¶</a></dt>
 <dd><p>character-by-character selection</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.SelectionMode.LINE">
-<code class="descname">LINE</code><em class="property"> = 2</em><a class="headerlink" href="#iterm2.SelectionMode.LINE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">LINE</code><em class="property"> = 2</em><a class="headerlink" href="#iterm2.SelectionMode.LINE" title="Permalink to this definition">¶</a></dt>
 <dd><p>row-by-row selection</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.SelectionMode.SMART">
-<code class="descname">SMART</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.SelectionMode.SMART" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">SMART</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.SelectionMode.SMART" title="Permalink to this definition">¶</a></dt>
 <dd><p>smart selection</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.SelectionMode.WHOLE_LINE">
-<code class="descname">WHOLE_LINE</code><em class="property"> = 5</em><a class="headerlink" href="#iterm2.SelectionMode.WHOLE_LINE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">WHOLE_LINE</code><em class="property"> = 5</em><a class="headerlink" href="#iterm2.SelectionMode.WHOLE_LINE" title="Permalink to this definition">¶</a></dt>
 <dd><p>entire wrapped lines, which could occupy many rows</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.SelectionMode.WORD">
-<code class="descname">WORD</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.SelectionMode.WORD" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">WORD</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.SelectionMode.WORD" title="Permalink to this definition">¶</a></dt>
 <dd><p>word-by-word selection</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="iterm2.SelectionMode.fromProtoValue">
-<code class="descname">fromProtoValue</code><em class="property"> = &lt;function SelectionMode.fromProtoValue&gt;</em><a class="headerlink" href="#iterm2.SelectionMode.fromProtoValue" title="Permalink to this definition">¶</a></dt>
+<dt id="iterm2.SelectionMode.from_proto_value">
+<code class="sig-name descname">from_proto_value</code><em class="property"> = &lt;function SelectionMode.from_proto_value&gt;</em><a class="headerlink" href="#iterm2.SelectionMode.from_proto_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="iterm2.SelectionMode.toProtoValue">
-<code class="descname">toProtoValue</code><em class="property"> = &lt;function SelectionMode.toProtoValue&gt;</em><a class="headerlink" href="#iterm2.SelectionMode.toProtoValue" title="Permalink to this definition">¶</a></dt>
+<dt id="iterm2.SelectionMode.to_proto_value">
+<code class="sig-name descname">to_proto_value</code><em class="property"> = &lt;function SelectionMode.to_proto_value&gt;</em><a class="headerlink" href="#iterm2.SelectionMode.to_proto_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="iterm2.SubSelection">
-<em class="property">class </em><code class="descname">SubSelection</code><span class="sig-paren">(</span><em>windowedCoordRange: iterm2.util.WindowedCoordRange</em>, <em>mode: iterm2.selection.SelectionMode</em>, <em>connected: bool</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.SubSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">SubSelection</code><span class="sig-paren">(</span><em class="sig-param">windowed_coord_range: iterm2.util.WindowedCoordRange</em>, <em class="sig-param">mode: iterm2.selection.SelectionMode</em>, <em class="sig-param">connected: bool</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.SubSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a continguous block of selected characters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>windowedCoordRange</strong> – A <a class="reference internal" href="util.html#iterm2.util.WindowedCoordRange" title="iterm2.util.WindowedCoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">WindowedCoordRange</span></code></a> describing the range.</li>
-<li><strong>mode</strong> – A <a class="reference internal" href="#iterm2.SelectionMode" title="iterm2.SelectionMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionMode</span></code></a> describing how the selection is interpreted and extended.</li>
-<li><strong>connected</strong> – If true, no newline exists between this and the next sub-selection.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>windowed_coord_range</strong> – A <a class="reference internal" href="util.html#iterm2.util.WindowedCoordRange" title="iterm2.util.WindowedCoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">WindowedCoordRange</span></code></a>
+describing the range.</p></li>
+<li><p><strong>mode</strong> – A <a class="reference internal" href="#iterm2.SelectionMode" title="iterm2.SelectionMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionMode</span></code></a> describing how the selection is
+interpreted and extended.</p></li>
+<li><p><strong>connected</strong> – If true, no newline exists between this and the next
+sub-selection.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="iterm2.SubSelection.async_get_string">
-<code class="descname">async_get_string</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>session_id: str</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.SubSelection.async_get_string" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">async_get_string</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">session_id: str</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.SubSelection.async_get_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the text belonging to this subselection.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</li>
-<li><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The ID of the session for which to look up the selected text.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</p></li>
+<li><p><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The ID of the session for which to look up the
+selected text.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.SubSelection.mode">
+<em class="property">property </em><code class="sig-name descname">mode</code><a class="headerlink" href="#iterm2.SubSelection.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the mode of this sub-selection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.SubSelection.windowedCoordRange">
+<em class="property">property </em><code class="sig-name descname">windowedCoordRange</code><a class="headerlink" href="#iterm2.SubSelection.windowedCoordRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated in favor of windowed_coord_range</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.SubSelection.windowed_coord_range">
+<em class="property">property </em><code class="sig-name descname">windowed_coord_range</code><a class="headerlink" href="#iterm2.SubSelection.windowed_coord_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the coordinate range spanned by this sub-selection.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="iterm2.Selection">
-<em class="property">class </em><code class="descname">Selection</code><span class="sig-paren">(</span><em>subSelections: List[iterm2.selection.SubSelection]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Selection" title="Permalink to this definition">¶</a></dt>
-<dd><p>A collection of <a class="reference internal" href="#iterm2.SubSelection" title="iterm2.SubSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubSelection</span></code></a> objects, describing all the selections in a session.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>subSelections</strong> – An array of <a class="reference internal" href="#iterm2.SubSelection" title="iterm2.SubSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubSelection</span></code></a> objects.</td>
-</tr>
-</tbody>
-</table>
+<em class="property">class </em><code class="sig-name descname">Selection</code><span class="sig-paren">(</span><em class="sig-param">subSelections: List[iterm2.selection.SubSelection]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>A collection of <a class="reference internal" href="#iterm2.SubSelection" title="iterm2.SubSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubSelection</span></code></a> objects, describing all the
+selections in a session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>subSelections</strong> – An array of <a class="reference internal" href="#iterm2.SubSelection" title="iterm2.SubSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubSelection</span></code></a> objects.</p>
+</dd>
+</dl>
 <dl class="method">
 <dt id="iterm2.Selection.async_get_string">
-<code class="descname">async_get_string</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection</em>, <em>session_id: str</em>, <em>width: int</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.Selection.async_get_string" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">async_get_string</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">session_id: str</em>, <em class="sig-param">width: int</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.Selection.async_get_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the selected text.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</li>
-<li><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The ID of the session for which to look up the selected text.</li>
-<li><strong>width</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The width (number of columns) of the session.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</p></li>
+<li><p><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The ID of the session for which to look up the
+selected text.</p></li>
+<li><p><strong>width</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The width (number of columns) of the session.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Selection.subSelections">
+<em class="property">property </em><code class="sig-name descname">subSelections</code><a class="headerlink" href="#iterm2.Selection.subSelections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated in favore of sub_selections.</p>
 </dd></dl>
 
 </dd></dl>
@@ -217,8 +231,8 @@
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 </div>
@@ -252,8 +266,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/selection.rst.txt"

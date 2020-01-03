@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Web-Based Status Bar &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -108,22 +107,22 @@
 
 <span class="n">ICON</span> <span class="o">=</span> <span class="s2">&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAARCAYAAADUryzEAAAABGdBTUEAALGPC/xhBQAAAK9JREFUOMtjYKAxqIRiskE9FBMFvIDYEYgZoXxJIDaHYkmoGEjOCYg9sRnABMQWQKwDxLuA+BoQz4Ti61AxkEZ+qFqsgAuIbwNxGZoiJqjYbaganKANiOfikZ8LVYMTnAFiYzzyxlA1GFH1GYnmwWMAD5pacBSzQiVYSXABsh7qhgHFsaAExHZ40gFIThGX5iAg1gBiZmiKk4T62RgpJYLkYoBYd3BmJmyAFVtUIQMAZuAlWgiKRrsAAAAASUVORK5CYII=&quot;</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">updater</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">updater</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A background tasks that reloads URL every UPDATE_INTERVAL seconds and</span>
 <span class="sd">    sets the app-scope &#39;user.{VARIABLE}&#39; variable.&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">value</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="n">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-            <span class="n">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">URL</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="n">await</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+            <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">URL</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">text</span><span class="p">:</span>
-                    <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_set_variable</span><span class="p">(</span><span class="s2">&quot;user.&quot;</span> <span class="o">+</span> <span class="n">VARIABLE</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span>
-                    <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">UPDATE_INTERVAL</span><span class="p">)</span>
+                    <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_set_variable</span><span class="p">(</span><span class="s2">&quot;user.&quot;</span> <span class="o">+</span> <span class="n">VARIABLE</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span>
+                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">UPDATE_INTERVAL</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="c1"># Start fetching the URL</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">updater</span><span class="p">(</span><span class="n">app</span><span class="p">))</span>
 
@@ -136,24 +135,24 @@
         <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Shows your local weather&quot;</span><span class="p">,</span>
         <span class="n">knobs</span><span class="o">=</span><span class="p">[],</span>
         <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;😎&quot;</span><span class="p">,</span>
-        <span class="n">update_cadence</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">update_cadence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.weather&quot;</span><span class="p">,</span>
         <span class="n">icons</span><span class="o">=</span><span class="p">[</span><span class="n">icon</span><span class="p">,</span><span class="n">icon2x</span><span class="p">])</span>
 
-    <span class="nd">@iterm2.StatusBarRPC</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">knobs</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;iterm2.user.&quot;</span> <span class="o">+</span> <span class="n">VARIABLE</span> <span class="o">+</span> <span class="s2">&quot;?&quot;</span><span class="p">)):</span>
+    <span class="nd">@iterm2</span><span class="o">.</span><span class="n">StatusBarRPC</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">knobs</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;iterm2.user.&quot;</span> <span class="o">+</span> <span class="n">VARIABLE</span> <span class="o">+</span> <span class="s2">&quot;?&quot;</span><span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;This function returns the value to show in a status bar.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">value</span>
         <span class="k">return</span> <span class="s2">&quot;Loading…&quot;</span>
 
     <span class="c1"># Register the component.</span>
-    <span class="n">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="../_downloads/140973170cef9bfdbc02df2383356775/weather.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/3c55e6d5a9630ce76850c51fc4339c35/weather.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -185,8 +184,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/examples/weather.rst.txt"

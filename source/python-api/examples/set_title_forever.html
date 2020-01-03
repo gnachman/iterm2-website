@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Launch iTerm2 and Set Session Title &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -84,9 +83,9 @@
 <span id="set-title-example"></span><h1>Launch iTerm2 and Set Session Title<a class="headerlink" href="#launch-iterm2-and-set-session-title" title="Permalink to this headline">¶</a></h1>
 <p>This script demonstrates two concepts:</p>
 <ol class="arabic simple">
-<li>Launching iTerm2 using PyObjC and running the script only
-after it is launched.</li>
-<li>Setting a session’s name.</li>
+<li><p>Launching iTerm2 using PyObjC and running the script only
+after it is launched.</p></li>
+<li><p>Setting a session’s name.</p></li>
 </ol>
 <p>Further, it demonstrates how to change a profile setting so
 the session title can’t be later changed by a control
@@ -109,19 +108,19 @@ pip3 install pyobjc
 <span class="c1"># Launch the app</span>
 <span class="n">AppKit</span><span class="o">.</span><span class="n">NSWorkspace</span><span class="o">.</span><span class="n">sharedWorkspace</span><span class="p">()</span><span class="o">.</span><span class="n">launchApplication_</span><span class="p">(</span><span class="s2">&quot;iTerm2&quot;</span><span class="p">)</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
     <span class="c1"># Foreground the app</span>
-    <span class="n">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_activate</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_activate</span><span class="p">()</span>
 
     <span class="c1"># Create a new tab or window</span>
     <span class="n">myterm</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">myterm</span><span class="p">:</span>
-        <span class="n">myterm</span> <span class="o">=</span> <span class="n">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+        <span class="n">myterm</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">await</span> <span class="n">myterm</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
-    <span class="n">await</span> <span class="n">myterm</span><span class="o">.</span><span class="n">async_activate</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">myterm</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">myterm</span><span class="o">.</span><span class="n">async_activate</span><span class="p">()</span>
 
     <span class="c1"># Update the name and disable future updates by</span>
     <span class="c1"># control sequences.</span>
@@ -131,13 +130,13 @@ pip3 install pyobjc
     <span class="c1"># Session&gt;Edit Session.</span>
     <span class="n">session</span> <span class="o">=</span> <span class="n">myterm</span><span class="o">.</span><span class="n">current_tab</span><span class="o">.</span><span class="n">current_session</span>
     <span class="n">update</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">LocalWriteOnlyProfile</span><span class="p">()</span>
-    <span class="n">update</span><span class="o">.</span><span class="n">set_allow_title_setting</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">update</span><span class="o">.</span><span class="n">set_allow_title_setting</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">update</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s2">&quot;This is my customized session name&quot;</span><span class="p">)</span>
-    <span class="n">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_set_profile_properties</span><span class="p">(</span><span class="n">update</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_set_profile_properties</span><span class="p">(</span><span class="n">update</span><span class="p">)</span>
 
 <span class="c1"># Passing True for the second parameter means keep trying to</span>
 <span class="c1"># connect until the app launches.</span>
-<span class="n">iterm2</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note that if you download and install the package below it will
@@ -146,7 +145,7 @@ within iTerm2 but your system Python configuration will not
 be modified. You still need to follow the steps above to
 install Python 3, the iterm2 Python module, and PyObjC if
 you plan to run this from the command line.</p>
-<p><a class="reference download internal" download="" href="../_downloads/f94dd9e27f6e528eaac88542c168da0f/set_title_forever.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+<p><a class="reference download internal" download="" href="../_downloads/5e7cfd4dce8d1a677e4ca5b54da18f99/set_title_forever.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 </div>
 
 
@@ -178,8 +177,8 @@ you plan to run this from the command line.</p>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/examples/set_title_forever.rst.txt"

@@ -4,8 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Variables &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Window" href="window.html" />
@@ -84,51 +83,54 @@
 	    
   <div class="section" id="module-iterm2.variables">
 <span id="variables"></span><h1>Variables<a class="headerlink" href="#module-iterm2.variables" title="Permalink to this headline">¶</a></h1>
+<p>Provides support for iTerm2 variables, which hold information associated
+with various objects such as sessions, tabs, and windows.</p>
 <dl class="class">
 <dt id="iterm2.VariableMonitor">
-<em class="property">class </em><code class="descname">VariableMonitor</code><span class="sig-paren">(</span><em>connection: iterm2.connection.Connection, scope: iterm2.variables.VariableScopes, name: str, identifier: Optional[str]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.VariableMonitor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">VariableMonitor</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection, scope: iterm2.variables.VariableScopes, name: str, identifier: Optional[str]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.VariableMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Watches for changes to a variable.</p>
-<p><cite>VariableMonitor</cite> is a context manager that helps observe changes in iTerm2 Variables.</p>
+<p><cite>VariableMonitor</cite> is a context manager that helps observe changes in iTerm2
+Variables.</p>
 </div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>connection</strong> – The connection to iTerm2.</li>
-<li><strong>scope</strong> – The scope in which the variable should be evaluated.</li>
-<li><strong>name</strong> – The variable name.</li>
-<li><strong>identifier</strong> – <p>A tab, window, or session identifier. Must correspond to the passed-in scope. If the scope is <cite>APP</cite> this should be None. If the scope is <cite>SESSION</cite> or <cite>WINDOW</cite> the identifier may be “all” or “active”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection</strong> – The connection to iTerm2.</p></li>
+<li><p><strong>scope</strong> – The scope in which the variable should be evaluated.</p></li>
+<li><p><strong>name</strong> – The variable name.</p></li>
+<li><p><strong>identifier</strong> – <dl class="simple">
+<dt>A tab, window, or session identifier. Must correspond to</dt><dd><p>the passed-in scope. If the scope is <cite>APP</cite> this should be None. If the
+scope is <cite>SESSION</cite> or <cite>WINDOW</cite> the identifier may be “all” or “active”.</p>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<ul class="last">
-<li>Example “<a class="reference internal" href="examples/colorhost.html#colorhost-example"><span class="std std-ref">Per-Host Colors</span></a>”</li>
-<li>Example “<a class="reference internal" href="examples/theme.html#theme-example"><span class="std std-ref">Change Color Presets On Theme Change</span></a>”</li>
+<p class="admonition-title">See also</p>
+<ul>
+<li><p>Example “<a class="reference internal" href="examples/colorhost.html#colorhost-example"><span class="std std-ref">Per-Host Colors</span></a>”</p></li>
+<li><p>Example “<a class="reference internal" href="examples/theme.html#theme-example"><span class="std std-ref">Change Color Presets On Theme Change</span></a>”</p></li>
 </ul>
 </div>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span>
         <span class="n">connection</span><span class="p">,</span>
         <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableScopes</span><span class="o">.</span><span class="n">SESSION</span><span class="p">,</span>
         <span class="s2">&quot;jobName&quot;</span><span class="p">,</span>
         <span class="n">my_session</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="n">new_value</span> <span class="o">=</span> <span class="n">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">new_value</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
         <span class="n">DoSomething</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
-</li>
+</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="iterm2.VariableMonitor.async_get">
-<code class="descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#iterm2.VariableMonitor.async_get" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#iterm2.VariableMonitor.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the new value of the variable.</p>
 </dd></dl>
 
@@ -136,29 +138,29 @@
 
 <dl class="class">
 <dt id="iterm2.VariableScopes">
-<em class="property">class </em><code class="descname">VariableScopes</code><a class="headerlink" href="#iterm2.VariableScopes" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">VariableScopes</code><a class="headerlink" href="#iterm2.VariableScopes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes the scope in which a variable can be evaluated.</p>
 <dl class="attribute">
 <dt id="iterm2.VariableScopes.APP">
-<code class="descname">APP</code><em class="property"> = 4</em><a class="headerlink" href="#iterm2.VariableScopes.APP" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">APP</code><em class="property"> = 4</em><a class="headerlink" href="#iterm2.VariableScopes.APP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whole-app scope</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.VariableScopes.SESSION">
-<code class="descname">SESSION</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.VariableScopes.SESSION" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">SESSION</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.VariableScopes.SESSION" title="Permalink to this definition">¶</a></dt>
 <dd><p>Session scope</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.VariableScopes.TAB">
-<code class="descname">TAB</code><em class="property"> = 2</em><a class="headerlink" href="#iterm2.VariableScopes.TAB" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">TAB</code><em class="property"> = 2</em><a class="headerlink" href="#iterm2.VariableScopes.TAB" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tab scope</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="iterm2.VariableScopes.WINDOW">
-<code class="descname">WINDOW</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.VariableScopes.WINDOW" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">WINDOW</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.VariableScopes.WINDOW" title="Permalink to this definition">¶</a></dt>
 <dd><p>Window scope</p>
 </dd></dl>
 
@@ -168,8 +170,8 @@
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 </div>
@@ -203,8 +205,8 @@
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/variables.rst.txt"
