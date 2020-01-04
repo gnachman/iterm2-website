@@ -1,3 +1,157 @@
+2020-01-03: Use different icons for beta and nightly
+
+2020-01-02: Fix vertical alignment of image assets in git
+status bar components. The 10.15 SDK draws strings in a
+different place for some reason.
+
+2020-01-01: Fix vertical alignment on retina displays of new
+output indicator and dead-session indicator. The bell also
+moves down half a point, and it doesn't seem to look any
+better or worse to my eyes.
+
+2020-01-01: Don't use @uservars in tmux integration prior to
+tmux 3.0. Issue 8596
+
+2019-12-31: Add .its file as openable file
+
+2019-12-31: Fix popover size in jsonpretty example
+
+2019-12-31: Add gmtlock.its
+
+2019-12-31: Convert tabs to spaces in gmtclock.rst
+
+2019-12-31: Fix force click to smart select. Besides
+stopping live selection prior to performing smart selection,
+we must also not clear it on mouse-up.
+
+2019-12-31: Set an upper bound of 1250x1250 for initial
+session size. Issue 8592
+
+2019-12-31: Combine profile debug logs into a single
+structure. Add logging at more locations.
+
+2019-12-30: Disable tab icon on macOS 10.12 and hide the
+pref. I can't get it to work and it's a nightmare to develop
+on old macoses.
+
+2019-12-30: Don't flip custom tab icons on 10.15
+
+2019-12-30: Don't use flipped images in tab icons on 10.15
+
+2019-12-30: Add TODOs for logging
+
+2019-12-30: [python] Fix more pylint issues
+
+2019-12-30: [python] Fix off by one error when getting
+content of multiple selection where the last character was
+elided improperly
+
+2019-12-30: [python] Respect timeout when registering
+statusbar
+
+2019-12-30: [python] Fix mypy, pycodestyle, and pylint
+complaints.
+
+A number of pylint errors had to be silenced, particularly
+because it can't handle protobufs.
+
+Some problems were silenced for backward compatibility
+reasons: I can't break public APIs for a naming issue, etc.
+
+A few were silenced because fixing them is riskier than
+leaving the imperfect code in place.
+
+2019-12-25: Update internet access policy for all outgoing
+connections
+
+2019-12-25: Inject banner text into repl session rather than
+passing it through the banner command line argument
+
+2019-12-25: Abort paste when blocking for prompt with ^C and
+esc. Issue 8094
+
+2019-12-24: Add an advanced pref to not copy background
+colors
+
+2019-12-24: Add Ignore as pointer action. Issue 8576
+
+2019-12-24: Strip leading hyphens in extract URL. We detect
+a URL by searching backward from the first colon to the
+beginning of the scheme. We support hyphens in schemes
+because Google ruined URLs with chrome-devtools. In issue
+8588 it is revealed that we will pick up dozens of leading
+hyphens in emacs.
+
+2019-12-23: Move fullscreen hotkey window to its preferred
+screen before making it key so the dock won't get hidden on
+the wrong window. Issue 8487
+
+2019-12-23: Fix a bug where 'select menu item' actions get
+performed twice. Issue 8587
+
+2019-12-23: Reset mouseDownOnSelection in mouseUp. Issue
+8538
+
+2019-12-23: Use RGB color space for black in
+underline/strikethrough mask because the callee expects 4
+color components
+
+2019-12-23: Make scrolling cancel three-finger tap gesture.
+Issue 8538
+
+2019-12-22: Fix printing black and white images. Issue 8581
+
+2019-12-22: On catalina, default to using the built in mouse
+cursor for i-beam. Overlay it with a circle for mouse
+reporting.
+
+2019-12-22: Add proper error reporting for dynamic profiles
+
+2019-12-22: Save user-defined vars in tmux server. Issue
+8516
+
+2019-12-22: Add skip button to shell integration installer
+
+2019-12-22: Refactor shell integration installer
+
+2019-12-22: Minor cleanup
+
+2019-12-22: Redo shell integration installer UI
+
+2019-12-22: End live selection on mouse up. Fixes a bug
+where a three finger tap followed by a scroll would begin
+selecting text
+
+2019-12-19: Make mouse drag cancel a three-finger tap
+gesture. Issue 8538
+
+2019-12-19: Prevent crazy behavior when dragging past the
+255-32nd column in xterm mouse reporting
+
+2019-12-19: Add advanced pref to draw solid underlines.
+Issue 8561
+
+2019-12-19: [tmux] Offer to force detach when tmux is
+unresponsive and you're trying something destructive (kill
+window, pane, session). Issue 8560
+
+2019-12-19: [tmux integration] Double-attachment polish.
+
+Offer to force detach other when already attached to tmux.
+
+Fix "reveal" behavior in this case to show a session rather
+than just the session's window.  If you try to detach twice,
+offer to force detach.
+
+Issue 8559
+
+2019-12-19: Add Send Selection to context menu. Issue 3590.
+
+2019-12-17: Reflect changes to custom touch bar items right
+away. Issue 8542
+
+2019-12-17: Remove various entitlements that are not needed
+
 2019-12-16: Fix bug that broke selection
 
 2019-12-15: Change colorspace of IBarCursor to sRGB. Before
@@ -194,322 +348,3 @@ self-signed cert.
 
 2019-12-01: Remove sigusr2 handler after CPU profiling is
 finished
-
-2019-11-26: Disregard dragOk_ when there are three fingers
-making a drag. I don't know if dragOk_ is still useful
-because it's from the big 2011 commit and there's not much
-info about why it is there. I do know that three-finger
-drags shuffle mouse down/up/drag in crazy ways, and in issue
-8323 we see that dragOk prevents a three finger drag from
-working when BetterTouchTool joins the crazy party and a
-drag precedes mousedown.
-
-2019-11-25: Reset find bar progress meter when it loses
-focus
-
-2019-11-25: Fix various analyzer complaints
-
-2019-11-25: When popping an icon title and the stack is
-empty, revert to the session name as title. Issue 8512
-
-2019-11-25: Bump Travis to xcode 11.2
-
-2019-11-25: Fix possible overflow in imported recordings
-
-2019-11-24: Prevent the possibility of buffer overflow when
-importing a recording
-
-2019-11-24: Remove /private/var from image_decoder sandbox.
-Doesn't seem to be necessary to decode PDFs. I tested on
-10.12 and 10.14
-
-2019-11-24: Add support for moving by a vim WORD (as opposed
-to a word) in copy mode. In vim parlance, a WORD is made of
-non-whitespace characters, while a word is alphanumeric.
-Refactors the logical movement stuff into its own class.
-
-2019-11-23: Remove /private/var from image decoder sandbox.
-I tested it on PDFs, PNGs, JPGs, and GIFs. I tested 10.12
-and 10.14. Doesn't seem to be needed any more. Maybe it was
-needed by 10.11 back in 2016 when it was added?
-
-2019-11-23: [python] Bump version
-
-2019-11-23: [python] Catch exceptions while unsubscribing
-from notifications in monitors. Also fix a missing  in
-Tab.async_activate.
-
-2019-11-23: Free palette and pixels in image decoder
-
-2019-11-23: Decode sixel out of process
-
-2019-11-23: Update libsixel
-
-2019-11-23: Add support for custom shell. This lets you
-choose a shell that isn't in /etc/shells and makes it a
-login shell by running it from login and changing argv[0] to
-start with a -. Issue 3139
-
-2019-11-22: Improve tmux logging: show direction of traffic
-
-2019-11-22: Update BetterFontPicker.framework
-
-2019-11-21: Don't show document edited if session has custom
-command. Issue 8507
-
-2019-11-21: Fix typo. Issue 8500
-
-2019-11-21: Initialize _textEditingRow. Fixes a bug where
-editing the regex of any row but the first and then stopping
-editing *without making changes* caused the first row to
-change.
-
-This happens because controlTextDidBeginEditing doesn't get
-called if the user doesn't actually make an edit but
-controlTextDidEndEditing is always called. To Apple's
-credit, the docs for controlTextDidEndEditing mention this.
-Plus one point for good docs, minus one million points for
-an API that has been broken long enough to go to war and
-vote.
-
-2019-11-21: Update the current window after swapping tab
-order in tmux integration. Issue 8488
-
-2019-11-21: Don't translate from screen terminal in tmux
-integration if default-terminal server option is set to
-something not including the substring 'screen'. Issue 8203
-
-2019-11-21: Use dispatch_source to know right away when a
-process is created or destroyed. Disabled by default because
-it needs optimization - it is monitoring a lot of processes,
-and I think it could do less work and just monitor those on
-the path to the current foreground job.
-
-2019-11-21: Replace the long-deprecated CFBundleTypeOSTypes
-with LSItemContentTypes for folders. Issue 8392
-
-2019-11-20: Defer adding layer to root terminal view until
-all sessions in the current tab have visible MTKViews. Fixes
-a flash when enabling GPU render. Issue 8503
-
-2019-11-20: Fix a bug in ensuring the uniqueness of
-navigation shortcuts: user defaults was not updated. This
-leads to confusion because the window setting is checked
-before the other settings, so although prefs says 'no
-shortcut' window may still have a shortcut. Issue 8497
-
-2019-11-19: Make duplicate tab respect advanced pref
-addNewTabAtEndOfTabs. Issue 6553
-
-2019-11-18: Change how font size is calculated for Consolas.
-Issue 8472
-
-2019-11-18: Bump project to xcode 11.2 settings, except for
-signing where they propose I use archiving. Give up, I'm
-never going to use archiving.
-
-2019-11-18: Fix warning
-
-2019-11-18: Reduce the size of the job manager interface.
-Fix a bug where tty wasn't always set
-
-2019-11-18: Move TTY-fiddling code to its own file
-
-2019-11-17: Fix table view cell reuse bug that caused font
-names to be right aligned in Catalina
-
-2019-11-17: Update release_stable to fail if notarization
-fails
-
-2019-11-17: Prevent a crash when creating a weak reference
-to PseudoTerminal during dealloc and an out-of-bounds row in
-the password manager because NSTableView gives a selectedRow
-that is too big out of bounds after reloading data (it says
-row 0 is selected when there are no rows).
-
-2019-11-17: Save search history outside the main plist file
-for privacy. Issue 8491
-
-2019-11-16: Refactor killing of tasks to hide monoserver
-details
-
-2019-11-16: Eliminate pidIsChild
-
-2019-11-16: Reduce uses of childPid and serverChildPid
-
-2019-11-16: Don't pass fork state around where it isn't
-needed by the caller
-
-2019-11-16: Combine forkAndExec with didForkAndExec
-
-2019-11-16: Improve error reporting for fork and exec to
-simplify callsite and eventually combine forking with
-post-forking calls
-
-2019-11-16: Move fork and exec into job manager
-
-2019-11-16: Refactor fork and exec code to prep for moving
-it into the job manager
-
-2019-11-16: Replace finishLaunchingDirectChild with
-didForkParent
-
-2019-11-16: Fix a bug where didForkParent didn't call the
-completion block when using monoserver and PTYTask
-attachToServer: was not defined
-
-2019-11-16: Begin adding legacy job manager
-
-2019-11-16: Start moving session restoration functionality
-from PTYTask to iTermMonoServerJobManager
-
-2019-11-16: Simplify iTermTask interface a little to hide
-the existence of session restoration
-
-2019-11-16: Break the dependency of TaskNotifier on PTYTask.
-
-2019-11-14: Convert NSAssert to beta asserts sampled at 1%.
-NSAssert gets compiled out, so I shouldn't have been using
-it.
-
-2019-11-14: Fix string length check
-
-2019-11-14: Fix python argument parser's behavior when space
-is left out after -c or -m
-
-2019-11-14: [BetterFontPicker] Don't crash if an image asset
-is missing
-
-2019-11-14: Turn the action status bar component into a text
-component that handles clicks rather than a button because
-its baseline was misaligned and the text color was a bit
-dimmer than everything else.
-
-2019-11-14: Add status bar menu component. Try to fix mouse
-down handling for status bar components.
-
-2019-11-14: Show action's description in subtitle of open
-quickly action
-
-2019-11-14: Fix open quickly action icon
-
-2019-11-14: Don't require a space after the shortcut for an
-open quickly command. So /a will now list arrangements, and
-/afoo will search for arrangements with query 'foo'.
-
-2019-11-14: Change action shortcut to /:
-
-2019-11-14: Speed up open quickly window animation
-
-2019-11-14: Add actions to open quickly
-
-2019-11-14: Add drag-drop and multiselect capability to
-actions tool
-
-2019-11-13: Change how fake middle clicks are generated to
-be an OtherMouseDown rather than as LeftMouseDown with
-button=2. Tangentially related to issue 8481 because it
-makes it report the event properly.
-
-2019-11-13: Do not report left clicks with multiple fingers
-touching. This is how apple trackpads reports three finger
-clicks. See also issue 4652. Issue 8481
-
-2019-11-13: Prevent a crash when you can't get the position
-of the upload/download menu. It crashed because
-AXUIElementCopyAttributeValue set temp to NULL and then it
-was CFReleased.
-
-2019-11-12: Fix off-center traffic light buttons in native
-full screen in minimal theme. Issue 8478
-
-2019-11-11: Set window title label's string/attributedString
-before computing its width to determine the text alignment.
-Fixes a bug where a short label would be left aligned after
-the title changes from a long label. Issue 8476.
-
-2019-11-10: Fix gray bar that appeared when in native full
-screen with one tab and no tab bar. Also appears when
-changing to minimal theme in native full screen. This
-happened because the style mask was not full-size content
-view. Issue 8257.
-
-Remove and re-add the tabbar titlebar accessory view when
-changing its height from 0 (one tab, hidden, minimal theme)
-to 38 (two tabs, visible tabbar, minimal theme) because
-otherwise the OS gets confused about how high it should be.
-
-Update the tab bar control's height when updating its style
-so that the transition from regular to minimal makes it
-grow. Outside full screen this happens as a side-effect of
-changing the window style or in -[iTermRootTerminalView
-layoutSubviews], but the former doesn't happen for obvious
-reasons and the latter because it doesn't consider itself
-the owner of the tabbar (it's on loan).
-
-2019-11-10: Don't set documentedEdited for child jobs named
-login or iTerm2. Issue 3139
-
-2019-11-09: Improve debug logging for hasNontrivialJob
-
-2019-11-09: Fix failing test
-
-2019-11-09: [python] Bump version to 1.9
-
-2019-11-09: Add support for getting the default profile
-
-2019-11-07: Enable dragging the window by the add-tab
-button. Issue 8046
-
-2019-11-07: Put title background and window border in layers
-when using metal on 10.14. Issue 8454
-
-2019-11-07: Put a dot in the close button when a job other
-than the shell is running. Issue 3139
-
-2019-11-07: Don't let password manager create New Account 10
-or higher. Somehow a user got stuck trying larger and larger
-account numbers. I don't see how it can happen but this
-gives a backstop. Issue 8452
-
-2019-11-07: Update touch bar in full screen to show the
-proper tab title. Issue 8447
-
-2019-11-06: [python] Add Session.async_get_contents to docs.
-
-2019-11-06: Replace ascii texture NSCache with a cache of my
-own design because NSCache sometimes evicts objects
-immediately after adding them for no discernable reason.
-Issue 8441
-
-2019-11-05: Add the option to have separate window titles
-per tab. Issue 8431
-
-2019-11-05: When the window title is set with OSC 2, set the
-window title to that value ignoring title components. Issue
-8431
-
-2019-11-05: Fix an off-by-one error that prevented find-next
-from navigating to a result on the first line. Issue 8426
-
-2019-11-05: Respect the desired size of custom status bar
-component popovers. From mailing list: [iterm2-discuss] A
-custom iterm2.util.Size doesn't seem to have any effect when
-provided to a popover component.
-
-2019-11-04: Add support for 2-factor suffixes to password
-manager
-
-2019-11-04: [BetterFontPicker] Preserve weight when changing
-font.
-
-2019-11-03: Add git push back to release_beta
-
-2019-11-03: Close downloads window when installation fails
-because of bad zip or bad signature
-
-2019-11-03: Fix Python 3.8 compatibility bug - was catching
-too specific of an exception for asyncio.CancelledError
-
-2019-11-03: Add ability to download site-packages separately
-from the rest of iterm2env.
