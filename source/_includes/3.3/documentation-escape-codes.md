@@ -197,7 +197,7 @@ Where *height* and *width* are floating point values giving the size in points o
 
 You can place a string in the system's pasteboard with this sequence:
 
-    ^[]1337;Copy=;base64^G
+    ^[]1337;Copy=:base64^G
 
 Where `base64` is the base64-encoded string to copy to the pasteboard.
 
