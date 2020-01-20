@@ -1,3 +1,63 @@
+2020-01-19: Add hardened runtime to image_decoder
+
+2020-01-19: Add more debug logging for initial session size
+for issue 7481
+
+2020-01-19: Make highlighted search results in the profile
+list legible in dark mode
+
+2020-01-19: Add pref to edit session to prevent APS. Issue
+8614
+
+2020-01-19: Don't crash on bad base64 passed to
+ReportVariable. Issue 8621
+
+2020-01-19: Make tab lable font size customizable. Issue
+8609
+
+2020-01-19: Fix signing settings for pidinfo target
+
+2020-01-19: Add notarization to adhoc
+
+2020-01-19: Add debug logging to keydown code path for issue
+8620
+
+2020-01-19: Implement mouse reporting frustration detection.
+Issue 7799
+
+2020-01-18: Enable DVRDEBUG in debug builds to diagnose
+crashes
+
+2020-01-17: Disable accent menu
+
+2020-01-17: Put XPC service behind advanced pref
+
+2020-01-17: Limit how many threads can get wedged while
+waiting for the pidinfo service to start
+
+2020-01-17: Eliminate synchronous: argument. Make
+applescript do a dispatch_async before calling
+resumeExecutionWithResult because it is a dumb api
+
+2020-01-17: Remove most of safelySetStyleMask: because the
+issue was fixed in 6980b22ed15dd03c4396ea52745ce0e753fbc6f6
+
+2020-01-17: Prevent rentrant calls to setStyleMask:
+
+2020-01-17: Make proc_pidinfo asynchronous and
+out-of-process. Issue 8615.
+
+This commit adds a pidinfo xpc service. It runs proc_pidinfo
+in a concurrent dispatch queue. It counts the number of
+times it gets wedged and then kills itself when it exceeds a
+threshold.
+
+A few other bugs were fixed along the way: - Fxes a bug
+where toggling fullscreen on a hotkey window hides it.  -
+The proxy icon's URL is now always the local directory - The
+last local directory is now tracked separately from the last
+directory, which may or may not be on a remote host.
+
 2020-01-11: Fix restoration for custom shells. The
 kProgramType was wrong. Issue 8616
 
