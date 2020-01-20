@@ -82,6 +82,9 @@ If enabled, the green "Zoom" button expands a terminal window vertically but doe
 #### Native full screen windows
 If enabled, fullscreen windows will animate into a special desktop, as is typical in macOS 10.7 and later. If disabled, fullscreen windows will instantly go fullscreen without changing desktops.
 
+#### Separate window title per tab
+The OSC 0 and OSC 2 control sequences set the window title. This setting controls whether such a control sequence changes the window title associated with all sessions in the window, or only with the one in which it was received.
+
 <hr>
 ### Preferences
 
