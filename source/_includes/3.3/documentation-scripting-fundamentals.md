@@ -224,6 +224,9 @@ tab.currentSession.path
 <a name="setting-user-defined-variables" />
 ## Setting User-Defined Variables
 
+You can set user-defined variables that are attached to a session. These always
+begin with `user.`. For example, `user.gitBranch`.
+
 ### Shell Integration
 
 The easiest way to set a user-defined variable is with shell integration.
@@ -270,6 +273,7 @@ iterm2_print_user_vars() {
 }
 </pre>
 
+You could then set your badge to `\(user.gitBranch)`, for exmaple.
 <br/>
 
 ### Control Sequence
