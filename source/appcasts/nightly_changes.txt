@@ -1,3 +1,56 @@
+2020-01-28: Add support for opening files with IntelliJ to a
+line number. Issue 8650
+
+2020-01-27: Close man page window when man ends. Issue 8649
+
+2020-01-26: Only deliver scroll wheel events to the window
+the event was originally destined for
+
+2020-01-26: Introduce SearchableComboListView
+
+This is a better control for picking an item from a long
+list.
+
+2020-01-26: Let xcode have its merry way with MainMenu.xib
+
+2020-01-26: Let xcode have its merry way with
+PreferencePanel.xib
+
+2020-01-26: Improve DVR debug logging
+
+2020-01-26: checkpoint
+
+2020-01-24: Warn the user when we detect that paste
+bracketing has been left on when they paste something with
+paste bracketing enabled and "00~" + [prefix of the thing
+they were pasting] shows up in the output soon thereafter.
+Issue 8645 and about a thousand others.
+
+2020-01-24: Arcify PTYSession+Scripting. Use the ready:
+rather than completion: callback for replying to a split
+command so the session will be immediately writable. Also,
+return nil if the created session is DOA (has no window, and
+therefore no object specifier)--returning a session with a
+nil object specifier is an exception. Issue 8644
+
+2020-01-24: Update the keymapper's configuration before
+calling shouldSendEventToController:context:. Somehow in
+issue 8260 the config was out of date which caused
+inconsistent behavior between the check in
+keyDown:inputContext: and the check in
+keyMapperShouldBypassPreCocoaForEvent:. This is a problem
+for the very first keypress in a new session, since the
+configuration will be uninitialized.
+
+2020-01-24: Select the pane under the cursor in focus
+follows mouse when switching spaces. Issue 3258
+
+2020-01-24: Refactor focus follows mouse logic
+
+2020-01-24: Add yet more logging for issue 7481
+
+2020-01-24: Fix tooltip for Separate window title per tab
+
 2020-01-21: Enable secure timestamps for iTerm2,
 image_decoder, and pidinfo
 
