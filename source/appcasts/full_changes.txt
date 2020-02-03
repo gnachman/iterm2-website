@@ -1,120 +1,141 @@
-iTerm2 version 3.3.7
+3.3.8
 
 New Features
-- Adds a preference to specify whether you want
-  each tab to control the window title
-  separately, or if all tabs in a window should
-  share a single window title. This affects window
-  title set by control sequences like OSC 2.
-- Separate 'use custom bold color' from 'brighten
-  bold colors', which previously were confusingly
-  grouped into a single setting.
-- Password manager now has a column for user
-  names.
-- Add support for 2-factor codes appended to
-  password in password manager.
+- You can now specify that a profile should use a "custom
+  shell". With this option, you can ask to use a particular
+  shell (e.g., /usr/local/bin/fish) without having to update
+  your Unix account with chsh. Such sessions are launched through
+  /usr/bin/login, which initializes them properly.
+- Add a new status bar component that opens a menu with a
+  list of actions. Actions are defined by the toolbelt
+  Actions tool.
+- You can now log plain text, both for automatic logging and
+  for one-off logging from the menu.
+- Adds a new built-in color preset, Smoooooth. Works around
+  bloom issues on Pro Display XDR.
+- Add "Send Selection" to context menu.
+- Dynamic Profiles now log errors to the scripting
+  console.
 
 Improvements
+- Add reordering and multiple selection to the Actions
+  toolbelt tool.
+- Add actions in the Actions tool to the Open Quickly
+  window.
+- Speed up Open Quickly window animation.
+- Change how shortcuts in the Open Quickly window work to
+  not require a space. For example, /afoo will now find
+  window arrangements matching the search query "foo".
+  Previously, you'd need to put a space after "/a".
+- Save search history outside of user defaults for better
+  privacy.
+- Tighten up image decoding sandboxes. There were some
+  permissions that aren't needed by the currently supported
+  versions of macOS.
+- Copy mode now supports moving forward and back by a vim
+  "WORD" with W and B. A WORD can contain symbols, as
+  opposed to a word which is approximately alphanumeric.
+- Be more paranoid about parsing imported recording files.
+- Sandbox sixel image decoding.
+- Improve the reliability of three-finger-drag-to-select.
+- Downloaded files (e.g., with it2dl) are now quarantined.
+- When a session's current directory is fetched from the OS,
+  rewrite root-firmlinked paths to their more familiar
+  aliases.
+- Add more advanced preferences to tame the dumpster fire
+  that is Consolas.
+- Restore tmux windows' positions more consistently in tmux
+  integration mode.
+- As you select items in the color presets menu, temporarily
+  apply them so you can see the effect.
+- Signed script archives now sign the entire file (other
+  than the signature itself) to prevent tampering with
+  embedded certs. For now older archives are still accepted
+  as input.
+- Require user permission for various control sequences that
+  could possibly be abused for evil purposes.
+- Separate next/previous mark and next/previous annotation
+  into separate menu items.
 - Various performance improvements.
-- When the window title is changed by a control
-  sequence, set the window title to exactly that
-  string.
-- Remember whether "tags" view of profile list is
-  expanded in toolbelt.
-- Move selection-related settings into General >
-  Selection.
-- Add advanced pref to disable tabbar tooltips.
-- Set pixel size in TTY.
-- Don't show a warning when modifying a session's
-  copy of its profile when that profile is backed
-  by a dynamic profile.
-- When prefs from a remote location fail to load,
-  offer to reveal the responsible preference.
-- The toolbelt now uses a dark background in the
-  Minimal theme when the terminal window's
-  background is dark.
-- Add Unicode 12 width tables for emoji.
-- Add "Edit Account Name" and "Edit User Name" to
-  password manager context menu.
-- Variable-size tmux windows are now pretty
-  usable. Try turning on Prefs>Advanced>Allow
-  variable window sizes in tmux integration.
-- Put a dot in the close button when there is an
-  active job running.
-- You can now drag the window using the New Tab +
-  button.
-- When selecting a tag from the "tags" view, use
-  the tag: operator to restrict the search term to
-  tags.
-- Add advanced pref to enable italic in tmux
-  integration. It uses the "screen" terminal where
-  the control sequence normally used for italics
-  instead does reverse video.
+- Three-finger drags are now reported when three finger
+  drags are configured to act as regular left mouse drags.
+- Use momentum scrolling for mouse reporting the scroll
+  wheel.
+- Remove various unneeded entitlements for extra security.
+- Changes to custom touch bar items are now reflected
+  immediately.
+- Deal with attempting to attach twice to the same tmux
+  session more nicely.
+- User-defined variables are now saved in the tmux server
+  and restored upon attaching in tmux integration mode.
+- Add "Ignore" as a new pointer action.
+- If Paste is waiting for a prompt and you press either
+  control-C or esc, the paste will be aborted.
+- Add an advanced pref to force antialiasing on retina
+  displays, even when AA is disabled in Text prefs.[
+- Use hardened runtimes in helper programs.
+- Use secure timestamps everywhere.
 
 Bug Fixes
-- Disable quicklook if it's disabled systemwide.
-- Fix drawing of "tags" view of profile list.
-- Fix bug where users with spaces in their names
-  couldn't log in.
-- Fix a bug where windows with a left-side tab bar
-  had the wrong number of columns when first
-  created.
-- Fix a bug where activating a session via API in
-  an inactive tab would activate the wrong session
-  in that tab.
-- Fix a bug where setting the icon title when
-  showing Profile + Session name caused the
-  profile name to go away.
-- Fix padding of "broken pipe" message.
-- Fix bugs in updating session list in tmux
-  dashboard.
-- Fix a bug where window buttons were hidden when
-  entering native full screen.
-- Disable selection scroll if it begins in the
-  mutable area while reporting mouse clicks.
-- Fix a bug where option-clicking the zoom button
-  after exiting full screen doesn't zoom.
-- Fix a bug where selection by dragging three
-  fingers selects too much text.
-- Fix imgcat in Catalina.
-- Fix dragging folders to iTerm2 icon.
-- Remove a brittle performance hack for scroll
-  views that may have been causing crashes.
-- Fix a bug when changing tabs while selecting
-  text causing future selections to be wrong.
-- Fix a few crashes.
-- Fix manpage viewer in touch bar.
-- If you use the CurrentDir control sequence
-  without the rest of shell integration, it will
-  now work reliably.
-- Fix escaping of smart selection "run command in
-  window" commands.
-- Fix some integer overflow bugs.
-- In secure copy, keyboard-interactive and private
-  key passpharse input deadlocked. Fix it.
-- Preserve the selected weight when changing
-  typeface, when possible.
-- Respect the desired popover size for custom
-  status bar components. This fix may cause some
-  popovers to have different-sized popovers than
-  expected, and may require updating the script to
-  correct.
-- Fix a bug where Find Next would not navigate to
-  the very first word in history.
-- Fix a runaway CPU issue when initializing GPU
-  renderer.
-- Touch bar in full screen now shows correct tab
-  titles. Fixes a bug where they would get out of
-  sync with reality.
-- Fixes a bug where adding a new password in the
-  password manager could hang.
+- Voice dictation now works!
+- Fix incorrect handling of three finger taps that caused
+  the dictionary to open.
+- Fix gray bar that appeared when in native full screen with
+  one tab and no tab bar.
+- Fix a bug where the title could be misaligned in the
+  Minimal theme.
+- Fix off-center red/yellow/green buttons in Minimal theme.
+- Fix various crashes.
+- Improve argument parsing for identifying Python scripts
+  that use the API.
+- Fix improper text alignment in font picker.
+- Duplicate Tab now respects the advanced pref that controls
+  where new tabs are added.
+- Fix a bug where the shorcut for switching
+  panes/tabs/window by number could show the wrong modifiers
+  in the settings UI.
+- Don't convert control sequences from screen to xterm in
+  tmux integration if the default-terminal tmux option is
+  set to something not including 'screen'.
+- Fix a bug where tmux integration would get confused about
+  which tab is which after reordering them.
+- Fix a bug where editing a trigger's regex could update the
+  first row instead of the one you were editing.
+- Don't show the "document edited" dot in the close button
+  when the profile has a custom command, which tricked us
+  into thinking it was always edited.
+- Fix a bug where the tab title could become empty after
+  popping a title from the stack (such as when exiting vim). 
+- Don't hang when importing a script with a self-signed
+  cert.
+- Improve how the git status bar component truncates text.
+- The GPU renderer drew selected tab characters incorrectly.
+  Fix it.
+- Disable quicklook for http, since it won't work anyway due
+  to ATS.
+- Fix bugs in restoring annotations that would cause them to
+  change what text was annotated.
+- Fix the git status bar tool in directories with tildes in
+  their names.
+- Fix crazy big mouse cursor when screen sharing.
+- Don't do crazy things if you try to mouse report past the
+  223rd row/column in xterm mouse reporting mode.
+- Fix printing of images in black-and-white mode.
+- Fix a bug where "select menu item" actions got performed
+  twice.
+- Fix a bug where the dock got hidden on the wrong screen
+  when entering full screen.
+- You can now assign force click to smart select and it'll
+  work the way you'd expect.
+- .its files now have proper icons and are bound to iTerm2.
+- Fix a bug where background images would sometimes not
+  update right away when using the GPU renderer.
+- Make highlighted search results in the profile list more
+  legible in dark mode.
 
-Scripting
-- Python 3.8.0 is now available. It requires
-  3.3.7beta3 or later, so keep that in mind when
-  distributing scripts.
-- Add support for delta updates of the Python
-  runtime.
-- Add Session.async_get_contents to docs.
-- Add Profile.async_get_default and
-  PartialProfile.async_get_default.
+Things Made Worse
+- Remove the CPU profiling feature. It was never very good
+  and the command line "sample" program is better.
+- Tab icons are no longer supported on macOS 10.12 because
+  Apple made a dog's breakfast of drawing images in the
+  10.15 SDK.
