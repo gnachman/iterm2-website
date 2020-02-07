@@ -1,3 +1,48 @@
+2020-02-06: Clean up iterm2Invoke support
+
+2020-02-06: Break retain cycle in iTermProcessInfo in an
+attempt to fix a crash in cxx_dealloc
+
+2020-02-06: Fix a crash when a tmux session exits while
+you're editing its session's name in the dashboard
+
+2020-02-06: Don't crash when flipping a 0x0 image
+
+2020-02-06: Don't try to sendaction to a menu with a submenu
+for a keybinding. Not sure how that happened, though.
+
+2020-02-06: Fix a nil string crash
+
+2020-02-06: Don't call _setWebSecurityEnabled: if it doesn't
+exist. This probably means that javascript in script-driven
+popovers can't make API calls any more.
+
+2020-02-06: Don't register or unregister a shortcut while
+the session is supsended since that hits an assert. This can
+happen when a bonjour host appears/disappears. This needs
+more testing.
+
+2020-02-06: Fix an out of bounds lookup when removing
+nameless APS entries in prefs
+
+2020-02-06: If there is no user fixed pitch font, fall back
+to the system font. Fixes a crash in font size estimation
+when it's given a nil font
+
+2020-02-06: Fix extremely frustrating longstanding crash.
+Don't do things in dealloc. This ended up calling into metal
+availability checks that caused the window to get retained
+and autoreleased, leading to a zombie.
+
+2020-02-06: Don't crash if you try to show a download in
+finder but it has no path for some reason
+
+2020-02-06: Fix uninitialized error in scp download when a
+download fails
+
+2020-02-06: Fix a very common crash in
+restoreTabsFromArrangement:named:sessions:
+
 2020-02-04: Center the thingy in the mouse in the sketch
 file
 
