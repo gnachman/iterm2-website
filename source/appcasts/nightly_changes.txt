@@ -1,3 +1,33 @@
+2020-02-08: Ensure the tabbar control's delegate is not the
+window controller before closing its tabs. This could be
+necessary if windowWillClose doesn't get called for some
+reason.
+
+2020-02-08: Ignore errors from tmux after trying to set
+window sizes. That's because we update window sizes when a
+window closes, and if many tabs/panes close at once (e.g.,
+cmd-shift-W) then it will try to resize a window that
+doesn't exist and the connection will break.
+
+2020-02-08: Fix use of undefined variable
+
+2020-02-08: When preferring full ligature support to speed
+treat spaces as drawable characters. Issue 7461
+
+2020-02-08: Fix typo
+
+2020-02-07: Kill/hide tmux windows when closing a window
+with Shell>Close Terminal Window
+
+2020-02-07: Don't resize tmux client when window is closing.
+Prevents spamming the command line. Issue 7770
+
+2020-02-07: Fix conservative url guessing to allow ports.
+Issue 8673
+
+2020-02-07: Fix a bug where, when mod+number to select tab
+is disabled, all tabs show all modifiers.
+
 2020-02-06: Clean up iterm2Invoke support
 
 2020-02-06: Break retain cycle in iTermProcessInfo in an
