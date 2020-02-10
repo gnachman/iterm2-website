@@ -1,3 +1,59 @@
+2020-02-09: Add a retry mechanism for determining the
+process ID that owns a connection. Issue 8684
+
+2020-02-09: Reject connection with no pids for issue 8684
+
+2020-02-09: Support command line parsing for python3.8
+scripts
+
+2020-02-09: When restoring a  profile in automatic profile
+switching, prefer the underlying profile to the saved copy.
+Only use the saved copy if it doesn't exist. This is because
+we want changes to the underlying profile to be applied. For
+example, changing the colors for to match dark mode. Issue
+8677
+
+2020-02-09: Update prefs panel text for window border.
+Enable it by default on 10.15 and up. Fix build break
+
+2020-02-09: Draw nice round borders for transparent windows
+on 10.14+. Issue 8681
+
+2020-02-09: Temporarily disable respecting soft boundaries
+if cursor leaves them while making a selection. Issue 8683
+
+2020-02-09: Bump deployment target of UKCrashReporter.xib to
+12.2. This fixes a warning. Amusingly, it still works on
+12.1 because xcode is lying as usual
+
+2020-02-09: Fix warning
+
+2020-02-09: Enable some experimental features that are
+ready. Reorganize them in the .m file to ease future updates
+
+2020-02-09: Bump upgraded asserts to 100%
+
+2020-02-09: Update UKCrashReporter to use a xib. Override
+its window and implement closeCurrentSession: so cmd-w will
+work with it
+
+2020-02-09: Improve internet-free shell integration
+installer: prevent inputrc from screwing up the prompt by
+launching bash with INPUTRC=/dev/null; don't use bracketed
+paste even if enabled; use base64 --decode, which works in
+both BSD and Gnu.
+
+2020-02-09: Interpret clean and dirty properly in remote git
+state variables. It isn't a boolean.
+
+2020-02-09: Fix incorrect vertical alignment of attribute
+string status bar components when using nonstandard fonts.
+It's especially obvious when you use Mono Extra Light 16.
+Issue 8665
+
+2020-02-09: Fix failing tests, a crash during test, and use
+of an uninitialized value.
+
 2020-02-08: Ensure the tabbar control's delegate is not the
 window controller before closing its tabs. This could be
 necessary if windowWillClose doesn't get called for some
