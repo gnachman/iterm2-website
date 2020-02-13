@@ -1,3 +1,48 @@
+3.3.9
+
+This release fixes a number of crashes and adds a security
+improvement to the Python API.
+
+Security Improvements
+- The security model for the Python API has changed. Any
+  process attempting to use the API that was not launched by
+  iTerm2 will require explicit user approval.
+
+  The previous technique, which relied on inferring the job
+  name from its command line, could be subverted.
+
+  Consequently, the UI for authorizing particular scripts
+  has been removed.
+
+  For more information, please see
+  https://iterm2.com/python-api-security-model
+
+Bug Fixes
+- Fix a bug where the character accent menu would appear
+  when holding down a key.
+- Fix crash when restoring window arrangement.
+- Fix crash when a download finishes.
+- Fix crash when a downloaded file has disappeared.
+- Fix crash after closing a window that completely obscures
+  another window and the GPU renderer is enabled.
+- Fix crash when there is no default fixed-pitch font.
+- Fix crash when removing invalid automatic profile
+  switching rule.
+- Fix crash when a bonjour host appears/disappears and the
+  default profile has a hotkey and you're switched to a
+  different user account than the one iTerm2 is in.
+- Enable same-origin policy for webkit popovers.
+- Fix a crash when a shortcut is configured to invoke a menu
+  item that has a submenu.
+- Fix a crash when a tab icon is 0x0 pixels.
+- Fix a crash when there's a process ID cycle.
+- Fix a bug where shortcuts are shown in tabs when
+  navigation by modifiers+number is disabled.
+- Fix various other crashes.
+
+Version 3.3.8 was a short-lived release. Its release notes
+follow:
+
 3.3.8
 
 New Features
@@ -139,3 +184,4 @@ Things Made Worse
 - Tab icons are no longer supported on macOS 10.12 because
   Apple made a dog's breakfast of drawing images in the
   10.15 SDK.
+
