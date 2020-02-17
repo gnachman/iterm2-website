@@ -1,22 +1,80 @@
-3.3.9beta1
+3.3.10beta1
 
-Bug Fixes
-- Fix crash when restoring window arrangement.
-- Fix crash when a download finishes.
-- Fix crash when a downloaded file has disappeared.
-- Fix crash after closing a window that completely obscures
-  another window and the GPU renderer is enabled.
-- Fix crash when there is no default fixed-pitch font.
-- Fix crash when removing invalid automatic profile
-  switching rule.
-- Fix crash when a bonjour host appears/disappears and the
-  default profile has a hotkey and you're switched to a
-  different user account than the one iTerm2 is in.
-- Enable same-origin policy for webkit popovers.
-- Fix a crash when a shortcut is configured to invoke a menu
-  item that has a submenu.
-- Fix a crash when a tab icon is 0x0 pixels.
-- Fix a crash when there's a process ID cycle.
-- Fix a bug where shortcuts are shown in tabs when
-  navigation by modifiers+number is disabled.
-- Fix various other crashes.
+Security Improvements
+- The security model for the Python API has changed. Any
+  process attempting to use the API that was not launched by
+  iTerm2 will require explicit user approval.
+
+  The previous technique, which relied on inferring the job
+  name from its command line, could be subverted.
+
+  Consequently, the UI for authorizing particular scripts
+  has been removed.
+
+  For more information, please see
+  https://iterm2.com/python-api-security-model
+
+New Features:
+- Updated shell integration installer UI, now with
+  internet-free install option.
+- Add a setting to Edit Session to prevent Automatic Profile
+  Switching from affecting that setting.
+- Add support for opening files to line number with
+  IntelliJ.
+
+Improvements:
+- Network filesystems can not hang the UI any more. Calls to
+  proc_pidinfo are now made in an XPC server.
+- Default to built-in mouse cursor on Catalina since it is
+  now visible against a black background.
+- Updated internet access policy for all outgoing
+  connections.
+- Improve appearance of items in the Uploads and Downloads
+  menus.
+- "Flash tab bar in full screen" is now off by default since
+  it is now a titlebar accessory.
+- Add keyboard shortcuts for some announcements.
+- The foreground and background color are shown in the
+  context menu when exactly one cell is selected.
+- Automatically detect when mouse reporting control
+  sequences are getting printed and offer to turn it off.
+- Automatically detect when paste bracketing control
+  sequences are getting printed and offer to turn it off.
+- Tab label font size is now customizable in an advanced
+  setting.
+- Improve legibility of highlighted search results in the
+  profile list in dark mode.
+- Restore tmux window locations better when burying the
+  attaching window.
+- Improve UI for selecting a key binding action.
+- Close the man page window (opened when tapping the man
+  page button on the touch bar) when man quits.
+- You can now close the crash reporter with cmd-w.
+- Improve the appearance of window borders (when enabled in
+  Appearance settings) on macOS 10.14+.
+- Improve usability of Arrangement prefs. You can now do
+  multiple selection, rename, and undo.
+
+Bug fixes:
+- Fix a bug where hotkey windows could appear under the menu
+  bar on secondary display.
+- Fix session restoration with custom shells.
+- Fix various crashes.
+- Fix a bug where a keypress with the option key in the very
+  first keypress in a session could be misinterpreted.
+- Fix a bug where URLs with ports were sometimes not
+  recognized.
+- Fix a bug where closing a tmux integration window with
+  many tabs would send garbage to the command line of the
+  attaching session.
+- Fix Shell>Close Terminal Window in tmux integration.
+- Fix support for ligatures with spaces when the advanced
+  pref "Prefer speed to accuracy for characters with
+  combining marks" is off.
+- Fix bugs with it2git
+- Fix bugs in tmux dashboard for session names containing
+  nonbreaking spaces.
+- Fix bug where you couldn't map a keystroke to increase
+  height.
+
+
