@@ -1,3 +1,20 @@
+2020-02-24: Set SSL_CERT_FILE and SSL_CERT_DIR. Issue 8722
+
+2020-02-24: Add a bunch of logging for everything even
+tangentially related to pidinfo polling
+
+2020-02-24: When the working directory poller fails (nil
+working directory) don't try to create a mark with it. This
+has the unfortunate side effect of trying to get the working
+directory again, causing high CPU utilization. Issue 8716
+
+2020-02-24: Use http as default scheme when the domain name
+is a single word with only a-z and 0-9 and does not start
+with a digit. Issue 8419
+
+2020-02-24: Prevent a crash in
+compactLineDumpWithWidth:andContinuationMarks:. Issue 8725
+
 2020-02-22: When attaching to tmux set window origin after
 calling the completion selector because it may affect the
 window's size (e.g., by burying the attaching session). This
