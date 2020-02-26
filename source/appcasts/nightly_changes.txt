@@ -1,3 +1,33 @@
+2020-02-25: Quell log messae IIONumber -- 'num' is of type
+'CFBoolean' -- expected: CFNumberRef. It doesn't like that I
+passed a boolean to a property that's documented as taking a
+boolean. Issue 8707.
+
+2020-02-25: Precomposite indicators to prevent punch-through
+
+2020-02-25: Don't make full screen flash make the window
+transparent
+
+2020-02-25: Use premultiplied blending for the highlight row
+to keep it from punching a hole through the window. This is
+an issue now that the window's background color is always
+clear. Issue 8700
+
+2020-02-25: Now that the window's background color is always
+clear, the tabbar backing looks bad when using within-window
+blending in dark mode. Change it to use behind-window
+blending instead.
+
+2020-02-25: Improve support for non-optimized ligature
+drawing. Always draw full rows. Treat the first null in a
+series of nulls as a space for ligatures like '# FIXME'.
+Issue 7461
+
+2020-02-25: Respect a key action of Ignore when there is no
+terminal window. Issue 5127
+
+2020-02-25: Synchronize access to queues array
+
 2020-02-24: Set SSL_CERT_FILE and SSL_CERT_DIR. Issue 8722
 
 2020-02-24: Add a bunch of logging for everything even
