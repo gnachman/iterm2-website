@@ -1,3 +1,23 @@
+2020-02-26: Fix handling of single quotes in scripts run
+from semantic history. Issue 8710
+
+2020-02-26: Don't attach the debugger to the xpc process
+because it confuses poor xcode and makes it give up
+debugging with signal 19 wtf
+
+2020-02-26: Don't get a bogus timeout if launching an
+applescript from the Scripts menu that does something
+asynchronous. Issue 8644
+
+2020-02-26: Add a profile pref to allow mouse reporting of
+clicks and drags. Issue 8711
+
+2020-02-26: Add advanced pref to disable document edited
+indicator. Ignore jobs in 'Sessions>If there are jobs
+besides' for document edited. Track the command line of the
+child of login and the root process so we can test if they
+are your shell. Issue 8507
+
 2020-02-25: Quell log messae IIONumber -- 'num' is of type
 'CFBoolean' -- expected: CFNumberRef. It doesn't like that I
 passed a boolean to a property that's documented as taking a
