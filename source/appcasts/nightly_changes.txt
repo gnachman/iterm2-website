@@ -1,3 +1,46 @@
+2020-03-01: Call refresh immediately after handling input
+that comes within 10ms of a keystroke to reduce latency.
+This is good for about 20ms of latency with the Metal
+renderer according to typometer.
+
+2020-03-01: Disable metal stats to try to prevent memory
+corruption
+
+2020-03-01: Respond to OSC 4 and 10, and 11 with 16 bit
+color components. See mailing list thread with subject line
+"Vim cannot detect background correctly when ssh to a remote
+server"
+
+2020-03-01: Support control-arrow keys in CSI u mode. Issue
+8719
+
+2020-03-01: Add an experimental setting (on in beta) that
+makes mouse wheel clicks always scroll. Issue 8419
+
+2020-03-01: When TERM contains 'screen' convert control
+sequences internally to xterm. Issue 8726
+
+2020-03-01: Add support for translating TERM=screen codes
+outside tmux integration
+
+2020-03-01: Make window background not normally clear
+because it breaks the light colored outline around windows
+on macOS 10.15. Consequently, we do not need the tabbar
+backing to be visible in compact windows. Also, fix how we
+decide whether the division view should be visible when
+tabbar is on loan
+
+2020-03-01: Ensure window changes size when tabbar as
+titlebar accessory disappears/appears. Ensure tabbar becomes
+titlebar accessory when exiting full screen (either kind).
+Issue 8731
+
+2020-03-01: Organize the methods in PTYTextView into
+sections and remove some dead code
+
+2020-03-01: Replace calls to mouseHandlerCurrentSelection
+with selection
+
 2020-02-29: Move mouse handling code into its own file to
 reduce the size of PTYTextView
 
