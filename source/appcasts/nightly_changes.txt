@@ -1,3 +1,17 @@
+2020-03-03: Allow Applescript to launc Python script with
+absolute path. Issue 8717
+
+2020-03-03: Don't crash if profiles have crazy values, which
+can happen with dynamic profiles.
+
+2020-03-03: Try to fix screenDidLock crash by removing
+observer on dealloc. Use different method names for the
+class vs instance observers so I can tell which one is
+crashing
+
+2020-03-03: Enable zombies in the nightly build to track
+down crashes
+
 2020-03-01: Call refresh immediately after handling input
 that comes within 10ms of a keystroke to reduce latency.
 This is good for about 20ms of latency with the Metal
@@ -468,3 +482,5 @@ reauthentication after the screen locks. Issue 6401
 
 2020-02-01: Don't show documented edited indicator if the
 current job's pid equals the one we spawned. Issue 8654
+
+2020-02-01: Fix crash in DVR
