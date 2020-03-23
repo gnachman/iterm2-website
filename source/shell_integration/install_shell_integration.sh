@@ -24,6 +24,7 @@ type printf > /dev/null 2>&1 || die "Shell integration requires the printf binar
 SHELL=${SHELL##*/}
 URL=""
 HOME_PREFIX='${HOME}'
+DOTDIR="$HOME"
 SHELL_AND='&&'
 SHELL_OR='||'
 QUOTE=''
@@ -36,7 +37,12 @@ fi
 if [ "${SHELL}" = zsh ]
 then
   URL="https://iterm2.com/shell_integration/zsh"
-  SCRIPT="${HOME}/.zshrc"
+  if [ -d "$ZDOTDIR" -a ! -f "${HOME}/.iterm2_shell_integration.${SHELL}" ]; then
+    echo "Using ZDOTDIR of $ZDOTDIR"
+    DOTDIR="$ZDOTDIR"
+    HOME_PREFIX='${ZDOTDIR}'
+  fi
+  SCRIPT="${DOTDIR}/.zshrc"
   QUOTE='"'
 fi
 if [ "${SHELL}" = bash ]
@@ -63,7 +69,7 @@ then
   exit 1
 fi
 
-FILENAME="${HOME}/.iterm2_shell_integration.${SHELL}"
+FILENAME="${DOTDIR}/.iterm2_shell_integration.${SHELL}"
 RELATIVE_FILENAME="${HOME_PREFIX}/.iterm2_shell_integration.${SHELL}"
 echo "Downloading script from ${URL} and saving it to ${FILENAME}..."
 curl -SsL "${URL}" > "${FILENAME}" || die "Couldn't download script from ${URL}"

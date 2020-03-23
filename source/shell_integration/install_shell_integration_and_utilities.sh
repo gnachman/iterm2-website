@@ -31,6 +31,7 @@ UTILITIES=(imgcat imgls it2api it2attention it2check it2copy it2dl it2getvar it2
 SHELL=${SHELL##*/}
 URL=""
 HOME_PREFIX='${HOME}'
+DOTDIR="$HOME"
 SHELL_AND='&&'
 QUOTE=''
 if [ "${SHELL}" = tcsh ]
@@ -48,12 +49,17 @@ fi
 if [ "${SHELL}" = zsh ]
 then
   URL="https://iterm2.com/shell_integration/zsh"
-  SCRIPT="${HOME}/.zshrc"
+  if [ -d "$ZDOTDIR" -a ! -f "${HOME}/.iterm2_shell_integration.${SHELL}" ]; then
+    echo "Using ZDOTDIR of $ZDOTDIR"
+    DOTDIR="$ZDOTDIR"
+    HOME_PREFIX='${ZDOTDIR}'
+  fi
+  SCRIPT="${DOTDIR}/.zshrc"
   QUOTE='"'
   ALIASES_ARRAY=()
   for U in "${UTILITIES[@]}"
   do
-    ALIASES_ARRAY+=("alias $U=~/.iterm2/$U")
+    ALIASES_ARRAY+=("alias $U=$HOME_PREFIX/.iterm2/$U")
   done
   ALIASES=$(join "; " "${ALIASES_ARRAY[@]}")
 fi
@@ -92,7 +98,7 @@ then
   exit 1
 fi
 
-FILENAME="${HOME}/.iterm2_shell_integration.${SHELL}"
+FILENAME="${DOTDIR}/.iterm2_shell_integration.${SHELL}"
 RELATIVE_FILENAME="${HOME_PREFIX}/.iterm2_shell_integration.${SHELL}"
 echo "Downloading script from ${URL} and saving it to ${FILENAME}..."
 curl -SsL "${URL}" > "${FILENAME}" || die "Couldn't download script from ${URL}"
@@ -107,11 +113,11 @@ if ! grep iterm2_shell_integration "${SCRIPT}" > /dev/null 2>&1; then
 EOF
 fi
 
-test -d ~/.iterm2 || mkdir ~/.iterm2
+test -d "$DOTDIR/.iterm2" || mkdir "$DOTDIR/.iterm2"
 for U in "${UTILITIES[@]}"
 do
   echo "Downloading $U..."
-  curl -SsL "https://iterm2.com/utilities/$U" > ~/.iterm2/$U && chmod +x ~/.iterm2/$U
+  curl -SsL "https://iterm2.com/utilities/$U" > "$DOTDIR/.iterm2/$U" && chmod +x "$DOTDIR/.iterm2/$U"
 done
 echo "Adding aliases..."
 echo "$ALIASES" >> "${FILENAME}"
