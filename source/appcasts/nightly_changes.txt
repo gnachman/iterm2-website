@@ -1,3 +1,29 @@
+2020-03-22: Fix a bug where the flags-changed event tap was
+disabled when the app resigned key and the app that was
+becoming key had secure input turned on. You can actually
+run a flags-changed event tap when secure input is on. This
+caused a really hard to understand bug where double-tap to
+open hotkey would break when both iTerm2 and the app being
+switched to had secure input enabled. Issue 8180
+
+2020-03-22: Handle unsupported shell when using
+internet-based shell integration installer
+
+2020-03-22: Fix a bunch of bugs in internet-free shell
+integration installation.
+
+2020-03-22: Support ZDOTDIR in internet-free shell
+integration install. Update the wording in the steps to be
+more accurate
+
+2020-03-22: When you add your first touch bar item post a
+notification explaining how to customize the touch bar.
+Issue 8775
+
+2020-03-22: Improve how the find pasteboard is used. Only
+update the key window's search fields. When you do Erase
+Search History, clear out the current query. Issue 8782
+
 2020-03-21: Giant refactor of key bindings code.
 
 Add iTermKeystroke, iTermTouchBarItem,
