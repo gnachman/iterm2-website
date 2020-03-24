@@ -1,3 +1,26 @@
+2020-03-23: Require user consent to clear scrollback history
+with CSI 3 J. Fix a bug in announcements that have shortcuts
+and are dismissable by keydown that the shortcuts didn't
+work. Issue 5058
+
+2020-03-23: Fix initial enabled state of the configure
+status bar button when show status bar is off
+
+2020-03-23: Never produce a null string from
+iTermFindPasteboard. Issue 8783
+
+2020-03-23: Get rid of absurd hacks from a long time ago.
+Now that there are real weak pointers, I don't need to keep
+track of whether a PTYSession is registered. In fact, I
+think I never had to do it at all; I should've just nilled
+out PTYTask's delegate after calling stop.
+
+2020-03-23: Make orphan adoption more async. Search for
+sockets in a background queue. There's no need to block the
+main queue while doing any of this work. It's guaranteed to
+begin only after all window states have finished restoring,
+and can then take as along as it likes. Issue 8781
+
 2020-03-22: Fix a bug where the flags-changed event tap was
 disabled when the app resigned key and the app that was
 becoming key had secure input turned on. You can actually
