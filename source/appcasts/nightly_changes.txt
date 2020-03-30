@@ -1,3 +1,62 @@
+2020-03-29: Hide shared background image when subpixel AA is
+on. Make legacy scrollers opaque when using shared bg image
+since now there isn't anything under them. Fix the fill
+operation when drawing the background color. I couldn't find
+any case that need NSCompositingOperationCopy, so I changed
+it to SourceOver only but I might have missed something.
+Also, delay disabling blur because it seems to happen faster
+than updating the view hierarchy and it looks bad for one
+frame.
+
+2020-03-29: Make toggling separate background images per
+pane immediately update GPU renderer availability
+
+2020-03-29: Make changes to 'use GPU rendering' take effect
+immediately
+
+2020-03-29: Fix ugly subpixel AA with legacy renderer on
+10.14+. macOS fails to find the right background color and
+it looks horrible. This diff makes iTermTextDrawingHelper
+draw the background color itself in such cases, and the
+background color view is hidden. However, legacy scrollers
+still need something behind them so this diff adds a new
+view to provide a background color there.
+
+2020-03-29: Extend MTKView under per-pane titlebar and
+per-pane bottom status bar. This makes background images
+match the legacy renderer, which places an imageview under
+the session view.
+
+2020-03-29: Fix a bug where tasks would get
+double-registered. When you launch a job, don't add it to
+unattached children. If the orphan server adopter comes
+along later it'll adopt those children and register them a
+second time. When one of those jobs gets killed by closing
+the window, only one of the registered tasks gets removed.
+The other hangs around and causes select() to return an
+EBADF error right away, making everything hang.
+
+Close file descriptors and set their fd to -1 atomically to
+avoid possible race conditions where the same FD gets closed
+twice, possibly closing some random other thing.
+
+Make extra sure that when a file descriptor is closed it
+also gets deregistered.
+
+Fix a bug where we'd deregister a task while iterating the
+array of tasks, thus mutating the array that was being
+iterated.
+
+2020-03-29: Remove stray space
+
+2020-03-29: Fix some warnings related to multiserver and
+rootTerminalViewTabBarBackgroundColorIgnoringTabColor and
+left shift of signed long long uniqueID.
+
+2020-03-29: Improve performance of background images on
+10.14+ by putting them in their own view for the legacy
+renderer. Issue 7399
+
 2020-03-28: Deal with spacelessApplicationSupport that's
 empty or contains spaces. Issue 8792
 
