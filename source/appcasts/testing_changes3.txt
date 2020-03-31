@@ -1,35 +1,45 @@
-3.3.10beta2
+3.3.10beta3
 
 Improvements;
-- Applescript can now launch a script from an
-  absolute path.
-- Add a delay before previewing a color preset to
-  make it easier to navigate the menu quickly.
-- Set SSL_CERT_FILE and SSL_CERT_DIR when running
-  Python scripts so they can use TLS.
-- Change "Broken Pipe" to "Session Ended" and make
-  it a soothing blue color.
+- Set an ITERM2_COOKIE environment variable that
+  enables Python API scripts launched from an
+  iTerm2 session not to need a permission prompt.
+- Improve legibility of window titles in Minimal
+  theme with light tab colors.
+- Improve legibility of autocomplete popup text.
+- Improve the tab color menu item UX.
+- Fix various crashes.
+- Fix memory leaks.
 
 Bug Fixes:
-- Fix many crashes.
-- Fix high CPU utilization.
-- Fix a bug where compact windows had a clear
-  title bar.
-- Fix a bug where attaching to tmux could restore
-  a window to a different position than where it
-  was before detaching.
-- Respect key action of "Ignore" when there is no
-  terminal window.
-- Prevent annoying system log messages from
-  IIONumber.
-- Fix a bug where applescript launched from
-  Scripts menu would timeout improperly.
-- Fix escaping of single quotes in semantic
-  history commands.
-- Fix drawing of selected tab indicator in Minimal
-  theme with colored tabs.
-- Fix a bug where new tabs created in Applescript
-  weren't always usable right away.
-- Disable performance statistics to try to
-  find cause of memory corruption bug.
+- Fix zoom follows cursor accessibility mode
+  support.
+- Fix a bug where saved arrangement previews with
+  multiple monitors didn't show previews for
+  secondary monitors.
+- Fix a deadlock when running AutoLaunch.scpt that
+  creates windows, tabs, or split panes.
+- Fix a bug where the tab bar's appearance is
+  wrong after changing the number of tabs in the
+  Regular theme.
+- Fix a bug where the advanced setting "Disable
+  remapping modifiers for system shortcuts" didn't
+  always work.
+- Fix tab color support in minimal mode without a
+  tabbar.
+- Fix a bug where tmux integration would
+  disconnect if a new session ends immediately
+  after starting.
+- Improve wording of inline image permission
+  prompt.
+- Fix lots of bugs in internet-free shell
+  integration installer.
+- Fix a bug where the "configure status bar"
+  button could be enabled when the status bar is
+  disabled.
+- Fix a bug where a tmux integration command would
+  get sent to the shell when the last session in
+  it ends.
+- Handle incorrect setting of custom Application
+  Support symlink name (in advanced prefs) better.
 
