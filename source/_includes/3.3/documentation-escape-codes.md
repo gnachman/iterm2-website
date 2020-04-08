@@ -265,6 +265,12 @@ Where `n` is 8 or 9
 
 You can push the current value on a stack and pop it off to return to the previous value by setting `n` to `push` or `pop`. Optionally, you may affix a label after `push` by setting `n` to something like `push mylabel`. This attaches a label to that stack entry. When you pop the same label, entries will be popped until that one is found. Set `n` to `pop mylabel` to effect this. This is useful if a program crashes or an ssh session ends unexpectedly.
 
+#### File Transfer
+
+   ^[]1337;File=(args)^G
+
+See <a href="documentation-images.html">Images</a> for details.
+
 #### Custom Control Sequences
 
 iTerm2 allows scripts to define custom control sequences. See the <a href="https://iterm2.com/python-api/examples/create_window.html">Create Window</a> example for a working demo. The control sequence is:
