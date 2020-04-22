@@ -1,3 +1,205 @@
+2020-04-22: Update window's background color when a session
+in the current tab's transparency changes. Issue 8838
+
+2020-04-22: Fix build break
+
+2020-04-21: Make sure I know when the nightly build fails
+
+2020-04-21: Handle errors due to a pane closing right away
+after creation in tmux. Improve the behavior of error
+toleration to run callbacks for all commands in a list.
+Improve tmux logging. Issue 8787.
+
+2020-04-21: Work around a macOS bug where setting the window
+appearance just after creating a full screen window from a
+full screen window creates a black space you can't get rid
+of. Issue 8842
+
+2020-04-21: Add support for SDA 2
+(https://github.com/mintty/mintty/issues/881) to report
+terminal name and version
+
+2020-04-21: Finish implementing new auth model escape hatch
+
+2020-04-21: Skip decendants when removing command history
+database to make it faster
+
+2020-04-20: Add help button for python auth
+
+2020-04-20: Add ability to disable applescript auth
+
+2020-04-19: Only use touch bar mitigations for esc when the
+keypress comes from the touch bar
+
+2020-04-19: Show a message while resizing indicating if any
+of the windows dimensions are fixed. Give maximized windows
+the resizable flag so this is visible. An attempt to reduce
+the confusion seen in issue 8809.
+
+2020-04-19: Prevent resizing full-width x-of-screen windows.
+I think that's more sensible than making them snap back to
+their original size
+
+2020-04-19: [BFP] Tell xcode to shut its pie hole
+
+2020-04-19: [BFP] Update framework
+
+2020-04-19: [BPF] Load fonts asynchronously.
+
+2020-04-19: Don't forget favorites when toggling a star
+while searching. Issue 8835
+
+2020-04-19: Fix typo "charactesr" -> "characters" (#418)
+
+
+2020-04-18: Don't save screen to scrollback on CSI H CSI J
+unless you're in alternate screen mode. Issue 8822
+
+2020-04-18: Add detail text for session items in open
+quickly that gives their command, user@host, directory, or
+badge. Use the most informative of those by looking at which
+has the most distinct values. Issue 8829
+
+2020-04-17: Don't call broken pipe when failing to connect
+to the server. Instead call it when you do connect to the
+server but the child is unknown (which I don't think will
+happen normally, but I guess it could happen if the state
+restoration gets confused because there were 2 instances of
+the app running and you have a bogus pid in the arrangement)
+
+2020-04-17: Check euid of attaching process to unix domain
+socket
+
+2020-04-17: Add applescript-based auth module
+
+2020-04-16: Fix autoresizing mask for border views
+
+2020-04-16: Refactor multiserver to allow larger messages
+and play nice with streams (no zero length messages, add
+message length header to all messages, make hello regular).
+Also make more stuff async; use dispatch_sources to wait for
+reads and writes to be ready. The server blocks on reads and
+writes so the client must not block or it can deadlock.
+There are still bugs. I need to bump the protocol version
+and I need to debug the asan issue I get in the server on
+parser failure
+
+2020-04-16: Remove outdated comment since
+taskWasDeregistered has been eliminated
+
+2020-04-15: Add variables for user's selection (#417)
+
+Co-Authored-By: George Nachman <gnachman+github@gmail.com>
+
+2020-04-12: Update menu and dock visibility when the active
+space changes. windowDidBecomeKey: happens too early and the
+presentation controller thinks the window is not on the
+current space. Issue 8815
+
+2020-04-11: Fix buffer overrun when the URL action factory
+uses a text extractor asynchronously after the grid size
+changes (the extractor's logical window could be too big,
+having been set before the change).
+
+2020-04-11: When a window gets resized using accessibility
+APIs, disable snap to grid
+
+2020-04-11: Fix use-after-free bug in multiserver
+
+2020-04-11: Finish implementing Applescript auth
+
+2020-04-11: Add experimental support for unix domain sockets
+for the Python API. Issue 8714
+
+2020-04-09: Use lovingly crafted images for the window
+corners instead of bezier curves because it's literally
+impossible to make NSBezierCurve do anything pixel-perfect.
+
+2020-04-09: Add missing functions to Session doc. Update
+menu IDs
+
+2020-04-09: Use a view-based tableview for key mappings
+
+2020-04-09: Fix the description of Select Menu Item actions
+in keybinding tables
+
+2020-04-08: Add `saveScrollBufferWhenClearing` advanced pref
+(#416)
+
+
+2020-04-07: Preserve font when printing in black and white.
+Issue 8810
+
+2020-04-07: Cancel in-band file transfers if they exceed
+their declared size
+
+2020-04-07: Replace ITUpgradedNSAssert with
+ITAssertWithMessage
+
+2020-04-07: Replace calloc with safer iTermCalloc
+
+2020-04-07: Remove unnecessary call to killOrHideTmuxWindow
+that confused the dickens out of macOS by closing a window
+that had a sheet.
+
+2020-04-07: Assert that iTermExpressionEvaluatorGlobalStore
+is only called on the main queue.
+
+2020-04-07: Ask before allowing a control sequence to change
+the current profile
+
+2020-04-07: Fix a bug where renaming a tmux pane used Edit
+Info and modifying Session Name didn't work
+
+2020-04-07: When showing tmux title, include tmux arrow
+indicator
+
+2020-04-06: Fix frame of imageView, backgroundColorView, and
+legacyScrollerBackgroundView in tmux mode
+
+2020-04-05: Fix some bugs in minimaps: update them when the
+number of lines in scrollback history changes. Ensure they
+all update at the same time.
+
+2020-04-05: Work around one of the weirder quirks of macOS.
+NSScrollView tries to outsmart you when you put a view over
+a scroller, but it forgets that the most important part of
+outsmarting someone is not being dumb. It proceeds to
+trigger bugs and crazytimes. See the snarky comment for
+details.
+
+2020-04-05: Make beta users upgrade to pyenv 63 to test
+module 1.11 and Python 3.8.2
+
+2020-04-05: Add an Applescript call to request a cookie.
+
+2020-04-05: Add support for sublime text 4 in semantic
+history
+
+2020-04-05: [SignedArchive] Give the verifier the ability to
+check for the version number. Give resign the ability to
+resign more than one file. Move SIGArchiveCommon.m into the
+SignedArchive folder and add it to the project.
+
+2020-04-05: Re-sign ITS files with v2 sigarchive
+
+2020-04-04: Add debug logging for issue 8701
+
+2020-04-04: Update zshrc in the right location when ZDOTDIR
+is set. Prefer $HOME to ~ for fish
+
+2020-04-04: Update dokc/menu visibility after hotkey window
+finishes rolling in. Issue 8487
+
+2020-04-04: Add support for swiping between tabs. Issue 1350
+
+2020-04-04: Improve debug logging for failed file transfers
+
+2020-04-04: When search results are shown in the scrollbar,
+also show the locations of marks
+
+2020-04-02: Refactor minimap view
+
 2020-04-02: Remove ugly animation when unhiding toolbelt.
 Especially visible in minimal + dark background + light
 theme
