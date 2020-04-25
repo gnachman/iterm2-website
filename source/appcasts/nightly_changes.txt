@@ -1,3 +1,31 @@
+2020-04-25: Fix a bug where transparent windows didn't use
+premultiplied alpha in GPU renderer. I'm not sure how I
+failed to see this before; I suspect there's something else
+I'm overlooking now. I tested with and without background
+images.
+
+2020-04-24: Add logging, fix a bug where untitled windows
+wouldn't open in quiet mode
+
+2020-04-24: Refactor untitled window state machine into its
+own file with better debug logging
+
+2020-04-24: Fix vertical centering of new python script
+icons
+
+2020-04-24: Install Python runtime if needed before showing
+the new script window. This lets us populate the available
+Python versions if you choose full environment.
+
+2020-04-24: Add polish to the REPL + unix domain socket
+experience
+
+2020-04-24: Listen on both unix domain and tcp sockets for
+Python API
+
+2020-04-24: Deprecate CONNECT_FLAGS. Avoid using pyobjc when
+not necessary
+
 2020-04-23: Make status bar height adjustable by an advanced
 pref. Issue 7702
 
