@@ -18,7 +18,7 @@ The following actions are available:
   * **Invoke Script Function**: Runs a script function. The parameter is always an interpolated string. See <a href="documentation-scripting-fundamentals.html">Scripting Fundamentals</a> for details.
   * **Make Hyperlink**: Converts the matched text into a hyperlink with the provided URL as its target.
   * **Open Password Manager**: Opens the password manager. You can specify which account to select by default.
-  * **Post Notification**: Posts a notification with Growl (if available) or Notification Center.
+  * **Post Notification**: Posts a notification with Notification Center.
   * **Prompt Detected**: Informs iTerm2 that the shell prompt begins at the start of the match. Used to emulate Shell Integration features. If the prompt is one line long then use Instant.
   * **Report Directory**: Tells iTerm2 what your current directory is. You can use this to enable <a href="documentation-shell-integration.html">Shell Integration</a> features without installing the scripts. The parameter is your current directory.
   * **Report User & Host**: Tells iTerm2 what your user or host name is. You can use this to enable <a href="documentation-shell-integration.html">Shell Integration</a> features without installing the scripts. To specify just a user name, say **user@**. For just a host, say **@host**. For both, say **user@host**.
@@ -41,7 +41,7 @@ If you'd like to match more text than you highlight with the **Highlight Text** 
 </pre>
 
 #### Parameter?
-Various actions (Run Command, Run Coprocess, Send Growl Alert, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. When the paramter is a text field with freeform entry, some special values are defined. The interpretation of the parameter depends on whether *Use interpolated strings for parameters* (at the bottom of the Triggers window) is enabled.
+Various actions (Run Command, Run Coprocess, Post Notification, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. When the paramter is a text field with freeform entry, some special values are defined. The interpretation of the parameter depends on whether *Use interpolated strings for parameters* (at the bottom of the Triggers window) is enabled.
 
 When *Use interpolated strings for parameters* is **off**:
 <table>

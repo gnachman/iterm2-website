@@ -16,7 +16,7 @@ The following actions are available:
         <li>Highlight Text: The text matching the regex in the trigger will change color. The parameter sets the color.</li>
         <li>Make Hyperlink: The text matching the regex in the trigger will become a hyperlink which you can open with Cmd-Click. The parameter sets the URL.</li>
         <li>Open Password Manager: Opens the password manager. You can specify which account to select by default.</li>
-        <li>Post Notification: Posts a notification with Growl (if available) or Notification Center.</li>
+        <li>Post Notification: Posts a notification with Notification Center.</li>
         <li>Prompt Detected: Informs iTerm2 that the shell prompt begins at the start of the match. Used to emulate Shell Integration features. If the prompt is one line long then use Instant.</li>
         <li>Report Directory: Tells iTerm2 what your current directory is. You can use this to enable <a href="documentation-shell-integration.html">Shell Integration</a> features without installing the scripts. The parameter is your current directory.</li>
         <li>Report User & Host: Tells iTerm2 what your user or host name is. You can use this to enable <a href="documentation-shell-integration.html">Shell Integration</a> features without installing the scripts. To specify just a user name, say `user@`. For just a host, say `@host`. For both, say `user@host`.</li>
@@ -31,7 +31,7 @@ The following actions are available:
 </ul>
 
 #### Parameter?
-Various actions (Run Command, Run Coprocess, Send Growl Alert, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. When the paramter is a text field with freeform entry, some special values are defined:
+Various actions (Run Command, Run Coprocess, Post Notification, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. When the paramter is a text field with freeform entry, some special values are defined:
 <table>
         <thead>
                 <tr>

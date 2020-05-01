@@ -105,8 +105,8 @@ You can use the mouse to position the cursor, highlight text, and perform other 
 </section>
 <section class="feature-block">
 <a name="growl-support"></a>
-### Growl Support
-You can choose to receive Growl notifications of activity, bells, and more. Feel free to let a long job run in the background, secure in the knowledge that you'll know when it's done.
+### Notification Center Support
+You can choose to receive notifications of activity, bells, and more. Feel free to let a long job run in the background, secure in the knowledge that you'll know when it's done.
 <a href="img/screenshots/growl.png" target="_blank"><img src="img/screenshots/growl.png"></a>
 
 </section>

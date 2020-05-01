@@ -351,8 +351,8 @@ If the host sends an escape code to resize the window, it will be ignored if thi
 #### Silence bell
 If selected, the bell (control-G) will not make an audible sound.
 
-#### Send Growl/Notification Center alerts
-If selectedinstalled, iTerm2 will post a notifications when sessions receive output, become idle, ring the bell, close, or get a proprietary escape sequence to post a notification. If Growl is installed it is preferred over Notification Center.
+#### Send Notification Center alerts
+If selectedinstalled, iTerm2 will post a notifications when sessions receive output, become idle, ring the bell, close, or get a proprietary escape sequence to post a notification.
 
 #### Filter Alerts
 This button opens a panel that lets you customize which notifications will be posted.

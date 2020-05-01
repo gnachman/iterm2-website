@@ -54,12 +54,10 @@ To inform iTerm2 of the current directory to help semantic history:
 
     ^[]1337;CurrentDir=/the/current/directory^G
 
-#### Post a Growl notification
-To post a Growl notification:
+#### Post a notification
+To post a notification:
 
     ^[]9;Message content goes here^G
-
-This will have no effect if Growl is not running.
 
 #### Change profile
 To change the session's profile on the fly:
