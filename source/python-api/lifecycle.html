@@ -88,7 +88,10 @@
 <dt id="iterm2.SessionTerminationMonitor">
 <em class="property">class </em><code class="sig-name descname">SessionTerminationMonitor</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.SessionTerminationMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Watches for session termination.</p>
-<p>A session is said to terminate when its command (typically <cite>login</cite>) has exited. If the user closes a window, tab, or split pane they can still undo closing it for some amount of time. Session termination will be delayed until it is no longer undoable.</p>
+<p>A session is said to terminate when its command (typically <cite>login</cite>) has
+exited. If the user closes a window, tab, or split pane they can still undo
+closing it for some amount of time. Session termination will be delayed
+until it is no longer undoable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>connection</strong> – The <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> to use.</p>
@@ -127,7 +130,8 @@
 <div><p>Blocks until the layout changes.</p>
 <p>Will block until any of the following occurs:</p>
 <ul class="simple">
-<li><p>A session moves from one tab to another (including moving into its own window).</p></li>
+<li><p>A session moves from one tab to another (including moving into its
+own window).</p></li>
 <li><p>The relative position of sessions within a tab changes.</p></li>
 <li><p>A tab moves from one window to another.</p></li>
 <li><p>The order of tabs within a window changes.</p></li>
@@ -183,8 +187,11 @@
 <dl class="class">
 <dt id="iterm2.EachSessionOnceMonitor">
 <em class="property">class </em><code class="sig-name descname">EachSessionOnceMonitor</code><span class="sig-paren">(</span><em class="sig-param">app: iterm2.app.App</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.EachSessionOnceMonitor" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is a convenient way to do something to all sessions exactly once, including those created in the future.</p>
-<p>You can use it as a context manager to get the session_id of each session, or you can use the static method <cite>async_foreach_session_create_task</cite> to have a task created for each session.</p>
+<dd><p>This is a convenient way to do something to all sessions exactly once,
+including those created in the future.</p>
+<p>You can use it as a context manager to get the session_id of each session,
+or you can use the static method <cite>async_foreach_session_create_task</cite> to
+have a task created for each session.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -196,7 +203,8 @@
 <dl class="method">
 <dt id="iterm2.EachSessionOnceMonitor.async_foreach_session_create_task">
 <em class="property">static </em><code class="sig-name descname">async_foreach_session_create_task</code><span class="sig-paren">(</span><em class="sig-param">app</em>, <em class="sig-param">task</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.EachSessionOnceMonitor.async_foreach_session_create_task" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a task for each session. Cancels the task when the session terminates.</p>
+<dd><p>Create a task for each session. Cancels the task when the session
+terminates.</p>
 <p>Includes sessions in existence now and those created in the future.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -212,13 +220,15 @@
 <p>Example:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-<span class="c1"># Print a message to stdout when there&#39;s a new prompt in any session</span>
+<span class="c1"># Print a message to stdout when there&#39;s a new prompt in any</span>
+<span class="c1"># session</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">my_task</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
     <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PromptMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
         <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Prompt detected&quot;</span><span class="p">)</span>
 
-<span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">EachSessionOnceMonitor</span><span class="o">.</span><span class="n">async_foreach_session_create_task</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">my_task</span><span class="p">)</span>
+<span class="k">await</span> <span class="p">(</span><span class="n">iterm2</span><span class="o">.</span><span class="n">EachSessionOnceMonitor</span><span class="o">.</span>
+    <span class="n">async_foreach_session_create_task</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">my_task</span><span class="p">))</span>
 </pre></div>
 </div>
 </div></blockquote>

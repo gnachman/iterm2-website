@@ -95,7 +95,8 @@
 <dd><p>Closes the tab.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>force</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the user will not be prompted for a confirmation.</p>
+<dd class="field-odd"><p><strong>force</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the user will not be prompted for a
+confirmation.</p>
 </dd>
 <dt class="field-even">Throws</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
@@ -132,13 +133,19 @@
 <dl class="method">
 <dt id="iterm2.Tab.async_invoke_function">
 <em class="property">async </em><code class="sig-name descname">async_invoke_function</code><span class="sig-paren">(</span><em class="sig-param">invocation: str</em>, <em class="sig-param">timeout: float = -1</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab.async_invoke_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invoke an RPC. Could be a registered function by this or another script of a built-in function.</p>
-<p>This invokes the RPC in the context of this tab. Note that most user-defined RPCs expect to be invoked in the context of a session. Default variables will be pulled from that scope. If you call a function from the wrong context it may fail because its defaults will not be set properly.</p>
+<dd><p>Invoke an RPC. Could be a registered function by this or another script
+of a built-in function.</p>
+<p>This invokes the RPC in the context of this tab. Note that most
+user-defined RPCs expect to be invoked in the context of a session.
+Default variables will be pulled from that scope. If you call a
+function from the wrong context it may fail because its defaults will
+not be set properly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>invocation</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A function invocation string.</p></li>
-<li><p><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – Max number of secondsto wait. Negative values mean to use the system default timeout.</p></li>
+<li><p><strong>timeout</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – Max number of secondsto wait. Negative values mean to
+use the system default timeout.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -160,10 +167,12 @@
 <dt id="iterm2.Tab.async_set_title">
 <em class="property">async </em><code class="sig-name descname">async_set_title</code><span class="sig-paren">(</span><em class="sig-param">title: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab.async_set_title" title="Permalink to this definition">¶</a></dt>
 <dd><p>Changes the tab’s title.</p>
-<p>This is equivalent to editing the tab’s title with the menu item Edit Tab Title. The title is an interpolated string.</p>
+<p>This is equivalent to editing the tab’s title with the menu item Edit
+Tab Title. The title is an interpolated string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>title</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The new title. Set it to an empty string to use the default value (the current session’s title).</p>
+<dd class="field-odd"><p><strong>title</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The new title. Set it to an empty string to use the
+default value (the current session’s title).</p>
 </dd>
 <dt class="field-even">Throws</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
@@ -175,7 +184,8 @@
 <dt id="iterm2.Tab.async_set_variable">
 <em class="property">async </em><code class="sig-name descname">async_set_variable</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">value: Any</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Tab.async_set_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets a user-defined variable in the tab.</p>
-<p>See the Scripting Fundamentals documentation for more information on user-defined variables.</p>
+<p>See the Scripting Fundamentals documentation for more information on
+user-defined variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -193,7 +203,8 @@
 <dt id="iterm2.Tab.async_update_layout">
 <em class="property">async </em><code class="sig-name descname">async_update_layout</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Tab.async_update_layout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adjusts the layout of the sessions in this tab.</p>
-<p>Change the <cite>Session.preferred_size</cite> of any sessions you wish to adjust before calling this.</p>
+<p>Change the <cite>Session.preferred_size</cite> of any sessions you wish to adjust
+before calling this.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Throws</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
@@ -206,7 +217,8 @@
 <em class="property">property </em><code class="sig-name descname">current_session</code><a class="headerlink" href="#iterm2.Tab.current_session" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The active session in this tab or <cite>None</cite> if it could not be determined.</p>
+<dd class="field-odd"><p>The active session in this tab or <cite>None</cite> if it could not be
+determined.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -224,7 +236,8 @@
 <dl class="method">
 <dt id="iterm2.Tab.root">
 <em class="property">property </em><code class="sig-name descname">root</code><a class="headerlink" href="#iterm2.Tab.root" title="Permalink to this definition">¶</a></dt>
-<dd><p>A tab’s sessions are stored in a tree. This returns the root of that tree.</p>
+<dd><p>A tab’s sessions are stored in a tree. This returns the root of that
+tree.</p>
 <p>An interior node of the tree is a Splitter. That corresponds to a
 collection of adjacent sessions with split pane dividers that are all
 either vertical or horizontal.</p>
@@ -264,9 +277,16 @@ either vertical or horizontal.</p>
 <dd><p>Returns this tab’s tmux window id or None.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A tmux window id or <cite>None</cite> if this is not a tmux integration window.</p>
+<dd class="field-odd"><p>A tmux window id or <cite>None</cite> if this is not a tmux integration
+window.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Tab.window">
+<em class="property">property </em><code class="sig-name descname">window</code><a class="headerlink" href="#iterm2.Tab.window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the window this tab belongs to.</p>
 </dd></dl>
 
 </dd></dl>

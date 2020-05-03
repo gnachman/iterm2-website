@@ -88,17 +88,20 @@
 <dt id="iterm2.ScreenStreamer">
 <em class="property">class </em><code class="sig-name descname">ScreenStreamer</code><span class="sig-paren">(</span><em class="sig-param">connection</em>, <em class="sig-param">session_id</em>, <em class="sig-param">want_contents=True</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenStreamer" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager for monitoring the screen contents.</p>
-<p>You can use this to be notified when screen contents change. Optionally, you can receive the actual contents of the screen.</p>
+<p>You can use this to be notified when screen contents change. Optionally,
+you can receive the actual contents of the screen.</p>
 <p>Don’t create this yourself. Use Session.get_screen_streamer() instead. See
 its docstring for more info.</p>
 <dl class="method">
 <dt id="iterm2.ScreenStreamer.async_get">
 <em class="property">async </em><code class="sig-name descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.screen.ScreenContents]<a class="headerlink" href="#iterm2.ScreenStreamer.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Blocks until the screen contents change.</p>
-<p>If this <cite>ScreenStreamer</cite> has been configured to provide screen contents, then they will be returned.</p>
+<p>If this <cite>ScreenStreamer</cite> has been configured to provide screen
+contents, then they will be returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A <a class="reference internal" href="#iterm2.ScreenContents" title="iterm2.ScreenContents"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenContents</span></code></a> (if so configured), otherwise <cite>None</cite>.</p>
+<dd class="field-odd"><p>A <a class="reference internal" href="#iterm2.ScreenContents" title="iterm2.ScreenContents"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenContents</span></code></a> (if so configured), otherwise
+<cite>None</cite>.</p>
 </dd>
 <dt class="field-even">Throws</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
@@ -149,10 +152,12 @@ its docstring for more info.</p>
 <dl class="method">
 <dt id="iterm2.ScreenContents.number_of_lines_above_screen">
 <em class="property">property </em><code class="sig-name descname">number_of_lines_above_screen</code><a class="headerlink" href="#iterm2.ScreenContents.number_of_lines_above_screen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the number of lines before the screen including scrollback history and lines lost from the head of scrollback history.</p>
+<dd><p>Returns the number of lines before the screen including scrollback
+history and lines lost from the head of scrollback history.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The number of lines ever received before the top line of the screen.</p>
+<dd class="field-odd"><p>The number of lines ever received before the top line of the
+screen.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -168,7 +173,8 @@ its docstring for more info.</p>
 <em class="property">property </em><code class="sig-name descname">hard_eol</code><a class="headerlink" href="#iterm2.LineContents.hard_eol" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>True if the line has a hard newline. If False, the text of a longer line wraps onto the next line.</p>
+<dd class="field-odd"><p>True if the line has a hard newline. If False, the text of a
+longer line wraps onto the next line.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -195,7 +201,8 @@ its docstring for more info.</p>
 <dd class="field-even"><p><strong>x</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The index to look up.</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A string giving the contents of the cell at that index, or empty string if none.</p>
+<dd class="field-odd"><p>A string giving the contents of the cell at that index, or
+empty string if none.</p>
 </dd>
 </dl>
 </dd></dl>

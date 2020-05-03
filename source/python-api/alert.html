@@ -92,8 +92,10 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>title</strong> – The title, shown in bold at the top.</p></li>
-<li><p><strong>subtitle</strong> – The informative text, which may be more than one line long.</p></li>
-<li><p><strong>window_id</strong> – The window to attach the alert to. If None, it will be application modal.</p></li>
+<li><p><strong>subtitle</strong> – The informative text, which may be more than one line
+long.</p></li>
+<li><p><strong>window_id</strong> – The window to attach the alert to. If None, it will be
+application modal.</p></li>
 </ul>
 </dd>
 </dl>
@@ -119,12 +121,91 @@
 <dd class="field-even"><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to use.</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The index of the selected button. If no buttons were defined then a single button, “OK”, is automatically added.</p>
+<dd class="field-odd"><p>The index of the selected button. If no buttons were defined
+then a single button, “OK”, is automatically added.</p>
 </dd>
 <dt class="field-even">Throws</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Alert.subtitle">
+<em class="property">property </em><code class="sig-name descname">subtitle</code><a class="headerlink" href="#iterm2.Alert.subtitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the subtitle string</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Alert.title">
+<em class="property">property </em><code class="sig-name descname">title</code><a class="headerlink" href="#iterm2.Alert.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the title string</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="iterm2.TextInputAlert">
+<em class="property">class </em><code class="sig-name descname">TextInputAlert</code><span class="sig-paren">(</span><em class="sig-param">title: str</em>, <em class="sig-param">subtitle: str</em>, <em class="sig-param">placeholder: str</em>, <em class="sig-param">default_value: str</em>, <em class="sig-param">window_id: Optional[str] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TextInputAlert" title="Permalink to this definition">¶</a></dt>
+<dd><p>A modal alert with a text input accessory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> – The title, shown in bold at the top.</p></li>
+<li><p><strong>subtitle</strong> – The informative text, which may be more than one line
+long.</p></li>
+<li><p><strong>placeholder</strong> – Grayed-out text to show in the text field when it is
+empty.</p></li>
+<li><p><strong>default_value</strong> – Default text to place in the text field.</p></li>
+<li><p><strong>window_id</strong> – Window ID to attach to, or None to make app-modal.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="iterm2.TextInputAlert.async_run">
+<em class="property">async </em><code class="sig-name descname">async_run</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em><span class="sig-paren">)</span> &#x2192; Optional[str]<a class="headerlink" href="#iterm2.TextInputAlert.async_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the modal alert.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to use.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The string entered, or None if the alert was canceled.</p>
+</dd>
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.TextInputAlert.default_value">
+<em class="property">property </em><code class="sig-name descname">default_value</code><a class="headerlink" href="#iterm2.TextInputAlert.default_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the default value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.TextInputAlert.placeholder">
+<em class="property">property </em><code class="sig-name descname">placeholder</code><a class="headerlink" href="#iterm2.TextInputAlert.placeholder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the placeholder string</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.TextInputAlert.subtitle">
+<em class="property">property </em><code class="sig-name descname">subtitle</code><a class="headerlink" href="#iterm2.TextInputAlert.subtitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the subtitle string</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.TextInputAlert.title">
+<em class="property">property </em><code class="sig-name descname">title</code><a class="headerlink" href="#iterm2.TextInputAlert.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the title string</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.TextInputAlert.window_id">
+<em class="property">property </em><code class="sig-name descname">window_id</code><a class="headerlink" href="#iterm2.TextInputAlert.window_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the window ID</p>
 </dd></dl>
 
 </dd></dl>

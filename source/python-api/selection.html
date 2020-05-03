@@ -125,27 +125,30 @@
 </dd></dl>
 
 <dl class="attribute">
-<dt id="iterm2.SelectionMode.fromProtoValue">
-<code class="sig-name descname">fromProtoValue</code><em class="property"> = &lt;function SelectionMode.fromProtoValue&gt;</em><a class="headerlink" href="#iterm2.SelectionMode.fromProtoValue" title="Permalink to this definition">¶</a></dt>
+<dt id="iterm2.SelectionMode.from_proto_value">
+<code class="sig-name descname">from_proto_value</code><em class="property"> = &lt;function SelectionMode.from_proto_value&gt;</em><a class="headerlink" href="#iterm2.SelectionMode.from_proto_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="iterm2.SelectionMode.toProtoValue">
-<code class="sig-name descname">toProtoValue</code><em class="property"> = &lt;function SelectionMode.toProtoValue&gt;</em><a class="headerlink" href="#iterm2.SelectionMode.toProtoValue" title="Permalink to this definition">¶</a></dt>
+<dt id="iterm2.SelectionMode.to_proto_value">
+<code class="sig-name descname">to_proto_value</code><em class="property"> = &lt;function SelectionMode.to_proto_value&gt;</em><a class="headerlink" href="#iterm2.SelectionMode.to_proto_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="iterm2.SubSelection">
-<em class="property">class </em><code class="sig-name descname">SubSelection</code><span class="sig-paren">(</span><em class="sig-param">windowedCoordRange: iterm2.util.WindowedCoordRange</em>, <em class="sig-param">mode: iterm2.selection.SelectionMode</em>, <em class="sig-param">connected: bool</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.SubSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">SubSelection</code><span class="sig-paren">(</span><em class="sig-param">windowed_coord_range: iterm2.util.WindowedCoordRange</em>, <em class="sig-param">mode: iterm2.selection.SelectionMode</em>, <em class="sig-param">connected: bool</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.SubSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a continguous block of selected characters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>windowedCoordRange</strong> – A <a class="reference internal" href="util.html#iterm2.util.WindowedCoordRange" title="iterm2.util.WindowedCoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">WindowedCoordRange</span></code></a> describing the range.</p></li>
-<li><p><strong>mode</strong> – A <a class="reference internal" href="#iterm2.SelectionMode" title="iterm2.SelectionMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionMode</span></code></a> describing how the selection is interpreted and extended.</p></li>
-<li><p><strong>connected</strong> – If true, no newline exists between this and the next sub-selection.</p></li>
+<li><p><strong>windowed_coord_range</strong> – A <a class="reference internal" href="util.html#iterm2.util.WindowedCoordRange" title="iterm2.util.WindowedCoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">WindowedCoordRange</span></code></a>
+describing the range.</p></li>
+<li><p><strong>mode</strong> – A <a class="reference internal" href="#iterm2.SelectionMode" title="iterm2.SelectionMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionMode</span></code></a> describing how the selection is
+interpreted and extended.</p></li>
+<li><p><strong>connected</strong> – If true, no newline exists between this and the next
+sub-selection.</p></li>
 </ul>
 </dd>
 </dl>
@@ -160,21 +163,41 @@
 <dt class="field-even">Parameters</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</p></li>
-<li><p><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The ID of the session for which to look up the selected text.</p></li>
+<li><p><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The ID of the session for which to look up the
+selected text.</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.SubSelection.mode">
+<em class="property">property </em><code class="sig-name descname">mode</code><a class="headerlink" href="#iterm2.SubSelection.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the mode of this sub-selection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.SubSelection.windowedCoordRange">
+<em class="property">property </em><code class="sig-name descname">windowedCoordRange</code><a class="headerlink" href="#iterm2.SubSelection.windowedCoordRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated in favor of windowed_coord_range</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.SubSelection.windowed_coord_range">
+<em class="property">property </em><code class="sig-name descname">windowed_coord_range</code><a class="headerlink" href="#iterm2.SubSelection.windowed_coord_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the coordinate range spanned by this sub-selection.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="iterm2.Selection">
-<em class="property">class </em><code class="sig-name descname">Selection</code><span class="sig-paren">(</span><em class="sig-param">subSelections: List[iterm2.selection.SubSelection]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Selection" title="Permalink to this definition">¶</a></dt>
-<dd><p>A collection of <a class="reference internal" href="#iterm2.SubSelection" title="iterm2.SubSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubSelection</span></code></a> objects, describing all the selections in a session.</p>
+<em class="property">class </em><code class="sig-name descname">Selection</code><span class="sig-paren">(</span><em class="sig-param">sub_selections: List[iterm2.selection.SubSelection]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>A collection of <a class="reference internal" href="#iterm2.SubSelection" title="iterm2.SubSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubSelection</span></code></a> objects, describing all the
+selections in a session.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>subSelections</strong> – An array of <a class="reference internal" href="#iterm2.SubSelection" title="iterm2.SubSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubSelection</span></code></a> objects.</p>
+<dd class="field-odd"><p><strong>sub_selections</strong> – An array of <a class="reference internal" href="#iterm2.SubSelection" title="iterm2.SubSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubSelection</span></code></a> objects.</p>
 </dd>
 </dl>
 <dl class="method">
@@ -188,11 +211,18 @@
 <dt class="field-even">Parameters</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>connection</strong> (<a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>) – The connection to iTerm2.</p></li>
-<li><p><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The ID of the session for which to look up the selected text.</p></li>
+<li><p><strong>session_id</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The ID of the session for which to look up the
+selected text.</p></li>
 <li><p><strong>width</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The width (number of columns) of the session.</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Selection.subSelections">
+<em class="property">property </em><code class="sig-name descname">subSelections</code><a class="headerlink" href="#iterm2.Selection.subSelections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated in favore of sub_selections.</p>
 </dd></dl>
 
 </dd></dl>
