@@ -1,3 +1,29 @@
+2020-05-03: Show ligature performance warning. Issue 8856
+
+2020-05-03: Tweak text prefs layout
+
+2020-05-03: Add more debug logging around font creation for
+issue 8862
+
+2020-05-03: For inscrutable reasons, fullscreen windows
+aren't added to the Window menu when the theme is minimal or
+compact. Apple's long-archived "documentation" on this at
+https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/WinPanel/Tasks/UsingWindowsMenu.html#//apple_ref/doc/uid/20000231-BCIBJBDA
+says:
+
+  This menu automatically lists windows that have a title
+  bar and are resizable and that can become the main window
+
+However this is a lie because fullscreen windows don't have
+a titlebar and aren't resizable regardless of theme, yet
+some of them are listed in the Window menu.
+
+By pure luck, they gave us an API to work around this
+brokenness, and it's actually easy to use!
+
+2020-05-03: Don't change selection when renaming an account
+in pw manager
+
 2020-05-02: Allow tmux windows to hang around after
 detaching if the tmux profile is not configured to close
 them. Add a nag since this will break existing workflows and
