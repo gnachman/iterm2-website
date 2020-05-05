@@ -1,3 +1,24 @@
+2020-05-04: Fix crash where a divorced session had a profile
+whose GUID was in shared, not sessions ProfileModel.
+
+The repro steps are: 1. Create a new window 2. Cmd-+ to
+increase font size 3. Split vertically 4. Edit font in
+shared profile to make it smaller 5. Cmd-+ in the new
+session again. Crash.
+
+The reason was that when we split vertically we preserved
+the GUID and Original Guid, but forgot to copy
+_overriddenFields from the session being split to the new
+session. Consequently, when the underlying profile was
+updated in step 4 the GUID didn't appear to be overridden
+and the shared GUID overwrote it. The session continued to
+have divorced flag set to YES. Next time you change its font
+size it checks if it needs a divorce and discovers its
+profile is not in sessions instance.
+
+2020-05-04: Fix handling of empty install_requires in
+setup.cfg parser
+
 2020-05-03: Show ligature performance warning. Issue 8856
 
 2020-05-03: Tweak text prefs layout
