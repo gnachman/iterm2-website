@@ -1,3 +1,16 @@
+2020-05-07: Avoid creating ApplicationSupport during startup
+so that it won't be created if you don't use the API. Issue
+8141
+
+2020-05-07: Send arrow keys for scroll wheel when in soft
+alternate screen mode
+
+2020-05-07: Remove unordered_map from iTermColorMap and turn
+it back into obj-c. There were a number of double-frees
+while destroying the unordered map. I don't see how I'm
+misusing it, but if I had a nickel for every time c++
+shivved me in the back I'd still hate the sob
+
 2020-05-06: Treat pressing enter in the search field of
 ProfileListView as a double click on the selected or or on
 the only row if none is selected. Issue 8875
