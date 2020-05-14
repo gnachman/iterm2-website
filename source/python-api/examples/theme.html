@@ -87,30 +87,25 @@
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">iterm2</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">theme</span><span class="p">):</span>
-    <span class="c1"># Themes have space-delimited attributes, one of which will be light or dark.</span>
-    <span class="n">parts</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">&quot;dark&quot;</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
-        <span class="n">preset</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">ColorPreset</span><span class="o">.</span><span class="n">async_get</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Dark Background&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">preset</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">ColorPreset</span><span class="o">.</span><span class="n">async_get</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Light Background&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Update the list of all profiles and iterate over them.</span>
-    <span class="n">profiles</span><span class="o">=</span><span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PartialProfile</span><span class="o">.</span><span class="n">async_query</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">partial</span> <span class="ow">in</span> <span class="n">profiles</span><span class="p">:</span>
-        <span class="c1"># Fetch the full profile and then set the color preset in it.</span>
-        <span class="n">profile</span> <span class="o">=</span> <span class="k">await</span> <span class="n">partial</span><span class="o">.</span><span class="n">async_get_full_profile</span><span class="p">()</span>
-        <span class="k">await</span> <span class="n">profile</span><span class="o">.</span><span class="n">async_set_color_preset</span><span class="p">(</span><span class="n">preset</span><span class="p">)</span>
-
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">update</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_get_variable</span><span class="p">(</span><span class="s2">&quot;effectiveTheme&quot;</span><span class="p">))</span>
     <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableScopes</span><span class="o">.</span><span class="n">APP</span><span class="p">,</span> <span class="s2">&quot;effectiveTheme&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># Block until theme changes</span>
             <span class="n">theme</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
-            <span class="k">await</span> <span class="n">update</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">theme</span><span class="p">)</span>
 
+            <span class="c1"># Themes have space-delimited attributes, one of which will be light or dark.</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;dark&quot;</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+                <span class="n">preset</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">ColorPreset</span><span class="o">.</span><span class="n">async_get</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Dark Background&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">preset</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">ColorPreset</span><span class="o">.</span><span class="n">async_get</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Light Background&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Update the list of all profiles and iterate over them.</span>
+            <span class="n">profiles</span><span class="o">=</span><span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PartialProfile</span><span class="o">.</span><span class="n">async_query</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">partial</span> <span class="ow">in</span> <span class="n">profiles</span><span class="p">:</span>
+                <span class="c1"># Fetch the full profile and then set the color preset in it.</span>
+                <span class="n">profile</span> <span class="o">=</span> <span class="k">await</span> <span class="n">partial</span><span class="o">.</span><span class="n">async_get_full_profile</span><span class="p">()</span>
+                <span class="k">await</span> <span class="n">profile</span><span class="o">.</span><span class="n">async_set_color_preset</span><span class="p">(</span><span class="n">preset</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
