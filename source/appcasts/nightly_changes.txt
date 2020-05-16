@@ -1,3 +1,25 @@
+2020-05-15: Fix a bug where the dock would appear over a
+nonnative fullscreen window because we aren't able to tell
+which screen has the dock when our presentation options
+cause the dock to be hidden; consequently, we believed the
+dock was not on the same screen as a fullscren window, and
+we changed the presentation option back to show it. The hack
+used herein is to remember the last screen that had the dock
+and assume it hasn't moved. That ought to mostly work,
+unless the user does something devious like move the dock to
+another screen where it is also not visible.
+
+2020-05-15: Update presentation controller after toggling
+full screen mode
+
+2020-05-15: Add an advanced pref to disable two finger swipe
+between tabs
+
+2020-05-15: Fix swipe scroll with toolbelt. Also fix blur
+
+2020-05-15: Fix first responder after exiting swipe to
+change tabs
+
 2020-05-14: Disable 'characters considered part of a word'
 when double-click for smart selection is on. Issue 8889
 
