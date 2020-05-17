@@ -1,3 +1,18 @@
+2020-05-16: Add decscusr test file
+
+2020-05-16: Use CSI > 4 ; Pp m to enable/disable CSI u and
+CSI > Pm n to reset the setting. See
+https://github.com/mintty/mintty/issues/881#issuecomment-629601970
+
+2020-05-16: In CSI u mode send esc+{ for meta+shift+[ on a
+US keyboard. A careful reading of the spec indicates that
+you should behave like a legacy terminal for
+meta+shift+key-that-produces-unicode-characters. nicm
+pointed out the behavior in
+https://github.com/mintty/mintty/issues/881#issuecomment-629594864
+
+2020-05-16: Ignore dock-only changes to screen parameters
+
 2020-05-15: Fix a bug where the dock would appear over a
 nonnative fullscreen window because we aren't able to tell
 which screen has the dock when our presentation options
