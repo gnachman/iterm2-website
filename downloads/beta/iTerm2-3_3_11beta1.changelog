@@ -1,0 +1,156 @@
+3.3.11beta1
+
+This is a bugfix release for 3.3.10, which was
+short-lived. The release notes for 3.3.10 are
+included below.
+
+- Fixes a bug introduced in 3.3.10 where the dock
+  and menu bar would sometimes remain hidden after
+  exiting non-native fullscreen.
+- Works around a possible macOS bug where Metal
+  drops frames occasionally.
+
+3.3.10
+
+Security Improvements
+- Improves the method for gaining authorization
+  to run Python scripts launched from outside
+  iTerm2.
+
+  Version 3.3.9 deprecated the older auth
+  mechanism based on the command line, requiring
+  the user to consent to every connection. That
+  was annoying.
+
+  There are now two ways to get permission:
+
+  1. The UI prompts on every connection.
+  2. The app requests a cookie using Applescript.
+     Therefore, Applescript permission is
+     required. This requires the user to
+     consent only once per app that originates the
+     connection.
+
+  Note that this does not affect scripts launched
+  by iTerm2, such as those opened from the Scripts
+  menu.
+
+  For more information, including details on how
+  to use osascript to get a cookie, please see:
+  https://iterm2.com/python-api-security-model
+
+New Features:
+- Updated shell integration installer UI, now with
+  internet-free install option.
+- Add a setting to Edit Session to prevent
+  Automatic Profile Switching from changing the
+  profile.
+- Add support for opening files to line number
+  with IntelliJ.
+- Applescript can now launch a Python API script
+  from an absolute path.
+
+Improvements:
+- Add a delay before previewing a color preset to
+  make it easier to navigate the menu quickly.
+- Set SSL_CERT_FILE and SSL_CERT_DIR when running
+  Python scripts so they can use TLS.
+- Change "Broken Pipe" to "Session Ended" and make
+  it a soothing blue color.
+- Network filesystems can not hang the UI any
+  more. Calls to proc_pidinfo are now made in an
+  XPC server.
+- Default to built-in mouse cursor on Catalina
+  since it is now visible against a black
+  background.
+- Updated internet access policy for all outgoing
+  connections.
+- Improve appearance of items in the Uploads and
+  Downloads menus.
+- "Flash tab bar in full screen" is now off by
+  default since it is now a titlebar accessory.
+- Add keyboard shortcuts for some announcements.
+- The foreground and background color are shown in
+  the context menu when exactly one cell is
+  selected.
+- Automatically detect when mouse reporting
+  control sequences are getting printed and offer
+  to turn it off.
+- Automatically detect when paste bracketing
+  control sequences are getting printed and offer
+  to turn it off.
+- Tab label font size is now customizable in an
+  advanced setting.
+- Improve legibility of highlighted search results
+  in the profile list in dark mode.
+- Restore tmux window locations better when
+  burying the attaching window.
+- Improve UI for selecting a key binding action.
+- Close the man page window (opened when tapping
+  the man page button on the touch bar) when man
+  quits.
+- You can now close the crash reporter with cmd-w.
+- Improve the appearance of window borders (when
+  enabled in Appearance settings) on macOS 10.14+.
+- Improve usability of Arrangement prefs. You can
+  now do multiple selection, rename, and undo.
+- Improve legibility of window titles in Minimal
+  theme with light tab colors.
+- Improve legibility of autocomplete popup text.
+- Improve the tab color menu item UX.
+- Make clearing command history faster.
+
+Bug Fixes:
+- Fix a bug where hotkey windows could appear
+  under the menu bar on secondary display.
+- Fix session restoration with custom shells.
+- Fix various crashes.
+- Fix a bug where a keypress with the option key
+  in the very first keypress in a session could be
+misinterpreted.
+- Fix a bug where URLs with ports were sometimes
+  not recognized.
+- Fix a bug where closing a tmux integration
+  window with many tabs would send garbage to the
+command line of the
+  attaching session.
+- Fix Shell>Close Terminal Window in tmux
+  integration.
+- Fix support for ligatures with spaces when the
+  advanced pref "Prefer speed to accuracy for
+  characters with
+  combining marks" is off.
+- Fix bugs with it2git
+- Fix bugs in tmux dashboard for session names
+  containing nonbreaking spaces.
+- Fix bug where you couldn't map a keystroke to
+  increase height.
+- Fix high CPU utilization in some situations.
+- Fix a bug where attaching to tmux could restore
+  a window to a different position than where it
+  was before detaching.
+- Respect key action of "Ignore" when there is no
+  terminal window.
+- Prevent annoying system log messages from
+  IIONumber.
+- Fix a bug where applescript launched from
+  Scripts menu would timeout improperly.
+- Fix escaping of single quotes in semantic
+  history commands.
+- Fix a bug where new tabs created in Applescript
+  weren't always usable right away.
+- Disable performance statistics to try to
+  find cause of memory corruption bug.
+- Fix memory leaks.
+- Fix a bug where the arrow icon was missing from
+  tmux tabs.
+- Replace calls to calloc() with a safer wrapper
+  function.
+- Fix a bug where the zsh command line could be
+  pushed into history unnecessarily.
+- Fix icon alignment in New Python Script window.
+
+
+
+SHA-256 of the zip file is
+d0b4af29376417562a106b617802a02834b30254fa3a426b00542376e8b3863a
