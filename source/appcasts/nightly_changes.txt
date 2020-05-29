@@ -1,3 +1,22 @@
+2020-05-28: Fix out of bounds read when debug logging is on.
+Issue 8921
+
+2020-05-28: Fix bugs in warning about can't switch to
+desktop X. Issue 8920
+
+2020-05-28: Fix memory leaks. From now on, weakSelf will
+only be used once in a block because this was a terrible way
+to spend an afternoon.
+
+2020-05-28: Change how tmux integration output is routed.
+Rather than calling threadedReadTask: from the tmuxQueue,
+write to a pipe from tmuxQueue. The read end of the pipe is
+like any other session in TaskNotifier, except that it
+doesn't accept writes. This provides backpressure so that we
+don't buffer too much data from tmux. That won't make a
+difference to tmux 3.1 but will in 3.2 when the work in
+https://github.com/tmux/tmux/issues/2217 lands.
+
 2020-05-27: When youg get %window-pane-changed for a pane
 that doesn't exist yet, activate the pane if it's in the
 current tab when it does come in to existence. This lets you
