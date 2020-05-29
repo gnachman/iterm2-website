@@ -4,6 +4,29 @@ A quick comment on notation: in this document, ^[ means "Escape" (hex code 0x1b)
 
 The OSC command `50` used to be used but it conflicts with xterm, so it is now `1337`.
 
+#### Report Foreground/Background Colors (OSC 4)
+
+The xterm-defined OSC 4 control sequence has a mode where it reports the RGB
+value of a color. iTerm2 extends its reporting mode to add two additional color
+indices representing the default foreground and background color.
+
+To get the background color:
+
+    ^[]4;-2;?^G
+
+And this gets the foreground color:
+
+    ^[]4;-1;?\^G
+
+For background and foreground respectively, the terminal will write back:
+
+    \033]4;-2;rgb:R/G/B\007
+    \033]4;-1;rgb:R/G/B\007
+
+Where R, G, and B are either 2 or 4-digit hex values like `14a7/195f/1efb`. For
+4-digit values, you can get an approximation of the 2-digit value by taking the
+first two digits.
+
 #### Anchor (OSC 8)
 
 VTE and iTerm2 support OSC 8 for defining hyperlinks, much like HTML's anchor tag.
