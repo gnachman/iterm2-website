@@ -1,3 +1,19 @@
+2020-06-09: Fix a bug where the 'restore full screen
+windows' prompt was given if there were no windows to
+restore and canceling didn't reset the counter so it would
+keep asking after a cancel.
+
+2020-06-09: Fix a bug where restoring a tmux controller
+didn't set the DCS unique ID so that when an invalid token
+is received it wasn't able to break the parser out of the
+DCS hook. Issue 8936
+
+2020-06-09: Set echo probe duration to 0 to disable probing
+
+2020-06-09: Update regex for http(s) URLs to ignore parens
+just before and after URL. Regex by @joliss. Random entity
+escaping by xcode. Issue 8925
+
 2020-06-08: [python] Fix wrong version number in error
 message, bump version to 1.14
 
