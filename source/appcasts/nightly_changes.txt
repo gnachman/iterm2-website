@@ -1,3 +1,42 @@
+2020-06-11: Add auto-unpause. Move warn before pausing to
+general prefs
+
+2020-06-11: Add support for %extended-output from tmux 3.2+
+
+2020-06-11: only update buffer size time series once a
+second to make the results more stable and use less cpu
+
+2020-06-11: Fix bad cherrypick
+
+2020-06-11: Fix a bug in how we calculate the tmux window
+size for variable-size windows.
+
+Previously, we calculated the desired tmux window size by
+adding the smallest content size to the number of dividers.
+That wasn't quite right, though. Sometimes you need to use
+the *largest* content size instead, because that gets you a
+smaller result. There was a tab like:
+
++-------+ |   |   | |   |   | |   +---| |   |   | |   |   |
++-------+
+
+When the divider is thin and there's no per-pane title bar,
+the window size is constrained by the tall pane because
+tmux's divider is thicker than iTerm2's. The result is that
+-variableTmuxSize returned a size that was a little too big.
+That kicked off a vicious cycle:
+
+1. Cause a layout change, such as by dragging a pane divider
+or resizing the window. The layout size we request is too
+big because of this bug.  2. Tmux sends %layout-change.  3.
+TmuxWindowOpener updates the layout.  4. The flexible view
+is smaller than the split view because the layout size that
+came back was bigger than the window.  5. layoutIsTooLarge
+return YES.  6. TmuxWindowOpener calls fitLayoutToWindows.
+7. It resizes the window to its current size.  8. GOTO 2.
+
+Issue was reported by ashturm via chat.
+
 2020-06-10: Disable metal during tmux split drag. Fix
 implementation of
 sessionViewShouldUpdateSubviewsFramesAutomatically which got
