@@ -1,3 +1,20 @@
+2020-06-18: Fix a bug where native fullscreen is broken on
+10.15.5 because we set the style mask to not-fullscreen from
+refreshTerminal when the window's effective appearance
+changes just before didEnterFullScreen. Issue 8945
+
+2020-06-18: Cancel mouse reporting frustration detection
+when we get a control sequence to copy to the clipboard.
+Issue 8905
+
+2020-06-18: Update presentation controller after adding or
+removing a window from iTermController instead of after
+initializing a full screen window. It has no effect before
+the window is added to the controller. Issue 8951
+
+2020-06-18: Add support for tmux wait-exit. See
+https://github.com/tmux/tmux/issues/2246
+
 2020-06-16: When tmux variable window sizes are in use, do
 not automatically resize them. This is a little gross when
 there are two clients connected and the other one does a
