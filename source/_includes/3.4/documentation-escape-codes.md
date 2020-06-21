@@ -442,3 +442,15 @@ The following synonym is available as a combination of RemoteHost and CurrentDir
     ^[]7;Ps^G
 
 where `Ps` is a file URL with a hostname and a path, like `file://example.com/usr/bin`.
+
+#### Extended Device Attributes
+
+Report terminal name and version.
+
+`^[[>q`
+
+iTerm2 will respond with:
+
+    ^[P>|iTerm2 {version}^[\\
+
+Where {version} is the version of iTerm2, such as `3.4.0`.
