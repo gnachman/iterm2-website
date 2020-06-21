@@ -41,12 +41,6 @@ If the **url** is absent then that ends the hyperlink. Typical usage would look 
 
 To open a link, hold Command and click the link.
 
-Note: in iTerm2 version 3.3.12 and later, if the URL has the `file` scheme and
-a `#` fragment is present then the semantic history rules will apply for
-opening the file. It may optionally include a line number, like
-`file:///tmp/file.txt#123` or line number and column number like
-`file:///tmp/file.txt#123:45`.
-
 #### Set cursor shape
 
     ^[]1337;CursorShape=N^G
