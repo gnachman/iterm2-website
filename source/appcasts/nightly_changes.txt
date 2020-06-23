@@ -1,3 +1,65 @@
+2020-06-21: Remove Travis. It's broken beyond repair.
+
+2020-06-21: Make window borders 1 pt thick in dark theme.
+See email with subject line 'Iterm2 border wider than one
+pixel'
+
+2020-06-21: Add xscode link
+
+2020-06-21: Fix failing test
+
+2020-06-21: Remove more ruby crap to get travis working
+
+2020-06-21: Fix a bug where ThreeFingerTapGestureRecognizer
+incorrectly looked for >3 touches on the *previous* count of
+touches rather than the current count. That allowed a
+four-finger tap to be treated as a three finger tap, which
+causes quicklook activations when swiping between desktops.
+Issue 8955
+
+2020-06-21: Stop using ruby in CI because both Ruby and
+Travis are kinda broken. Travis fails while trying to
+install libxml, which seems to be related to ruby. This
+loses code coverage, but I didn't even know we had that...
+
+2020-06-21: Switch a bunch of experimental features to
+always on in preparation for 3.4
+
+2020-06-21: Move master to 3.4.x
+
+2020-06-21: Fix warning when ASAN is enabled
+
+2020-06-21: Fix version number in warning
+
+2020-06-21: Bump minimum python version for betas
+
+2020-06-21: Do not accept older format .its files
+
+2020-06-21: Fix warning
+
+2020-06-21: Fix duplicate main menu identifiers
+
+2020-06-21: Advertise that PTYSession conforms to
+iTermTmuxControllerSession
+
+2020-06-21: Remove duplicate references in project file,
+suggested by xcode upgrade
+
+2020-06-21: Update window opacity when the profile changes
+transparency. Issue 7327
+
+2020-06-21: Fix a bug where session logs could be corrupted.
+Issue 8959
+
+2020-06-20: Move nontrivial screen parameters change check
+into presentation controller. Fix coalescing. General clean
+up
+
+2020-06-20: Avoid disabling metal when the app is activated.
+For some reason we get screenParametersChanged sometimes
+upon activation which causes metal to be deactivated at the
+worst possible time.
+
 2020-06-19: Disable metal during split pane dragging for
 tmux sessions. Issue 8954.
 
@@ -520,6 +582,3 @@ performance. Issue 8855
 
 2020-05-02: [python] Fix theme.py to set the color at
 startup. Issue 6764
-
-2020-05-01: Really skip descendants when removing copy
-history [cherry pick this to master]
