@@ -1,3 +1,14 @@
+2020-06-23: Refactor tmux response handling. Fix a bug where
+if a command early in a list with a nil target got an error
+then the rest of the list would not be canceled, causing a
+hang.  Tolerate errors from refresh-client -C. Issue 8943.
+
+2020-06-23: Fix logic for adjusting tmux layout. If the root
+view is larger than the flexible view, you really have to
+resize it or content will be outside the visible bounds. If
+it's smaller by more than one cell, that should also be
+fixable.
+
 2020-06-21: Remove Travis. It's broken beyond repair.
 
 2020-06-21: Make window borders 1 pt thick in dark theme.
@@ -582,3 +593,6 @@ performance. Issue 8855
 
 2020-05-02: [python] Fix theme.py to set the color at
 startup. Issue 6764
+
+2020-05-01: Really skip descendants when removing copy
+history [cherry pick this to master]
