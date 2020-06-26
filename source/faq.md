@@ -145,3 +145,6 @@ A: Their drivers have a bug. Turn off the menu item **iTerm2 > Secure Keyboard E
 
 #### Q: I use bash and sometimes my prompt draws incorrectly.
 A: If you have problems where doing a reverse search or wrapping a long command causes letters to appear in the wrong place it may be because you have non-printing characters in your PS1. Place them between `\[` and `\]`. More info <a href="https://www.tldp.org/HOWTO/Bash-Prompt-HOWTO/nonprintingchars.html">here</a>.
+
+#### Q: What is "CSI u mode"?
+A: This is a way of reporting keystrokes which is mostly backwards compatible but enables more combinations of keys and modifiers to be properly reported. For example, it standardizes how option+arrow key works. Neovim has support out of the box. <a href="https://gist.github.com/gnachman/b4fb1e643e7e82a546bc9f86f30360e4">Emacs can be persuaded to work by adding this to your `.emacs`.</a>
