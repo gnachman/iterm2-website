@@ -20,7 +20,7 @@ Paypal is a good choice for one-time donations.
 <hr/>
 
 <div>
-    <a href="https://github.com/sponsors/gnachman"><img src="images/github-sponsors.png" /></a>
+    <a href="https://github.com/sponsors/gnachman"><img src="images/github-sponsors.png" width="132" height="41" /></a>
 </div>
 
 Sponsor me on Github! It's a convenient way to make monthly donations.
