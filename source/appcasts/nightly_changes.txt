@@ -1,3 +1,17 @@
+2020-06-25: Don't save window state except for hotkey
+windows when not using system window restoration. I should
+eventually change the behavior for hotkey windows, too, but
+that will be more involved because it'll break workflows.
+Issue 8960.
+
+2020-06-25: Add FUNDING.yml
+
+2020-06-25: Fix false pause detections. Negative slope
+predicted a pause in the past, which is not a useful
+prediction, so ignore negative slopes. Also require five
+consecutive redzone predictions before warning to deal with
+momentary latency spikes.
+
 2020-06-25: Unbreak the build on Xcode 11
 
 2020-06-25: [bigsur] Fix misbehaved search field in prefs
@@ -602,3 +616,6 @@ performance. Issue 8855
 
 2020-05-02: [python] Fix theme.py to set the color at
 startup. Issue 6764
+
+2020-05-01: Really skip descendants when removing copy
+history [cherry pick this to master]
