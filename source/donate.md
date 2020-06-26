@@ -19,9 +19,17 @@ Paypal is a good choice for one-time donations.
 
 <hr/>
 
+<div>
+    <a href="https://github.com/sponsors/gnachman"><img src="images/github-sponsors.png" /></a>
+</div>
+
+Sponsor me on Github! It's a convenient way to make monthly donations.
+
+<hr/>
+
 <a href="https://www.patreon.com/gnachman"><img src="images/Patreon.png" width="210" height="59"></a>
 
-Patreon is a convenient way to make monthly donations.
+Patreon is another way to make monthly donations.
 
 <hr/>
 
