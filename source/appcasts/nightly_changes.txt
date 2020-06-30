@@ -1,3 +1,26 @@
+2020-06-29: Try to unbreak the nightly build for big sur
+users
+
+2020-06-29: Make the tabbar opaque when the window's
+background is clear.
+
+2020-06-29: Switch to within-window blending for the tabbar
+backing doesn't appear translucent. This reverts
+6328686a8e989dd5a2ac7ba3fcd918020c623a84. I can't reproduce
+the problem that commit's message describes
+
+2020-06-29: Force the tab bar to be a visible titlebar
+accessory while entering fullscreen, and then set its max
+height to 0 if it should be collapsed. Issue 8981
+
+2020-06-29: Promote pref to make LSUIElement require only
+hotkey windows out of advanced prefs. Default it to off
+instead of on. Issue 8980
+
+2020-06-29: Fix shortcut input view pre-big sur. Apparently
+the changes I made to the sheet it's in for the hotkey
+window made its window never key.
+
 2020-06-28: Fix hamburger image on 10.15
 
 2020-06-28: Fix build on 10.15 sdk
