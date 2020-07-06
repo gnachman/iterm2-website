@@ -396,6 +396,8 @@
 </li>
       <li><a href="session.html#iterm2.Session.async_get_contents">async_get_contents() (Session method)</a>
 </li>
+      <li><a href="session.html#iterm2.Session.async_get_coprocess">async_get_coprocess() (Session method)</a>
+</li>
       <li><a href="profile.html#iterm2.Profile.async_get_default">async_get_default() (Profile static method)</a>
 </li>
       <li><a href="window.html#iterm2.Window.async_get_frame">async_get_frame() (Window method)</a>
@@ -434,10 +436,10 @@
 </li>
       <li><a href="tmux.html#iterm2.async_get_tmux_connection_by_connection_id">async_get_tmux_connection_by_connection_id() (in module iterm2)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tmux.html#iterm2.async_get_tmux_connections">async_get_tmux_connections() (in module iterm2)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="app.html#iterm2.App.async_get_variable">async_get_variable() (App method)</a>
 
       <ul>
@@ -468,6 +470,8 @@
 </li>
       <li><a href="tool.html#iterm2.tool.async_register_web_view_tool">async_register_web_view_tool() (in module iterm2.tool)</a>
 </li>
+      <li><a href="session.html#iterm2.Session.async_restart">async_restart() (Session method)</a>
+</li>
       <li><a href="arrangement.html#iterm2.Arrangement.async_restore">async_restore() (Arrangement static method)</a>
 </li>
       <li><a href="window.html#iterm2.Window.async_restore_window_arrangement">async_restore_window_arrangement() (Window method)</a>
@@ -478,6 +482,8 @@
         <li><a href="alert.html#iterm2.TextInputAlert.async_run">(TextInputAlert method)</a>
 </li>
       </ul></li>
+      <li><a href="session.html#iterm2.Session.async_run_coprocess">async_run_coprocess() (Session method)</a>
+</li>
       <li><a href="session.html#iterm2.Session.async_run_tmux_command">async_run_tmux_command() (Session method)</a>
 </li>
       <li><a href="arrangement.html#iterm2.Arrangement.async_save">async_save() (Arrangement static method)</a>
@@ -748,6 +754,8 @@
 </li>
       <li><a href="session.html#iterm2.Session.async_split_pane">async_split_pane() (Session method)</a>
 </li>
+      <li><a href="session.html#iterm2.Session.async_stop_coprocess">async_stop_coprocess() (Session method)</a>
+</li>
       <li><a href="tab.html#iterm2.Tab.async_update_layout">async_update_layout() (Tab method)</a>
 </li>
       <li><a href="preferences.html#iterm2.PreferenceKey.AUTO_COMMAND_HISTORY">AUTO_COMMAND_HISTORY (PreferenceKey attribute)</a>
@@ -980,6 +988,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lifecycle.html#iterm2.EachSessionOnceMonitor">EachSessionOnceMonitor (class in iterm2)</a>
 </li>
+      <li><a href="prompt.html#iterm2.PromptState.EDITING">EDITING (PromptState attribute)</a>
+</li>
       <li><a href="preferences.html#iterm2.PreferenceKey.EMULATE_US_KEYBOARD">EMULATE_US_KEYBOARD (PreferenceKey attribute)</a>
 </li>
       <li><a href="preferences.html#iterm2.PreferenceKey.ENABLE_BONJOUR_DISCOVERY">ENABLE_BONJOUR_DISCOVERY (PreferenceKey attribute)</a>
@@ -1050,9 +1060,11 @@
 </li>
       <li><a href="keyboard.html#iterm2.Keycode.F8">F8 (Keycode attribute)</a>
 </li>
+      <li><a href="keyboard.html#iterm2.Keycode.F9">F9 (Keycode attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="keyboard.html#iterm2.Keycode.F9">F9 (Keycode attribute)</a>
+      <li><a href="prompt.html#iterm2.PromptState.FINISHED">FINISHED (PromptState attribute)</a>
 </li>
       <li><a href="session.html#iterm2.session.SessionLineInfo.first_visible_line_number">first_visible_line_number() (SessionLineInfo property)</a>
 </li>
@@ -1502,6 +1514,8 @@
 </li>
       <li><a href="prompt.html#iterm2.PromptMonitor">PromptMonitor (class in iterm2)</a>
 </li>
+      <li><a href="prompt.html#iterm2.PromptState">PromptState (class in iterm2)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1534,10 +1548,10 @@
 </li>
       <li><a href="keyboard.html#iterm2.Keycode.RIGHT_ARROW">RIGHT_ARROW (Keycode attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="preferences.html#iterm2.PreferenceKey.RIGHT_COMMAND_REMAPPING">RIGHT_COMMAND_REMAPPING (PreferenceKey attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="keyboard.html#iterm2.Keycode.RIGHT_CONTROL">RIGHT_CONTROL (Keycode attribute)</a>
 </li>
       <li><a href="keyboard.html#iterm2.Keycode.RIGHT_OPTION">RIGHT_OPTION (Keycode attribute)</a>
@@ -1555,6 +1569,8 @@
       <li><a href="connection.html#iterm2.run_forever">run_forever() (in module iterm2)</a>
 </li>
       <li><a href="connection.html#iterm2.run_until_complete">run_until_complete() (in module iterm2)</a>
+</li>
+      <li><a href="prompt.html#iterm2.PromptState.RUNNING">RUNNING (PromptState attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -2052,12 +2068,14 @@
 </li>
       <li><a href="profile.html#iterm2.UnicodeNormalization">UnicodeNormalization (class in iterm2)</a>
 </li>
-      <li><a href="profile.html#iterm2.Profile.unlimited_scrollback">unlimited_scrollback() (Profile property)</a>
+      <li><a href="prompt.html#iterm2.PromptState.UNKNOWN">UNKNOWN (PromptState attribute)</a>
 </li>
-      <li><a href="keyboard.html#iterm2.Keycode.UP_ARROW">UP_ARROW (Keycode attribute)</a>
+      <li><a href="profile.html#iterm2.Profile.unlimited_scrollback">unlimited_scrollback() (Profile property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="keyboard.html#iterm2.Keycode.UP_ARROW">UP_ARROW (Keycode attribute)</a>
+</li>
       <li><a href="profile.html#iterm2.Profile.use_bold_font">use_bold_font() (Profile property)</a>
 </li>
       <li><a href="profile.html#iterm2.Profile.use_bright_bold">use_bright_bold() (Profile property)</a>

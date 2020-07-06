@@ -53,6 +53,7 @@ Shell > tmux > Detach                                                           
 Shell > tmux > Force Detach                                                             `tmux.Force Detach`                                                           
 Shell > tmux > New Tmux Window                                                          `tmux.New Tmux Window`                                                        
 Shell > tmux > New Tmux Tab                                                             `tmux.New Tmux Tab`                                                           
+Shell > tmux > Pause Pane                                                               `trmux.Pause Pane`                                                            
 Shell > tmux > Dashboard                                                                `tmux.Dashboard`                                                              
 Shell > Page Setup...                                                                   `Page Setup...`                                                               
 Shell > Print > Screen                                                                  `Print.Screen`                                                                
@@ -74,6 +75,7 @@ Edit > Paste Special > Paste Slowly Faster                                      
 Edit > Paste Special > Paste Slower                                                     `Paste Special.Paste Slower`                                                  
 Edit > Paste Special > Paste Slowly Slower                                              `Paste Special.Paste Slowly Slower`                                           
 Edit > Paste Special > Warn Before Multi-Line Paste                                     `Paste Special.Warn Before Multi-Line Paste`                                  
+Edit > Paste Special > Prompt to Convert Tabs to Spaces when Pasting                    `Paste Special.Prompt to Convert Tabs to Spaces when Pasting`                 
 Edit > Paste Special > Limit Multi-Line Paste Warning to Shell Prompt                   `Paste Special.Limit Multi-Line Paste Warning to Shell Prompt`                
 Edit > Paste Special > Warn Before Pasting One Line Ending in a Newline at Shell Prompt `Paste Special.Warn Before Pasting One Line Ending in a Newline at Shell Prompt`
 Edit > Open Selection                                                                   `Open Selection`                                                              
@@ -109,6 +111,7 @@ View > Show Cursor Guide                                                        
 View > Show Timestamps                                                                  `Show Timestamps`                                                             
 View > Show Annotations                                                                 `Show Annotations`                                                            
 View > Auto Command Completion                                                          `Auto Command Completion`                                                     
+View > Composer                                                                         `Composer`                                                                    
 View > Open Quickly                                                                     `Open Quickly`                                                                
 View > Maximize Active Pane                                                             `Maximize Active Pane`                                                        
 View > Make Text Bigger                                                                 `Make Text Bigger`                                                            
@@ -137,6 +140,7 @@ Session > Terminal State > Mouse Reporting                                      
 Session > Terminal State > Paste Bracketing                                             `Paste Bracketing`                                                            
 Session > Terminal State > Application Cursor                                           `Application Cursor`                                                          
 Session > Terminal State > Application Keypad                                           `Application Keypad`                                                          
+Session > Terminal State > Report Modifiers with CSI u                                  `Reprot Modifiers with CSI u`                                                 
 Session > Terminal State > Reset                                                        `Reset Terminal State`                                                        
 Session > Bury Session                                                                  `Bury Session`                                                                
 Scripts > Manage > New Python Script                                                    `New Python Script`                                                           

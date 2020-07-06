@@ -85,6 +85,36 @@
 <span id="prompt"></span><h1>Prompt<a class="headerlink" href="#module-iterm2.prompt" title="Permalink to this headline">¶</a></h1>
 <p>Provides information about the shell prompt.</p>
 <dl class="class">
+<dt id="iterm2.PromptState">
+<em class="property">class </em><code class="sig-name descname">PromptState</code><a class="headerlink" href="#iterm2.PromptState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes the states that a command prompt can take.</p>
+<dl class="attribute">
+<dt id="iterm2.PromptState.EDITING">
+<code class="sig-name descname">EDITING</code><em class="property"> = 0</em><a class="headerlink" href="#iterm2.PromptState.EDITING" title="Permalink to this definition">¶</a></dt>
+<dd><p>User is editing the command at the prompt</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.PromptState.FINISHED">
+<code class="sig-name descname">FINISHED</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.PromptState.FINISHED" title="Permalink to this definition">¶</a></dt>
+<dd><p>The last entered command has finished but there hasn’t been a new prompt yet (rare).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.PromptState.RUNNING">
+<code class="sig-name descname">RUNNING</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.PromptState.RUNNING" title="Permalink to this definition">¶</a></dt>
+<dd><p>The last entered command is still executing, and has not finished yet.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.PromptState.UNKNOWN">
+<code class="sig-name descname">UNKNOWN</code><em class="property"> = -1</em><a class="headerlink" href="#iterm2.PromptState.UNKNOWN" title="Permalink to this definition">¶</a></dt>
+<dd><p>This version of iTerm2 does not report prompt state (you should upgrade)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="iterm2.Prompt">
 <em class="property">class </em><code class="sig-name descname">Prompt</code><span class="sig-paren">(</span><em class="sig-param">proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Prompt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a command prompt.</p>
@@ -154,13 +184,17 @@ version of iTerm2 will result in an exception telling the user to upgrade.</p>
 </div></blockquote>
 <dl class="method">
 <dt id="iterm2.PromptMonitor.async_get">
-<em class="property">async </em><code class="sig-name descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Tuple[iterm2.prompt.PromptMonitor.Mode, Any]<a class="headerlink" href="#iterm2.PromptMonitor.async_get" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">async_get</code><span class="sig-paren">(</span><em class="sig-param">include_id: bool = False</em><span class="sig-paren">)</span> &#x2192; Union[Tuple[iterm2.prompt.PromptMonitor.Mode, Any], Tuple[iterm2.prompt.PromptMonitor.Mode, Any, Optional[str]]]<a class="headerlink" href="#iterm2.PromptMonitor.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Blocks until a new shell prompt is received.</p>
 <p>Note: Older versions of the runtime that do not support modes other
 than PROMPT always return None.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A tuple of (PROMPT,None), (COMMAND_START,Str), or
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>include_id</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – If True, return a triple where the last value is the
+prompt’s unique ID if available or None otherwise.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tuple of (PROMPT,None), (COMMAND_START,Str), or
 (COMMAND_END,Int) where the Str gives the command being run and the
 Int gives the exit status of the command.</p>
 </dd>

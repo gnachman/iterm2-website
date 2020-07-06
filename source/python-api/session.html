@@ -191,6 +191,17 @@ unavailable then a subset is returned.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="iterm2.Session.async_get_coprocess">
+<em class="property">async </em><code class="sig-name descname">async_get_coprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional[str]<a class="headerlink" href="#iterm2.Session.async_get_coprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the command line of the currently running coprocess, if any.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether there is a coprocess currently running.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="iterm2.Session.async_get_line_info">
 <em class="property">async </em><code class="sig-name descname">async_get_line_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.session.SessionLineInfo<a class="headerlink" href="#iterm2.Session.async_get_line_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches the number of lines that are visible, in history, and that have
@@ -355,6 +366,39 @@ use the system default timeout.</p></li>
 </dd>
 <dt class="field-odd">Throws</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Session.async_restart">
+<em class="property">async </em><code class="sig-name descname">async_restart</code><span class="sig-paren">(</span><em class="sig-param">only_if_exited: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Session.async_restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restarts a session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>only_if_exited</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – When <cite>True</cite>, this will raise an exception if the
+session is still running. When <cite>False</cite>, a running session will be
+killed and restarted.</p>
+</dd>
+<dt class="field-even">Throws</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Session.async_run_coprocess">
+<em class="property">async </em><code class="sig-name descname">async_run_coprocess</code><span class="sig-paren">(</span><em class="sig-param">command_line: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#iterm2.Session.async_run_coprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs a coprocess, provided non is already running.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><p><strong>command_line</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The command line for the new coprocess.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if it was launched or False if one was already running.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -563,6 +607,17 @@ affect only this session, or <cite>None</cite> to make no changes.</p></li>
 <p class="admonition-title">See also</p>
 <p>Example “<a class="reference internal" href="examples/broadcast.html#broadcast-example"><span class="std std-ref">Asymmetric Broadcast Input</span></a>”</p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Session.async_stop_coprocess">
+<em class="property">async </em><code class="sig-name descname">async_stop_coprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#iterm2.Session.async_stop_coprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the currently running coprocess, if any.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if a coprocess was stopped or False if non was running.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
