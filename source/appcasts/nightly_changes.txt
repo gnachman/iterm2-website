@@ -1,3 +1,38 @@
+2020-07-05: Make windows draggable by the status bar.
+Prevent dragging a window by its titlebar if the window
+should not be draggable. Issue 8993
+
+2020-07-05: Fix failing tests
+
+2020-07-05: Fix support for ZWJ in emoji
+
+2020-07-05: Suppress stoplight hotbox when the search field
+would be under it
+
+2020-07-04: Fix wrong URL encoding for sematic history paths
+(#422)
+
+This fixes wrong encoding of paths when cmd-clicking on
+existing files in sematic history to for example open the
+file in MacVim or a custom URL.
+
+The problem is that URLHostAllowedCharacterSet does not
+contain the slash character, so eg. /Users/foo/bar baz.txt
+is encoded as %2FUsers%2Ffoo%2Fbar%20baz.txt instead of the
+correct /Users/foo/bar%20baz.txt.
+
+While some application might not care this at least breaks
+opening files in MacVim, which requires proper path
+encoding.
+
+This changes to use the correct URLPathAllowedCharacterSet
+instead.
+
+It is possible that URLHostAllowedCharacterSet contained "/"
+in the past, even though it is not a valid character for the
+host part of a URL and Apple fixed it it newer SDK versions.
+2020-07-04: Update libsixel. Add makefile target to build it
+
 2020-07-04: Fix big sur window border
 
 2020-07-04: Disable window border feature on 10.16. I am
@@ -407,3 +442,8 @@ pane might get paused right away
 2020-06-03: Add support for tmux pause mode. Still lots of
 polish needed around the UI and testing. For all the gory
 details see https://github.com/tmux/tmux/issues/2217
+
+2020-06-01: Fix build
+
+2020-06-01: Don't append nil to debug string if the complex
+character is missing. Issue 8922
