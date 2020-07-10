@@ -1,3 +1,31 @@
+2020-07-09: Fix crash when using non-master tmux
+
+2020-07-09: Avoid constantly re-creating status bar icons.
+The test for whether the imageview's image equals the
+provided image for the status bar component always failed
+because I guess the imageview changes the image at some
+point on its own. This commit adds a new api for cacheable
+images. It's fine to cache status bar images because they're
+tiny and you usually don't change them much. An attempt to
+fix issue 8978
+
+2020-07-09: [python] Bump version
+
+2020-07-09: [python,api] Add Arrangements.async_list. Issue
+9004
+
+2020-07-09: Fix compact windows entering full screen in big
+sur: there was a gray rectangle in full screen under the tab
+bar. This also affects older versions of macOS because I
+moved the call to updateTabBarControlIsTitlebarAccessory in
+windowDidEnterFullScreen to after lionFullScreen_=YES which
+it needs in order to reason correctly about whether it
+should be a titlebar accessory. This will either fix a bunch
+of bugs or create a bunch of bugs, or maybe both. sigh
+
+2020-07-09: Move tabbar out of title bar in big sur because
+it looks bad with 4 points of empty space under it
+
 2020-07-09: Make third party packages buildable via the
 makefile. Build them all for ARM & x86.
 
