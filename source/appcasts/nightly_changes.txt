@@ -1,3 +1,123 @@
+2020-07-19: Fix leak of PSMCachedTitle, noticed in memory
+graph in issue 8840
+
+2020-07-19: ARCify iTermAnimatedImageInfo to fix a leak when
+its initializer returns nil
+
+2020-07-19: Avoid crash when a filename on the pasteboard
+hits some weird edge case (bogus utf 16 maybe?)
+
+2020-07-19: Don't die with an assertion when tmux views are
+in a weird state
+
+2020-07-19: Give each iTermThread a unique label. Job
+managers get their unique label assigned before creation
+because they upgrade the dispatch queue to an iTermThread
+late to simplify memory management of the dispatch queue.
+
+2020-07-19: Add iTermThread.currentThread. Improve
+cross-thread stack traces.
+
+2020-07-19: Remove double-invoke of callback. Reproduces a
+crash when you close a tab and then quit.
+
+2020-07-19: Add debugging to catch extra dispatch_leave in
+multiclient
+
+2020-07-19: Implemnt a no-op encodeWithCoder: in PTYTab to
+avoid crashing if NSTabViewItem decides to encode its
+identifier.
+
+2020-07-19: Bounds check sumOfValuesInRange and avoid
+passing out of bounds values to it from
+absPositionOfFindContext to fix a crash in 3.4.0beta1.
+
+2020-07-19: Enter copy mode automatically if you press
+shift+arrow/home/end while there is a selection. Add
+home/end support to copy mode.
+
+2020-07-19: Add a bunch of debug logging for killing child
+processes. Add a warning when the path to the daemon
+includes 'A Document Being Saved By Autoupdate'. Issue 9022
+
+2020-07-19: Add more debug logging to iTermEventTap.m for
+issue 9002
+
+2020-07-19: Change the Beta icon so it isn't vulgar in
+Chinese. Issue 9021
+
+2020-07-19: Add assertions ot track down issue 9019
+
+2020-07-19: Add a clear pixel to the root terminal view to
+work around a bug when entering full screen. For all the
+gory details see issue 8701. Limited to 10.14 in the hope
+that the bug is fixed in 10.15.
+
+2020-07-19: Avoid using NSAttributedString as a dictionary
+key. It is jaw-droppingly slow. Create a very special
+purpose dictionary key for the CTLineRef cache that is quick
+to hash and compare. Issue 9016
+
+2020-07-19: Switch beta-iTerm2.plist and iTerm2.plist to
+modern from new
+
+2020-07-19: Add back testing_new for betas since we want
+transitional builds to upgrade to 3.4
+
+2020-07-19: 3.4.0beta1
+
+2020-07-19: Make AMIndeterminateProgressIndicators lock
+phase
+
+2020-07-19: Fix appearance of popups. I believe it was
+hardcoded to light for pre-mojave brokenness
+
+2020-07-19: Remove intercell spacing from open quickly
+tableview for big sur
+
+2020-07-19: [big sur] also fix tags view scroller
+
+2020-07-19: Remove intercell spacing for the captured output
+tool on big sur because it clips the selection rounded rect.
+Bring back the bullet for it too, not sure why that was
+removed
+
+2020-07-19: Improve appearance of toolbelt on big sur
+
+2020-07-19: Add space for the bottom margin of the open
+quickly table view in big sur. I wish there were an API for
+this.
+
+2020-07-19: Improve appearance of compact tabs on big sur
+
+2020-07-19: Use the fat title bar font for the shortcut
+label and minimal title
+
+2020-07-19: Remove dependency on DSA key
+
+2020-07-19: Update build scripts to only update _modern.xml
+
+2020-07-19: Remove dsa_pub.pem. EdDSA is now the only
+signature type supported. See
+https://github.com/sparkle-project/Sparkle/issues/1355 for
+how this is supposed to work. 3.3 is the transitional
+release and 3.4 is the 'modern' release.
+
+2020-07-19: Remove obsolete todos
+
+2020-07-19: Update app icon, courtesy of Arda ebi with edits
+by me
+
+2020-07-19: Bump deployment target of UKCrashReporter
+
+2020-07-19: Remove bogus warning
+
+2020-07-19: [sigarchive] Create v2 archives
+
+2020-07-19: Remove logging during upload
+
+2020-07-19: Bump minimum python environment to 67
+
 2020-07-18: Do not warn about multi line paste when the
 RemovingNewLines flag is true. (#425)
 
