@@ -69,9 +69,10 @@ Next, you need to load the script at login time. Add this to the end of ~/.login
 <pre>source ~/.iterm2_shell_integration.tcsh</pre>
 </div>
 
-
 Don't want to or can't install a login script? See the workaround at the end of this document using
 triggers.
+
+Elvish users: Diego Zamboni maintains a <a href="https://github.com/zzamboni/elvish-modules/blob/master/iterm2.org">shell integration script for Elvish on Github.</a>
 
 ### Features
 Shell Integration enables numerous features:
