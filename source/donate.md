@@ -10,9 +10,12 @@ Support free software! It's a nice way to say thanks, and it helps me buy coffee
 
 <hr />
 
-Donate by credit card through Square:
-
-<a href="https://iterm2.square.site/product/make-a-donation/1?cs=true"><img width="199" height="39" src="images/squaresite.png"></a>
+<a href="https://iterm2.square.site/product/make-a-donation/1?cs=true">
+Donate by credit card</a> through Square:
+<br/>
+<br/>
+<a href="https://iterm2.square.site/product/make-a-donation/1?cs=true">
+<img width="199" height="39" src="images/squaresite.png"></a>
 
 Or Limepay:
 
