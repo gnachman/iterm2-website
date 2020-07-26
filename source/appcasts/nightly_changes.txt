@@ -1,3 +1,41 @@
+2020-07-25: Don't let a split pane become smaller than its
+minimum size because of the window resizing. -[NSSplitView
+adjustSubviews] ignores all the delegate methods that
+constrain subview sizes. This diff does its #*(@) job for it
+by calling one of the delegate methods to make the sizes
+sane.
+
+2020-07-25: Don't crash when a pane is 1 column wide.
+
+2020-07-25: Log more state of the cumulative sum cache when
+failing assertion in wrappedLineAtIndex:width:continuation:
+
+2020-07-25: Add a magic number of iTermCallback to detect
+use after free
+
+2020-07-25: Nil out block on dealloc iTermCallback in case
+the bug with leaving the group execessively is a use after
+free
+
+2020-07-25: Nil out group on dealloc iTermCallback in case
+the bug with leaving the group execessively is a use after
+free
+
+2020-07-25: Tolerate touchAndHold -> touchAndHold. This
+happened in the wild in crash 1595410370.876396244.txt
+
+2020-07-25: Fix use after free of note when deleting it
+
+2020-07-25: When you create a hotkey window with
+Prefs>Keys>Hotkey>Create a Dedicated Hotkey Window, add a
+keybinding to the new profile for cmd-t to open a new tab
+with that profile. Issue 9041
+
+2020-07-25: Enable secure keyboard input at password prompt.
+Issue 9039
+
+2020-07-25: Change default build back to dev
+
 2020-07-25: Don't auto-enter copy mode unless there is a
 selection. Issue 9038
 
