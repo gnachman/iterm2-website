@@ -7,6 +7,20 @@ title: Donate - iTerm2 - macOS Terminal Replacement
 
 Support free software! It's a nice way to say thanks, and it helps me buy coffee so I stay up late fixing bugs. Several forms of donation are accepted.
 
+<div>
+    <a href="https://github.com/sponsors/gnachman"><img src="images/github-sponsors.png" width="132" height="41" /></a>
+</div>
+
+Sponsor me on Github! It's a convenient way to make monthly donations.
+
+<hr/>
+
+<a href="https://www.patreon.com/gnachman"><img src="images/Patreon.png" width="210" height="59"></a>
+
+Patreon is another way to make monthly donations.
+
+<hr/>
+
 <a href="https://iterm2.square.site/product/make-a-donation/1?cs=true">
 Donate by credit card</a> through Square:
 <br/>
@@ -26,20 +40,6 @@ Or Paypal:
   ">
   <input type="image" src="images/PayPal.png" width="210" height="59" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 </form>
-
-<hr/>
-
-<div>
-    <a href="https://github.com/sponsors/gnachman"><img src="images/github-sponsors.png" width="132" height="41" /></a>
-</div>
-
-Sponsor me on Github! It's a convenient way to make monthly donations.
-
-<hr/>
-
-<a href="https://www.patreon.com/gnachman"><img src="images/Patreon.png" width="210" height="59"></a>
-
-Patreon is another way to make monthly donations.
 
 <hr/>
 
