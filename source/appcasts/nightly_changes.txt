@@ -1,3 +1,33 @@
+2020-08-05: Defer calling -[TmuxController
+fitLayoutToWindows] after adjusting a tab's layout until all
+tabs in the window have had their layouts updated. Hopefully
+fixes 9024, which I cannot reproduce.
+
+2020-08-05: Streaming state restoration.
+
+The macOS window restoration system is no longer used except
+for migrating users from a previous version to this one. We
+save state in a SQLite database under Application Support
+now. The benefit is that we can avoid saving giant
+scrollback histories that have not changed, or at least only
+saving the very last part of it when the beginning is
+unchanged. Hopefully it should be more reliable, as well.
+
+The previous implementation that works kind of like Apple's
+is still here in case of emergency but it can be removed
+after this is in a safe place.
+
+For all the gory details, see the delta_encoding branch.
+
+Fixes these issues:
+https://gitlab.com/gnachman/iterm2/issues/6632
+https://gitlab.com/gnachman/iterm2/issues/7909
+https://gitlab.com/gnachman/iterm2/issues/7278
+https://gitlab.com/gnachman/iterm2/issues/6189
+https://gitlab.com/gnachman/iterm2/issues/5164
+https://gitlab.com/gnachman/iterm2/issues/4667
+https://gitlab.com/gnachman/iterm2/-/issues/8990
+
 2020-07-31: Fix vertical alignment in text in tip of the day
 buttons
 
