@@ -12,6 +12,10 @@ A few items of note:
   * The numeric keypad Enter key is treated the same as the regular Enter key.
   * F16 through F24 do nothing in CSI u mode. Regular keyboards don't have them, but the Touch Bar does.
 
+In version 3.4 of iTerm2, CSI u mode adheres to the standard and does away with some backward compatibility control sequences that 3.3 supported in a deviation from the standard. These were for the following characters when combined with Control: `-, _, / ,?, 2, 6, [, and ]`. If you prefer to use the non-CSI-u sequences for these codes, import this keymap file in to your profile by choosing **Prefs > Profiles > Keys > Presets… > Import…**.
+
+[CSIu-Backward-Compat.itermkeymap](/keymaps/CSIu-Backward-Compat.itermkeymap)
+
 ### Applications
 
   * neovim supports CSI u out of the box with no additional configuration needed.
