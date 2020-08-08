@@ -12,6 +12,17 @@ A few items of note:
   * The numeric keypad Enter key is treated the same as the regular Enter key.
   * F16 through F24 do nothing in CSI u mode. Regular keyboards don't have them, but the Touch Bar does.
 
+For practical reasons, some deviations from the spec have been deemed useful. They are:
+
+* Control-`[` sends `esc`. This is to mitigate the 2016-2019 Macbook Pro's horrid keyboard.
+* Control-`@` sends `nul`. This is because by default macOS reserves Control-`2` to change desktops, making it impossible to send a `nul`.
+* Control-`^` sends ASCII 30. This is because Control-`6` is unusable for the same reason as Control-`2`.
+* Prior to version 3.4 of iTerm2, Control-`?` sent ASCII 127. That was removed because the backspace key already sends this.
+
+To override these exceptions, import this keymap file in to your profile by choosing **Prefs > Profiles > Keys > Presets… > Import…**.
+
+[Standard-CSI-u.itermkeymap](/keymaps/Standard-CSI-u.itermkeymap)
+
 ### Applications
 
   * neovim supports CSI u out of the box with no additional configuration needed.
