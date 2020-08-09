@@ -1,3 +1,16 @@
+2020-08-08: Do away with ApplicationSupport.
+
+The reason for creating an ApplicationSupport symlink to
+"Application Support" is that a shebang can't take a path
+with a space. But there's a workaround:
+
+ #!/usr/bin/env -S ".../Application\_Support/..."
+
+Issue 8919.
+
+2020-08-08: Remove stack traces from ProfileModel debug code
+to improve startup performance
+
 2020-08-07: Revert "Add various exceptions to CSI u support
 for backward compatibility."
 
