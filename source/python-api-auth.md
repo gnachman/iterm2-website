@@ -8,8 +8,8 @@ title: Python API Security - iTerm2 - macOS Terminal Replacement
 The Python API aims to provide a safe and reliable way for programs to control
 iTerm2. The data in iTerm2 is particularly sensitive because a compromise would
 affect not only the local machine but also on remote hosts that you connect to
-with ssh. This document describes how the Python API works on version 3.3.XXX
-(TBD) and later.
+with ssh. This document describes how the Python API works on version 3.4 and
+later.
 
 By default, the Python API is disabled. No program can use it when in this state.
 
@@ -36,7 +36,7 @@ Some users may experience problems with Applescript, either due to bugs in
 macOS or limitations in the OS's ability to grant certain apps permission to
 use it. iTerm2 offers an escape hatch: you can elect to disable the cookie
 requirement by selecting **Allow all apps to connect** in **Prefs > General >
-Magic**. Only a user with Administrator access change this setting. The way the
+Magic**. Only a user with Administrator access may change this setting. The way the
 setting is enabled is to create a file in `$HOME/Library/Application
 Support/iTerm2/disable-automation-auth` that meets the following criteria:
 
