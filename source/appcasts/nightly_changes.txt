@@ -1,3 +1,20 @@
+2020-08-15: Don't disable metal when window is obscured or
+bounce it when screen parameters change. This caused
+slowness when switching back to the app with cmd-tab
+sometimes. Issue 9044
+
+2020-08-15: Fix a bunch of analyzer complaints. ARCify some
+files in the process. Fix a bug where the slow operation
+gateway ran the callback on the wrong thread. Fix some minor
+memory leaks.
+
+2020-08-15: Arcify iTermPasteHelper, make its delegate weak
+in an attempt to fix the leak Alexander reported in issue
+8128
+
+2020-08-15: Copy iTermServer to a safe place before
+executing it. Issue 9022.
+
 2020-08-14: Fix a bug where restoring multiple windows would
 just restore the first window many times. Issue 9076
 
