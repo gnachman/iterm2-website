@@ -1,44 +1,153 @@
-3.4.0beta3
+3.4.0beta4
 
-New Features:
-* Add control as a shortcut for navigation.
-* Add checkbox to advanced prefs to exclude
-  default values.
-* Window state restoration is now completely
-  custom. It uses a sqlite database to update
-  changes instead of rewriting the whole thing
-  over and over. It should be faster and more
-  reliable now.
+New Features
 
-Improvements:
-* You can now provide custom session icons by
-  placing graphic_colors.json, graphic_icons.json,
-  and graphic_xxx.png in
-  ~/Library/Application Support/iTerm2.
-* Enable secure keyboard input at password prompt.
-* When you create a hotkey window with
-  Prefs>Keys>Hotkey>Create a Dedicated Hotkey
-  Window, add a keybinding to the new profile for
-  cmd-t to open a new tab with that profile.
-* Dismiss paste bracketing warning when a control
-  sequence changes its setting.
-* Remove deviations from CSI u spec.
+Breaking Changes
+- TIOCGWINSZ now reports pixels, not points.
+- The Python API now only uses websockets.
+  Everyone has to upgrade to the newest version of
+  the Python runtime. This confers security
+  benefits.
+- The toolbelt has a new "snippets" tool that lets
+  you quickly paste saved text.
 
-Bug Fixes:
-* Fix crashes.
-* Fix a bug where a split pane could become less
-  than 2 columns wide, and then crazy things
-  happen.
-* Fix various bugs in CSI u mode, including f1-f4
-  not working in vim.
-* Don't let momentum scroll in one tab affect
-  another when the mouse cursor moves.
-* Fix a bug where the window didn't get shorter
-  when closing the last tab.
-* Don't auto-enter copy mode unless there is a
-  selection.
-* Save and restore touch bar key labels that were
-  changed by a control sequence.
-* Various visual improvements.
+Improvements
+- The ApplicationSupport symlink under ~/Library
+  is no longer needed.
+- Postgres icon added.
+- Status bar components that show graphs (CPU,
+  memory, network, battery) now animate smoothly
+  and use much less CPU.
+- Inline images no longer scale unnecessarily.
+- You'll be offered to repair saved arrangements
+  with bad initial working directories.
+- Add support for SSH_AUTH_SOCK with the built-in
+  secure copy feature.
+- You can now change a profile's icon by single
+  clicking on the image.
+- Don't disable metal when a window is obscured to
+  improve performance when switching from another
+  app to iTerm2 (e.g., with cmd-tab).
+- Support u= or username= TXT records in Bonjour
+  to provide a user name.
+
+Bug Fixes
+- Fix a bug where restoring multiple windows
+  instead restored one window many times.
+- Fix a bug where you couldn't create new sessions
+  after upgrading. You'll need to killall
+  iTermServer for this to take effect.
+- Fix various small memory leaks.
+- Shortcuts bound to Paste won't take effect when
+  the find-on-page text field has focus.
+- Fix a hang on certain Sixel images.
+
+3.4.0 Release Notes:
+
+New Features
+- You can now set a custom tab title on a profile
+- There is a new profile preference to configure
+  whether mouse reporting of clicks and drags are
+  allowed.
+- Search results, marks, and annotations are now
+  indicated in the scroll bar.
+- There's a new preference to focus a window when
+  you right- or middle-click in it.
+- Add support for IntelliJ IDEA, VSCodium, and
+  Sublime Text 4 as Semantic History editors.
+- There's a new "Composer" feature that lets you
+  quickly open a scratchpad to enter a command.
+- You can now swipe with two or three fingers
+  between tabs, like in Safari.
+- Curly underlines are now supported.
+- Adds support for DECRQSS.
+- DECSCUSR 0 now resets the cursor to its default
+  setting.
+- Adds support for flow control in tmux 3.2 and
+  "pause mode" that will automatically pause
+  sessions in tmux integration that get very far
+  behind with the ability to catch up quickly.
+  NOTE: tmux 3.2 has not yet been released.
+- tmux integration windows will now keep their
+  size the same as you create or destroy split
+  panes.
+- Adds a preference to exclude iTerm2 from the
+  dock and cmd-tab app switcher only if all
+  windows are hotkey windows.
+- In the Minimal and Compact themes, you can now
+  drag the window by grabbing the edge of the tab
+  bar near the window border.
+- Pressing shift+arrow key when there is a
+  selection now enters Copy Mode automatically.
+  This can be disabled in Prefs > General >
+  Selection.
+
+Improvements
+- Updates now use exclusively EdDSA. DSA-signed
+  auto update appcasts are completely gone.
+- Various performance improvements.
+- The Python API now uses a Unix Domain Socket
+  instead of a TCP socket for better performance.
+  The security model has also changed: apps can
+  authenticate via Applescript or you can choose
+  to allow all programs running locally to use the
+  API.
+- Use a single daemon process for all sessions
+  instead of one per session. This reduces the
+  number of process IDs used and also improves the
+  time to launch a new session.
+- Background images are significantly faster when
+  not using the GPU renderer.
+- Most tables now allow multiple selection.
+- The number of search results is now shown in the
+  Find on Page UI.
+- Dynamic profiles now works with symlinks. Even
+  the DynamicProfiles folder itself may be a
+  symlink.
+- Exported scripts now have a more secure
+  container format that signs the entire file
+  except the signature itself.
+- Improve cold launch time.
+- Countless minor improvements and polishing.
+- Big Sur supported.
+- Permission is now requested before various
+  possibly destructive or annoying activities are
+  done in response to control sequences.
+- Don't snap window size to the cell grid when it
+  gets resized by an Accessibility API.
+- Only use touch bar mitigations for keypresses
+  originating from the built-in keyboard.
+- The profile preference "Send text at start" is
+  now an interpolated string.
+- The profile preference "Custom command" is
+  now an interpolated string.
+- The feature where the scroll wheel sends arrow
+  keys when in alternate screen mode now works
+  even when alternate screen mode is disabled.
+- Enable window shadow for transparent windows.
+- When resizing the window while scrolled up in to
+  history, keep the text in the top left locked in
+  position.
+- Show a brief message when automatic profile
+  switching takes effect.
+
+Bug Fixes
+- Full screen windows in the Minimal or Compact
+  theme did not used to get restored properly and
+  now they do.
+- Fix how 24-bit colors are reported to work with
+  vim.
+- Saved arrangements that contain local changes
+  (such as those made with Edit Session) will now
+  pick up changes to the original profile.
+- Fix a bug where inline images and OSC 8
+  hyperlinks didn't get restored reliably when
+  restarting the app.
+- Improve support for zero-width joiners in Emoji.
+- Fix a memory leak of inline images when
+  restoring windows after restarting the app.
+
+Things Made Worse
+- Support for macOS 10.12 and 10.13 dropped.
 
 
