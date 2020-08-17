@@ -1,3 +1,24 @@
+2020-08-16: Improve URLWithUserSuppliedString.
+
+Use the proper escaping for each part (IDN, percent,
+whatever random thing is done for user and password, and
+nothing for scheme).
+
+2020-08-16: Build URLs to search the web smarter. Take in to
+account what part of the URL is parameterized with %@ and
+escape it properly, since (for example) query parameters are
+percent escaped while hostnames are IDNed, etc. Issue 8119
+
+2020-08-16: Perform an integrity check after opening the
+restorable state db. Delete dangling references after
+opening. Create an index to make that fast
+
+2020-08-16: Various improvements to preceding commit for
+security, readability.
+
+2020-08-16: Extract usernames from txt-record entries in
+bonjour/mDNS advertisements
+
 2020-08-15: Don't disable metal when window is obscured or
 bounce it when screen parameters change. This caused
 slowness when switching back to the app with cmd-tab
