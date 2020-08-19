@@ -1,3 +1,22 @@
+2020-08-18: Change how screen state is saved for
+restoration.
+
+Previously, the current grid was appended to the line buffer
+and the whole mess was saved.
+
+This made it difficult to restore to the primary buffer when
+coming from the alt buffer (issue 8125).
+
+This commit changes how we save state to make it easier to
+restore. The line buffer, primary grid, and alt grid are
+saved separately and restored separately.
+
+Because of the new sqlite-based state restoration system,
+I've removed the limit on the number of lines to save. This
+might turn out to be a performance problem. I think it won't
+be because only deltas get saved and the expensive work
+happens on a background thread.
+
 2020-08-17: Ensure the whole dirty region is drawn to. Issue
 5665.
 
