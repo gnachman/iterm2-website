@@ -1,3 +1,30 @@
+2020-08-28: Fix broken test for tmux version that prevented
+creating tabs in tmux 1.8
+
+2020-08-27: Fix a bug where tmux windows shrink each time
+you reattach. It happens when you initially have a single
+tab and no tabbar. Then the gateway session is buried. The
+tabbar briefly exists as a tabbar accessory. It was wrong to
+use the tabview's frame as the target size when computing
+-tmuxSize because the tabview is about to brow by the hight
+of the just-removed-from-the-titlebar tabbar. Issue 9048.
+CHERRY PICK TO 3.3.13
+
+2020-08-27: Fix alignment and spacing for blending control
+
+2020-08-27: Avoid restoring grids with bad dictionaries. I
+think it happened if you saved state when there was no alt
+grid, which is maybe possible with tmux integration sessions
+
+2020-08-27: Add debug logging for scrollWheel routing. Issue
+9089
+
+2020-08-27: Add a tooltip to the session name lock icon
+
+2020-08-27: Auto-lock session name on edit. Fix a bug where
+the session name got reset when focusing the session. Issue
+9085
+
 2020-08-24: Change selection to use absolute coordinates.
 
 2020-08-22: Clean up captured output.
