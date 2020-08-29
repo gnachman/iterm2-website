@@ -1,3 +1,20 @@
+2020-08-28: Don't enter copy mode automatically without a
+selection. Commit 9675e01cc5b695199205f870e9278d6dfbe270cf
+was insufficient because it did the test in a useful but not
+critical place. The test added in 9675e01 was correct
+insofar as it wouldn't treat shift-arrow as an actionable
+keymapping if there was no selection. But if that keystroke
+doesn't have another interpretation then it could still make
+it in to -shouldAcceptKeyDownEvent: which would then enter
+copy mode automatically.
+
+2020-08-28: Fix a bug where on the first backgrounding we'd
+re-write all the blocks out. It happened because PTYTab
+didn't have a stable stringUniqueIdentifier (don't know why)
+and because LineBlock overwrote its restored GUID.
+
+2020-08-28: Bump bash shell integration version
+
 2020-08-28: Fix broken test for tmux version that prevented
 creating tabs in tmux 1.8
 
