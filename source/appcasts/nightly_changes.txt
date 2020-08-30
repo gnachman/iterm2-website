@@ -1,3 +1,53 @@
+2020-08-29: Center the script console. Make it wider. Give
+it an autosave name.
+
+2020-08-29: Make registered functions split smaller in
+scripting inspector
+
+2020-08-29: Center script inspector. Remember its splitview
+settings
+
+2020-08-29: Add process title support.
+
+The jobs tool, job status bar component, and a new
+processTitle variable now show the perhaps-modified process
+name (e.g., -tcsh instead of tcsh). Automatic profile
+switching will check both names.
+
+Issue 4214
+
+2020-08-29: Fix vertical offset of timestamps in metal.
+Should use bottom margin, not top.
+
+2020-08-29: Add advanced pref to show timestamps by default
+
+2020-08-29: Treat 'ignore' as an actionable key mapping.
+Actionable key mappings intercept keydown events early, and
+Ignore should because we want it to (for example) supercede
+a main menu shortcut. Issue 9100
+
+2020-08-29: Fixes for advanced prefs: Capitalize Minimal,
+call it a Theme, not a tab style.
+
+2020-08-29: Prevent windows created with
+application:openFile: from loading auto-save frames because
+then they show up exactly under a window that gets restored
+in the near future. Issue 9104
+
+2020-08-29: Fix an exception in subarrayFromIndex: when
+requesting too big of an index
+
+2020-08-29: Add debug logging for issue 9108
+
+2020-08-29: Add a warning to fix slowness
+
+2020-08-29: Rename showSearchResultsMinimap to
+showLocationsInScrollbar
+
+2020-08-29: To my horror, sometimes -scrollToEnd shows
+overlay scrollbars briefly. Worse, there's no way to disable
+it. Do something disgusting with a private API. Issue 9096
+
 2020-08-28: Don't enter copy mode automatically without a
 selection. Commit 9675e01cc5b695199205f870e9278d6dfbe270cf
 was insufficient because it did the test in a useful but not
