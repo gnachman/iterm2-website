@@ -1,48 +1,68 @@
-3.4.0beta4
+3.4.0beta5
+
+Improvements
+- Windows now restore their full history instead
+  of just the last 10k lines.
+- Many improvements to auto command completion,
+  making it actually usable.
+- Actions that invoke a command such as smart
+  selection "run command" actions now go through
+  your shell so they have a proper PATH.
+- Exposé Tabs was removed in favor of a
+  lighter-weight "Find Globally" feature.
+- Making a selection while viewing scrollback
+  history while reciving new content is more
+  reliable now.
+- Job names now show the modified name if a
+  process writes to its argv[0].
 
 New Features
+- You can now change window style (top of screen,
+  maximized, no title bar, etc.) for existing
+  windows from the Window menu.
+- There is a new control sequence to clear
+  captured output (OSC 1337 ; ClearCapturedOutput
+  ST).
+- After editing a session's name in Edit Session,
+  control sequences will no longer change it.
+  There is a lock icon in Edit Session to change
+  this behavior.
+- If you launch iTerm2 by opening a file it is
+  associated with, it would create a window
+  exactly where the first restored window would go,
+  making it hard to find. It now goes somewhere
+  else.
+- Add an advanced pref to show timestamps by
+  default.
+
+Bug Fixes
+- URL escaping should be more consistent now in
+  various places (search web for selection, open
+  URL, etc.)
+- Fix flashing while scrolling.
+- Fix a bug where tmux windows shrink each time
+  you attach.
+- Fix a bug where copy mode was sometimes entered
+  when you press shift-arrow key when there was no
+  existing selection.
+- Fix a bug where the scrollbar would randomly
+  appear for no reason.
+- Fix a bug where a key bound to Ignore would not
+  prevent a menu shortcut from working.
+
+3.4.0 Release Notes:
 
 Breaking Changes
 - TIOCGWINSZ now reports pixels, not points.
+  This makes it easier to make inline images
+  pixel-perfect.
 - The Python API now only uses websockets.
   Everyone has to upgrade to the newest version of
   the Python runtime. This confers security
   benefits.
 - The toolbelt has a new "snippets" tool that lets
   you quickly paste saved text.
-
-Improvements
-- The ApplicationSupport symlink under ~/Library
-  is no longer needed.
-- Postgres icon added.
-- Status bar components that show graphs (CPU,
-  memory, network, battery) now animate smoothly
-  and use much less CPU.
-- Inline images no longer scale unnecessarily.
-- You'll be offered to repair saved arrangements
-  with bad initial working directories.
-- Add support for SSH_AUTH_SOCK with the built-in
-  secure copy feature.
-- You can now change a profile's icon by single
-  clicking on the image.
-- Don't disable metal when a window is obscured to
-  improve performance when switching from another
-  app to iTerm2 (e.g., with cmd-tab).
-- Support u= or username= TXT records in Bonjour
-  to provide a user name.
-
-Bug Fixes
-- Fix a bug where restoring multiple windows
-  instead restored one window many times.
-- Fix a bug where you couldn't create new sessions
-  after upgrading. You'll need to killall
-  iTermServer for this to take effect.
-- Fix various small memory leaks.
-- Shortcuts bound to Paste won't take effect when
-  the find-on-page text field has focus.
-- Fix a hang on certain Sixel images.
-
-3.4.0 Release Notes:
+- Support for macOS 10.12 and 10.13 dropped.
 
 New Features
 - You can now set a custom tab title on a profile
@@ -85,6 +105,8 @@ New Features
 Improvements
 - Updates now use exclusively EdDSA. DSA-signed
   auto update appcasts are completely gone.
+- The ApplicationSupport symlink under ~/Library
+  is no longer needed.
 - Various performance improvements.
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
@@ -130,6 +152,22 @@ Improvements
   position.
 - Show a brief message when automatic profile
   switching takes effect.
+- Postgres icon added.
+- Status bar components that show graphs (CPU,
+  memory, network, battery) now animate smoothly
+  and use much less CPU.
+- Inline images no longer scale unnecessarily.
+- You'll be offered to repair saved arrangements
+  with bad initial working directories.
+- Add support for SSH_AUTH_SOCK with the built-in
+  secure copy feature.
+- You can now change a profile's icon by single
+  clicking on the image.
+- Don't disable metal when a window is obscured to
+  improve performance when switching from another
+  app to iTerm2 (e.g., with cmd-tab).
+- Support u= or username= TXT records in Bonjour
+  to provide a user name.
 
 Bug Fixes
 - Full screen windows in the Minimal or Compact
@@ -146,8 +184,7 @@ Bug Fixes
 - Improve support for zero-width joiners in Emoji.
 - Fix a memory leak of inline images when
   restoring windows after restarting the app.
-
-Things Made Worse
-- Support for macOS 10.12 and 10.13 dropped.
-
+- Shortcuts bound to Paste won't take effect when
+  the find-on-page text field has focus.
+- Fix a hang on certain Sixel images.
 
