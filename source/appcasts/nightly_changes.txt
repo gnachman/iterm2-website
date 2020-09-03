@@ -1,3 +1,9 @@
+2020-09-02: Fix a bug where duplicating a tab would not give
+the new tab a unique guid, causing a crash when we try to
+save session state. When state restoration throws an
+exception, log its details in the crash log (previously we
+just asserted). Issue 9117.
+
 2020-09-01: Improve dynamic profiles error reporting
 
 2020-09-01: Rate limit errors from background jobs. Issue
