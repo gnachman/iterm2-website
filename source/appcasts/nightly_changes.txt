@@ -1,3 +1,26 @@
+2020-09-03: Remove unreachable code. iTermController is
+nilled out before applicationWillTerminate: runs.
+
+2020-09-03: Fix a race. When we save state, the record gets
+rowIDs assigned in a private queue but we save the record to
+the iTermGraphDatabase on the main queue. If you save twice
+in succession, you might see an after record that has no
+rowid. I think? It's complicated, but this is definitely an
+improvement even if it doesn't fix that bug.
+
+2020-09-03: Don't crash when creating an indexset with range
+(NSNotFound,0). Not quite sure how this happened. It's in
+the recently refactored selection code. It's silly for
+NSIndexSet to assert in this case since it's a reasonable
+way to express no range.
+
+2020-09-03: Don't beta-crash when you ask for the cell in
+the right margin. It can happeh when auto command completion
+is enabled in zsh and you press control C when the cursor is
+just before the right margin.
+
+2020-09-03: Bring back support for nvidia GPUs
+
 2020-09-02: Fix a bug where duplicating a tab would not give
 the new tab a unique guid, causing a crash when we try to
 save session state. When state restoration throws an
