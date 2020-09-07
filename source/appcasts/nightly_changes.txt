@@ -1,3 +1,37 @@
+2020-09-06: Remove iTermTrivialExpressionEvaluator, which
+was wrong when there was an escaped backslash. Instead,
+avoid swifty string evaluation when all the parts of the
+interpolated string are literals.
+
+2020-09-06: Change how backslashes are interpreted in
+interpolated strings. A backslash followed by an
+unrecognized character (not n, a, t, r, or backslash) used
+to remove the backslash. But that broke backslashes in
+profile custom commands that included a backslash. For
+example, launching the repl would have a backslash before
+the space in Application Support, which was simply removed.
+I don't expect this will be a big problem because people who
+escaped their backslashes will not see a difference.
+However, people who relied on the backslash being removed
+will see different behavior. This fixes the REPL, which was
+broken after the removal of the ApplicationSupport symlink.
+
+2020-09-06: Fix a bug where child reports over 1k couldn't
+be sent. sendmsg() either sends all or none of its input.
+
+2020-09-06: Fix a bug where the
+sources/iTermFileDescriptorMultiClient was released before
+its completion block could be called when a handshake fails.
+This caused a hang on launch when the job manager's
+attachToServer blocked on beginAttachToServer's completion
+block running.
+
+2020-09-06: Optimize evaluating swifty strings that have no
+subexpressions.
+
+2020-09-06: Optimize calculating the attributed string for a
+tab shortcut.
+
 2020-09-04: Add some polish to global search
 
 2020-09-04: Move kScreenStateIntervalTreeKey and
