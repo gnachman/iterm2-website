@@ -1,3 +1,23 @@
+2020-09-07: Status bar improvements:
+
+- Report errors from status bar function call component.  -
+Make all non-graphic status bar components have min/max
+width.  - Change both layout algorithms to respect min/max
+width.  - Modify the stable layout algorithm to allow
+variable sizes when min/max widths are present.  - Fix how
+the function call component measures its minimum width.  -
+Make graphic components' min size the number of values they
+can hold, which reduces the amount of status bar layout that
+happens before they have that many values.
+
+2020-09-07: Fix fragmenting large messages sent from server
+to client.
+
+2020-09-07: Fix a write to a dangling pointer because there
+was a race when setting up a connected unix domain socket.
+Trying to do this with threads is probably impossible, so do
+it with nonblocking file descriptors instead.
+
 2020-09-06: Remove iTermTrivialExpressionEvaluator, which
 was wrong when there was an escaped backslash. Instead,
 avoid swifty string evaluation when all the parts of the
