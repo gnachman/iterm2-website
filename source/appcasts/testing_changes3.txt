@@ -1,54 +1,28 @@
-3.4.0beta5
+3.4.0beta6
 
 Improvements
-- Windows now restore their full history instead
-  of just the last 10k lines.
-- Many improvements to auto command completion,
-  making it actually usable.
-- Actions that invoke a command such as smart
-  selection "run command" actions now go through
-  your shell so they have a proper PATH.
-- Exposé Tabs was removed in favor of a
-  lighter-weight "Find Globally" feature.
-- Making a selection while viewing scrollback
-  history while reciving new content is more
-  reliable now.
-- Job names now show the modified name if a
-  process writes to its argv[0].
-
-New Features
-- You can now change window style (top of screen,
-  maximized, no title bar, etc.) for existing
-  windows from the Window menu.
-- There is a new control sequence to clear
-  captured output (OSC 1337 ; ClearCapturedOutput
-  ST).
-- After editing a session's name in Edit Session,
-  control sequences will no longer change it.
-  There is a lock icon in Edit Session to change
-  this behavior.
-- If you launch iTerm2 by opening a file it is
-  associated with, it would create a window
-  exactly where the first restored window would go,
-  making it hard to find. It now goes somewhere
-  else.
-- Add an advanced pref to show timestamps by
-  default.
+- You can press cmd-B to toggle broadcasting in
+  the password manager.
+- Improve error reporting for dynamic profiles.
+- If a "run command" from a trigger produces too
+  many errors, rate limit them to avoid spamming
+  you.
+- Performance improvements
+- Add min/max width configuration settings to most
+  status bar components.
 
 Bug Fixes
-- URL escaping should be more consistent now in
-  various places (search web for selection, open
-  URL, etc.)
-- Fix flashing while scrolling.
-- Fix a bug where tmux windows shrink each time
-  you attach.
-- Fix a bug where copy mode was sometimes entered
-  when you press shift-arrow key when there was no
-  existing selection.
-- Fix a bug where the scrollbar would randomly
-  appear for no reason.
-- Fix a bug where a key bound to Ignore would not
-  prevent a menu shortcut from working.
+- Change how escaping works so you do not need to
+  escape backslashes in profile initial text or
+  command.
+- Fix spurious tab activity icon/spinner.
+- Fix a crash after duplicating a tab.
+- Unbreak NVidia GPUs.
+- Fix a crash with auto command completion.
+- Fix a bug where marks and annotations weren't
+  restored properly.
+- Fix a hang on launch.
+
 
 3.4.0 Release Notes:
 
@@ -101,6 +75,18 @@ New Features
   selection now enters Copy Mode automatically.
   This can be disabled in Prefs > General >
   Selection.
+- You can now change window style (top of screen,
+  maximized, no title bar, etc.) for existing
+  windows from the Window menu.
+- There is a new control sequence to clear
+  captured output (OSC 1337 ; ClearCapturedOutput
+  ST).
+- After editing a session's name in Edit Session,
+  control sequences will no longer change it.
+  There is a lock icon in Edit Session to change
+  this behavior.
+- Add an advanced pref to show timestamps by
+  default.
 
 Improvements
 - Updates now use exclusively EdDSA. DSA-signed
@@ -187,4 +173,11 @@ Bug Fixes
 - Shortcuts bound to Paste won't take effect when
   the find-on-page text field has focus.
 - Fix a hang on certain Sixel images.
+- URL escaping should be more consistent now in
+  various places (search web for selection, open
+  URL, etc.)
+- Fix a bug where tmux windows shrink each time
+  you attach.
+- Fix a bug where a key bound to Ignore would not
+  prevent a menu shortcut from working.
 
