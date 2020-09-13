@@ -1,3 +1,62 @@
+2020-09-12: Fix a bug where tmux windows would shrink on
+10.14 when there was a window border. The root terminal view
+incorrectly computed the tabview size: it subtracted a point
+for a bottom border inset. PseudoTerminal's
+windowDecorationSize correctly ignored it. That caused the
+tab view to be a point smaller thanit should have been,
+which caused tmux to shrink the window by one cell. The
+problem continues to repeat until it's 1x1 and it
+disconnects. Same issue for side margins. Issue 9048
+
+2020-09-12: Add proper support for modifyOtherKeys. Change
+cursor keys based on application cursor keys, not
+application keypad mode.
+
+2020-09-12: Fix warnings
+
+2020-09-11: Assign identifiers to the window style menu
+items and regen python docs
+
+2020-09-11: Re-sign sync_title.its and theme.its using
+sigarchive v2
+
+2020-09-11: Add more logging for why the password manager
+closes for issue 9129
+
+2020-09-11: Fix a bug where we'd resize the session when
+changing the active space because the backing scale factor
+became 0 when the view was in an inactive space. Issue 9132
+
+2020-09-11: Drag snippet rows as strings so they can be
+dropped in PTYTextView
+
+2020-09-11: Fix prefs toolbar on Big Sur
+
+2020-09-11: Fix a bunch of bugs with XMP invalidation
+handlers, which are dark magic
+
+2020-09-11: Improve sqlite-based state restoration.
+
+- Eliminate the unnecessary factory class.  - Add an
+advisory lock to keep two iTerm2 processes from writing to
+the same db, which breaks it.  - Refactoring to simplify
+various things.  - Fix a number of assertion failures in
+recovery scenarios. I tested deleting the sqlite db,
+changing its permissions to 000, and deleting & changing its
+directory permissions to 000.  - Fix a bug where didSave was
+never called because weakSelf was not initialized.
+
+I need to come back and fix the unit tests, which were
+broken badly by this change.
+
+2020-09-11: Add Snippets and Actions as first-class
+citizens.
+
+Adds a new tab to prefs for Shortcuts, which contains
+snippets and actions.  Add status bar components, main menu
+items, and context menu items.  Add snippets to open
+quickly.
+
 2020-09-10: Support file urls with fragments
 
 2020-09-09: Disable enabling CSI u mode by control sequence
