@@ -1,3 +1,67 @@
+2020-09-13: Composer improvements: turn off the various
+automatic substitutions. Change the shortcut to cmd-shift-.
+since cmd-. is a shortcut for esc
+
+2020-09-13: Don't allow setting a user value with a dot. Add
+an assert with message for an assert that I think was
+because of this.
+
+2020-09-13: Beta assert if you can't get the app support
+directory to get the reason why, since there were beta
+crashes for it being nil.
+
+2020-09-13: Don't use NSTask.waitUntilExit because it's not
+safe to use off the main thread. FFS
+
+2020-09-13: Remove filterWithBlock which is the same as
+filteredWithBlock
+
+2020-09-13: Don't write unsyncable keys when saving prefs
+
+2020-09-13: Clean up untitled window opening during startup
+and don't block the main thread on loading the restorable
+state.
+
+Delay running post-restoration block until sqlite-based
+restoration completes.
+
+Allow multiple post-restoration blocks.
+
+Prevent opening an untitled window until sqlite-based and
+native restoration is done.
+
+Use the utntiled window state machine to prevent opening
+untitled windows when the default arrangement is opened or
+initial untitled windows are disabled.
+
+Rewrite the untitled window state machine to be simpler.
+
+Do not adopt orphans until window restoration is completely
+finished.
+
+Do not open an untitled window until window restoration is
+completely finished.
+
+Fix invalidation of iTermGraphDatabase, which didn't assign
+to _invalid.
+
+Make attemptRecovery:encoder: close the db when it fails.
+
+Grant the restorable state controller the ability to notify
+its delegate when it has enqueued restoration for all
+windows.
+
+Load the restoration index asynchronously when using
+sqlite-based restoration to avoid blocking the app on
+loading that state.
+
+2020-09-13: Remove TODO. When we initially load the image it
+is not attached to a window so it uses scale 2. That works
+fine when going from hidpi to lowdpi or vice versa.
+
+2020-09-13: Add bellCount variable to enable the analog bell
+in PR 428
+
 2020-09-12: Fix a bug where tmux windows would shrink on
 10.14 when there was a window border. The root terminal view
 incorrectly computed the tabview size: it subtracted a point
