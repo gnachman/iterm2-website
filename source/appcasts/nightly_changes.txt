@@ -1,3 +1,21 @@
+2020-09-15: Prevent multiple daemons on the same socket
+using advisory locks
+
+2020-09-15: Restore children as orphans if it takes too long
+to get them from the daemon.
+
+2020-09-15: Implement partial attachment.
+
+When restoring windows, we used to block on attaching to the
+daemon. If the daemon is not feeling well, it can take
+forever.
+
+Now we wait to restore the windows until we have received
+child reports from the daemon. We create the job manager as
+part of this process. Then we can restore the arrangement
+and marry up the job manager with the PTYTask for the new
+session.
+
 2020-09-13: Composer improvements: turn off the various
 automatic substitutions. Change the shortcut to cmd-shift-.
 since cmd-. is a shortcut for esc
