@@ -1,28 +1,36 @@
-3.4.0beta6
+3.4.0beta7
+
+New Features
+- Add Snippets and Actions to a new Shortcuts tab
+  in prefs, and ways to access them in various
+  places throughout the app, including new status
+  bar components.
 
 Improvements
-- You can press cmd-B to toggle broadcasting in
-  the password manager.
-- Improve error reporting for dynamic profiles.
-- If a "run command" from a trigger produces too
-  many errors, rate limit them to avoid spamming
-  you.
-- Performance improvements
-- Add min/max width configuration settings to most
-  status bar components.
+- The prefs panel now opens centered on the
+  screen.
+- Modifier keys in vim should work better now. CSI
+  u mode is no longer enabled by a control
+  sequence. Instead, a "modifyOtherKeys" mode has
+  been added which is compatible with xterm.
+- File URLs with fragments will now open properly
+  in the browser.
+- Expose a new bellCount session variable so API
+  scripts can perform an action when the bell
+  rings.
+- Avoid saving non-syncing keys to externally
+  stored preferences.
+- Change Composer shortcut from cmd-. to
+  cmd-shift-., to avoid breaking cmd-. acting as
+  esc.
 
 Bug Fixes
-- Change how escaping works so you do not need to
-  escape backslashes in profile initial text or
-  command.
-- Fix spurious tab activity icon/spinner.
-- Fix a crash after duplicating a tab.
-- Unbreak NVidia GPUs.
-- Fix a crash with auto command completion.
-- Fix a bug where marks and annotations weren't
-  restored properly.
-- Fix a hang on launch.
-
+- State restoration made more reliable.
+- Many crashes fixed.
+- Fix spurious activity indicator when changing
+  tabs.
+- Fix a bug where tmux windows would shrink by
+  themselves.
 
 3.4.0 Release Notes:
 
@@ -154,6 +162,15 @@ Improvements
   app to iTerm2 (e.g., with cmd-tab).
 - Support u= or username= TXT records in Bonjour
   to provide a user name.
+- You can press cmd-B to toggle broadcasting in
+  the password manager.
+- Improve error reporting for dynamic profiles.
+- If a "run command" from a trigger produces too
+  many errors, rate limit them to avoid spamming
+  you.
+- Performance improvements
+- Add min/max width configuration settings to most
+  status bar components.
 
 Bug Fixes
 - Full screen windows in the Minimal or Compact
@@ -180,4 +197,7 @@ Bug Fixes
   you attach.
 - Fix a bug where a key bound to Ignore would not
   prevent a menu shortcut from working.
+- Change how escaping works so you do not need to
+  escape backslashes in profile initial text or
+  command.
 
