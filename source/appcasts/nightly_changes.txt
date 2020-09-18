@@ -1,3 +1,23 @@
+2020-09-17: Disable auto-hide menu bar when unconditionally
+in UIElement mode. Issue 9143
+
+2020-09-17: Add logging to debug issue 9139
+
+2020-09-17: Fix detection of tmux 2.1, which would sometimes
+spuriously fail and make us think it's 2.0. Failing to
+detect tmux 3.2 is a disaster because it pauses after 0
+seconds. Issue 9133
+
+2020-09-16: Fall back to ~/.iterm2/socket.1 if the normal
+path the daemon's unix domain socket is too long to fit.
+
+2020-09-16: Fix crash due to mutating an event tap observer
+while enumerating them
+
+2020-09-16: Prevent use of multiserver if the path to socket
+would be more than the relatively short max length in
+sockaddr_un. Fixes a crash
+
 2020-09-15: Prevent multiple daemons on the same socket
 using advisory locks
 
