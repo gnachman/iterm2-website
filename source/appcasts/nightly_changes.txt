@@ -1,3 +1,20 @@
+2020-09-18: Avoid updating status bar component when the
+configuration is updated but with no change. In particular
+this is a problem with auto-rainbow, which sets the color of
+all components to their current value. That triggers a call
+to updateWithKnobValues (in the case of the RPC component)
+which triggers a new fetch which triggers a layout and then
+you get an infinite loop of layout-fetch-layout-fetch. Git
+component had the same issue. Issue 9139
+
+2020-09-18: Fix a bug where we would open two untitled
+windows at startup for some users. Issue 9146
+
+2020-09-18: Prevent automatic profile switching from
+switching profiles reentrantly. Somehow a user got an
+infinite loop of this in issue 9125, though I can't
+reproduce it.
+
 2020-09-17: Disable auto-hide menu bar when unconditionally
 in UIElement mode. Issue 9143
 
