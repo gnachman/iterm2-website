@@ -68,4 +68,9 @@ Mountain View, CA<br/>
 
 <hr/>
 
-Need something complicated? Just feel like chatting? You can schedule time to talk to me on <a href="https://app.switchboard.co/gnachman">Switchboard</a>.
+Need something complicated? Just feel like chatting?
+
+You can schedule time to talk to me on <a href="https://app.switchboard.co/gnachman">Switchboard</a>.
+
+<a href="https://xscode.com/gnachman/iTerm2"><img src="/images/xscode.png" width="490" height="128"></a>
+
