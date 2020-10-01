@@ -1,3 +1,244 @@
+2020-09-30: Send a newline before curl to install shell
+integration. Issue 9166
+
+2020-09-29: At some point the menu item validation for bury:
+was removed. Fix it. Issue 9163
+
+2020-09-29: Performance improvements for history
+restoration. Limit lines to 20k. Stop encoding block arrays
+when truncating.
+
+2020-09-28: Fix a bug where you could save state before
+restoration begins, causing the db to have two roots.
+
+2020-09-27: Prevent childJobNameTuples from returning tuples
+with nil entries. Fixes a crash in -[PTYSession
+promptOnCloseReason].
+
+2020-09-27: Show a warning when the app support folder can't
+be found/created
+
+2020-09-27: Don't delete state restoration data by unlinking
+the sqlite db.
+
+This can cause an EXC_GUARD exception because apparently
+sqlite marks its file descriptors protected and trying to
+unlink the files can cause a crash. Or is it not a crash? I
+don't know, but it writes a crash dump (which says
+"SIMULATED (this is NOT a crash)").
+
+At any rate it isn't good. I saw this happen when
+terminating the app and the main thread unlinks the db while
+another thread is inside sqlite3Close().
+
+Relevant snippet from crash log:
+
+Exception Type:        EXC_GUARD Exception Codes:
+0x800000040000d364, 0x08fd4dbfade2dead Exception Subtype:
+GUARD_TYPE_VN, id=0x08fd4dbfade2dead, pid=54116,
+flavor=0x00000004 (VNG_UNLINK) Exception Note:
+SIMULATED (this is NOT a crash) Termination Reason:
+Namespace <0x17>, Code 0x1 Termination Details:   <0x17>,
+/Users/jkoftinoff/Library/Application
+Support/iTerm2/SavedState/restorable-state.sqlite-wal
+
+Application Specific Information: dyld: in dladdr()
+Performing @selector(terminate:) from sender NSMenuItem
+0x600003613020
+
+Thread 0 Crashed: 0   libsystem_kernel.dylib
+0x00007fff6c5a7ee2 __unlink + 10 1   libsystem_kernel.dylib
+0x00007fff6c5a7ec4 unlink + 11 2   libremovefile.dylib
+0x00007fff6c498b36 __removefile_tree_walker + 298 3
+libremovefile.dylib                 0x00007fff6c498995
+removefile + 153 4   com.apple.Foundation
+0x00007fff34a3a51c -[NSFilesystemItemRemoveOperation main] +
+186 5   com.apple.Foundation
+0x00007fff34a22981 __NSOPERATION_IS_INVOKING_MAIN__ + 17 6
+com.apple.Foundation                0x00007fff34a21bb3
+-[NSOperation start] + 722 7   com.apple.Foundation
+0x00007fff34a3a36f -[NSFileManager removeItemAtPath:error:]
++ 84 8   com.googlecode.iterm2
+0x0000000104def49f -[iTermSqliteDatabaseImpl unlink] + 463 9
+com.googlecode.iterm2               0x0000000104cd0f4c
++[iTermRestorableStateSQLite unlinkDatabaseAtURL:] + 90 10
+com.googlecode.iterm2               0x0000000104cd15e3
+-[iTermRestorableStateSQLite eraseStateRestorationData] + 92
+11  com.googlecode.iterm2               0x0000000104f00e3d
+-[iTermRestorableStateDriver erase] + 48 12
+com.apple.CoreFoundation            0x00007fff3239d80f
+__CFNOTIFICATIONCENTER_IS_CALLING_OUT_TO_AN_OBSERVER__ + 12
+13  com.apple.CoreFoundation            0x00007fff3239d7a3
+___CFXRegistrationPost1_block_invoke + 63 14
+com.apple.CoreFoundation            0x00007fff3239d718
+_CFXRegistrationPost1 + 372 15  com.apple.CoreFoundation
+0x00007fff3239d384 ___CFXNotificationPost_block_invoke + 80
+16  com.apple.CoreFoundation            0x00007fff3236d4fd
+-[_CFXNotificationRegistrar
+find:object:observer:enumerator:] + 1554 17
+com.apple.CoreFoundation            0x00007fff3236c9a9
+_CFXNotificationPost + 1351 18  com.apple.Foundation
+0x00007fff349ea786 -[NSNotificationCenter
+postNotificationName:object:userInfo:] + 59 19
+com.googlecode.iterm2               0x0000000104c41d03
+-[iTermApplicationDelegate applicationShouldTerminate:] +
+1721 20  com.apple.AppKit
+0x00007fff2f8f95f3 -[NSApplication
+_docController:shouldTerminate:] + 88 21  com.apple.AppKit
+0x00007fff2f8f94c8 __91-[NSDocumentController(NSInternal)
+_closeAllDocumentsWithDelegate:shouldTerminateSelector:]_block_invoke
++ 448 22  com.apple.AppKit
+0x00007fff2f8f9182 -[NSDocumentController(NSInternal)
+_closeAllDocumentsWithDelegate:shouldTerminateSelector:] +
+1187 23  com.apple.AppKit
+0x00007fff2f8f8cb8 -[NSDocumentController(NSInternal)
+__closeAllDocumentsWithDelegate:shouldTerminateSelector:] +
+291 24  com.apple.AppKit
+0x00007fff2f8f88d7 -[NSApplication _shouldTerminate] + 975
+25  com.apple.AppKit                    0x00007fff2f8e5d63
+-[NSApplication terminate:] + 740 26  com.apple.AppKit
+0x00007fff2f85a7a7 -[NSApplication(NSResponder)
+sendAction:to:from:] + 299 27  com.apple.AppKit
+0x00007fff2f96af3e -[NSMenuItem _corePerformAction] + 312 28
+com.apple.AppKit                    0x00007fff2f96acba
+-[NSCarbonMenuImpl
+performActionWithHighlightingForItemAtIndex:] + 106 29
+com.apple.AppKit                    0x00007fff2f969bb7
+-[NSMenu performKeyEquivalent:] + 412 30  com.apple.AppKit
+0x00007fff2fd9f9ab routeKeyEquivalent + 521 31
+com.apple.AppKit                    0x00007fff2f7bb87d
+-[NSApplication(NSEvent) sendEvent:] + 1161 32
+com.googlecode.iterm2               0x0000000104ae2dc2
+-[iTermApplication sendEvent:] + 354 33  com.apple.AppKit
+0x00007fff2f6085bf -[NSApplication run] + 707 34
+com.apple.AppKit                    0x00007fff2f5da396
+NSApplicationMain + 777 35  com.googlecode.iterm2
+0x0000000104a3d323 main + 115 36  libdyld.dylib
+0x00007fff6c463cc9 start + 1
+
+Thread 24: 0   libsystem_kernel.dylib
+0x00007fff6c5a7ee2 __unlink + 10 1   libsystem_kernel.dylib
+0x00007fff6c5a7ec4 unlink + 11 2   libsqlite3.dylib
+0x00007fff6b4c41d1 unixDelete + 49 3   libsqlite3.dylib
+0x00007fff6b4c10b8 sqlite3WalClose + 456 4
+libsqlite3.dylib                    0x00007fff6b4c0cfa
+sqlite3PagerClose + 314 5   libsqlite3.dylib
+0x00007fff6b4c0700 sqlite3BtreeClose + 320 6
+libsqlite3.dylib                    0x00007fff6b4ed402
+sqlite3LeaveMutexAndCloseZombie + 482 7   libsqlite3.dylib
+0x00007fff6b4f86bf sqlite3Close + 2239 8
+com.googlecode.iterm2               0x0000000104d1ee55
+-[FMDatabase close] + 59 9   com.googlecode.iterm2
+0x0000000104cd2d1e __32-[iTermGraphDatabase
+invalidate]_block_invoke + 82 10  com.googlecode.iterm2
+0x0000000104ad37b4 __29-[iTermThread
+dispatchAsync:]_block_invoke + 57 11  libdispatch.dylib
+0x00007fff6c4096c4 _dispatch_call_block_and_release + 12 12
+libdispatch.dylib                   0x00007fff6c40a658
+_dispatch_client_callout + 8 13  libdispatch.dylib
+0x00007fff6c40fc44 _dispatch_lane_serial_drain + 597 14
+libdispatch.dylib                   0x00007fff6c4105d6
+_dispatch_lane_invoke + 363 15  libdispatch.dylib
+0x00007fff6c419c09 _dispatch_workloop_worker_thread + 596 16
+libsystem_pthread.dylib             0x00007fff6c664a3d
+_pthread_wqthread + 290 17  libsystem_pthread.dylib
+0x00007fff6c663b77 start_wqthread + 15
+
+2020-09-27: Prevent crazy ranges in getting selected
+indexes. This caused a crash.
+
+2020-09-27: Don't confirm quit when Sparkle is upgrading.
+Fixes a longstanding bug.
+
+2020-09-26: The previous test for whether windows should be
+saved was wrong.
+
+NSQuitAlwaysKeepsWindows reflects the setting of the "close
+windows when quitting an app" system preference. But it can
+be overridden when restarting or logging out. When you log
+out, you're asked if you want to restore windows when
+logging back in. If you turn that on then state should be
+saved irrsepective of the "close windows when quitting an
+app" setting.
+
+Luckily there's a friendly private API to access this.
+
+This commit also changes the restoration behavior to be more
+like macOS: if there is saved stuff, restore it. Previously,
+we'd delete the saved stuff if NSQuitAlwaysKeepsWindows was
+off, but obvs that's no good any more. I am amused that the
+awkward-sounding wording of "close windows when quitting an
+app" was actually written that way to be a technically
+correct description of how state saving works.
+
+Issue 9156
+
+2020-09-26: Fix dection of tmux 1.8. Issue 9133
+
+2020-09-26: Add debug logging for issue 4575
+
+2020-09-26: Add debug logging for state saving
+
+2020-09-26: Trim newlines when exfiltrating environment
+variables. Kinda fixes issue 9066, which failed to connect
+to the daemon because of this (the issue of entering a pin
+means that issue is still busted though)
+
+2020-09-26: Widen the prefs panel in big sur so the prefs
+search field doesn't hide the advanced tab when focused
+
+2020-09-23: Disable the cadence controller when there is a
+modal window to try to fix a hang. Issue 9093
+
+2020-09-23: Show a warning when system window restoration is
+selected but system prefs has disabled it. Issue 6270
+(comment by @bradchoate).
+
+2020-09-23: Make tmux version detection more robust and add
+debug logging for issue 9133
+
+2020-09-22: Move ligature warning closer to Font subtitle
+
+2020-09-22: Rebuild frameworks with xcode 12.2 beta
+
+2020-09-22: Add support for getting the line number from a
+python-style filename that doesn't have a colon. Fix support
+for the colon-style thing too. Fix failing tests. Issue 7518
+
+This change modifies the regex used to find the suffix of a
+filename, which might have unexpected consequences. If
+semantic history breaks in some case I'm not thinking of,
+this will be the commit to revert.
+
+2020-09-22: Disable broken test
+
+2020-09-20: Fix a bug where SessionView's scrollview got
+ordered beneath its imageview when splitting a pane. Issue
+9148
+
+2020-09-20: Ensure tab GUIDs are unique. When a tab is
+created from an arrangement, it generates a new GUID if
+another tab with that GUID already exists.
+
+2020-09-19: let xcode party on its files
+
+2020-09-19: Fix overlapping views, ugly sliders in big sur
+
+2020-09-19: If we run out of data while parsing the mode for
+an OSC/APC code, backtrack the parser to the beginning of
+the mode. When parsing resumes, it will need to re-parse the
+mode. This fixes a bug where it tried to parse the mode
+beginning at the first byte of new data after the previously
+parse mode, causing it to see a mode of 0, and spuriously
+changing the title. Issue 9144
+
+2020-09-19: Fix delegate ot touch bar label text field in
+edit key action window controller, which was set to nil
+probably by mistake. Issue 9147
+
+2020-09-19: Rename key reporting modes. Add debug logging
+for window creation timing
+
 2020-09-18: Avoid updating status bar component when the
 configuration is updated but with no change. In particular
 this is a problem with auto-rainbow, which sets the color of
@@ -283,412 +524,3 @@ windows so we got a backing scale factor of 0 so we would
 clear the pixel size in TIOCGWINSZ and then set it properly
 when the tab is activated, causing the activity indicator to
 toggle. Issue 9099
-
-2020-08-31: Fix autoresizing mask for settings button in
-password manager. Make next key view of search field the
-2-fac code.
-
-2020-08-31: Assign cmd-b as keyboard shortcut to the
-broadcast button in the password manager. Issue 9094
-
-2020-08-31: Escape the value we set KEY_INITIAL_TEXT to in
-application:openFile: so that the backslashes survive swifty
-string evaluation. Issue 9104
-
-2020-08-31: Context menu improvements.
-
-- Fix parsing user-provided URLs with // in query parameter.
-- Fix some failing tests - Don't show pause/unpause tmux in
-context menu in versions of tmux that don't support it.  -
-Move context menu code into its own file.  - Add support for
-context menu providers in Python API.
-
-2020-08-30: Don't log sql statemetns to console in debug
-builds
-
-2020-08-29: Center the script console. Make it wider. Give
-it an autosave name.
-
-2020-08-29: Make registered functions split smaller in
-scripting inspector
-
-2020-08-29: Center script inspector. Remember its splitview
-settings
-
-2020-08-29: Add process title support.
-
-The jobs tool, job status bar component, and a new
-processTitle variable now show the perhaps-modified process
-name (e.g., -tcsh instead of tcsh). Automatic profile
-switching will check both names.
-
-Issue 4214
-
-2020-08-29: Fix vertical offset of timestamps in metal.
-Should use bottom margin, not top.
-
-2020-08-29: Add advanced pref to show timestamps by default
-
-2020-08-29: Treat 'ignore' as an actionable key mapping.
-Actionable key mappings intercept keydown events early, and
-Ignore should because we want it to (for example) supercede
-a main menu shortcut. Issue 9100
-
-2020-08-29: Fixes for advanced prefs: Capitalize Minimal,
-call it a Theme, not a tab style.
-
-2020-08-29: Prevent windows created with
-application:openFile: from loading auto-save frames because
-then they show up exactly under a window that gets restored
-in the near future. Issue 9104
-
-2020-08-29: Fix an exception in subarrayFromIndex: when
-requesting too big of an index
-
-2020-08-29: Add debug logging for issue 9108
-
-2020-08-29: Add a warning to fix slowness
-
-2020-08-29: Rename showSearchResultsMinimap to
-showLocationsInScrollbar
-
-2020-08-29: To my horror, sometimes -scrollToEnd shows
-overlay scrollbars briefly. Worse, there's no way to disable
-it. Do something disgusting with a private API. Issue 9096
-
-2020-08-28: Don't enter copy mode automatically without a
-selection. Commit 9675e01cc5b695199205f870e9278d6dfbe270cf
-was insufficient because it did the test in a useful but not
-critical place. The test added in 9675e01 was correct
-insofar as it wouldn't treat shift-arrow as an actionable
-keymapping if there was no selection. But if that keystroke
-doesn't have another interpretation then it could still make
-it in to -shouldAcceptKeyDownEvent: which would then enter
-copy mode automatically.
-
-2020-08-28: Fix a bug where on the first backgrounding we'd
-re-write all the blocks out. It happened because PTYTab
-didn't have a stable stringUniqueIdentifier (don't know why)
-and because LineBlock overwrote its restored GUID.
-
-2020-08-28: Bump bash shell integration version
-
-2020-08-28: Fix broken test for tmux version that prevented
-creating tabs in tmux 1.8
-
-2020-08-27: Fix a bug where tmux windows shrink each time
-you reattach. It happens when you initially have a single
-tab and no tabbar. Then the gateway session is buried. The
-tabbar briefly exists as a tabbar accessory. It was wrong to
-use the tabview's frame as the target size when computing
--tmuxSize because the tabview is about to brow by the hight
-of the just-removed-from-the-titlebar tabbar. Issue 9048.
-CHERRY PICK TO 3.3.13
-
-2020-08-27: Fix alignment and spacing for blending control
-
-2020-08-27: Avoid restoring grids with bad dictionaries. I
-think it happened if you saved state when there was no alt
-grid, which is maybe possible with tmux integration sessions
-
-2020-08-27: Add debug logging for scrollWheel routing. Issue
-9089
-
-2020-08-27: Add a tooltip to the session name lock icon
-
-2020-08-27: Auto-lock session name on edit. Fix a bug where
-the session name got reset when focusing the session. Issue
-9085
-
-2020-08-24: Change selection to use absolute coordinates.
-
-2020-08-22: Clean up captured output.
-
-- Add a control sequence (OSC 1337 ClearCapturedOutput) to
-clear the current captured output. No data is lost, it's
-just removed from the UI.  - Change the presentation to use
-a - as a bullet instead of an actual bullet, which is ugly.
-- You can click on a selected row to re-highlight the
-captured line.
-
-Issue 5418
-
-2020-08-22: Add global search to replace expose tabs.
-
-2020-08-22: Remove Expos, which was unusably slow
-
-2020-08-22: Add Window > Window Style
-
-This lets you change the window style.
-
-I decided not to put it in Edit Session because it's not a
-property of the session. Therefore we would have to do a lot
-of work to keep it synchronized among all panes in the
-window.
-
-Issue 6466
-
-2020-08-22: Remove dead code
-
-2020-08-22: Move code related to window style into a
-category. ARCify it.
-
-2020-08-21: Fix the font for the snippets tool
-
-2020-08-20: Add iTermBackgroundCommandRunner
-
-Move code to run a command in the background out of
-PTYTextView and into its own class. Clean it up and use it
-for script triggers, too. Modify it to use the user's path
-with the new environment variable exfiltration feature.
-
-Issue 7765.
-
-2020-08-20: Use the user's shell when running a command for
-a smart selection action. Issue 7765
-
-2020-08-19: Make command history prefix checking
-case-insensitive. Issue 8659
-
-2020-08-19: Auto command history improvements
-
-Don't steal left and right arrow. Avoid opening auto command
-history when not at the end of the command. Issue 6162.
-
-2020-08-19: Use option+return to exit auto command
-completion with a newline. Issue 8078
-
-2020-08-19: Make auto command completion less annoying.
-Issue 6887.
-
-Use shift-enter to send command.
-
-Don't steal enter, tab, or control keys (except ^P and ^N
-which navigate the list).
-
-Make footers in popups look nicer.
-
-2020-08-18: Change how screen state is saved for
-restoration.
-
-Previously, the current grid was appended to the line buffer
-and the whole mess was saved.
-
-This made it difficult to restore to the primary buffer when
-coming from the alt buffer (issue 8125).
-
-This commit changes how we save state to make it easier to
-restore. The line buffer, primary grid, and alt grid are
-saved separately and restored separately.
-
-Because of the new sqlite-based state restoration system,
-I've removed the limit on the number of lines to save. This
-might turn out to be a performance problem. I think it won't
-be because only deltas get saved and the expensive work
-happens on a background thread.
-
-2020-08-17: Ensure the whole dirty region is drawn to. Issue
-5665.
-
-2020-08-17: Increase line spacing in internet-free shell
-integration installer
-
-2020-08-17: Use URLWithUserSuppliedString in mail:
-
-2020-08-17: Fix percents in user-supplied URLs that are not
-percent escapes. Use NSURLComponents for composing text
-editor URLs for semantic history
-
-2020-08-17: Replace stringByEscapingForURL with
-URLWithUserSuppliedString
-
-2020-08-17: Add script to release a beta build that was
-built but not notarized in Big Sur, because xcrun is broken
-on big sur
-
-2020-08-17: Update shell integration utilities
-
-2020-08-16: Improve URLWithUserSuppliedString.
-
-Use the proper escaping for each part (IDN, percent,
-whatever random thing is done for user and password, and
-nothing for scheme).
-
-2020-08-16: Build URLs to search the web smarter. Take in to
-account what part of the URL is parameterized with %@ and
-escape it properly, since (for example) query parameters are
-percent escaped while hostnames are IDNed, etc. Issue 8119
-
-2020-08-16: Perform an integrity check after opening the
-restorable state db. Delete dangling references after
-opening. Create an index to make that fast
-
-2020-08-16: Various improvements to preceding commit for
-security, readability.
-
-2020-08-16: Extract usernames from txt-record entries in
-bonjour/mDNS advertisements
-
-2020-08-15: Don't disable metal when window is obscured or
-bounce it when screen parameters change. This caused
-slowness when switching back to the app with cmd-tab
-sometimes. Issue 9044
-
-2020-08-15: Fix a bunch of analyzer complaints. ARCify some
-files in the process. Fix a bug where the slow operation
-gateway ran the callback on the wrong thread. Fix some minor
-memory leaks.
-
-2020-08-15: Arcify iTermPasteHelper, make its delegate weak
-in an attempt to fix the leak Alexander reported in issue
-8128
-
-2020-08-15: Copy iTermServer to a safe place before
-executing it. Issue 9022.
-
-2020-08-14: Fix a bug where restoring multiple windows would
-just restore the first window many times. Issue 9076
-
-2020-08-14: Fix build
-
-2020-08-14: Add snippets tool. Issue 5386
-
-2020-08-13: Make iTermImageWell respond to a single click.
-Issue 9072
-
-2020-08-13: Add some debug logging to authsock code
-
-2020-08-13: Rebuild NMSSH
-
-2020-08-13: Update NMSSH
-
-2020-08-13: Fix some bugs for building third party
-dependencies
-
-2020-08-13: Rebuild NMSSH
-
-2020-08-13: Get SSH_AUTH_SOCK from the user's shell and tell
-libssh2 what it is when connecting via scp. NOTE: This won't
-compile until I update NMSSH.framework
-
-2020-08-13: Add the ability to repair saved arrangements
-with bad initial working directories. Issue 9065.
-
-Change pidinfo to a general slow operation xpc process. Add
-the ability to check if a directory exists.
-
-When a session is created from a named saved arrangement
-check if its initial directory exists. If not, prompt the
-user to repair the arrangement.
-
-2020-08-12: Don't get into an infinite loop parsing a DCS
-sequence that has an ESC on the last byte of a 1024 bit
-chunk. Issue 9070
-
-2020-08-12: Fix test that didn't compile
-
-2020-08-12: Delete TCP websocket server support. Force full
-environment scripts to upgrade to unix domain socket
-environment.
-
-2020-08-11: Document built-in API methods
-
-2020-08-11: Set loadAction on the drawable colorAttachment.
-Issue 9035.
-
-2020-08-11: Move iTermMinimalComposerViewController.xib into
-Interfaces
-
-2020-08-11: Reclassify paste actions as text-sending so that
-keybindings with those actions will only take effect when
-PTYTextView is first responder, not something like the
-search field. Issue 9067
-
-2020-08-10: When you specify an inline image's width in
-pixels and height is auto, don't round heights up to the
-next cell. This fixes unnecessary truncation.
-
-2020-08-10: Report pixels, not points, to posix window size.
-Issue 9060
-
-2020-08-10: Fix a bunch of bugs where inline images were
-unnecessarily scaled a bit.
-
-2020-08-10: Refactor graphic status bar components. Make
-sparklines components animate smoothly. Use layers instead
-of trying to build images for better performance. Issue 8976
-
-2020-08-09: Fix installing of delta updates, broken by
-ApplicationSupport removal
-
-2020-08-09: Remove NSLog
-
-2020-08-08: Add postgres icon
-
-2020-08-08: Disable malloc scribble
-
-2020-08-08: Fix possible retain cycle from issue 8840
-
-2020-08-08: Do away with ApplicationSupport.
-
-The reason for creating an ApplicationSupport symlink to
-"Application Support" is that a shebang can't take a path
-with a space. But there's a workaround:
-
- #!/usr/bin/env -S ".../Application\_Support/..."
-
-Issue 8919.
-
-2020-08-08: Remove stack traces from ProfileModel debug code
-to improve startup performance
-
-2020-08-07: Revert "Add various exceptions to CSI u support
-for backward compatibility."
-
-This reverts commit
-2de95135556a38498b1c8e76c80b392c2b1049a2.
-
-See issue 9052
-
-2020-08-07: Remove deviation from CSI u spec for control-?.
-Backspace does the job fine
-
-2020-08-06: Dismiss paste bracketing announcement when a
-control sequence turns it on or off. Issue 9046
-
-2020-08-06: Respect the dismemberScrollView setting on
-10.14. Issue 8826. I believe that using layers actually
-fixes the performance issue anyway
-
-2020-08-06: Change help for clock status bar component to
-explain localize date format's trap. Issue 7849
-
-2020-08-05: Defer calling -[TmuxController
-fitLayoutToWindows] after adjusting a tab's layout until all
-tabs in the window have had their layouts updated. Hopefully
-fixes 9024, which I cannot reproduce.
-
-2020-08-05: Streaming state restoration.
-
-The macOS window restoration system is no longer used except
-for migrating users from a previous version to this one. We
-save state in a SQLite database under Application Support
-now. The benefit is that we can avoid saving giant
-scrollback histories that have not changed, or at least only
-saving the very last part of it when the beginning is
-unchanged. Hopefully it should be more reliable, as well.
-
-The previous implementation that works kind of like Apple's
-is still here in case of emergency but it can be removed
-after this is in a safe place.
-
-For all the gory details, see the delta_encoding branch.
-
-Fixes these issues:
-https://gitlab.com/gnachman/iterm2/issues/6632
-https://gitlab.com/gnachman/iterm2/issues/7909
-https://gitlab.com/gnachman/iterm2/issues/7278
-https://gitlab.com/gnachman/iterm2/issues/6189
-https://gitlab.com/gnachman/iterm2/issues/5164
-https://gitlab.com/gnachman/iterm2/issues/4667
-https://gitlab.com/gnachman/iterm2/-/issues/8990
