@@ -1,23 +1,28 @@
-3.4.0beta8
+3.4.0beta10
+
+New Features
+- Show local time in the context menu when you
+  right click on a timestamp in microseconds since
+  epoch.
+- Add a menu item "copy with control sequences".
 
 Improvements
-- Show a warning icon when system window
-  restoration is disabled but your startup option
-  is to use it.
-- Widen prefs panel in Big Sur so the search field
-  remains open.
-- Show a warning when the application support
-  folder can't be found instead of crashing (then
-  crash).
+- Improve launch performance by saving less
+  scrollback restory.
+- Send a newline before sending the curl command
+  to install shell integration to clear out any
+  existing command.
 
 Bug Fixes
-- Fix a number of crashes.
-- Really fix tmux version detection for tmux less
-  than 2.3.
-- When system window restoration is off but you're
-  logging out and have opted to restore windows
-  when logging back in, respect that.
-- Don't confirm quitting the app when upgrading.
+- Fix a crash on launch.
+- Fix a bug where the Bury menu item was grayed
+  out.
+- Fix a bug where the prefs window would shrink
+  when changing profiles.
+- Fix a bug where fullscreen windows didn't have a
+  titlebar or tabbar on 10.15.6+.
+- Fix a bug where the tmux dashboard would appear
+  upon attach when it oughtn't.
 
 
 3.4.0 Release Notes:
@@ -177,6 +182,10 @@ Improvements
   esc.
 - Fix support for tmux 2.1, which was incorrectly
   detected, causing various bugs.
+- Show a warning icon when system window
+  restoration is disabled but your startup option
+  is to use it.
+- Don't confirm quitting the app when upgrading.
 
 Bug Fixes
 - Full screen windows in the Minimal or Compact
@@ -208,10 +217,12 @@ Bug Fixes
   command.
 - Fix a bug where automatic profile switching
   could get into an infinite loop.
-
 - Fix bad performance with status bars using
   auto-rainbow.
 - Fix a bug where OSC codes would sometimes not be
   parsed correctly and would change the title
   instead.
 - Fix detecting line numbers in Python tracebacks.
+- Fix tmux version detection for tmux less than
+  2.3.
+
