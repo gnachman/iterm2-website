@@ -257,7 +257,7 @@ Where `label` is an ASCII string that works best if it is unique in the stack.
 
 #### Unicode Version
 
-iTerm2 by default uses Unicode 8's width tables. The user can opt to use Unicode 9's tables with a preference (which render emoji more nicely, but requires applications that expect Unicode 9 width tables). Since not all apps will be updated at the same time, you can tell iTerm2 to use a particular set of width tables with:
+iTerm2 by default uses Unicode 9's width tables. The user can opt to use Unicode 8's tables with a preference (for backward compatibility with older locale databases). Since not all apps will be updated at the same time, you can tell iTerm2 to use a particular set of width tables with:
 
     ^[]1337;UnicodeVersion=n^G
 
