@@ -1,3 +1,19 @@
+2020-10-14: Remove inexplicable minus ones that were added
+by 784c183bd6bbf6b21df0411f9015aee8cffb83a8. They caused the
+bottom margin to be too big when resizing a tmux window
+quickly vertically. They also caused a tmux window to shrink
+when adjusting its height with window > resize > increase
+height.
+
+2020-10-14: Remove titlebar accessory tabbar after exiting
+lion fullscreen, otherwise a single-tab tabbar remains
+visible when it shouldn't be. This is especially bad with
+tmux tabs, where it assumes it gets the full tabview height
+and therefore runs off the bottom.
+
+2020-10-14: Update layouts when scroller style changes.
+Issue 7481
+
 2020-10-11: Make 'new tab using same profile' have correct
 overriddenFields so that it can later be saved into an
 arrangement correctly. Issue 9187
