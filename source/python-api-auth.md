@@ -5,6 +5,8 @@ title: Python API Security - iTerm2 - macOS Terminal Replacement
 
 ## Python API Security
 
+Note: This document applies to iTerm2 version 3.4.0 and later.
+
 The Python API aims to provide a safe and reliable way for programs to control
 iTerm2. The data in iTerm2 is particularly sensitive because a compromise would
 affect not only the local machine but also on remote hosts that you connect to
