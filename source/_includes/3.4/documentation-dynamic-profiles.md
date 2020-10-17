@@ -101,7 +101,7 @@ If something goes wrong loading a Dynamic Profile, errors will be logged to Cons
 
 ### Triggers
 
-By default, *Highlight* triggers save colors in a large inscrutable mess of a format. For dynamic profiles, you can use `#rrggbb` in place of the large inscrutable mess.
+By default, *Highlight* triggers save colors in a large inscrutable mess of a format. For dynamic profiles, you can use `{#rrggbb,#rrggbb}` in place of the large inscrutable mess. The first value gives the foreground color and the second value gives the background color. Replace either `#rrggbb` with an empty string to not change that color. For example, to make the foreground red without changing the background use `#{ff0000,}`.
 
 ### Example
 
