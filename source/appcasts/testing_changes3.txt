@@ -1,43 +1,37 @@
-3.4.0beta10
-
-New Features
-- Show local time in the context menu when you
-  right click on a timestamp in microseconds since
-  epoch.
-- Add a menu item "copy with control sequences".
+3.4.0beta11
 
 Improvements
-- Improve launch performance by saving less
-  scrollback restory.
-- Send a newline before sending the curl command
-  to install shell integration to clear out any
-  existing command.
+- Disable GPU renderer for obscured windows when
+  using the integrated GPU.
+- When a tmux pane fails to split, don't detach.
+- Remember tmux window sizes when reattaching.
+- When disintering a buried tmux tab, put it back
+  in the right position in the same window it came
+  from.
 
 Bug Fixes
-- Fix a crash on launch.
-- Fix a bug where the Bury menu item was grayed
-  out.
-- Fix a bug where the prefs window would shrink
-  when changing profiles.
-- Fix a bug where fullscreen windows didn't have a
-  titlebar or tabbar on 10.15.6+.
-- Fix a bug where the tmux dashboard would appear
-  upon attach when it oughtn't.
-
+- Fix a bug where trimming whitespace when copying
+  didn't work.
+- Fix a bug where tux windows would sometimes have
+  a discolored bar at the bottom.
+- Fix a bug where Swap With Session didn't work on
+  tmux panes.
+- Fix crash on startup.
+- Fix a bug where arrangements created with tabs
+  that were created using "new tab using same
+  profile" would not restore with the same
+  settings.
+- Fix a bug where scrollbars could overlap content
+  when changing scroller style.
+- Fix a bug where the tab bar could remain visible
+  after exiting full screen when there is only a
+  single tab.
+- Fix a bug where quickly resizing tmux windows
+  would increase the bottom margin.
+- Fix a bug where Window > Resize Window would
+  cause tmux windows to resie incorrectly.
 
 3.4.0 Release Notes:
-
-Breaking Changes
-- TIOCGWINSZ now reports pixels, not points.
-  This makes it easier to make inline images
-  pixel-perfect.
-- The Python API now only uses websockets.
-  Everyone has to upgrade to the newest version of
-  the Python runtime. This confers security
-  benefits.
-- The toolbelt has a new "snippets" tool that lets
-  you quickly paste saved text.
-- Support for macOS 10.12 and 10.13 dropped.
 
 New Features
 - You can now set a custom tab title on a profile
@@ -72,32 +66,12 @@ New Features
 - In the Minimal and Compact themes, you can now
   drag the window by grabbing the edge of the tab
   bar near the window border.
-- Pressing shift+arrow key when there is a
-  selection now enters Copy Mode automatically.
-  This can be disabled in Prefs > General >
-  Selection.
-- You can now change window style (top of screen,
-  maximized, no title bar, etc.) for existing
-  windows from the Window menu.
-- There is a new control sequence to clear
-  captured output (OSC 1337 ; ClearCapturedOutput
-  ST).
-- After editing a session's name in Edit Session,
-  control sequences will no longer change it.
-  There is a lock icon in Edit Session to change
-  this behavior.
-- Add an advanced pref to show timestamps by
-  default.
-- Add Snippets and Actions to a new Shortcuts tab
-  in prefs, and ways to access them in various
-  places throughout the app, including new status
-  bar components.
+- Show local time in the context menu when you
+  right click on a timestamp in microseconds since
+  epoch.
+- Add a menu item "copy with control sequences".
 
 Improvements
-- Updates now use exclusively EdDSA. DSA-signed
-  auto update appcasts are completely gone.
-- The ApplicationSupport symlink under ~/Library
-  is no longer needed.
 - Various performance improvements.
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
@@ -143,49 +117,9 @@ Improvements
   position.
 - Show a brief message when automatic profile
   switching takes effect.
-- Postgres icon added.
-- Status bar components that show graphs (CPU,
-  memory, network, battery) now animate smoothly
-  and use much less CPU.
-- Inline images no longer scale unnecessarily.
-- You'll be offered to repair saved arrangements
-  with bad initial working directories.
-- Add support for SSH_AUTH_SOCK with the built-in
-  secure copy feature.
-- You can now change a profile's icon by single
-  clicking on the image.
-- Don't disable metal when a window is obscured to
-  improve performance when switching from another
-  app to iTerm2 (e.g., with cmd-tab).
-- Support u= or username= TXT records in Bonjour
-  to provide a user name.
-- You can press cmd-B to toggle broadcasting in
-  the password manager.
-- Improve error reporting for dynamic profiles.
-- If a "run command" from a trigger produces too
-  many errors, rate limit them to avoid spamming
-  you.
-- Performance improvements
-- Add min/max width configuration settings to most
-  status bar components.
-- The prefs panel now opens centered on the
-  screen.
-- File URLs with fragments will now open properly
-  in the browser.
-- Expose a new bellCount session variable so API
-  scripts can perform an action when the bell
-  rings.
-- Avoid saving non-syncing keys to externally
-  stored preferences.
-- Change Composer shortcut from cmd-. to
-  cmd-shift-., to avoid breaking cmd-. acting as
-  esc.
-- Fix support for tmux 2.1, which was incorrectly
-  detected, causing various bugs.
-- Show a warning icon when system window
-  restoration is disabled but your startup option
-  is to use it.
-- Don't confirm quitting the app when upgrading.
+- Send a newline before sending the curl command
+  to install shell integration to clear out any
+  existing command.
 
 Bug Fixes
 - Full screen windows in the Minimal or Compact
@@ -202,27 +136,7 @@ Bug Fixes
 - Improve support for zero-width joiners in Emoji.
 - Fix a memory leak of inline images when
   restoring windows after restarting the app.
-- Shortcuts bound to Paste won't take effect when
-  the find-on-page text field has focus.
-- Fix a hang on certain Sixel images.
-- URL escaping should be more consistent now in
-  various places (search web for selection, open
-  URL, etc.)
-- Fix a bug where tmux windows shrink each time
-  you attach.
-- Fix a bug where a key bound to Ignore would not
-  prevent a menu shortcut from working.
-- Change how escaping works so you do not need to
-  escape backslashes in profile initial text or
-  command.
-- Fix a bug where automatic profile switching
-  could get into an infinite loop.
-- Fix bad performance with status bars using
-  auto-rainbow.
-- Fix a bug where OSC codes would sometimes not be
-  parsed correctly and would change the title
-  instead.
-- Fix detecting line numbers in Python tracebacks.
-- Fix tmux version detection for tmux less than
-  2.3.
+
+Things Made Worse
+- Support for macOS 10.12 and 10.13 dropped.
 
