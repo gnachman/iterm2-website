@@ -1,3 +1,31 @@
+2020-10-24: Don't keep a separate date formatter for each
+script history entry. They are quite expensive. Issue 7189
+
+2020-10-24: Use double/cgfloat everywhere for vertical and
+horizontal  spacing. Because we compute line height/char
+width using ceil, using float for some calculations can
+result in a 1pt error. When using Menlo Regular 25pt with
+80% hspacing and 80% vspacing, tmux tabs compute a height
+that is wrong because .8 is different enough between float
+and double that it computes 24 instead of 25 for the width
+(and likewise is off by 1 for height). Hopefully this fixes
+issue 9195
+
+2020-10-24: Fix shift-return in profiles window. It now gets
+handled by the tableview so the shortcut doesn't get called.
+I'm going to leave the shortcut handlers because I can't be
+sure I handled every possible way the keystroke could get
+routed. Issue 9205
+
+2020-10-22: Add a crlf after a sixel image, like xterm.
+Issue 9204
+
+2020-10-22: Draw outline on right side of single-tab minimal
+tab. Issue 9201
+
+2020-10-22: Make windows movable after exiting lion full
+screen. Issue 9198
+
 2020-10-15: Make iTermOrderedDictionary ignore duplicate
 keys. Fixes an assertion in issue 9179 caused by a bum db
 with two of the same key from a previous buggy version. The
