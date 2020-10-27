@@ -1,35 +1,25 @@
-3.4.0beta11
+3.4.0beta12
 
 Improvements
-- Disable GPU renderer for obscured windows when
-  using the integrated GPU.
-- When a tmux pane fails to split, don't detach.
-- Remember tmux window sizes when reattaching.
-- When disintering a buried tmux tab, put it back
-  in the right position in the same window it came
-  from.
+- Draw outline on right hand side of last tab in
+  minimal theme.
+- Hide subpixel antialiasing UI on big sur because
+  Apple took it away from us :(
+- App icon 7% snazzier
+- Make shift-tab behave better in vim.
+- Reset key reporting to default after restoring a
+  window when the original process can't be
+  attached to.
 
 Bug Fixes
-- Fix a bug where trimming whitespace when copying
-  didn't work.
-- Fix a bug where tux windows would sometimes have
-  a discolored bar at the bottom.
-- Fix a bug where Swap With Session didn't work on
-  tmux panes.
-- Fix crash on startup.
-- Fix a bug where arrangements created with tabs
-  that were created using "new tab using same
-  profile" would not restore with the same
-  settings.
-- Fix a bug where scrollbars could overlap content
-  when changing scroller style.
-- Fix a bug where the tab bar could remain visible
-  after exiting full screen when there is only a
-  single tab.
-- Fix a bug where quickly resizing tmux windows
-  would increase the bottom margin.
-- Fix a bug where Window > Resize Window would
-  cause tmux windows to resie incorrectly.
+- Fix a bug where windows are not movable after
+  exiting native full screen.
+- Add crlf after sixel image.
+- Fix shift-return in profiles window to open a
+  window instead of a tab.
+- Fix a bug where tmux windows would change sizes
+  unexpectedly when using horizontal/vertical
+  character spacing.
 
 3.4.0 Release Notes:
 
@@ -120,6 +110,13 @@ Improvements
 - Send a newline before sending the curl command
   to install shell integration to clear out any
   existing command.
+- Disable GPU renderer for obscured windows when
+  using the integrated GPU.
+- When a tmux pane fails to split, don't detach.
+- Remember tmux window sizes when reattaching.
+- When disintering a buried tmux tab, put it back
+  in the right position in the same window it came
+  from.
 
 Bug Fixes
 - Full screen windows in the Minimal or Compact
@@ -136,6 +133,12 @@ Bug Fixes
 - Improve support for zero-width joiners in Emoji.
 - Fix a memory leak of inline images when
   restoring windows after restarting the app.
+- Fix a bug where Swap With Session didn't work on
+  tmux panes.
+- Fix a bug where quickly resizing tmux windows
+  would increase the bottom margin.
+- Fix a bug where Window > Resize Window would
+  cause tmux windows to resie incorrectly.
 
 Things Made Worse
 - Support for macOS 10.12 and 10.13 dropped.
