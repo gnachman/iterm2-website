@@ -1,3 +1,25 @@
+2020-10-28: Reinstate borders on big sur. Dark background
+windows need it in the light theme because they have a
+barely visible border drawn by the OS.
+
+2020-10-27: Add VS15 to default-text-presentation emoji that
+follow a default-emoji-presentation emoji in the legacy
+renderer. macOS cleverly upgrades them to emoji presentation
+(with some exceptions). It is a pita for the GPU renderer to
+do that, so instead of giving it the magical power of
+letting adjacent characters affect each other's appearance
+and making it slower and even more complex, instead prevent
+the legacy renderer from 'enjoying' this 'feature'. Issue
+9185
+
+2020-10-27: Add the ability to output emoji presentation
+charsets to emoji.py
+
+2020-10-26: Add square window corner images
+
+2020-10-26: Add support for square window corners. Issue
+9211
+
 2020-10-25: Reset send modifiers when restoring a session
 and not attaching to a process. Fixes a bug where restoring
 windows could leave you at a shell prompt with
