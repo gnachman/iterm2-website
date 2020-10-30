@@ -1,3 +1,12 @@
+2020-10-29: Create a new logging helper when starting a
+program. Fixes a bug where restarting a terminated session
+creates a log file but never appends to it. Issue 9218
+
+2020-10-29: Simplify getting the local hostname. Turns out
+gethostbyname gives a fqdn on bsd. We therefore can do a
+fresh lookup on every use and not break the git status bar
+component when the hostname changes. Issue 9217
+
 2020-10-28: Reinstate borders on big sur. Dark background
 windows need it in the light theme because they have a
 barely visible border drawn by the OS.
