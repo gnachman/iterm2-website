@@ -3,9 +3,31 @@ layout: default
 title: Version 3 - iTerm2 - macOS Terminal Replacement
 ---
 
-## iTerm2 Version 3.3
+## iTerm2 Version 3.4
 
-iTerm2 version 3.3 is now out as a "stable" build, meaning there are no known major bugs. It has a bunch of new features. This document lists the highlights.
+iTerm2 version 3.4 is now out as a "stable" build, meaning there are no known major bugs. It has a bunch of new features. This document lists the highlights.
+
+### Scrollbar Hints
+
+The scrollbar shows the locations of prompts, annotations, and search results.
+
+### Composer
+
+The Composer (Cmd-shift-.) is a convenient UI to edit commands before sending them.
+
+### tmux Integration Flow Control
+
+Tmux integration now has an advanced flow control feature that will prevent excessive buffering (requires tmux 3.2).
+
+### Performance Improvements
+
+Creating a new tab is now faster and uses fewer process IDs, thanks to a redesigned daemon process. Performance with background images has been improved.
+
+### Window Restoration Improvements
+
+Window content restoration is now more robust.
+
+## New features in version 3.3
 
 ### Python Scripting
 
