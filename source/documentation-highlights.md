@@ -4,4 +4,4 @@ title: Highlights for New Users - Documentation - iTerm2 - macOS Terminal Replac
 active-state: documentation
 subhead: Highlights for New Users
 ---
-{% include 3.3/documentation-highlights.md %}
+{% include 3.4/documentation-highlights.md %}

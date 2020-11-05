@@ -4,4 +4,4 @@ title: Appearance Preferences - Documentation - iTerm2 - macOS Terminal Replacem
 active-state: documentation
 subhead: Preferences
 ---
-{% include 3.3/documentation-preferences-appearance.md %}
+{% include 3.4/documentation-preferences-appearance.md %}
