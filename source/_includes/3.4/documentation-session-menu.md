@@ -19,6 +19,9 @@ If you use <a href="documentation-shell-integration.html">Shell Integration</a> 
 #### Session > Open Paste History...
 "Open Paste History" opens a window showing up to the last 20 values that were copied or pasted in iTerm2. You can search its contents by typing a (non-necessarily-consecutive) subsequence of characters that appear in the value. You can use arrow keys and enter to make a selection, or you can click on an item to choose it, and it will be pasted. If you enable the Save copy/pate history to disk preference then these values will persist across sessions of iTerm2.
 
+#### Add Trigger
+Adds a <a href="documentation-triggers.html">trigger</a>, defaulting to highlighting the currently selected text.
+
 #### Session > Reset
 Resets the internal state of the emulator and clears the screen. Use this if you get wedged in a bad state, like the wrong character set or mouse reporting mode is stuck.
 
@@ -27,6 +30,10 @@ Logging saves all input received in a session to a file on disk.
 
 #### Session > Log > Import/Export Recording...
 The Instant Replay feature allows you to view the past window state. The import/export feature allows you to save that state to an `itr` file and share it with others. For more control, enter instant replay by selecting *View > Start Instant Replay* and click the *Export* button there; it will allow you to clip the recording by selecting its start and end points separately.
+
+#### Session > Terminal State
+
+Shows the internal state of the terminal emulator and lets you directly manipulate it.
 
 #### Session > Bury Session/Buried Sessions
 Buries or unburies a session. See <a href="documentation-buried-sessions.html">Buried Sessions</a> for details.

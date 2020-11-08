@@ -22,8 +22,10 @@ Anti-aliased text will be drawn with thinner strokes by default on Retina displa
 #### Use built-in Powerline glyphs
 When enabled, iTerm2 renders Powerline glyphs itself rather than using what is built-in to the font. These glyphs tend to line up better with other elements than font-provided glyphs.
 
-#### Enable subpixel anti-aliasing (macOS 10.14 only)
+#### Enable subpixel anti-aliasing (macOS 10.14 and 10.15 only)
 When enabled, subpixel anti-aliasing is enabled throughout the application. You must restart iTerm2 for this to take effect. Subpixel anti-aliasing uses artifacts of LCD displays to improve the perceived resolution. Enabling this incurs a minor performance penalty for drawing operations.
+
+This is not available in macOS 11.0 and later because Apple has removed support for it.
 
 #### Use Unicode Version 9 Widths
 Unicode version 9 offers better formatting for Emoji. If your applications have been updated to use these tables, you should enable this setting.

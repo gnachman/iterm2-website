@@ -206,7 +206,7 @@ The `value` should be *yes* to request attention by bouncing the dock icon indef
 
     ^[]1337;SetBackgroundImageFile=base64^G
 
-The value of *base64* is a base64-encoded filename to display as a background image. If it is an empty string then the background image iwll be removed. User confirmation is required as a security measure.
+The value of *base64* is a base64-encoded filename to display as a background image. If it is an empty string then the background image will be removed. User confirmation is required as a security measure.
 
 #### Report Cell Size
 
@@ -218,7 +218,9 @@ The terminal responds with:
 
 Where *height* and *width* are floating point values giving the size in points of a single character cell. For example:
 
-    ^[]1337;ReportCellSize=17.50;8.00^[\
+    ^[]1337;ReportCellSize=17.50;8.00;2.0^[\
+
+The third value gives the scale. This is the number of pixels (physical units) to points (logical units). 1.0 means non-retina, 2.0 means retina.
 
 #### Copy to Pasteboard
 
@@ -442,6 +444,20 @@ The following synonym is available as a combination of RemoteHost and CurrentDir
     ^[]7;Ps^G
 
 where `Ps` is a file URL with a hostname and a path, like `file://example.com/usr/bin`.
+
+#### ClearCapturedOutput
+
+`^[]1337;ClearCapturedOutput^G`
+
+Erases the current captured output.
+
+#### DECSCUSR 0
+
+`^[[0 q` will reset the cursor to its default appearance. This is an intentional deviation from the behavior of DEC virtual terminals.
+
+#### Curly Underlines
+
+`^[[4:3m` turns on curly underliens.
 
 #### Extended Device Attributes
 

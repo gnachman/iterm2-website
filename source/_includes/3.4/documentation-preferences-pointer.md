@@ -1,6 +1,28 @@
 ## Pointer
 <hr>
 
+### General
+
+#### Cmd-Click Opens Filename/URL
+If enabled, then clicking on a filename (of an existing file on the local machine) or a URL will open it.
+
+#### Ctrl-click reported to apps, does not open menu
+If enabled, ctrl-click will be sent to applications that support Xterm mouse reporting (if mouse reporting is enabled).
+
+#### Option-Click moves cursor
+If enabled, option-click will move the cursor to where the mouse pointer is. If you install shell integration, this will be well-behaved at the shell prompt by not sending up and down arrow keys.
+
+#### Three-finger tap reports middle click to apps
+If enabled, a three-finger tap acts like a middle click for the purposes of mouse reporting.
+
+#### Focus follows mouse
+If enabled, moving the mouse over an inactive window will cause it to receive keyboard focus.
+
+#### Focus window after right or middle click
+When enabled, right-clicking or middle-clicking on a window will give it keyboard focus.
+
+### Bindings
+
 #### Mouse Button and Trackpad Gesture Actions
 You may assign custom actions to mouse clicks and trackpad gestures. The left mouse button is not configurable because its behavior is rather complex, however. This is especially useful if you have a mouse with many buttons. Any combination of mouse button + number of clicks + modifiers may be assigned an action. For gestures, three finger taps and swipes may be configured in combination with modifiers. The following actions are available:
 
@@ -24,25 +46,4 @@ You may assign custom actions to mouse clicks and trackpad gestures. The left mo
   * *Smart Selection ignoring Newlines* - Performs smart selection on the text under the pointer, ignoring newlines (e.g., if a URL is split by a hard newline, it can still be selected as a single item).
 
 <hr/>
-
-#### Cmd-Click Opens Filename/URL
-If enabled, then clicking on a filename (of an existing file on the local machine) or a URL will open it.
-
-#### Ctrl-click reported to apps, does not open menu
-If enabled, ctrl-click will be sent to applications that support Xterm mouse reporting (if mouse reporting is enabled).
-
-#### Option-Click moves cursor
-If enabled, option-click will move the cursor to where the mouse pointer is. If you install shell integration, this will be well-behaved at the shell prompt by not sending up and down arrow keys.
-
-#### Focus follows mouse
-If enabled, moving the mouse over an inactive window will cause it to receive keyboard focus.
-
-#### Double-click performs smart selection
-If enabled, double click performs smart selection instead of word selection as is standard on macOS.
-
-#### Triple-click selects full wrapped lines
-If enabled, a triple click selects a whole line, even if it was longer than one row in the terminal. If off, then triple click selects exactly one row.
-
-#### Three-finger tap reports middle click to apps
-If enabled, a three-finger tap acts like a middle click for the purposes of mouse reporting.
 

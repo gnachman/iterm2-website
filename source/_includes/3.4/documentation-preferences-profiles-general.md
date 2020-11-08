@@ -32,8 +32,13 @@ This menu contains items which may be separately enabled. They are combined to f
 
 If a script that installs a custom title provider is running, its offerings will be added to the bottom of the list. For a working demo, see the <a href="https://iterm2.com/python-api/examples/georges_title.html">George's Title Algorithm</a> example.
 
+#### Applications in terminal may change the title
+When enabled, a control sequence can change a session's or window's title.
+
 #### Command
 This is the command that is executed when a new session with the profile is created. If *login shell* is chosen, then `login` is invoked. You can put special terms surrounded by $$ in this field (example: $$USERNAME$$). When a new session is created, you will be prompted to enter a value for each such term. See the description of URL Schemes below for details about the special "$$" value that can go in this field.
+
+When *custom shell* is selected, you should enter the path to a shell (e.g., `/usr/local/bin/bash`) and it will be run as a login shell.
 
 #### Send Text at Start
 This text will be sent when a session begins. If it is not empty then a newline will be sent afterwards. It does not accept any special characters or require any escaping.
