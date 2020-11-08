@@ -25,6 +25,9 @@ Indicate the time of last modification of each line on the screen.
 #### View > Show Annotations
 Toggles the visibility of annotations.
 
+#### View > Composer
+Opens a view that lets you edit a command before sending it.
+
 #### View > Auto Command Completion
 Automatically shows a window with command completion suggestions as you type. Only usable when you have command history built up with <a href="documentation-shell-integration.html">Shell Integration</a>.
 
@@ -34,11 +37,11 @@ If you have lots of sessions you can quickly find the one you're looking for wit
 #### View > Maximize Active Pane
 When there are split panes present, this toggles whether a given pane expands to fill the tab. When a maximized pane is present, the tab will be inscribed with a dotted outline.
 
-#### View > Start Instant Replay
-Stepping through time allows you to see what was on the screen at a previous time. This is different than going back through the scrollback buffer, as interactive programs sometimes overwrite the screen contents without having them scroll back. Once in this mode, you can use the left and right arrow keys to step back and forward, respectively. The "esc" key exits this mode, as does clicking the close button in the bar that appears on the bottom. You can adjust the amount of memory dedicated to this feature in Preferences > Instant Replay uses xx MB per session. The more memory you assign, the further back in time you can step. The instant replay UI also lets you choose to export a section of your terminal history to share with other iTerm2 users.
-
 #### View > Size Changes Update Profile
 When enabled, changes made to the text size in this session (by selecting Make Text Bigger/Smaller) will be reflected in its profile.
+
+#### View > Start Instant Replay
+Stepping through time allows you to see what was on the screen at a previous time. This is different than going back through the scrollback buffer, as interactive programs sometimes overwrite the screen contents without having them scroll back. Once in this mode, you can use the left and right arrow keys to step back and forward, respectively. The "esc" key exits this mode, as does clicking the close button in the bar that appears on the bottom. You can adjust the amount of memory dedicated to this feature in Preferences > Instant Replay uses xx MB per session. The more memory you assign, the further back in time you can step. The instant replay UI also lets you choose to export a section of your terminal history to share with other iTerm2 users.
 
 #### View > Tab Color
 Allows you to select a tint color for the tab, to make it easier to distinguish. You can also change the tab color in Profiles > Preferences > Colors.

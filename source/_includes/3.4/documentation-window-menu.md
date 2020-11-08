@@ -14,4 +14,8 @@ Opens the password manager.
 Allows you to enter a tab title to override the default, which is the current session's title. This is an <a href="documentation-scripting-fundamentals.html">interpolated string</a>.
 
 #### Window > Edit Window Title
-ALlows you to enter a window title to override the default, which is the current tab's title. This is an <a href="documentation-scripting-fundamentals.html">interpolated string</a>.
+Allows you to enter a window title to override the default, which is the current tab's title. This is an <a href="documentation-scripting-fundamentals.html">interpolated string</a>.
+
+#### Window > Window Style
+Allows you to modify the window style, for example by removing the title bar.
+
