@@ -8,13 +8,10 @@ Checks to see if a new version of iTerm2 is available. If Preferences > General 
 This saves helpful debugging information in memory. When it is toggled off it is saved to /tmp/debuglog.txt.
 
 #### iTerm2 > Copy Performance Stats
-Copies information about drawing performance to the pasteboard. This is useful for filing bug reports.
-
-#### iTerm2 > Profile CPU Usage
-Creates a file with a sample of main thread CPU usage. This is useful for filing bug reports.
+This copies information about drawing speed to the pasteboard. This is useful when reporting issues relating to poor performance.
 
 #### iTerm2 > Capture GPU Frame
-Creates a file with information about how the screen was drawn when using the GPU renderer. This is useful for filing bug reports.
+This saves information about how the current session is drawn. This is useful when reporting issues relating to drawing errors in the GPU renderer.
 
 #### iTerm2 > Secure Keyboard Entry
 When this is enabled, the operating system will prevent other programs running on your computer from being able to see what you are typing. If you're concerned that untrusted programs might try to steal your passwords, you can turn this on, but it may disable global hotkeys in other programs.
@@ -26,6 +23,5 @@ Makes iTerm2 the default terminal for opening .command, .tool, .zsh, .csh, and .
 You must hold down Option for this entry to be visible. Makes Terminal.app the default terminal for opening .command, .tool, .zsh, .csh, and .pl files.
 
 #### iTerm2 > Install Shell Integration
-Runs a shell script that modifies your .bash_profile (or other startup script) and enables the <a href="/shell_integration.html">Shell Integration</a> features.
-
+This opens a window that guides you through the installation of the <a href="/shell_integration.html">Shell Integration</a> features.
 

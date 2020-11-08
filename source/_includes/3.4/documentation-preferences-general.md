@@ -22,6 +22,9 @@ If selected, commands that close one session will not be confirmed, but commands
 #### Confirm Quit iTerm2 Command
 If selected, the Quit iTerm2 (cmd-Q) command will be confirmed if any terminal windows are open.
 
+#### Even if there are no windows
+Modifies *Confirm Quit iTerm2 COmmand* to disable the prompt when there are no open windows.
+
 <hr>
 ### Magic
 
@@ -30,6 +33,9 @@ This setting specifies the maximum amount of memory allocated to instant replay 
 
 #### Save copy/paste and command history to disk
 If selected, every time text is copied or pasted in iTerm2 it will be saved to disk. The last 20 values are recorded. They can be accessed with **Edit > Open Paste History...**. If you use <a href="shell_integration.html">Shell Integration</a> then when this is enabled your command history, directory history, and remote hostname and usernames will also be saved to disk. Unchecking this will erase all of the saved information.
+
+#### Enable Python API
+Toggles the availability of the Pythono API. See <a href="/python-api-auth.html">Python API Authentication</a> for details on the security model.
 
 #### GPU Rendering
 The GPU renderer improves drawing performance, but it may use more energy. You can also configure when it is enabled in *Advanced GPU Settings*.
@@ -55,9 +61,6 @@ If enabled, iTerm2 will periodically check if a new unstable version of iTerm2 e
 <hr>
 ### Selection
 
-#### Characters considered part of a word for selection
-When you double-click in the terminal window, a "word" is selected. The OS's algorithm for word selection is used, but it's extended to also include characters in this set. For example, by adding `/` to this field, double-clicking on a `path/like/this` would select the entire path instead of just one component.
-
 #### Copy to pasteboard on selection
 If enabled, text is copied to the clipboard immediately upon selection. If not selected, you must select **Edit > Copy** to copy it.
 
@@ -66,6 +69,18 @@ If enabled, a terminal newline will be copied to the pasteboard when the selecti
 
 #### Applications in terminal may access clipboard
 If enabled, clipboard access will be granted via escape code to programs running in iTerm2. They will be able to set the contents of the system pasteboard. For more details, see <a href="documentation-utilities.html">Shell Integration Utilities</a>.
+
+#### Triple-click selects full wrapped lines
+If enabled, a triple click selects a whole line, even if it was longer than one row in the terminal. If off, then triple click selects exactly one row.
+
+#### Double-click performs smart selection
+If enabled, double click performs smart selection instead of word selection as is standard on macOS.
+
+#### Automatically enter copy mode on Shift+Arrow Key with selection
+If enabled, pressing shift-left or shift-right will enter copy mode when a selection exists.
+
+#### Characters considered part of a word for selection
+When you double-click in the terminal window, a "word" is selected. The OS's algorithm for word selection is used, but it's extended to also include characters in this set. For example, by adding `/` to this field, double-clicking on a `path/like/this` would select the entire path instead of just one component.
 
 <hr>
 ### Window
@@ -97,7 +112,7 @@ When you've turned on *Load preferences from a custom folder* and this is on the
 <hr>
 ### tmux
 
-#### Open tmux windows as
+#### When attaching, restore windows as…
 The first dropdown box in the **tmux Integration** section allows you to define how tmux windows should be mapped to native constructs. When attaching to a new tmux session with the tmux integration, tmux windows not seen by iTerm2 before will open in either new windows or tabs, as specified by this preference.
 
 #### Automatically bury the tmux client session after connecting
@@ -107,4 +122,16 @@ When the tmux integration is entered by running tmux -CC, the window in which th
 This used to on by default, but is no longer so as of version 3.3. When enabled, a copy of the Default profile is created, called `tmux`. When using tmux integration all tmux sessions will use this profile.
 
 When disabled, the profile of the session in which you ran `tmux -CC` will be used for all tmux sessions.
+
+#### Status bar shows tmux status bar content, not native components.
+When enabled, the status bar will contain the same content as the tmux status bar in its text-mode UI. When disabled, the status bar defined in the profile used for a tmux integration session will be used.
+
+#### Pause a pane if it would take more than X seconds to catch up.
+When both a tmux integration and tmux text-mode UI client are attached to the same tmux session, the text-mode UI can sink data much faster than tmux integration can because it drops information between frames. In this case, a large buffer can grow in the tmux integration window. Once the time to catch up exceeds this number of seconds, the tmux integration session will be paused. That means it stops receiving new data. While paused, no more data will be added to its buffer and may be lost forever. You will be prompted by a notification at the top of the window to unpause the session. This feature is only available in tmux 3.2 and later.
+
+#### Warn Before Pausing
+If enabled, a notification is shown when a pause is projected to occur within half of the pause deadline. See *Pause a pane if it would take more than X seconds to catch up* for more detail on pausing.
+
+#### Unpause Automatically
+When enabled, this unpauses the tmux session as quickly as possible after it is paused by tmux. It does not completely eliminate the possibility of data loss.
 

@@ -20,7 +20,7 @@ If enabled, a window created with this profile will immediately miniaturize afte
 If enabled, a window created with this profile will feature an open toolbelt.
 
 #### Custom window title
-New windows created with this profile will use this title by default, overriding the default behavior of using the current tab's title as the window's title.
+New windows created with this profile will use this title by default, overriding the default behavior of using the current tab's title as the window's title. This is an <a href="documentation-scripting-fundamentals.html">interpolated string</a>.
 
 #### Force this profile to always open in a new window, never in a tab.
 If you ask for a new tab with this profile, it will just open in a window instead. This is for people who hate tabs.
@@ -40,6 +40,9 @@ This allows you to select how the image is scaled to fit the window:
   * *Scale to Fit* - The image is scaled to exactly fill the window either horizontally or vertically. Its aspect raio is preserved. Letterboxes or pillarboxes may be added.
 
 See also: *Preferences > Appearance > Panes > Separate background images per pane*.
+
+#### Custom Tab Title
+New tabs created with this profile will use this tab title by default. This is an <a href="documentation-scripting-fundamentals.html">interpolated string</a>.
 
 #### Blending
 The blending slider determines how strongly the image dominates over the text's background color.

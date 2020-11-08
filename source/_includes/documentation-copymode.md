@@ -1,4 +1,4 @@
-Copy Mode allows you to make selections using the keyboard. To enter or exit Copy Mode, select *Edit &gt; Copy Mode*. A special cursor rendered as a downward-pointing arrow is visible while in Copy Mode. 
+Copy Mode allows you to make selections using the keyboard. To enter or exit Copy Mode, select *Edit &gt; Copy Mode*. You can also enter copy mode by pressing Shift+Arrow key immediately after making a selection with the mouse. A special cursor rendered as a downward-pointing arrow is visible while in Copy Mode. 
 
 While in Copy Mode, the session's contents will not change. You can use the keyboard to move the cursor and modify the selection using these keystrokes:
 
@@ -73,12 +73,22 @@ While in Copy Mode, the session's contents will not change. You can use the keyb
 
   <tr>
     <td>Meta-Left arrow, M-b, Shift-tab, b</td>
-    <td>Move back one word</td>
+    <td>Move back one word, treating symbols as word breaks.</td>
   </tr>
 
   <tr>
     <td>M-Right arrow, M-f, Tab, w</td>
-    <td>Move forward one word</td>
+    <td>Move forward one word, treating symbols as word breaks.</td>
+  </tr>
+
+  <tr>
+    <td>B</td>
+    <td>Move back one word, treating symbols as part of a word.</td>
+  </tr>
+
+  <tr>
+    <td>W</td>
+    <td>Move forward one word, treating symbols as part of a word.</td>
   </tr>
 
   <tr>

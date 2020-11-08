@@ -1,9 +1,6 @@
 #### iTerm2 > Show Tip of the Day
 When you start using iTerm2 it will offer to show you a daily tip describing a feature. You can show a tip immediately by selecting this item.
 
-#### iTerm2 > Check for Incompatible Software
-Checks if you have any software on your system that has not been updated for compatibility with the current version of iTerm2.
-
 #### iTerm2 > Check for Updates
 Checks to see if a new version of iTerm2 is available. If Preferences > General > Prompt for test-release updates is turned on then this includes beta versions; otherwise only stable versions are downloaded.
 
@@ -26,6 +23,5 @@ Makes iTerm2 the default terminal for opening .command, .tool, .zsh, .csh, and .
 You must hold down Option for this entry to be visible. Makes Terminal.app the default terminal for opening .command, .tool, .zsh, .csh, and .pl files.
 
 #### iTerm2 > Install Shell Integration
-Runs a shell script that modifies your .bash_profile (or other startup script) and enables the <a href="/shell_integration.html">Shell Integration</a> features.
-
+This opens a window that guides you through the installation of the <a href="/shell_integration.html">Shell Integration</a> features.
 

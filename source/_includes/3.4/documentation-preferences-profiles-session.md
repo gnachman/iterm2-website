@@ -13,6 +13,9 @@ When a session will close, you can choose when to be prompted with a modal alert
 #### Automatically log session input to files in:
 If enabled, every session's output will be logged to a file in the specified directory. File names are formatted as Date_Time.ProfileName.TerminalID.ProcessId.RandomNumber.log. You can customize the filename in **Preferences > Advanced > Format for automatic session log filenames**.
 
+#### Log plain text
+When enabled, control sequences will be stripped out before logging. This will produce confusing output when an interactive application like emacs is used, but for simple command-line interactions it produces a more usable log file.
+
 #### When idle, send ASCII code X every Y seconds.
 If selected, the specified ASCII code "X" (a number from 0 to 255) will be transmitted every Y seconds while nothing is happening. Don't use this unless you know what you're doing as it can have unexpected consequences. Seriously, it's probably not what you want.
 

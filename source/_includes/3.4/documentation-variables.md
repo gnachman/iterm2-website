@@ -28,8 +28,12 @@ The following variables are defined in the context of a session:
   * `jobName` - The name of the current foreground job (e.g., "emacs")
   * `jobPid` - The process ID of the current foreground job in this session.
   * `mouseReportingMode` - A number indicating how mouse events are reported. -1: Not reported, 0: button clicks reported, 1: not currently implemented, 2: reports clicks and drags, 3: reports clicks, drags, and movement
+  * `parentSession` - The session that was current when this sessionw as created. This is an alias to the context of that session so you can access its variables.
   * `pid` - The process ID of the root process in this session (typically `login`).
+  * `processTitle` - The (perhaps modified by the process) title of a process from its argv.
   * `rows` - The session's height in rows
+  * `selection` - The currently selected text.
+  * `selectionLength` - The length in UTF-8 bytes of the currently selected text.
   * `termid` - Window, tab, and pane number as used in the `$TERM_SESSION_ID` environment variable.
   * `tty` - The path to the local TTY device
 
@@ -48,6 +52,7 @@ These values require shell integration to be installed.
 
 #### tmux Integration
   * `tmuxClientName` - The name of the tmux session when tmux integration is in use (e.g., `user@localhost`).
+  * `tmuxPaneTitle` - The title of the tmux window pane.
   * `tmuxRole` - Unset if tmux integration is not in use. Otherwise, is "gateway" for the session in which `tmux -CC` is running or "client" in tmux integration sessions.
   * `tmuxStatusLeft` - In tmux integration, the value of the left side of the status bar.
   * `tmuxStatusRight` - In tmux integration, the value of the right side of the status bar.

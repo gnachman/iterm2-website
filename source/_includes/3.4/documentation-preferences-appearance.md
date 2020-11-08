@@ -50,6 +50,9 @@ If enabled, entering fullscreen mode will automatically turn off transparency fo
 #### Show line under title bar when tab bar is not visible
 Turn this off for a sleek appearance with the dark theme.
 
+#### Show proxy icon in window title bar
+When enabled, an icon representing the current directory is added to the window's title bar. You can drag it.
+
 <hr>
 ### Tabs
 
@@ -106,8 +109,5 @@ If enabled, windows in the background (that is, those not receiving keyboard inp
 
 #### Dimming affects only text, not background
 When a window or pane is dimmed, this option controls whether the background color is dimmed or only the text colors.
-
-#### Show proxy icon in window title bar
-When enabled, an icon representing the current directory is added to the window's title bar. You can drag it.
 
 

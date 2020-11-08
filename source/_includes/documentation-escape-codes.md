@@ -397,3 +397,25 @@ The following synonym is available as a combination of RemoteHost and CurrentDir
     ^[]7;Ps^G
 
 where `Ps` is a file URL with a hostname and a path, like `file://example.com/usr/bin`.
+
+#### ClearCapturedOutput
+
+`^[]1337;ClearCapturedOutput^G`
+
+Erases the current captured output.
+
+#### DECSCUSR 0
+
+`^[[0 q` will reset the cursor to its default appearance. This is an intentional deviation from the behavior of DEC virtual terminals.
+
+#### Curly Underlines
+
+`^[[4:3m` turns on curly underliens.
+
+#### Terminal ID
+
+`^[[>0q` causes iTerm2 to report its ID. 
+
+It responds with the app name and version number. For example, `^[P>|iTerm2 3.4.0^[\`.
+
+

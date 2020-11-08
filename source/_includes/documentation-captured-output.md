@@ -71,3 +71,8 @@ You can right-click on an entry in Captured Output to open a menu, which contain
 
 Captured Output is linked to the Command History tool. If no command is selected in the Command History tool, then the most recent captured output is displayed. Otherwise, the captured output from the selected command is displayed. You can remove a selection from the Command History tool by cmd-clicking on it.
 
+## Clearing Captured Output
+
+You can use the `ClearCapturedOutput` control sequence to remove captured output. This is useful to do before starting a compilation which may produce errors. Doing so ensures the only captured errors are from the most recent build. Use the following command in bash to produce the control sequence:
+
+`printf "\e]1337;ClearCapturedOutput\e\\"`

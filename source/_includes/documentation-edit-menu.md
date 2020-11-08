@@ -4,6 +4,9 @@ After you close a session, tab, or window then you have five seconds to undo it.
 #### Edit > Copy (With Styles)
 Hold down Option to turn Copy into Copy With Styles, which includes fonts and color information in the copied text.
 
+#### Edit > Copy with Control Sequences
+Copies the selected text, including control sequences that will reproduce the appearance (bold, colors, etc.) of the copied text when pasted into a terminal. Note that these will not be exactly the control sequences that were originally received, but instead a reconstruction that has the same effect.
+
 #### Edit > Copy Mode
 Enters *Copy Mode* which lets you make selections using the keyboard. See <a href="documentation-copymode.html">Copy Mode</a> for details.
 
@@ -13,7 +16,7 @@ This opens the Advanced Paste window which lets you select a string from the pas
 #### Edit > Paste Special > Paste Selection
 Pastes the currently selected text (which may differ from the text in the pasteboard).
 
-#### Edit  > Paste Special > Paste File Base64-Encoded
+#### Edit > Paste Special > Paste File Base64-Encoded
 If there is a file on the pasteboard then this is enabled. When invoked, it base64-encodes the file and pastes the encoded value.
 
 #### Edit > Paste Special > Paste Escaping Special Characters
@@ -37,6 +40,12 @@ If *Warn Before Multi-Line Paste* is on, then this restricts it to warn only whe
 #### Edit > Paste Special > Warn Before Pasting One Line Ending in a Newline at Shell Prompt
 This requires shell integration to be installed to work. If you try to paste one line that ends in a newline while at the shell prompt and this is enabled, you'll get a confirmation dialog before the text is pasted.
 
+#### Edit > Snippets
+Gives access to Snippets, which are saved bits of text that can be pasted quickly. You can change snippets in **Prefs&gt;Shortcuts&gt;Snippets**.
+
+#### Edit > Actions
+Gives access to Actions, which are user-defined actions similar to those that can be bound to a keystroke. You can change actions in **Prefs&gt;Shortcuts&gt;Actions**.
+
 #### Edit > Selection Respects Soft Boundaries
 When enabled, vertical lines of pipe characters `|` will be interpreted as pane dividers (as in vim or emacs) and selection will wrap at them.
 
@@ -48,6 +57,9 @@ Requires shell integration to be installed. Selects the text of the current comm
 
 #### Edit > Find > Find
 Opens or focuses the find panel. Select the down arrow to the left of the search field to open the options menu, which lets you select case insensitivity and regular expression options. The default case sensitivity option of "Smart Case Sensitivity" performs a case-sensitive search if the search query contains any upper case letters. Otherwise, a case-insensitive search is performed.
+
+#### Edit > Find > Find Globally
+Opens a window that lets you search all tabs at once.
 
 #### Edit > Find > Find URLs
 Searches the current session for URLish looking strings.
