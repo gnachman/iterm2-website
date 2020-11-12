@@ -4,16 +4,16 @@ title: iTerm2 - macOS Terminal Replacement
 active-state: news
 ---
 
-#### Security update released. Please upgrade.
-<i>Sunnyvale, CA&mdash;October 9, 2019</i>
-A serious bug (CVE-2019-9535) was fixed in version 3.3.6. Users on older versions should upgrade right away. More details can be found here: https://groups.google.com/forum/#!topic/iterm2-discuss/57k_AuLdQa4
-
 #### iTerm2 Version 3.4 Released
 <i>Sunnyvale, CA&mdash;November 10, 2020</i>
 
 iTerm2 version 3.4 has been released, featuring a number of improvements to performance, core functionality, and polish. For all the details, please see the <a href="https://iterm2.com/downloads/stable/iTerm2-3_4_0.changelog">change log</a>.
 
 Get it from <a href="/downloads.html">the Downloads page</a> in the "Stable Releases" section.
+
+#### Security update released. Please upgrade.
+<i>Sunnyvale, CA&mdash;October 9, 2019</i>
+A serious bug (CVE-2019-9535) was fixed in version 3.3.6. Users on older versions should upgrade right away. More details can be found here: https://groups.google.com/forum/#!topic/iterm2-discuss/57k_AuLdQa4
 
 #### iTerm2 Version 3.3 Released
 <i>Sunnyvale, CA&mdash;July 31, 2019</i>
