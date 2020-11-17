@@ -513,7 +513,6 @@ function iterm2_print_version_number() {
 
 # If hostname -f is slow on your system, set iterm2_hostname before sourcing this script.
 # On macOS we run `hostname -f` every time because it is fast.
-unameOut="$(uname -s)"
 if [ -z "${iterm2_hostname:-}" ]; then
   if [ "$(uname)" != "Darwin" ]; then
     iterm2_hostname=$(hostname -f 2>/dev/null)
