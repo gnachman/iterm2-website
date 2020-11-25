@@ -1,57 +1,66 @@
-3.4.1
+3.4.2
 
-Bug fixes:
-- Work around a bug in Big Sur where downloads of
-  the Python API are interrupted.
-- Work around a bug in Big Sur where modal alerts
-  don't resize when expanding their contents.
-- Fix a bug where full screen tabbars would
-  overlap terminal contents.
+- Fix a bug where sessions ended immediately.
+- Fix a bug where tmux integration would
+  disconnect immediately.
+- Fix crashes.
+- Fix a bug where smart selection actions in the
+  context menu were disabled.
+- Fix Prefs > General > Magic > Allow all apps to
+  connect, which gave an error every time.
+- Fix right click to open context menu for
+  two-button mice.
+- Improve performance when resizing windows with
+  background images.
+- Fix shortcut for Composer in tip of the day.
+- Fix support for control keys that include option
+  on non-US keyboard in modifyOtherKeys mode 2.
+- Fix a bug where the tab title was used in place
+  of the window title.
 
-3.4.0
+3.4.1:
+
+- Make downloads of Python runtime more reliable.
+- Fix a bug in Big Sur where the content of alert
+  boxes could be cut off.
+- Fix a bug in Big Sur where the tabbar could
+  overlap terminal contents in full screen mode.
+
+3.4.0 Release Notes:
 
 New Features
-- There's a new pane in Preferences calls
-  Shortcuts where you can define Snippets and
-  Actions. A Snippet is a piece of text that you
-  can paste from the toolbelt, status bar, or from
-  the Edit menu. Actions are similar to key
-  binding actions, but can be invoked from the
-  toolbelt, status bar, or Edit menu.
-- Search results, marks, and annotations are now
-  indicated in the scroll bar.
-- There's a new "Composer" feature that lets you
-  quickly open a scratchpad to enter a command.
-- Adds support for flow control in tmux 3.2 and
-  "pause mode" that will automatically pause
-  sessions in tmux integration that get very far
-  behind with the ability to catch up quickly.
-  NOTE: tmux 3.2 has not yet been released.
-- In the Minimal and Compact themes, you can now
-  drag the window by grabbing the edge of the tab
-  bar near the window border.
-- Add "Add Trigger" menu item, which lets you
-  quickly create a highlight trigger.
 - You can now set a custom tab title on a profile
 - There is a new profile preference to configure
   whether mouse reporting of clicks and drags are
   allowed.
+- Search results, marks, and annotations are now
+  indicated in the scroll bar.
 - There's a new preference to focus a window when
   you right- or middle-click in it.
 - Add support for IntelliJ IDEA, VSCodium, and
   Sublime Text 4 as Semantic History editors.
+- There's a new "Composer" feature that lets you
+  quickly open a scratchpad to enter a command.
 - You can now swipe with two or three fingers
   between tabs, like in Safari.
 - Curly underlines are now supported.
 - Adds support for DECRQSS.
 - DECSCUSR 0 now resets the cursor to its default
   setting.
+- Adds support for flow control in tmux 3.2 and
+  "pause mode" that will automatically pause
+  sessions in tmux integration that get very far
+  behind with the ability to catch up quickly.
+  NOTE: tmux 3.2 has not yet been released.
 - tmux integration windows will now keep their
   size the same as you create or destroy split
   panes.
 - Adds a preference to exclude iTerm2 from the
   dock and cmd-tab app switcher only if all
   windows are hotkey windows.
+- In the Minimal and Compact themes, you can now
+  drag the window by grabbing the edge of the tab
+  bar near the window border.
 - Show local time in the context menu when you
   right click on a timestamp in microseconds since
   epoch.
@@ -59,7 +68,6 @@ New Features
 
 Improvements
 - Various performance improvements.
-- Window restoration made more reliable.
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
@@ -72,7 +80,7 @@ Improvements
   time to launch a new session.
 - Background images are significantly faster when
   not using the GPU renderer.
-- Most table views now allow multiple selection.
+- Most tables now allow multiple selection.
 - The number of search results is now shown in the
   Find on Page UI.
 - Dynamic profiles now works with symlinks. Even
@@ -118,19 +126,8 @@ Improvements
   minimal theme.
 - Hide subpixel antialiasing UI on big sur because
   Apple took it away from us :(
-- Draw window borders on big sur in light theme.
 
 Bug Fixes
-- Fix a discrepancy between the legacy and GPU
-  renderers. When an emoji with default text
-  presentation follows an emoji with default emoji
-  presentation, CoreText renders the emoji with
-  the emoji presentation while the GPU does not.
-  Use the default presentation always.
-- Detect hostname changes. Fixes the git status
-  bar component breaking.
-- Fix support for multiple broadcast domains in
-  Python API.
 - Full screen windows in the Minimal or Compact
   theme did not used to get restored properly and
   now they do.
@@ -162,4 +159,6 @@ Bug Fixes
 
 Things Made Worse
 - Support for macOS 10.12 and 10.13 dropped.
+
+
 
