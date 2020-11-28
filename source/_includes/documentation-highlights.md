@@ -70,9 +70,6 @@ Sometimes an application will display text with a color combination that is hard
 #### Notification Center Support
 If you enable notifications (Preferences > Profiles > Terminal > Send Notification Center alerts) then you'll receive messages when a terminal beeps, has output after a period of silence, or terminates. There's also <a href="documentation-escape-codes.html">a proprietary escape sequence</a> to send a notification. You can adjust the kinds of notifications that get posted in Preferences > Profiles > Terminal > Filter Alerts.
 
-#### Exposé Tabs
-If you have too many tabs and are unable to find the one you're looking for, you can use the Exposé Tabs feature to find it. Press cmd-opt-E and all your tabs will be shown at once. You can then perform a search over all tabs simultaneously to find what you're looking for.
-
 #### Window Arrangements
 You can take a snapshot of your open windows, tabs, and panes with the menu option Window > Save Window Arrangement. You can restore this configuration with Window > Restore Window Arrangement, or you can choose to have it automatically restored when you start iTerm2 with Preferences > General > Open saved window arrangement.
 

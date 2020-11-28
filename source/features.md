@@ -9,7 +9,7 @@ iTerm2 has a lot of features. Every conceivable desire a terminal user might hav
 <a name="split-panes"></a>
 ### Split Panes
 Divide a tab up into multiple panes, each one showing a different session. You can slice vertically and horizontally and create any number of panes in any imaginable arrangement.
-<a href="img/screenshots/split_panes_full.png" target="_blank"><img src="img/screenshots/split_panes.png"></a>
+<img src="img/screenshots/split_panes.png" class="linkless-image">
 Notice how inactive panes are slightly dimmed so it's easy to see which is active.
 
 </section>
@@ -17,63 +17,81 @@ Notice how inactive panes are slightly dimmed so it's easy to see which is activ
 <a name="hotkey-window"></a>
 ### Hotkey Window
 Register a hotkey that brings iTerm2 to the foreground when you're in another application. A terminal is always a keypress away. You can choose to have the hotkey open a dedicated window. This gives you an always-available terminal (like Visor, Guake, or Yakuake) at your fingertips.
-<a href="img/screenshots/hotkeywindow_full.png" target="_blank"><img src="img/screenshots/hotkeywindow.png"></a>
+<img src="img/screenshots/hotkey_window.png" class="linkless-image">
 
 </section>
 <section class="feature-block">
 <a name="search"></a>
 ### Search
 iTerm2 comes with a robust find-on-page feature. The UI stays out of the way. All matches are immediately highlighted. Even regular expression support is offered!
-<a href="img/screenshots/search.png" target="_blank"><img src="img/screenshots/search.png"></a>
+<img src="img/screenshots/find.png" class="linkless-image">
 
 </section>
 <section class="feature-block">
 <a name="autocomplete"></a>
 ### Autocomplete
 Just type the start of any word that has ever appeared in your window and then Cmd-; will pop open a window with suggestions. The word you're looking for is usually on top of the list!
-<a href="img/screenshots/autocomplete.png" target="_blank"><img src="img/screenshots/autocomplete.png"></a>
+<img src="img/screenshots/autocomplete.png" class="linkless-image">
 
 </section>
 <section class="feature-block">
-<a name="mouseless-copy"></a>
-### Mouseless Copy
-Use the Find feature to begin searching for text. Press tab to expand the selection to the right or shift-tab to expand the selection to the left. Option-enter pastes the current match.
-<a href="img/screenshots/mouselesscopy.gif" target="_blank"><img src="img/screenshots/mouselesscopy.gif"></a>
+<a name="copy-mode"></a>
+### Copy Mode
+Use the keyboard to make and modify selections.
+<img src="img/screenshots/copy_mode.png" class="linkless-image">
 
 </section>
 <section class="feature-block">
 <a name="paste-history"></a>
 ### Paste History
 Paste history lets you revisit recently copied or pasted text. You can even opt to have the history saved to disk so it will never be lost.
-<a href="img/screenshots/pastehistory.png" target="_blank"><img src="img/screenshots/pastehistory.png"></a>
+<img src="img/screenshots/paste_history.png" class="linkless-image">
 
 </section>
 <section class="feature-block">
 <a name="instant-replace"></a>
 ### Instant Replay
-Instant replay lets you travel back in time. It's like TiVo for your terminal!
-<a href="img/screenshots/instantreplay.gif" target="_blank"><img src="img/screenshots/instantreplay.gif"></a>
+Instant replay lets you travel back in time to recover text that was erased from the terminal.
+<img src="img/screenshots/instant_replay.gif" class="linkless-image">
 
 </section>
 <section>
 <a name="configurability"></a>
 ### Configurability
-Map any key to any function. Assign separate functions to each option key--or even remap all the modifier keys. You can customize iTerm2's appearance to suit your needs: enable transparency, background blur, background images, and much more.
+A mind-boggling number of options lets you configure the terminal to suit you perfectly.
 <div style="overflow-x:scroll; overflow-y: hidden; height: 379px;">
-<div style="width: 7800px; height: 379px; white-space: nowrap">
-<a href="img/screenshots/v2-screen-shots/general.png" target="_blank"><img src="img/screenshots/v2-screen-shots/general.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/appearance.png" target="_blank"><img src="img/screenshots/v2-screen-shots/appearance.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_general.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_general.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_colors.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_colors.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_text.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_text.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_window.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_window.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_terminal.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_terminal.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_session.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_session.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_keys.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_keys.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_advanced.png" target="_blank"><img src="img/screenshots/v2-screen-shots/profiles_advanced.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_keys.jpg" target="_blank"><img src="img/screenshots/v2-screen-shots/keys.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_pointer.png" target="_blank"><img src="img/screenshots/v2-screen-shots/pointer.jpg"></a>
-<a href="img/screenshots/v2-screen-shots/profiles_arrangements.png" target="_blank"><img src="img/screenshots/v2-screen-shots/savedarrangements.jpg"></a>
+<div style="width: 56240px; height: 1468px; white-space: nowrap">
+<img src="img/screenshots/settings1.png" />
+<img src="img/screenshots/settings2.png" />
+<img src="img/screenshots/settings3.png" />
+<img src="img/screenshots/settings4.png" />
+<img src="img/screenshots/settings5.png" />
+<img src="img/screenshots/settings6.png" />
+<img src="img/screenshots/settings7.png" />
+<img src="img/screenshots/settings8.png" />
+<img src="img/screenshots/settings9.png" />
+<img src="img/screenshots/settings10.png" />
+<img src="img/screenshots/settings11.png" />
+<img src="img/screenshots/settings12.png" />
+<img src="img/screenshots/settings13.png" />
+<img src="img/screenshots/settings14.png" />
+<img src="img/screenshots/settings15.png" />
+<img src="img/screenshots/settings16.png" />
+<img src="img/screenshots/settings17.png" />
+<img src="img/screenshots/settings18.png" />
+<img src="img/screenshots/settings19.png" />
+<img src="img/screenshots/settings20.png" />
+<img src="img/screenshots/settings21.png" />
+<img src="img/screenshots/settings22.png" />
+<img src="img/screenshots/settings23.png" />
+<img src="img/screenshots/settings24.png" />
+<img src="img/screenshots/settings25.png" />
+<img src="img/screenshots/settings26.png" />
+<img src="img/screenshots/settings27.png" />
+<img src="img/screenshots/settings28.png" />
+<img src="img/screenshots/settings29.png" />
+<img src="img/screenshots/settings30.png" />
+<img src="img/screenshots/settings31.png" />
 </div>
 </div>
 
@@ -85,10 +103,10 @@ Coming from a Unix world? You'll feel at home with focus follows mouse, copy on 
 
 </section>
 <section class="feature-block">
-<a name="256-colors"></a>
-### 256 Colors (or more!)
-With 256-color mode, Vim explodes with photorealism: the terminal is a medley of color and code comes alive. In version 3, 24-bit color is supported.
-<a href="img/screenshots/256colors.png" target="_blank"><img src="img/screenshots/256colors.png"></a>
+<a name="24-bit-colors"></a>
+### 24-bit Color
+With both 24-bit and 256-color mode, Vim explodes with photorealism: the terminal is a medley of color and code comes alive.
+<img src="img/screenshots/256colors.png" class="linkless-image">
 
 </section>
 <section class="feature-block">
@@ -106,37 +124,37 @@ You can use the mouse to position the cursor, highlight text, and perform other 
 <section class="feature-block">
 <a name="growl-support"></a>
 ### Notification Center Support
-You can choose to receive notifications of activity, bells, and more. Feel free to let a long job run in the background, secure in the knowledge that you'll know when it's done.
-<a href="img/screenshots/growl.png" target="_blank"><img src="img/screenshots/growl.png"></a>
+You can choose to receive notifications of activity, bells, job completion, and more. Feel free to let a long job run in the background, secure in the knowledge that you'll know when it's done.
+<img src="img/screenshots/notification.png" class="linkless-image">
 
 </section>
 <section class="feature-block">
-<a name="expose-tabs"></a>
-### Exposé Tab
-Like macOS's Exposé feature, iTerm2 shows all your tabs on one screen. Better yet, you can search through them all at once. Go ahead and open as many tabs as you want--you can always find what you're looking for.
-<a href="img/screenshots/expose_full.jpg" target="_blank"><img src="img/screenshots/expose.png"></a>
-
+<a name="global-search"></a>
+### Global Search
+Search all your tabs at once with Global Search.
+<img src="img/screenshots/global_search.png" class="linkless-image">
 </section>
+
 <section class="feature-block">
 <a name="tagged-profiles"></a>
 ### Tagged Profiles
 Do you need to store separate configurations for many different hosts? iTerm2 provides a taggable and searchable profiles database so you can easily find the profile you're looking for.
-<a href="img/screenshots/profiles1_full.png" target="_blank"><img src="img/screenshots/profiles1.png"></a>
-<a href="img/screenshots/profiles2_full.png" target="_blank"><img src="img/screenshots/profiles2.png"></a>
+<img src="img/screenshots/profiles1.png" class="linkless-image">
+<img src="img/screenshots/profiles2.png" class="linkless-image">
 
 </section>
 <section class="feature-block">
 <a name="multi-lingual"></a>
 ### Multi-Lingual
-iTerm2 features excellent internationalization support, including support for Unicode combining marks, double-width characters, and all Unicode planes.
-<a href="img/screenshots/utf8.png" target="_blank"><img src="img/screenshots/utf8.png"></a>
+iTerm2 features excellent internationalization support, including support for Unicode combining marks, full-width characters, Emoji, and many other Unicode features.
+<img src="img/screenshots/utf8.png" class="linkless-image">
 
 </section>
 <section class="feature-block">
 <a name="triggers"></a>
 ### Triggers
 iTerm2 supports user-defined triggers, which are actions that run when text matching a regular expression is received. You can use it to highlight words, automatically respond to prompts, notify you when something important happens, and more.
-<a href="img/screenshots/v2-screen-shots/triggers_full.png" target="_blank"><img src="img/screenshots/v2-screen-shots/triggers.png"></a>
+<img src="img/screenshots/v2-screen-shots/triggers.png" class="linkless-image">
 
 </section>
 <section class="feature-block">
@@ -146,23 +164,18 @@ iTerm2 can perform "smart selection" to highlight URLs, email addresses, filenam
 
 </section>
 
-<hr>
-
-## New in Version 3
-
 <section class="feature-block">
 <a name="shell-integration"></a>
 ### Shell Integration
 iTerm2 can integrate with your shell so it knows where your shell prompt is, what commands you're entering, which host you are on, and what your current directory is. This enables all sorts of cool features: you can easily navigate to previous shell prompts with &#8679;&#8984;&uarr; and &#8679;&#8984;&darr;. Your most used directories will be remembered for you. You can auto-complete previously used commands. And much more!
-<a href="img/screenshots/v3-screen-shots/iterm2-shell-integration-navigation-demo.mov" target="_blank"><img src="img/screenshots/v3-screen-shots/iterm2-shell-integration-navigation-demo.gif"></a>
+<img src="img/screenshots/v3-screen-shots/iterm2-shell-integration-navigation-demo.gif" class="linkless-image">
 </section>
 
 <section class="feature-block">
 <a name="automatic-profile-switching"></a>
 ### Automatic Profile Switching
 Using the Shell Integration feature, you can have iTerm2 switch profiles depending on what you're doing. For example, you can define a profile that's always used when you ssh to some hostname. Or when your username is root. Or even when you're in a particular directory.
-<a href="img/screenshots/v3-screen-shots/iterm2-automatic-profile-switching.mov" target="_blank">
-<img src="img/screenshots/v3-screen-shots/iterm2-automatic-profile-switching.gif"></a>
+<img src="img/screenshots/v3-screen-shots/iterm2-automatic-profile-switching.gif" class="linkless-image">
 </section>
 
 <section class="feature-block">
@@ -170,7 +183,7 @@ Using the Shell Integration feature, you can have iTerm2 switch profiles dependi
 ### Inline Images
 iTerm2 has a custom escape sequence to display images right in the terminal. Even animated GIFs!
 
-<a href="img/screenshots/v3-screen-shots/iterm2-inline-images-demo.mov" target="_blank"><img src="img/screenshots/v3-screen-shots/iterm2-inline-images-demo.gif"></a>
+<img src="img/screenshots/v3-screen-shots/iterm2-inline-images-demo.gif" class="linkless-image">
 </section>
 
 <section class="feature-block">
@@ -186,7 +199,7 @@ You can see the last-modified time of every line in the terminal. It's useful to
 ### Password Manager
 Do you find yourself typing your password over and over again? Do you need to remember a bunch of passwords? Use iTerm2's built-in password manager. It stores your data securely encrypted in macOS's keychain, protected by your user account's password. iTerm2 includes a safety mechanism that ensures your password only gets entered at a password prompt.
 
-<img src="img/screenshots/v3-screen-shots/iterm2-password-manager.png" class="linkless-image">
+<img src="img/screenshots/password_manager.png" class="linkless-image">
 </section>
 
 <section class="feature-block">
@@ -194,7 +207,7 @@ Do you find yourself typing your password over and over again? Do you need to re
 ### Advanced Paste
 With the Advanced Paste feature you can edit text before pasting it, convert it to base64, transform special characters, and more.
 
-<img src="img/screenshots/v3-screen-shots/iterm2-advanced-paste.png" class="linkless-image">
+<img src="img/screenshots/advanced_paste.png" class="linkless-image">
 </section>
 
 <section class="feature-block">
@@ -218,7 +231,7 @@ You can put a *badge* in the top right of your terminal showing information abou
 ### Captured Output
 Use iTerm2 as your IDE. When you build a big project, you used to have to pore over its output to find warnings and errors. No more! With the *captured output* feature, iTerm2 finds those messages (based on regular expressions you define) and shows them in the toolbelt. You can navigate right to each message. A double-click will run a coprocess of your choice, which can (for example) open the file in your favorite editor right to the line with the error.
 
-<a href="img/screenshots/v3-screen-shots/iterm2-captured-output.mov" target="_blank"><img src="img/screenshots/v3-screen-shots/iterm2-captured-output.gif"></a>
+<img src="img/screenshots/v3-screen-shots/iterm2-captured-output.gif">
 </section>
 
 
