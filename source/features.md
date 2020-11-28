@@ -59,41 +59,44 @@ Instant replay lets you travel back in time to recover text that was erased from
 <a name="configurability"></a>
 ### Configurability
 A mind-boggling number of options lets you configure the terminal to suit you perfectly.
-<div style="overflow-x:scroll; overflow-y: hidden; height: 379px;">
-<div style="width: 56240px; height: 1468px; white-space: nowrap">
-<img src="img/screenshots/settings1.png" />
-<img src="img/screenshots/settings2.png" />
-<img src="img/screenshots/settings3.png" />
-<img src="img/screenshots/settings4.png" />
-<img src="img/screenshots/settings5.png" />
-<img src="img/screenshots/settings6.png" />
-<img src="img/screenshots/settings7.png" />
-<img src="img/screenshots/settings8.png" />
-<img src="img/screenshots/settings9.png" />
-<img src="img/screenshots/settings10.png" />
-<img src="img/screenshots/settings11.png" />
-<img src="img/screenshots/settings12.png" />
-<img src="img/screenshots/settings13.png" />
-<img src="img/screenshots/settings14.png" />
-<img src="img/screenshots/settings15.png" />
-<img src="img/screenshots/settings16.png" />
-<img src="img/screenshots/settings17.png" />
-<img src="img/screenshots/settings18.png" />
-<img src="img/screenshots/settings19.png" />
-<img src="img/screenshots/settings20.png" />
-<img src="img/screenshots/settings21.png" />
-<img src="img/screenshots/settings22.png" />
-<img src="img/screenshots/settings23.png" />
-<img src="img/screenshots/settings24.png" />
-<img src="img/screenshots/settings25.png" />
-<img src="img/screenshots/settings26.png" />
-<img src="img/screenshots/settings27.png" />
-<img src="img/screenshots/settings28.png" />
-<img src="img/screenshots/settings29.png" />
-<img src="img/screenshots/settings30.png" />
-<img src="img/screenshots/settings31.png" />
+<div style="overflow-x:scroll; overflow-y: hidden; height: 734px;">
+<div style="width: 26153px; height: 734px; white-space: nowrap">
+
+<img  src="img/screenshots/settings1.png" width="802" height="323">
+<img  src="img/screenshots/settings2.png" width="802" height="353">
+<img  src="img/screenshots/settings3.png" width="802" height="367">
+<img  src="img/screenshots/settings4.png" width="802" height="333">
+<img  src="img/screenshots/settings5.png" width="802" height="423">
+<img  src="img/screenshots/settings6.png" width="802" height="376">
+<img  src="img/screenshots/settings7.png" width="802" height="391">
+<img  src="img/screenshots/settings8.png" width="802" height="466">
+<img  src="img/screenshots/settings9.png" width="802" height="397">
+<img src="img/screenshots/settings10.png" width="802" height="373">
+<img src="img/screenshots/settings11.png" width="802" height="453">
+<img src="img/screenshots/settings12.png" width="802" height="374">
+<img src="img/screenshots/settings13.png" width="802" height="344">
+<img src="img/screenshots/settings14.png" width="1030" height="730">
+<img src="img/screenshots/settings15.png" width="1040" height="592">
+<img src="img/screenshots/settings16.png" width="1055" height="592">
+<img src="img/screenshots/settings17.png" width="1042" height="697">
+<img src="img/screenshots/settings18.png" width="1049" height="734">
+<img src="img/screenshots/settings19.png" width="1063" height="648">
+<img src="img/screenshots/settings20.png" width="1128" height="732">
+<img src="img/screenshots/settings21.png" width="1036" height="734">
+<img src="img/screenshots/settings22.png" width="401" height="628">
+<img src="img/screenshots/settings23.png" width="401" height="377">
+<img src="img/screenshots/settings24.png" width="401" height="345">
+<img src="img/screenshots/settings25.png" width="401" height="392">
+<img src="img/screenshots/settings26.png" width="1049" height="632">
+<img src="img/screenshots/settings27.png" width="401" height="379">
+<img src="img/screenshots/settings28.png" width="1049" height="573">
+<img src="img/screenshots/settings29.png" width="1023" height="583">
+<img src="img/screenshots/settings30.png" width="1028" height="583">
+<img src="img/screenshots/settings31.png" width="1130" height="615">
+<br/>
 </div>
 </div>
+Scroll horizontally to see more…
 
 </section>
 <section class="feature-block">
@@ -154,7 +157,7 @@ iTerm2 features excellent internationalization support, including support for Un
 <a name="triggers"></a>
 ### Triggers
 iTerm2 supports user-defined triggers, which are actions that run when text matching a regular expression is received. You can use it to highlight words, automatically respond to prompts, notify you when something important happens, and more.
-<img src="img/screenshots/v2-screen-shots/triggers.png" class="linkless-image">
+<img src="img/screenshots/triggers.png" class="linkless-image">
 
 </section>
 <section class="feature-block">
