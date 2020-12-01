@@ -1,3 +1,46 @@
+2020-11-30: Allow window.representedURL to be set in
+minimal/compact but hide the proxy icon so that
+accessibility will be happy. Issue 7558 (redux)
+
+2020-11-30: Fix bugs where callbacks were run on the wrong
+queue. Hopefully fixes crash mentioned by javasgl in issue
+9116.
+
+2020-11-30: When you split a pane in tmux and focus follows
+mouse is on, don't make the pane under the cursor key due to
+a mouseEnter: on it. Issue 9322
+
+2020-11-30: Bump minimum python environment version to 71 to
+force everyone to get spaceless app support paths in the
+modified files
+
+2020-11-28: Bump Python API version
+
+2020-11-28: Add findps example.
+
+2020-11-28: Revert "Do away with ApplicationSupport."
+
+This reverts commit
+c4c43c5ff60b639faebb49114065d6bb5c87db59.
+
+2020-11-28: Turn off caching for python runtime downloading
+because the cloudflare disaster caused 301s to be cached
+
+2020-11-27: Add PreventEscapeSequenceFrom* to exempt keys
+for remote prefs. Issue 9315
+
+2020-11-27: Sanitize infinities in __knobs JSON sent to
+status bar components. This unbreaks custom status bar
+components, which were broken by changing the default max
+width to infinity. Issue 9313
+
+2020-11-27: Be less aggressive about showing what's new.
+It's now only for upgrading users.
+
+2020-11-27: Save restorable state when Sparkle is about to
+upgrade you, even if you generally have state restoration
+turned off in system prefs. Issue 9312
+
 2020-11-27: When copying server over, try ~/.iterm2 if
 application support is not writable. Also ensure the socket
 folder is writable before trying to start the daemon. Issue
