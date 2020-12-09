@@ -1,4 +1,63 @@
-<<<<<<< HEAD
+2020-12-08: Reduce max frames in flight to 1 to prevent
+crashes
+
+2020-12-07: Don't crash if a trigger has a param of the
+wrong type when the trigger matches
+
+2020-12-07: Fix various bugs in Add Triggers context menu.
+It didn't record the values of text fields properly, leading
+to a crash
+
+2020-12-07: Set ShellLauncher's deployment target to 10.14
+
+2020-12-06: Move shell launcher into its own binary to
+improve performance when using a custom shell
+
+2020-12-06: Silence warning and add better assertion message
+to advanced settings
+
+2020-12-06: Add missing completion calls to script history
+addOutput calls
+
+2020-12-06: Reenable metal stats
+
+2020-12-06: Add metal capture to gpu capture. Motivated by
+issue 9325
+
+2020-12-05: Give backpressure to
+iTermBackgroundCommandRunner when processing output is slow.
+Run Command triggers could hang the whole app by producing
+lots of output. Issue 9337
+
+2020-12-05: Make size of edge drag region configurable in
+minimal and compact. Issue 8123
+
+2020-12-05: Catch exceptions when writing to the tmux pipe.
+Issue 9339
+
+2020-12-03: Add advanced pref to turn off shortcut accessory
+view controller. Issue 9332
+
+2020-12-03: Add option to save prefs to remote folder
+automatically. Issue 9335
+
+2020-12-01: New tmux windows created outside iterm2 (e.g.
+with tmux new-window) become tabs in the current window.
+Issue 6400
+
+2020-12-01: Make window movable when exiting traditional
+fullscreen. Fixes a bug where windows whose profile window
+style is fullscreen can't be dragged after exiting
+traditional fullscreen
+
+2020-12-01: Create spaceless app support symlink when
+creating the scripts menu if any scripts exist.
+
+2020-12-01: tmux integration windows should enter full
+screen when the profile specifies the fullscreen window
+type. Otherwise you end up with a regular looking window
+that can't be dragged
+
 2020-11-30: Allow window.representedURL to be set in
 minimal/compact but hide the proxy icon so that
 accessibility will be happy. Issue 7558 (redux)
@@ -27,8 +86,6 @@ c4c43c5ff60b639faebb49114065d6bb5c87db59.
 2020-11-28: Turn off caching for python runtime downloading
 because the cloudflare disaster caused 301s to be cached
 
-=======
->>>>>>> b603e28... 3_4_20201128-nightly
 2020-11-27: Add PreventEscapeSequenceFrom* to exempt keys
 for remote prefs. Issue 9315
 
@@ -380,203 +437,3 @@ because it is not used. Fix a crash when adding a trigger to
 a profile with none
 
 2020-11-01: Fix square corners bug
-
-2020-10-31: Add 'add trigger' to context menu.
-
-Adds a new view controller for editing the trigger.  Adds
-colorspace conversion code for picking a trigger color.
-
-2020-10-30: Fix support for multiple broadcast domains per
-window in Python API. Clean up broadcast helper to track
-domains and generally be less hacky. For example, it didn't
-used to remember BROADCAST_TO_ALL_PANES and would switch
-itself to OFF. Now it behaves as you would expect. Issue
-9222
-
-2020-10-29: Create a new logging helper when starting a
-program. Fixes a bug where restarting a terminated session
-creates a log file but never appends to it. Issue 9218
-
-2020-10-29: Simplify getting the local hostname. Turns out
-gethostbyname gives a fqdn on bsd. We therefore can do a
-fresh lookup on every use and not break the git status bar
-component when the hostname changes. Issue 9217
-
-2020-10-28: Reinstate borders on big sur. Dark background
-windows need it in the light theme because they have a
-barely visible border drawn by the OS.
-
-2020-10-27: Add VS15 to default-text-presentation emoji that
-follow a default-emoji-presentation emoji in the legacy
-renderer. macOS cleverly upgrades them to emoji presentation
-(with some exceptions). It is a pita for the GPU renderer to
-do that, so instead of giving it the magical power of
-letting adjacent characters affect each other's appearance
-and making it slower and even more complex, instead prevent
-the legacy renderer from 'enjoying' this 'feature'. Issue
-9185
-
-2020-10-27: Add the ability to output emoji presentation
-charsets to emoji.py
-
-2020-10-26: Add square window corner images
-
-2020-10-26: Add support for square window corners. Issue
-9211
-
-2020-10-25: Reset send modifiers when restoring a session
-and not attaching to a process. Fixes a bug where restoring
-windows could leave you at a shell prompt with
-modifyOtherKeys=2, which is awful
-
-2020-10-25: Send CSI for shift-tab in modifyOtherKeys=2 to
-unbreak vim
-
-2020-10-25: Add script to help rename iconsets
-appropriately. Use in conjunction with Image2Icon
-
-2020-10-25: Make a sketch file with the icon and the thicker
-bezel used in later big sur betas. Issue 8969.
-
-2020-10-25: Disable subpixel antialiasing on big suf. Issue
-9209
-
-2020-10-25: Only respect application keypad/application
-cursor mode for unmodified keypresses. See analysis in issue
-9161
-
-2020-10-24: Don't keep a separate date formatter for each
-script history entry. They are quite expensive. Issue 7189
-
-2020-10-24: Use double/cgfloat everywhere for vertical and
-horizontal  spacing. Because we compute line height/char
-width using ceil, using float for some calculations can
-result in a 1pt error. When using Menlo Regular 25pt with
-80% hspacing and 80% vspacing, tmux tabs compute a height
-that is wrong because .8 is different enough between float
-and double that it computes 24 instead of 25 for the width
-(and likewise is off by 1 for height). Hopefully this fixes
-issue 9195
-
-2020-10-24: Fix shift-return in profiles window. It now gets
-handled by the tableview so the shortcut doesn't get called.
-I'm going to leave the shortcut handlers because I can't be
-sure I handled every possible way the keystroke could get
-routed. Issue 9205
-
-2020-10-22: Add a crlf after a sixel image, like xterm.
-Issue 9204
-
-2020-10-22: Draw outline on right side of single-tab minimal
-tab. Issue 9201
-
-2020-10-22: Make windows movable after exiting lion full
-screen. Issue 9198
-
-2020-10-15: Make iTermOrderedDictionary ignore duplicate
-keys. Fixes an assertion in issue 9179 caused by a bum db
-with two of the same key from a previous buggy version. The
-issue was in the before-dict which is why my previous
-attempt to fix this didn't work.
-
-2020-10-15: Hex dump malformed message in multiserver for
-issue 9022
-
-2020-10-14: Remove inexplicable minus ones that were added
-by 784c183bd6bbf6b21df0411f9015aee8cffb83a8. They caused the
-bottom margin to be too big when resizing a tmux window
-quickly vertically. They also caused a tmux window to shrink
-when adjusting its height with window > resize > increase
-height.
-
-2020-10-14: Remove titlebar accessory tabbar after exiting
-lion fullscreen, otherwise a single-tab tabbar remains
-visible when it shouldn't be. This is especially bad with
-tmux tabs, where it assumes it gets the full tabview height
-and therefore runs off the bottom.
-
-2020-10-14: Update layouts when scroller style changes.
-Issue 7481
-
-2020-10-11: Make 'new tab using same profile' have correct
-overriddenFields so that it can later be saved into an
-arrangement correctly. Issue 9187
-
-2020-10-11: When you disinter a tmux tab, remember its
-window and index, even across detach-attach. Issue 9186
-
-2020-10-10: Ensure no duplicate items in graph db arrays
-when saving. The user had a duplicate tab ID. This could
-have been a carryover from before the bug where duplicating
-a tab would duplicate its tab ID was fixed. Issue 9179.
-
-2020-10-10: Add debug logging for bury/disinter session for
-issue 9186
-
-2020-10-08: Add support for VS-16 changing the width of the
-base character but don't enable it.
-
-Turning this on breaks vim because it doesn't handle VS-16,
-and then draws over the right-hand cell, erasing the
-character. See issue 9185
-
-2020-10-07: Translate fractional timestamps to local date in
-context menu. Inspired by PR 429
-
-2020-10-07: Assert that array identifiers in the graph
-encoder are unique
-
-2020-10-07: Remember tmux window size when using
-variable-size windows
-
-2020-10-07: Remove NSLogs
-
-2020-10-07: Fix swap left/right/above/below for tmux. Issue
-9177
-
-2020-10-07: Tolerate failure to split pane in tmux. Issue
-9083
-
-2020-10-07: Fix a bug where the wrong background color was
-used for the flexible view when it was slightly larger than
-the root view. Issue 9083 (in a comment)
-
-2020-10-06: Revert unintentional change from
-6b4cbcd17f47c1a7591f0e1873830c372ca6d99e that broke trimming
-whitespace and trailing newlines when copying to clipboard.
-Issue 9182
-
-2020-10-04: Disable metal for obscured windows when using
-integrated GPUs. Issue 9174
-
-2020-10-04: Add copy with control sequences
-
-2020-10-04: Add an advanced pref to show tab title in the
-window titlebar when there is no tabbar
-
-2020-10-04: Add support for decoding microsecond timestamps.
-Issue 9175.
-
-2020-10-04: Move tmux dashboard initilaization into
-windowDidLoad to prevent spurious opening as seen in 9168.
-Also change the xib to not make it visible at launch. I'm
-not sure why it only happened for this user, though.
-
-2020-10-03: Update bash shell integration (for issue 9171)
-and utilities
-
-2020-10-03: Don't remove auto-hide dock and auto-hide menu
-bar from the app presentation options when it also has the
-full screen presentation option or else the title bar and
-its titleBarViewController disappears.
-
-Issue 9164
-
-2020-10-02: Fix prefs window shrinking width when on text
-pane and changing profiles
-
-2020-10-02: Add support for changing the xterm verison
-number. Add support for modifyOtherKeys mode 1 to try to fix
-emacs. It won't work until you bump the xterm version to at
-least 216 but I'm afraid to do that because who knows what
-will break. Issue 9161.
