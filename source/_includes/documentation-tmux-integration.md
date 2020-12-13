@@ -64,20 +64,15 @@ In general, you don't need to run commands to perform the most common actions. T
 There are a few limitations of tmux integration which are related to the design of tmux.
 
   * A tab with a tmux window may not contain non-tmux split panes.
-  * .tmuxrc files are untested and probably won't work well.
-  * All tabs and windows belonging to a particular tmux session must be the same size and use the same font.
   * A tab with split panes may have "empty" areas. This is because tmux wants every tmux window to be the same size, but our split pane dividers are not exactly one cell by one cell in size.
 
-### Shell Integration
+### Configuration
 
-Shell integration works well with tmux integration mode (`tmux -CC`) but does not work with plain-old tmux. For that reason, it will not work when the `$TERM` is `screen`. You can enable shell integration within tmux by doing `export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=1` prior to sourcing shell integration in your shell's login script.
+Check *Preferences > General > tmux* for configuration settings. You can also adjust whether to open the tmux Dashboard when connecting to a session with a large number of windows. You can open the tmux Dashboard by selecting the menu item *Shell > tmux > Dashboard*.
 
-== Building tmux ==
+See also the tmux section of <a href="documentation-preferences-general.html">General Preferences</a>.
 
-Use the latest version of tmux. The oldest version that works is 1.8, but 2.3 or later is recommended (older versions didn't handle non-ASCII input very well, or suffered from various known bugs and limitations). The easiest way to install tmux on your Mac is with <a href="https://brew.sh/">homebrew</a>:
+### Best Practices
 
-````
-brew install tmux
-````
-
-
+For practical tips on how to configure iTerm2 for use with tmux integration in the real world, please
+see <a href="https://gitlab.com/gnachman/iterm2/wikis/tmux-Integration-Best-Practices">tmux Integration Best Practices</a>.
