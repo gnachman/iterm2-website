@@ -1,187 +1,113 @@
-3.4.3beta1
+3.4.4beta1
 
-- Don't allow programs to turn on
-  "modifyOtherKeys" key reporting mode, which
-  caused problems in vim for many users.
-  This default can be changed in 
-  Prefs > Profiles > Keys.
-- Fix a bug where "Move Session to Window" was
-  disabled in the context menu.
-- Fix a bug where long URLs couldn't be
-  cmd-clicked on.
-- If Application Support is not writable, copy the
-  server binary to ~/.iterm2
-- Save restorable state when upgrading, even if
-  it's normally not used.
-- Fix a bug where custom status bar components
-  didn't work.
-- Fix a bug where the python runtime couldn't be
-  downloaded.
-- Bring back the ApplicationSupport symlink
-  because pip3 can't handle spaces in paths.
-- Fix a crash when the scripting console was open.
-
-3.4.2
-
-- Fix a bug where sessions ended immediately.
-- Fix a bug where tmux integration would
-  disconnect immediately.
-- Fix crashes.
-- Fix a bug where smart selection actions in the
-  context menu were disabled.
-- Fix Prefs > General > Magic > Allow all apps to
-  connect, which gave an error every time.
-- Fix right click to open context menu for
-  two-button mice.
-- Improve performance when resizing windows with
-  background images.
-- Fix shortcut for Composer in tip of the day.
-- Fix support for control keys that include option
-  on non-US keyboard in modifyOtherKeys mode 2.
-- Fix a bug where the tab title was used in place
-  of the window title.
-
-3.4.1:
-
-- Make downloads of Python runtime more reliable.
-- Fix a bug in Big Sur where the content of alert
-  boxes could be cut off.
-- Fix a bug in Big Sur where the tabbar could
-  overlap terminal contents in full screen mode.
-
-3.4.0 Release Notes:
+Annoying things I'm sorry about
+- You'll be asked to re-install the Python
+  runtime. This fixes a problem where pip3 would
+  sometimes fail. Instead of creating a symlink
+  of ~/Library/ApplicationSupport we will now use
+  ~/.config/iterm2/AppSupport.
 
 New Features
-- You can now set a custom tab title on a profile
-- There is a new profile preference to configure
-  whether mouse reporting of clicks and drags are
-  allowed.
-- Search results, marks, and annotations are now
-  indicated in the scroll bar.
-- There's a new preference to focus a window when
-  you right- or middle-click in it.
-- Add support for IntelliJ IDEA, VSCodium, and
-  Sublime Text 4 as Semantic History editors.
-- There's a new "Composer" feature that lets you
-  quickly open a scratchpad to enter a command.
-- You can now swipe with two or three fingers
-  between tabs, like in Safari.
-- Curly underlines are now supported.
-- Adds support for DECRQSS.
-- DECSCUSR 0 now resets the cursor to its default
-  setting.
-- Adds support for flow control in tmux 3.2 and
-  "pause mode" that will automatically pause
-  sessions in tmux integration that get very far
-  behind with the ability to catch up quickly.
-  NOTE: tmux 3.2 has not yet been released.
-- tmux integration windows will now keep their
-  size the same as you create or destroy split
-  panes.
-- Adds a preference to exclude iTerm2 from the
-  dock and cmd-tab app switcher only if all
-  windows are hotkey windows.
-- In the Minimal and Compact themes, you can now
-  drag the window by grabbing the edge of the tab
-  bar near the window border.
-- Show local time in the context menu when you
-  right click on a timestamp in microseconds since
-  epoch.
-- Add a menu item "copy with control sequences".
+- Tab titles now parse very basic HTML tags for
+  bold, italic, and underline. Less-than and
+  ampersand entites are also recognized.
+- Margins are now adjustable in Prefs >
+  Appearance > Panes.
+- Add an option to save prefs to a custom folder
+  automatically.
 
 Improvements
-- Various performance improvements.
-- The Python API now uses a Unix Domain Socket
-  instead of a TCP socket for better performance.
-  The security model has also changed: apps can
-  authenticate via Applescript or you can choose
-  to allow all programs running locally to use the
-  API.
-- Use a single daemon process for all sessions
-  instead of one per session. This reduces the
-  number of process IDs used and also improves the
-  time to launch a new session.
-- Background images are significantly faster when
-  not using the GPU renderer.
-- Most tables now allow multiple selection.
-- The number of search results is now shown in the
-  Find on Page UI.
-- Dynamic profiles now works with symlinks. Even
-  the DynamicProfiles folder itself may be a
-  symlink.
-- Exported scripts now have a more secure
-  container format that signs the entire file
-  except the signature itself.
-- Improve cold launch time.
-- Countless minor improvements and polishing.
-- Big Sur supported.
-- Permission is now requested before various
-  possibly destructive or annoying activities are
-  done in response to control sequences.
-- Don't snap window size to the cell grid when it
-  gets resized by an Accessibility API.
-- Only use touch bar mitigations for keypresses
-  originating from the built-in keyboard.
-- The profile preference "Send text at start" is
-  now an interpolated string.
-- The profile preference "Custom command" is
-  now an interpolated string.
-- The feature where the scroll wheel sends arrow
-  keys when in alternate screen mode now works
-  even when alternate screen mode is disabled.
-- Enable window shadow for transparent windows.
-- When resizing the window while scrolled up in to
-  history, keep the text in the top left locked in
-  position.
-- Show a brief message when automatic profile
-  switching takes effect.
-- Send a newline before sending the curl command
-  to install shell integration to clear out any
-  existing command.
-- Disable GPU renderer for obscured windows when
-  using the integrated GPU.
-- When a tmux pane fails to split, don't detach.
-- Remember tmux window sizes when reattaching.
-- When disintering a buried tmux tab, put it back
-  in the right position in the same window it came
-  from.
-- Draw outline on right hand side of last tab in
-  minimal theme.
-- Hide subpixel antialiasing UI on big sur because
-  Apple took it away from us :(
+- Improve performance of opening lots of tabs at
+  once.
+- Improve performance when changing prefs that
+  affect many tabs.
+- Tabs are now selected on mouse down rather than
+  on mouse up.
+- Hide tab close button on small tabs to prevent
+  accidental closure.
+- Confirm deleting entries in the password
+  manager.
+- Tab icons are now always left aligned and get
+  replaced with the close button on hover.
+- Plain-text logs now include timestamps.
+- Recognize U+251C and U+2524 as column dividers
+  for selection's soft boundaries.
+- Reduce minimum dimming amount allowed in Prefs >
+  Appearance > Dimming.
+- Use terminal background color to determine
+  appearance of composer.
+- You can now use Cmd-W to dismiss the composer.
+- Don't show an alert if the initial tmux
+  integration command fails.
+- When you split a pane in tmux integration and
+  focus follows mouse is on, don't make the pane
+  under the mouse active. Make the new pane
+  active.
+- New tmux windows created outside iTerm2 (e.g.,
+  by running `tmux new-window`) will become tabs
+  in the current window.
+- Give backpressure to commands run in the
+  background (e.g., from triggers) to keep them
+  from hogging CPU.
+- Improve performance of creating a new session in
+  a custom directory.
+- Improve performance when there are big
+  background images.
+- The composer now clears the existing command by
+  sending C-U C-K.
+- Handle "Default_Ignorable" unicode characters
+  correctly.
+- Use the background color of inactive sessions to
+  determine the split pane divider color.
+- Improve performance of decoding inline images.
+- Make trackpads scroll faster to act more like
+  other macOS apps.
 
 Bug Fixes
-- Full screen windows in the Minimal or Compact
-  theme did not used to get restored properly and
-  now they do.
-- Fix how 24-bit colors are reported to work with
-  vim.
-- Saved arrangements that contain local changes
-  (such as those made with Edit Session) will now
-  pick up changes to the original profile.
-- Fix a bug where inline images and OSC 8
-  hyperlinks didn't get restored reliably when
-  restarting the app.
-- Improve support for zero-width joiners in Emoji.
-- Fix a memory leak of inline images when
-  restoring windows after restarting the app.
-- Fix a bug where Swap With Session didn't work on
-  tmux panes.
-- Fix a bug where quickly resizing tmux windows
-  would increase the bottom margin.
-- Fix a bug where Window > Resize Window would
-  cause tmux windows to resie incorrectly.
-- Fix a bug where windows are not movable after
-  exiting native full screen.
-- Add crlf after sixel image.
-- Fix shift-return in profiles window to open a
-  window instead of a tab.
-- Fix a bug where tmux windows would change sizes
-  unexpectedly when using horizontal/vertical
-  character spacing.
-
-Things Made Worse
-- Support for macOS 10.12 and 10.13 dropped.
-
-
-
+- Fix various crashes.
+- Fix a bug where tab labels would be white in
+  light mode when there was a colored tab.
+- Fix alignment of underlines in GPU renderer.
+- Fix various drawing bugs in legacy renderer.
+- Fix a bug where on Big Sur transparency doesn't
+  work with background images.
+- Fix $$$$ in profile commands, which should be
+  replaced with $$.
+- Fix a bug in key reporting for arrow keys when
+  application cursor mode is on. This caused
+  problems in vim.
+- Improve how background colors are blended with
+  background images in GPU renderer to be
+  consistent with legacy renderer.
+- Fix a bug where Window > Move to (display) was
+  disabled.
+- Fix a bug where tmux panes would get killed when
+  switching sessions.
+- Don't show the "short-lived session" warning in
+  tmux integration when creating a new tmux
+  session.
+- Fix a problem where BBEdit couldn't find the
+  parent iTerm2 app.
+- Tolerate missing profiles when restoring a
+  window arrangement.
+- Don't show swipe-between-tabs animation when
+  there is only one tab.
+- Give minimal windows an invisible proxy icon so
+  that accessibility can tell what the current
+  directory is.
+- Tmux integration windows enter full screen when
+  the profile specifies it.
+- Fix a bug where windows were not movable after
+  exiting full screen.
+- Fix various bugs in the "Add Trigger" menu item.
+- Fix bugs where switching tabs makes a cleared
+  search field regain its previous value.
+- Fix a bug where async_get_full_profile in Python
+  API would throw for some profiles.
+- Reduce size of saved state database.
+- Fix a bug where tmux integration didn't work on
+  OpenBSD.
+- Fix a bug where clicking in the search field
+  didn't work.
+- Fix a bug where non-default background colors
+  had the wrong opacity in the GPU renderer.
