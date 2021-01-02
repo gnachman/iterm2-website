@@ -1,3 +1,29 @@
+2021-01-01: Make Cmd-shift-. keyboard shortcut open the
+dropdown composer rather than the popover.
+
+2021-01-01: Remove iTermTextFixup, which is no longer needed
+because its only purpose is to deal with background colors
+for cells that overlap their neighbors and the previous
+commit eliminated the use of background color in the text
+renderer (the fragment shader samples when this is needed)
+
+2021-01-01: Don't pass background color to text Metal
+renderer because it does not need it.
+
+2021-01-01: Fix a bug where we used transparent as the bg
+color for the default background color in the GPU renderer
+when computing minimum contrast. This commit changes it to
+use the actual background color for the minimum contrast
+calculation and then use transparent everywhere else. Issue
+9387.
+
+2021-01-01: Avoid burning CPU when we're waiting for GPU
+resources to become free. Issue 9393
+
+2021-01-01: Attempt to include pgp signature in changelogs
+
+2020-12-31: Make send-snippet a keybinding action.
+
 2020-12-31: Fix autoresizing masks in shortcuts prefs
 windows. Issue 9396
 
