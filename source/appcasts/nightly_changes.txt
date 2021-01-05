@@ -1,3 +1,25 @@
+2021-01-05: Restore window's miniaturization state. Issue
+6627
+
+2021-01-04: Commit daed41c33dffbcf6520f8d4429a0f3e6e2576af7
+introduced a bug because it treated initial windows the same
+as anonymous windows, causing them to always open in the
+attaching tab. Adding to the confusion is that it didn't
+take commit 8d92dd6e05 in to account. This commit explicitly
+labels windows as anonymous and uses the advanced pref added
+daed41c in for them while respecting the user's setting for
+the initial attach. Issue 9403
+
+2021-01-04: When a tab drag exits the tabbar select the
+previously selected tab. If the current tab is being
+dragged, select the next one if possible otherwise the
+previous one. Fixes a problem where you couldn't drag
+another tab into a split pane in the current tab. Brought up
+in mailing list subject 'New tab-drag behavior: Bug or
+feature'
+
+2021-01-04: Clarify how to verify signature in changelog
+
 2021-01-03: Fix how the hash is signed by gpg.
 
 2021-01-03: Add 'Copy Link Address' to context menu. Issue
