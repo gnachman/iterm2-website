@@ -78,7 +78,7 @@ To erase the scrollback history:
 
     ^[]1337;ClearScrollback^G
 
-#### Set curent directory
+#### Set current directory
 To inform iTerm2 of the current directory to help semantic history:
 
     ^[]1337;CurrentDir=/the/current/directory^G
@@ -216,6 +216,12 @@ The terminal responds with:
 
     ^[]1337;ReportCellSize=height;width^G
 
+Or, in newer versions:
+
+    ^[]1337;ReportCellSize=height;width;scale^G
+
+Where scale is 2.0 for retina displays and 1.0 for non-retina displays. It could be other decimal fractions in the future.
+
 Where *height* and *width* are floating point values giving the size in points of a single character cell. For example:
 
     ^[]1337;ReportCellSize=17.50;8.00;2.0^[\
@@ -255,7 +261,7 @@ For information on file downloads and inline images, see <a href="images.html">h
 
 To request the user select one or more files to upload, send:
 
-    ^[]1337;RequestUpload=format=tgz
+    ^[]1337;RequestUpload=format=tgz^G
 
 In the future the format may be configurable, but for now it must always be `tgz`, which is a tar and gzipped file.
 
@@ -296,7 +302,7 @@ You can push the current value on a stack and pop it off to return to the previo
 
 #### File Transfer
 
-   ^[]1337;File=(args)^G
+   ^[]1337;File=(args)\^G
 
 See <a href="documentation-images.html">Images</a> for details.
 

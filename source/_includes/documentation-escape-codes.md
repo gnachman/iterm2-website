@@ -4,6 +4,29 @@ A quick comment on notation: in this document, ^[ means "Escape" (hex code 0x1b)
 
 The OSC command `50` used to be used but it conflicts with xterm, so it is now `1337`.
 
+#### Report Foreground/Background Colors (OSC 4)
+
+The xterm-defined OSC 4 control sequence has a mode where it reports the RGB
+value of a color. iTerm2 extends its reporting mode to add two additional color
+indices representing the default foreground and background color.
+
+To get the background color:
+
+    ^[]4;-2;?^G
+
+And this gets the foreground color:
+
+    ^[]4;-1;?\^G
+
+For background and foreground respectively, the terminal will write back:
+
+    \033]4;-2;rgb:R/G/B\007
+    \033]4;-1;rgb:R/G/B\007
+
+Where R, G, and B are either 2 or 4-digit hex values like `14a7/195f/1efb`. For
+4-digit values, you can get an approximation of the 2-digit value by taking the
+first two digits.
+
 #### Anchor (OSC 8)
 
 VTE and iTerm2 support OSC 8 for defining hyperlinks, much like HTML's anchor tag.
@@ -17,6 +40,12 @@ If the **url** is absent then that ends the hyperlink. Typical usage would look 
     ^[]8;;https://example.com/^GLink to example website^[]8;;^G
 
 To open a link, hold Command and click the link.
+
+Note: in iTerm2 version 3.4 and later, if the URL has the `file` scheme and
+a `#` fragment is present then the semantic history rules will apply for
+opening the file. It may optionally include a line number, like
+`file:///tmp/file.txt#123` or line number and column number like
+`file:///tmp/file.txt#123:45`.
 
 #### Set cursor shape
 
@@ -49,7 +78,7 @@ To erase the scrollback history:
 
     ^[]1337;ClearScrollback^G
 
-#### Set curent directory
+#### Set current directory
 To inform iTerm2 of the current directory to help semantic history:
 
     ^[]1337;CurrentDir=/the/current/directory^G
@@ -170,7 +199,7 @@ The *boolean* should be *yes* or *no*. This shows or hides the cursor guide.
 
     ^[]1337;RequestAttention=value^G
 
-The `value` should be *yes* to request attention by bouncing the dock icon indefinitely and *no* to cancel a previous request. To bounce only once `value` should be *once*. The dock icon will bounce only if iTerm2 is not the active application. If `value` is `fireworks` then fireworks explode at the cursor's location.
+The `value` should be *yes* to request attention by bouncing the dock icon indefinitely, *once* to bounce it a single time, or *no* to cancel a previous request. If it is `fireworks` then fireworks explode at the cursor's location. 
 
 
 #### Background Image
@@ -186,6 +215,12 @@ The value of *base64* is a base64-encoded filename to display as a background im
 The terminal responds with:
 
     ^[]1337;ReportCellSize=height;width^G
+
+Or, in newer versions:
+
+    ^[]1337;ReportCellSize=height;width;scale^G
+
+Where scale is 2.0 for retina displays and 1.0 for non-retina displays. It could be other decimal fractions in the future.
 
 Where *height* and *width* are floating point values giving the size in points of a single character cell. For example:
 
@@ -204,7 +239,7 @@ Where `base64` is the base64-encoded string to copy to the pasteboard.
 
 #### Report Variable
 
-Each iTerm2 session has internal variables (as described in <a href="badges.html">Badges</a>). This escape sequence reports a variable's value:
+Each iTerm2 session has internal variables (as described in <a href="documentation-scripting-fundamentals.html">Scripting Fundamentals</a>). This escape sequence reports a variable's value:
 
     ^[]1337;ReportVariable=base64^G
 
@@ -226,7 +261,7 @@ For information on file downloads and inline images, see <a href="images.html">h
 
 To request the user select one or more files to upload, send:
 
-    ^[]1337;RequestUpload=format=tgz
+    ^[]1337;RequestUpload=format=tgz^G
 
 In the future the format may be configurable, but for now it must always be `tgz`, which is a tar and gzipped file.
 
@@ -265,10 +300,27 @@ Where `n` is 8 or 9
 
 You can push the current value on a stack and pop it off to return to the previous value by setting `n` to `push` or `pop`. Optionally, you may affix a label after `push` by setting `n` to something like `push mylabel`. This attaches a label to that stack entry. When you pop the same label, entries will be popped until that one is found. Set `n` to `pop mylabel` to effect this. This is useful if a program crashes or an ssh session ends unexpectedly.
 
+#### File Transfer
+
+   ^[]1337;File=(args)\^G
+
+See <a href="documentation-images.html">Images</a> for details.
+
+#### Custom Control Sequences
+
+iTerm2 allows scripts to define custom control sequences. See the <a href="https://iterm2.com/python-api/examples/create_window.html">Create Window</a> example for a working demo. The control sequence is:
+
+    ^[]1337;Custom=id=secret:pattern^G
+
+Where `secret` is a secret shared between the script implementing the control
+sequence and the program producing it, as a security measure to make it more
+difficult for untrusted text to invoke a custom control sequence. `pattern` is
+used to identify the sequence and may contain any parameters the script needs
+to handle it.
 
 ## Shell Integration/FinalTerm
 
-iTerm2's <a href="shell_integration.html">Shell Integration</a> feature is made
+iTerm2's <a href="documentation-shell-integration.html">Shell Integration</a> feature is made
 possible by proprietary escape sequences pioneered by the FinalTerm emulator.
 FinalTerm is defunct, but the escape sequences are documented here.
 
@@ -346,8 +398,9 @@ iTerm2 extends FinalTerm's suite of escape sequences.
 `^[]1337;SetUserVar=Ps1=Ps2^G`
 
 Sets the value of a user-defined variable. iTerm2 keeps a dictionary of
-key-value pairs which may be used within iTerm2 as string substitutions, such
-as in the <a href="/badges.html">Badge</a>.
+key-value pairs which may be used within iTerm2 as string substitutions.
+See <a href="documentation-scripting-fundamentals.html">Scripting
+Fundamentals</a> for more information on variables and how they can be used.
 
 Ps1 is the key.
 
@@ -412,10 +465,14 @@ Erases the current captured output.
 
 `^[[4:3m` turns on curly underliens.
 
-#### Terminal ID
+#### Extended Device Attributes
 
-`^[[>0q` causes iTerm2 to report its ID. 
+Report terminal name and version.
 
-It responds with the app name and version number. For example, `^[P>|iTerm2 3.4.0^[\`.
+`^[[>q`
 
+iTerm2 will respond with:
 
+    ^[P>|iTerm2 {version}^[\\
+
+Where {version} is the version of iTerm2, such as `3.4.0`.
