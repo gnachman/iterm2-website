@@ -8,7 +8,7 @@ The control sequences use the following notation:
 * Values in [brackets] are variable parameters, not literals.
 * `OSC` means `ESC ]`
 * `CSI` means `ESC [`
-* `SP` means a literal "space" character
+* `SP` means a literal "space" character (not ignored!)
 
 The OSC command `50` used to be used but it conflicts with xterm, so it is now `1337`.
 
@@ -160,18 +160,18 @@ The following alternate schemes are also supported:
 
 A second escape sequence is also supported, but its use is not recommended:
 
-    OSC P [n] [rr] [gg] [bb]^[\
+    OSC P [n] [rr] [gg] [bb] ST
 
 Replace `[n]` with:
 <ul>
-        <li>0-f (hex) = ansi color</li>
-        <li>g = foreground</li>
-        <li>h = background</li>
-        <li>i = bold color</li>
-        <li>j = selection color</li>
-        <li>k = selected text color</li>
-        <li>l = cursor</li>
-        <li>m = cursor text</li>
+        <li>`0`-`f` (hex) = ansi color</li>
+        <li>`g` = foreground</li>
+        <li>`h` = background</li>
+        <li>`i` = bold color</li>
+        <li>`j` = selection color</li>
+        <li>`k` = selected text color</li>
+        <li>`l` = cursor</li>
+        <li>`m` = cursor text</li>
 </ul>
 `[rr]`, `[gg]`, `[bb]` are 2-digit hex value (for example, "ff").
 Example in bash that changes the foreground color blue:
@@ -182,12 +182,12 @@ Example in bash that changes the foreground color blue:
 
 To add an annotation use on of these sequences:
 
-    OSC 1337 ; AddAnnotation=[message]^G
-    OSC 1337 ; AddAnnotation=[length]|[message]^G
-    OSC 1337 ; AddAnnotation=[message]|[length]|[x-coord]|[y-coord]^G
-    OSC 1337 ; AddHiddenAnnotation=[message]^G
-    OSC 1337 ; AddHiddenAnnotation=[length]|[message]^G
-    OSC 1337 ; AddHiddenAnnotation=[message]|[length]|[x-coord]|[y-coord]^G
+    OSC 1337 ; AddAnnotation=[message] ST
+    OSC 1337 ; AddAnnotation=[length] | [message] ST
+    OSC 1337 ; AddAnnotation=[message] | [length] | [x-coord] | [y-coord] ST
+    OSC 1337 ; AddHiddenAnnotation=[message] ST
+    OSC 1337 ; AddHiddenAnnotation=[length] | [message] ST
+    OSC 1337 ; AddHiddenAnnotation=[message] | [length] | [x-coord] | [y-coord] ST
 
 <ul>
 <li>`[message]`: The message to attach to the annotation.</li>
@@ -226,11 +226,11 @@ The terminal responds with either:
 
 Or, in newer versions:
 
-    OSC 1337 ; ReportCellSize=[height];[width];[scale]^G
+    OSC 1337 ; ReportCellSize=[height];[width];[scale] ST
 
 `[scale]` gives the number of pixels (physical units) to points (logical units). 1.0 means non-retina, 2.0 means retina. It could take other values in the future.
 
-Where `[height]` and `[width]` are floating point values giving the size in points of a single character cell. For example:
+`[height]` and `[width]` are floating point values giving the size in points of a single character cell. For example:
 
     OSC 1337 ; ReportCellSize=17.50;8.00;2.0 ST
 
