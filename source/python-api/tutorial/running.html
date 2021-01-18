@@ -128,7 +128,9 @@ a minimum, install the <cite>iterm2</cite> module.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>iTerm2 creates the <cite>ApplicationSupport</cite> symlink to <cite>Application
-Support</cite> because shell scripts may not have spaces in their paths.</p>
+Support</cite> because shell scripts may not have spaces in their paths
+and the <cite>pip</cite> utiltiy does not work correctly in directories with
+spaces.</p>
 </div>
 <p>If you’d like your script to launch iTerm2, you’ll need to use pyobjc. To install it:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install pyobjc
@@ -141,6 +143,8 @@ Support</cite> because shell scripts may not have spaces in their paths.</p>
     <span class="n">AppKit</span><span class="o">.</span><span class="n">NSWorkspace</span><span class="o">.</span><span class="n">sharedWorkspace</span><span class="p">()</span><span class="o">.</span><span class="n">launchApplication_</span><span class="p">(</span><span class="s2">&quot;iTerm&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Note that the <cite>iterm2</cite> module includes <cite>pyobjc</cite> (which vends <cite>AppKit</cite>) as a dependency, so
+you don’t need to install it separately.</p>
 <p>The <cite>iterm2.run_forever</cite> or <cite>iterm2.run_until_complete</cite> call will block until
 it is able to make a connection, so you don’t need to add any logic that waits
 for the launch to complete. Just try to connect right away.</p>
