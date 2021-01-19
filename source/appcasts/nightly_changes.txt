@@ -1,3 +1,78 @@
+2021-01-18: Add libgit2
+
+2021-01-18: Make the textview wrapper draw the background
+color when the background color view is hidden.
+
+2021-01-18: Bump max blur on 10.14. Issue 9229.
+
+2021-01-18: Try to make the scrolling algorithm for
+trackpads more like Terminal.app. Issue 9427
+
+2021-01-18: Fix advanced working directory window so that
+its text fields can become first responder. I think this has
+been broken since Big Sur broke utility panels. Issue 9431
+
+2021-01-18: Don't try to add custom actions to the context
+menu if there is an invalid click coord, as when you open
+the menu from the pane titlebar.
+
+2021-01-18: Don't attempt to extract a URL from invalid
+coordinates (-1,-1) if context menu is opened from the
+session titlebar (#434)
+
+
+2021-01-18: Fix file descriptor leak in iTerm2. Issue 9430
+
+* Close file descriptor when
+iTermFileDescriptorMultiClientChild gets dealloced. This
+fixes a file descriptor leak.  * Invoke all wait callbacks
+from handleWait:. Failing to call the one added in
+fileDescriptorMultiClient:childDidTerminate: caused a leak
+of iTermFileDescriptorMultiClientChild.  * Add a call to
+brokenPipe in finishAttaching:task: for jobs that terminated
+while iTerm2 was not running. This ensures you get the
+"session ended" banner on terminated restored sessions and
+orphans.  * Add support for tracing iTermCallback.
+
+2021-01-17: Fix file descriptor leak in iTermServer. Issue
+9430
+
+2021-01-17: Fix a bug where doublecliking on a session
+titlebar didn't maximize tmux panes correctly. Issue 9428
+
+2021-01-17: Fix a bug where the big sur fullscreen white
+line workaround left an empty spot at the top of the screen
+in minimal after hiding the tabbar
+
+2021-01-17: Disgusting hack to remove titlebar divider when
+there's a top tabbar. Issue 9424.
+
+2021-01-17: Fix colors of dark tabbar on big sur.
+
+2021-01-17: Fix shortcut for zoom to cmd-shift-0.
+
+2021-01-16: Add git branch as a search feature for open
+quickly
+
+2021-01-16: Expose git repo state (merging, picking, etc.)
+and show in the status bar.
+
+2021-01-16: Use libgit2 to fetch list of recent branches
+when you click on the status bar component
+
+2021-01-16: Use libgit2 instead of shelling out to git for
+the status bar git component.
+
+2021-01-15: Add menu command to create a new window with the
+current profile (#433)
+
+
+2021-01-15: Add prefs to make left/right option keys
+changeable by decset 1036. Issue 8195
+
+Also update Python profile.py and its sphinx docs, which
+were out of date.
+
 2021-01-10: Add debug logging to indicate whether we
 detected a password prompt
 
