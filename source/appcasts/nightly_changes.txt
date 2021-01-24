@@ -1,3 +1,57 @@
+2021-01-23: Ignore dynamic profile files that end in "~"
+(GNU-syle backups) (#436)
+
+GNU tools often support or default to making backups of
+modified files. By default, the previous contents of the
+file are preserved in `filename~` or `filename.~1~`. See
+[the coreutils
+docs](https://www.gnu.org/software/coreutils/manual/html_node/Backup-options.html)
+and [some Emacs
+docs](https://www.gnu.org/software/emacs/manual/html_node/emacs/Backup-Names.html).
+Note that Emacs produces `filename~` backups by default.
+Users generally do not expect these files to be read
+automatically.
+
+When using Emacs to edit a dynamic profile, saving it
+immediately causes an iTerm diagnostic: both `filename` and
+`filename~` will likely contain the same UUID.
+
+Instead of making a special case for `~`, this problem could
+be solved by requiring dynamic profiles have a known suffix,
+like `.json`. This eliminates all kinds of directory detrius
+at the cost of breaking some people's configs.  2021-01-23:
+Reset zooming flag if liveResize_ isn't set synchronously
+after calling windowWillUseStandardFrame. Fixes a bug where
+the GPU renderer gets stuck 'off' when 'System Prefs >
+Accessibility > Display > Reduce motion' is enabled. Issue
+9436
+
+2021-01-23: Marry sqlite based state restoration with macOS
+system restoration opportunistically. If macOS *does* try to
+restore a window, we call its completion block with the
+actually-restored window. That will move it to the correct
+desktop after a reboot. If macOS asks us to restore a window
+we have no state for, run the callback but indicate failure.
+Issue 9445
+
+2021-01-23: Disable fast trackpad by default until logitech
+problems in issue 9427 can be resolved. The adhoc branch
+20210118_141155 contains a change to work more like
+Terminal.app, but it seems to misbehave when using Logitech
+Options.
+
+2021-01-23: Use cmd-modifier for key equivalents in
+warnings. Issue 9447
+
+2021-01-23: Give the multiline paste confirmation dialog box
+a title
+
+2021-01-23: Add debug logging for issue 9437
+
+2021-01-23: Unanchor window from a preferred screen when the
+user moves it by chosing the menu item Window > Move to
+[screen]. Issue 9087
+
 2021-01-21: Make the GPU renderer draw every half second to
 avoid encountering high latency when requesting a drawable.
 
