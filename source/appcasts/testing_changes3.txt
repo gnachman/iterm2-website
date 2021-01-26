@@ -1,21 +1,24 @@
-3.4.4beta3
+3.4.4beta4
 
 Improvements:
-- The changelog now has a PGP signature.
-- When you hold down cmd while dragging in a file
-  from Finder, insert a command to cd to its
-  containing folder.
-- (Beta only) support DECSET 1036.
+- The GPU renderer now draws a frame at least
+  every half second to prevent a brief hang after
+  inactivity.
 
 Bugs Fixed:
-- When you drag a tab out of a window, show the
-  previously selected tab. That makes it possible
-  to drag another tab into a pane in the current
-  tab.
-- Fix a bug where the tmux initial window mode was
-  not respected.
-- Fix a bug where miniaturized windows were
-  restored non-miniaturized.
-- Fix a bug where the "do not remap" action didn't
-  work when secure keyboard input was turned on.
+- Fix a file descriptor leak in the main app and
+  also the server.
+- Fix crash when opening session title bar menu.
+- Fix a bug where advanced working directory
+  settings were not editable.
+- Revert experimental scoll-wheel speed change.
+- Fix a bug where sessions could have a line of
+  the wrong color near the top when empty.
+- Fix color of tab bar text on Big Sur.
+- Fix a bug where double-clicking on a session's
+  title bar didn't maximize tmux panes correctly.
+- Fix truncated button in status bar search field.
+- Update window blur when changing window styles.
+- Turn off paste bracketing and other undesirable
+  terminal state when relaunching a session.
 
