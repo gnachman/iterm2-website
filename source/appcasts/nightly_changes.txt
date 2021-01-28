@@ -1,3 +1,14 @@
+2021-01-27: Change fast-trackpad behavior. Don't
+double-multiply by lineheight when scrollbars are hidden.
+Always use the scroll accumulator (even when scrollbars
+aren't hidden) to get consistent behavior. Issue 9427
+
+2021-01-27: Support control+shift modifiers for arrow keys
+in the standard key mapper. For whatever reason these take
+the performKeyEquivalent code path. Cocoa's input handling
+is certainly mysterious, so this change is as narrow in
+scope as possible to avoid introducing bugs. Issue 8382
+
 2021-01-24: Partially reset terminal when restoring a
 session (such as when launching a new program in a restored
 session after a reboot or when restarting a terminated
