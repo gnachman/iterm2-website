@@ -9,6 +9,8 @@ Captured Output is a tool that may be added to iTerm2's toolbelt (a view on the 
 ### Shell Integration Required
 <a href="https://www.iterm2.com/shell_integration.html">Shell Integration</a> must be installed because Captured Output ties in to command history.
 
+Ensure you have enough scrollback history to contain the full output of your build command. The default of 1000 may not be sufficient. You can adjust this in **Prefs > Profiles > Terminal > Scrollback lines**.
+
 ### Example
 
 One way to use Captured Output is to view compiler output. Suppose you run *make* and get thousands of lines of output, some of which may contain errors or warnings. You'd like to examine each one and take some action on it. Here's how you would use Captured Output to assist with this task:

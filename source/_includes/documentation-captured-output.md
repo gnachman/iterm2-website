@@ -1,6 +1,6 @@
 iTerm2 has a feature called "Captured Output" which helps you find and track important lines of output from logs, build processes, and such.
 
-<center><img src="img/screenshots/v3-screen-shots/iterm2-captured-output.gif"></center>
+<center><img src="/img/screenshots/v3-screen-shots/iterm2-captured-output.gif"></center>
 
 ### What does it do?
 
@@ -8,6 +8,8 @@ Captured Output is a tool that may be added to iTerm2's toolbelt (a view on the 
 
 ### Shell Integration Required
 <a href="https://www.iterm2.com/shell_integration.html">Shell Integration</a> must be installed because Captured Output ties in to command history.
+
+Ensure you have enough scrollback history to contain the full output of your build command. The default of 1000 may not be sufficient. You can adjust this in **Prefs > Profiles > Terminal > Scrollback lines**.
 
 ### Example
 
@@ -40,7 +42,7 @@ Kick off the build by running make. It spits out thousands of lines of output.
 
 Any errors or warnings that appear in the compiler output will appear in the Captured Output tool.
 
-<img src="images/CapturedOutput.png">
+<img src="/images/CapturedOutput.png">
 Select an entry in the tool. iTerm2 scrolls to display the line and briefly highlights it in blue.
 
 #### Step 5: Open the file containing the error
