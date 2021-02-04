@@ -1,3 +1,16 @@
+2021-02-03: Fix a bug introduced waaaay back in 5f1fa63
+where mouseDown was renamed to _mouseDown but Apple
+*awesomely* has a global symbol named mouseDown and I missed
+two of them. The effect of this change is intended to be to
+ignore mouseUp when called more than once in a row. I don't
+think it will have a big effect, but who knows - mouse
+events are crazy and there will probably be unexpected
+consequences. This commit also copies text when ending live
+selection to avoid problems as seen in issue 9461 where a
+trackpad did nutty things and a mouse-up that was (probably)
+misidentified as a three-finger touch (in part because of
+the mouseDown bug) ended live selection but didn't copy.
+
 2021-02-02: Turn on fastTrackpad because of confirmation by
 dylan71 in issue 9427 that the fix in
 d7d63c3e34d2a3386dd92856545c4e526861bf9a worked.
