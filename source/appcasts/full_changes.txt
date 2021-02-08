@@ -1,3 +1,172 @@
+3.4.4
+
+Annoying things I'm sorry about
+- You'll be asked to re-install the Python
+  runtime. This fixes a problem where pip3 would
+  sometimes fail. Instead of creating a symlink
+  of ~/Library/ApplicationSupport we will now use
+  ~/.config/iterm2/AppSupport.
+
+New Features
+- Tab titles now parse very basic HTML tags for
+  bold, italic, and underline. Less-than and
+  ampersand entites are also recognized.
+- Margins are now adjustable in Prefs >
+  Appearance > Panes.
+- Add an option to save prefs to a custom folder
+  automatically.
+- The composer now integrates with command history
+  and makes completion suggestions.
+- When you right click on text with a hyperlink,
+  "Copy Link Address" is now available in the
+  context menu.
+
+Improvements
+- The changelog now has a PGP signature.
+- Improve performance of opening lots of tabs at
+  once.
+- Improve performance when changing prefs that
+  affect many tabs.
+- Tabs are now selected on mouse down rather than
+  on mouse up.
+- Hide tab close button on small tabs to prevent
+  accidental closure.
+- Confirm deleting entries in the password
+  manager.
+- Tab icons are now always left aligned and get
+  replaced with the close button on hover.
+- Plain-text logs now include timestamps.
+- Recognize U+251C and U+2524 as column dividers
+  for selection's soft boundaries.
+- Reduce minimum dimming amount allowed in Prefs >
+  Appearance > Dimming.
+- Use terminal background color to determine
+  appearance of composer.
+- You can now use Cmd-W to dismiss the composer.
+- Don't show an alert if the initial tmux
+  integration command fails.
+- When you split a pane in tmux integration and
+  focus follows mouse is on, don't make the pane
+  under the mouse active. Make the new pane
+  active.
+- New tmux windows created outside iTerm2 (e.g.,
+  by running `tmux new-window`) will become tabs
+  in the current window.
+- Give backpressure to commands run in the
+  background (e.g., from triggers) to keep them
+  from hogging CPU.
+- Improve performance of creating a new session in
+  a custom directory.
+- Improve performance when there are big
+  background images.
+- The composer now clears the existing command by
+  sending C-U C-K.
+- Handle "Default_Ignorable" unicode characters
+  correctly.
+- Use the background color of inactive sessions to
+  determine the split pane divider color.
+- Improve performance of decoding inline images.
+- Allow emoji picker to be added to the touch bar.
+- Add "Send Snippet" as a key binding action.
+- Remove the popover composer UI; use the large
+  composer UI regardless of whether there is a
+  status bar.
+- Add a button in the composer UI to open
+  explainshell.com.
+- When you hold down cmd while dragging in a file
+  from Finder, insert a command to cd to its
+  containing folder.
+- The GPU renderer now draws a frame at least
+  every half second to prevent a brief hang after
+  inactivity.
+
+Bug Fixes
+- Fix various crashes.
+- Fix a bug where tab labels would be white in
+  light mode when there was a colored tab.
+- Fix alignment of underlines in GPU renderer.
+- Fix various drawing bugs in legacy renderer.
+- Fix a bug where on Big Sur transparency doesn't
+  work with background images.
+- Fix $$$$ in profile commands, which should be
+  replaced with $$.
+- Fix a bug in key reporting for arrow keys when
+  application cursor mode is on. This caused
+  problems in vim.
+- Improve how background colors are blended with
+  background images in GPU renderer to be
+  consistent with legacy renderer.
+- Fix a bug where Window > Move to (display) was
+  disabled.
+- Fix a bug where tmux panes would get killed when
+  switching sessions.
+- Don't show the "short-lived session" warning in
+  tmux integration when creating a new tmux
+  session.
+- Fix a problem where BBEdit couldn't find the
+  parent iTerm2 app.
+- Tolerate missing profiles when restoring a
+  window arrangement.
+- Don't show swipe-between-tabs animation when
+  there is only one tab.
+- Give minimal windows an invisible proxy icon so
+  that accessibility can tell what the current
+  directory is.
+- Tmux integration windows enter full screen when
+  the profile specifies it.
+- Fix a bug where windows were not movable after
+  exiting full screen.
+- Fix various bugs in the "Add Trigger" menu item.
+- Fix bugs where switching tabs makes a cleared
+  search field regain its previous value.
+- Fix a bug where async_get_full_profile in Python
+  API would throw for some profiles.
+- Reduce size of saved state database.
+- Fix a bug where tmux integration didn't work on
+  OpenBSD.
+- Fix a bug where clicking in the search field
+  didn't work.
+- Fix a bug where non-default background colors
+  had the wrong opacity in the GPU renderer.
+- Fix tiled images, which did not tile properly.
+- Fix a bug where newly added snippets cannot be
+  selected in the menu.
+- Fix a bug where the login shell could be
+  launched as x86 only.
+- Fix layout bugs when resizing shortcuts prefs
+  windows.
+- Reduce CPU utilization when GPU resources are
+  scarce.
+- Fix a bug where minimum contrast didn't work
+  correctly in GPU renderer sometimes.
+- Make the tab color selection menu item look
+  right in dark mode.
+- When you drag a tab out of a window, show the
+  previously selected tab. That makes it possible
+  to drag another tab into a pane in the current
+  tab.
+- Fix a bug where the tmux initial window mode was
+  not respected.
+- Fix a bug where miniaturized windows were
+  restored non-miniaturized.
+- Fix a bug where the "do not remap" action didn't
+  work when secure keyboard input was turned on.
+- Fix a file descriptor leak in the main app and
+  also the server.
+- Fix crash when opening session title bar menu.
+- Fix a bug where advanced working directory
+  settings were not editable.
+- Fix a bug where sessions could have a line of
+  the wrong color near the top when empty.
+- Fix color of tab bar text on Big Sur.
+- Fix a bug where double-clicking on a session's
+  title bar didn't maximize tmux panes correctly.
+- Fix truncated button in status bar search field.
+- Update window blur when changing window styles.
+- Turn off paste bracketing and other undesirable
+  terminal state when relaunching a session.
+
+
 3.4.3
 
 - Fix crashes.
