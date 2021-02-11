@@ -1,3 +1,20 @@
+2021-02-10: Remove html tags from window title and tab
+tooltip. Also fix the profile name in the tab tooltip which
+was wrong for sessions with customized names. Issue 9488.
+
+2021-02-10: Tolerate failure to create a bitmap context in
+rawDataForMetal. Issue 9490
+
+2021-02-10: Try ~/.iterm2 if ~/.config/iterm2 doesn't work
+to try to prevent crashes like issue 9493. If both fail show
+an alert explaining what went wrong before crashing.
+
+2021-02-10: When 'close windows when app quits' is on for
+some reason we still get a window restoration request to
+PseudoTerminalRestorer. Previously the completion block was
+never run. This blocked the creation of any windows, leaving
+the app wedged.
+
 2021-02-09: Fix downscaling of images in Metal renderer.
 Issue 9475
 
