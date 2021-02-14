@@ -1,3 +1,15 @@
+2021-02-13: Add soft hyphen to the set of unicode dashes for
+advanced paste's 'convert unicode punctuation' feature.
+Issue 9497
+
+2021-02-13: When using the default background color in the
+GPU renderer, set the unprocessed background color correctly
+except set the alpha to 0. This allows
+useThinStrokesWithAttributes to get the right inputs.
+Previously it would appear to be black which made it do
+silly things for light backgrounds in the retina-only
+configuration. Issue 9486
+
 2021-02-12: Prevent fractional image sizes which break
 creating a bitmap context and a subsequent crash in the
 badge renderer. Issue 9490
