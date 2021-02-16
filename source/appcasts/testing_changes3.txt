@@ -1,24 +1,103 @@
-3.4.4beta4
+3.4.5beta1
 
-Improvements:
-- The GPU renderer now draws a frame at least
-  every half second to prevent a brief hang after
-  inactivity.
+New Features:
+- Add preference to allow/disallow apps changing
+  the function of the option keys with a control
+  sequence.
+- Add a menu item to pop the current session into
+  a new window.
+- The git status bar now indicates the repo state
+  (merging, reverting, cherrypicking, bisecting,
+  rebasing, or applying).
+- When you right click on a hex color like #ffeedd
+  show a preview of the color in sRGB in the
+  context menu.
+- Add a new type of trigger to highlight the whole
+  line. This is useful because matching .*foo.* is
+  very slow. With this trigger you can simply
+  match foo and the whole line changes color.
 
-Bugs Fixed:
-- Fix a file descriptor leak in the main app and
-  also the server.
-- Fix crash when opening session title bar menu.
-- Fix a bug where advanced working directory
-  settings were not editable.
-- Revert experimental scoll-wheel speed change.
-- Fix a bug where sessions could have a line of
-  the wrong color near the top when empty.
-- Fix color of tab bar text on Big Sur.
-- Fix a bug where double-clicking on a session's
-  title bar didn't maximize tmux panes correctly.
-- Fix truncated button in status bar search field.
-- Update window blur when changing window styles.
-- Turn off paste bracketing and other undesirable
-  terminal state when relaunching a session.
+Improvements
+- The git status bar component no longer shells
+  out to the system git. It uses libgit2 instead
+  (nicely named!) and should be faster and more
+  reliable now.
+- When known, the current git branch is used as a
+  search feature in Open Quickly.
+- Don't show a line between the titlebar and
+  tabbar in Big Sur.
+- Increase max allowed blur on macOS 10.14.
+- When you move a window to a different screen by
+  selecting the Move To Screen menu item, it will
+  lose its affinity for the window assigned to it
+  in Prefs > Profiles > Window and stay where it
+  was put when screens are added or removed.
+- Buttons in modal alerts now accept cmd+letter
+  shortcuts.
+- Ignore dynamic profiles whose filename ends in a
+  tilde.
+- Reset terminal when relaunching a session (e.g.,
+  paste bracketing and mouse reporting).
+- The composer window now uses the terminal's
+  font.
+- Scrolling with the trackpad should be more
+  responsive now.
+- Change how text is drawn when not using GPU
+  renderer to avoid artifacts.
+- When doing selection respecting soft boundaries,
+  treat a backslash in the last column as a
+  continuation mark and don't include it.
+- By default, save terminal contents to history
+  when there is a scrolling region that touches
+  the top of the screen.
+- Newly saved window arrangements will restore to
+  the right size when scroller style changes after
+  they were created (unless there are side-by-side
+  split panes).
+- Treat soft hyphens as unicode punctuation in
+  Advanced Paste.
+
+Bug Fixes
+- Fix a bug where doublecliking on a session
+  titlebar didn't maximize tmux panes correctly.
+- Fix clipped button next to status bar search
+  field.
+- Blur is now correct after changing window type
+  or theme.
+- Fix a bug where a window forgot it was blurred
+  when toggling traditional fullscreen in Minimal
+  theme.
+- Fix a bug where windows would restore on the
+  wrong desktop.
+- Fixes a bug where the GPU renderer gets stuck
+  "off" when the "Reduce motion" accessibility
+  setting is enabled and a window is maximized.
+- Fix a bug where control+shift+function/arrow key
+  sent the wrong code.
+- Fix a bug where the app could hang after certain
+  trackpad touches.
+- Fix a bug where copy on selection didn't always
+  work.
+- Fix a bug where transparent windows changed
+  colors in native full screen mode.
+- Fix a bug where keystrokes bound to menu items
+  didn't always work.
+- Fix crashes.
+- Fix a bug where disabling
+  middle-click-to-close-a-tab also breaks the tab
+  close button.
+- Fix keystroke filtering in the Python APi which
+  seems have been broken for some time.
+- Fix various bugs with HTML tab titles: remove
+  HTML for window title and tooltips.
+- Fix a bug where inline images downscaled
+  with artifacts in the GPU renderer.
+- Fix a crash on launch if ~/.config/iterm2 is not
+  able to be created and is not already a
+  directory.
+- Fix a bug where tab icons were flipped
+  vertically on macOS 10.14.
+- Fix a bug where the GPU renderer would sometimes
+  use the wrong thickness for text.
+
 
