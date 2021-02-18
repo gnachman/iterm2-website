@@ -1,3 +1,15 @@
+2021-02-17: Fix some bugs in broadcast to panes in current
+tab. The model was muddled. I think what it was mean to be
+is: this broadcast mode is enabled on tabs, not on the
+window. Other modes are enabled on the window, and when
+selected reset the per-tab setting and supercede it. Now
+when you toggle it, it will enable/disable the setting for
+the current tab. If doing so disables it for all tabs in the
+window then the mode is reset to off. Meanwhile, the checked
+item in the menu takes the current tab into account when
+choosing between 'off' and 'all panes in current tab'. Issue
+9492
+
 2021-02-17: Assign GUIDs to snippets and use them to
 identify actions. Includes a migration path for existing
 actions that use title as the identifier. Title can be
