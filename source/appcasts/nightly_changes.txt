@@ -1,3 +1,39 @@
+2021-02-25: Fix legacy renderer's handling of background
+images with non-opaque parts. Issue 9011
+
+Non-opaque background images would show the window
+background color in the legacy renderer. In the GPU renderer
+they would be completely wrong because the fragment shader
+had a bug (alpha was assigned to w rather than multiplying
+w).
+
+The architecture is now:
+
+LEGACY RENDERER iTermImageView is a container. It has two
+subviews.  The lower view is iTermImageBackgroundColorView.
+This is a 100% alpha view with the default background color.
+On top of that is iTermInternalImageView. It shows the
+image, also at 100% alpha.
+
+Normally, the image is completely opaque and
+iTermImageBackgroundColorView is completely obscured by
+iTermInternalImageView. But if it does have any non-opaque
+pixels, the default background color is behind the image as
+a backstop.
+
+Since the session might be transparent, iTermImageView
+itself will have an alphaValue that comes from
+iTermAlphaValueForBottomView.
+
+On top of all this is iTermSessionBackgroundColorView. Its
+alpha value comes from iTermAlphaValueForTopView.
+
+GPU RENDERER Blend the default background color at alpha=1
+with the image sample in the fragment shader for background
+image rendering. Then multiply that value by alpha. This is
+identical to the legacy renderer's algorithm, but in a lot
+less code :)
+
 2021-02-24: If the home directory dotdir can't be created,
 show a warning exactly once and disable all features that
 need it.
