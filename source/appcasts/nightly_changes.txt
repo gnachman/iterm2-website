@@ -1,5 +1,33 @@
-2021-03-02: Fix snapshots by working around AppKit bug. This
-fixes mostly clear images when dragging a tab.
+2021-03-04: Remove flexible space from prefs panel. It was
+selectable because NSToolbar is insane (it only appears if
+selectable!) and also didn't work very well. Issue 9522
+
+2021-03-03: Fix how the GPU renderer determines where
+underlines begin and end. They incorrectly started at the
+start of the cell plus half the difference between glyph and
+cell size. That caused them to appear shifted to the right
+when italics were enabled because that increases the glyph
+size. But underlines should always begin at the left edge of
+the cell. They should terminate at the right edge of the
+last cell of a run. The logic for runs did not exist; this
+commit adds it to the vertex shader. It starts the underline
+at the 'ascii offset', which is where the cell visually
+begins. Issue 9521
+
+2021-03-03: Add feature request, fix title of memory usage
+issue description
+
+2021-03-03: Add memory usage issue template and remove html
+commesn from Crash.md
+
+2021-03-03: provide gitlab description templates (#438)
+
+Introduce issue types
+
+Co-authored-by: Niklas <niklas@janz.online> Co-authored-by:
+George Nachman <gnachman+github@gmail.com> 2021-03-02: Fix
+snapshots by working around AppKit bug. This fixes mostly
+clear images when dragging a tab.
 
 2021-03-01: Bounce metal when a window changes screen. I was
 able to reproduce the problem described in issue 9515. The
