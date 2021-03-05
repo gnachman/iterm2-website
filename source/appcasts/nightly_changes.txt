@@ -1,3 +1,93 @@
+2021-03-04: Change wording in dashboard min windows
+threshold to be clearer. Issue 9530
+
+2021-03-04: Replace version.txt when building adhoc
+
+2021-03-04: Change adhoc builds version number to
+0.<date>-adhoc so they will autoupdate properly
+
+2021-03-04: Fix metal debugger
+
+2021-03-04: When creating the tmux profile, disable its
+hotkey. Issue 9527
+
+2021-03-04: Use ideal tab size for fit window to tabs when
+scroller style changes. Issue 9479.
+
+Notes from Kelvin's debug log on that issue:
+
+After adding the tab, tabViewDidChangeNumberOfTabViewItems:
+is called. We do
+fitWindowToTabsExclusingTmuxTabs:preservingHeight:sizeOfLargestTab:.
+The largest tab is found to be 570. This is based on 80
+columns wide from a correctly initialized session. Why does
+it come up with 570?
+_sessionSizeWithCellSize:dimensions:showTitles:showBottomStatusBar:inTerminal:
+seems to be the culprit.
+
+It says its scrollerStyle is 1, which is overlay.
+
+So the window initially has overlay scrollers and then they
+immediately change to legacy.
+
+1612880636.525463 iTermWindowImpl.m:567 (-[iTermWindow
+setFrame:display:]): setFrame:{{442, 170}, {570, 458}}
+display:1 maxy=628 of <PseudoTerminal: 0x7fd0d4722060 tabs=1
+window=<iTermWindow: 0x7fd0d5837620 frame=NSRect: {{442,
+170}, {570, 458}} title=   8025 alpha=1.000000 isMain=1
+isKey=1 isVisible=1 delegate=0x7fd0d4722060>> from (
+	0   iTerm2
+	0x000000010f54e404 -[iTermWindow setFrame:display:]
+	+ 189 1   iTerm2
+	0x000000010f6d6a65 -[PseudoTerminal
+	fitWindowToTabSize:preferredHeight:] + 2912 2
+	iTerm2
+	0x000000010f6d5ece -[PseudoTerminal
+	fitWindowToTabsExcludingTmuxTabs:preservingHeight:sizeOfLargestTab:]
+	+ 581 3   iTerm2
+	0x000000010f6d8875 -[PseudoTerminal
+	scrollerStyleDidChange:] + 215
+
+I can't explain why scrollerStyleDidChange: was called, but
+it should have grown the window instead of shrinking the
+tab.
+
+scrollerStyleDidChange calls [self
+fitWindowToTabsExcludingTmuxTabs:NO preservingHeight:YES].
+
+It has a comment which seems to be a lie:
+	// The scrollbar has already been added so tabs'
+	current sizes are wrong.  // Use ideal sizes
+	instead, to fit to the session dimensions instead of
+	// the existing pixel dimensions of the tabs.
+The first thing that happens when
+fitWindowToTabsExcludingTmuxTabs:preservingHeight: is called
+is [self sizeOfLargestTabExcludingTmux:excludeTmux].
+
+It uses [tab currentSize] to compute the size of the largest
+tab, which comes out to 570 because it is *NOT* using ideal
+sizes.
+
+So why are we not using ideal sizes? Let's see if we used to
+and when it was removed.
+
+This commit is responsible: commit
+90506bba5beee0b6aa085c18c9680862319abb7b (HEAD,
+refs/bisect/bad) Author: George Nachman <gnachman@gmail.com>
+Date:   Sat Nov 10 12:12:55 2018 -0800
+
+    When the window size changes because scroller appearance
+    changed, preserve its height and adjust only the width.
+    Issue 7318 and 6198.
+
+The purpose of the commit was to preserve height, but it is
+also preserving width which was not intended.
+
+This commit fixes the error by changing
+scrollerStyleDidChange back to use ideal sizes while
+preserving height. I tested that the neither the window's
+width nor height changes when scroller style changes.
+
 2021-03-04: Remove flexible space from prefs panel. It was
 selectable because NSToolbar is insane (it only appears if
 selectable!) and also didn't work very well. Issue 9522
