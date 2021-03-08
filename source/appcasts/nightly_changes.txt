@@ -1,3 +1,55 @@
+2021-03-07: Fix smart cursor color, which uses NSClipRect
+and that call was not updated to use virtual offsets. Issue
+9532
+
+2021-03-07: Fix escaping.
+
+Sending text escaped incorrectly in various ways. For
+example, the send text keybinding action accepted escaped
+controls (\n,\e,\a,\t) but not escaped backslashes so there
+is no way to send backslash + a since \a sends a control-G
+and \\a sends \\a.
+
+The concept of compatibility escapes is added. Keybinding
+actions, touchbar items, Actions, and snippets now track
+which mode to use. Newly created ones will NOT use
+compatibility escaping while existing ones will.
+
+Compatibility escaping keeps the current suite of bugs. When
+off, a sane escaping algorithm is used depending on context.
+A number of escaping modes are defined:
+
+none: No escapes, just raw text.  compatibility: "neat", or
+\n \e \a \t but not \\ are handled common: \n \e \a \t \b \r
+\\ \xXXXX (hex) vim: stringByExpandingVimSpecialCharacters
+vimAndCompatibility: stringByExpandingVimSpecialCharacters
+  and THEN neat. Terrible!
+
+* The "Send Text" keybinding action escapes using the Common
+  mode. Previously it unescaped neat but not \.
+* The "Send Text with Vim Special Chars" escapes with the
+  Vim mode. Previously it unescaped vim chars and THEN neat.
+* The "Send selected text" context menu item now sends the
+  literal text. It used to unescape neat.
+* Sending a snippet now unescapes using the Common mode. It
+  used to unescape neat.
+* Pointer "Send Text" actions now use the Common mode.
+  Previously it unescaped neat but not \.
+
+In order to effect this, actions, snippets, key bindings,
+and touch bar items now track a version. If the version is
+unset or 0 then compatibility mode is used. Existing values
+automatically get this since the version will be unset for
+them. Otherwise if the version is nonzero then we use modern
+escaping instead of compatibility.
+
+See mailing list thread subject "Re: [iterm2-discuss] Escape
+special characters in snippets"
+
+2021-03-07: Invalidate blend when changing the textview or
+PTYSession delegate. Fixes a bug where transparency was off
+in restored sessions. Issue 9548
+
 2021-03-04: Change wording in dashboard min windows
 threshold to be clearer. Issue 9530
 
