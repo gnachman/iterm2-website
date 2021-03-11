@@ -83,6 +83,12 @@ if ! grep iterm2_shell_integration "${SCRIPT}" > /dev/null 2>&1; then
 
 EOF
 fi
-echo "Done."
+
+echo "iTerm2 shell integration was installed!"
 echo ""
-echo "The next time you log in, shell integration will be enabled."
+echo "A script was installed to ${FILENAME}"
+echo ""
+echo "To make it work right now, do:"
+echo "  source ~/${FILENAME}"
+echo
+echo "This line was also added to ${SCRIPT}, so the next time you log in it will be loaded automatically."

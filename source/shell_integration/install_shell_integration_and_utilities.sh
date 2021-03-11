@@ -121,11 +121,20 @@ do
 done
 echo "Adding aliases..."
 echo "$ALIASES" >> "${FILENAME}"
-
-echo "Done."
+echo ""
 echo "--------------------------------------------------------------------------------"
 echo ""
-echo "The next time you log in, shell integration will be enabled."
+echo "iTerm2 shell integration was installed!"
+echo ""
+echo "A script was installed to ${FILENAME}"
+echo "Utilities were installed to ${DOTDIR}/.iterm2. You don't need to modify your PATH because ${FILENAME} includes aliases for them."
+echo ""
+echo "To make it work right now, do:"
+echo "  source ~/${FILENAME}"
+echo
+echo "This line was also added to ${SCRIPT}, so the next time you log in it will be loaded automatically."
+echo ""
+echo "--------------------------------------------------------------------------------"
 echo ""
 echo "You will also have these commands:"
 echo "imgcat filename"
