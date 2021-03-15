@@ -1,3 +1,10 @@
+2021-03-14: Try the standard string-to-URL conversion before
+doing my complicated algorithm. This preserves percent
+encoding in paths. Percent encoding won't be preserved in
+paths with URLs it can't handle like non-ascii domain names,
+but at least now well formed URLs don't get messed with.
+Issue 9562.
+
 2021-03-13: Fix support for IPv6 addresses in
 URLWithUserSuppliedString. Issue 9568
 
