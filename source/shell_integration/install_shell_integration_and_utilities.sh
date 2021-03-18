@@ -131,7 +131,7 @@ echo "A script was installed to ${FILENAME}"
 echo "Utilities were installed to ${DOTDIR}/.iterm2. You don't need to modify your PATH because ${FILENAME} includes aliases for them."
 echo ""
 echo "To make it work right now, do:"
-echo "  source ~/${FILENAME}"
+echo "  source ${FILENAME}"
 echo
 echo "This line was also added to ${SCRIPT}, so the next time you log in it will be loaded automatically."
 echo ""

@@ -90,6 +90,6 @@ echo ""
 echo "A script was installed to ${FILENAME}"
 echo ""
 echo "To make it work right now, do:"
-echo "  source ~/${FILENAME}"
+echo "  source ${FILENAME}"
 echo
 echo "This line was also added to ${SCRIPT}, so the next time you log in it will be loaded automatically."
