@@ -84,6 +84,7 @@ if ! grep iterm2_shell_integration "${SCRIPT}" > /dev/null 2>&1; then
 EOF
 fi
 
+echo "Done."
 echo "iTerm2 shell integration was installed!"
 echo ""
 echo "A script was installed to ${FILENAME}"
