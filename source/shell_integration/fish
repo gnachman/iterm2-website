@@ -67,7 +67,8 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
         if not functions iterm2_fish_prompt | grep iterm2_prompt_mark > /dev/null
             iterm2_prompt_mark
         end
-        sh -c "exit $last_status"
+
+        return $last_status
    end
 
   function iterm2_has_fish_mode_prompt -d "Returns true iff fish_mode_prompt is defined and non-empty"
