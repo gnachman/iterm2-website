@@ -389,11 +389,10 @@ async def saved_arrangement(connection, args):
     elif args.action == "restore":
       await w.async_restore_window_arrangement(args.name)
   else:
-    a = await iterm2.async_get_app(connection)
     if args.action == "save":
-      await a.async_save_window_arrangement(args.name)
+      await iterm2.Arrangement.async_save(connection, args.name)
     elif args.action == "restore":
-      await a.async_restore_window_arrangement(args.name)
+      await iterm2.Arrangement.async_restore(connection, args.name)
 
 async def show_focus(connection, args):
   a = await iterm2.async_get_app(connection)
