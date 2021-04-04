@@ -90,6 +90,22 @@
 <dd><p>Represents a tab.</p>
 <p>Don’t create this yourself. Instead, use <a class="reference internal" href="app.html#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a>.</p>
 <dl class="method">
+<dt id="iterm2.Tab.async_activate">
+<em class="property">async </em><code class="sig-name descname">async_activate</code><span class="sig-paren">(</span><em class="sig-param">order_window_front: bool = True</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Tab.async_activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects this tab.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>order_window_front</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the window this session is in should
+be brought to the front and given keyboard focus.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Example “<a class="reference internal" href="examples/function_key_tabs.html#function-key-tabs-example"><span class="std std-ref">Function Key Tabs</span></a>”</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="iterm2.Tab.async_close">
 <em class="property">async </em><code class="sig-name descname">async_close</code><span class="sig-paren">(</span><em class="sig-param">force: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Tab.async_close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Closes the tab.</p>
@@ -158,9 +174,44 @@ use the system default timeout.</p></li>
 </dd></dl>
 
 <dl class="method">
+<dt id="iterm2.Tab.async_move_to_window">
+<em class="property">async </em><code class="sig-name descname">async_move_to_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.window.Window<a class="headerlink" href="#iterm2.Tab.async_move_to_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves this tab to its own window, provided there are multiple tabs in
+the window it belongs to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The new window ID.</p>
+</dd>
+<dt class="field-even">Throws</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="iterm2.Tab.async_select">
 <em class="property">async </em><code class="sig-name descname">async_select</code><span class="sig-paren">(</span><em class="sig-param">order_window_front: bool = True</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.Tab.async_select" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deprecated in favor of <cite>async_activate</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Tab.async_select_pane_in_direction">
+<em class="property">async </em><code class="sig-name descname">async_select_pane_in_direction</code><span class="sig-paren">(</span><em class="sig-param">direction: iterm2.tab.NavigationDirection</em><span class="sig-paren">)</span> &#x2192; Optional[str]<a class="headerlink" href="#iterm2.Tab.async_select_pane_in_direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Activates a split pane adjacent to the currently selected pane.
+Requires iTerm2 version 3.3.2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>direction</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">NavigationDirection</span></code>) – Specifies the direction to move. For example, LEFT
+will cause the pane to the left of the currently active one.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The ID of the newly selected session ID, or None if there was
+no session in that direction.</p>
+</dd>
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -269,6 +320,12 @@ either vertical or horizontal.</p>
 <dd class="field-odd"><p>The tab’s identifier, a string.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iterm2.Tab.tmux_connection_id">
+<em class="property">property </em><code class="sig-name descname">tmux_connection_id</code><a class="headerlink" href="#iterm2.Tab.tmux_connection_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the connection ID.</p>
 </dd></dl>
 
 <dl class="method">

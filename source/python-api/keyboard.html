@@ -86,13 +86,15 @@
 <p>Provides classes for monitoring keyboard activity and modifying how iTerm2 handles keystrokes.</p>
 <dl class="class">
 <dt id="iterm2.KeystrokeMonitor">
-<em class="property">class </em><code class="sig-name descname">KeystrokeMonitor</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">session: Union[None</em>, <em class="sig-param">str] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.KeystrokeMonitor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">KeystrokeMonitor</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">session: Union[None</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">advanced: Optional[bool] = False</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.KeystrokeMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Monitors keystrokes in one or all sessions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>connection</strong> – The <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> to use.</p></li>
 <li><p><strong>session</strong> – The session ID to affect, or <cite>None</cite> meaning all sessions.</p></li>
+<li><p><strong>advanced</strong> – If false only key-down events are reported. If true,
+key-up and flags-changed events are also reported.</p></li>
 </ul>
 </dd>
 </dl>
@@ -823,6 +825,11 @@ keyboard regardless of its actual layout.</p>
 <dl class="attribute">
 <dt id="iterm2.Keycode.RIGHT_ARROW">
 <code class="sig-name descname">RIGHT_ARROW</code><em class="property"> = 124</em><a class="headerlink" href="#iterm2.Keycode.RIGHT_ARROW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="iterm2.Keycode.RIGHT_COMMAND">
+<code class="sig-name descname">RIGHT_COMMAND</code><em class="property"> = 54</em><a class="headerlink" href="#iterm2.Keycode.RIGHT_COMMAND" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
