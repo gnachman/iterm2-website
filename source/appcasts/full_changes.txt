@@ -1,360 +1,152 @@
-3.4.4
+3.4.5
 
-Annoying things I'm sorry about
-- You'll be asked to re-install the Python
-  runtime. This fixes a problem where pip3 would
-  sometimes fail. Instead of creating a symlink
-  of ~/Library/ApplicationSupport we will now use
-  ~/.config/iterm2/AppSupport.
-
-New Features
-- Tab titles now parse very basic HTML tags for
-  bold, italic, and underline. Less-than and
-  ampersand entites are also recognized.
-- Margins are now adjustable in Prefs >
-  Appearance > Panes.
-- Add an option to save prefs to a custom folder
-  automatically.
-- The composer now integrates with command history
-  and makes completion suggestions.
-- When you right click on text with a hyperlink,
-  "Copy Link Address" is now available in the
+New Features:
+- Add preference to allow/disallow apps changing
+  the function of the option keys with a control
+  sequence.
+- Add a menu item to pop the current session into
+  a new window.
+- The git status bar now indicates the repo state
+  (merging, reverting, cherrypicking, bisecting,
+  rebasing, or applying).
+- When you right click on a hex color like #ffeedd
+  show a preview of the color in sRGB in the
   context menu.
+- Add a new type of trigger to highlight the whole
+  line. This is useful because matching .*foo.* is
+  very slow. With this trigger you can simply
+  match foo and the whole line changes color.
 
 Improvements
-- The changelog now has a PGP signature.
-- Improve performance of opening lots of tabs at
-  once.
-- Improve performance when changing prefs that
-  affect many tabs.
-- Tabs are now selected on mouse down rather than
-  on mouse up.
-- Hide tab close button on small tabs to prevent
-  accidental closure.
-- Confirm deleting entries in the password
-  manager.
-- Tab icons are now always left aligned and get
-  replaced with the close button on hover.
-- Plain-text logs now include timestamps.
-- Recognize U+251C and U+2524 as column dividers
-  for selection's soft boundaries.
-- Reduce minimum dimming amount allowed in Prefs >
-  Appearance > Dimming.
-- Use terminal background color to determine
-  appearance of composer.
-- You can now use Cmd-W to dismiss the composer.
-- Don't show an alert if the initial tmux
-  integration command fails.
-- When you split a pane in tmux integration and
-  focus follows mouse is on, don't make the pane
-  under the mouse active. Make the new pane
-  active.
-- New tmux windows created outside iTerm2 (e.g.,
-  by running `tmux new-window`) will become tabs
-  in the current window.
-- Give backpressure to commands run in the
-  background (e.g., from triggers) to keep them
-  from hogging CPU.
-- Improve performance of creating a new session in
-  a custom directory.
-- Improve performance when there are big
-  background images.
-- The composer now clears the existing command by
-  sending C-U C-K.
-- Handle "Default_Ignorable" unicode characters
-  correctly.
-- Use the background color of inactive sessions to
-  determine the split pane divider color.
-- Improve performance of decoding inline images.
-- Allow emoji picker to be added to the touch bar.
-- Add "Send Snippet" as a key binding action.
-- Remove the popover composer UI; use the large
-  composer UI regardless of whether there is a
-  status bar.
-- Add a button in the composer UI to open
-  explainshell.com.
-- When you hold down cmd while dragging in a file
-  from Finder, insert a command to cd to its
-  containing folder.
-- The GPU renderer now draws a frame at least
-  every half second to prevent a brief hang after
-  inactivity.
+- The git status bar component no longer shells
+  out to the system git. It uses libgit2 instead
+  (nicely named!) and should be faster and more
+  reliable now.
+- When known, the current git branch is used as a
+  search feature in Open Quickly.
+- Don't show a line between the titlebar and
+  tabbar in Big Sur.
+- Increase max allowed blur on macOS 10.14.
+- When you move a window to a different screen by
+  selecting the Move To Screen menu item, it will
+  lose its affinity for the window assigned to it
+  in Prefs > Profiles > Window and stay where it
+  was put when screens are added or removed.
+- Buttons in modal alerts now accept cmd+letter
+  shortcuts.
+- Ignore dynamic profiles whose filename ends in a
+  tilde.
+- Reset terminal when relaunching a session (e.g.,
+  paste bracketing and mouse reporting).
+- The composer window now uses the terminal's
+  font.
+- Scrolling with the trackpad should be more
+  responsive now.
+- Change how text is drawn when not using GPU
+  renderer to avoid artifacts.
+- When doing selection respecting soft boundaries,
+  treat a backslash in the last column as a
+  continuation mark and don't include it.
+- By default, save terminal contents to history
+  when there is a scrolling region that touches
+  the top of the screen.
+- Newly saved window arrangements will restore to
+  the right size when scroller style changes after
+  they were created (unless there are side-by-side
+  split panes).
+- Treat soft hyphens as unicode punctuation in
+  Advanced Paste.
 
 Bug Fixes
-- Fix various crashes.
-- Fix a bug where tab labels would be white in
-  light mode when there was a colored tab.
-- Fix alignment of underlines in GPU renderer.
-- Fix various drawing bugs in legacy renderer.
-- Fix a bug where on Big Sur transparency doesn't
-  work with background images.
-- Fix $$$$ in profile commands, which should be
-  replaced with $$.
-- Fix a bug in key reporting for arrow keys when
-  application cursor mode is on. This caused
-  problems in vim.
-- Improve how background colors are blended with
-  background images in GPU renderer to be
-  consistent with legacy renderer.
-- Fix a bug where Window > Move to (display) was
-  disabled.
-- Fix a bug where tmux panes would get killed when
-  switching sessions.
-- Don't show the "short-lived session" warning in
-  tmux integration when creating a new tmux
-  session.
-- Fix a problem where BBEdit couldn't find the
-  parent iTerm2 app.
-- Tolerate missing profiles when restoring a
-  window arrangement.
-- Don't show swipe-between-tabs animation when
-  there is only one tab.
-- Give minimal windows an invisible proxy icon so
-  that accessibility can tell what the current
-  directory is.
-- Tmux integration windows enter full screen when
-  the profile specifies it.
-- Fix a bug where windows were not movable after
-  exiting full screen.
-- Fix various bugs in the "Add Trigger" menu item.
-- Fix bugs where switching tabs makes a cleared
-  search field regain its previous value.
-- Fix a bug where async_get_full_profile in Python
-  API would throw for some profiles.
-- Reduce size of saved state database.
-- Fix a bug where tmux integration didn't work on
-  OpenBSD.
-- Fix a bug where clicking in the search field
-  didn't work.
-- Fix a bug where non-default background colors
-  had the wrong opacity in the GPU renderer.
-- Fix tiled images, which did not tile properly.
-- Fix a bug where newly added snippets cannot be
-  selected in the menu.
-- Fix a bug where the login shell could be
-  launched as x86 only.
-- Fix layout bugs when resizing shortcuts prefs
-  windows.
-- Reduce CPU utilization when GPU resources are
-  scarce.
-- Fix a bug where minimum contrast didn't work
-  correctly in GPU renderer sometimes.
-- Make the tab color selection menu item look
-  right in dark mode.
-- When you drag a tab out of a window, show the
-  previously selected tab. That makes it possible
-  to drag another tab into a pane in the current
-  tab.
-- Fix a bug where the tmux initial window mode was
-  not respected.
-- Fix a bug where miniaturized windows were
-  restored non-miniaturized.
-- Fix a bug where the "do not remap" action didn't
-  work when secure keyboard input was turned on.
-- Fix a file descriptor leak in the main app and
-  also the server.
-- Fix crash when opening session title bar menu.
-- Fix a bug where advanced working directory
-  settings were not editable.
-- Fix a bug where sessions could have a line of
-  the wrong color near the top when empty.
-- Fix color of tab bar text on Big Sur.
-- Fix a bug where double-clicking on a session's
-  title bar didn't maximize tmux panes correctly.
-- Fix truncated button in status bar search field.
-- Update window blur when changing window styles.
-- Turn off paste bracketing and other undesirable
-  terminal state when relaunching a session.
-
-
-3.4.3
-
+- Fix a bug where doublecliking on a session
+  titlebar didn't maximize tmux panes correctly.
+- Fix clipped button next to status bar search
+  field.
+- Blur is now correct after changing window type
+  or theme.
+- Fix a bug where a window forgot it was blurred
+  when toggling traditional fullscreen in Minimal
+  theme.
+- Fix a bug where windows would restore on the
+  wrong desktop.
+- Fixes a bug where the GPU renderer gets stuck
+  "off" when the "Reduce motion" accessibility
+  setting is enabled and a window is maximized.
+- Fix a bug where control+shift+function/arrow key
+  sent the wrong code.
+- Fix a bug where the app could hang after certain
+  trackpad touches.
+- Fix a bug where copy on selection didn't always
+  work.
+- Fix a bug where transparent windows changed
+  colors in native full screen mode.
+- Fix a bug where keystrokes bound to menu items
+  didn't always work.
 - Fix crashes.
-- Don't allow programs to turn on
-  "modifyOtherKeys" key reporting mode, which
-  caused problems in vim for many users.
-  This default can be changed in 
-  Prefs > Profiles > Keys.
-- Fix a bug where "Move Session to Window" was
-  disabled in the context menu.
-- Fix a bug where long URLs couldn't be
-  cmd-clicked on.
-- If Application Support is not writable, copy the
-  server binary to ~/.iterm2
-- Save restorable state when upgrading, even if
-  it's normally not used.
-- Fix a bug where custom status bar components
-  didn't work.
-- Fix a bug where the python runtime couldn't be
-  downloaded.
-- Bring back the ApplicationSupport symlink
-  because pip3 can't handle spaces in paths.
-- Fix a crash when the scripting console was open.
-
-3.4.2
-
-- Fix a bug where sessions ended immediately.
-- Fix a bug where tmux integration would
-  disconnect immediately.
-- Fix crashes.
-- Fix a bug where smart selection actions in the
-  context menu were disabled.
-- Fix Prefs > General > Magic > Allow all apps to
-  connect, which gave an error every time.
-- Fix right click to open context menu for
-  two-button mice.
-- Improve performance when resizing windows with
-  background images.
-- Fix shortcut for Composer in tip of the day.
-- Fix support for control keys that include option
-  on non-US keyboard in modifyOtherKeys mode 2.
-- Fix a bug where the tab title was used in place
-  of the window title.
-
-3.4.1:
-
-- Make downloads of Python runtime more reliable.
-- Fix a bug in Big Sur where the content of alert
-  boxes could be cut off.
-- Fix a bug in Big Sur where the tabbar could
-  overlap terminal contents in full screen mode.
-
-3.4.0 Release Notes:
-
-New Features
-- You can now set a custom tab title on a profile
-- There is a new profile preference to configure
-  whether mouse reporting of clicks and drags are
-  allowed.
-- Search results, marks, and annotations are now
-  indicated in the scroll bar.
-- There's a new preference to focus a window when
-  you right- or middle-click in it.
-- Add support for IntelliJ IDEA, VSCodium, and
-  Sublime Text 4 as Semantic History editors.
-- There's a new "Composer" feature that lets you
-  quickly open a scratchpad to enter a command.
-- You can now swipe with two or three fingers
-  between tabs, like in Safari.
-- Curly underlines are now supported.
-- Adds support for DECRQSS.
-- DECSCUSR 0 now resets the cursor to its default
-  setting.
-- Adds support for flow control in tmux 3.2 and
-  "pause mode" that will automatically pause
-  sessions in tmux integration that get very far
-  behind with the ability to catch up quickly.
-  NOTE: tmux 3.2 has not yet been released.
-- tmux integration windows will now keep their
-  size the same as you create or destroy split
-  panes.
-- Adds a preference to exclude iTerm2 from the
-  dock and cmd-tab app switcher only if all
-  windows are hotkey windows.
-- In the Minimal and Compact themes, you can now
-  drag the window by grabbing the edge of the tab
-  bar near the window border.
-- Show local time in the context menu when you
-  right click on a timestamp in microseconds since
-  epoch.
-- Add a menu item "copy with control sequences".
-
-Improvements
-- Various performance improvements.
-- The Python API now uses a Unix Domain Socket
-  instead of a TCP socket for better performance.
-  The security model has also changed: apps can
-  authenticate via Applescript or you can choose
-  to allow all programs running locally to use the
-  API.
-- Use a single daemon process for all sessions
-  instead of one per session. This reduces the
-  number of process IDs used and also improves the
-  time to launch a new session.
-- Background images are significantly faster when
-  not using the GPU renderer.
-- Most tables now allow multiple selection.
-- The number of search results is now shown in the
-  Find on Page UI.
-- Dynamic profiles now works with symlinks. Even
-  the DynamicProfiles folder itself may be a
-  symlink.
-- Exported scripts now have a more secure
-  container format that signs the entire file
-  except the signature itself.
-- Improve cold launch time.
-- Countless minor improvements and polishing.
-- Big Sur supported.
-- Permission is now requested before various
-  possibly destructive or annoying activities are
-  done in response to control sequences.
-- Don't snap window size to the cell grid when it
-  gets resized by an Accessibility API.
-- Only use touch bar mitigations for keypresses
-  originating from the built-in keyboard.
-- The profile preference "Send text at start" is
-  now an interpolated string.
-- The profile preference "Custom command" is
-  now an interpolated string.
-- The feature where the scroll wheel sends arrow
-  keys when in alternate screen mode now works
-  even when alternate screen mode is disabled.
-- Enable window shadow for transparent windows.
-- When resizing the window while scrolled up in to
-  history, keep the text in the top left locked in
-  position.
-- Show a brief message when automatic profile
-  switching takes effect.
-- Send a newline before sending the curl command
-  to install shell integration to clear out any
-  existing command.
-- Disable GPU renderer for obscured windows when
-  using the integrated GPU.
-- When a tmux pane fails to split, don't detach.
-- Remember tmux window sizes when reattaching.
-- When disintering a buried tmux tab, put it back
-  in the right position in the same window it came
-  from.
-- Draw outline on right hand side of last tab in
-  minimal theme.
-- Hide subpixel antialiasing UI on big sur because
-  Apple took it away from us :(
-
-Bug Fixes
-- Full screen windows in the Minimal or Compact
-  theme did not used to get restored properly and
-  now they do.
-- Fix how 24-bit colors are reported to work with
-  vim.
-- Saved arrangements that contain local changes
-  (such as those made with Edit Session) will now
-  pick up changes to the original profile.
-- Fix a bug where inline images and OSC 8
-  hyperlinks didn't get restored reliably when
-  restarting the app.
-- Improve support for zero-width joiners in Emoji.
-- Fix a memory leak of inline images when
-  restoring windows after restarting the app.
-- Fix a bug where Swap With Session didn't work on
-  tmux panes.
-- Fix a bug where quickly resizing tmux windows
-  would increase the bottom margin.
-- Fix a bug where Window > Resize Window would
-  cause tmux windows to resie incorrectly.
-- Fix a bug where windows are not movable after
-  exiting native full screen.
-- Add crlf after sixel image.
-- Fix shift-return in profiles window to open a
-  window instead of a tab.
-- Fix a bug where tmux windows would change sizes
-  unexpectedly when using horizontal/vertical
-  character spacing.
-
-Things Made Worse
-- Support for macOS 10.12 and 10.13 dropped.
+- Fix a bug where disabling
+  middle-click-to-close-a-tab also breaks the tab
+  close button.
+- Fix keystroke filtering in the Python APi which
+  seems have been broken for some time.
+- Fix various bugs with HTML tab titles: remove
+  HTML for window title and tooltips.
+- Fix a bug where inline images downscaled
+  with artifacts in the GPU renderer.
+- Fix a crash on launch if ~/.config/iterm2 is not
+  able to be created and is not already a
+  directory.
+- Fix a bug where tab icons were flipped
+  vertically on macOS 10.14.
+- Fix a bug where the GPU renderer would sometimes
+  use the wrong thickness for text.
+- Fix various bugs around snippets with the same
+  title.
+- Don't crash if ~/.config/iterm2, ~/.iterm2, and
+  ~/.iterm2-1 cannot be created/used as writable
+  directories.
+- Fix rendering bugs in background images with
+  transparency.
+- When HTML titles are enabled, remove the tags
+  from various places like notifications.
+- Don't crash when pseudoterminals are exhausted.
+- Fix a bug where windows would be empty after
+  changing screen.
+- Fix a bug where no terminal content was shown
+  when dragging a tab.
+- Fix a bug where underlines appeared offset.
+- Fix a bug where transparency and blur would
+  sometimes be wrong.
+- Fix a bug where smart cursor color didn't use
+  the right neighbors as input.
+- Fix a bug where the tty pixel size didn't take
+  retina scale into account.
+- Fix blurry timestamps.
+- Fix a hang when using a status bar with the
+  "stable layout" algorithm and a fixed-size
+  spacer.
+- Fix a bug where scroll wheel mice could need
+  more than one click to scroll.
+- Fix a bug where tmux integration was broken on
+  OpenBSD 6.8.
+- Fix a flash when the metal renderer is enabled
+  or disabled.
+- Fix bugs where tiled background images didn't
+  look right.
+- Fix bug where the last command in the command
+  history toolbelt tool was cut off.
 
 
+You can use the following to verify the zip file on https://keybase.io/verify:
 
-SHA-256 of the zip file is
-9db9b3801c90e16575d20ebc65a462fc9a119c4b9e3ad9743e4a0b47cb7bfa46
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+2fead9e50cf8d6b1604306acc3ad83791fda234e2583c26d02f59d0a8664426a
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCYCtcDwAKCRB0Et0TaFtK
+rNV7AQCvTEEIq1DArq1zpZKEbOZKVnpCVBCyWiNY3WI84vsilgD7BmmhrBZIcjOt
+3wWI1DoucA++txeTFFTi+7ObvcK1AMk=
+=6od5
+-----END PGP SIGNATURE-----
 
