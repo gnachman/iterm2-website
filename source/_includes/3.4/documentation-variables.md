@@ -46,9 +46,10 @@ These values require shell integration to be installed.
   * `path` - The current working directory (this works without shell integration, but not if you ssh elsewhere)
   * `username` - The current user name
 
-#### Auto-Logging
+#### Logging
   * `autoLogId` - When automatic logging is enabled, this is the random number portion of the filename.
   * `creationTimeString` - A string giving the initial creation time of the session, used as part of the filename when automatic logging is enabled
+  * `logFilename` - If set, the filename that logging goes to. If unset, logging is off. New in version 3.4.7.
 
 #### tmux Integration
   * `tmuxClientName` - The name of the tmux session when tmux integration is in use (e.g., `user@localhost`).
