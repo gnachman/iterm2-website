@@ -1,3 +1,14 @@
+2021-04-20: In big sur when the tabbar is on top in native
+fullscreen make the tabbar a titlebar accessory view
+controller only if it is no normally shown. When it *is*
+normally shown, we move it out of the titlebar so that it
+doesn't get a shadow under it. Issue 9639. This also removes
+some AFAICT dead code for disabling titlebar accessory VCs
+in big sur (it was off by default)
+
+2021-04-20: Fix inline images on retina displays by storing
+both 1x and 2x representations. Issue 9632
+
 2021-04-19: Change how insets are calculated for inline
 images to make sense and to work correctly when preserving
 aspect ratio. Issue 9632
