@@ -13,6 +13,7 @@ The preferences dialog contains the following sections:
   * <a href="documentation-preferences-keys.html">Keys</a>
   * <a href="documentation-preferences-arrangements.html">Arrangements</a>
   * <a href="documentation-preferences-pointer.html">Pointer</a>
+  * <a href="documentation-preferences-shortcuts.html">Shortcuts</a>
   * <a href="documentation-preferences-advanced.html">Advanced</a>
 
  
