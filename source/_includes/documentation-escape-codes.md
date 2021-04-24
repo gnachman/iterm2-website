@@ -28,8 +28,8 @@ And this gets the foreground color:
 
 For background and foreground respectively, the terminal will write back:
 
-    OSC 4 ; -2 ; rgb ; [red] / [green] / [blue] ST
-    OSC 4 ; -1 ; rgb ; [red] / [green] / [blue] ST
+    OSC 4 ; -2 ; rgb : [red] / [green] / [blue] ST
+    OSC 4 ; -1 ; rgb : [red] / [green] / [blue] ST
 
 Where `[red]`, `[green]`, and `[blue]` are either 2 or 4-digit hex values like `14a7`
 or `ff`. For 4-digit values, you can get an approximation of the 2-digit value
