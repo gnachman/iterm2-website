@@ -1,3 +1,27 @@
+2021-05-15: Don't ignore zero-width joiners. Instead, append
+them to the preceding cell. This prevents a ligature from
+forming at drawing time. Issue 9699
+
+2021-05-15: Remove prompt marks when doing ED 0 (erase in
+display below cursor). Fixes a bug where marks get left
+behind in tmux integration with shell integration enabled
+because the screen terminal uses ED 0 instead of ED 2 to
+clear the screen.
+
+2021-05-15: Draw the adjusted document-visible rect. The
+adjusted rect is forced to the bottom when userScroll is
+off, even if the scrollview isn't caught up yet. This
+prevents artifacts for example in (non-integration) tmux
+when saving lines to scrollback in alternate screen mode for
+issue 9676
+
+2021-05-15: Add support for evaluating idempotent triggers.
+Issue 9688
+
+2021-05-15: Always make window key and order front before
+dragging (by status bar, tabbar control top edge in Minimal,
+and buttons in tab bar.
+
 2021-05-14: Since the crash in dictionary merging was very
 common, try a different approach to avoid it.
 
