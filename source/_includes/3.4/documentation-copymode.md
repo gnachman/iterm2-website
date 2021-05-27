@@ -10,17 +10,17 @@ While in Copy Mode, the session's contents will not change. You can use the keyb
     <th>Action</th>
   </tr>
   <tr>
-    <td>C-space</td>
+    <td>control-space</td>
     <td>Stop selecting</td>
   </tr>
 
   <tr>
-    <td>Esc, q, C-c, C-g</td>
+    <td>Esc, q, control-c, control-g</td>
     <td>Exit copy mode</td>
   </tr>
 
   <tr>
-    <td>C-v</td>
+    <td>control-v</td>
     <td>Toggle rectangular selection</td>
   </tr>
 
@@ -110,12 +110,12 @@ While in Copy Mode, the session's contents will not change. You can use the keyb
     <th>Action</th>
   </tr>
   <tr>
-    <td>C-b, Page Up</td>
+    <td>control-b, Page Up</td>
     <td>Move up one screen</td>
   </tr>
 
   <tr>
-    <td>C-f, Page Down</td>
+    <td>control-f, Page Down</td>
     <td>Move down one screen</td>
   </tr>
 
@@ -195,7 +195,7 @@ While in Copy Mode, the session's contents will not change. You can use the keyb
   </tr>
 
   <tr>
-    <td>C-k, y</td>
+    <td>control-k, y</td>
     <td>Copy selection</td>
   </tr>
 </table>
