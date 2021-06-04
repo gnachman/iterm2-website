@@ -1,3 +1,28 @@
+2021-06-03: Make opening tabs from the dashboard treat the
+tmux windows as non-anonymous to avoid their opening as tabs
+in the current window. They should open in their own window.
+Also fix the appearance of selected rows in the window table
+of the tmux dashboard. Issue 9746
+
+2021-06-03: Don't send focus reports when password manager
+is opening, open, or closing. Issue 9748
+
+2021-06-01: Add debug logging to help time session
+initialization
+
+2021-05-29: Fix how tableview height is calculated to work
+right in big sur. Issue 9728
+
+2021-05-29: Fix error reporting for nightly build
+
+2021-05-29: Fix debug log for user-supplied URL conversion
+
+2021-05-28: Assume openssh private keys are encrypted since
+it's impossible to tell through libssh2's APIs. See also
+https://github.com/libssh2/libssh2/issues/608. Issue 9713
+
+2021-05-28: [python] Add support for websockets 9.x
+
 2021-05-26: Add import/export buttons to actions and
 snippets in prefs. Issue 9724
 
@@ -158,161 +183,3 @@ script
 9214
 
 2021-05-01: Add logging for excessive timers for issue 9580
-
-2021-04-30: Treat 'move to [display]' menu item key actions
-specially. Don't depend on them being in the window menu
-since this is contingent on which screen the key window is
-on. Instead, manually add them and invoke them specially.
-Store a unique identifier for the display with the binding.
-Do a bunch of annoying stuff to give screens unique names
-like what's in the Window menu. Issue 9666.
-
-2021-04-30: Don't crash when a profile lacks a shortcut.
-Issue 9667
-
-2021-04-27: Make pidinfo fork to get git state and terminate
-the child process if it takes too long, per the gitTimeout
-advanced pref. Issue 9640
-
-2021-04-25: In GPU renderer, don't underline past the cell
-width (rather than the glyph width, which can be quite
-large) when the next instance in the row is not underlined.
-Issue 9653
-
-2021-04-25: Change fullscreen menu item shortcut to the
-standard cmd-ctrl-F. If you have a profile whose shortcut is
-set to this, then modify the shortcut to cmd-enter. Also
-continue to accept cmd-enter for existing users. If you have
-a keybinding for cmd-enter then the legacy hack won't be
-activated. Issue 6254
-
-2021-04-25: Don't let the working directory poller's
-invalidated result override a pushed working directory.
-Comment in issue 8615
-
-2021-04-24: Add debug logging for braodcast input for issue
-9628
-
-2021-04-24: Don't let a control sequence take you out of CSI
-u mode. Issue 9641
-
-2021-04-24: Fix margins on tranferrable file menu item view
-
-2021-04-24: Improve SCPFile logging. Fix a bug where we do
-the transfer again after retrying without an agent.
-
-2021-04-24: Update live-resize window size view when a grid
-resizes, which for tmux integration happens asynchronously.
-Issue 9649
-
-2021-04-22: Allow focus to stay on search field when a
-terminal window becomes key. Issue 9644
-
-2021-04-22: Fix the expand arrows in the status bar compose
-component. Issue 9633
-
-2021-04-22: Offer to disable remote settings loading when
-the location is unset. Isue 9629
-
-2021-04-22: Disable paste bracketing when sending 'cd
-directory' due to a drag being dropped. Issue 9625
-
-2021-04-20: In big sur when the tabbar is on top in native
-fullscreen make the tabbar a titlebar accessory view
-controller only if it is no normally shown. When it *is*
-normally shown, we move it out of the titlebar so that it
-doesn't get a shadow under it. Issue 9639. This also removes
-some AFAICT dead code for disabling titlebar accessory VCs
-in big sur (it was off by default)
-
-2021-04-20: Fix inline images on retina displays by storing
-both 1x and 2x representations. Issue 9632
-
-2021-04-19: Change how insets are calculated for inline
-images to make sense and to work correctly when preserving
-aspect ratio. Issue 9632
-
-2021-04-19: Fix data race in iTermImageInfo
-
-2021-04-18: Fix bug where inline images were scaled wrong
-introduced by a dumb mistake in
-50fc9b4954d79814ce907daf52217702f6700a69. Issue 9632.
-
-2021-04-18: Move cursor to first column after adding
-'session contents restored' banner.
-
-2021-04-18: Remove selection when pasting. Issue 9614
-
-2021-04-18: Make smart selection radius configurable
-
-2021-04-18: Allow adhoc versions to install Python API
-
-2021-04-18: Add logFilename variable to session scope. Issue
-9609
-
-2021-04-17: Add comments about tmux window/pane titles
-
-2021-04-17: [tmux integration] Prioritize terminalWindowName
-over tab.tmuxWindowName for window titles. Issue 9605
-
-2021-04-17: Fix a bug where the session name controller
-didn't notify its delegate of a name change when it could be
-evaluated synchronously
-
-2021-04-17: [tmux integration] Use pane_title-based value
-from session title function for tab title when it's
-non-empty; otherwise fall back to tmux window name. Issue
-9605
-
-2021-04-17: When launching a Python script start with
-iTerm2's environment rather than an empty one so you get
-stuff like TMPDIR. Issue 9599
-
-2021-04-17: Don't use status bar composer by adding a
-temporary one. Add an advanced pref to enable the old
-beahvior. Issue 9633
-
-2021-04-16: Add debug logging
-
-2021-04-16: Search parent directories for git repo. Issue
-9630
-
-2021-04-06: Improve error reporting in python runtime
-downloader. Issue 8792
-
-2021-04-05: Fix special event handling for control-shift-tab
-which sends a character ASCII 25 (end of medium). Issue 9585
-
-2021-04-05: When not synchronizing to find pasteboard don't
-store to it. Issue 9595
-
-2021-04-05: Add showingAlternateScreen as a session-scoped
-variable.
-
-- Also some edits by gnachman for polish
-
-2021-04-04: Prevent tmux option monitor from polling when
-there is a valid subscription
-
-2021-04-04: Track tmux pane current command and use it to
-set tab icon. Issue 9604
-
-2021-04-03: Scroll on page up, page down, home, and end when
-not in an interactive app. Adds an advanced pref 'Page Up,
-Page Down, Home, and End scroll except when in interactive
-apps.' to control this. Issue 1407
-
-2021-04-03: Fix API reporting of control-tab. Issue 9585
-
-2021-04-03: Preserve semicolons unencoded in paths in
-user-supplied URLs. Issue 9598
-
-2021-04-03: Add a bunch of methods in Tab to documentation.
-
-2021-04-03: Detect when triggers are causing performance
-problems and offer to turn them off in interactive apps
-
-2021-04-02: Add option to disable triggers in interactive
-apps
-
-2021-04-01: Update fish shell integration and it2api
