@@ -1,3 +1,34 @@
+2021-06-05: Fix CSI u mode C-i and C-m, broken by
+5cffd254b75643cb33b8d1d3f6533522a9bd58b3
+
+2021-06-05: Fix a bug where the screen contents are
+double-restored. Issue 9754
+
+2021-06-05: Fix a bug where DCS garbage checking was broken
+by commit c934e493a0745f68722f959818226d4c98022090
+
+2021-06-05: Fix failing unit tests
+
+Note the change to LineBlock and LineBuffer resolves a
+problem introduced in commit
+ee085065ada01f3968a96a96ce50b3f3c96a697e.
+
+2021-06-05: Convert click coordinates to the adjusted
+document visible rect before using them. This fixes a bug
+where scrolling while there is new input coming + scrollback
+overflow causes the selection to jump around. That's because
+the click location is given to us by the OS based on where
+the scrollview is scrolled to, but that doesn't exactly
+correspond to what the user sees since we account for
+scrollback overflow when drawing to keep the screen stable
+when userScroll is on.
+
+2021-06-05: When copying the server binary over, remove the
+old one first.
+
+2021-06-05: Fix a bug where the content jumps around when
+scrolled up and there's scrollback overflow. Issue 9755
+
 2021-06-03: Make opening tabs from the dashboard treat the
 tmux windows as non-anonymous to avoid their opening as tabs
 in the current window. They should open in their own window.
