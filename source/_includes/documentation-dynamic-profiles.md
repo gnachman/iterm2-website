@@ -55,6 +55,10 @@ Here is a fully formed (but minimal) Dynamic Profiles plist:
 }
 </pre>
 
+### Editing
+
+The only way to change a dynamic profile is to modify its parent profile or to modify the property list file. If you change its properties through the preferences UI those changes will *not* be reflected in the property list.
+
 ### Attributes
 
 Every profile preference that iTerm2 supports may be an attribute of a Dynamic Profile. Since there are dozens of attributes, you usually won't specify them all. Any attribute not specified will inherit its value from the default profile, or a specified "parent" profile (see below).
@@ -71,7 +75,9 @@ If you paste a whole profile into a Dynamic Profile this way, make sure you reme
 
 #### Parent Profiles
 
-Normally, a dynamic profile inherits any attributes you don't explicitly specify from the default profile. You may also specify a particular profile to inherit from using the <i>Dynamic Profile Parent Name</i> attribute. The value it takes is a profile name (that is, the name you see listed in the list of profiles in Preferences box). Profile names are not guaranteed to be unique, but they are more convenient than GUIDs. If no profile with the specified name is found, the default profile is used instead. For example:
+Normally, a dynamic profile inherits any attributes you don't explicitly specify from the default profile. You may also specify a particular profile to inherit from using the `Dynamic Profile Parent Name` attribute. The value it takes is a profile name (that is, the name you see listed in the list of profiles in Preferences box). Profile names are not guaranteed to be unique, but they are more convenient than GUIDs. If no profile with the specified name is found, the default profile is used instead. For example:
+
+Starting in version 3.4.9, `Dynamic Profile Parent GUID` is another way to specify a parent. It takes precedence over `Dynamic Profile Parent Name`.
 
 <pre>
 {
@@ -97,7 +103,7 @@ If something goes wrong loading a Dynamic Profile, errors will be logged to Cons
 
 ### Triggers
 
-By default, *Highlight* triggers save colors in a large inscrutable mess of a format. For dynamic profiles, you can use `#rrggbb` in place of the large inscrutable mess.
+By default, *Highlight* triggers save colors in a large inscrutable mess of a format. For dynamic profiles, you can use `{#rrggbb,#rrggbb}` in place of the large inscrutable mess. The first value gives the foreground color and the second value gives the background color. Replace either `#rrggbb` with an empty string to not change that color. For example, to make the foreground red without changing the background use `#{ff0000,}`.
 
 ### Example
 

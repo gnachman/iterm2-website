@@ -75,7 +75,9 @@ If you paste a whole profile into a Dynamic Profile this way, make sure you reme
 
 #### Parent Profiles
 
-Normally, a dynamic profile inherits any attributes you don't explicitly specify from the default profile. You may also specify a particular profile to inherit from using the <i>Dynamic Profile Parent Name</i> attribute. The value it takes is a profile name (that is, the name you see listed in the list of profiles in Preferences box). Profile names are not guaranteed to be unique, but they are more convenient than GUIDs. If no profile with the specified name is found, the default profile is used instead. For example:
+Normally, a dynamic profile inherits any attributes you don't explicitly specify from the default profile. You may also specify a particular profile to inherit from using the `Dynamic Profile Parent Name` attribute. The value it takes is a profile name (that is, the name you see listed in the list of profiles in Preferences box). Profile names are not guaranteed to be unique, but they are more convenient than GUIDs. If no profile with the specified name is found, the default profile is used instead. For example:
+
+Starting in version 3.4.9, `Dynamic Profile Parent GUID` is another way to specify a parent. It takes precedence over `Dynamic Profile Parent Name`.
 
 <pre>
 {
