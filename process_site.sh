@@ -8,6 +8,7 @@ tar -c -v -z --exclude=$HOME/iterm2.com/nightly --exclude=$HOME/iterm2.com/adhoc
 cp -v -n downloads/beta/* ~/iterm2.com/downloads/beta/
 export GEM_HOME=$HOME/.gems2
 rm -rf ~/iterm2.com_stage
+./copy-shell-integration.sh
 ./generate_downloads.py > source/downloads.md
 $GEM_HOME/bin/bundle exec jekyll build -d ~/iterm2.com_stage
 cp -R source/python-api/_downloads ~/iterm2.com_stage/python-api/_downloads
