@@ -1,3 +1,59 @@
+2021-06-27: Assert that the foreground color is never set to
+nil. Issue 9785
+
+2021-06-27: [Python] Remove Splitter.__sessions
+
+In the case of nested splitters, __sessions was not updated
+when a child's sessions were changed. I think that
+__sessions is an unnecessary optimization that adds a bunch
+of complexity including this bug.
+
+It manifested in issue 9784: changing a session's preferred
+size had no effect. The reason is that the protobuf was
+built by doing a DFS through __children but the tab.sessions
+accessor uses __sessions which referred to different
+objects.
+
+While this change could affect user code I think the impact
+will be limited to scripts affecting nested sessions. I
+expect breakage will be on code that worked by accident.
+
+2021-06-26: Make font configurable in text status bar
+components. Issue 9782
+
+2021-06-26: Add Inject trigger. This is the first real Swift
+code in the main app :). Issue 9779
+
+2021-06-26: Use CONFIGURATION_TEMP_DIR for user header
+search paths to find -swift.h files
+
+2021-06-26: Brighten regular color scheme's light mode
+background color
+
+2021-06-26: Add DECSET 2026 for synchronized updates. See
+https://github.com/microsoft/terminal/issues/8331
+
+2021-06-23: Fix golden tests. Use dark background and leave
+background color transparent
+
+2021-06-23: Make it possible to use Swift.
+
+2021-06-20: Remove advanced pref userFixedPitchFontOfSize
+
+2021-06-20: Fix load color preset action, which had not been
+updated for separate light/dark mode support
+
+2021-06-20: Use session font for timestamps. Issue 9778
+
+2021-06-20: [BFP] Rebuild BetterFontPicker framework to try
+to fix crash from issue 9688
+
+2021-06-19: Prevent UB when a sparklines component's width
+is huge
+
+2021-06-19: [BFP] Prevent a crash when the family picker's
+menu somehow gets out of sync with the internal model
+
 2021-06-18: Clean up odds and ends from the great color mode
 change.
 
