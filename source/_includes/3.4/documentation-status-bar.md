@@ -32,6 +32,7 @@ A status bar is composed of components. iTerm2 ships with a number of components
   * **Search Tool** - A search field for performing searches over terminal history.
   * **Action** - A button that activates a programmable action, much like a key-binding action.
   * **Snippet** - A button that pastes text from Snippets, as configured in *Prefs&gt;Shortcuts&gt;Snippets*.
+  * **Triggers** - A button that activates a menu allowing you to enable or disable triggers.
 
 #### Spacers
 

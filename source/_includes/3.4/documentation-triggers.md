@@ -15,6 +15,7 @@ The following actions are available:
   * **Bounce Dock Icon**: Makes the dock icon bounce until the iTerm2 window becomes key.
   * **Capture Output**: Save the line to the Captured Output toolbelt tool. See <a href="documentation-captured-output.html">Captured Output</a>. The parameter is text to send (as though it had been typed) when you double-click on an entry in the Captured Output tool.
   * **Highlight Text**: The text matching the regex in the trigger will change color. The parameter sets the color.
+  * **Inject Data**: Injects a string as though it had been received. For example, you could inject a control sequence that changes the tab color. See <a href="documentation-escape-codes.html">Proprietary Escape Codes</a> for a list of the more interesting things you can do.
   * **Invoke Script Function**: Runs a script function. The parameter is always an interpolated string. See <a href="documentation-scripting-fundamentals.html">Scripting Fundamentals</a> for details.
   * **Make Hyperlink**: Converts the matched text into a hyperlink with the provided URL as its target.
   * **Open Password Manager**: Opens the password manager. You can specify which account to select by default.
@@ -29,6 +30,7 @@ The following actions are available:
   * **Send Text**: Sends user-defined text back to the terminal as though the user had typed it.
   * **Set Mark**: Sets a mark. You can specify whether you'd like the display to stop scrolling after the trigger fires.
   * **Set Title**: Sets the session's title.
+  * **Set User Variable**: Sets a user-defined variable as described in <a href="documentation-scripting-fundamentals.html">Scripting Fundamentals</a>.
   * **Show Alert**: Shows an alert box with user-defined text.
   * **Stop Processing Triggers**: When this action is invoked no triggers further down the list will be invoked for the current text.
 
