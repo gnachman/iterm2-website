@@ -2,17 +2,18 @@
 <!DOCTYPE html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Focus &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Keyboard" href="keyboard.html" />
@@ -81,11 +82,11 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="focus">
+  <section id="focus">
 <h1>Focus<a class="headerlink" href="#focus" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="iterm2.FocusMonitor">
-<em class="property">class </em><code class="sig-name descname">FocusMonitor</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusMonitor" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.FocusMonitor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">FocusMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager for monitoring keyboard focus changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -96,9 +97,9 @@
 <p class="admonition-title">See also</p>
 <p>Example “<a class="reference internal" href="examples/mrutabs.html#mrutabs-example"><span class="std std-ref">Persistent MRU Tabs</span></a>”</p>
 </div>
-<dl class="method">
-<dt id="iterm2.FocusMonitor.async_get_next_update">
-<em class="property">async </em><code class="sig-name descname">async_get_next_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.focus.FocusUpdate<a class="headerlink" href="#iterm2.FocusMonitor.async_get_next_update" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.FocusMonitor.async_get_next_update">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get_next_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#iterm2.FocusUpdate" title="iterm2.focus.FocusUpdate"><span class="pre">iterm2.focus.FocusUpdate</span></a><a class="headerlink" href="#iterm2.FocusMonitor.async_get_next_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>When focus changes, returns an update.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -118,15 +119,15 @@
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.FocusUpdate">
-<em class="property">class </em><code class="sig-name descname">FocusUpdate</code><span class="sig-paren">(</span><em class="sig-param">application_active: iterm2.focus.FocusUpdateApplicationActive = None</em>, <em class="sig-param">window_changed: iterm2.focus.FocusUpdateWindowChanged = None</em>, <em class="sig-param">selected_tab_changed: iterm2.focus.FocusUpdateSelectedTabChanged = None</em>, <em class="sig-param">active_session_changed: iterm2.focus.FocusUpdateActiveSessionChanged = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdate" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.FocusUpdate">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">FocusUpdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application_active</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.FocusUpdateApplicationActive" title="iterm2.focus.FocusUpdateApplicationActive"><span class="pre">iterm2.focus.FocusUpdateApplicationActive</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_changed</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.FocusUpdateWindowChanged" title="iterm2.focus.FocusUpdateWindowChanged"><span class="pre">iterm2.focus.FocusUpdateWindowChanged</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_tab_changed</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.FocusUpdateSelectedTabChanged" title="iterm2.focus.FocusUpdateSelectedTabChanged"><span class="pre">iterm2.focus.FocusUpdateSelectedTabChanged</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_session_changed</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.FocusUpdateActiveSessionChanged" title="iterm2.focus.FocusUpdateActiveSessionChanged"><span class="pre">iterm2.focus.FocusUpdateActiveSessionChanged</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a change to keyboard focus.</p>
 <p>Up to one of <cite>application_active</cite>, <cite>window_changed</cite>,
 <cite>selected_tab_changed</cite>, or <cite>active_session_changed</cite> will not be <cite>None</cite>.</p>
-<dl class="method">
-<dt id="iterm2.FocusUpdate.active_session_changed">
-<em class="property">property </em><code class="sig-name descname">active_session_changed</code><a class="headerlink" href="#iterm2.FocusUpdate.active_session_changed" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.FocusUpdate.active_session_changed">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">active_session_changed</span></span><em class="property"><span class="pre">:</span> <span class="pre">Union[None,</span> <span class="pre">iterm2.focus.FocusUpdateActiveSessionChanged]</span></em><a class="headerlink" href="#iterm2.FocusUpdate.active_session_changed" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><cite>None</cite> if no change to active session, otherwise
@@ -135,9 +136,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.FocusUpdate.application_active">
-<em class="property">property </em><code class="sig-name descname">application_active</code><a class="headerlink" href="#iterm2.FocusUpdate.application_active" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.FocusUpdate.application_active">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">application_active</span></span><em class="property"><span class="pre">:</span> <span class="pre">Union[None,</span> <span class="pre">iterm2.focus.FocusUpdateApplicationActive]</span></em><a class="headerlink" href="#iterm2.FocusUpdate.application_active" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><cite>None</cite> if no change to whether the app is active,
@@ -146,9 +147,9 @@ otherwise <a class="reference internal" href="#iterm2.FocusUpdateApplicationActi
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.FocusUpdate.selected_tab_changed">
-<em class="property">property </em><code class="sig-name descname">selected_tab_changed</code><a class="headerlink" href="#iterm2.FocusUpdate.selected_tab_changed" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.FocusUpdate.selected_tab_changed">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">selected_tab_changed</span></span><em class="property"><span class="pre">:</span> <span class="pre">Union[None,</span> <span class="pre">iterm2.focus.FocusUpdateSelectedTabChanged]</span></em><a class="headerlink" href="#iterm2.FocusUpdate.selected_tab_changed" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><cite>None</cite> if no change to selected tab, otherwise
@@ -157,9 +158,9 @@ otherwise <a class="reference internal" href="#iterm2.FocusUpdateApplicationActi
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.FocusUpdate.window_changed">
-<em class="property">property </em><code class="sig-name descname">window_changed</code><a class="headerlink" href="#iterm2.FocusUpdate.window_changed" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.FocusUpdate.window_changed">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">window_changed</span></span><em class="property"><span class="pre">:</span> <span class="pre">Union[None,</span> <span class="pre">iterm2.focus.FocusUpdateWindowChanged]</span></em><a class="headerlink" href="#iterm2.FocusUpdate.window_changed" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><cite>None</cite> if no change to the current window, otherwise
@@ -170,13 +171,13 @@ otherwise <a class="reference internal" href="#iterm2.FocusUpdateApplicationActi
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.FocusUpdateActiveSessionChanged">
-<em class="property">class </em><code class="sig-name descname">FocusUpdateActiveSessionChanged</code><span class="sig-paren">(</span><em class="sig-param">session_id: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdateActiveSessionChanged" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateActiveSessionChanged">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">FocusUpdateActiveSessionChanged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdateActiveSessionChanged" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a change to the active session within a tab.</p>
-<dl class="method">
-<dt id="iterm2.FocusUpdateActiveSessionChanged.session_id">
-<em class="property">property </em><code class="sig-name descname">session_id</code><a class="headerlink" href="#iterm2.FocusUpdateActiveSessionChanged.session_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateActiveSessionChanged.session_id">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">session_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#iterm2.FocusUpdateActiveSessionChanged.session_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the active session ID within its tab.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -187,13 +188,13 @@ otherwise <a class="reference internal" href="#iterm2.FocusUpdateApplicationActi
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.FocusUpdateSelectedTabChanged">
-<em class="property">class </em><code class="sig-name descname">FocusUpdateSelectedTabChanged</code><span class="sig-paren">(</span><em class="sig-param">tab_id: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdateSelectedTabChanged" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateSelectedTabChanged">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">FocusUpdateSelectedTabChanged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tab_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdateSelectedTabChanged" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a change in the selected tab.</p>
-<dl class="method">
-<dt id="iterm2.FocusUpdateSelectedTabChanged.tab_id">
-<em class="property">property </em><code class="sig-name descname">tab_id</code><a class="headerlink" href="#iterm2.FocusUpdateSelectedTabChanged.tab_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateSelectedTabChanged.tab_id">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">tab_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#iterm2.FocusUpdateSelectedTabChanged.tab_id" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A tab ID, which is a string.</p>
@@ -203,13 +204,13 @@ otherwise <a class="reference internal" href="#iterm2.FocusUpdateApplicationActi
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.FocusUpdateWindowChanged">
-<em class="property">class </em><code class="sig-name descname">FocusUpdateWindowChanged</code><span class="sig-paren">(</span><em class="sig-param">window_id: str</em>, <em class="sig-param">event: iterm2.focus.FocusUpdateWindowChanged.Reason</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateWindowChanged">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">FocusUpdateWindowChanged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#iterm2.FocusUpdateWindowChanged.Reason" title="iterm2.focus.FocusUpdateWindowChanged.Reason"><span class="pre">iterm2.focus.FocusUpdateWindowChanged.Reason</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a change in which window is focused.</p>
-<dl class="method">
-<dt id="iterm2.FocusUpdateWindowChanged.event">
-<em class="property">property </em><code class="sig-name descname">event</code><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.event" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateWindowChanged.event">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">event</span></span><em class="property"><span class="pre">:</span> <span class="pre">Reason</span></em><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes how the window’s focus changed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -218,9 +219,9 @@ otherwise <a class="reference internal" href="#iterm2.FocusUpdateApplicationActi
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.FocusUpdateWindowChanged.window_id">
-<em class="property">property </em><code class="sig-name descname">window_id</code><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.window_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateWindowChanged.window_id">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">window_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.window_id" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the window ID of the window that changed.</p>
@@ -230,37 +231,37 @@ otherwise <a class="reference internal" href="#iterm2.FocusUpdateApplicationActi
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.FocusUpdateWindowChanged.Reason">
-<em class="property">class </em><code class="sig-prename descclassname">FocusUpdateWindowChanged.</code><code class="sig-name descname">Reason</code><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.Reason" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateWindowChanged.Reason">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">FocusUpdateWindowChanged.</span></span><span class="sig-name descname"><span class="pre">Reason</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.Reason" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the reason for the change</p>
-<dl class="attribute">
-<dt id="iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_BECAME_KEY">
-<code class="sig-name descname">TERMINAL_WINDOW_BECAME_KEY</code><em class="property"> = 0</em><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_BECAME_KEY" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_BECAME_KEY">
+<span class="sig-name descname"><span class="pre">TERMINAL_WINDOW_BECAME_KEY</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_BECAME_KEY" title="Permalink to this definition">¶</a></dt>
 <dd><p>A terminal window received keyboard focus.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_IS_CURRENT">
-<code class="sig-name descname">TERMINAL_WINDOW_IS_CURRENT</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_IS_CURRENT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_IS_CURRENT">
+<span class="sig-name descname"><span class="pre">TERMINAL_WINDOW_IS_CURRENT</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_IS_CURRENT" title="Permalink to this definition">¶</a></dt>
 <dd><p>A terminal window is current but some non-terminal window (such as Preferences) has keyboard focus.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_RESIGNED_KEY">
-<code class="sig-name descname">TERMINAL_WINDOW_RESIGNED_KEY</code><em class="property"> = 2</em><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_RESIGNED_KEY" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_RESIGNED_KEY">
+<span class="sig-name descname"><span class="pre">TERMINAL_WINDOW_RESIGNED_KEY</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#iterm2.FocusUpdateWindowChanged.Reason.TERMINAL_WINDOW_RESIGNED_KEY" title="Permalink to this definition">¶</a></dt>
 <dd><p>A terminal window no longer has keyboard focus.</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.FocusUpdateApplicationActive">
-<em class="property">class </em><code class="sig-name descname">FocusUpdateApplicationActive</code><span class="sig-paren">(</span><em class="sig-param">active</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdateApplicationActive" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateApplicationActive">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">FocusUpdateApplicationActive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.FocusUpdateApplicationActive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a change in whether the application is active.</p>
-<dl class="method">
-<dt id="iterm2.FocusUpdateApplicationActive.application_active">
-<em class="property">property </em><code class="sig-name descname">application_active</code><a class="headerlink" href="#iterm2.FocusUpdateApplicationActive.application_active" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.FocusUpdateApplicationActive.application_active">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">application_active</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#iterm2.FocusUpdateApplicationActive.application_active" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><cite>True</cite> if the application is active or <cite>False</cite> if not.</p>
@@ -271,14 +272,14 @@ otherwise <a class="reference internal" href="#iterm2.FocusUpdateApplicationActi
 </dd></dl>
 
 <hr class="docutils" />
-<div class="section" id="indices-and-tables">
+<section id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
 	  </div>
@@ -309,7 +310,7 @@ otherwise <a class="reference internal" href="#iterm2.FocusUpdateApplicationActi
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

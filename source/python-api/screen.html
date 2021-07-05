@@ -2,17 +2,18 @@
 <!DOCTYPE html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Screen &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Selection" href="selection.html" />
@@ -81,20 +82,20 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="module-iterm2.screen">
+  <section id="module-iterm2.screen">
 <span id="screen"></span><h1>Screen<a class="headerlink" href="#module-iterm2.screen" title="Permalink to this headline">¶</a></h1>
 <p>Provides access to screen contents.</p>
-<dl class="class">
-<dt id="iterm2.ScreenStreamer">
-<em class="property">class </em><code class="sig-name descname">ScreenStreamer</code><span class="sig-paren">(</span><em class="sig-param">connection</em>, <em class="sig-param">session_id</em>, <em class="sig-param">want_contents=True</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenStreamer" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.ScreenStreamer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">ScreenStreamer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">want_contents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenStreamer" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager for monitoring the screen contents.</p>
 <p>You can use this to be notified when screen contents change. Optionally,
 you can receive the actual contents of the screen.</p>
 <p>Don’t create this yourself. Use Session.get_screen_streamer() instead. See
 its docstring for more info.</p>
-<dl class="method">
-<dt id="iterm2.ScreenStreamer.async_get">
-<em class="property">async </em><code class="sig-name descname">async_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.screen.ScreenContents]<a class="headerlink" href="#iterm2.ScreenStreamer.async_get" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.ScreenStreamer.async_get">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#iterm2.ScreenContents" title="iterm2.screen.ScreenContents"><span class="pre">iterm2.screen.ScreenContents</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.ScreenStreamer.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Blocks until the screen contents change.</p>
 <p>If this <cite>ScreenStreamer</cite> has been configured to provide screen
 contents, then they will be returned.</p>
@@ -111,13 +112,13 @@ contents, then they will be returned.</p>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.ScreenContents">
-<em class="property">class </em><code class="sig-name descname">ScreenContents</code><span class="sig-paren">(</span><em class="sig-param">proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenContents" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.ScreenContents">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">ScreenContents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ScreenContents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes screen contents.</p>
-<dl class="method">
-<dt id="iterm2.ScreenContents.cursor_coord">
-<em class="property">property </em><code class="sig-name descname">cursor_coord</code><a class="headerlink" href="#iterm2.ScreenContents.cursor_coord" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.ScreenContents.cursor_coord">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">cursor_coord</span></span><em class="property"><span class="pre">:</span> <span class="pre">iterm2.util.Point</span></em><a class="headerlink" href="#iterm2.ScreenContents.cursor_coord" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the location of the cursor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -126,13 +127,13 @@ contents, then they will be returned.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.ScreenContents.line">
-<code class="sig-name descname">line</code><span class="sig-paren">(</span><em class="sig-param">index: int</em><span class="sig-paren">)</span> &#x2192; iterm2.screen.LineContents<a class="headerlink" href="#iterm2.ScreenContents.line" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.ScreenContents.line">
+<span class="sig-name descname"><span class="pre">line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#iterm2.LineContents" title="iterm2.screen.LineContents"><span class="pre">iterm2.screen.LineContents</span></a><a class="headerlink" href="#iterm2.ScreenContents.line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the LineContents at the given index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">LineContents</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="#iterm2.LineContents" title="iterm2.screen.LineContents"><code class="xref py py-class docutils literal notranslate"><span class="pre">LineContents</span></code></a></p>
 </dd>
 <dt class="field-even">Parameters</dt>
 <dd class="field-even"><p><strong>index</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – should be at least 0 and less than <cite>number_of_lines</cite>.</p>
@@ -143,15 +144,15 @@ contents, then they will be returned.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.ScreenContents.number_of_lines">
-<em class="property">property </em><code class="sig-name descname">number_of_lines</code><a class="headerlink" href="#iterm2.ScreenContents.number_of_lines" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.ScreenContents.number_of_lines">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">number_of_lines</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#iterm2.ScreenContents.number_of_lines" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of lines in this object.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.ScreenContents.number_of_lines_above_screen">
-<em class="property">property </em><code class="sig-name descname">number_of_lines_above_screen</code><a class="headerlink" href="#iterm2.ScreenContents.number_of_lines_above_screen" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.ScreenContents.number_of_lines_above_screen">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">number_of_lines_above_screen</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#iterm2.ScreenContents.number_of_lines_above_screen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of lines before the screen including scrollback
 history and lines lost from the head of scrollback history.</p>
 <dl class="field-list simple">
@@ -164,13 +165,13 @@ screen.</p>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.LineContents">
-<em class="property">class </em><code class="sig-name descname">LineContents</code><span class="sig-paren">(</span><em class="sig-param">proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.LineContents" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.LineContents">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">LineContents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.LineContents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes the contents of a line.</p>
-<dl class="method">
-<dt id="iterm2.LineContents.hard_eol">
-<em class="property">property </em><code class="sig-name descname">hard_eol</code><a class="headerlink" href="#iterm2.LineContents.hard_eol" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.LineContents.hard_eol">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">hard_eol</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#iterm2.LineContents.hard_eol" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>True if the line has a hard newline. If False, the text of a
@@ -179,9 +180,9 @@ longer line wraps onto the next line.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.LineContents.string">
-<em class="property">property </em><code class="sig-name descname">string</code><a class="headerlink" href="#iterm2.LineContents.string" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.LineContents.string">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">string</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#iterm2.LineContents.string" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The line’s contents as a string.</p>
@@ -189,9 +190,9 @@ longer line wraps onto the next line.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.LineContents.string_at">
-<code class="sig-name descname">string_at</code><span class="sig-paren">(</span><em class="sig-param">x: int</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.LineContents.string_at" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.LineContents.string_at">
+<span class="sig-name descname"><span class="pre">string_at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><a class="headerlink" href="#iterm2.LineContents.string_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the string of the cell at index <cite>x</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -210,14 +211,14 @@ empty string if none.</p>
 </dd></dl>
 
 <hr class="docutils" />
-<div class="section" id="indices-and-tables">
+<section id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
 	  </div>
@@ -248,7 +249,7 @@ empty string if none.</p>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

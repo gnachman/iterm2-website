@@ -2,17 +2,18 @@
 <!DOCTYPE html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Prompt &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Registration" href="registration.html" />
@@ -81,83 +82,83 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="module-iterm2.prompt">
+  <section id="module-iterm2.prompt">
 <span id="prompt"></span><h1>Prompt<a class="headerlink" href="#module-iterm2.prompt" title="Permalink to this headline">¶</a></h1>
 <p>Provides information about the shell prompt.</p>
-<dl class="class">
-<dt id="iterm2.PromptState">
-<em class="property">class </em><code class="sig-name descname">PromptState</code><a class="headerlink" href="#iterm2.PromptState" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.PromptState">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">PromptState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PromptState" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes the states that a command prompt can take.</p>
-<dl class="attribute">
-<dt id="iterm2.PromptState.EDITING">
-<code class="sig-name descname">EDITING</code><em class="property"> = 0</em><a class="headerlink" href="#iterm2.PromptState.EDITING" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iterm2.PromptState.EDITING">
+<span class="sig-name descname"><span class="pre">EDITING</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#iterm2.PromptState.EDITING" title="Permalink to this definition">¶</a></dt>
 <dd><p>User is editing the command at the prompt</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="iterm2.PromptState.FINISHED">
-<code class="sig-name descname">FINISHED</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.PromptState.FINISHED" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iterm2.PromptState.FINISHED">
+<span class="sig-name descname"><span class="pre">FINISHED</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#iterm2.PromptState.FINISHED" title="Permalink to this definition">¶</a></dt>
 <dd><p>The last entered command has finished but there hasn’t been a new prompt yet (rare).</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="iterm2.PromptState.RUNNING">
-<code class="sig-name descname">RUNNING</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.PromptState.RUNNING" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iterm2.PromptState.RUNNING">
+<span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#iterm2.PromptState.RUNNING" title="Permalink to this definition">¶</a></dt>
 <dd><p>The last entered command is still executing, and has not finished yet.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="iterm2.PromptState.UNKNOWN">
-<code class="sig-name descname">UNKNOWN</code><em class="property"> = -1</em><a class="headerlink" href="#iterm2.PromptState.UNKNOWN" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iterm2.PromptState.UNKNOWN">
+<span class="sig-name descname"><span class="pre">UNKNOWN</span></span><em class="property"> <span class="pre">=</span> <span class="pre">-1</span></em><a class="headerlink" href="#iterm2.PromptState.UNKNOWN" title="Permalink to this definition">¶</a></dt>
 <dd><p>This version of iTerm2 does not report prompt state (you should upgrade)</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.Prompt">
-<em class="property">class </em><code class="sig-name descname">Prompt</code><span class="sig-paren">(</span><em class="sig-param">proto</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Prompt" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.Prompt">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Prompt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Prompt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a command prompt.</p>
 <p>Shell Integration must be installed for this to work properly.  Do not
 construct this object yourself. Use <a class="reference internal" href="#iterm2.async_get_last_prompt" title="iterm2.async_get_last_prompt"><code class="xref py py-func docutils literal notranslate"><span class="pre">async_get_last_prompt()</span></code></a> to get
 an instance.</p>
-<dl class="method">
-<dt id="iterm2.Prompt.command">
-<em class="property">property </em><code class="sig-name descname">command</code><a class="headerlink" href="#iterm2.Prompt.command" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.Prompt.command">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="pre">:</span> <span class="pre">Union[None,</span> <span class="pre">str]</span></em><a class="headerlink" href="#iterm2.Prompt.command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the command entered at the prompt.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.Prompt.command_range">
-<em class="property">property </em><code class="sig-name descname">command_range</code><a class="headerlink" href="#iterm2.Prompt.command_range" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.Prompt.command_range">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">command_range</span></span><em class="property"><span class="pre">:</span> <span class="pre">iterm2.util.CoordRange</span></em><a class="headerlink" href="#iterm2.Prompt.command_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the <a class="reference internal" href="util.html#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of the command following the
 shell prompt.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.Prompt.output_range">
-<em class="property">property </em><code class="sig-name descname">output_range</code><a class="headerlink" href="#iterm2.Prompt.output_range" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.Prompt.output_range">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">output_range</span></span><em class="property"><span class="pre">:</span> <span class="pre">iterm2.util.CoordRange</span></em><a class="headerlink" href="#iterm2.Prompt.output_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the <a class="reference internal" href="util.html#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of the output of a command
 following a shell prompt.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.Prompt.prompt_range">
-<em class="property">property </em><code class="sig-name descname">prompt_range</code><a class="headerlink" href="#iterm2.Prompt.prompt_range" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.Prompt.prompt_range">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">prompt_range</span></span><em class="property"><span class="pre">:</span> <span class="pre">iterm2.util.CoordRange</span></em><a class="headerlink" href="#iterm2.Prompt.prompt_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the <a class="reference internal" href="util.html#iterm2.util.CoordRange" title="iterm2.util.CoordRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordRange</span></code></a> of a shell prompt.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.Prompt.working_directory">
-<em class="property">property </em><code class="sig-name descname">working_directory</code><a class="headerlink" href="#iterm2.Prompt.working_directory" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.Prompt.working_directory">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">working_directory</span></span><em class="property"><span class="pre">:</span> <span class="pre">Union[None,</span> <span class="pre">str]</span></em><a class="headerlink" href="#iterm2.Prompt.working_directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the working directory at the time the prompt was printed.</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.PromptMonitor">
-<em class="property">class </em><code class="sig-name descname">PromptMonitor</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">session_id: str</em>, <em class="sig-param">modes: Optional[List[iterm2.prompt.PromptMonitor.Mode]] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PromptMonitor" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.PromptMonitor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">PromptMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">modes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.PromptMonitor.Mode" title="iterm2.prompt.PromptMonitor.Mode"><span class="pre">iterm2.prompt.PromptMonitor.Mode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PromptMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asyncio context manager to watch for changes to the prompt.</p>
 <p>This requires shell integration or prompt-detecting triggers to be
 installed for prompt detection.</p>
@@ -182,9 +183,9 @@ version of iTerm2 will result in an exception telling the user to upgrade.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<dl class="method">
-<dt id="iterm2.PromptMonitor.async_get">
-<em class="property">async </em><code class="sig-name descname">async_get</code><span class="sig-paren">(</span><em class="sig-param">include_id: bool = False</em><span class="sig-paren">)</span> &#x2192; Union[Tuple[iterm2.prompt.PromptMonitor.Mode, Any], Tuple[iterm2.prompt.PromptMonitor.Mode, Any, Optional[str]]]<a class="headerlink" href="#iterm2.PromptMonitor.async_get" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.PromptMonitor.async_get">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.PromptMonitor.Mode" title="iterm2.prompt.PromptMonitor.Mode"><span class="pre">iterm2.prompt.PromptMonitor.Mode</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.PromptMonitor.Mode" title="iterm2.prompt.PromptMonitor.Mode"><span class="pre">iterm2.prompt.PromptMonitor.Mode</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.PromptMonitor.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Blocks until a new shell prompt is received.</p>
 <p>Note: Older versions of the runtime that do not support modes other
 than PROMPT always return None.</p>
@@ -203,30 +204,33 @@ Int gives the exit status of the command.</p>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.PromptMonitor.Mode">
-<em class="property">class </em><code class="sig-name descname">Mode</code><a class="headerlink" href="#iterm2.PromptMonitor.Mode" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.PromptMonitor.Mode">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PromptMonitor.Mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>The mode for a prompt monitor.</p>
-<dl class="attribute">
-<dt id="iterm2.PromptMonitor.Mode.COMMAND_END">
-<code class="sig-name descname">COMMAND_END</code><em class="property"> = 3</em><a class="headerlink" href="#iterm2.PromptMonitor.Mode.COMMAND_END" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iterm2.PromptMonitor.Mode.COMMAND_END">
+<span class="sig-name descname"><span class="pre">COMMAND_END</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#iterm2.PromptMonitor.Mode.COMMAND_END" title="Permalink to this definition">¶</a></dt>
+<dd><p>Notify when a command finishes execution</p>
+</dd></dl>
 
-<dl class="attribute">
-<dt id="iterm2.PromptMonitor.Mode.COMMAND_START">
-<code class="sig-name descname">COMMAND_START</code><em class="property"> = 2</em><a class="headerlink" href="#iterm2.PromptMonitor.Mode.COMMAND_START" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iterm2.PromptMonitor.Mode.COMMAND_START">
+<span class="sig-name descname"><span class="pre">COMMAND_START</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#iterm2.PromptMonitor.Mode.COMMAND_START" title="Permalink to this definition">¶</a></dt>
+<dd><p>Notify when a command begins execution</p>
+</dd></dl>
 
-<dl class="attribute">
-<dt id="iterm2.PromptMonitor.Mode.PROMPT">
-<code class="sig-name descname">PROMPT</code><em class="property"> = 1</em><a class="headerlink" href="#iterm2.PromptMonitor.Mode.PROMPT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="iterm2.PromptMonitor.Mode.PROMPT">
+<span class="sig-name descname"><span class="pre">PROMPT</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#iterm2.PromptMonitor.Mode.PROMPT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Notify when prompt detected</p>
+</dd></dl>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="iterm2.async_get_last_prompt">
-<em class="property">async </em><code class="sig-name descname">async_get_last_prompt</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">session_id: str</em><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.prompt.Prompt]<a class="headerlink" href="#iterm2.async_get_last_prompt" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="iterm2.async_get_last_prompt">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get_last_prompt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#iterm2.Prompt" title="iterm2.prompt.Prompt"><span class="pre">iterm2.prompt.Prompt</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.async_get_last_prompt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches info about the last prompt in a session.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -246,14 +250,14 @@ prompt.</p></li>
 </dd></dl>
 
 <hr class="docutils" />
-<div class="section" id="indices-and-tables">
+<section id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
 	  </div>
@@ -284,7 +288,7 @@ prompt.</p></li>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

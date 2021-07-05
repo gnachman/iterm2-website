@@ -2,17 +2,18 @@
 <!DOCTYPE html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>RPCs &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -79,7 +80,7 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="rpcs">
+  <section id="rpcs">
 <h1>RPCs<a class="headerlink" href="#rpcs" title="Permalink to this headline">¶</a></h1>
 <p>iTerm2 offers a very powerful facility where a script (typically a daemon)
 registers a function as available to be invoked by iTerm2.</p>
@@ -147,7 +148,7 @@ to indicate an optional value, like this: <cite>Reference(“id?”)</cite>.</p>
 <p>The “id” is a variable that exists in the session’s scope. To learn more about
 how variables work and which variables are defined, see
 <a class="reference external" href="https://www.iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a></p>
-<div class="section" id="invocation">
+<section id="invocation">
 <h2>Invocation<a class="headerlink" href="#invocation" title="Permalink to this headline">¶</a></h2>
 <p>To invoke an RPC, create a key binding for it. Go to <strong>Preferences &gt; Keys</strong> and
 click the + button. Select <strong>Invoke Script Function</strong> as the action and enter a
@@ -156,8 +157,8 @@ function call in the field beneath it. Like this:</p>
 <p>Then press the associated keystroke and the function will be invoked.</p>
 <p>You can also bind a trigger to invoke a function automatically:</p>
 <img alt="../_images/trigger_cls.png" src="../_images/trigger_cls.png" />
-</div>
-<div class="section" id="repl">
+</section>
+<section id="repl">
 <h2>REPL<a class="headerlink" href="#repl" title="Permalink to this headline">¶</a></h2>
 <p>You can test RPCs defined in the REPL. First, define them as usual. When the
 RPC gets invoked, the REPL must allow the event loop to run so it can handle
@@ -170,8 +171,8 @@ for a set period of time, like this:</p>
 registered functions wait in a queue until they can be handled. That means you
 can press a key in iTerm2 to invoke the RPC and then do
 <cite>async_dispatch_for_duration(0.1)</cite> and it will be handled immediately.</p>
-</div>
-<div class="section" id="arguments">
+</section>
+<section id="arguments">
 <h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
 <p>Registered RPCs may take arguments. Any argument may take a value of
 of <cite>None</cite>, so take care to handle that possibility.</p>
@@ -224,15 +225,15 @@ section of
 <p>For more details, see <a class="reference internal" href="#composition">Composition</a>.</p>
 <p><a class="reference external" href="https://www.iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a>
 goes in to more detail on expressions.</p>
-</div>
-<div class="section" id="timeouts">
+</section>
+<section id="timeouts">
 <h2>Timeouts<a class="headerlink" href="#timeouts" title="Permalink to this headline">¶</a></h2>
 <p>By default, iTerm2 stops waiting for a function’s result after five seconds.
 The function continues to run until completion. You can pass an optional
 <cite>timeout</cite> parameter to <cite>async_register</cite> to set your own timeout value in
 seconds.</p>
-</div>
-<div class="section" id="composition">
+</section>
+<section id="composition">
 <span id="id3"></span><h2>Composition<a class="headerlink" href="#composition" title="Permalink to this headline">¶</a></h2>
 <p>Function invocations may use composition. A registered function can return a
 value which the becomes an argument to a subsequent function call. Here’s a
@@ -265,7 +266,7 @@ RPC will not be made until all its dependencies have completed without errors.</
 <p>Errors are propagated up the call chain and shown in an alert with a traceback.</p>
 <p>Continue to the next section, <a class="reference internal" href="hooks.html"><span class="doc">Hooks</span></a>.</p>
 <hr class="docutils" />
-<div class="section" id="other-sections">
+<section id="other-sections">
 <h3>Other Sections<a class="headerlink" href="#other-sections" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><dl class="simple">
@@ -282,16 +283,16 @@ RPC will not be made until all its dependencies have completed without errors.</
 </dl>
 </li>
 </ul>
-</div>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
+</section>
+</section>
+</section>
+<section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="../genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="../search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
+</section>
 
 
 	  </div>
@@ -322,7 +323,7 @@ RPC will not be made until all its dependencies have completed without errors.</
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

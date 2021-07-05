@@ -2,17 +2,18 @@
 <!DOCTYPE html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Tmux &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Tool" href="tool.html" />
@@ -81,12 +82,12 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="module-iterm2.tmux">
+  <section id="module-iterm2.tmux">
 <span id="tmux"></span><h1>Tmux<a class="headerlink" href="#module-iterm2.tmux" title="Permalink to this headline">¶</a></h1>
 <p>Represents tmux integration objects.</p>
-<dl class="function">
-<dt id="iterm2.async_get_tmux_connections">
-<em class="property">async </em><code class="sig-name descname">async_get_tmux_connections</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em><span class="sig-paren">)</span> &#x2192; List[iterm2.tmux.TmuxConnection]<a class="headerlink" href="#iterm2.async_get_tmux_connections" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="iterm2.async_get_tmux_connections">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get_tmux_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.TmuxConnection" title="iterm2.tmux.TmuxConnection"><span class="pre">iterm2.tmux.TmuxConnection</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.async_get_tmux_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches a list of tmux connections.</p>
 <p>This may not be called from within a <a class="reference internal" href="transaction.html#iterm2.Transaction" title="iterm2.Transaction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transaction</span></code></a>.</p>
 <dl class="field-list simple">
@@ -103,9 +104,9 @@
 </div>
 </dd></dl>
 
-<dl class="function">
-<dt id="iterm2.async_get_tmux_connection_by_connection_id">
-<em class="property">async </em><code class="sig-name descname">async_get_tmux_connection_by_connection_id</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">connection_id: str</em><span class="sig-paren">)</span> &#x2192; Optional[iterm2.tmux.TmuxConnection]<a class="headerlink" href="#iterm2.async_get_tmux_connection_by_connection_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="iterm2.async_get_tmux_connection_by_connection_id">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get_tmux_connection_by_connection_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.TmuxConnection" title="iterm2.tmux.TmuxConnection"><span class="pre">iterm2.tmux.TmuxConnection</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.async_get_tmux_connection_by_connection_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find a tmux connection by its ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -120,21 +121,21 @@
 </dl>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.TmuxException">
-<em class="property">class </em><code class="sig-name descname">TmuxException</code><a class="headerlink" href="#iterm2.TmuxException" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.TmuxException">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">TmuxException</span></span><a class="headerlink" href="#iterm2.TmuxException" title="Permalink to this definition">¶</a></dt>
 <dd><p>A problem was encountered in a Tmux request.</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.TmuxConnection">
-<em class="property">class </em><code class="sig-name descname">TmuxConnection</code><span class="sig-paren">(</span><em class="sig-param">connection_id</em>, <em class="sig-param">owning_session_id</em>, <em class="sig-param">delegate</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TmuxConnection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.TmuxConnection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">TmuxConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owning_session_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delegate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.TmuxConnection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A tmux integration connection.</p>
 <p>Do not create this yourself. Use <a class="reference internal" href="#iterm2.async_get_tmux_connections" title="iterm2.async_get_tmux_connections"><code class="xref py py-func docutils literal notranslate"><span class="pre">async_get_tmux_connections()</span></code></a>,
 instead.</p>
-<dl class="method">
-<dt id="iterm2.TmuxConnection.async_create_window">
-<em class="property">async </em><code class="sig-name descname">async_create_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; iterm2.window.Window<a class="headerlink" href="#iterm2.TmuxConnection.async_create_window" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.TmuxConnection.async_create_window">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_create_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="window.html#iterm2.Window" title="iterm2.window.Window"><span class="pre">iterm2.window.Window</span></a><a class="headerlink" href="#iterm2.TmuxConnection.async_create_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new tmux window.</p>
 <p>This may not be called from within a <a class="reference internal" href="transaction.html#iterm2.Transaction" title="iterm2.Transaction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transaction</span></code></a>.</p>
 <dl class="field-list simple">
@@ -148,9 +149,9 @@ instead.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.TmuxConnection.async_send_command">
-<em class="property">async </em><code class="sig-name descname">async_send_command</code><span class="sig-paren">(</span><em class="sig-param">command: str</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.TmuxConnection.async_send_command" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.TmuxConnection.async_send_command">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_send_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><a class="headerlink" href="#iterm2.TmuxConnection.async_send_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends a command to the tmux server.</p>
 <p>This may not be called from within a <a class="reference internal" href="transaction.html#iterm2.Transaction" title="iterm2.Transaction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transaction</span></code></a>.</p>
 <dl class="field-list simple">
@@ -174,9 +175,9 @@ fails such as from an invalid ID.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.TmuxConnection.async_set_tmux_window_visible">
-<em class="property">async </em><code class="sig-name descname">async_set_tmux_window_visible</code><span class="sig-paren">(</span><em class="sig-param">tmux_window_id: str</em>, <em class="sig-param">visible: bool</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.TmuxConnection.async_set_tmux_window_visible" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.TmuxConnection.async_set_tmux_window_visible">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_set_tmux_window_visible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmux_window_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><a class="headerlink" href="#iterm2.TmuxConnection.async_set_tmux_window_visible" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hides or shows a tmux window.</p>
 <p>Tmux windows are represented as tabs in iTerm2. You can get a
 tmux_window_id from <a class="reference internal" href="tab.html#iterm2.Tab.tmux_window_id" title="iterm2.Tab.tmux_window_id"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tmux_window_id()</span></code></a>. If this tab is
@@ -192,9 +193,9 @@ attached to a tmux session, then it may be hidden.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.TmuxConnection.connection_id">
-<em class="property">property </em><code class="sig-name descname">connection_id</code><a class="headerlink" href="#iterm2.TmuxConnection.connection_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.TmuxConnection.connection_id">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">connection_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#iterm2.TmuxConnection.connection_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the unique identifier of the connection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -204,9 +205,9 @@ of the connection.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.TmuxConnection.owning_session">
-<em class="property">property </em><code class="sig-name descname">owning_session</code><a class="headerlink" href="#iterm2.TmuxConnection.owning_session" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.TmuxConnection.owning_session">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">owning_session</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional[iterm2.session.Session]</span></em><a class="headerlink" href="#iterm2.TmuxConnection.owning_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the “gateway” session.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -219,14 +220,14 @@ of the connection.</p>
 </dd></dl>
 
 <hr class="docutils" />
-<div class="section" id="indices-and-tables">
+<section id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
 	  </div>
@@ -257,7 +258,7 @@ of the connection.</p>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -2,17 +2,18 @@
 <!DOCTYPE html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Status Bar &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Tab" href="tab.html" />
@@ -81,12 +82,12 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="module-iterm2.statusbar">
+  <section id="module-iterm2.statusbar">
 <span id="status-bar"></span><h1>Status Bar<a class="headerlink" href="#module-iterm2.statusbar" title="Permalink to this headline">¶</a></h1>
 <p>Status bar customization interfaces.</p>
-<dl class="class">
-<dt id="iterm2.StatusBarComponent">
-<em class="property">class </em><code class="sig-name descname">StatusBarComponent</code><span class="sig-paren">(</span><em class="sig-param">short_description: str, detailed_description: str, knobs: List[iterm2.statusbar.Knob], exemplar: str, update_cadence: Optional[float], identifier: str, icons: List[iterm2.statusbar.StatusBarComponent.Icon] = []</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.StatusBarComponent">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">StatusBarComponent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">short_description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">detailed_description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">knobs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">iterm2.statusbar.Knob</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exemplar</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_cadence</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">icons</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.StatusBarComponent.Icon" title="iterm2.statusbar.StatusBarComponent.Icon"><span class="pre">iterm2.statusbar.StatusBarComponent.Icon</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes a script-provided status bar component showing a text value
 provided by a user-provided coroutine.</p>
 <dl class="field-list simple">
@@ -119,9 +120,9 @@ empty if you don’t want an icon.</p></li>
 <li><p>Example “<a class="reference internal" href="examples/statusbar.html#statusbar-example"><span class="std std-ref">Status Bar Component</span></a>”</p></li>
 </ul>
 </div>
-<dl class="method">
-<dt id="iterm2.StatusBarComponent.async_open_popover">
-<em class="property">async </em><code class="sig-name descname">async_open_popover</code><span class="sig-paren">(</span><em class="sig-param">session_id: str</em>, <em class="sig-param">html: str</em>, <em class="sig-param">size: iterm2.util.Size</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.async_open_popover" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.StatusBarComponent.async_open_popover">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_open_popover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">html</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="util.html#iterm2.util.Size" title="iterm2.util.Size"><span class="pre">iterm2.util.Size</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.async_open_popover" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open a popover with a webview.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -139,9 +140,9 @@ empty if you don’t want an icon.</p></li>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.StatusBarComponent.async_register">
-<em class="property">async </em><code class="sig-name descname">async_register</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection, coro, timeout: Union[None, float] = None, onclick: Optional[Callable[[str, Any], Coroutine[Any, Any, None]]] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.async_register" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.StatusBarComponent.async_register">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coro</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/dev/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onclick</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Coroutine</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.async_register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers the statusbar component.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -200,9 +201,9 @@ of the session owning the status bar component that was clicked on.</p></li>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.CheckboxKnob">
-<em class="property">class </em><code class="sig-name descname">CheckboxKnob</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">default_value: bool</em>, <em class="sig-param">key: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.CheckboxKnob" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.CheckboxKnob">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">CheckboxKnob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.CheckboxKnob" title="Permalink to this definition">¶</a></dt>
 <dd><p>A status bar configuration knob to select a checkbox.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -215,9 +216,9 @@ of the session owning the status bar component that was clicked on.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.StringKnob">
-<em class="property">class </em><code class="sig-name descname">StringKnob</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">placeholder: str</em>, <em class="sig-param">default_value: str</em>, <em class="sig-param">key: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StringKnob" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.StringKnob">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">StringKnob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">placeholder</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StringKnob" title="Permalink to this definition">¶</a></dt>
 <dd><p>A status bar configuration knob to select a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -232,9 +233,9 @@ when it has no content.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.PositiveFloatingPointKnob">
-<em class="property">class </em><code class="sig-name descname">PositiveFloatingPointKnob</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">default_value: float</em>, <em class="sig-param">key: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PositiveFloatingPointKnob" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.PositiveFloatingPointKnob">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">PositiveFloatingPointKnob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.PositiveFloatingPointKnob" title="Permalink to this definition">¶</a></dt>
 <dd><p>A status bar configuration knob to select a positive floating point
 value.</p>
 <dl class="field-list simple">
@@ -248,9 +249,9 @@ value.</p>
 </dl>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.ColorKnob">
-<em class="property">class </em><code class="sig-name descname">ColorKnob</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">default_value: iterm2.color.Color</em>, <em class="sig-param">key: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ColorKnob" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.ColorKnob">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">ColorKnob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="color.html#iterm2.Color" title="iterm2.color.Color"><span class="pre">iterm2.color.Color</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.ColorKnob" title="Permalink to this definition">¶</a></dt>
 <dd><p>A status bar configuration knob to select color.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -263,9 +264,9 @@ value.</p>
 </dl>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.StatusBarComponent.Icon">
-<em class="property">class </em><code class="sig-name descname">Icon</code><span class="sig-paren">(</span><em class="sig-param">scale: float</em>, <em class="sig-param">base64_data: str</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.Icon" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.StatusBarComponent.Icon">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Icon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">base64_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.StatusBarComponent.Icon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contains a status bar icon.</p>
 <p>The scale gives the ratio between pixels and points. For example, a
 32x34 image with scale 2 has a size of 16x17 points.</p>
@@ -285,14 +286,14 @@ format.</p></li>
 </dd></dl>
 
 <hr class="docutils" />
-<div class="section" id="indices-and-tables">
+<section id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
 	  </div>
@@ -323,7 +324,7 @@ format.</p></li>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -2,17 +2,18 @@
 <!DOCTYPE html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Broadcast &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Color" href="color.html" />
@@ -81,12 +82,12 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="module-iterm2.broadcast">
+  <section id="module-iterm2.broadcast">
 <span id="broadcast"></span><h1>Broadcast<a class="headerlink" href="#module-iterm2.broadcast" title="Permalink to this headline">¶</a></h1>
 <p>Provides interfaces for managing input broadcasting.</p>
-<dl class="class">
-<dt id="iterm2.BroadcastDomain">
-<em class="property">class </em><code class="sig-name descname">BroadcastDomain</code><a class="headerlink" href="#iterm2.BroadcastDomain" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.BroadcastDomain">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">BroadcastDomain</span></span><a class="headerlink" href="#iterm2.BroadcastDomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Broadcast domains describe how keyboard input is broadcast.</p>
 <p>A user typing in a session belonging to one broadcast domain will result in
 those keystrokes being sent to all sessions in that domain.</p>
@@ -95,20 +96,20 @@ those keystrokes being sent to all sessions in that domain.</p>
 <p class="admonition-title">See also</p>
 <p>Example “<a class="reference internal" href="examples/enable_broadcasting.html#enable-broadcasting-example"><span class="std std-ref">Enable Broadcasting Input</span></a>”</p>
 </div>
-<dl class="method">
-<dt id="iterm2.BroadcastDomain.add_session">
-<code class="sig-name descname">add_session</code><span class="sig-paren">(</span><em class="sig-param">session: iterm2.session.Session</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.BroadcastDomain.add_session" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.BroadcastDomain.add_session">
+<span class="sig-name descname"><span class="pre">add_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="session.html#iterm2.Session" title="iterm2.session.Session"><span class="pre">iterm2.session.Session</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.BroadcastDomain.add_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a session to the broadcast domain.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>session</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code>) – The session to add.</p>
+<dd class="field-odd"><p><strong>session</strong> (<a class="reference internal" href="session.html#iterm2.Session" title="iterm2.session.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>) – The session to add.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.BroadcastDomain.sessions">
-<em class="property">property </em><code class="sig-name descname">sessions</code><a class="headerlink" href="#iterm2.BroadcastDomain.sessions" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.BroadcastDomain.sessions">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">sessions</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[iterm2.session.Session]</span></em><a class="headerlink" href="#iterm2.BroadcastDomain.sessions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the list of sessions belonging to a broadcast domain.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -119,9 +120,9 @@ those keystrokes being sent to all sessions in that domain.</p>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="iterm2.async_set_broadcast_domains">
-<em class="property">async </em><code class="sig-name descname">async_set_broadcast_domains</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection, broadcast_domains: List[iterm2.broadcast.BroadcastDomain]</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_set_broadcast_domains" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="iterm2.async_set_broadcast_domains">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_set_broadcast_domains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">broadcast_domains</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.BroadcastDomain" title="iterm2.broadcast.BroadcastDomain"><span class="pre">iterm2.broadcast.BroadcastDomain</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_set_broadcast_domains" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the current set of broadcast domains.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -138,14 +139,14 @@ those keystrokes being sent to all sessions in that domain.</p>
 </dd></dl>
 
 <hr class="docutils" />
-<div class="section" id="indices-and-tables">
+<section id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
 	  </div>
@@ -176,7 +177,7 @@ those keystrokes being sent to all sessions in that domain.</p>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

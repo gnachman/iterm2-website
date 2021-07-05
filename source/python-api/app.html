@@ -2,17 +2,18 @@
 <!DOCTYPE html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>App &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Arrangement" href="arrangement.html" />
@@ -81,14 +82,14 @@
 	<div class="bodywrapper">
 	  <div class="body" role="main">
 	    
-  <div class="section" id="module-iterm2.app">
+  <section id="module-iterm2.app">
 <span id="app"></span><h1>App<a class="headerlink" href="#module-iterm2.app" title="Permalink to this headline">¶</a></h1>
 <p>Provides access to application-level structures.</p>
 <p>This module is the starting point for getting access to windows and other
 application-global data.</p>
-<dl class="function">
-<dt id="iterm2.async_get_app">
-<em class="property">async </em><code class="sig-name descname">async_get_app</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">create_if_needed: bool = True</em><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.app.App]<a class="headerlink" href="#iterm2.async_get_app" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="iterm2.async_get_app">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_if_needed</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#iterm2.App" title="iterm2.app.App"><span class="pre">iterm2.app.App</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.async_get_app" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the app singleton, creating it if needed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -105,9 +106,9 @@ this may return <cite>None</cite> if no such instance exists.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="iterm2.async_invoke_function">
-<em class="property">async </em><code class="sig-name descname">async_invoke_function</code><span class="sig-paren">(</span><em class="sig-param">connection: iterm2.connection.Connection</em>, <em class="sig-param">invocation: str</em>, <em class="sig-param">timeout: float = -1</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_invoke_function" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="iterm2.async_invoke_function">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_invoke_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">invocation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.async_invoke_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Invoke an RPC. Could be a registered function by this or another script of
 a built-in function.</p>
 <p>This invokes the RPC in the global application context. Note that most
@@ -131,17 +132,17 @@ the system default timeout.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.App">
-<em class="property">class </em><code class="sig-name descname">App</code><span class="sig-paren">(</span><em class="sig-param">connection</em>, <em class="sig-param">windows</em>, <em class="sig-param">buried_sessions</em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.App" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.App">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">App</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buried_sessions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.App" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents the application.</p>
 <p>Stores and provides access to app-global state. Holds a collection of
 terminal windows and provides utilities for them.</p>
 <p>This object keeps itself up to date by getting notifications when sessions,
 tabs, or windows change.</p>
-<dl class="method">
-<dt id="iterm2.App.async_activate">
-<em class="property">async </em><code class="sig-name descname">async_activate</code><span class="sig-paren">(</span><em class="sig-param">raise_all_windows: bool = True</em>, <em class="sig-param">ignoring_other_apps: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.App.async_activate" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.App.async_activate">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_activate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raise_all_windows</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoring_other_apps</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><a class="headerlink" href="#iterm2.App.async_activate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Activate the app, giving it keyboard focus.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -155,9 +156,9 @@ interacts with another app after the call.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.async_get_theme">
-<em class="property">async </em><code class="sig-name descname">async_get_theme</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[str]<a class="headerlink" href="#iterm2.App.async_get_theme" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.App.async_get_theme">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get_theme</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.App.async_get_theme" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets attributes the current theme.</p>
 <p>The automatic and minimal themes will always include “dark” or “light”.</p>
 <p>On macOS 10.14, the light or dark attribute may be inferred from the
@@ -170,9 +171,9 @@ automatic, minimal, highContrast.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.async_get_variable">
-<em class="property">async </em><code class="sig-name descname">async_get_variable</code><span class="sig-paren">(</span><em class="sig-param">name: str</em><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#iterm2.App.async_get_variable" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.App.async_get_variable">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="headerlink" href="#iterm2.App.async_get_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches the value of a variable from the global context.</p>
 <p>See <a class="reference external" href="https://iterm2.com/documentation-scripting-fundamentals.html">Scripting Fundamentals</a> for
 details on variables.</p>
@@ -189,9 +190,9 @@ details on variables.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.async_set_variable">
-<em class="property">async </em><code class="sig-name descname">async_set_variable</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">value: Any</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#iterm2.App.async_set_variable" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.App.async_set_variable">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_set_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><a class="headerlink" href="#iterm2.App.async_set_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets a user-defined variable in the application.</p>
 <p>See the Scripting Fundamentals documentation for more information on
 user-defined variables.</p>
@@ -208,9 +209,9 @@ user-defined variables.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.broadcast_domains">
-<em class="property">property </em><code class="sig-name descname">broadcast_domains</code><a class="headerlink" href="#iterm2.App.broadcast_domains" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.App.broadcast_domains">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">broadcast_domains</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[iterm2.broadcast.BroadcastDomain]</span></em><a class="headerlink" href="#iterm2.App.broadcast_domains" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the current broadcast domains.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -221,9 +222,9 @@ user-defined variables.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.buried_sessions">
-<em class="property">property </em><code class="sig-name descname">buried_sessions</code><a class="headerlink" href="#iterm2.App.buried_sessions" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.App.buried_sessions">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">buried_sessions</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[iterm2.session.Session]</span></em><a class="headerlink" href="#iterm2.App.buried_sessions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of buried sessions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -232,15 +233,15 @@ user-defined variables.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.current_terminal_window">
-<em class="property">property </em><code class="sig-name descname">current_terminal_window</code><a class="headerlink" href="#iterm2.App.current_terminal_window" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.App.current_terminal_window">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">current_terminal_window</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional[iterm2.window.Window]</span></em><a class="headerlink" href="#iterm2.App.current_terminal_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deprecated in favor of current_window.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.get_session_by_id">
-<code class="sig-name descname">get_session_by_id</code><span class="sig-paren">(</span><em class="sig-param">session_id: str</em><span class="sig-paren">)</span> &#x2192; Union[None, iterm2.session.Session]<a class="headerlink" href="#iterm2.App.get_session_by_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.App.get_session_by_id">
+<span class="sig-name descname"><span class="pre">get_session_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="session.html#iterm2.Session" title="iterm2.session.Session"><span class="pre">iterm2.session.Session</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.App.get_session_by_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds a session exactly matching the passed-in id.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -252,9 +253,9 @@ user-defined variables.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.get_tab_by_id">
-<code class="sig-name descname">get_tab_by_id</code><span class="sig-paren">(</span><em class="sig-param">tab_id: str</em><span class="sig-paren">)</span> &#x2192; Optional[iterm2.tab.Tab]<a class="headerlink" href="#iterm2.App.get_tab_by_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.App.get_tab_by_id">
+<span class="sig-name descname"><span class="pre">get_tab_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tab_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.tab.Tab"><span class="pre">iterm2.tab.Tab</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.App.get_tab_by_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds a tab exactly matching the passed-in id.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -266,13 +267,13 @@ user-defined variables.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.get_window_and_tab_for_session">
-<code class="sig-name descname">get_window_and_tab_for_session</code><span class="sig-paren">(</span><em class="sig-param">session: iterm2.session.Session</em><span class="sig-paren">)</span> &#x2192; Union[Tuple[None, None], Tuple[iterm2.window.Window, iterm2.tab.Tab]]<a class="headerlink" href="#iterm2.App.get_window_and_tab_for_session" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.App.get_window_and_tab_for_session">
+<span class="sig-name descname"><span class="pre">get_window_and_tab_for_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="session.html#iterm2.Session" title="iterm2.session.Session"><span class="pre">iterm2.session.Session</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="window.html#iterm2.Window" title="iterm2.window.Window"><span class="pre">iterm2.window.Window</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.tab.Tab"><span class="pre">iterm2.tab.Tab</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.App.get_window_and_tab_for_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds the tab and window that own a session.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>session</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code>) – The session whose tab and window you wish to find.</p>
+<dd class="field-odd"><p><strong>session</strong> (<a class="reference internal" href="session.html#iterm2.Session" title="iterm2.session.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>) – The session whose tab and window you wish to find.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A tuple of (<a class="reference internal" href="window.html#iterm2.Window" title="iterm2.Window"><code class="xref py py-class docutils literal notranslate"><span class="pre">Window</span></code></a>, <a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.Tab"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tab</span></code></a>), or (<cite>None</cite>,
@@ -281,9 +282,9 @@ user-defined variables.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.get_window_by_id">
-<code class="sig-name descname">get_window_by_id</code><span class="sig-paren">(</span><em class="sig-param">window_id: str</em><span class="sig-paren">)</span> &#x2192; Optional[iterm2.window.Window]<a class="headerlink" href="#iterm2.App.get_window_by_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.App.get_window_by_id">
+<span class="sig-name descname"><span class="pre">get_window_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="window.html#iterm2.Window" title="iterm2.window.Window"><span class="pre">iterm2.window.Window</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.App.get_window_by_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds a window exactly matching the passed-in id.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -295,9 +296,9 @@ user-defined variables.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.get_window_for_tab">
-<code class="sig-name descname">get_window_for_tab</code><span class="sig-paren">(</span><em class="sig-param">tab_id: str</em><span class="sig-paren">)</span> &#x2192; Optional[iterm2.window.Window]<a class="headerlink" href="#iterm2.App.get_window_for_tab" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.App.get_window_for_tab">
+<span class="sig-name descname"><span class="pre">get_window_for_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tab_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="window.html#iterm2.Window" title="iterm2.window.Window"><span class="pre">iterm2.window.Window</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.App.get_window_for_tab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds the window that contains the passed-in tab id.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -309,35 +310,35 @@ user-defined variables.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.pretty_str">
-<code class="sig-name descname">pretty_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#iterm2.App.pretty_str" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.App.pretty_str">
+<span class="sig-name descname"><span class="pre">pretty_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><a class="headerlink" href="#iterm2.App.pretty_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the hierarchy as a human-readable string</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="iterm2.App.terminal_windows">
-<em class="property">property </em><code class="sig-name descname">terminal_windows</code><a class="headerlink" href="#iterm2.App.terminal_windows" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="iterm2.App.terminal_windows">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">terminal_windows</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[iterm2.window.Window]</span></em><a class="headerlink" href="#iterm2.App.terminal_windows" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deprecated in favor of <cite>windows</cite></p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="iterm2.app.CreateWindowException">
-<em class="property">class </em><code class="sig-name descname">CreateWindowException</code><a class="headerlink" href="#iterm2.app.CreateWindowException" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="iterm2.app.CreateWindowException">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">CreateWindowException</span></span><a class="headerlink" href="#iterm2.app.CreateWindowException" title="Permalink to this definition">¶</a></dt>
 <dd><p>A problem was encountered while creating a window.</p>
 </dd></dl>
 
 <hr class="docutils" />
-<div class="section" id="indices-and-tables">
+<section id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
 	  </div>
@@ -368,7 +369,7 @@ user-defined variables.</p>
       &copy;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
