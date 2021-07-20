@@ -1,6 +1,20 @@
-2021-07-18: Introduce tmux per-tab settings. Use it to
-remember tab title overrides. See mailing list thread with
-title [double-click renaming of tabs broken]
+2021-07-19: Add a key-down event tap for the modifier
+doublepress hotkey so that pressing a non-modifier will
+cancel it. Issue 9811
+
+2021-07-19: Bump python API version to 1.25
+
+2021-07-19: [python] Add async_set_preference (#446)
+
+
+2021-07-19: Fix a PTYSession retain cycle (#449)
+
+We forgot to use weakSelf in the observer block, keeping the
+entire session (and all its lines) alive even after the
+window had closed.  2021-07-18: Introduce tmux per-tab
+settings. Use it to remember tab title overrides. See
+mailing list thread with title [double-click renaming of
+tabs broken]
 
 2021-07-17: Don't use very long strings from find
 pasteboard. Issue 9804
