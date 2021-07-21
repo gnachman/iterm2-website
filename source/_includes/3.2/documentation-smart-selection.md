@@ -22,4 +22,4 @@ When Smart Selection is activated, iTerm2 tries each regular expression. For a g
 Actions may be associated with smart selection rules. When you right click in a terminal, smart selection is performed at the cursor's location. Any smart selection rule that matches that location will be searched for associated actions, and those actions will be added to the context menu. Actions may open a file, open a URL, run a command, or start a coprocess. A cmd-click on text matching a smart selection rule will invoke the first rule.
 
 #### Regular Expressions
-Regular expressions conform to the <a href="http://userguide.icu-project.org/strings/regexp">ICU regular expressions</a> rules.
+Regular expressions conform to the <a href="https://unicode-org.github.io/icu/userguide/strings/regexp.html">ICU regular expressions</a> rules.
