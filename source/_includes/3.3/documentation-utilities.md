@@ -1,6 +1,6 @@
 iTerm2 has a collection of shell scripts that help you take advantage of some of its unique features. When you install <a href="documentation-shell-integration.html">Shell Integration</a> from the **iTerm2 > Install Shell Integration** menu, you're asked if you'd like to install the Utilities Package as well. This page describes these utilities.
 
-If you prefer to install only the utilities (without also installing Shell Integration) you can find them <a href="https://github.com/gnachman/iterm2-website/tree/master/source/utilities">here</a>. Most of the utilities work without Shell Integration.
+If you prefer to install only the utilities (without also installing Shell Integration) you can find them <a href="https://github.com/gnachman/iTerm2-shell-integration/tree/main/utilities">here</a>. Most of the utilities work without Shell Integration.
  
 ### Components
 
