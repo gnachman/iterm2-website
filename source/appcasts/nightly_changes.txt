@@ -1,3 +1,12 @@
+2021-08-08: Restore tmux's SGR mouse reporting state. Also
+don't store user vars in tmux prior to 3.1 since it doesn't
+seem to work (show-options has no -p). Issue 9827
+
+2021-08-08: Skip over DWC_RIGHT in augmented string before
+appending when the cursor's initial position is over a
+DWC_RIGHT (in which case predecessorIsDoubleWidth would be
+false). Issue 9852
+
 2021-08-05: Don't try to report mouse events to a dead
 session. This lets the scroll wheel scroll after a broken
 pipe. Issue 9836
