@@ -1,3 +1,30 @@
+2021-08-14: Jiggle when foreground or background color
+change. Issue 9855
+
+2021-08-14: Send modifiers for delete, page up, and page
+down for 'standard' terminals. For terminals we don't
+recognize just use terminfo (or the weird hacks existed
+before). Also ARCify and do minor cleanup on VT100Output.m.
+This is a first step toward making VT100Output sane. Issue
+9849
+
+2021-08-14: Make the write end of the tmux pipe nonblocking
+to avoid dropping data. Issue 9684
+
+2021-08-14: Fix build break
+
+2021-08-13: Another try at improving changing key reporting
+modes. Issue 9770 (lots more detail there)
+
+* `CSI > 5 ; x m` now erases the stack and sets the mode.  *
+There's now a separate stack of key modes for main vs alt
+screen.  * Allow apps to change key reporting mode pref now
+affects CSI u.  * `CSI > 1 u` enters CSI u mode.  * ARCify
+VT100Terminal
+
+2021-08-13: Report vt220 in secondary device attribute
+response
+
 2021-08-11: Cache highlight trigger colors to reduce time
 spent parsing strings. Issue 9776
 
