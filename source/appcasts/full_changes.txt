@@ -1,173 +1,191 @@
-3.4.8
-This is a bugfix release over 3.4.7.
+3.4.9
 
-- Fix a bug where background images didn't appear
-  correctly when subpixel antialiasing was
-enabled.
+New Features
+- Add support for new keyboard reporting mode
+  control sequences:
+  - CSI > u  Push key reporting mode
+  - CSI < u  Pop key reporting mode
+  - CSI ? u  Query key reporting mode
+- When you select hex characters and open the
+  context menu their base-10 equivalent is shown.
+- Add Undo Close to menu so that you can bind a
+  keystroke to it. It undoes closing the last
+  session/tab/window.
+- You can now enable and disable triggers both on
+  a per-profile basis and per-session. You can do
+  this through the usual prefs UIs and also
+  through the Session > Triggers menu.
+- Add "Clear to Last Mark" and "Clear to Start of
+  Selection" menu items.
+- Add an option to disable triggers in interactive
+  applications.
+- You can now importa nd export snippets.
+- Add a profile preference to open the password
+  manager automatically when a password prompt is
+  detected.
+- Dynamic profiles may now name a "Dynamic Profile
+  Parent GUID" rather than "Dynamic Profile Parent
+  Name" to avoid breaking things when you rename a
+  profile with children.
+- Timestamps can now be configured to show when
+  the mouse hovers over the right edge of the
+  window.
 
-3.4.7
-This is a bugfix release over 3.4.6.
-
-- Fix a bug where the GPU renderer would draw the
-  wrong part of history when receiving input.
-- Fix a regression where clicking on an inactive
-  split pane while iTerm2 is not the active app
-  didn't focus it.
-- Fix performance problems because of a timer
-  leak.
-- Fix performance problems on certain systems that
-  constantly issue screen change notifications.
-- Fix a crash when using Undo in the composer.
-- Fix poor performance in full screen mode.
-- Fix drawing bug in non-GPU renderer when
-  scrolled to the bottom while receiving input
-  quickly.
-
-3.4.6
-
-This is a minor bugfix release over 3.4.5, which
-was not widely distributed.
-
-- Fix crashing bugs.
-- Fix a bug where the git status bar didn't work
-  when outside the root of a repo.
-
-The release notes for 3.4.5 follow:
-
-3.4.5
-
-New Features:
-- Add preference to allow/disallow apps changing
-  the function of the option keys with a control
-  sequence.
-- Add a menu item to pop the current session into
-  a new window.
-- The git status bar now indicates the repo state
-  (merging, reverting, cherrypicking, bisecting,
-  rebasing, or applying).
-- When you right click on a hex color like #ffeedd
-  show a preview of the color in sRGB in the
-  context menu.
-- Add a new type of trigger to highlight the whole
-  line. This is useful because matching .*foo.* is
-  very slow. With this trigger you can simply
-  match foo and the whole line changes color.
-
-Improvements
-- The git status bar component no longer shells
-  out to the system git. It uses libgit2 instead
-  (nicely named!) and should be faster and more
-  reliable now.
-- When known, the current git branch is used as a
-  search feature in Open Quickly.
-- Don't show a line between the titlebar and
-  tabbar in Big Sur.
-- Increase max allowed blur on macOS 10.14.
-- When you move a window to a different screen by
-  selecting the Move To Screen menu item, it will
-  lose its affinity for the window assigned to it
-  in Prefs > Profiles > Window and stay where it
-  was put when screens are added or removed.
-- Buttons in modal alerts now accept cmd+letter
+Other Improvements
+- In tmux integration the tmux server will now
+  remember user-set tab titles.
+- Preserve existing percent encoding when
+  cmd-clicking a URL.
+- Avoid setting TTY's size when switching away
+  from a tab.
+- Verbiage improvements to tmux dashboard.
+- Improvements to escaping when sending text via
+  key binding action or snippets. Backaslashes can
+  now reliably be sent by escaping them as \\.
+  Existing key bindings and snippets will not
+  change behavior until edited.
+- Sliders in prefs now include a text field
+  showing the actual value.
+- The window menu now indicates windows'
   shortcuts.
-- Ignore dynamic profiles whose filename ends in a
-  tilde.
-- Reset terminal when relaunching a session (e.g.,
-  paste bracketing and mouse reporting).
-- The composer window now uses the terminal's
-  font.
-- Scrolling with the trackpad should be more
-  responsive now.
-- Change how text is drawn when not using GPU
-  renderer to avoid artifacts.
-- When doing selection respecting soft boundaries,
-  treat a backslash in the last column as a
-  continuation mark and don't include it.
-- By default, save terminal contents to history
-  when there is a scrolling region that touches
-  the top of the screen.
-- Newly saved window arrangements will restore to
-  the right size when scroller style changes after
-  they were created (unless there are side-by-side
-  split panes).
-- Treat soft hyphens as unicode punctuation in
-  Advanced Paste.
+- Don't select tabs on mouse-down when option is
+  pressed so that you can option-drag a
+  non-selected tab.
+- Set COPYFILE_DISABLE before creating an archive
+  to send with it2ul to not include extended
+  attributes files.
+- Add Edit Triggers to Session menu.
+- If the current directory is a symlink remember
+  it more reliably when creating a new session
+  that reuses the previous session's directory.
+- Upload and download colors in the network usage
+  status bar component configurable.
+- Prevent triggers that run commands from eating
+  infinite CPU if there are too many of them by
+  limiting the number that can run concurrently.
+- Detect when triggers create a performance
+  problem and offer to disable them in interactive
+  apps.
+- Page up, page down, home, and end now scroll
+  when you are not in an interactive app. There is
+  a new preference in Profiles > Keys to control
+  this.
+- In tmux integration (for tmux 3.2 and later) tab
+  icons now reflect the current app in the tmux
+  pane.
+- Add showingAlternateScreen as a session-scoped
+  variable.
+- Add tmuxWindowPaneIndex as a session-scoped
+  variable (requires tmux 3.2+ and tmux
+  integration).
+- Add logFilename variable to session scope.
+- When a status bar is present without a composer
+  component and you open the composer, open the
+  big one instead of creating a temporary one in
+  the status bar.
+- Include default environment variables when
+  launching a Python API script (e.g. so TMPDIR is
+  set).
+- Tmux integration now uses #{pane_title} for the
+  tab title in most cases.
+- Remove selection when pasting.
+- Change the full screen mode shortcut to the mac
+  standard cmd-ctrl-F unless you have a profile
+  whose shortcut is set to this. Continue to
+  acccept cmd-enter as well.
+- Minor performance improvements to legacy
+  renderer.
+- Aesthetic improvements to the tabbar on big sur
+  to look more like system tabs.
+- Make "movement keys scroll outside interactive
+  apps" into a profile preference.
+- When dragging a window by the tabbar make it key
+  and front on mousedown.
+- Order a window front when dragging begins.
+- Add support for encrypted OpenSSH private keys
+  to upload/download with secure copy.
+- Disable GPU renderer when macOS Monterey is in
+  low-power mode.
 
 Bug Fixes
-- Fix a bug where doublecliking on a session
-  titlebar didn't maximize tmux panes correctly.
-- Fix clipped button next to status bar search
-  field.
-- Blur is now correct after changing window type
-  or theme.
-- Fix a bug where a window forgot it was blurred
-  when toggling traditional fullscreen in Minimal
-  theme.
-- Fix a bug where windows would restore on the
-  wrong desktop.
-- Fixes a bug where the GPU renderer gets stuck
-  "off" when the "Reduce motion" accessibility
-  setting is enabled and a window is maximized.
-- Fix a bug where control+shift+function/arrow key
-  sent the wrong code.
-- Fix a bug where the app could hang after certain
-  trackpad touches.
-- Fix a bug where copy on selection didn't always
-  work.
-- Fix a bug where transparent windows changed
-  colors in native full screen mode.
-- Fix a bug where keystrokes bound to menu items
-  didn't always work.
-- Fix crashes.
-- Fix a bug where disabling
-  middle-click-to-close-a-tab also breaks the tab
-  close button.
-- Fix keystroke filtering in the Python APi which
-  seems have been broken for some time.
-- Fix various bugs with HTML tab titles: remove
-  HTML for window title and tooltips.
-- Fix a bug where inline images downscaled
-  with artifacts in the GPU renderer.
-- Fix a crash on launch if ~/.config/iterm2 is not
-  able to be created and is not already a
-  directory.
-- Fix a bug where tab icons were flipped
-  vertically on macOS 10.14.
-- Fix a bug where the GPU renderer would sometimes
-  use the wrong thickness for text.
-- Fix various bugs around snippets with the same
-  title.
-- Don't crash if ~/.config/iterm2, ~/.iterm2, and
-  ~/.iterm2-1 cannot be created/used as writable
-  directories.
-- Fix rendering bugs in background images with
-  transparency.
-- When HTML titles are enabled, remove the tags
-  from various places like notifications.
-- Don't crash when pseudoterminals are exhausted.
-- Fix a bug where windows would be empty after
-  changing screen.
-- Fix a bug where no terminal content was shown
-  when dragging a tab.
-- Fix a bug where underlines appeared offset.
-- Fix a bug where transparency and blur would
-  sometimes be wrong.
-- Fix a bug where smart cursor color didn't use
-  the right neighbors as input.
-- Fix a bug where the tty pixel size didn't take
-  retina scale into account.
-- Fix blurry timestamps.
-- Fix a hang when using a status bar with the
-  "stable layout" algorithm and a fixed-size
-  spacer.
-- Fix a bug where scroll wheel mice could need
-  more than one click to scroll.
-- Fix a bug where tmux integration was broken on
-  OpenBSD 6.8.
-- Fix a flash when the metal renderer is enabled
-  or disabled.
-- Fix bugs where tiled background images didn't
-  look right.
-- Fix bug where the last command in the command
-  history toolbelt tool was cut off.
+- Fix a bug where some input was dropped in tmux
+  integration.
+- macOS Monterey support.
+- Make "broadcast to panes in current tab" saner.
+  It is now a per-tab rather than per-window
+  setting. Toggling it will enable/disable the
+  setting only for the current tab.
+- Don't highlight the area next to the search
+  field in the preferences pane on mouse-over.
+- Fix a bug where windows could be created a bit
+  narrower than they should have been.
+- When the standard "tmux" profile is created,
+  ensure it doesn't have a hotkey.
+- Fix improper truncation in git status bar
+  component.
+- Fix cmd-clicking on URLs with ipv6 addresses.
+- Fix URL changing in various cases when
+  cmd-clicking on it.
+- Fix discrepancy between legacy and GPU
+  renderer's drawing of tiled background images.
+- Fix a bug where toolbelt tables could be
+  truncated on the bottom.
+- Move cursor to first column after adding
+  'session contents restored' banner.
+- Fix bug where inline images were scaled
+  incorrectly.
+- Fix insets of inline images to be mroe sensible.
+- Fix a bug where a shadow could appear under the
+  tabbar in full screen mode on Big Sur and also
+  in the minimal theme.
+- Disable paste bracketing when sending 'cd
+  directory' due to a drag being dropped.
+- Fix the expand arrow button in the status bar
+  composer component.
+- Allow focus to stay on search field when a
+  terminal window becomes key.
+- Don't let a control sequence take you out of
+  CSI u mode.
+- Fix overly long underlines in GPU renderer.
+- Prevent excessive CPU usage when the git status
+  bar component is enabled and the repo in the
+  current directory is enormous.
+- Fix incorrect network throughput in network
+  status bar component when the set of NICs
+  changes.
+- Update full-environment Python scripts'
+  setup.cfg after editing dependencies.
+- Fixes a bug where the window shrinks when
+  splitting a tab in a 1-tab window.
+- Fix various crashes.
+- Fix a bug where prompt marks could survive the
+  screen being cleared (this happened a lot in
+  tmux integration).
+- Respect zero-width joiners and allow them to
+  prevent ligatures.
+- Fix a bug where restoring windows from an
+  arrangement via the dock menu could put them on
+  the wrong screen.
+- Avoid sending focus reports when the password
+  manager is open.
+- Fix a bug where tabs opened from the tmux
+  dashboard would open in the current window
+  instead of in a new window.
+- Fix a bug where content would jump around when
+  scrolled up into history and new input is being
+  received.
+- Fix a bug where it was impossible to make a
+  selection while scrolled into history and new
+  input is being received.
+- Fix a bug where content was duplicated when
+  restoring a window on app launch.
+- Fix a bug where buried sessions remained hidden
+  when the password manager was opened by a
+  trigger.
+- Fix opening emacs in an existing window when
+  cmd-clicking on a text file.
+- Unset SHLVL when launching a session to avoid it
+  being greater than 1.
+- Control-J in CSI u mode now sends a control
+  sequence.
 
