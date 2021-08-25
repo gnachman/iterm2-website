@@ -1,3 +1,11 @@
+2021-08-25: Don't remove a fd from TaskNotifier when we get
+a Terminate notification from iTermServer. It races against
+the last reads from its file descriptor and can cause the
+last bit of output to be lost. I think. Issue 9873
+
+2021-08-24: Don't record call stacks for timers by default
+to improve performance
+
 2021-08-24: Bump max texture size to 16k. Issue 9850
 
 2021-08-24: Fix vertical offset of cursor when
