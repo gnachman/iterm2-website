@@ -56,7 +56,7 @@ Next, you need to load the script at login time. Add this to the end of ~/.zshrc
 
 Next, you need to load the script at login time. Add this to the end of ~/.config/fish/config.fish:
 
-<pre>source ~/.iterm2_shell_integration.(basename $SHELL)</pre>
+<pre>source ~/.iterm2_shell_integration.fish</pre>
 </div>
 
 
