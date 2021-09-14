@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # vim: set fileencoding=utf-8 :
 
+import datetime
 import os
 import os.path, time
 import re
@@ -9,7 +10,7 @@ import sys
 
 print '''---
 layout: default
-title: Downloads - iTerm2 - Mac OS Terminal Replacement
+title: Downloads - iTerm2 - macOS Terminal Replacement
 active-state: downloads
 ---
 '''
@@ -68,6 +69,13 @@ def CompareZipFileNames(x, y):
 
   return cmp(yversion, xversion)
 
+def Date(filename):
+    timestamp = os.path.getmtime(filename)
+    dt = datetime.datetime.fromtimestamp(timestamp)
+    if dt < datetime.datetime(2016, 1, 1):
+      return None
+    return dt.strftime("%B %-d, %Y")
+
 def Metadata(zip, metadataType, onError=None):
     basename = os.path.splitext(zip)[0]
     name = basename + "." + metadataType
@@ -78,6 +86,12 @@ def Metadata(zip, metadataType, onError=None):
 	    return os.path.split(basename)[1]
 	else:
 	    return onError
+
+def Released(zip):
+    d = Date(zip)
+    if d is None:
+	return ""
+    return "Built on " + d + "."
 
 def Summary(zip):
     return Metadata(zip, "summary")
@@ -144,7 +158,7 @@ for sectionName,path,note,tracks in DOWNLOADS_PATHS:
 	name = os.path.split(zip)[1]
 	print '<h4 style="margin-top: 4pt"><a href="https://iterm2.com/downloads/' + path + '/' + name + '"><img src="/images/Download.png" width=100 height=27 style="padding-right: 10pt">' + Summary(zip) + '</a></h4>'
 
-	descr = Description(zip)
+	descr = Description(zip) + Released(zip)
 	if len(descr) > 0:
 	  print "<p>"
 	  print descr
