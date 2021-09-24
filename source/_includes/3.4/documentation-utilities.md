@@ -36,17 +36,22 @@ Requests attention. Can bounce the dock icon or show a fireworks animation at th
 
 Usage:
 
-`it2attention start`
+<ul>
+<li>`it2attention start`
+<br/>
+Begin bouncing the dock icon if another app is active
+</li>
 
- * Begin bouncing the dock icon if another app is active
-
-`it2attention stop`
-
- * Stop bouncing the dock icon if another app is active
-
+<li>`it2attention stop`
+<br/>
+Stop bouncing the dock icon if another app is active
+</li>
+<li>
 `it2attention fireworks`
-
- * Show an explosion animation at the cursor
+<br/>
+how an explosion animation at the cursor
+</li>
+</ul>
 
 #### it2check
 
@@ -103,17 +108,40 @@ For example:
 
 name is one of:
 <ul>
-<li>fg bg bold link selbg selfg curbg curfg underline tab</li>
-<li>black red green yellow blue magenta cyan white</li>
-<li>br_black br_red br_green br_yellow br_blue br_magenta br_cyan br_white</li>
+<li>fg</li>
+<li>bg</li>
+<li>bold</li>
+<li>link</li>
+<li>selbg</li>
+<li>selfg</li>
+<li>curbg</li>
+<li>curfg</li>
+<li>underline</li>
+<li>tab</li>
+<li>black</li>
+<li>red</li>
+<li>green</li>
+<li>yellow</li>
+<li>blue</li>
+<li>magenta</li>
+<li>cyan</li>
+<li>white</li>
+<li>br_black</li>
+<li>br_red</li>
+<li>br_green</li>
+<li>br_yellow</li>
+<li>br_blue</li>
+<li>br_magenta</li>
+<li>br_cyan</li>
+<li>br_white</li>
 </ul>
 
 color is of the format:
 <ul>
-<li>RGB        (three hex digits, like fff)</li>
-<li>RRGGBB     (six hex digits, like f0f0f0)</li>
-<li>cs:RGB     (cs is a color space name)</li>
-<li>cs:RRGGBB  (cs is a color space name)</li>
+<li>`RGB`       (three hex digits, like fff)</li>
+<li>`RRGGBB`    (six hex digits, like f0f0f0)</li>
+<li>`cs:RGB`    (cs is a color space name)</li>
+<li>`cs:RRGGBB` (cs is a color space name)</li>
 </ul>
 
 The color space names accepted in the color are:
