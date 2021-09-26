@@ -1195,7 +1195,9 @@ mode colors are not enabled.</p>
 <dt class="sig sig-object py" id="iterm2.Profile.async_set_key_mappings">
 <em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_set_key_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_key_mappings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the keyboard shortcuts.</p>
-<p>The value is a Dictionary mapping keystroke to action.</p>
+<p>The value is a Dictionary mapping keystroke to action. You can convert
+between the values in this dictionary and a <code class="xref py py-class docutils literal notranslate"><span class="pre">KeyBinding</span></code>
+using <cite>iterm2.decode_key_binding</cite></p>
 </dd></dl>
 
 <dl class="py method">
@@ -1652,7 +1654,9 @@ UI.</p>
 <dt class="sig sig-object py" id="iterm2.Profile.async_set_triggers">
 <em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_set_triggers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Profile.async_set_triggers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the triggers.</p>
-<p>Value is a trigger definition (currently undocumented)</p>
+<p>Value is an encoded trigger. Use iterm2.decode_trigger to convert from
+an encoded trigger to an object. Trigger objects can be encoded using
+the encode property.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2370,7 +2374,9 @@ light/dark mode colors are not enabled.</p>
 <dt class="sig sig-object py" id="iterm2.Profile.key_mappings">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">key_mappings</span></span><em class="property"><span class="pre">:</span> <span class="pre">Dict[str,</span> <span class="pre">Any]</span></em><a class="headerlink" href="#iterm2.Profile.key_mappings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the keyboard shortcuts.</p>
-<p>The value is a Dictionary mapping keystroke to action.</p>
+<p>The value is a Dictionary mapping keystroke to action. You can convert
+between the values in this dictionary and a <code class="xref py py-class docutils literal notranslate"><span class="pre">KeyBinding</span></code>
+using <cite>iterm2.decode_key_binding</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A typing.Dict[str, typing.Any]</p>
@@ -2897,7 +2903,9 @@ display name for the UI.</p>
 <dt class="sig sig-object py" id="iterm2.Profile.triggers">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">triggers</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[Dict[str,</span> <span class="pre">Any]]</span></em><a class="headerlink" href="#iterm2.Profile.triggers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the triggers.</p>
-<p>Value is a trigger definition (currently undocumented)</p>
+<p>Value is an encoded trigger. Use iterm2.decode_trigger to convert from
+an encoded trigger to an object. Trigger objects can be encoded using
+the encode property.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A typing.List[typing.Dict[str, typing.Any]]</p>
@@ -3966,7 +3974,9 @@ mode colors are not enabled.</p>
 <dt class="sig sig-object py" id="iterm2.LocalWriteOnlyProfile.set_key_mappings">
 <span class="sig-name descname"><span class="pre">set_key_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.LocalWriteOnlyProfile.set_key_mappings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the keyboard shortcuts.</p>
-<p>The value is a Dictionary mapping keystroke to action.</p>
+<p>The value is a Dictionary mapping keystroke to action. You can convert
+between the values in this dictionary and a <code class="xref py py-class docutils literal notranslate"><span class="pre">KeyBinding</span></code>
+using <cite>iterm2.decode_key_binding</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>value</strong> – A typing.Dict[str, typing.Any]</p>
@@ -4478,7 +4488,9 @@ UI.</p>
 <dt class="sig sig-object py" id="iterm2.LocalWriteOnlyProfile.set_triggers">
 <span class="sig-name descname"><span class="pre">set_triggers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.LocalWriteOnlyProfile.set_triggers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the triggers.</p>
-<p>Value is a trigger definition (currently undocumented)</p>
+<p>Value is an encoded trigger. Use iterm2.decode_trigger to convert from
+an encoded trigger to an object. Trigger objects can be encoded using
+the encode property.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>value</strong> – A typing.List[typing.Dict[str, typing.Any]]</p>
@@ -4814,6 +4826,11 @@ specified properties set.</p>
 <span class="sig-name descname"><span class="pre">TILE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#iterm2.BackgroundImageMode.TILE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Full size, undistorted, and tessellated if needed.</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="iterm2.BackgroundImageMode.toJSON">
+<span class="sig-name descname"><span class="pre">toJSON</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.BackgroundImageMode.toJSON" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

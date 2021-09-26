@@ -87,7 +87,7 @@
 <p>Provides a class that represents an iTerm2 tab.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="iterm2.Tab">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmux_window_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmux_connection_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmux_window_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmux_connection_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimized_sessions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Tab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a tab.</p>
 <p>Don’t create this yourself. Instead, use <a class="reference internal" href="app.html#iterm2.App" title="iterm2.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a>.</p>
 <dl class="py method">
@@ -305,6 +305,8 @@ either vertical or horizontal.</p>
 <dt class="sig sig-object py" id="iterm2.Tab.sessions">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">sessions</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[iterm2.session.Session]</span></em><a class="headerlink" href="#iterm2.Tab.sessions" title="Permalink to this definition">¶</a></dt>
 <dd><p>A tab contains a list of sessions, which are its split panes.</p>
+<p>This excludes minimized sessions. Use <cite>all_sessions</cite> to get both visible
+and minimized sessions in this tab.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The sessions belonging to this tab, in no particular order.</p>
