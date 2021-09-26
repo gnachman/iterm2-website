@@ -1,0 +1,111 @@
+3.5.0beta1
+
+New Features
+- Add support for filtering: this hides all lines
+  not matching a search query to facilitate
+  browsing logs.
+- Claim to be xterm version 314 and a vt220. This
+  will enable new features in various programs,
+  such as better key reporting in vim and emacs.
+  It may introduce new incompatibilities too!
+  Please let me know if something breaks.
+- Add support for separate light/dark mode colors.
+- Add Inject trigger. It injects input to the
+  terminal as though it had been read from the
+  running app.
+- Add a trigger to set a user-defined variable.
+- Add Triggers status bar component.
+- Add session size as a feature you can show in
+  tab titles.
+- Add a mouseInfo variable that exposes info about
+  the last button event to Python API scripts.
+- In the Minimal theme, tabs now have a separate
+  configurable subtitle under the main title.
+- You can now reveal a session by opening a URL
+  like iterm2:///reveal?sessionid=w0t0p0.guid
+  where the parameter comes from the
+  ITERM_SESSION_ID environment variable.
+- You can now save logs in HTML.
+- Add support for various control sequences that
+  affect colors (OSC 12, 17, 19, 104, 110, 111,
+  112, 117, and 119).
+- Add support for colored underlines.
+
+Other Improvements
+- When you drag a top statusbar in a no-titlebar
+  window with a single tab and no split panes drag
+  the window instead of the tab.
+- Use session font for timestamps.
+- Add DECSET 2026 for synchronized updates.
+- Make font configurable in text status bar
+  components.
+- Various minor visual improvements.
+- Prompt to delete the restoration db if verifying
+  its integrity takes over 10 seconds.
+- Use fixed-pitch fonts in various places in
+  settings where they make sense.
+- Show an indicator in all sessions when debug
+  logging is enabled.
+- tmux integration now remembers which windows had
+  the toolbelt open.
+- tmux integration now remembers tab title
+  overrides.
+- Pressing a non-modifier key will now cancel a
+  double-tap of a modifier key that opens a hotkey
+  window.
+- Clicking on indicator icons in the top right of
+  a session now shows help text.
+- Broadcast to all panes/tabs is now a toggle.
+- Double clicking on the tabbar now behaves the
+  same as double clicking on the title bar: it
+  respects the system setting for title bar double
+  clicks.
+- Improve legibility of tab labels in the Minimal
+  theme.
+- Limit CPU usage of helper tasks to 50%.
+- Improve performance of highlight triggers.
+- Various improvements to key reporting.
+- Force apps to redraw when color settings change.
+- Synchronize selected window, tab, and pane in
+  tmux integration when another client changes it.
+- Add modified terminfo for xterm, xterm-256color,
+  and xterm-new that support Smulx (undercurl).
+- Support resolutions larger than 4k pixels per
+  dimension in GPU renderer.
+- Up/down arrows wrap around in open quickly
+  window.
+- Don't reset the start location for search when a
+  search finds zero results.
+- Add support for HTML-style #rrggbb colors in OSC
+  4 and related sequences.
+
+Bug fixes
+- When global search finds a result in a hidden
+  pane because a sibling is maximized an d you
+  select it, change which pane is maximized.
+- Fix memory leaks.
+- Mouse reporting now reports mouse up more than
+  once when multiple buttons were pressed at the
+  same time.
+- Fix a bug where the scroll wheel could stop
+  working after a session terminates.
+- Fix a bug when overwriting the second half of a
+  double-width character.
+- Fix a bug in mouse reporting with tmux.
+- Fix how colors are reported to improve
+  compatibility with emacs.
+- Terminate buried sessions when quitting.
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+c50b0718edb8acad04f20b1283e3add96752633c876630ed6ddaf7ebc4250e00
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCYU/63gAKCRB0Et0TaFtK
+rImWAP9l0Q1tvZ3u+1j9KOfYc9pNEQLF2RCpgR5MpC31yS1H5wEA5mIuxPnM3epz
+6/axQ8+kHttB7qg4FlYUXsLz6DKHOq8=
+=ubcq
+-----END PGP SIGNATURE-----
