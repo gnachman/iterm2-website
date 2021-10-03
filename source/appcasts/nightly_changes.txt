@@ -1,3 +1,16 @@
+2021-10-02: Fix a bug where the ligature warning was shown
+for fonts that have default ligatures (currently none) or
+fonts that don't support ligatures and it wasn't updated
+when changing fonts
+
+2021-10-02: ESC c now restores profile colors to the values
+from the underlying profile. Since OSC 4 can change them
+it's only fair that you can reset them. This might cause
+problems if people are manually tweaking their profiles and
+expecting it to stick, but restoring values to the last
+human-set color would introduce gobs of complexity. Issue
+9948
+
 2021-10-01: Only hide tabbar backing's visual effect view
 when in the minimal theme. Fixes a bug where the regular
 theme with a transparent window would have no backing,
