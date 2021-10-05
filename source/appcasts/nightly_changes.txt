@@ -1,3 +1,12 @@
+2021-10-04: Various improvements to sending key events.
+
+- Function keys now communicate modifiers when TERM starts
+with `xterm`.  - Rewrite modify other keys mode=1 to fix a
+lot of problems. Issue 9962.  - Control-backspace now sends
+c-h - Fix various other weird edge cases I spotted in xterm
+(c-m-backspace sends CSI; meta+special control (i.e., c-2 or
+c-6) now does esc + special control)
+
 2021-10-03: Add some guardrails for the toolbelt font
 setting to avoid a crash. Issue 9940
 
