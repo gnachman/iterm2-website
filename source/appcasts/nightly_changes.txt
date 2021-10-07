@@ -1,3 +1,32 @@
+2021-10-06: Add support for SR (shift right)
+
+2021-10-06: Add support for SL (Shift left).
+
+2021-10-06: Fix a bug where scroll regions got corrupted
+weirdly (leaving illegal values) after a resize.
+
+2021-10-06: Add support XTSETTCAP. Change how XTGETTCAP
+works for TN, which now returns the termcap name (e.g.,
+xterm-new) rather than the terminal emulator name. This will
+probably break some people's scripts. They can use another
+test, such as whether you get a response for iTerm2Profile
+instead of TN.
+
+2021-10-06: Add support for DECRSPS
+
+2021-10-06: Add support for DECRQPSR
+
+2021-10-06: Remove debugging code
+
+2021-10-06: Attach save panel to the presenting window
+
+2021-10-06: Add DECSLPP. DECRQSS improvements. DECRQCRA
+update.
+
+- Add support for DECSLPP.  - Fix DECRQCRA to use the first
+arg for the request ID to work with modern esctest.  -
+Implement most of DECRQSS.
+
 2021-10-05: Add support for DECBI
 
 2021-10-05: Add support for DECFI
