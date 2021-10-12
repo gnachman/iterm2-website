@@ -1,3 +1,34 @@
+2021-10-11: Implement SPA, EPA, DECSCA, DECSERA, DECSED, and
+DECSEL. Report selective erase support in DECRQSS.
+
+Split enumerateCellsInRect into a mutable & immutable
+methods.
+
+Fix a bug where Primary DA would respond when the parameter
+is not 0.
+
+2021-10-11: Move URL out of screen_char_t and in to
+iTermExternalAttributes.
+
+This required adding a migration path from the now-legacy
+screen_char_t that had a URL code to the modern one that has
+16 bits of unused space. This was motivated by the desire to
+support the protected attribute and to add new attributes
+more easily in the future. This also gets us 32-bit URL
+codes, which ought to be enough for anyone. I also fixed a
+bug where NSURLs were saved in VT100Terminal's restorable
+state when OSC 8 is in effect (rare, but breaks decoding).
+Fix a crash when VT100Grid fails to import a broken
+restorable state dictionary. Update DVR to import/export
+external attributes. Fix a bug in iTermURLStore that used up
+codes unnecessarily quickly.
+
+2021-10-11: Don't crash if we fail to restore the primary
+grid from restorable state.
+
+2021-10-11: Add Setulc (underline color support) to my fork
+of xterm-256color
+
 2021-10-09: Implement DECSACE
 
 2021-10-09: Implement DECERA. Fix default rectangles for
