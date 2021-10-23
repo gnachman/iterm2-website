@@ -1,3 +1,57 @@
+2021-10-23: Add graphic_emacs files that were missed in a
+previous commit
+
+2021-10-23: When adding new tabs adjacent to the current
+one, close tab should take you to the previous (not next)
+tab. Issue 9994
+
+2021-10-22: Add an optional shadow to vertical and
+horizontal cursors to improve visibility. See private email
+with subject line 'ITerm2 Smart box cursor color issue'
+
+2021-10-22: Turn debug logging for timers back on in beta
+and log notification center observers to debug log
+
+2021-10-22: Remove notification center observation for
+debugging in iTermTimerProxy. It's causing performance
+problems, although I'd be a little surprised if this fixes
+it. Issue 9306
+
+2021-10-22: Enable subtitles in the regular theme. Allow
+setting subtitle with OSC (0 or 1) (title newline subtitle).
+Issue 6850
+
+2021-10-21: Fix tab icons for emacs and python by adding a
+noramlization step that removes version number/arch stuff
+from the executable's name. Add an emacs icon, inspired by
+the macOS icon.
+
+2021-10-21: Enable subtitles in regular theme when tab bar
+is at least 28 pts high. Add a UI for enabling the taller
+tab bar. This was done to avoid breaking existing
+arrangements while providing a path toward a standard-height
+tabbar. Issue 6850
+
+2021-10-21: Update shell integration
+
+2021-10-21: Make [LineBuffer initWithDictionary] return an
+empty line buffer if the dictionary is broken to avoid being
+left without a line buffer at all.
+
+2021-10-21: Fix ubsan warning
+
+2021-10-21: Don't call CPU governor off the main queue.
+Fixes a data race
+
+2021-10-21: Rebuild BetterFontPicker.framework with release
+Xcode 13
+
+2021-10-21: Fix a race between async writes and closing the
+file descriptor. Issue 9992
+
+2021-10-21: [python] Remove max websocket payload size.
+Issue 9992. Bump python version.
+
 2021-10-21: Desperate attempt to prevent leak of gitpoller.
 Issue 9950, 9986
 
