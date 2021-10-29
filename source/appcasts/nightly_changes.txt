@@ -1,3 +1,19 @@
+2021-10-28: Make ED not erase marks unless the last token
+was CSI 1 ; 1 H (CUP). Issue 10006
+
+2021-10-28: Fix file descriptor leak and assertion failure
+in HTTP connection because the retain/release infra was not
+adpoted everywhere. closing also needs to be synchronized
+together with fd to avoid a race.
+
+2021-10-28: When scroller style changes don't adjust
+window's frame if it's presently maximized to its screen's
+visible frame. Issue 9946
+
+2021-10-28: Fix taking a snapshot of a view (such as when
+dragging a tab) which seems to have been broken by
+iTermBackgroundColorView
+
 2021-10-27: Add advanced pref to increase minimal tab text
 legibility
 
