@@ -1,3 +1,76 @@
+2021-11-04: Fix blending in metal plus various differences
+between it and the legacy renderer.
+
+A TREATISE ON METAL AND COLOR SPACES
+
+THE FACTS * NSView blends in the colorspace of its enclosing
+window. For example, if you paint srgb(255, 0, 0,
+25%)=xdr(234, 51, 35, 25%)=SD(255, 0, 8, 25%) over srgb(64,
+64, 64)=xdr(64, 64, 64)=SD(56, 56, 56) the result dependson
+the screen. On pro display, you get xdr(107, 61,
+57)=srgb(114, 58, 55) and on SD you get SD(105, 41,
+43)=srgb(114, 50, 50).  * NSWindow has a colorspace, but
+changing it tickles bugs in the window server (FB9316904).
+* Because window colorspaces are effectively immutable,
+blending of non-images in drawRect: always happen in the
+screen's colorspace. Maybe that makes sense: how else would
+you blend srgb(x) over p3(y)? It's arbitrary.  * An NSImage
+has a colorspace that affects how blending happens.  * When
+you programatically create an NSImage, it seems to be in the
+colorspace of your main display. Or best display? I'm not
+sure. Regardless, you should draw into it with the
+colorspace you really want (probably sRGB for iTerm2 today,
+although P3 would be nice in the future).  * For Metal, you
+have to convert images to the screen's colorspace using
+bitmapImageRepByConvertingToColorSpace:renderingIntent: in
+order to actually change the raw data correctly
+(CGImageCreateCopyWithColorSpace doesn't seem to change raw
+values; it just re-tags it). This can be done just before
+turning it into a texture.  * Like drawing in images, in
+drawRect: you can draw with the colorspace you like (sRGB
+typically for me) and don't think about it otherwise.  * In
+Metal, convert your colors (typically in sRGB) to the
+screen's colorspace when going from NSColor ->
+vector_float4.  * MTKView has a colorspace that affects how
+blending happens. In order for it to behave like NSView,
+make its colorspace equal the window's colorspace.
+Thankfully you can change MTKView's colorspace without
+reprocussions. I think that if I didn't care about matching
+drawRect:, I could set this to sRGB and get saner blending
+behavior.
+
+** THE GOLDEN RULE OF METAL ** Shaders operate in the color
+space of the screen. All their inputs and outputs that
+relate to colors should be in the display's color space.
+
+Detailed list of changes in this commit:
+
+* Arcify iTermBadgeLabel * Enable whole-module optimization
+* Appease xcode 13 * Fix blending in Metal.  * Add atop
+blending mode for metal which is a better match for how
+drawRect: blends.  * Don't force textures to be BGRA8Unorm.
+Many of them (especially programatically generated) will
+have 16-bit float representations.  * Background stripes in
+GPU now don't extend into margins.  * Refactor mark drawing
+to reduce duplication and ensure pixel-perfect match between
+gpu and legacy code.  * Fix a bug in GPU timestamps where
+there could be rounding errors in the iTermTimestampKey.date
+field that would cause discrepancies with the legacy
+renderer. Use the string representation to compare for
+equality.  * Fix a bug where the GPU rendered timestamps
+would shift right under a legacy scroller.  * Fix
+it_verticallyFlippedImage to preserve the resolution of the
+bitmap and output floats (not BGRA8).  * Add -[NSView
+enclosingWindowDidMoveToScreen:] * Simplify drawing badge
+labels to apply alpha at text rendering time rather than as
+a separate step.  * Draw cursor guide in IME text * Hide
+regular cursor in copy mode in legacy renderer.  * Fix font
+smoothing discrepancy between legacy and GPU timestamps *
+Fix vertical orientation of timestamps discrepancy
+
+FAQ Q: Do I feel bad about such a big commit?  A: No. For
+individual commits, see the metal_colorspaces branch.
+
 2021-10-31: Fix flashing white line. See
 https://twitter.com/satefan/status/1454894566381916167?s=20.
 Issue 9199
