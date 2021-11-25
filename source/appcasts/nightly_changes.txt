@@ -1,3 +1,52 @@
+2021-11-25: Add NSScrollView+iTerm.swift which was somehow
+missed a few days ago
+
+2021-11-25: Make NSRect comparison in
+scrollerStyleDidChange: sloppy. Issue 9946
+
+2021-11-24: Make nonnative fullscreen windows and floating
+top-of-screen hotkey windows avoid the notch
+
+2021-11-24: Fix safe area insets for notch displays.
+
+2021-11-24: Add support for greater than 120hz updates.
+Requires an ARM mac to ensure we don't cause problems on
+Intel machines. Issue 10028
+
+2021-11-23: When prepending a default scheme to a
+user-supplied URL for URL actions, include //. A URL must
+have either one or two slashes, and using neither caused
+NSURL and NSURLComponents to be confused and percent-encode
+the hashmark. Issue 10062
+
+2021-11-23: Fix crash when main display causes
+NSImage.lockFocus to produce ARGB instead of RGBA/BGRA. Also
+fix a bug where the cursor guide created a new texture for
+each frame.
+
+2021-11-23: Fix a crash when a textview has no window
+
+2021-11-22: Improve logging for resizing PTYSplitView
+
+2021-11-22: Fix wrong titlebar color. Cherrypick this to
+3.4.14.
+
+2021-11-22: Remove unneeded availability checks
+
+2021-11-22: Add 'convert matches to selections'. Issue 10049
+
+2021-11-22: Fix a bug where 'Duplicate Tab' would duplicate
+the current tab, not the one whose context menu item was
+selected. Issue 10048
+
+2021-11-21: Tweak horizontal insets of toolbelt table views
+for macOS 10.x
+
+2021-11-21: Make toolbelt tables look good.
+
+Factor out common tableview code. Use NSTableCellView, which
+fixes vertical alignment problems mentioned in issue 10027.
+
 2021-11-19: Revert "Add
 NSPrefersDisplaySafeAreaCompatibilityMode"
 
