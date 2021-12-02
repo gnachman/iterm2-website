@@ -1,0 +1,179 @@
+3.5.0beta3
+
+New Features
+- Add support for 120hz.
+- Add support for the notch.
+- Function keys now send modifier flags as long as
+  TERM begins with `xterm`.
+- Compatibility improvements to "modifyOtherKeys"
+  mode.
+- Add support for various control sequences:
+  - CSI ^
+  - CSI a
+  - DEC(RE)SET 1007
+  - DEC(RE)SET 1016
+  - DEC(RE)SET 1047
+  - DEC(RE)SET 1048
+  - DEC(RE)SET 12 (blinking cursor: disabled by
+    default in new pref)
+  - DEC(RE)SET 66
+  - DECBI
+  - DECCARA
+  - DECCRA
+  - DECDC
+  - DECDSR
+  - DECERA
+  - DECFI
+  - DECFRA
+  - DECIC
+  - DECNCSM
+  - DECRARA (yeah! let's go!)
+  - DECRQPSR
+  - DECRQSS
+  - DECRSPS
+  - DECSACE
+  - DECSCA
+  - DECSCPP
+  - DECSED
+  - DECSEL
+  - DECSERA
+  - DECSLPP
+  - DECSNLS
+  - EPA
+  - HPA
+  - SGR 21 (double underline)
+  - SL
+  - SPA
+  - SR
+  - Tertiary DA
+  - XTPOPSGR
+  - XTPUSHSGR
+  - XTSETTCAP
+  - XTSMGRAPHICS
+  - push/pop/report colors
+- HTML logs now support double underlines.
+- Provide a modified termcap that advertises
+  Setulc (underline color support) for
+  xterm-256color.
+- Add a "compose" action (prefs > shortcuts >
+  actions).
+- You can now disable probing for a password
+  prompt in the settings menu of the password
+  manager.
+- Subtitles are now available in the regular theme
+  after you increase the tabbar's height via a new
+  button in profile general prefs.
+- The vertical line and horizontal line cursors
+  now have a subtle shadow to improve their
+  visibility.
+- Add "Add tab on right" to tab context menu.
+- The folder for automatic logging is now an
+  interpolated string.
+- There's a new Utilitiy, it2tip, which implements
+  the tip of the day as a command line app.
+  Install shell integration and utilities to get
+  it.
+- Offer to detach after closing the last tmux tab.
+- Selecting Advanced Paste while in the composer
+  moves the compoer's content into the advanced
+  paste window.
+- Hold shift when selecting a snippet to open it
+  in the composer.
+- Add "Convert Matches to Selections" menu item.
+- You can now bind "select menu item" to pointer
+  events (clicks and gestures).
+- Make menu items searchable in key bindings and
+  pointer bindigns.
+
+Other Improvements
+- Increase the maximum number of URLs to bignum.
+- Performing find next/previous without a search
+  bar open will highlight all search results now.
+- Emacs and Python now get the correct tab icons.
+- Rate limit alerts and notification triggers to
+  avoid spamming you to death.
+- Make the tab bar look prettier in Monterey.
+- Tweak sorting of command history to make age a
+  slightly stronger factor. Hopefully this is a
+  net improvement.
+- Smart selection action parameters are now
+  interpolated strings.
+- Visual improvements to the toolbelt.
+- Warn about changes in macOS 12 when secure
+  keyboard entry is enabled.
+- Show an indicator in the current session when
+  secure keyboard input is enabled.
+
+Bug fixes
+- Fix a bug where cmd-enter wouldn't toggle
+  fullscreen for a hotkey window when native
+  fullscreen was enabled.
+- Control-backspace now sends ^H.
+- Fix DECRQCRA interpretation of params (first is
+  now request ID).
+- Fix corrupted scroll regions after a resize.
+- Fix application keypad mode.
+- Fix DECCOLM to reset margins on change and to
+  preserve the cursor's position.
+- Work around a bug in old versions of tmux where
+  they didn't accept control-space like other
+  keys, causing 0x0 to be printed.
+- Fix tmux integration for tmux 1.8.
+- Turn off smart substitution in the snippets
+  value text view.
+- Open hotkey windows beneath menu bar when
+  opening over another app's fullscreen window.
+- Fix the appearance of dragged tabs.
+- Fix flashing white line at top of screen in dark
+  mode full screen.
+- Fix discrepancy between GPU and non-GPU renderer
+  in the presence of blending.
+- OSC no longer requires a semicolon after the
+  mode if there is no argument.
+- Fix a bug where both a per-pane and per-window
+  gbackground iamge could be visible at the same
+  time.
+- Turn off mouse movement trac king when it isn't
+  needed to reduce idle CPU.
+- Fix discrepancy in rendering of composed
+  characters in GPU renderer vs legacy renderer.
+- When "Enable full keyboard access" is turned on
+  in system prefs, iTerm2 now accepts the spacebar
+  as input.
+- Hotkey windows now appear beneath notification
+  center messages.
+- Restore window title when unburying a session
+  that causes the window to be resurrected.
+- Fix a bug where "Duplicate Tab" would duplicate
+  the current tab, not the one belonging to the
+  context menu.
+- Fix cmd-clicking on URLs without a scheme but
+  with a fragment.
+
+Breaking Changes
+- Change XTGETTCAP's response to "TN" to give
+  $TERM rather than the name of the terminal
+  emulator. This will probably break your code if
+  you relied on it..
+- The response to Primary DA now indicates VT
+  level 400. Hopefully this doesn't break
+  anything, but it's hard to test!  Please let me
+  know if programs start misbehaving.
+- The response to Secondary DA now gives xterm
+  patch level 2500. This unlocks features in some
+  apps (like better key handling in Emacs) but
+  will probably break things I don't know exist.
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+73a993e070ea2bbcfebda7190f7210a22ce9986d91dfb37f80fbbca6f0c367d3
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCYagZ+AAKCRB0Et0TaFtK
+rKgoAP4+uV03oSYs7y87DpI9N/Aq/vCv/e2UEZSd2HoRkgD2sAEA6jKCwx6j4r97
+AtB8tBb4ZypsKh0xezpEGKjtyeGf6PQ=
+=D38E
+-----END PGP SIGNATURE-----
