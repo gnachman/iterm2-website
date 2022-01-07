@@ -1,226 +1,434 @@
-2021-11-30: Make the server refuse to build when ubsan is
-enabled
+2021-12-31: Allow requesting speech recognition permission
+(#456)
 
-2021-11-28: Show indicator when secure keyboard entry is
-enabled. Issue 10004
 
-2021-11-28: Warn about Monterey breakages when enable secure
-keyboard entry. Issue 10035, 10004.
+2021-12-27: Refactor triggers code to move evaluation into
+its own class and action performing into PTYSession as a
+delegate of the trigger evaluator. This is in preparation
+for moving trigger evaluation into PTYSession and eventually
+into the mutation thread.
 
-2021-11-27: Fix frame of hotkey window when opening over an
-iTerm2 Lion fullscreen window.
-https://gitlab.com/gnachman/iterm2/-/issues/10066#note_743278556
+2021-12-27: move use of delegate in
+mutClearBufferSavingPrompt to side effect
 
-2021-11-27: Quote multi-word labels in issue templates
+2021-12-27: Reduce duplicate screenNeedsRedraw calls. Make
+annotation removal use it
 
-2021-11-27: Update labels for issue templates. Issue 10065
+2021-12-27: Fix bugs related to removing annotations.
+PTYNoteViewController must be removed from _notes when a
+PTYAnnotation is removed from the interval tree. This can
+happen if it goes out of range or the buffer is cleared.
+Also, make PTYTextView.alphaValue=1 when annotations are
+visible. I have no idea why they ever worked - macOS was
+drawing subviews of an alpha=0 view.
 
-2021-11-27: Work around a bug in MTKTextureLoader that
-prevented mark images from being loaded.
+2021-12-26: Various UI improvements for annotations: use a
+better 'delete' icon; make the window grow when the text
+view grows; confirm deletions.
 
-I once met the man who wrote MTKView, and I missed my chance
-to share my feelings. I may go to the grave with this
-regret, but at least I didn't make a scene.
+2021-12-26: Break PTYAnnotation out of
+PTYNoteViewController. It is the model object and belongs to
+the interval tree. The view controller is its delegate.
+PTYTextView owns the VCs while the IntervalTree owns the
+models. PTYTextView is the delegate of
+PTYNoteViewController.
 
-2021-11-25: Add NSScrollView+iTerm.swift which was somehow
-missed a few days ago
+2021-12-26: Move PTYNoteViewController.h to be with its .m
+in the project file
 
-2021-11-25: Make NSRect comparison in
-scrollerStyleDidChange: sloppy. Issue 9946
+2021-12-26: Move screenLogWorkingDirectoryAtLine to a
+side-effect
 
-2021-11-24: Make nonnative fullscreen windows and floating
-top-of-screen hotkey windows avoid the notch
+2021-12-24: Make call to
+screenGetWorkingDirectoryWithCompletion into a side-effect
 
-2021-11-24: Fix safe area insets for notch displays.
+2021-12-24: Move screenCommandDidEndWithRange partially into
+the mutation path and make the rest a side-effect
 
-2021-11-24: Add support for greater than 120hz updates.
-Requires an ARM mac to ensure we don't cause problems on
-Intel machines. Issue 10028
+2021-12-23: Move commandInRange and haveCommandInRange to
+VT100Screen
 
-2021-11-23: When prepending a default scheme to a
-user-supplied URL for URL actions, include //. A URL must
-have either one or two slashes, and using neither caused
-NSURL and NSURLComponents to be confused and percent-encode
-the hashmark. Issue 10062
+2021-12-23: Move shouldExpectPromptMarks to
+VT100ScreenState. Also fix the condition under which it is
+restored from an arrangement, which seems to be due to an
+accidental change in
+69d2ec858f169f0f3540cb3f550eef2fd6b8c9b4
 
-2021-11-23: Fix crash when main display causes
-NSImage.lockFocus to produce ARGB instead of RGBA/BGRA. Also
-fix a bug where the cursor guide created a new texture for
-each frame.
+2021-12-23: Move mark-addding machiner of
+screenPromptDidEndAtLine to VT100Screen+Mutation and make
+call to API an async side-effect
 
-2021-11-23: Fix a crash when a textview has no window
+2021-12-23: Add some todos
 
-2021-11-22: Improve logging for resizing PTYSplitView
+2021-12-23: Make redrawing the screen after adding a mark
+into an async side-effect
 
-2021-11-22: Fix wrong titlebar color. Cherrypick this to
-3.4.14.
+2021-12-23: Move code to add marks into VT100Screen+Mutation
 
-2021-11-22: Remove unneeded availability checks
+2021-12-23: Make the call to screenPromptDidStartAtLine:
+into an async side effect. Here we go!
 
-2021-11-22: Add 'convert matches to selections'. Issue 10049
+2021-12-23: Move code from screenPromptDidStartAtLine to
+VT100Screen+Mutation.m
 
-2021-11-22: Fix a bug where 'Duplicate Tab' would duplicate
-the current tab, not the one whose context menu item was
-selected. Issue 10048
+2021-12-23: Move iTermMarkDelegate to VT100Screen+Mutation
 
-2021-11-21: Tweak horizontal insets of toolbelt table views
-for macOS 10.x
+2021-12-23: Remove VT100ScreenDelegate.screenSessionGuid(),
+add guid to VT100ScreenConfiguration.
 
-2021-11-21: Make toolbelt tables look good.
+2021-12-23: Add VT100ScreenSideEffects
 
-Factor out common tableview code. Use NSTableCellView, which
-fixes vertical alignment problems mentioned in issue 10027.
+2021-12-22: Remove _lastMark (it was an unnecessary
+optimization) and fix some bugs: jumpToSavedScrollPosition
+could jump to captured output; captured output would
+interfere with setting the last command's end date;
+currentMarkOrNotePosition would get updated for
+non-navigable marks.
 
-2021-11-19: Revert "Add
-NSPrefersDisplaySafeAreaCompatibilityMode"
+2021-12-22: Move lastPromptLine to VT100ScreenState
 
-This reverts commit
-139e1d44630688034372d59128c2c8ba89c055aa.
+2021-12-22: Move fakePromptDetectedAbsLine to VT100Screen
 
-2021-11-19: Restore window title when disintering a buried
-session. Issue 10041
+2021-12-21: Process queued tokens immediately when exiting
+copy mode
 
-2021-11-18: If non-native fullscreen windows preserve the
-menu bar then lower floating hotkey windows' levels to below
-the menu bar so notification center remains visible. Issue
-10040
+2021-12-21: Create VT100ScreenConfiguration to start
+breaking blocking dependencies of VT100ScreenMutation on its
+delegate
 
-2021-11-18: Fix full keyboard access. Issue 10023
+2021-12-21: Move VT100Screen resizing code to its own
+category
 
-2021-11-18: Fix failing tests. Add golden test for issue
-10038
+2021-12-20: Move VT100TerminalDelegate into
+VT100Screen+Mutation and fix a bunch of problems.
 
-2021-11-18: Fix discrepancy between legacy and GPU
-renderer's horizontal position for composed characters.
-Issue 10038
+- Fix failing tests.  - Fix a bug in LineBuffer and
+LineBlock where mayHaveDoubleWidthCharacter was not copied,
+which broke searching over a DWC (since searches are now
+done on a cow copy) - Fix some nullability warnings - Make
+PTYTextView dataSource weak.  - Update textview's and text
+drawing helper's reference to colorMap when textview's
+datasource changes.
 
-2021-11-17: Hold shift to make toolbelt send string to
-composer instead of advanced paste. Issue 9966
+2021-12-20: Add comment
 
-2021-11-17: When you select Advanced Paste in the large
-composer, copy its contents, dismiss it, and open advanced
-paste.
+2021-12-20: Add missing accessor, fixes selecting output of
+last command while not at shell prompt
 
-2021-11-17: Fix crash if there is no remotehost or pwd when
-doing a smart selection action
+2021-12-20: Move temporaryDoubleBuffer to VT100ScreenState
 
-2021-11-17: Fix drawing on 10.12. Also fix a bug where the
-search field didn't get first responder after typing when
-tableview was first responder.
+2021-12-20: Move colormap into VT100ScreenState
 
-2021-11-17: Add support for interpolated strings to smart
-selection actions. Issue 10036
+2021-12-20: Move colormap ownership to VT100Screen
 
-2021-11-16: ARCify the iTerm2 target
+2021-12-20: Move ownership of iTermColorMap to VT100Screen
 
-2021-11-16: Move a couple files to the iTerm2SharedArc
-target from the iTerm target
+2021-12-20: Move lastCommandMark to VT100ScreenState
 
-2021-11-16: Turn off mouse movement tracking when it isn't
-needed to reduce background CPU utilization. Issue 8640
+2021-12-20: Move intervalTreeObserver to VT100ScreenState
 
-2021-11-16: Hide per-window background image when there is a
-per-pane background image. Improve logging of
-iTermImatgeView and iTermImageWrapper for email from
-Antoine.
+2021-12-20: Move normalization to VT100ScreenState
 
-2021-11-15: Add debug logging for applescript setting
-background images
+2021-12-20: Move shellIntegrationInstalled to
+VT100ScreenState
 
-2021-11-15: Fix ordering of command history
+2021-12-20: Move appendToScrollbackWithStatusBar to
+VT100ScreenState
 
-2021-11-15: Make sorting of command history entries
-configurable by advanced prefs and make age a slightly
-stronger factor in sorting. Issue 10031
+2021-12-20: Move _trackCursorLineMovement to
+VT100ScreenState
 
-2021-11-11: When closing the last tmux tab in a window offer
-to detach. Issue 7203
+2021-12-20: Move lineBuffer to VT100ScreenState
 
-2021-11-11: Fix capture GPU frame when textures have 16 bit
-color depth
+2021-12-20: [colorpicker] Fix a race in -awakeFromNib.
+Distressingly, it is called on a view controller before all
+of its own views awake. Ensure CPKColorWell calls -load
+before trying to use _view.
 
-2021-11-06: Make deselected tab color alpha controllable by
-advanced pref. Add advanced pref for colors in tab color
-menu item. See mailing list thread with subject line 'tab
-colors'.
+2021-12-19: Move cumulativeScrollbackOverflow to
+VT100ScreenState
 
-2021-11-05: Don't require a semicolon in OSC parser. Issue
-10014
+2021-12-19: Fix warning
 
-2021-11-05: Reading user defaults can cause
-advancedSettingsDidChange: (wtf) so if it happens off the
-main thread dispatch to main to avoid using NSViewController
-on the wrong thread
+2021-12-19: Move initialSize to VT100ScreenState
 
-2021-11-04: Fix blending in metal plus various differences
-between it and the legacy renderer.
+2021-12-19: Move protectedMode to VT100ScreenState
 
-A TREATISE ON METAL AND COLOR SPACES
+2021-12-19: Move shellIntegrationInstalled,
+lastCommandOutputRange, currentPromptRange, and
+startOfRunningCommandOutput to VT100ScreenState
 
-THE FACTS * NSView blends in the colorspace of its enclosing
-window. For example, if you paint srgb(255, 0, 0,
-25%)=xdr(234, 51, 35, 25%)=SD(255, 0, 8, 25%) over srgb(64,
-64, 64)=xdr(64, 64, 64)=SD(56, 56, 56) the result dependson
-the screen. On pro display, you get xdr(107, 61,
-57)=srgb(114, 58, 55) and on SD you get SD(105, 41,
-43)=srgb(114, 50, 50).  * NSWindow has a colorspace, but
-changing it tickles bugs in the window server (FB9316904).
-* Because window colorspaces are effectively immutable,
-blending of non-images in drawRect: always happen in the
-screen's colorspace. Maybe that makes sense: how else would
-you blend srgb(x) over p3(y)? It's arbitrary.  * An NSImage
-has a colorspace that affects how blending happens.  * When
-you programatically create an NSImage, it seems to be in the
-colorspace of your main display. Or best display? I'm not
-sure. Regardless, you should draw into it with the
-colorspace you really want (probably sRGB for iTerm2 today,
-although P3 would be nice in the future).  * For Metal, you
-have to convert images to the screen's colorspace using
-bitmapImageRepByConvertingToColorSpace:renderingIntent: in
-order to actually change the raw data correctly
-(CGImageCreateCopyWithColorSpace doesn't seem to change raw
-values; it just re-tags it). This can be done just before
-turning it into a texture.  * Like drawing in images, in
-drawRect: you can draw with the colorspace you like (sRGB
-typically for me) and don't think about it otherwise.  * In
-Metal, convert your colors (typically in sRGB) to the
-screen's colorspace when going from NSColor ->
-vector_float4.  * MTKView has a colorspace that affects how
-blending happens. In order for it to behave like NSView,
-make its colorspace equal the window's colorspace.
-Thankfully you can change MTKView's colorspace without
-reprocussions. I think that if I didn't care about matching
-drawRect:, I could set this to sRGB and get saner blending
-behavior.
+2021-12-19: Move cursorVisible to VT100ScreenState
 
-** THE GOLDEN RULE OF METAL ** Shaders operate in the color
-space of the screen. All their inputs and outputs that
-relate to colors should be in the display's color space.
+2021-12-19: Move saveToScrollbackInAlternateScreen to
+VT100ScreenState
 
-Detailed list of changes in this commit:
+2021-12-19: Move lastExternalAttribute into VT100ScreenState
 
-* Arcify iTermBadgeLabel * Enable whole-module optimization
-* Appease xcode 13 * Fix blending in Metal.  * Add atop
-blending mode for metal which is a better match for how
-drawRect: blends.  * Don't force textures to be BGRA8Unorm.
-Many of them (especially programatically generated) will
-have 16-bit float representations.  * Background stripes in
-GPU now don't extend into margins.  * Refactor mark drawing
-to reduce duplication and ensure pixel-perfect match between
-gpu and legacy code.  * Fix a bug in GPU timestamps where
-there could be rounding errors in the iTermTimestampKey.date
-field that would cause discrepancies with the legacy
-renderer. Use the string representation to compare for
-equality.  * Fix a bug where the GPU rendered timestamps
-would shift right under a legacy scroller.  * Fix
-it_verticallyFlippedImage to preserve the resolution of the
-bitmap and output floats (not BGRA8).  * Add -[NSView
-enclosingWindowDidMoveToScreen:] * Simplify drawing badge
-labels to apply alpha at text rendering time rather than as
-a separate step.  * Draw cursor guide in IME text * Hide
-regular cursor in copy mode in legacy renderer.  * Fix font
-smoothing discrepancy between legacy and GPU timestamps *
-Fix vertical orientation of timestamps discrepancy
+2021-12-19: Move _lastCharacterIsDoubleWidth to
+VT100ScreenState
 
-FAQ Q: Do I feel bad about such a big commit?  A: No. For
-individual commits, see the metal_colorspaces branch.
+2021-12-19: Move _lastCharacter into VT100ScreenState
+
+2021-12-19: Move charsetUsesLineDrawingMode to
+VT100ScreenState
+
+2021-12-18: Move tabStops into VT100ScreenState
+
+2021-12-18: Move savedFindContextAbsPosition into
+VT100ScreenState
+
+2021-12-18: Move maxScrollbackLines into VT100ScreenState
+
+2021-12-18: Remove unused ivar, markCacheRange_.
+
+2021-12-18: Move markCache to VT100ScreenState
+
+2021-12-18: Move command start coord to VT100ScreenState
+
+2021-12-18: Move scrollbackOverflow into VT100ScreenState
+
+2021-12-18: Move findContext into VT100ScreenState
+
+2021-12-17: Remove dead code
+
+2021-12-17: Extend simplified row height algo to
+ProfileListView
+
+2021-12-17: Fix toolbelt tableview row height calculation.
+I'm now actually doing what Corbin Dunn suggests in
+https://stackoverflow.com/a/8054170/321984. Works on macOS
+12, might break on 10.14 so needs to be tested
+
+2021-12-17: Move unlimitedScrollback into VT100State and add
+some missing fields to its copy method
+
+2021-12-17: Remove ansiMode, which was never implemented
+besides round-tripping through DECRQM.
+
+2021-12-17: Move wraparoundMode, ansi, and insert into
+VT100ScreenState.
+
+2021-12-17: Move terminal into VT100ScreenState
+
+2021-12-17: Fix crash. When ARCifying I should not have
+removed the call to invalidate and I should not have left an
+object pointer as .
+
+2021-12-17: Move saved interval tree into VT100ScreenState
+
+2021-12-17: Fix some leaks and analyzer warnings
+
+2021-12-17: Remove chatty NSLog
+
+2021-12-17: Get rid of iterm_dealloc and ARCify some code
+
+2021-12-17: Fix analyzer warnings, arcify some old code
+
+2021-12-16: Fix more analyzer warnings
+
+2021-12-16: Fix more analyzer warnings
+
+2021-12-16: Fix some leaks found by the analyzer
+
+2021-12-16: Fix analyzer warnings, mostly nullability
+
+2021-12-16: To work around the pop-failure assertion whose
+cause I cannot find, use a discardable copy of the line
+buffer to append the grid to prior to performing a search.
+Issue 10107
+
+2021-12-16: ARCify VT100StateParser and make transition
+references to states weak to fix spurious leak reports in
+memory graph
+
+2021-12-16: Fix leak of attributed strings in tabbar
+
+2021-12-16: ARCify VT100Grid
+
+2021-12-16: Fix leak
+
+2021-12-16: Move the grids into VT100ScreenState
+
+2021-12-16: Make interval tree copyable (but slow - I need
+to optimize this) and add -copy to VT100ScreenMutableState.
+Also fix a wrong assert in LineBlock
+
+2021-12-16: Define VT100ScreenMutableState.copy
+
+2021-12-16: Move intervalTree into VT100ScreenState
+
+2021-12-16: Move order enforcers into VT100ScreenState
+
+2021-12-16: Move copyString into VT100ScreenState
+
+2021-12-16: Move animatedLines into VT100ScreenState
+
+2021-12-16: Move lastBell into VT100ScreenState
+
+2021-12-16: Move more state into VT100ScreenState
+
+2021-12-16: Begin moving VT100Screen's state into a separate
+class to make an immutable view of it.
+
+2021-12-16: Add missing file
+
+2021-12-15: Fix full screen notch inset when a menu bar is
+visible (prefs > appearance > auto-hide menu bar in
+non-native fullscreen is off). Also fix fullscreen window
+frame dropping down when another display becomes active
+(because NSApp.mainMenu.menuBarHeight is only accurate for
+the 'active' screen). Issue 10080
+
+2021-12-15: Fix metal renderer's badge frame, indicators
+frame, and broadcast stripes quad when there is a per-pane
+status bar or per-pane title bar (the MTKView sits under
+them and their height must be taken into account). Issue
+10092
+
+2021-12-15: Add p3 support to Python API
+
+2021-12-15: Add support for the P3 colorspace. This will
+cause minor breakages because colors in control sequences
+are now in P3 when enabled. Issue 9652
+
+2021-12-15: Add support for P3 to ColorPicker
+
+2021-12-14: Remove dead code
+
+2021-12-14: Ensure no jiggle occurs while PTYSession is
+being set up. Fix broken logic in
+iTermColorMap.setColor:forKey: to prevent calling
+colorMap:didChangeColorForKey: when nothing changed. Issue
+10091
+
+2021-12-14: Make iTermTipWindowController's window an
+NSPanel. This allows new clicking on the dock to open a new
+window when the tip is open (#455)
+
+
+2021-12-14: Install rosetta before running Python API on ARM
+macs
+
+2021-12-14: When attaching to tmux if a window is 95%
+offscreen move it to be entirely onscreen. Issue 10094
+
+2021-12-13: Make jobs tool into a treeview. It shares the
+same outline view as the status bar component. Add icons to
+it. Issue 10096
+
+2021-12-13: Fix bogus assertion
+
+2021-12-13: Reduce sparklines graph status bar component
+frame rate to limit window server CPU utilization. Issue
+7410
+
+2021-12-13: Add an advanced pref to draw window borders even
+in dark mode. Issue 9965
+
+2021-12-13: Make SGR 4 with no subparameter use single
+underline. Issue 10102
+
+2021-12-13: When the search field is first responder,
+automatically search for text on the find pasteboard. Issue
+10103
+
+2021-12-13: Make 'save all profiles as JSON' preserve order
+of the tableview. Issue 10105
+
+2021-12-12: Fix various problems with PTYTextView's
+visibleRect calculations.
+
+- Fix scrollLineNumberRangeIntoView: because when the range
+gave the last visible line it would scroll anyway.  - Fix
+adjustedDocumentVisibleRect to never include the top margin,
+as its callers (in particular textDrawingHelperVisibleRect)
+expect it to do. Issue 9958 - Make PTYTextView.excess more
+readable.  - Keep badge in place while scrolling through
+history.  - Simplify calculation of topMarginRect in
+drawTopMarginWithVirtualOffset:. Since _visibleRect is now
+clearly defined as not including the top margin the
+calculation is easy.
+
+2021-12-09: Move most mutation code in VT100Screen into a
+category
+
+2021-12-09: Split LineBuffer non-mutating methods into
+protocol
+
+2021-12-09: Expand constness, immutability, and read-only
+protocols to enable moving mutations off the main thread.
+
+2021-12-09: Add immutable interfaces for VT100Grid,
+iTermExternalAttributeIndex, VT100LineInfo, and
+iTermMetadata
+
+2021-12-09: Fix warning
+
+2021-12-09: Fix warning
+
+2021-12-08: Remove per-line generation tracking.
+
+2021-12-08: Initial attempt at copy-on-write for LineBuffer
+
+2021-12-07: Don't crash if CGDisplayModeGetRefreshRate
+returns NULL. See
+https://gitlab.com/gnachman/iterm2/-/issues/10028#note_755390693
+
+2021-12-07: More const improvements for screen_char_t
+pointers. Use ScreenCharArray everywhere instead of passing
+screen_char_t pointers around. This lays the groundwork for
+Swift to do useful work without dealing with unsafe
+pointers.
+
+2021-12-06: Improve const correctness for passing
+screen_char_t pointers around
+
+2021-12-06: Fix failing tests
+
+2021-12-05: [tmux integration] Make send-keys tolerate
+errors since it is inherently racy. There might be more bugs
+here, pending debug log from issue 10085
+
+2021-12-04: Add a pref to force an untitled window to open
+at launch. Issue 10079
+
+2021-12-03: Use NSProgressIndicator on macOS 12+ in the
+hopes that it uses less energy than mine and that it has
+stopped crashing when exiting full screen (which was the
+motivation for having it in the first place). Issue 8640
+
+2021-12-03: Change MTKTextureLoader's storage mode to avoid
+a crash on macOS 10.14
+
+2021-12-03: Add advanced prefs tmuxTitlePrefix and
+tmuxIncludeClientNameInWindowTitle
+
+2021-12-02: Add View > Disable transparency in key window
+
+2021-12-02: Increase height of non-tag profile list view
+rows to make them look better. I hate this dark magic.
+
+2021-12-02: Add labels to default color picker accessory
+buttons. Issue 10073
+
+2021-12-02: Add makefile to simplify building ColorPicker
+
+2021-12-02: Reset the width adjustment after applying it in
+loadArrangement:named:sessions:partialAttachments: so it
+doesn't get reapplied in didFinishRestoringWindow:. Do not
+save a scroller width if the window is maximized since we
+don't want to adjust it at all in that case upon a scroller
+style change, preferring to keep it maximized per the logic
+in scrollerStyleDidChange:. Issue 9946
+
+2021-12-01: Fix hotkey windows overlapping notifications on
+macOS 10
+
+2021-12-01: Place floating hotkey panels below
+notifications. Issue 10040
+
+2021-12-01: Add makefile to SearchableComboListView
+
+2021-12-01: Improvements to menu item selection, and add
+Select Menu Item to pointer bindings. Issue 9781
