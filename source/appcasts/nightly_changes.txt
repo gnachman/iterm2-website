@@ -1,7 +1,55 @@
-2022-01-25: Use addPausedSideEffect in
+2022-01-27: Remove todo
+
+2022-01-27: Delete PPC code
+
+2022-01-27: When you do ED 2 (CSI 2 J) in alternate screen
+when visible marks are present and the screen is empty (or
+marks occur below the last non-empty line), scroll the marks
+off the screen.
+
+2022-01-27: Avoid updating untouched parts of the config
+
+2022-01-27: Clean up some todos. Reuse triggers when
+reloading profile when possible
+
+2022-01-27: Create a general method for idempotent side
+effects and use it for setNeedsRedraw and
+intervalTreeVisibleRangeDidChange
+
+2022-01-27: Remove todo, make needsRedraw nonatomic
+
+2022-01-27: Remove todo
+
+2022-01-27: Remove todos, don't try to handle token
+injection on arbitrary queues
+
+2022-01-27: Remove todos
+
+2022-01-27: Make copying a temporary double buffer cheap
+when it hasn't changed.
+
+2022-01-27: Mark grid dirty when restoring
+
+2022-01-27: Move animatedLines to VT100Screen to make
+updating VT100ScreenState cheaper
+
+2022-01-27: Make the mark cache track whether it's dirty so
+syncing is cheap when it's unchanged
+
+2022-01-27: Remove some todos that have been todone
+
+2022-01-26: Remove dead code
+
+2022-01-26: Avoid copying the colormap on sync. Instead,
+mirror changes to the mutable colormap in the immutable one
+in side-effects like we do for the interval tree. Refactor
+some color-setting code to make it faster. Also fix a hang
+on launch when concurrency is disabled.
+
+2022-01-26: Use addPausedSideEffect in
 VT100ScreenMutableState+TerminalDelegate
 
-2022-01-25: Prevent reentrant setConfig:
+2022-01-26: Prevent reentrant setConfig:
 
 Sync before and after nested joined side effects so that
 changes to the colormap are reflected in the delegate's
@@ -11,7 +59,7 @@ Make setMutingAmount and setDimOnlyText be side-effect-free
 when no change is made to avoid infinite recursion in
 setConfig:.
 
-2022-01-25: Fixes and performance improvements
+2022-01-26: Fixes and performance improvements
 
 Move throughput estimation to mutation thread.
 
