@@ -1,3 +1,20 @@
+2022-01-29: remove debug code
+
+2022-01-29: While the main and mutation threads are joined,
+keep VT100Screen.state exactly equal to
+VT100Screen.mutableState. A bit of NSProxy magic ensures
+that only interval tree doppelgangers are accessible through
+.state and that iTermColorMap's delegate remains the mutable
+state in state.colorMap.delegate. Clean up various other
+odds and ends
+
+2022-01-29: Pass resetOverflow to didSynchronize so it is
+always called
+
+2022-01-29: Oops, missed one line in the last commit
+
+2022-01-29: Add some todos, add missing return
+
 2022-01-27: Remove todo
 
 2022-01-27: Delete PPC code
