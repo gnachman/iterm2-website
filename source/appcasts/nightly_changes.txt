@@ -1,3 +1,36 @@
+2022-02-02: Hold the lineblock mutex during mutations. There
+was a race between cowCopy nilling the mutation certificate
+and willModify allocating it. Not to mention writing to
+memory is unsafe while copying it.
+
+2022-02-02: Document why trigger checks should be done just
+before sync
+
+2022-02-02: Address TODO
+
+2022-02-02: Pass dimmingAmount through screen config. Remove
+some todos
+
+2022-02-02: Fix some warnings
+
+2022-02-02: Actually you don't need to pause to send a
+report because all reports are sent through a side-effect.
+
+2022-02-02: Finish auditing side effects for runloops.
+Dispatch async as needed. Also caught a few places that
+needed to be paused.
+
+2022-02-02: Avoid calling screenDidAddMark if not alerting.
+
+Use the mark's doppelganger in
+screenDidUpdateReturnCodeForMark:remoteHost: and
+screenCommandDidExitWithCode:mark:
+
+Prevent tmux tokens from having runloops in side effects.
+
+Use a joined side effect for screenDidAddNote:focus: because
+it will call -refresh.
+
 2022-02-01: Remove NSLog
 
 2022-02-01: Speed up querying for terminfo values. Fix
