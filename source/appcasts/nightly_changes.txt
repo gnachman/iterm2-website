@@ -1,3 +1,36 @@
+2022-02-03: Allow requesting Bluetooth permission (#457)
+
+Add NSBluetoothAlwaysUsageDescription.  Command line
+applications that use CoreBluetooth will crash with SIGABRT
+if this is not present in info.plist.  2022-02-03: Reduce
+calls to screenDidReceiveLineFeed
+
+2022-02-03: Resolve TODO
+
+2022-02-03: Remove todo. I already moved
+removeInaccessibleIntervalTreeObjects to didSynchronize
+
+2022-02-03: Remove some TODOs. We are already limiting
+temporaryDoubleBuffer.drawSavedGrid=YES and haveScrolled=NO
+to when resetting scrollback overflow, which weakly relates
+to when draws happen. I think it's good enough but real
+world experience will tell for sure. I also don't think
+there's any reason to update the grid's currentDate in
+didSynchronize because it's set prior to executing a vector
+of tokens and I don't see anywhere that we mark dirty just
+after synchronizing.
+
+2022-02-03: Use absolute ranges when computing intervals.
+This behaves better when intervals are before the start of
+history. Remove inaccessible interval tree objects at the
+end of sync. After syncing, run any pending side-effects.
+
+2022-02-03: Add VT100GridAbsCoordRangeContainsAbsCoord
+
+2022-02-02: Add debug logs
+
+2022-02-02: Fix typo
+
 2022-02-02: Hold the lineblock mutex during mutations. There
 was a race between cowCopy nilling the mutation certificate
 and willModify allocating it. Not to mention writing to
