@@ -1,3 +1,12 @@
+2022-02-05: Update shell integration
+
+2022-02-05: Fix incorrect use of mutableState from main
+thread in search. Invalidate tail find timer when dirty
+cells are found. This fixes a bug where two -refresh calls
+in the same spin of the runloop broke tail find (because it
+thought it was still finding so it declined to search even
+though some search results were removed).
+
 2022-02-04: Fix selecting menu items in pointer action
 
 2022-02-04: Downgrade todo to comment
