@@ -1,3 +1,11 @@
+2022-02-06: Put all metal drivers on the same queue. This
+fixes a data race that tsan found in TexturePageCollection
+(and friends) because they are a global data structure with
+no locking. Perhaps this is the memory corruption bug I have
+been chasing for so many years?
+
+2022-02-06: Fix data race on _dcsHooked
+
 2022-02-05: Update shell integration
 
 2022-02-05: Fix incorrect use of mutableState from main
