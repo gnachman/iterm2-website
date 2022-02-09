@@ -1,3 +1,32 @@
+2022-02-08: Make VT100ScreenMutableState a linebuffer
+delegate
+
+2022-02-08: Fix variable line height in about window
+
+2022-02-08: Never run side effects synchronously. You can
+hit this in setConfig: (e.g., when it affects the color map)
+but side effects get executed at the end of sync so it's not
+a long wait. This might break things but I definitely prefer
+this design.
+
+2022-02-08: Update to Xcode 13.2, Swift 5.5
+
+2022-02-08: Make iTermTuple nullability-correct. This forces
+fixing up SetUserVariableTrigger.swift.
+
+Make side-effect state into a bitmask instead of a
+dictionary because it was wasting 3.5% of cpu on the spam.cc
+benchmark.
+
+Add assertions that out-of-order side effects never occur
+(i.e., that addSideEffect in joined threads only happens
+when no side-effects are queued up).
+
+Fix a bug in swapOnscreenIntervalTreeObjects where its
+`temp` tree could get deallocated causing its doppelgangers
+not to be removed triggering an assertion when later adding
+them to the saved tree.
+
 2022-02-07: Add optimizations: make marking dirty in grid
 faster. Change line buffer copy to merge by dropping from
 head/tail and appending to tail. This is WAY faster and
