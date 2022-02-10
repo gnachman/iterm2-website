@@ -1,3 +1,47 @@
+2022-02-09: Don't crash if you click on an OSC 8 file: url
+without a path. Issue 10121
+
+2022-02-09: Always search automatically when the value on
+the find pasteboard changes regardless of which view has
+first responder. Issue 10103
+
+2022-02-09: Fix warnings
+
+2022-02-09: Fix bug where marks were vertically flipped in
+GPU renderer
+
+2022-02-09: Minor fixes
+
+2022-02-09: Convert most joined side effects into unmanaged
+side effects to eliminate side-effect reentrancy as much as
+possible.
+
+Fix screenSetTabColorRedComponentTo, which actually changed
+blue.
+
+2022-02-09: Fix various cases where the main thread got
+access to non-doppelganger interval tree objects.
+
+Avoid calling -refresh in joined side blocks to reduce
+reentrancy.
+
+Avoid looking up interval tree objects in side effects
+because things may have changed since the side effect was
+added. For example, screenCurrentDirectroydDidChangeTo: now
+takes the remoteHost instead of looking it up.
+
+Remove spurious assertions that
+performBlockWithJoinedThreads can run in a side effect so
+long as it's joined. It should never run in an unpaused
+side-effect.
+
+Drop support for old-style saved grids because it requires
+multiple round trips to the main thread. It's been over a
+year.
+
+2022-02-08: Fix a bug where interval tree objects were lost
+on resize because their entries were nilled too early
+
 2022-02-08: Make VT100ScreenMutableState a linebuffer
 delegate
 
