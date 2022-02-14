@@ -1,3 +1,21 @@
+2022-02-13: Make search history completion work on a word
+basis. Issue 10151
+
+2022-02-13: Fix off-main-thread use of
+iTermRateLimitedUpdate for idempotent timers that caused a
+crash. Issue 10209
+
+2022-02-13: Always respect newlines in set winicon/icon
+title. Issue 10143
+
+newline + subtitle -> change only subtitle title + newline
+-> erase subtitle title -> change only title
+
+Fixes a bug where setting the subtitle by control sequence
+didn't take effect because we created a new swifty string
+but the observer was run before the instance varible was
+assigned to.
+
 2022-02-11: Defer TIOCSWINSZ until we know the final size of
 the window, in case you asked to make it bigger than macOS
 allows. Issue 10134
