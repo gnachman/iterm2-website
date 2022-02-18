@@ -1,3 +1,37 @@
+2022-02-17: Use promises for async selection. Issue 10155.
+
+* Make copying big selections to the clipboard asynchronous
+to avoid accidental hangs when you hit cmd-a.
+
+* Fix a bug in copying with SGR codes where the params were
+out of order and could end with 0, negating them.
+
+* Add TerminalContentSnapshot, a handy object for accessing
+the state of the terminal in the future. Thanks to
+copy-on-write LineBuffer, making this is cheap.
+
+* Add iTermRenegablePromise. Such a promise is created with
+the capability of being "reneged". Invoking `renege` will
+attempt to stop it and cause it to fail, but obviously there
+are no guarantees since it's inherently racey. The purpose
+is to avoid continuing to extract selections when a promise
+is going to be discarded.
+
+* Add the ability to wait on a promise, This is a little
+risky because it could cause a deadlock, but I don't see a
+better way to wait for a selection to be available when the
+main thread needs it synchronously.
+
+* Don't add selections over 1000 lines long to paste
+history. Doing so would make it impossible to renege on copy
+promises that could take a really long time to finish.
+
+* Add nullability annotations to iTermTextExtractor.h.
+
+* Add stopAsSoonAsPossible to iTermTextExtractor. It makes
+content extraction stop wherever it is. This is to support
+reneging selection promises.
+
 2022-02-14: Fix a bug where the root terminal view's
 iTermImageView was visible when there was no image
 
