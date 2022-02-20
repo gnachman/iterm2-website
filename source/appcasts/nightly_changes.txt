@@ -1,3 +1,23 @@
+2022-02-19: Nil out tooltips since super.dealloc will cause
+it to be used
+
+2022-02-19: Coalesce tooltip updates. Issue 10170
+
+2022-02-19: Tweak vertical offset of underlines for fonts
+that have an asciiOffset. See the comment about asciioffset
+in updateMetalDriver
+
+2022-02-19: When a keystroke is bound to enable copy mode,
+use the event to guess where the cursor ought to be so
+shift-left will put the cursor on the left side. Isseu 10164
+
+2022-02-19: In tail find, remove search results before
+adding them to avoid duplicates. Issue 10158. Also, when
+searching forwards, begin from the end of the last result.
+This prevents search results from overlapping which can
+happen with regexes like x.*, causing a huge number of
+results. We already did this when searching in reverse.
+
 2022-02-17: Use promises for async selection. Issue 10155.
 
 * Make copying big selections to the clipboard asynchronous
