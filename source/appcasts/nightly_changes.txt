@@ -1,3 +1,40 @@
+2022-03-03: Add scientific notation context menu synonym
+(#463)
+
+
+2022-03-03: Defer cursor blink side effect
+
+2022-03-03: Update status item images to look right for
+macOS 11+. Issue 10240
+
+2022-03-03: Optimizations for emacs from issue 10206
+
+* Defer running the side effect after hiding the cursor to
+avoid drawing while it's hidden.  * Make
+incrementOverflowBy: a no-op when it's incremented by 0
+lines to avoid an immediate draw.  * Don't schedule a
+side-effect when blink changes if the terminal is not
+allowed to change blink.  * Use a deferred side-effect for
+blink changes since they aren't urgent and could cause
+cursor flicker in emacs.
+
+Emacs loves to toggle cursor blink and needs these
+mitigations to look good.
+
+2022-03-03: Don't draw subtitle if the tabbar isn't tall
+enough in minimal. No-titlebar windows have a short tabbar
+in Minimal.
+
+2022-03-03: Add debug logging for
+NSWindowRestoresWorkspaceAtLaunch
+
+2022-03-03: Bail out of swipe tracker after 5 seconds of
+inactivity and log what the events were. Trying to diagnose
+a hang here. Issue 10258
+
+2022-03-03: Add support for Nova to semantic history. Issue
+10165
+
 2022-03-03: Draw window background color behind tab in
 tab-drag-window. Make no-titlebar windows drag the window
 when there is a single tab when
