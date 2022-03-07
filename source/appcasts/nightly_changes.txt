@@ -1,3 +1,33 @@
+2022-03-06: Rebuild shell integration
+
+2022-03-06: Provide the copied iTermSelection a delegate
+during endLive(). Fixes a bug where box selections couldn't
+have their content extracted
+
+2022-03-06: Fix a bug where selectionDidChange was called on
+the wrong queue
+
+2022-03-05: Enable tsan and zombies to find more issues like
+the crash in 10160
+
+2022-03-05: Make iTermExternalAttribute's accessors atomic
+to mollify tsan. The values are immutable after
+initialization and I don't buy that there's a real data race
+here.
+
+2022-03-05: Copy metadata to fix a data race (issue 10160)
+
+2022-03-05: Fix UKCrashReporter for macOS 12
+
+2022-03-05: Ensure add tab button doesn't treat a drag as a
+click. I can't reproduce this locally. See issue 10217
+
+2022-03-05: Update shell integration utilities to pull in
+imgcat improvements from PR 4
+
+2022-03-05: Fix 'select current command' to go past the
+cursor if needed. issue 10269
+
 2022-03-03: Add scientific notation context menu synonym
 (#463)
 
