@@ -1,3 +1,24 @@
+2022-03-08: Fix two bugs with minimum contrast: (issue
+10273)
+
+1. The prefs panel showed the wrong value when not using
+separate light/dark colors because the "use different colors
+for light and dark mode" checkbox was not initialized before
+it was used, causing it to behave as though it was always
+checked when looking up values to initialize the min
+contrast slider.
+
+2. Colormap mutations before the mutable state's side-effect
+performing delegate was assigned didn't update the
+main-thread copy. Fix this by running those side effects
+even when there is no delegate since it wasn't used anyway.
+
+2022-03-08: Add support for reporting clipboard content.
+Introduce secure user defaults as a generalization of the
+mechanism used for disabling applescript authentication for
+the Python API to make sure that users consent to clipboard
+reporting before it is used automatically.
+
 2022-03-06: Rebuild shell integration
 
 2022-03-06: Provide the copied iTermSelection a delegate
