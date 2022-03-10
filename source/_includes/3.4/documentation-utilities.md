@@ -49,7 +49,7 @@ Stop bouncing the dock icon if another app is active
 <li>
 `it2attention fireworks`
 <br/>
-how an explosion animation at the cursor
+Show an explosion animation at the cursor
 </li>
 </ul>
 
