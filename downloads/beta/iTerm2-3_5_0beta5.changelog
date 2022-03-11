@@ -1,0 +1,128 @@
+3.5.0beta5
+
+Performance Improvements
+The major theme of version 3.5 will be performance
+improvements.
+
+- Input is now handled off the main thread. This
+  increases throughput and decreases latency. We
+  can now redraw at a higher frame rate without
+  impacting throughput significantly.
+- Selecting a bunch of text used to lock up the UI
+  for a long time, but it is now instant. The hard
+  work is deferred until you actually paste the
+  text.
+- Semantic history (cmd-clicking on a filename)
+  used to search the filesystem on the main thread
+  which could cause hangs (such as on slow network
+  filesystems). This work has been moved to a
+  separate XPC process, keeping the UI responsive
+  while the search for files happens concurrently.
+- Trigger evaluation, especially when you have
+  many triggers, is significantly faster now.
+
+New Features
+- The P3 color space is now supported. The color
+  picker uses P3 and control sequences that accept
+  a color space now accept p3.
+- Add a setting to preserve windows' spaces on
+  restoration.
+- Searches for profiles now allow you to exclude
+  terms using the minus operator. For example:
+  -tag:dynamic
+- Clipboard content reporting via control sequence
+  OSC 52 is now supported, but requires user
+  consent to enable.
+
+Other Improvements
+- Allow apps running in the terminal to request
+  bluetooth access.
+- Optimize bandwidth for sending keystrokes to
+  tmux in tmux integratino mode.
+- Ensure the URL preview box does not overlap the
+  hyperlink being previewed.
+- Search history completion now works on words
+  instead of entire phrases.
+- Avoid causing the window contents to jump when
+  colors change.
+- Visual improvements to minimal theme with
+  transparent windows.
+- Add support for newest Emoji.
+- UI improvements to the password manager for
+  adding a new password.
+- Tweak how command history is sorted. When there
+  is no search query, use a purely chronological
+  ordering.
+- Tweak status bar colors to look nicer in the
+  Minimal theme.
+- Data injected by the Python API during a silent
+  coprocess is now made visible.
+- Add support for the Nova editor to semantic
+  history.
+- Tweak the status icon (shown in the menu bar
+  when you've excluded iTerm2 from the dock) to
+  have a more modern design.
+- Right-clicking on a number in scientific
+  notation like 6.022e23 shows its expanded form
+  in the context menu.
+- imgcat has a bunch of new options. You'll need
+  to reinstall shell integration utilities to get
+  it.
+- You can now search the tty and foreground job
+  process ID in the Open Quickly window.
+
+Bug Fixes
+- Ensure Rosetta is installed before running the
+  Python API.
+- Fix a bug where clicking the dock icon while the
+  tip of the day was open wouldn't open a new
+  window.
+- Fix bugs in positioning the badge, indicators,
+  and broadcast stripes when a per-pane status bar
+  or per-pane title bar is present.
+- Fix a bug where fullscreen windows overlapped
+  the notch when the menu bar was not
+  automatically hidden in fullscreen.
+- Fix a bug where fullscreen windows resized
+  incorrectly when changing the active display in
+  the presence of a notch.
+- Fix a bug where the Jobs toolbelt would show a
+  process with pid 0 after the login shell
+  terminates.
+- Fix bugs in handling newlines in control
+  sequences that set the title.
+- Fix a bug where marks were sometimes not removed
+  when the screen was cleared.
+- Fix memory leaks.
+- Fix a long-standing memory corruption bug.
+- Fix a bug where marks were drawn upside-down
+  in the GPU renderer.
+- Fix a bug where faint text could render
+  incorrectly.
+- Fix a bug where window transparency could be
+  wrong when the window is first created.
+- Fix overlapping search results with regular
+  expression queries.
+- Fix a bug where "clear to last mark" misbehaved
+  while at a prompt. It now clears to the mark
+  before the current prompt.
+- Improve appearance of tabs being dragged.
+- Select Current Command now selects past the
+  cursor if needed.
+- Fix a bug where crash reports weren't sent on
+  macOS 12.
+
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+e8f44be2f37f55e485da44c562b5ecc9f088c77eb412a8af8867112b7efe0f23
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCYir2SQAKCRB0Et0TaFtK
+rBFqAQDXuwAbN//BjYpbfcE70sIBaFKpK7zIV5B2X3YL93rkRgD/SOPtZhcY9ZC4
+yhZF8Q70eKe6oXwNkT4P5/BOj8p4P4w=
+=eR+E
+-----END PGP SIGNATURE-----
