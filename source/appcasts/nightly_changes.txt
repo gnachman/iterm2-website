@@ -1,3 +1,291 @@
+2022-04-06: Remove session from MovePaneController after
+dragging a tab into a split pane. Fixes a bug where after
+doing so split pane drags don't begin. Issue 10335
+
+2022-04-06: Fix a bug in the password manager's search
+feature where after filtering out an entry it never
+reappears
+
+2022-04-06: Fix crash when pressing left or right arrow in
+command history. Issue 10322
+
+2022-04-06: Vacuum and checkpoint the state restoration DB
+after db ready callbacks get run to avoid blocking opening
+initial windows. Unfortunately the DB finishes loading graph
+records before whenReady gets called so it ends up blocking
+for a long time on checkpointing. Issue 10328
+
+2022-04-05: Handle 1password timeout errors. See
+https://1password.community/discussion/128167/cli-v2-not-connecting-to-desktop-app-sandbox-issue
+
+2022-04-05: Fix bug in mark rendering when only display is
+nonretina. Issue 10291
+
+2022-04-05: Fix bug in parsing bind-keys for a literal of -
+which got confused with a flag. Issue 10301
+
+2022-04-04: Make get_session_by_id return buried sessions by
+default. Fixes a bug where a buried tmux gateway couldn't be
+found by Tmux.owning_session. See email thread 'Open tmux
+profile when VPN comes up if not open'
+
+2022-04-04: Add 1password debug logging
+
+2022-04-04: Make option-cmd-enter a shortcut for 'convert
+matches to cursors', usable in composer. Make the composer
+first responder when you do that so the cursors will be
+usable.
+
+2022-04-04: Add main menu to context menu in LSUI mode
+
+2022-04-03: Fix a race in coprocess error reporting where we
+read from stderr after -terminate runs, causing that output
+to be lost. Now synchronize it so the delegate isn't
+notified of termination until we finish reading from stderr
+
+2022-04-03: Remove loop parameter from asyncio.Queue. (#466)
+
+It no longer works in Python 3.10. removed the loop
+parameter from asyncio.Queue. More background here:
+https://stackoverflow.com/questions/60312374/what-are-all-these-deprecated-loop-parameters-in-asyncio
+2022-04-03: Document how to clear a background image (#468)
+
+
+2022-04-03: Add advanced pref to hide new tab button in
+tabbar
+
+2022-04-03: Add totd for composer power features
+
+2022-04-03: Add support for sending one command of many from
+the composer
+
+2022-04-02: Update MultiCursor
+
+2022-04-02: Composer improvements.
+
+Rename "Convert Matches to Selections" to "Select Matches",
+which is the standard. Use performFindPanelAction: instead
+of convertMatchesToSelections: so Select Matches will work
+in the composer as well as in PTYTextView.  Remove
+performFindPanelAction: from PseudoTerminal since it really
+belongs in PTYTextView. Add a disgusting hack to
+iTermComposerView to make Select Matches work in the
+composer.
+
+ARCify iTermWarning so I can use it from Swift.  Add
+mullability annotations to it.
+
+Add CommandExplainer to centrailze explainshell URL logic.
+
+Make cmd-click on a command in the composer open
+explainshell for just that command. The logic is now mostly
+in ComposerTextView, but it uses a URL with the iterm2
+scheme so some of it ended up in the app delegate as well.
+
+Change composer's help to describe shortcuts.
+
+Add iTermTextPopoverViewController.sizeToFit and beat
+AppKit's buggy sizing code into submission.
+
+2022-04-02: Add drag handle to composer. Reduce help text to
+make it less cluttered
+
+2022-04-01: Use performFindPanelAction: with tag 1 for Find
+(this is standard) instead of showFindPanel:. Enable the
+find bar in the composer
+
+2022-04-01: Port ComposerTextView to swift. Make it a
+subclass of MultiCursorTextView. The composer now has
+support for multiple cursors.
+
+2022-03-29: Fix encoding bug in invocation_string which
+affected Tab.async_set_title. Issue 10303
+
+2022-03-29: Exclude tmux commands that require interaction
+
+2022-03-29: Use the leader to provide support for tmux
+keystrokes in tmux integration mode. Issue 10301
+
+2022-03-29: Update graphic_icons.json (#465)
+
+
+2022-03-28: Add support for leader. Issue 10301
+
+2022-03-27: Add a hint to enable biometric auth for 1pw
+
+2022-03-26: Using python3 on macOS 12.3 and fix null
+environment issue for tmux integration. (#464)
+
+* Using python3 on macOS 12.3
+
+* Fix null environment issue for tmux integration
+2022-03-26: Improve how we check for the availability of
+biometric auth in 1password. See
+https://1password.community/discussion/comment/633329
+
+2022-03-26: Improve lastpass login experience
+
+2022-03-26: Make password manager async and improve UI for
+editing triggers when locked.
+
+2022-03-22: Centralize calls to
+iTermPasswordManagerDataSourceProvider.dataSource and rename
+keyChain to currentDataSource
+
+2022-03-22: Fix new warnings from xcode 13.3
+
+2022-03-22: Add 1password and lastpass password manager
+integrations.
+
+2022-03-19: Fix a bug where alternate keychains didn't work
+when changing an entry.
+
+Add some swift extensions.
+
+Abstract password datasources to make it possible to add
+command-line providers like LastPass or 1password.
+
+ARCify iTermApplication.
+
+Fix a bug where context menu items in the password manager
+used the selected row rather than the clicked row for
+context menu actions.
+
+2022-03-18: Fix a bug where the background image was messed
+up in the legacy renderer when changing 'separate background
+images per pane'
+
+2022-03-18: Oops, missed on change in previous commit
+
+2022-03-18: Enable GPU renderer when background images are
+not per-pane
+
+2022-03-18: Tell xcode to shut its gob
+
+2022-03-18: Set environment variables in coprocesses that
+are the same as in sessions. Issue 10136
+
+2022-03-17: Update Python API project description
+
+2022-03-17: Remove pyobjc from Python API, making it an
+'extras_require' package. Use osascript for authentication
+and change how colors are encoded to not require AppKit to
+decode them. Users on existing versions of iTerm2 will
+continue to need pyobjc to decode triggers with colors, so
+I'm bumping the major version of the library since it is a
+backwards-incompatible change. Auth should continue to work
+as usual. Inspired by issue 10136
+
+2022-03-17: Update help text when toggling interpolated
+params for smart selection actions. Issue 10296
+
+2022-03-17: Prevent transient titles during a window's first
+second of life. Issue 7434
+
+2022-03-16: Add debug logging for issue 10291
+
+2022-03-16: Fix warning
+
+2022-03-16: Remove still-trying announcement because it
+doesn't stay visible long enough to be read.
+
+2022-03-16: Don't crash on really long ancestry chains of
+processes. Issue 10290
+
+2022-03-16: Move DWC_RIGHT and friends to 0x001-0x004 so
+nerd fonts can use 0xf000-0xf003. Migrate existing restored
+state to the new range. Issue 7570.
+
+Also fix a few bugs I found along the way: - Don't call
+[NSApp invalidateRestorableState] off the main queue.  - Fix
+a bug in LineBlock where it didn't save generation when
+copying, which broke delta encoding.
+
+2022-03-15: Add option to not require password to open
+password manager
+
+2022-03-15: Add option to select keychain for password
+manager. Issue 7471
+
+2022-03-14: Fix a bug where prompt marks stopped showing up
+in the scrollbar. The visible range of the minimap was 0,0
+because updateMarksMinimapRangeOfVisibleLines didn't get
+called until the scrollback buffer got full. Issue 10097
+
+2022-03-14: Bump shell integration (shebang to /usr/bin/env
+PR)
+
+2022-03-14: Remove stray characters
+
+2022-03-14: Update README.md 2022-03-14: Add
+notificationOcclusionThreshold. Issue 10267
+
+2022-03-13: When an rpc is unregistered during session
+creation, retry for five seconds. This could happen during
+app launch when a session outraces a python API script that
+will register an RPC that is needed for the autolog
+filename. Issue 10104
+
+2022-03-13: Update utilities for new imgls
+
+2022-03-13: Bump iTerm2-shell-integration for new imgls
+
+2022-03-13: Add debugging for
+https://gitlab.com/gnachman/iterm2/-/issues/10104#note_872816107.
+Fix wrong error message when calling an RPC with no
+registered handler.
+
+2022-03-13: Fix a crash when requesting a block with a
+negative abs char offset.
+
+2022-03-13: Fix a long standing bug where PTYSession didn't
+realize an upload had finished and showed a spurious error
+when you type something after uploading
+
+2022-03-12: Make all save panels async to fix a beachball on
+those with accessories. Also improve exporting IR to default
+to start -> end and fix a bug with the save content save
+panel that didn't let you change format.
+
+2022-03-12: Add support for logging as asciicast
+
+2022-03-12: Add an autorelease pool when building the
+process cache to try to prevent runaway autoreleased
+objects. Issue 10284
+
+2022-03-12: Set ITERM2_COOKIE in coprocesses. ARCify
+Coprocess.m. Issue 10136
+
+2022-03-11: Fix a typo
+
+2022-03-11: Post a notification when you press a hotkey with
+secure keyboard input enabled while another app is active.
+Issue 10283
+
+2022-03-10: Add pid and tty to open quickly search features.
+Include in the detail for each session why the query
+recalled it. Issue 10278
+
+2022-03-09: Don't refresh if there is no delegate. This is
+the only explanation I have for the crash mentioned in issue
+10258
+
+2022-03-09: Delete incorrect comment
+
+2022-03-09: [python] Bump version
+
+2022-03-09: [python] Fix a bug where you couldn't run
+multiple async runloops after creating an App. Issue 10136
+
+2022-03-09: Handle nil strings in trigger evaluation
+
+2022-03-09: Speed up trigger regex evaluation. To my horror,
+I have found that RegexKitLite was not caching compiled
+regular expressions :(. I think it's past time to stop using
+it. Issue 10113
+
+2022-03-09: Add missing nullability annotations
+
 2022-03-08: Fix two bugs with minimum contrast: (issue
 10273)
 
@@ -101,436 +389,3 @@ prompt. Issue 10256
 
 2022-03-02: Use foreground color as text color in tabs in
 minimal with no transparency. Issue 10255
-
-2022-02-28: Allow injected tokens (via python API or
-trigger) to run during silent coprocesses. Issue 10136
-
-2022-02-28: Note that
-Preferences.SIZE_CHANGES_AFFECT_PROFILE is deprecated. See
-issue 10248
-
-2022-02-28: When loading prefs from remote URL and local
-changes are present, prompt on launch rather than warning on
-quit
-
-2022-02-27: Add donate button
-
-2022-02-27: Fix a bug where timestamps were unset because
-markAllCharsDirty: shouldn't usually affect timestamps
-
-2022-02-27: Fix TLV decoding of doubles, which in turn fixes
-timestamps in DVR
-
-2022-02-27: Replace missing read_bytes in it2caps
-
-2022-02-27: Fix infinite loop in iTErmPathFinder
-
-2022-02-27: Add it2caps
-
-2022-02-27: Change NSLog to DLog
-
-2022-02-27: Add support for reporting capabilities. See
-draft spec here:
-https://gitlab.freedesktop.org/terminal-wg/specifications/-/merge_requests/8/diffs#52c1a05f148e1d116aa84a794c9f37ff44b85ec4
-
-2022-02-25: Update status bar icon and text colors when
-changing main or app-active status. Fixes an inconsistency
-in icon colors as a bonus. Issue 10229
-
-2022-02-25: Fix double draw of lines above tabs when there
-is one tab in minimal theme. Issue 10229
-
-2022-02-25: Improve debug logging for semantic history
-
-2022-02-25: Fix transposed title/identifier in pointer menu
-item actions. Issue 9781
-
-2022-02-25: Rebuild binary deps with
-BUILD_LIBRARY_FOR_DISTRIBUTION
-
-2022-02-25: Set BUILD_LIBRARY_FOR_DISTRIBUTION for
-frameworks (#460)
-
-This allows for building the project with a newer Swift
-compiler than the one that was used to compile the binary
-dependencies that are in committed to the repository.
-
-See https://www.swift.org/blog/library-evolution/
-2022-02-25: Add a key-up event tap for modifier remapping.
-Hopefully fixes issue 10220
-
-2022-02-24: When there is no prefix, sort command history
-chronologically. Issue 10216
-
-2022-02-24: Remove accidentally added emacs backup
-
-2022-02-24: improve UI for adding a new password as
-suggested in issue 10213
-
-2022-02-24: Pause and sync before sending a report rather
-than when modifying mutable state. issue 10206
-
-2022-02-24: Move semantic history file operations into XPC
-to avoid wedging the main app when IO gets wedged. Issue
-10200
-
-2022-02-23: Fix bugs in transparency when exiting
-fullscreen. See issue 10202. Also fix a bug where the tabbar
-backing is not hidden after exiting fullscreen with
-transparency and fix a bug where the transparency was not
-always re-enabled after exiting full screen (disable use
-transparency in one tab, full screen, enable use
-transparency, exit fullscreen).
-
-2022-02-23: Add advanced pref for accent menu. Implement
-selectedRange in PTYTextView. Issue 743
-
-2022-02-23: Make iTermStandardKeyMapperConfiguration into an
-object. For reasons I don't understand, output was getting
-over-released. Fixes a crash when launching emacs
-
-2022-02-23: Fix tags pane opening/closing
-
-2022-02-23: Add support for negated profile queries. Issue
-10192
-
-2022-02-23: Add file missed from last commit
-
-2022-02-22: Update unicode data. Issue 10186
-
-2022-02-22: If .config/iterm2/AppSupport points at the wrong
-place, fix it. Issue 10185
-
-2022-02-22: Add advanced pref to remove marks from
-scrollbar. Issue 10097
-
-2022-02-22: Add more characters that can be send to tmux
-unencoded to speed base64. See comment on
-https://github.com/gnachman/iTerm2/pull/459
-
-2022-02-22: In minimal, don't make session title view
-background gray when the tab has a color. This seems to have
-been an oversight in the initial implementation of minimal.
-Issue 10177
-
-2022-02-19: Nil out tooltips since super.dealloc will cause
-it to be used
-
-2022-02-19: Coalesce tooltip updates. Issue 10170
-
-2022-02-19: Tweak vertical offset of underlines for fonts
-that have an asciiOffset. See the comment about asciioffset
-in updateMetalDriver
-
-2022-02-19: When a keystroke is bound to enable copy mode,
-use the event to guess where the cursor ought to be so
-shift-left will put the cursor on the left side. Isseu 10164
-
-2022-02-19: In tail find, remove search results before
-adding them to avoid duplicates. Issue 10158. Also, when
-searching forwards, begin from the end of the last result.
-This prevents search results from overlapping which can
-happen with regexes like x.*, causing a huge number of
-results. We already did this when searching in reverse.
-
-2022-02-17: Use promises for async selection. Issue 10155.
-
-* Make copying big selections to the clipboard asynchronous
-to avoid accidental hangs when you hit cmd-a.
-
-* Fix a bug in copying with SGR codes where the params were
-out of order and could end with 0, negating them.
-
-* Add TerminalContentSnapshot, a handy object for accessing
-the state of the terminal in the future. Thanks to
-copy-on-write LineBuffer, making this is cheap.
-
-* Add iTermRenegablePromise. Such a promise is created with
-the capability of being "reneged". Invoking `renege` will
-attempt to stop it and cause it to fail, but obviously there
-are no guarantees since it's inherently racey. The purpose
-is to avoid continuing to extract selections when a promise
-is going to be discarded.
-
-* Add the ability to wait on a promise, This is a little
-risky because it could cause a deadlock, but I don't see a
-better way to wait for a selection to be available when the
-main thread needs it synchronously.
-
-* Don't add selections over 1000 lines long to paste
-history. Doing so would make it impossible to renege on copy
-promises that could take a really long time to finish.
-
-* Add nullability annotations to iTermTextExtractor.h.
-
-* Add stopAsSoonAsPossible to iTermTextExtractor. It makes
-content extraction stop wherever it is. This is to support
-reneging selection promises.
-
-2022-02-14: Fix a bug where the root terminal view's
-iTermImageView was visible when there was no image
-
-2022-02-14: Fix a bug where transparency is wrong initially.
-Issue 10119
-
-2022-02-14: Remove NSLog
-
-2022-02-14: In legacy renderer, create a new background run
-when faintness changes because fg & bg interact in this
-case. Issue 10153
-
-2022-02-14: Only jiggle on color change if bg or fg changes
-darkness. Issue 9855
-
-2022-02-13: Make search history completion work on a word
-basis. Issue 10151
-
-2022-02-13: Fix off-main-thread use of
-iTermRateLimitedUpdate for idempotent timers that caused a
-crash. Issue 10209
-
-2022-02-13: Always respect newlines in set winicon/icon
-title. Issue 10143
-
-newline + subtitle -> change only subtitle title + newline
--> erase subtitle title -> change only title
-
-Fixes a bug where setting the subtitle by control sequence
-didn't take effect because we created a new swifty string
-but the observer was run before the instance varible was
-assigned to.
-
-2022-02-11: Defer TIOCSWINSZ until we know the final size of
-the window, in case you asked to make it bigger than macOS
-allows. Issue 10134
-
-2022-02-11: Don't try (and fail) to duplicate a tmux tab if
-invoked by binding. Issue 10128
-
-2022-02-11: Place the URL preview view in a location that
-does not overlap the URL. Issue 10131
-
-2022-02-11: Move setting the "did receive line feed" flag
-into appendLineFeed so that code that prints tmux messages,
-banners, etc. will get it. It's used for logging,
-publishing, and pwd polling. Aside from wastefully doing
-more pwd polling (which is already mitigated by rate
-limiting) this fixes filtering on things like tmux gateways.
-
-Avoid reentrant joined blocks switching to shared state when
-already switched.
-
-Fix a crash when copying color maps when state is joined.
-
-2022-02-11: Optimize sendking keystrokes to tmux. Add
-RunLengthEncoder to abstract grouping of similar sequential
-elements
-
-Based on https://github.com/gnachman/iTerm2/pull/459 by
-Lonny Wong <lonnywong@qq.com>
-
-2022-02-10: Don't remove selection when scrolling in
-alternate screen mode while appending to history. Issue
-10123
-
-2022-02-10: Add a pref to preserve window spaces on
-restoration. Issue 10087
-
-2022-02-09: Don't crash if you click on an OSC 8 file: url
-without a path. Issue 10121
-
-2022-02-09: Always search automatically when the value on
-the find pasteboard changes regardless of which view has
-first responder. Issue 10103
-
-2022-02-09: Fix warnings
-
-2022-02-09: Fix bug where marks were vertically flipped in
-GPU renderer
-
-2022-02-09: Minor fixes
-
-2022-02-09: Convert most joined side effects into unmanaged
-side effects to eliminate side-effect reentrancy as much as
-possible.
-
-Fix screenSetTabColorRedComponentTo, which actually changed
-blue.
-
-2022-02-09: Fix various cases where the main thread got
-access to non-doppelganger interval tree objects.
-
-Avoid calling -refresh in joined side blocks to reduce
-reentrancy.
-
-Avoid looking up interval tree objects in side effects
-because things may have changed since the side effect was
-added. For example, screenCurrentDirectroydDidChangeTo: now
-takes the remoteHost instead of looking it up.
-
-Remove spurious assertions that
-performBlockWithJoinedThreads can run in a side effect so
-long as it's joined. It should never run in an unpaused
-side-effect.
-
-Drop support for old-style saved grids because it requires
-multiple round trips to the main thread. It's been over a
-year.
-
-2022-02-08: Fix a bug where interval tree objects were lost
-on resize because their entries were nilled too early
-
-2022-02-08: Make VT100ScreenMutableState a linebuffer
-delegate
-
-2022-02-08: Fix variable line height in about window
-
-2022-02-08: Never run side effects synchronously. You can
-hit this in setConfig: (e.g., when it affects the color map)
-but side effects get executed at the end of sync so it's not
-a long wait. This might break things but I definitely prefer
-this design.
-
-2022-02-08: Update to Xcode 13.2, Swift 5.5
-
-2022-02-08: Make iTermTuple nullability-correct. This forces
-fixing up SetUserVariableTrigger.swift.
-
-Make side-effect state into a bitmask instead of a
-dictionary because it was wasting 3.5% of cpu on the spam.cc
-benchmark.
-
-Add assertions that out-of-order side effects never occur
-(i.e., that addSideEffect in joined threads only happens
-when no side-effects are queued up).
-
-Fix a bug in swapOnscreenIntervalTreeObjects where its
-`temp` tree could get deallocated causing its doppelgangers
-not to be removed triggering an assertion when later adding
-them to the saved tree.
-
-2022-02-07: Add optimizations: make marking dirty in grid
-faster. Change line buffer copy to merge by dropping from
-head/tail and appending to tail. This is WAY faster and
-makes the spam.cc benchmark finish in under 3 seconds :)
-
-2022-02-07: Don't use fastpath
-(CGContextShowGlyphsAtPositions) to draw powerline glyphs
-because core text (CTFontDrawGlyphs) does it differently and
-better. Issue 10120
-
-2022-02-06: Put all metal drivers on the same queue. This
-fixes a data race that tsan found in TexturePageCollection
-(and friends) because they are a global data structure with
-no locking. Perhaps this is the memory corruption bug I have
-been chasing for so many years?
-
-2022-02-06: Fix data race on _dcsHooked
-
-2022-02-05: Update shell integration
-
-2022-02-05: Fix incorrect use of mutableState from main
-thread in search. Invalidate tail find timer when dirty
-cells are found. This fixes a bug where two -refresh calls
-in the same spin of the runloop broke tail find (because it
-thought it was still finding so it declined to search even
-though some search results were removed).
-
-2022-02-04: Fix selecting menu items in pointer action
-
-2022-02-04: Downgrade todo to comment
-
-2022-02-04: Enable thread sanitizer
-
-2022-02-04: Remove resolved TODO
-
-2022-02-04: Fix leak of AATree
-
-2022-02-04: Fix a bug where hidden annotations would briefly
-flash visible
-
-2022-02-04: Remove already-addressed todo
-
-2022-02-04: Remove already-addressed TODOs
-
-2022-02-04: Nil out interval tree object entries when
-removing all. I think this caused the assertion I kept
-hitting when adding an object back later (the doppelganger
-had a nonnil entry)
-
-2022-02-04: Remove already-addressed todos
-
-2022-02-04: Remove already-addressed TODO
-
-2022-02-04: Add missing delegate methods
-
-2022-02-03: Allow requesting Bluetooth permission (#457)
-
-Add NSBluetoothAlwaysUsageDescription.  Command line
-applications that use CoreBluetooth will crash with SIGABRT
-if this is not present in info.plist.  2022-02-03: Reduce
-calls to screenDidReceiveLineFeed
-
-2022-02-03: Resolve TODO
-
-2022-02-03: Remove todo. I already moved
-removeInaccessibleIntervalTreeObjects to didSynchronize
-
-2022-02-03: Remove some TODOs. We are already limiting
-temporaryDoubleBuffer.drawSavedGrid=YES and haveScrolled=NO
-to when resetting scrollback overflow, which weakly relates
-to when draws happen. I think it's good enough but real
-world experience will tell for sure. I also don't think
-there's any reason to update the grid's currentDate in
-didSynchronize because it's set prior to executing a vector
-of tokens and I don't see anywhere that we mark dirty just
-after synchronizing.
-
-2022-02-03: Use absolute ranges when computing intervals.
-This behaves better when intervals are before the start of
-history. Remove inaccessible interval tree objects at the
-end of sync. After syncing, run any pending side-effects.
-
-2022-02-03: Add VT100GridAbsCoordRangeContainsAbsCoord
-
-2022-02-02: Add debug logs
-
-2022-02-02: Fix typo
-
-2022-02-02: Hold the lineblock mutex during mutations. There
-was a race between cowCopy nilling the mutation certificate
-and willModify allocating it. Not to mention writing to
-memory is unsafe while copying it.
-
-2022-02-02: Document why trigger checks should be done just
-before sync
-
-2022-02-02: Address TODO
-
-2022-02-02: Pass dimmingAmount through screen config. Remove
-some todos
-
-2022-02-02: Fix some warnings
-
-2022-02-02: Actually you don't need to pause to send a
-report because all reports are sent through a side-effect.
-
-2022-02-02: Finish auditing side effects for runloops.
-Dispatch async as needed. Also caught a few places that
-needed to be paused.
-
-2022-02-02: Avoid calling screenDidAddMark if not alerting.
-
-Use the mark's doppelganger in
-screenDidUpdateReturnCodeForMark:remoteHost: and
-screenCommandDidExitWithCode:mark:
-
-Prevent tmux tokens from having runloops in side effects.
-
-Use a joined side effect for screenDidAddNote:focus: because
-it will call -refresh.
-
-2022-02-01: Remove NSLog
-
-2022-02-01: Speed up querying for terminfo values. Fix
-colors, Co, and RGB.
