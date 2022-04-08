@@ -121,3 +121,7 @@ Prior to version 3.3 of iTerm2, parameters could use backreferences like `\1` to
 #### Example
 The [iTerm2-zmodem](https://github.com/RobberPhex/iTerm2-zmodem) project demonstrates hooking up iTerm2 to zmodem upload and download.
 
+### Known Issues
+
+For performance reasons, triggers evaluate only part of very long lines. If a line wraps to more than three visible lines trigger behavior will be nondeterminstic. You can adjust the window size in **Preferences > Advanced > Number of screen lines to match against trigger regular expressions**.
+
