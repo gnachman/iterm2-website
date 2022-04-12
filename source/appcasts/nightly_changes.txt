@@ -1,3 +1,33 @@
+2022-04-11: Avoid making multiple line block copies during
+tail find. Instead, keep a running copy of the line block in
+sync with the 'real' main-thread instance using merge to
+keep it recent and releasing it when not searching. Add a
+method to LineBuffer to more safely temporarily append stuff
+to a line buffer.
+
+2022-04-11: Deallocate line blocks on a serial queue to
+avoid an explosion of threads and lock contention
+
+2022-04-11: Seal line block at each sync to reduce tail find
+cost
+
+2022-04-11: Optimize ExpandScreenChar. It showed up hot in a
+profile of tail find
+
+2022-04-11: Add a TODO calling out slowness for searching
+long lines - accidentally quadratic code
+
+2022-04-11: Don't copy _numberOfFullLinesCache when copying
+a LineBlock. Copying a hash map is very slow and for the
+most part we don't need these. It'll be cheaper to recompute
+it almost all the time.
+
+2022-04-11: Prune nils from LineBlock.clients. It used to
+accrue a ton of empty boxes leading to quadratic complexity,
+causing tail searches to get really slow.
+
+2022-04-11: Disable asan
+
 2022-04-11: Add support for 'sequence' key actions, which
 let you do multiple actions one after another. Issue 10315
 
