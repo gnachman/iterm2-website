@@ -1,3 +1,73 @@
+2022-04-29: Add portholes.
+
+* Add SwiftyMarkdown swift module.  * Fix a bug in
+dropExcessLinesWithWidth where cursor_rawline was not
+adjusted.  * Make appendContentsOfLineBuffer optionally
+transfer the cursor position and return the number of lines
+dropped.  * Fix a bug where shift-arrow events to enter copy
+mode were handled twice.  * Fix a crash when selection
+promises are nil, which can happen after a session is
+closed.  * Fix a bug where SetDecodedImage called
+invalidateRestorableState on the wrong thread.  * Give
+ScreenCharArray the ability to (de)serialize * Fix a bug
+where VT100GridRange.dirtyRangeForLine: didn't respsect
+allDirty.  * Add VT100GridCoordRangeInvalid * Fix a bug when
+synchronizing while state is shared that screwed up line
+buffers because the serach buffer tries to merge from the
+immuatable state's line buffer * Lots of fixes to how line
+buffer positions are converted to coordinates to deal with
+bugs around empty lines. This probably broke things.  * Fix
+an apparent off-by-one in
+hideOnScreenNotesAndTruncateSpanners.  * Accept a type=
+argument on OSC 1337 File= * Fix bug sin iTermLineblockArray
+around locating blank lines.
+
+See the markdown_porthole branch for individual commits.
+
+Note that SwiftyMarkdown and Highlightr are added as binary
+frameworks rather than Swift package dependencies because
+the latter simply does not work with xcodebuild.
+
+2022-04-12: Remove some unnecssary calls to refresh which
+can only have negative side effects, as seen in issue 10325.
+Selections use absolute ranges so refresh should never be
+necessary.
+
+2022-04-12: Add logging for origin mode issue 10339
+
+2022-04-12: If a session is short lived, uses a login shell,
+the shell does not exist, and the profile can be changed
+offer to change the shell to /bin/zsh which will always
+exist to get the user unstuck. Issue 10336
+
+2022-04-12: Fix crash when your profile specifies a font tha
+doesn't exist. Issue 10343
+
+2022-04-12: Fix a crash when resizing with tail find. Or
+when the line buffer is ever empty (somehow)
+
+2022-04-12: Add a TODO
+
+2022-04-12: Fix performBlockWithTemporaryChanges to restore
+the num_wrapped_liens cache. This fixes an assertion when
+switching between primary/secondary grid.
+
+2022-04-12: Optimize -[LineBuffer
+convertPositions:withWidth:]. Objective C overhead made this
+one of the slowest parts of tail find. Rewrite the hot path
+in C++.
+
+2022-04-12: Avoid making lots of copies of haystack when
+searching; provide a range instead.
+
+2022-04-12: Change regex prefix/suffix to private range
+chars. Add IMPOSSIBLE_CHAR, a private range code that the
+search algorithm wants never to exist in the strings it
+searches over.
+
+The purpose of this change is just to improve consistency
+and clarity.
+
 2022-04-11: Avoid making multiple line block copies during
 tail find. Instead, keep a running copy of the line block in
 sync with the 'real' main-thread instance using merge to
