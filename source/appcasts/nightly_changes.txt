@@ -1,3 +1,27 @@
+2022-05-02: Fix a bug where scrollbackOverflow was always 0
+or 1, causing scroll position not to lock when userScroll is
+enabled. Issue 10385
+
+2022-05-02: Call setNeedsDisplay when the selection changes
+
+2022-05-02: Add NSLocale.preferredLanguages to candidates
+for LANG for issue 10297
+
+2022-05-02: [python] Preserve open/save pane folder, return
+nil instead of throwing exception on user cancellation
+(#469)
+
+* [python API] Change the open/save panels
+
+1. Open the last directory by default.  2. Return `None` if
+the user cancels.
+
+Co-authored-by: George Nachman <gnachman+github@gmail.com>
+2022-05-02: Fix crash in issue 10387
+
+2022-05-02: Add support for search to portholes. Save and
+restore wide mode.
+
 2022-04-30: Fix a bug in core search where deltas was
 indexed by a rawline offset rather than by a code point
 offset. Yikes
