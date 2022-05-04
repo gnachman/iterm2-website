@@ -102,6 +102,12 @@ To change the session's profile on the fly:
     OSC 1337 SetProfile=[new profile name] ST
 
 #### Copy to clipboard
+There are three ways to copy text to the clipboard for reasons that have been lost to history.
+
+**OSC 1337 CopyToClipboard**
+
+This method allows you to copy to various macOS-specific pasteboards. This is probably not useful to you unless you have very specialized needs. It is also the worst in terms of backwards compatibility because other terminals will simply display the text you wished to copy.
+
 To place text in the pasteboard:
 
     OSC 1337 ; CopyToClipboard=[clipboard name] ST
@@ -109,6 +115,39 @@ To place text in the pasteboard:
 Where name is one of "rule", "find", "font", or empty to mean the general pasteboard (which is what you normally want). After this is sent, all text received is placed in the pasteboard until this code comes in:
 
     OSC 1337 ; EndCopy ST
+
+**OSC 1337 Copy**
+
+This is an alternative to OSC 52. The implementation is a bit more efficient for very large values.
+
+You can place a string in the system's pasteboard with this sequence:
+
+    OSC 1337 ; Copy=:[base64] ST
+
+Where `[base64]` is the base64-encoded string to copy to the pasteboard.
+
+**OSC 52**
+
+This is not a proprietary control sequence. It's probably your best choice since it'll work with other terminal emulators.
+
+To write to the pasteboard:
+
+    OSC 52 ; Pc ; [base64 encoded string] ST
+
+The `Pc` parameter is ignored. xterm uses it to choose among various clipboards, most of which do not exist in macOS.
+
+In version 3.5 and later, iTerm2 supports the sequence to query the clipboard:
+
+    OSC 52 ; Pc ; ? ST
+
+The clipboard contents are reported with:
+
+    OSC 52 ; Pc; [base64 encoded string] ST
+
+Where Pc is the same as in the request.
+
+User consent is required both to read and write the pasteboard.
+
 
 #### Set window title and tab chrome background color
 To set the window title and tab color use this escape sequence:
@@ -233,15 +272,6 @@ Or, in newer versions:
 `[height]` and `[width]` are floating point values giving the size in points of a single character cell. For example:
 
     OSC 1337 ; ReportCellSize=17.50;8.00;2.0 ST
-
-#### Copy to Pasteboard
-
-You can place a string in the system's pasteboard with this sequence:
-
-    OSC 1337 ; Copy=:[base64] ST
-
-Where `[base64]` is the base64-encoded string to copy to the pasteboard.
-
 
 #### Report Variable
 
