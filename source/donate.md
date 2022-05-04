@@ -67,7 +67,3 @@ Mountain View, CA<br/>
 </div>
 
 <hr/>
-
-Need something complicated? Just feel like chatting?  Contact me on xs:code:
-<a href="https://xscode.com/gnachman/iTerm2"><img src="/images/xscode.png" width="490" height="128"></a>
-
