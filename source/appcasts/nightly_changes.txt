@@ -1,3 +1,112 @@
+2022-05-21: Update framer
+
+2022-05-21: Fix call to appendBannerMessage on wrong queue
+
+2022-05-21: Fix bug in input chunking. Framer needs
+continuation marks and conductor.sh does not
+
+2022-05-21: Modify framer's %output to send channel -1 for
+login shells so the echo probe can detect side-channels
+without needing to know the login shell's pid
+
+2022-05-21: Get process cache working for ssh sessions. Fix
+IO for background jobs in framer. Fix parsing by using a
+separate vt100parser for each background job.
+
+2022-05-19: Add it2ssh as resource
+
+2022-05-19: Fix echo probe in ssh
+
+2022-05-19: Add sigwinch support to framer
+
+2022-05-18: Add framer to ssh integration.
+
+framer: - Logging improvements.  - Expand ~ and $VARS in
+login cwd - Send process ID along with %output - Send reason
+with abort - Put identifier as first arg of "end"
+
+Main app[: - Add framer and support for it to conductor.
+Nested framer support is there but untested.  - Add SSH_*
+tokens.
+  - SSH_BEGIN: Beginning of command output - SSH_OUTPUT:
+  Wrapped output from framer. Uses CSI parameters to
+  communicate pid and channel. This is used internally in
+  VT100Parser while unwrapping %output. VT100Terminal
+  repurposes it as a container for side-channel output.  -
+  SSH_TERMINATE: Framer job exited. Ises CSI parameters to
+  give pid and return code.  - Add sshInfo to VT100Token to
+  identifier what framer job produced a token. This is
+  attached to regular (i.e., not SSH_*) tokens so we can
+  tell if it's output from a framer login shell or from a
+  side channel. Side channels aren't used yet.
+
+2022-05-16: Add framer
+
+2022-05-14: Update shell integration submodule
+
+2022-05-14: Don't print an ssh banner if there are no ssh
+sessions running when one ends.
+
+2022-05-14: Fix bugs in tar
+
+2022-05-14: [it2ssh] Split writes into small lines.
+
+2022-05-13: Add accessory view to open panel for file
+uploads with destination folder
+
+2022-05-13: Show a banner when ssh exits. Miscellanous ssh
+bug fixes too
+
+2022-05-13: Refactor conductor and update SI submodule
+
+2022-05-13: Parse ssh command line arguments. Handle
+non-shell-launching commands correctly.
+
+Remove conductor on reset.
+
+Accept list of boolean ssh args in DCS sequence.
+
+2022-05-12: Parse SSH arguments poorly to establish an
+identity of (hostname,username,port). Use that in
+_sshHostNames instead of just hostname.
+
+Fix a bug where we didn't unhook from
+screenDidUnhookSSHConductor.
+
+Don't recycle the current directory when opening an ssh
+session from a non-ssh session or an ssh session with a
+different identity.
+
+Show a banner when beginning an ssh session.
+
+Don't queue writes until the conductor tells you to,
+otherwise you can't enter a passphrase.
+
+2022-05-12: - Queue writes while initializing conductor.  -
+When splitting a pane or creating a new tab from an ssh
+session, make the new session connect to the same host and
+(if so configured) use the same directory.  - Keep a stack
+of ssh hostnames and extend the protocol to indicate when an
+ssh session ends. To do this, introduce a unique ID for each
+ssh session.  - Don't try to cd to the local machine's home
+directory in ssh
+
+2022-05-11: Update submodules
+
+2022-05-11: Add support for uploading payloads
+
+2022-05-11: Remove UserInterfaceState.xcuserstate
+
+2022-05-11: Add new xcode garbage to gitignore
+
+2022-05-10: Add support for sending environment variables in
+it2ssh
+
+2022-05-10: Add UI for configuring SSH in profiles
+
+2022-05-09: Add ssh option to login command menu using
+it2ssh
+
 2022-05-09: Add parser support for ssh integration using a
 new DCS code
 
