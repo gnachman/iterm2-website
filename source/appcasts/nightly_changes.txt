@@ -1,3 +1,34 @@
+2022-05-24: Make the session closing dialog that tells you
+what jobs get killed know about ssh
+
+2022-05-24: Add autopolling. Framer can run ps once a second
+and onlys end an update when something changes. It then
+sleeps until you request autopolling again, to keep it from
+spinning forever when the client is gone.
+
+2022-05-24: Fix bug where -[LineBuffer
+__findPosition:inBlock:inOffset:] returned offset 0 when
+you're looking for exactly the last position in the block
+
+2022-05-24: Don't allow seal to create interior partial
+blocks and ensure that search only indicates a partial last
+line when it's also the last block to avoid triggering bad
+behavior in filtering when it backs up to research the last
+line
+
+2022-05-24: [framer]Send diffs of processes instead of
+everything
+
+2022-05-24: State restoration for framer ps
+
+2022-05-24: Make python parse the output of ps and only send
+results if something changed.
+
+2022-05-23: Fix bugs in detaching and in python 3.10 with
+exception handling
+
+2022-05-23: Fix restoration for nested ssh sessions
+
 2022-05-23: Get nested ssh sessions basically working but
 not performant or well tested
 
