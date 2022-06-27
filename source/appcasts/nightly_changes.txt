@@ -1,3 +1,197 @@
+2022-06-26: Fix a bug where tailfind didn't select the right
+ranges because searchBuffer could get out of sync because
+the immutable linebuffer is never dirty after merging,
+therefore causing the serachbuffer never to merge.
+
+2022-06-26: Add key binding actions to swap with
+next/previous pane. Issue 10357
+
+2022-06-26: Add debug logging for password manager shake-no
+for issue 10432
+
+2022-06-26: Use x11 mouse instead sgr mouse for xterm-new.
+Issue 10449
+
+2022-06-26: Move copy mode cursor on nextMark/previousMark
+and when moving the cursor ensure it remains visible. Issue
+10448
+
+2022-06-26: Use system python3 in api makefile
+
+2022-06-26: [python] Bump version
+
+2022-06-25: Add support for tmux 3.3 to shell integration
+and utilities. Also fix a bug in internet-free install.
+Remove it2ssh when updating utiliities since it is not baked
+
+2022-06-25: Enable focus reporting in tmux integration if
+tmux is configured to use it. See
+https://github.com/tmux/tmux/issues/2856
+
+2022-06-25: Add more assertions about nil fonts
+
+2022-06-25: Fix warning, add separator to screens menu in
+prefs
+
+2022-06-25: Use more meaningful names for screens in prefs.
+Issue 10428
+
+2022-06-25: Improve error handling when the tempdir can't be
+created when installing the python runtime. Issue 8792
+
+2022-06-25: Ensure that the profileName variable is correct
+when changing profile by control sequence. Issue 10424
+
+2022-06-24: Don't clobber symlinks when saving prefs to
+remote folder. Issue 7921
+
+2022-06-23: Use tuples instead of dictionaries in
+iTermGraphDeltaEncoder's enumerator to reduce overhead of
+dictionary comparison. Issue 10414.
+
+2022-06-23: Remove unnecessary and slow duplicate check from
+iTermOrderedDictionary that accounted for 25% of the time in
+issue 10414
+
+2022-06-23: Post fake flags-changed events when do-not-remap
+caused an implicit flags change by failing to remap. Issue
+10220
+
+2022-06-23: Prevent assertion failure
+
+2022-06-23: Add option to disable sqlite integrity check to
+debug issue 10232.
+
+2022-06-23: Prevent crash when selectiveEraseRange is called
+with bogus args. Issue 10409
+
+2022-06-23: Tweak content navigation shortcuts animation
+
+2022-06-23: Add shortcut navigation, which is a fancy way of
+saying key equivalents for opening URLs we find as search
+results. Issue 10408
+
+2022-06-22: Don't scroll when revealing a search result if
+it is unnecessary
+
+2022-06-21: Add find indicator
+
+2022-06-19: Set keyPressHandled based on comment in
+https://github.com/gnachman/iTerm2/pull/279
+
+2022-06-19: Disable remove button from sequence keybinding
+vc on initialization
+
+2022-06-19: Allow single part hostnames in http(s) smart
+selection. Issue 10388. Credit to Neil Jarvis
+
+2022-06-19: When switching to another app because a hotkey
+window is rolling out, disable secure keyboard entry. Issue
+10386
+
+2022-06-18: Turn off copy when when attachingg to tmux to
+avoid appearing hung if tmux.conf has an error
+
+2022-06-18: Fix force unwrap crash
+
+2022-06-17: Add a visual effect view to the job tree view so
+the kill combobox is more well defined. It just looked
+funny.
+
+2022-06-17: Add context menu for job tree view. Issue 10358
+
+2022-06-17: Update protobuf runtime to 3.19.4
+
+2022-06-16: Use system protoc. Require protoc at least 3.19
+because some corner of DLL hell breaks loading the iterm2
+module, saying:
+
+TypeError: Descriptors cannot not be created directly.  If
+this call came from a _pb2.py file, your generated code is
+out of date and must be regenerated with protoc >= 3.19.0.
+If you cannot immediately regenerate your protos, some other
+possible workarounds are:
+ 1. Downgrade the protobuf package to 3.20.x or lower.  2.
+ Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this
+ will use pure-Python parsing and will be much slower).
+
+More information:
+https://developers.google.com/protocol-buffers/docs/news/2022-05-06#python-updates
+
+But don't bother visiting the url because it says diddly
+squat about this problem. I'm going to hope that
+regenerating with 3.19 doesn't break anything for anyone
+everywhere but ¯\_(ツ)_/¯
+
+2022-06-16: Fix a bug where manual minimap entries weren't
+removed when a prompt's return code is set. Issue 10097
+
+2022-06-16: Optimize removing prompt marks below a given
+line. This speeds up EraseInDisplay. Issue 10352
+
+2022-06-16: When inserting a tab, if the window is an
+already-created hotkey window, show the window instead of
+just ordering the window front (since its alpha will be
+zero). Issue 9135
+
+2022-06-16: Fix crash when using invalid variable paths.
+Issue 10347
+
+2022-06-16: Fix crash when enabling auto-rainbow
+
+2022-06-15: Clean up logging a bit
+
+2022-06-15: Reenable autopoll
+
+2022-06-15: Add --deep codesigning flag back to unbreak
+image decoder
+
+2022-06-15: Add a run script build phase to sign th
+efileprovider app extension based on a stack overflow
+comment (see script for link)
+
+2022-06-14: Trying to make the file provider in the nightly
+build target work. At this point the Info.plist files have
+the right version (same for plugin as main app) but it fails
+saying that plugins must be sandboxed. I think that points
+to a signing problem.
+
+2022-06-14: Fix crash, tweak signing
+
+2022-06-14: Implement downloads
+
+2022-06-14: Directory listing works (barely)!
+
+2022-06-12: IPC is working!!!
+
+2022-06-11: Update file provider with one that actually
+works
+
+2022-06-11: Flail around trying to make file provider work.
+Adds a bunch of useful infra like a service but doesn't
+actually work
+
+2022-06-05: Change both main app's and extension's
+entitlements to specify
+com.apple.security.application-groups of (team prefix)iTerm.
+I'm not sure that mattered. Remove --deep from main app, and
+change provider's Info.plist's
+NSExtensionFileProviderDocumentGroup to match the app group.
+It now works!
+
+2022-06-04: Try to use the file provider. It doesn't work.
+Console complains that iTermFileProvider.appex: plug-ins
+must be sandboxed
+
+2022-06-04: Add file provider extension to app group
+
+2022-06-04: Add file provider extension
+
+2022-06-04: Add main app to an app group
+
+2022-06-04: Switch to managed signing with dev certificate
+for Development target
+
 2022-06-04: Update to latest SI submodule
 
 2022-06-04: Add fish SI loader
