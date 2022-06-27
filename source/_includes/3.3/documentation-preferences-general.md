@@ -101,7 +101,7 @@ When you've turned on *Load preferences from a custom folder* and this is on the
 The first dropdown box in the **tmux Integration** section allows you to define how tmux windows should be mapped to native constructs. When attaching to a new tmux session with the tmux integration, tmux windows not seen by iTerm2 before will open in either new windows or tabs, as specified by this preference.
 
 #### Automatically bury the tmux client session after connecting
-When the tmux integration is entered by running tmux -CC, the window in which that command was run will be <a href="documentation-buried-sessions.md">buried</a>.
+When the tmux integration is entered by running tmux -CC, the window in which that command was run will be <a href="documentation-buried-sessions.html">buried</a>.
 
 #### Use "tmux" profile rather than profile of connecting session
 This used to on by default, but is no longer so as of version 3.3. When enabled, a copy of the Default profile is created, called `tmux`. When using tmux integration all tmux sessions will use this profile.

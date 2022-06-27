@@ -1,115 +1,114 @@
-3.5.0beta5
+3.5.0beta6
 
-Performance Improvements
-The major theme of version 3.5 will be performance
-improvements.
+New features
+- Add "Render Selection", which replaces a chunk
+  of selected text with a natively rendered view.
+  For example, JSON gets pretty-printed and syntax
+  highlighted. Rendered selections have the option
+  of scrolling horizontally to make navigating
+  logs easier. They are searchable. Over 150
+  different languages are supported for syntax
+  highlighting. Markdown gets special treatment
+  and displays its rendered format.
+- Enable logging as asciicast, which is playable
+  by asciinema.
+- Add option not to require a password to open the
+  password manager.
+- (Experimental) The password manager can now use
+  LastPass or 1Password rather than the keychain.
+  Use the (⋯) menu next to the search field to
+  configure it.
+- You can configure a shortcut to be a "leader".
+  This allows you to define two-keystroke
+  shortcuts, composed of leader + some other
+  shortcut. For example, if you make cmd-B the
+  leader then you can create a key binding for
+  leader+h/j/k/l to navigate among split panes.
+  In tmux integration, key bindings are
+  automatically created to emulate tmux's
+  shortcuts with the leader in place of tmux's
+  prefix key.
+  You can set up the leader in Prefs > Keys >
+  Leader.
+- The composer now supports search.
+- The composer (cmd-shift-.) now supports multiple
+  cursors. Use ctrl-shift-up/down or option-drag to
+  create them. You can also convert search results
+  to cursors with Edit > Find > Select Matches.
+- You can resize the composer's height by dragging
+  its bottom edge.
+- Cmd-click in the composer opens the command in
+  explainshell.com.
+- In the composer, option-shift-enter sends the
+  command at the cursor and removes it from the
+  composer.
+- Add "copy" as a new smart selection action.
+- Option-cmd-click now selects the second smart
+  selection action.
+- Add a new kind of key binding action called
+  "sequence" that performs any number of other key
+  binding actions in order.
+- Shell integration can now be injected
+  automatically as part of creating a login shell.
+  Explicit installation is no longer needed on
+  localhost (except for tcsh users, who are still
+  stuck in 1995. Sorry).
+- Selecting URLs (cmd-opt-u) now enables shortcuts
+  to jump to them by number.
 
-- Input is now handled off the main thread. This
-  increases throughput and decreases latency. We
-  can now redraw at a higher frame rate without
-  impacting throughput significantly.
-- Selecting a bunch of text used to lock up the UI
-  for a long time, but it is now instant. The hard
-  work is deferred until you actually paste the
-  text.
-- Semantic history (cmd-clicking on a filename)
-  used to search the filesystem on the main thread
-  which could cause hangs (such as on slow network
-  filesystems). This work has been moved to a
-  separate XPC process, keeping the UI responsive
-  while the search for files happens concurrently.
-- Trigger evaluation, especially when you have
-  many triggers, is significantly faster now.
+Bug fixes
+- Fix memory leak
+- Fix a beachball in save panels.
+- Fix a bug where errors were shown after an
+  upload finished.
+- Fix various crashes.
+- When a session needs a Python API script to be
+  running but it hasn't started yet, retry for
+  five seconds.
+- Fix a bug where prompt marks didn't show in the
+  scrollbar.
+- Fix rendering of background images in non-GPU
+  renderer when togglign "separate background
+  images per pane".
+- Fix a bug where output on stderr could be lost.
+- Fix a bug in rendering marks on non-retina
+  displays.
+- Fix a bug where split panes can't be dragged
+  after moving them.
+- Temporarily disable secure keyboard entry when
+  exiting a hotkey window so the other app's
+  window can be revealed.
+- Tolerate errors in tmux.conf when starting tmux
+  integration.
+- Use x11 mouse reporting instead of SGR to fix
+  curses support.
+- Fix a bug where find could select the wrong
+  range on new input.
 
-New Features
-- The P3 color space is now supported. The color
-  picker uses P3 and control sequences that accept
-  a color space now accept p3.
-- Add a setting to preserve windows' spaces on
-  restoration.
-- Searches for profiles now allow you to exclude
-  terms using the minus operator. For example:
-  -tag:dynamic
-- Clipboard content reporting via control sequence
-  OSC 52 is now supported, but requires user
-  consent to enable.
-
-Other Improvements
-- Allow apps running in the terminal to request
-  bluetooth access.
-- Optimize bandwidth for sending keystrokes to
-  tmux in tmux integratino mode.
-- Ensure the URL preview box does not overlap the
-  hyperlink being previewed.
-- Search history completion now works on words
-  instead of entire phrases.
-- Avoid causing the window contents to jump when
-  colors change.
-- Visual improvements to minimal theme with
-  transparent windows.
-- Add support for newest Emoji.
-- UI improvements to the password manager for
-  adding a new password.
-- Tweak how command history is sorted. When there
-  is no search query, use a purely chronological
-  ordering.
-- Tweak status bar colors to look nicer in the
-  Minimal theme.
-- Data injected by the Python API during a silent
-  coprocess is now made visible.
-- Add support for the Nova editor to semantic
-  history.
-- Tweak the status icon (shown in the menu bar
-  when you've excluded iTerm2 from the dock) to
-  have a more modern design.
-- Right-clicking on a number in scientific
-  notation like 6.022e23 shows its expanded form
-  in the context menu.
-- imgcat has a bunch of new options. You'll need
-  to reinstall shell integration utilities to get
-  it.
-- You can now search the tty and foreground job
-  process ID in the Open Quickly window.
-
-Bug Fixes
-- Ensure Rosetta is installed before running the
-  Python API.
-- Fix a bug where clicking the dock icon while the
-  tip of the day was open wouldn't open a new
-  window.
-- Fix bugs in positioning the badge, indicators,
-  and broadcast stripes when a per-pane status bar
-  or per-pane title bar is present.
-- Fix a bug where fullscreen windows overlapped
-  the notch when the menu bar was not
-  automatically hidden in fullscreen.
-- Fix a bug where fullscreen windows resized
-  incorrectly when changing the active display in
-  the presence of a notch.
-- Fix a bug where the Jobs toolbelt would show a
-  process with pid 0 after the login shell
-  terminates.
-- Fix bugs in handling newlines in control
-  sequences that set the title.
-- Fix a bug where marks were sometimes not removed
-  when the screen was cleared.
-- Fix memory leaks.
-- Fix a long-standing memory corruption bug.
-- Fix a bug where marks were drawn upside-down
-  in the GPU renderer.
-- Fix a bug where faint text could render
-  incorrectly.
-- Fix a bug where window transparency could be
-  wrong when the window is first created.
-- Fix overlapping search results with regular
-  expression queries.
-- Fix a bug where "clear to last mark" misbehaved
-  while at a prompt. It now clears to the mark
-  before the current prompt.
-- Improve appearance of tabs being dragged.
-- Select Current Command now selects past the
-  cursor if needed.
-- Fix a bug where crash reports weren't sent on
-  macOS 12.
-
+Other improvements
+- Set ITERM2_COOKIE in coprocesses so they can use
+  the Python API without an extra authentication
+  step. All other environment variables that
+  sessions have are also now provided to
+  coprocesses.
+- Code points 0xf000-0xf003 can now be rendered.
+  These are sometimes used in nerd fonts.
+- GPU renderer is now usable when background
+  images are shared across panes.
+- Defer database janitorial work until after app
+  launch to avoid blocking it.
+- Performance improvements.
+- If a session is short lived, uses a login shell,
+  the shell does not exist, and the profile can be
+  changed offer to change the shell to /bin/zsh
+  which will always exist to get the user unstuck.
+- A find indicator now display search results to
+  highlight the current one with an animation.
+- Saving prefs no longer clobbers symlinks.
+- The list of displays in profile window settings
+  now uses meaningful names for screens.
+- Enable focus reporting in tmux integration.
+- Copy mode now supports previous/next mark
+  navigation.
+- Add key binding actionss for next/previous pane.
 

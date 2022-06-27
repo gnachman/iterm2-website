@@ -1,536 +1,274 @@
-2022-03-08: Fix two bugs with minimum contrast: (issue
-10273)
+2022-06-04: Update to latest SI submodule
 
-1. The prefs panel showed the wrong value when not using
-separate light/dark colors because the "use different colors
-for light and dark mode" checkbox was not initialized before
-it was used, causing it to behave as though it was always
-checked when looking up values to initialize the min
-contrast slider.
+2022-06-04: Add fish SI loader
 
-2. Colormap mutations before the mutable state's side-effect
-performing delegate was assigned didn't update the
-main-thread copy. Fix this by running those side effects
-even when there is no delegate since it wasn't used anyway.
+2022-06-04: Handle framer login shell execution failuire
+properly.
 
-2022-03-08: Add support for reporting clipboard content.
-Introduce secure user defaults as a generalization of the
-mechanism used for disabling applescript authentication for
-the Python API to make sure that users consent to clipboard
-reporting before it is used automatically.
+Update to latest it2ssh
 
-2022-03-06: Rebuild shell integration
+Handle shell integration injection over ssh.
 
-2022-03-06: Provide the copied iTermSelection a delegate
-during endLive(). Fixes a bug where box selections couldn't
-have their content extracted
+Make a bunch of ShellIntegrationInjection synchronous.
 
-2022-03-06: Fix a bug where selectionDidChange was called on
-the wrong queue
+2022-06-03: Show login shell in general prefs
 
-2022-03-05: Enable tsan and zombies to find more issues like
-the crash in 10160
+2022-06-03: Shell injection working in fish
 
-2022-03-05: Make iTermExternalAttribute's accessors atomic
-to mollify tsan. The values are immutable after
-initialization and I don't buy that there's a real data race
-here.
+2022-06-03: Add bash shell integration injection and add
+flag to enable automatic shell integration injection to
+prefs
 
-2022-03-05: Copy metadata to fix a data race (issue 10160)
+2022-06-02: Delete a bunch of dead code including
+serialization stuff
 
-2022-03-05: Fix UKCrashReporter for macOS 12
+2022-06-02: Add profile pref to load shell integration
+automatically
 
-2022-03-05: Ensure add tab button doesn't treat a drag as a
-click. I can't reproduce this locally. See issue 10217
+2022-06-02: Rip out zsh new-user stuff which doesn't seem to
+run on modern macOS. Get zsh shell integration injection
+working locally
 
-2022-03-05: Update shell integration utilities to pull in
-imgcat improvements from PR 4
+2022-06-02: Initial implementation
 
-2022-03-05: Fix 'select current command' to go past the
-cursor if needed. issue 10269
+2022-06-02: Fix bug in backtracking
 
-2022-03-03: Add scientific notation context menu synonym
-(#463)
+2022-06-02: Add minified it2ssh
 
+2022-06-01: Fix a leak of VT100ScreenMutableState
 
-2022-03-03: Defer cursor blink side effect
+2022-06-01: Fix leak of VT100Parser
 
-2022-03-03: Update status item images to look right for
-macOS 11+. Issue 10240
+2022-06-01: Fix recovery when autopoll is enabled, plus
+various minor tweaks
 
-2022-03-03: Optimizations for emacs from issue 10206
+2022-06-01: Fix ssh recovery
 
-* Defer running the side effect after hiding the cursor to
-avoid drawing while it's hidden.  * Make
-incrementOverflowBy: a no-op when it's incremented by 0
-lines to avoid an immediate draw.  * Don't schedule a
-side-effect when blink changes if the terminal is not
-allowed to change blink.  * Use a deferred side-effect for
-blink changes since they aren't urgent and could cause
-cursor flicker in emacs.
+2022-06-01: Make framer log verbosely when debug logging is
+on
 
-Emacs loves to toggle cursor blink and needs these
-mitigations to look good.
+2022-06-01: Make framer IDs shorter
 
-2022-03-03: Don't draw subtitle if the tabbar isn't tall
-enough in minimal. No-titlebar windows have a short tabbar
-in Minimal.
+2022-06-01: Fix a bug in conductor parser with inner OSC
+codes that get truncated after the semicolon. Also, make
+logging improvements
 
-2022-03-03: Add debug logging for
-NSWindowRestoresWorkspaceAtLaunch
+2022-06-01: whitespace
 
-2022-03-03: Bail out of swipe tracker after 5 seconds of
-inactivity and log what the events were. Trying to diagnose
-a hang here. Issue 10258
+2022-06-01: Switch to OSC-delimted rather than
+newline-delimited protocol for conductor/framer to avoid
+having to deal with tty craziness
 
-2022-03-03: Add support for Nova to semantic history. Issue
-10165
+2022-05-31: ssh recovery and win size refactor.
 
-2022-03-03: Draw window background color behind tab in
-tab-drag-window. Make no-titlebar windows drag the window
-when there is a single tab when
-convertTabDragToWindowDragForSolitaryTabInCompactOrMinimalTheme
-is enabled. Issue 10257
+- Recover when ssh sessions get into a wonky state, in
+particular for orphan recovery.  - Jiggle upon recovering an
+orphan to trigger ssh recovery (but also to redraw
+interactive apps) - Move winsize ioctl sending logic to
+WinSizeController. The old code would reorder resizes in the
+presence of jiggles and defers and such and now it is saen.
 
-2022-03-02: Clear to mark before last mark while at a
-prompt. Issue 10256
+2022-05-27: Implement framer recovery and handle input from
+framer in OSC 134
 
-2022-03-02: Add debug logging
+2022-05-26: Wrap framer data in OSC 134 to hide it if things
+go sideways (like orphan restoration happens)
 
-2022-03-02: Remove stray lines from tabbar in minimal theme
+2022-05-25: Add SecretServer, a little unix domain socket
+server that produces random numbers so it2ssh can prove it
+was launched locally as a condition of exporting files and
+environment variables to the remote host
 
-2022-03-02: Use foreground color as text color in tabs in
-minimal with no transparency. Issue 10255
+2022-05-25: Modify framer/conductor protocol to specify if
+it's framing in end messages. Remove sshHostnames.
 
-2022-02-28: Allow injected tokens (via python API or
-trigger) to run during silent coprocesses. Issue 10136
+2022-05-25: Fix how ssh identities are compared
 
-2022-02-28: Note that
-Preferences.SIZE_CHANGES_AFFECT_PROFILE is deprecated. See
-issue 10248
+2022-05-24: Add menu item to disconnect from ssh
 
-2022-02-28: When loading prefs from remote URL and local
-changes are present, prompt on launch rather than warning on
-quit
+2022-05-24: Don't unhook DCS until hardStop so that
+conductor session closing can be undoable
 
-2022-02-27: Add donate button
+2022-05-24: Make the session closing dialog that tells you
+what jobs get killed know about ssh
 
-2022-02-27: Fix a bug where timestamps were unset because
-markAllCharsDirty: shouldn't usually affect timestamps
+2022-05-24: Add autopolling. Framer can run ps once a second
+and onlys end an update when something changes. It then
+sleeps until you request autopolling again, to keep it from
+spinning forever when the client is gone.
 
-2022-02-27: Fix TLV decoding of doubles, which in turn fixes
-timestamps in DVR
+2022-05-24: Fix bug where -[LineBuffer
+__findPosition:inBlock:inOffset:] returned offset 0 when
+you're looking for exactly the last position in the block
 
-2022-02-27: Replace missing read_bytes in it2caps
+2022-05-24: Don't allow seal to create interior partial
+blocks and ensure that search only indicates a partial last
+line when it's also the last block to avoid triggering bad
+behavior in filtering when it backs up to research the last
+line
 
-2022-02-27: Fix infinite loop in iTErmPathFinder
+2022-05-24: [framer]Send diffs of processes instead of
+everything
 
-2022-02-27: Add it2caps
+2022-05-24: State restoration for framer ps
 
-2022-02-27: Change NSLog to DLog
+2022-05-24: Make python parse the output of ps and only send
+results if something changed.
 
-2022-02-27: Add support for reporting capabilities. See
-draft spec here:
-https://gitlab.freedesktop.org/terminal-wg/specifications/-/merge_requests/8/diffs#52c1a05f148e1d116aa84a794c9f37ff44b85ec4
+2022-05-23: Fix bugs in detaching and in python 3.10 with
+exception handling
 
-2022-02-25: Update status bar icon and text colors when
-changing main or app-active status. Fixes an inconsistency
-in icon colors as a bonus. Issue 10229
+2022-05-23: Fix restoration for nested ssh sessions
 
-2022-02-25: Fix double draw of lines above tabs when there
-is one tab in minimal theme. Issue 10229
+2022-05-23: Get nested ssh sessions basically working but
+not performant or well tested
 
-2022-02-25: Improve debug logging for semantic history
+2022-05-22: Add restoration support to ssh mode
 
-2022-02-25: Fix transposed title/identifier in pointer menu
-item actions. Issue 9781
+2022-05-21: [framer]Initialize tty size
 
-2022-02-25: Rebuild binary deps with
-BUILD_LIBRARY_FOR_DISTRIBUTION
+2022-05-21: Update framer
 
-2022-02-25: Set BUILD_LIBRARY_FOR_DISTRIBUTION for
-frameworks (#460)
+2022-05-21: Fix call to appendBannerMessage on wrong queue
 
-This allows for building the project with a newer Swift
-compiler than the one that was used to compile the binary
-dependencies that are in committed to the repository.
+2022-05-21: Fix bug in input chunking. Framer needs
+continuation marks and conductor.sh does not
 
-See https://www.swift.org/blog/library-evolution/
-2022-02-25: Add a key-up event tap for modifier remapping.
-Hopefully fixes issue 10220
+2022-05-21: Modify framer's %output to send channel -1 for
+login shells so the echo probe can detect side-channels
+without needing to know the login shell's pid
 
-2022-02-24: When there is no prefix, sort command history
-chronologically. Issue 10216
+2022-05-21: Get process cache working for ssh sessions. Fix
+IO for background jobs in framer. Fix parsing by using a
+separate vt100parser for each background job.
 
-2022-02-24: Remove accidentally added emacs backup
+2022-05-19: Add it2ssh as resource
 
-2022-02-24: improve UI for adding a new password as
-suggested in issue 10213
+2022-05-19: Fix echo probe in ssh
 
-2022-02-24: Pause and sync before sending a report rather
-than when modifying mutable state. issue 10206
+2022-05-19: Add sigwinch support to framer
 
-2022-02-24: Move semantic history file operations into XPC
-to avoid wedging the main app when IO gets wedged. Issue
-10200
+2022-05-18: Add framer to ssh integration.
 
-2022-02-23: Fix bugs in transparency when exiting
-fullscreen. See issue 10202. Also fix a bug where the tabbar
-backing is not hidden after exiting fullscreen with
-transparency and fix a bug where the transparency was not
-always re-enabled after exiting full screen (disable use
-transparency in one tab, full screen, enable use
-transparency, exit fullscreen).
+framer: - Logging improvements.  - Expand ~ and $VARS in
+login cwd - Send process ID along with %output - Send reason
+with abort - Put identifier as first arg of "end"
 
-2022-02-23: Add advanced pref for accent menu. Implement
-selectedRange in PTYTextView. Issue 743
+Main app[: - Add framer and support for it to conductor.
+Nested framer support is there but untested.  - Add SSH_*
+tokens.
+  - SSH_BEGIN: Beginning of command output - SSH_OUTPUT:
+  Wrapped output from framer. Uses CSI parameters to
+  communicate pid and channel. This is used internally in
+  VT100Parser while unwrapping %output. VT100Terminal
+  repurposes it as a container for side-channel output.  -
+  SSH_TERMINATE: Framer job exited. Ises CSI parameters to
+  give pid and return code.  - Add sshInfo to VT100Token to
+  identifier what framer job produced a token. This is
+  attached to regular (i.e., not SSH_*) tokens so we can
+  tell if it's output from a framer login shell or from a
+  side channel. Side channels aren't used yet.
 
-2022-02-23: Make iTermStandardKeyMapperConfiguration into an
-object. For reasons I don't understand, output was getting
-over-released. Fixes a crash when launching emacs
+2022-05-16: Add framer
 
-2022-02-23: Fix tags pane opening/closing
+2022-05-14: Update shell integration submodule
 
-2022-02-23: Add support for negated profile queries. Issue
-10192
+2022-05-14: Don't print an ssh banner if there are no ssh
+sessions running when one ends.
 
-2022-02-23: Add file missed from last commit
+2022-05-14: Fix bugs in tar
 
-2022-02-22: Update unicode data. Issue 10186
+2022-05-14: [it2ssh] Split writes into small lines.
 
-2022-02-22: If .config/iterm2/AppSupport points at the wrong
-place, fix it. Issue 10185
+2022-05-13: Add accessory view to open panel for file
+uploads with destination folder
 
-2022-02-22: Add advanced pref to remove marks from
-scrollbar. Issue 10097
+2022-05-13: Show a banner when ssh exits. Miscellanous ssh
+bug fixes too
 
-2022-02-22: Add more characters that can be send to tmux
-unencoded to speed base64. See comment on
-https://github.com/gnachman/iTerm2/pull/459
+2022-05-13: Refactor conductor and update SI submodule
 
-2022-02-22: In minimal, don't make session title view
-background gray when the tab has a color. This seems to have
-been an oversight in the initial implementation of minimal.
-Issue 10177
+2022-05-13: Parse ssh command line arguments. Handle
+non-shell-launching commands correctly.
 
-2022-02-19: Nil out tooltips since super.dealloc will cause
-it to be used
+Remove conductor on reset.
 
-2022-02-19: Coalesce tooltip updates. Issue 10170
+Accept list of boolean ssh args in DCS sequence.
 
-2022-02-19: Tweak vertical offset of underlines for fonts
-that have an asciiOffset. See the comment about asciioffset
-in updateMetalDriver
+2022-05-12: Parse SSH arguments poorly to establish an
+identity of (hostname,username,port). Use that in
+_sshHostNames instead of just hostname.
 
-2022-02-19: When a keystroke is bound to enable copy mode,
-use the event to guess where the cursor ought to be so
-shift-left will put the cursor on the left side. Isseu 10164
+Fix a bug where we didn't unhook from
+screenDidUnhookSSHConductor.
 
-2022-02-19: In tail find, remove search results before
-adding them to avoid duplicates. Issue 10158. Also, when
-searching forwards, begin from the end of the last result.
-This prevents search results from overlapping which can
-happen with regexes like x.*, causing a huge number of
-results. We already did this when searching in reverse.
+Don't recycle the current directory when opening an ssh
+session from a non-ssh session or an ssh session with a
+different identity.
 
-2022-02-17: Use promises for async selection. Issue 10155.
+Show a banner when beginning an ssh session.
 
-* Make copying big selections to the clipboard asynchronous
-to avoid accidental hangs when you hit cmd-a.
+Don't queue writes until the conductor tells you to,
+otherwise you can't enter a passphrase.
 
-* Fix a bug in copying with SGR codes where the params were
-out of order and could end with 0, negating them.
+2022-05-12: - Queue writes while initializing conductor.  -
+When splitting a pane or creating a new tab from an ssh
+session, make the new session connect to the same host and
+(if so configured) use the same directory.  - Keep a stack
+of ssh hostnames and extend the protocol to indicate when an
+ssh session ends. To do this, introduce a unique ID for each
+ssh session.  - Don't try to cd to the local machine's home
+directory in ssh
 
-* Add TerminalContentSnapshot, a handy object for accessing
-the state of the terminal in the future. Thanks to
-copy-on-write LineBuffer, making this is cheap.
+2022-05-11: Update submodules
 
-* Add iTermRenegablePromise. Such a promise is created with
-the capability of being "reneged". Invoking `renege` will
-attempt to stop it and cause it to fail, but obviously there
-are no guarantees since it's inherently racey. The purpose
-is to avoid continuing to extract selections when a promise
-is going to be discarded.
+2022-05-11: Add support for uploading payloads
 
-* Add the ability to wait on a promise, This is a little
-risky because it could cause a deadlock, but I don't see a
-better way to wait for a selection to be available when the
-main thread needs it synchronously.
+2022-05-11: Remove UserInterfaceState.xcuserstate
 
-* Don't add selections over 1000 lines long to paste
-history. Doing so would make it impossible to renege on copy
-promises that could take a really long time to finish.
+2022-05-11: Add new xcode garbage to gitignore
 
-* Add nullability annotations to iTermTextExtractor.h.
+2022-05-10: Add support for sending environment variables in
+it2ssh
 
-* Add stopAsSoonAsPossible to iTermTextExtractor. It makes
-content extraction stop wherever it is. This is to support
-reneging selection promises.
+2022-05-10: Add UI for configuring SSH in profiles
 
-2022-02-14: Fix a bug where the root terminal view's
-iTermImageView was visible when there was no image
+2022-05-09: Add ssh option to login command menu using
+it2ssh
 
-2022-02-14: Fix a bug where transparency is wrong initially.
-Issue 10119
+2022-05-09: Add parser support for ssh integration using a
+new DCS code
 
-2022-02-14: Remove NSLog
+2022-05-05: Add option to upgrade to full-environment
+scripts in dependency editor
 
-2022-02-14: In legacy renderer, create a new background run
-when faintness changes because fg & bg interact in this
-case. Issue 10153
+2022-05-05: [portholes] When you set the language to JSON,
+ensure it produces a value even if it's an error
 
-2022-02-14: Only jiggle on color change if bg or fg changes
-darkness. Issue 9855
+2022-05-05: Remove incorrect assertion. There could be
+scrollback overflow if state is shared. This can happen
+during resize.
 
-2022-02-13: Make search history completion work on a word
-basis. Issue 10151
+2022-05-02: Fix a bug where scrollbackOverflow was always 0
+or 1, causing scroll position not to lock when userScroll is
+enabled. Issue 10385
 
-2022-02-13: Fix off-main-thread use of
-iTermRateLimitedUpdate for idempotent timers that caused a
-crash. Issue 10209
+2022-05-02: Call setNeedsDisplay when the selection changes
 
-2022-02-13: Always respect newlines in set winicon/icon
-title. Issue 10143
+2022-05-02: Add NSLocale.preferredLanguages to candidates
+for LANG for issue 10297
 
-newline + subtitle -> change only subtitle title + newline
--> erase subtitle title -> change only title
+2022-05-02: [python] Preserve open/save pane folder, return
+nil instead of throwing exception on user cancellation
+(#469)
 
-Fixes a bug where setting the subtitle by control sequence
-didn't take effect because we created a new swifty string
-but the observer was run before the instance varible was
-assigned to.
+* [python API] Change the open/save panels
 
-2022-02-11: Defer TIOCSWINSZ until we know the final size of
-the window, in case you asked to make it bigger than macOS
-allows. Issue 10134
+1. Open the last directory by default.  2. Return `None` if
+the user cancels.
 
-2022-02-11: Don't try (and fail) to duplicate a tmux tab if
-invoked by binding. Issue 10128
+Co-authored-by: George Nachman <gnachman+github@gmail.com>
+2022-05-02: Fix crash in issue 10387
 
-2022-02-11: Place the URL preview view in a location that
-does not overlap the URL. Issue 10131
-
-2022-02-11: Move setting the "did receive line feed" flag
-into appendLineFeed so that code that prints tmux messages,
-banners, etc. will get it. It's used for logging,
-publishing, and pwd polling. Aside from wastefully doing
-more pwd polling (which is already mitigated by rate
-limiting) this fixes filtering on things like tmux gateways.
-
-Avoid reentrant joined blocks switching to shared state when
-already switched.
-
-Fix a crash when copying color maps when state is joined.
-
-2022-02-11: Optimize sendking keystrokes to tmux. Add
-RunLengthEncoder to abstract grouping of similar sequential
-elements
-
-Based on https://github.com/gnachman/iTerm2/pull/459 by
-Lonny Wong <lonnywong@qq.com>
-
-2022-02-10: Don't remove selection when scrolling in
-alternate screen mode while appending to history. Issue
-10123
-
-2022-02-10: Add a pref to preserve window spaces on
-restoration. Issue 10087
-
-2022-02-09: Don't crash if you click on an OSC 8 file: url
-without a path. Issue 10121
-
-2022-02-09: Always search automatically when the value on
-the find pasteboard changes regardless of which view has
-first responder. Issue 10103
-
-2022-02-09: Fix warnings
-
-2022-02-09: Fix bug where marks were vertically flipped in
-GPU renderer
-
-2022-02-09: Minor fixes
-
-2022-02-09: Convert most joined side effects into unmanaged
-side effects to eliminate side-effect reentrancy as much as
-possible.
-
-Fix screenSetTabColorRedComponentTo, which actually changed
-blue.
-
-2022-02-09: Fix various cases where the main thread got
-access to non-doppelganger interval tree objects.
-
-Avoid calling -refresh in joined side blocks to reduce
-reentrancy.
-
-Avoid looking up interval tree objects in side effects
-because things may have changed since the side effect was
-added. For example, screenCurrentDirectroydDidChangeTo: now
-takes the remoteHost instead of looking it up.
-
-Remove spurious assertions that
-performBlockWithJoinedThreads can run in a side effect so
-long as it's joined. It should never run in an unpaused
-side-effect.
-
-Drop support for old-style saved grids because it requires
-multiple round trips to the main thread. It's been over a
-year.
-
-2022-02-08: Fix a bug where interval tree objects were lost
-on resize because their entries were nilled too early
-
-2022-02-08: Make VT100ScreenMutableState a linebuffer
-delegate
-
-2022-02-08: Fix variable line height in about window
-
-2022-02-08: Never run side effects synchronously. You can
-hit this in setConfig: (e.g., when it affects the color map)
-but side effects get executed at the end of sync so it's not
-a long wait. This might break things but I definitely prefer
-this design.
-
-2022-02-08: Update to Xcode 13.2, Swift 5.5
-
-2022-02-08: Make iTermTuple nullability-correct. This forces
-fixing up SetUserVariableTrigger.swift.
-
-Make side-effect state into a bitmask instead of a
-dictionary because it was wasting 3.5% of cpu on the spam.cc
-benchmark.
-
-Add assertions that out-of-order side effects never occur
-(i.e., that addSideEffect in joined threads only happens
-when no side-effects are queued up).
-
-Fix a bug in swapOnscreenIntervalTreeObjects where its
-`temp` tree could get deallocated causing its doppelgangers
-not to be removed triggering an assertion when later adding
-them to the saved tree.
-
-2022-02-07: Add optimizations: make marking dirty in grid
-faster. Change line buffer copy to merge by dropping from
-head/tail and appending to tail. This is WAY faster and
-makes the spam.cc benchmark finish in under 3 seconds :)
-
-2022-02-07: Don't use fastpath
-(CGContextShowGlyphsAtPositions) to draw powerline glyphs
-because core text (CTFontDrawGlyphs) does it differently and
-better. Issue 10120
-
-2022-02-06: Put all metal drivers on the same queue. This
-fixes a data race that tsan found in TexturePageCollection
-(and friends) because they are a global data structure with
-no locking. Perhaps this is the memory corruption bug I have
-been chasing for so many years?
-
-2022-02-06: Fix data race on _dcsHooked
-
-2022-02-05: Update shell integration
-
-2022-02-05: Fix incorrect use of mutableState from main
-thread in search. Invalidate tail find timer when dirty
-cells are found. This fixes a bug where two -refresh calls
-in the same spin of the runloop broke tail find (because it
-thought it was still finding so it declined to search even
-though some search results were removed).
-
-2022-02-04: Fix selecting menu items in pointer action
-
-2022-02-04: Downgrade todo to comment
-
-2022-02-04: Enable thread sanitizer
-
-2022-02-04: Remove resolved TODO
-
-2022-02-04: Fix leak of AATree
-
-2022-02-04: Fix a bug where hidden annotations would briefly
-flash visible
-
-2022-02-04: Remove already-addressed todo
-
-2022-02-04: Remove already-addressed TODOs
-
-2022-02-04: Nil out interval tree object entries when
-removing all. I think this caused the assertion I kept
-hitting when adding an object back later (the doppelganger
-had a nonnil entry)
-
-2022-02-04: Remove already-addressed todos
-
-2022-02-04: Remove already-addressed TODO
-
-2022-02-04: Add missing delegate methods
-
-2022-02-03: Allow requesting Bluetooth permission (#457)
-
-Add NSBluetoothAlwaysUsageDescription.  Command line
-applications that use CoreBluetooth will crash with SIGABRT
-if this is not present in info.plist.  2022-02-03: Reduce
-calls to screenDidReceiveLineFeed
-
-2022-02-03: Resolve TODO
-
-2022-02-03: Remove todo. I already moved
-removeInaccessibleIntervalTreeObjects to didSynchronize
-
-2022-02-03: Remove some TODOs. We are already limiting
-temporaryDoubleBuffer.drawSavedGrid=YES and haveScrolled=NO
-to when resetting scrollback overflow, which weakly relates
-to when draws happen. I think it's good enough but real
-world experience will tell for sure. I also don't think
-there's any reason to update the grid's currentDate in
-didSynchronize because it's set prior to executing a vector
-of tokens and I don't see anywhere that we mark dirty just
-after synchronizing.
-
-2022-02-03: Use absolute ranges when computing intervals.
-This behaves better when intervals are before the start of
-history. Remove inaccessible interval tree objects at the
-end of sync. After syncing, run any pending side-effects.
-
-2022-02-03: Add VT100GridAbsCoordRangeContainsAbsCoord
-
-2022-02-02: Add debug logs
-
-2022-02-02: Fix typo
-
-2022-02-02: Hold the lineblock mutex during mutations. There
-was a race between cowCopy nilling the mutation certificate
-and willModify allocating it. Not to mention writing to
-memory is unsafe while copying it.
-
-2022-02-02: Document why trigger checks should be done just
-before sync
-
-2022-02-02: Address TODO
-
-2022-02-02: Pass dimmingAmount through screen config. Remove
-some todos
-
-2022-02-02: Fix some warnings
-
-2022-02-02: Actually you don't need to pause to send a
-report because all reports are sent through a side-effect.
-
-2022-02-02: Finish auditing side effects for runloops.
-Dispatch async as needed. Also caught a few places that
-needed to be paused.
-
-2022-02-02: Avoid calling screenDidAddMark if not alerting.
-
-Use the mark's doppelganger in
-screenDidUpdateReturnCodeForMark:remoteHost: and
-screenCommandDidExitWithCode:mark:
-
-Prevent tmux tokens from having runloops in side effects.
-
-Use a joined side effect for screenDidAddNote:focus: because
-it will call -refresh.
-
-2022-02-01: Remove NSLog
-
-2022-02-01: Speed up querying for terminfo values. Fix
-colors, Co, and RGB.
+2022-05-02: Add support for search to portholes. Save and
+restore wide mode.
