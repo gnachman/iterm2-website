@@ -1,0 +1,125 @@
+New features
+- Add "Render Selection", which replaces a chunk
+  of selected text with a natively rendered view.
+  For example, JSON gets pretty-printed and syntax
+  highlighted. Rendered selections have the option
+  of scrolling horizontally to make navigating
+  logs easier. They are searchable. Over 150
+  different languages are supported for syntax
+  highlighting. Markdown gets special treatment
+  and displays its rendered format.
+- Enable logging as asciicast, which is playable
+  by asciinema.
+- Add option not to require a password to open the
+  password manager.
+- (Experimental) The password manager can now use
+  LastPass or 1Password rather than the keychain.
+  Use the (⋯) menu next to the search field to
+  configure it.
+- You can configure a shortcut to be a "leader".
+  This allows you to define two-keystroke
+  shortcuts, composed of leader + some other
+  shortcut. For example, if you make cmd-B the
+  leader then you can create a key binding for
+  leader+h/j/k/l to navigate among split panes.
+  In tmux integration, key bindings are
+  automatically created to emulate tmux's
+  shortcuts with the leader in place of tmux's
+  prefix key.
+  You can set up the leader in Prefs > Keys >
+  Leader.
+- The composer now supports search.
+- The composer (cmd-shift-.) now supports multiple
+  cursors. Use ctrl-shift-up/down or option-drag to
+  create them. You can also convert search results
+  to cursors with Edit > Find > Select Matches.
+- You can resize the composer's height by dragging
+  its bottom edge.
+- Cmd-click in the composer opens the command in
+  explainshell.com.
+- In the composer, option-shift-enter sends the
+  command at the cursor and removes it from the
+  composer.
+- Add "copy" as a new smart selection action.
+- Option-cmd-click now selects the second smart
+  selection action.
+- Add a new kind of key binding action called
+  "sequence" that performs any number of other key
+  binding actions in order.
+- Shell integration can now be injected
+  automatically as part of creating a login shell.
+  Explicit installation is no longer needed on
+  localhost (except for tcsh users, who are still
+  stuck in 1995. Sorry).
+- Selecting URLs (cmd-opt-u) now enables shortcuts
+  to jump to them by number.
+
+Bug fixes
+- Fix memory leak
+- Fix a beachball in save panels.
+- Fix a bug where errors were shown after an
+  upload finished.
+- Fix various crashes.
+- When a session needs a Python API script to be
+  running but it hasn't started yet, retry for
+  five seconds.
+- Fix a bug where prompt marks didn't show in the
+  scrollbar.
+- Fix rendering of background images in non-GPU
+  renderer when togglign "separate background
+  images per pane".
+- Fix a bug where output on stderr could be lost.
+- Fix a bug in rendering marks on non-retina
+  displays.
+- Fix a bug where split panes can't be dragged
+  after moving them.
+- Temporarily disable secure keyboard entry when
+  exiting a hotkey window so the other app's
+  window can be revealed.
+- Tolerate errors in tmux.conf when starting tmux
+  integration.
+- Use x11 mouse reporting instead of SGR to fix
+  curses support.
+- Fix a bug where find could select the wrong
+  range on new input.
+
+Other improvements
+- Set ITERM2_COOKIE in coprocesses so they can use
+  the Python API without an extra authentication
+  step. All other environment variables that
+  sessions have are also now provided to
+  coprocesses.
+- Code points 0xf000-0xf003 can now be rendered.
+  These are sometimes used in nerd fonts.
+- GPU renderer is now usable when background
+  images are shared across panes.
+- Defer database janitorial work until after app
+  launch to avoid blocking it.
+- Performance improvements.
+- If a session is short lived, uses a login shell,
+  the shell does not exist, and the profile can be
+  changed offer to change the shell to /bin/zsh
+  which will always exist to get the user unstuck.
+- A find indicator now display search results to
+  highlight the current one with an animation.
+- Saving prefs no longer clobbers symlinks.
+- The list of displays in profile window settings
+  now uses meaningful names for screens.
+- Enable focus reporting in tmux integration.
+- Copy mode now supports previous/next mark
+  navigation.
+- Add key binding actionss for next/previous pane.
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+6790a1d352598ec18a924365127589d6ddceb71b3eb3f1359377b051310a5694
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCYrn3GwAKCRB0Et0TaFtK
+rB3rAP4+QCv7YWE/LAp0JxCCFzj4rmJYYeONIsncEcQDF+5ymQEAj+8J7dbgJUlS
+ppVJpCLaQ1kdufJQOnP9dNOlMFnABXc=
+=1fnn
+-----END PGP SIGNATURE-----
