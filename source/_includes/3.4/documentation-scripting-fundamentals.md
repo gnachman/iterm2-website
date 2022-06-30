@@ -207,6 +207,14 @@ interpolated string:
 
 Its value would be `Lorem ipsum dolor sit amet`.
 
+### Contexts
+
+When writing an interpolated string, you must be mindful of the context in which
+it is evaluated. For example, window titles are evaluated in the window's context.
+If you want to put the current session's hostname in the window title, you'd use
+`\(currentTab.currentSession.hostname)`. Likewise, tab titles are evaluated in
+the tab's context.
+
 ## Following Context References
 
 Some variables reference another context. For example, the session context has
