@@ -1,3 +1,80 @@
+2022-07-01: Don't resign file provider. It broke the nightly
+build.
+
+2022-07-01: - Allow secure encoding of iTermTuple.  - Fix
+reentrant calls to refresh (updateDisplay -> refresh ->
+textViewWillRefresh ->
+performLightweightBlockWithJoinedThreads ->
+executeSideEffectsImmediatelySyncingFirst ->
+tokenExecutorHandleSideEffectFlags -> performSideEffect ->
+screenNeedsRedraw -> refresh - Change iTermURLStore to use
+tuples instead of dictionaries for performance (issue 10113)
+
+2022-07-01: Improve readability of prefs search results in
+dark mode.
+
+2022-07-01: Respect 'add new windows at end' setting for
+anonymous tmux windows (i.e., those created with tmux
+new-window). Issue 9994
+
+2022-07-01: Add support for segmented copy to pasteboard to
+work with tmux's limit on passthrough control sequences.
+
+2022-07-01: Offer the option to replace an existing file
+when downloading. Issue 10473
+
+2022-06-30: Add debug logging for tabstops
+
+2022-06-30: When modifying a character by adding combining
+marks to it ensure it is marked dirty so it gets copied to
+the main thread. Issue 10443
+
+2022-06-30: Add key binding actions for copy-or-send and
+paste-or-send. Also only send keybinding actions through the
+responder chain without first trying the static action if
+the first responder is PTYTextView. This allows you to do
+control-c to paste into e.g. the toolbelt. Issue 10436.
+
+2022-06-29: Warn about interpolated strings that reference
+variables in the session context when evaluation will be in
+another context. Issue 10426
+
+2022-06-29: Explain the evaluation context for window and
+tab titles
+
+2022-06-29: SSH improvements
+
+In framer, change argv0] to -program only if it's the login
+shell. This unbreaks running emacs as the command.
+
+conductor.sh now reveals the shell's version.
+
+Preserve quotes in command arg to ssh.
+
+Don't inject shell integration for broken macOS bash or for
+unrecognized shells over ssh.
+
+Don't inject shell integration over ssh if prefs say not to.
+
+Change how ssh args are parsed.
+
+ssh localhost -t emacs
+	      ^ arg to ssh
+
+ssh localhost emacs -nw
+		    ^ arg to emacs
+
+Anything after the command after the remote host is a
+command argument, even without a -- argument.
+
+2022-06-29: Fix removing and moving of interval tree objects
+when clearing scrollback history (but not grid), such as
+with CSI 3J. Issue 10420
+
+2022-06-27: Update shell integration
+
+2022-06-27: Rebuild binary dependencies
+
 2022-06-26: Fix a bug where tailfind didn't select the right
 ranges because searchBuffer could get out of sync because
 the immutable linebuffer is never dirty after merging,
@@ -230,239 +307,3 @@ working locally
 2022-06-02: Add minified it2ssh
 
 2022-06-01: Fix a leak of VT100ScreenMutableState
-
-2022-06-01: Fix leak of VT100Parser
-
-2022-06-01: Fix recovery when autopoll is enabled, plus
-various minor tweaks
-
-2022-06-01: Fix ssh recovery
-
-2022-06-01: Make framer log verbosely when debug logging is
-on
-
-2022-06-01: Make framer IDs shorter
-
-2022-06-01: Fix a bug in conductor parser with inner OSC
-codes that get truncated after the semicolon. Also, make
-logging improvements
-
-2022-06-01: whitespace
-
-2022-06-01: Switch to OSC-delimted rather than
-newline-delimited protocol for conductor/framer to avoid
-having to deal with tty craziness
-
-2022-05-31: ssh recovery and win size refactor.
-
-- Recover when ssh sessions get into a wonky state, in
-particular for orphan recovery.  - Jiggle upon recovering an
-orphan to trigger ssh recovery (but also to redraw
-interactive apps) - Move winsize ioctl sending logic to
-WinSizeController. The old code would reorder resizes in the
-presence of jiggles and defers and such and now it is saen.
-
-2022-05-27: Implement framer recovery and handle input from
-framer in OSC 134
-
-2022-05-26: Wrap framer data in OSC 134 to hide it if things
-go sideways (like orphan restoration happens)
-
-2022-05-25: Add SecretServer, a little unix domain socket
-server that produces random numbers so it2ssh can prove it
-was launched locally as a condition of exporting files and
-environment variables to the remote host
-
-2022-05-25: Modify framer/conductor protocol to specify if
-it's framing in end messages. Remove sshHostnames.
-
-2022-05-25: Fix how ssh identities are compared
-
-2022-05-24: Add menu item to disconnect from ssh
-
-2022-05-24: Don't unhook DCS until hardStop so that
-conductor session closing can be undoable
-
-2022-05-24: Make the session closing dialog that tells you
-what jobs get killed know about ssh
-
-2022-05-24: Add autopolling. Framer can run ps once a second
-and onlys end an update when something changes. It then
-sleeps until you request autopolling again, to keep it from
-spinning forever when the client is gone.
-
-2022-05-24: Fix bug where -[LineBuffer
-__findPosition:inBlock:inOffset:] returned offset 0 when
-you're looking for exactly the last position in the block
-
-2022-05-24: Don't allow seal to create interior partial
-blocks and ensure that search only indicates a partial last
-line when it's also the last block to avoid triggering bad
-behavior in filtering when it backs up to research the last
-line
-
-2022-05-24: [framer]Send diffs of processes instead of
-everything
-
-2022-05-24: State restoration for framer ps
-
-2022-05-24: Make python parse the output of ps and only send
-results if something changed.
-
-2022-05-23: Fix bugs in detaching and in python 3.10 with
-exception handling
-
-2022-05-23: Fix restoration for nested ssh sessions
-
-2022-05-23: Get nested ssh sessions basically working but
-not performant or well tested
-
-2022-05-22: Add restoration support to ssh mode
-
-2022-05-21: [framer]Initialize tty size
-
-2022-05-21: Update framer
-
-2022-05-21: Fix call to appendBannerMessage on wrong queue
-
-2022-05-21: Fix bug in input chunking. Framer needs
-continuation marks and conductor.sh does not
-
-2022-05-21: Modify framer's %output to send channel -1 for
-login shells so the echo probe can detect side-channels
-without needing to know the login shell's pid
-
-2022-05-21: Get process cache working for ssh sessions. Fix
-IO for background jobs in framer. Fix parsing by using a
-separate vt100parser for each background job.
-
-2022-05-19: Add it2ssh as resource
-
-2022-05-19: Fix echo probe in ssh
-
-2022-05-19: Add sigwinch support to framer
-
-2022-05-18: Add framer to ssh integration.
-
-framer: - Logging improvements.  - Expand ~ and $VARS in
-login cwd - Send process ID along with %output - Send reason
-with abort - Put identifier as first arg of "end"
-
-Main app[: - Add framer and support for it to conductor.
-Nested framer support is there but untested.  - Add SSH_*
-tokens.
-  - SSH_BEGIN: Beginning of command output - SSH_OUTPUT:
-  Wrapped output from framer. Uses CSI parameters to
-  communicate pid and channel. This is used internally in
-  VT100Parser while unwrapping %output. VT100Terminal
-  repurposes it as a container for side-channel output.  -
-  SSH_TERMINATE: Framer job exited. Ises CSI parameters to
-  give pid and return code.  - Add sshInfo to VT100Token to
-  identifier what framer job produced a token. This is
-  attached to regular (i.e., not SSH_*) tokens so we can
-  tell if it's output from a framer login shell or from a
-  side channel. Side channels aren't used yet.
-
-2022-05-16: Add framer
-
-2022-05-14: Update shell integration submodule
-
-2022-05-14: Don't print an ssh banner if there are no ssh
-sessions running when one ends.
-
-2022-05-14: Fix bugs in tar
-
-2022-05-14: [it2ssh] Split writes into small lines.
-
-2022-05-13: Add accessory view to open panel for file
-uploads with destination folder
-
-2022-05-13: Show a banner when ssh exits. Miscellanous ssh
-bug fixes too
-
-2022-05-13: Refactor conductor and update SI submodule
-
-2022-05-13: Parse ssh command line arguments. Handle
-non-shell-launching commands correctly.
-
-Remove conductor on reset.
-
-Accept list of boolean ssh args in DCS sequence.
-
-2022-05-12: Parse SSH arguments poorly to establish an
-identity of (hostname,username,port). Use that in
-_sshHostNames instead of just hostname.
-
-Fix a bug where we didn't unhook from
-screenDidUnhookSSHConductor.
-
-Don't recycle the current directory when opening an ssh
-session from a non-ssh session or an ssh session with a
-different identity.
-
-Show a banner when beginning an ssh session.
-
-Don't queue writes until the conductor tells you to,
-otherwise you can't enter a passphrase.
-
-2022-05-12: - Queue writes while initializing conductor.  -
-When splitting a pane or creating a new tab from an ssh
-session, make the new session connect to the same host and
-(if so configured) use the same directory.  - Keep a stack
-of ssh hostnames and extend the protocol to indicate when an
-ssh session ends. To do this, introduce a unique ID for each
-ssh session.  - Don't try to cd to the local machine's home
-directory in ssh
-
-2022-05-11: Update submodules
-
-2022-05-11: Add support for uploading payloads
-
-2022-05-11: Remove UserInterfaceState.xcuserstate
-
-2022-05-11: Add new xcode garbage to gitignore
-
-2022-05-10: Add support for sending environment variables in
-it2ssh
-
-2022-05-10: Add UI for configuring SSH in profiles
-
-2022-05-09: Add ssh option to login command menu using
-it2ssh
-
-2022-05-09: Add parser support for ssh integration using a
-new DCS code
-
-2022-05-05: Add option to upgrade to full-environment
-scripts in dependency editor
-
-2022-05-05: [portholes] When you set the language to JSON,
-ensure it produces a value even if it's an error
-
-2022-05-05: Remove incorrect assertion. There could be
-scrollback overflow if state is shared. This can happen
-during resize.
-
-2022-05-02: Fix a bug where scrollbackOverflow was always 0
-or 1, causing scroll position not to lock when userScroll is
-enabled. Issue 10385
-
-2022-05-02: Call setNeedsDisplay when the selection changes
-
-2022-05-02: Add NSLocale.preferredLanguages to candidates
-for LANG for issue 10297
-
-2022-05-02: [python] Preserve open/save pane folder, return
-nil instead of throwing exception on user cancellation
-(#469)
-
-* [python API] Change the open/save panels
-
-1. Open the last directory by default.  2. Return `None` if
-the user cancels.
-
-Co-authored-by: George Nachman <gnachman+github@gmail.com>
-2022-05-02: Fix crash in issue 10387
-
-2022-05-02: Add support for search to portholes. Save and
-restore wide mode.
