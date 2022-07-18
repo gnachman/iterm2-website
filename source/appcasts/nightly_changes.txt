@@ -1,3 +1,15 @@
+2022-07-17: Use provisioning profiles for the main app
+target and the file provider target. I don't think this will
+break app building for third parties since they have to
+modifiy code signing settings anyway. This is necessary to
+make the file provider stuff work.
+
+2022-07-15: Fix a bug where compact opaque windows with
+image backgrounds and 1 tab and no tabbar showed the image
+under the titlebar. It was wrong to assume that opaque
+windows have a window background behind the fake titlebar,
+since that is not true when there's an image background.
+
 2022-07-15: Add advanced pref to run coprocess on file drop.
 Issue 10498
 
