@@ -1,3 +1,29 @@
+2022-08-14: Don't use an opaque background for the add-tab
+button. Issue 10499
+
+2022-08-14: Add Window graphics for open quickly window
+browsing feature
+
+2022-08-14: Fix capitalization in Check for Updates and
+regenerate mainmenu.py. See PR #476
+
+2022-08-13: Add escape code for rich notifications.
+
+Based on PR #472 by gawashburn <geoff@washburght.org>.
+
+2022-08-13: Don't set the dirty flag when scrolling the
+screen up. VT100Grid already tracks whether it has scrolled
+via  and we can use that instead. This changed with the
+great multithreading of '22 - I modified it to set all lines
+dirty when scrolling so they'd be synced, but that isn't
+actually necessary. Doing so introduced a bug (issue 10524)
+because the dirty flag has a second purpose of tracking
+which search results should be erased on a line-by-line
+basis.
+
+2022-08-13: Add support for windows to open quickly. Issue
+10523
+
 2022-08-10: Include timestamp in iTermFileProvider code
 signature
 
@@ -150,3 +176,25 @@ templates
 
 2022-07-01: Don't resign file provider. It broke the nightly
 build.
+
+2022-07-01: - Allow secure encoding of iTermTuple.  - Fix
+reentrant calls to refresh (updateDisplay -> refresh ->
+textViewWillRefresh ->
+performLightweightBlockWithJoinedThreads ->
+executeSideEffectsImmediatelySyncingFirst ->
+tokenExecutorHandleSideEffectFlags -> performSideEffect ->
+screenNeedsRedraw -> refresh - Change iTermURLStore to use
+tuples instead of dictionaries for performance (issue 10113)
+
+2022-07-01: Improve readability of prefs search results in
+dark mode.
+
+2022-07-01: Respect 'add new windows at end' setting for
+anonymous tmux windows (i.e., those created with tmux
+new-window). Issue 9994
+
+2022-07-01: Add support for segmented copy to pasteboard to
+work with tmux's limit on passthrough control sequences.
+
+2022-07-01: Offer the option to replace an existing file
+when downloading. Issue 10473
