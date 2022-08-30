@@ -1,3 +1,30 @@
+2022-08-29: Fix SGR0 when using 'Copy with Control
+Sequences' (#478)
+
+I found that when I use **Edit -> Copy with Control
+Sequences** on `Build 3.5.20220828-nightly`, the resulting
+copied text has `\x1b[0` *without* a trailing `m` before
+newlines and at the end of the text.
+
+I could definitely be confused here (ECMA-48 is a bit dense
+haha), but it *seemed* like the SGR sequences are required
+to end in the character `m` (aka `\x6d` aka 06/13).
+Specifically it says
+
+> **8.3.117 SGR - SELECT GRAPHIC RENDITION** > Notation:
+(Ps...) > Representation: CSI Ps... 06/13 > Parameter
+default value: Ps = 0
+
+If this is intentional (aka, there's some part of the spec
+I'm missing, which is more than likely) then we can just
+close this out.
+
+Note: I had trouble getting this to build locally (kept
+failing with `No account for team "H7V7XYVQ7D"` despite
+changing it to `Sign to Run Locally`), but I can try again
+if you'd like me to specifically verify the change locally.
+2022-08-29: Hook up the ssh integration flag
+
 2022-08-27: Add option to mirror tmux paste buffer to local
 clipboard
 
