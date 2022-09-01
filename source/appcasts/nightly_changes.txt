@@ -1,3 +1,12 @@
+2022-08-31: Tell iTermTextView it's the field editor. Issue
+10536
+
+2022-08-31: Make status bar item image a template. Remove
+the unused alt image.
+
+2022-08-30: Fix alignment of checkmark/warning in text
+fields in prefs and remove the search label from toolbar
+
 2022-08-30: Fix edgeDragSize wording for issue 9338
 
 2022-08-29: Fix SGR0 when using 'Copy with Control
@@ -153,132 +162,3 @@ sessions to session profile prefs
 
 2022-08-01: Add support for multiple 1password accounts
 through advanced prefs.
-
-2022-07-25: Improve logging for file provider
-
-2022-07-23: [File provider] Implement chmod and improve
-logging
-
-2022-07-22: [file provider] Implement utime
-
-2022-07-22: [file provider] Add support for replacing
-content
-
-2022-07-22: [File provider] Add support for create
-
-2022-07-22: [file provider] Implement mkdir
-
-2022-07-22: [file provider] Implement mv
-
-2022-07-21: [file provider] Add support for creating
-symlinks
-
-2022-07-21: [file provider] Improve logging and error
-handling. Add support for deleting items
-
-2022-07-20: Fix file provider.
-
-2022-07-17: Use provisioning profiles for the main app
-target and the file provider target. I don't think this will
-break app building for third parties since they have to
-modifiy code signing settings anyway. This is necessary to
-make the file provider stuff work.
-
-2022-07-15: Fix a bug where compact opaque windows with
-image backgrounds and 1 tab and no tabbar showed the image
-under the titlebar. It was wrong to assume that opaque
-windows have a window background behind the fake titlebar,
-since that is not true when there's an image background.
-
-2022-07-15: Add advanced pref to run coprocess on file drop.
-Issue 10498
-
-2022-07-14: Fix inline images on default-nonretina systems.
-Issue 10462
-
-2022-07-14: Add debug logging for issue 10462
-
-2022-07-13: Center images vertically in legacy renderer when
-there's cell spacing and the multiplart attributed string
-case is used (which is almost always). Issue 10462
-
-2022-07-13: Don't hang if you request a default tabstop
-interval of 0
-
-2022-07-12: Delete disused iTermServer binaries. Issue 10493
-
-2022-07-12: Port iTermProcessInfo to Swift
-
-2022-07-11: Respect focus reporting advanced pref in tmux
-when 'set -g focus-events on' is run. Comment in issue 10490
-
-2022-07-11: Add advanced pref for lastpass groups. Issue
-10487
-
-2022-07-11: Fix keyview loop in modal password alert
-
-2022-07-10: Don't assume .bash_profile ends with a newline.
-Issue 10491
-
-2022-07-09: Discourage changing default tab stops
-
-2022-07-07: Style tweaks
-
-2022-07-07: Fix password retrieval via `op` command for the
-case where there's more than one field with label
-"password"; always choose the first field with `id` set to
-`"password"` instead of asking `op` to give us the one with
-that label since it can return the wrong one. #475
-
-2022-07-06: Use TTY to add 1password account. Issue 10483
-
-2022-07-06: Optimize decoding refcounts in url store.
-Apparently decoding an NSCountedSet is preposterously slow.
-Issue 10460
-
-2022-07-05: Reduce the number of unnecessary executions of
-onepassword cli
-
-2022-07-05: Fixes for onepassword CLI version 2.5. Issue
-10483
-
-2022-07-05: Add logging for issue 10482
-
-2022-07-05: Avoid using CGPreflightScreenCaptureAccess on
-macOS 10.15. FB10559441
-
-2022-07-05: Support VS16 by default outside of alternate
-screen mode. Also fix VS16 support outside BMP since the
-codepoint was truncated to 16 bits. Issue 10480
-
-2022-07-05: Use latest python version in new-script
-templates
-
-2022-07-05: Fix leak of pipes in pidinfo
-
-2022-07-01: Fix straight apostrophe
-
-2022-07-01: Don't resign file provider. It broke the nightly
-build.
-
-2022-07-01: - Allow secure encoding of iTermTuple.  - Fix
-reentrant calls to refresh (updateDisplay -> refresh ->
-textViewWillRefresh ->
-performLightweightBlockWithJoinedThreads ->
-executeSideEffectsImmediatelySyncingFirst ->
-tokenExecutorHandleSideEffectFlags -> performSideEffect ->
-screenNeedsRedraw -> refresh - Change iTermURLStore to use
-tuples instead of dictionaries for performance (issue 10113)
-
-2022-07-01: Improve readability of prefs search results in
-dark mode.
-
-2022-07-01: Respect 'add new windows at end' setting for
-anonymous tmux windows (i.e., those created with tmux
-new-window). Issue 9994
-
-2022-07-01: Add support for segmented copy to pasteboard to
-work with tmux's limit on passthrough control sequences.
-
-2022-07-01: Offer the option to replace an existing file
-when downloading. Issue 10473
