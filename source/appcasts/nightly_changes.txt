@@ -1,3 +1,24 @@
+2022-09-12: Hack updateVersion to use homebrew python3. I'm
+not quite sure how this ever worked before.
+
+2022-09-11: Fix some accidentally quadratic behavior in
+graph encoding. Issue 10572
+
+2022-09-08: Fix wrong sgr codes for
+copy-with-control-sequences for bright ANSI colors. Issue
+10568
+
+2022-09-08: Fix the priority inversion by using synchronous
+dispatch from main queue to token executor. This has a
+pretty good chance of being correct. See previous commit for
+more details and helpless flailing
+
+2022-09-08: Attempt to fix a priority inversion error. I
+really don't know if I succeeded, and I think I probably
+didn't. We'll see if tsan complains again. If it does read
+these tea leaves:
+https://developer.apple.com/documentation/xcode/diagnosing-performance-issues-early?language=objc
+
 2022-09-04: Try to release images that are overwritten. This
 is definitely imperfect but it's an improvement over the
 status quo, especially for issue 10565 where an image is
