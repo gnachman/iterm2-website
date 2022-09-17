@@ -52,7 +52,7 @@ The scoring is defined as:
   * An exact match on the path scores one point.
   * A partial match on the path using a wildcard scores zero points, but does count as a match for the rule.
 
-The highest scoring rule, if any, will be used and the session's profile will be siwtched.
+The highest scoring rule, if any, will be used and the session's profile will be switched.
 
 The UI tries to prevent you from entering the same rule in two different profiles, but if that does happen then one profile is chosen arbitrarily.
 

@@ -28,10 +28,6 @@ Donate by credit card</a> through Square:
 <a href="https://iterm2.square.site/product/make-a-donation/1?cs=true">
 <img width="199" height="39" src="images/squaresite.png"></a>
 
-Or Limepay:
-
-<a id='preview-btn' href='https://www.limepay.me/iTerm2'target='_blank' style='color: rgb(255, 255, 255);size: 18px; font-weight: bold;background-color: rgb(51, 195, 126);background-repeat: no-repeat;width: fit-content; height: fit-content;border-radius: 2px;display: block; background-image: url(/images/limepay.png) !important;border: 0px; box-shadow: rgba(19, 165, 101, 0.157) 4px 6.928px 20px 0px;margin: 10px 0px;font-family: Avenir Next LT Pro Regular, Open Sans, sans-serif;text-decoration: none; min-width: 40px;background-position: 10px 11px; background-size: 18px; font-size: 16px; padding: 10px 10px 10px 35px;'>Pay with Limepay </a>
-                
 Or Paypal:
 
 <form class="paypal-donate" action="https://www.paypal.com/cgi-bin/webscr" method="post">

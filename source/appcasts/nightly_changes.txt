@@ -1,274 +1,197 @@
-2022-06-04: Update to latest SI submodule
+2022-09-15: Preallocate children for graph encoder arrays.
+Issue 10572, sample from Rhongomiant on 9/15/22 at 10:33 am
 
-2022-06-04: Add fish SI loader
+2022-09-14: Squelch audible beeps that come within 100ms of
+sending a focus report (and not a keystroke, mouse report,
+etc.) and offer to turn off focus reporting. Issue 10351
 
-2022-06-04: Handle framer login shell execution failuire
-properly.
+2022-09-12: Hack updateVersion to use homebrew python3. I'm
+not quite sure how this ever worked before.
 
-Update to latest it2ssh
+2022-09-11: Fix some accidentally quadratic behavior in
+graph encoding. Issue 10572
 
-Handle shell integration injection over ssh.
+2022-09-08: Fix wrong sgr codes for
+copy-with-control-sequences for bright ANSI colors. Issue
+10568
 
-Make a bunch of ShellIntegrationInjection synchronous.
+2022-09-08: Fix the priority inversion by using synchronous
+dispatch from main queue to token executor. This has a
+pretty good chance of being correct. See previous commit for
+more details and helpless flailing
 
-2022-06-03: Show login shell in general prefs
+2022-09-08: Attempt to fix a priority inversion error. I
+really don't know if I succeeded, and I think I probably
+didn't. We'll see if tsan complains again. If it does read
+these tea leaves:
+https://developer.apple.com/documentation/xcode/diagnosing-performance-issues-early?language=objc
 
-2022-06-03: Shell injection working in fish
+2022-09-04: Try to release images that are overwritten. This
+is definitely imperfect but it's an improvement over the
+status quo, especially for issue 10565 where an image is
+repeatedly overwritten
 
-2022-06-03: Add bash shell integration injection and add
-flag to enable automatic shell integration injection to
-prefs
+2022-09-03: Fix a bug where LegacyView could be on top of
+PTYScrollView when creating a split pane. Issue 10561
 
-2022-06-02: Delete a bunch of dead code including
-serialization stuff
+2022-08-31: Tell iTermTextView it's the field editor. Issue
+10536
 
-2022-06-02: Add profile pref to load shell integration
-automatically
+2022-08-31: Make status bar item image a template. Remove
+the unused alt image.
 
-2022-06-02: Rip out zsh new-user stuff which doesn't seem to
-run on modern macOS. Get zsh shell integration injection
-working locally
+2022-08-30: Fix alignment of checkmark/warning in text
+fields in prefs and remove the search label from toolbar
 
-2022-06-02: Initial implementation
+2022-08-30: Fix edgeDragSize wording for issue 9338
 
-2022-06-02: Fix bug in backtracking
+2022-08-29: Fix SGR0 when using 'Copy with Control
+Sequences' (#478)
 
-2022-06-02: Add minified it2ssh
+I found that when I use **Edit -> Copy with Control
+Sequences** on `Build 3.5.20220828-nightly`, the resulting
+copied text has `\x1b[0` *without* a trailing `m` before
+newlines and at the end of the text.
 
-2022-06-01: Fix a leak of VT100ScreenMutableState
+I could definitely be confused here (ECMA-48 is a bit dense
+haha), but it *seemed* like the SGR sequences are required
+to end in the character `m` (aka `\x6d` aka 06/13).
+Specifically it says
 
-2022-06-01: Fix leak of VT100Parser
+> **8.3.117 SGR - SELECT GRAPHIC RENDITION** > Notation:
+(Ps...) > Representation: CSI Ps... 06/13 > Parameter
+default value: Ps = 0
 
-2022-06-01: Fix recovery when autopoll is enabled, plus
-various minor tweaks
+If this is intentional (aka, there's some part of the spec
+I'm missing, which is more than likely) then we can just
+close this out.
 
-2022-06-01: Fix ssh recovery
+Note: I had trouble getting this to build locally (kept
+failing with `No account for team "H7V7XYVQ7D"` despite
+changing it to `Sign to Run Locally`), but I can try again
+if you'd like me to specifically verify the change locally.
+2022-08-29: Hook up the ssh integration flag
 
-2022-06-01: Make framer log verbosely when debug logging is
-on
+2022-08-27: Add option to mirror tmux paste buffer to local
+clipboard
 
-2022-06-01: Make framer IDs shorter
+2022-08-27: Change left margin of tab color menu item when
+no siblings are checked. Inspired by PR 477 by Dave Nicolson
 
-2022-06-01: Fix a bug in conductor parser with inner OSC
-codes that get truncated after the semicolon. Also, make
-logging improvements
+2022-08-24: Use a custom field editor under PseudoTerminal
+(it had to happen eventually) so that Edit>Find works even
+when the find panel has first responder. Issue 10551
 
-2022-06-01: whitespace
+2022-08-24: Fix a crash when tmux disconnects while opening
+a window
 
-2022-06-01: Switch to OSC-delimted rather than
-newline-delimited protocol for conductor/framer to avoid
-having to deal with tty craziness
+2022-08-23: Add debug logging for issue 9978
 
-2022-05-31: ssh recovery and win size refactor.
+2022-08-23: Log callstack when user defaults change and
+remote prefs are marked as needing saved for issue 10549
 
-- Recover when ssh sessions get into a wonky state, in
-particular for orphan recovery.  - Jiggle upon recovering an
-orphan to trigger ssh recovery (but also to redraw
-interactive apps) - Move winsize ioctl sending logic to
-WinSizeController. The old code would reorder resizes in the
-presence of jiggles and defers and such and now it is saen.
+2022-08-23: Add fn key to remappable modifiers
 
-2022-05-27: Implement framer recovery and handle input from
-framer in OSC 134
+2022-08-23: Only show secure keyboard entry warning once per
+launch
 
-2022-05-26: Wrap framer data in OSC 134 to hide it if things
-go sideways (like orphan restoration happens)
+2022-08-23: Don't use local home directory for ssh profiles
 
-2022-05-25: Add SecretServer, a little unix domain socket
-server that produces random numbers so it2ssh can prove it
-was launched locally as a condition of exporting files and
-environment variables to the remote host
+2022-08-23: Fix bug where login shells didn't get SI
+injected
 
-2022-05-25: Modify framer/conductor protocol to specify if
-it's framing in end messages. Remove sshHostnames.
+2022-08-23: Fix bug where the wrong path was used for zsh
+shell integration injection
 
-2022-05-25: Fix how ssh identities are compared
+2022-08-22: Remove iTermTimerProxy debug info because it was
+super slow for some users. Issue 10505
 
-2022-05-24: Add menu item to disconnect from ssh
+2022-08-22: Fix window resize loop where a non-tmux tab
+would cause the window to grow when we get a layout change,
+causing us to tell tmux the window grew, and so on forever.
+Issue 10249
 
-2022-05-24: Don't unhook DCS until hardStop so that
-conductor session closing can be undoable
+2022-08-17: Allow link drag operations to paste the
+filename. Issue 10538
 
-2022-05-24: Make the session closing dialog that tells you
-what jobs get killed know about ssh
+2022-08-17: Ensure status bar components in the stable
+layout algorithm are never smaller than their minimum size.
+Because the desired size is initialized to 0, the code that
+uses apportionment to ensure width distribution makes
+progress could inadvertantly create too-small components.
+This can happen when there's a flexible spacer with a high
+spring constant as seen in issue 10533
 
-2022-05-24: Add autopolling. Framer can run ps once a second
-and onlys end an update when something changes. It then
-sleeps until you request autopolling again, to keep it from
-spinning forever when the client is gone.
+2022-08-17: Fix build
 
-2022-05-24: Fix bug where -[LineBuffer
-__findPosition:inBlock:inOffset:] returned offset 0 when
-you're looking for exactly the last position in the block
+2022-08-16: Make 1password token fetching async and cache
+biometrics availability to improve perf. Issue 10501
 
-2022-05-24: Don't allow seal to create interior partial
-blocks and ensure that search only indicates a partial last
-line when it's also the last block to avoid triggering bad
-behavior in filtering when it backs up to research the last
-line
+2022-08-14: Don't use an opaque background for the add-tab
+button. Issue 10499
 
-2022-05-24: [framer]Send diffs of processes instead of
-everything
+2022-08-14: Add Window graphics for open quickly window
+browsing feature
 
-2022-05-24: State restoration for framer ps
+2022-08-14: Fix capitalization in Check for Updates and
+regenerate mainmenu.py. See PR #476
 
-2022-05-24: Make python parse the output of ps and only send
-results if something changed.
+2022-08-13: Add escape code for rich notifications.
 
-2022-05-23: Fix bugs in detaching and in python 3.10 with
-exception handling
+Based on PR #472 by gawashburn <geoff@washburght.org>.
 
-2022-05-23: Fix restoration for nested ssh sessions
+2022-08-13: Don't set the dirty flag when scrolling the
+screen up. VT100Grid already tracks whether it has scrolled
+via  and we can use that instead. This changed with the
+great multithreading of '22 - I modified it to set all lines
+dirty when scrolling so they'd be synced, but that isn't
+actually necessary. Doing so introduced a bug (issue 10524)
+because the dirty flag has a second purpose of tracking
+which search results should be erased on a line-by-line
+basis.
 
-2022-05-23: Get nested ssh sessions basically working but
-not performant or well tested
+2022-08-13: Add support for windows to open quickly. Issue
+10523
 
-2022-05-22: Add restoration support to ssh mode
+2022-08-10: Include timestamp in iTermFileProvider code
+signature
 
-2022-05-21: [framer]Initialize tty size
+2022-08-07: Update increase_font_size to support additional
+param in font name
 
-2022-05-21: Update framer
+2022-08-07: Add support for stylistic alternatives to the
+font picker. Issue 9290
 
-2022-05-21: Fix call to appendBannerMessage on wrong queue
+2022-08-05: Change fileDropCoprocess to use a slient
+coprocess and accept multiple files. Issue 10498
 
-2022-05-21: Fix bug in input chunking. Framer needs
-continuation marks and conductor.sh does not
+2022-08-05: [tmux integration] Fix a bug where window size
+was miscalculated when a pane is zoomed. Issue 10249
 
-2022-05-21: Modify framer's %output to send channel -1 for
-login shells so the echo probe can detect side-channels
-without needing to know the login shell's pid
+2022-08-04: Correction to previous commit - when scroller
+style changes don't adjust window's frame if it exactly
+touches the right edge.
 
-2022-05-21: Get process cache working for ssh sessions. Fix
-IO for background jobs in framer. Fix parsing by using a
-separate vt100parser for each background job.
+2022-08-04: When scroller style changes don't adjust
+window's frame if it goes edge-to-edge. Issue 10482. See
+also issue 9946 that started all this.
 
-2022-05-19: Add it2ssh as resource
+2022-08-04: Fix zero-width space treatment. See issue 9786
 
-2022-05-19: Fix echo probe in ssh
+2022-08-03: Fix wording around terminal clipboard access in
+UI
 
-2022-05-19: Add sigwinch support to framer
+2022-08-03: Fix it2copy. Issue 10502
 
-2022-05-18: Add framer to ssh integration.
+2022-08-02: Make the status bar search field have an
+appearance that matches its effective background color for
+non-minimal themes
 
-framer: - Logging improvements.  - Expand ~ and $VARS in
-login cwd - Send process ID along with %output - Send reason
-with abort - Put identifier as first arg of "end"
+2022-08-02: Fix nightly build
 
-Main app[: - Add framer and support for it to conductor.
-Nested framer support is there but untested.  - Add SSH_*
-tokens.
-  - SSH_BEGIN: Beginning of command output - SSH_OUTPUT:
-  Wrapped output from framer. Uses CSI parameters to
-  communicate pid and channel. This is used internally in
-  VT100Parser while unwrapping %output. VT100Terminal
-  repurposes it as a container for side-channel output.  -
-  SSH_TERMINATE: Framer job exited. Ises CSI parameters to
-  give pid and return code.  - Add sshInfo to VT100Token to
-  identifier what framer job produced a token. This is
-  attached to regular (i.e., not SSH_*) tokens so we can
-  tell if it's output from a framer login shell or from a
-  side channel. Side channels aren't used yet.
+2022-08-02: Missed a few
 
-2022-05-16: Add framer
+2022-08-02: Elminiate todo case because they are all todone
 
-2022-05-14: Update shell integration submodule
-
-2022-05-14: Don't print an ssh banner if there are no ssh
-sessions running when one ends.
-
-2022-05-14: Fix bugs in tar
-
-2022-05-14: [it2ssh] Split writes into small lines.
-
-2022-05-13: Add accessory view to open panel for file
-uploads with destination folder
-
-2022-05-13: Show a banner when ssh exits. Miscellanous ssh
-bug fixes too
-
-2022-05-13: Refactor conductor and update SI submodule
-
-2022-05-13: Parse ssh command line arguments. Handle
-non-shell-launching commands correctly.
-
-Remove conductor on reset.
-
-Accept list of boolean ssh args in DCS sequence.
-
-2022-05-12: Parse SSH arguments poorly to establish an
-identity of (hostname,username,port). Use that in
-_sshHostNames instead of just hostname.
-
-Fix a bug where we didn't unhook from
-screenDidUnhookSSHConductor.
-
-Don't recycle the current directory when opening an ssh
-session from a non-ssh session or an ssh session with a
-different identity.
-
-Show a banner when beginning an ssh session.
-
-Don't queue writes until the conductor tells you to,
-otherwise you can't enter a passphrase.
-
-2022-05-12: - Queue writes while initializing conductor.  -
-When splitting a pane or creating a new tab from an ssh
-session, make the new session connect to the same host and
-(if so configured) use the same directory.  - Keep a stack
-of ssh hostnames and extend the protocol to indicate when an
-ssh session ends. To do this, introduce a unique ID for each
-ssh session.  - Don't try to cd to the local machine's home
-directory in ssh
-
-2022-05-11: Update submodules
-
-2022-05-11: Add support for uploading payloads
-
-2022-05-11: Remove UserInterfaceState.xcuserstate
-
-2022-05-11: Add new xcode garbage to gitignore
-
-2022-05-10: Add support for sending environment variables in
-it2ssh
-
-2022-05-10: Add UI for configuring SSH in profiles
-
-2022-05-09: Add ssh option to login command menu using
-it2ssh
-
-2022-05-09: Add parser support for ssh integration using a
-new DCS code
-
-2022-05-05: Add option to upgrade to full-environment
-scripts in dependency editor
-
-2022-05-05: [portholes] When you set the language to JSON,
-ensure it produces a value even if it's an error
-
-2022-05-05: Remove incorrect assertion. There could be
-scrollback overflow if state is shared. This can happen
-during resize.
-
-2022-05-02: Fix a bug where scrollbackOverflow was always 0
-or 1, causing scroll position not to lock when userScroll is
-enabled. Issue 10385
-
-2022-05-02: Call setNeedsDisplay when the selection changes
-
-2022-05-02: Add NSLocale.preferredLanguages to candidates
-for LANG for issue 10297
-
-2022-05-02: [python] Preserve open/save pane folder, return
-nil instead of throwing exception on user cancellation
-(#469)
-
-* [python API] Change the open/save panels
-
-1. Open the last directory by default.  2. Return `None` if
-the user cancels.
-
-Co-authored-by: George Nachman <gnachman+github@gmail.com>
-2022-05-02: Fix crash in issue 10387
-
-2022-05-02: Add support for search to portholes. Save and
-restore wide mode.
+2022-08-01: Add option to reenable warn on shortlived
+sessions to session profile prefs
