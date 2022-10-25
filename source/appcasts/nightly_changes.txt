@@ -1,3 +1,96 @@
+2022-10-25: Bump shell integration
+
+2022-10-25: Support xcode 14.1
+
+2022-10-25: Add PowerlineExtraSymbols
+
+2022-10-25: Add debug logging for auto completion
+
+2022-10-04: Bump max length of OSC 8 URL to 2 megs and make
+it configurable. Issue 10610
+
+2022-10-04: Limit REP to 64k. See email with subject line
+'Minor iTerm 2 DoS'
+
+2022-10-03: Add WebStorm and Rider. Inspired by PR 454
+
+2022-10-02: Polish shell integration injection
+
+2022-10-02: Update sessions appearance when current tab
+changes. Issue 10598
+
+2022-10-02: Make shell integration loading warnings less
+obnoxious
+
+2022-10-02: Clean up file provider debug logging
+
+2022-09-29: Add support for powerline extended symbols.
+Issue 10180
+
+2022-09-29: Add utf16_to_utf8.py
+
+2022-09-29: Log stack when showing a warning
+
+2022-09-29: Tolerate missing font in profile. Issue 10582
+
+2022-09-29: Optimize -[LineBuffer
+numberOfWrappedLinesWithWidth:upToAbsoluteBlockNumber:]
+which became a bottleneck in search. I think the
+multithreaded design causes there to be many more (smaller)
+blocks. Issue 10600
+
+2022-09-29: Tolerate NSBitmapImageRep without CGImage. Issue
+10583
+
+2022-09-27: Fix a bug in the port of iTermProcessInfo. Issue
+10594
+
+2022-09-27: Change Mutex to use os_unfair_lock to avoid
+running into priority inversions seen with dispatch
+semaphores
+
+2022-09-27: Ensure session title bar ordinals are correct
+after pane move/swap. Issue 10592
+
+2022-09-27: Add homebrew path to copy_api
+
+2022-09-27: [python] Avoid printing stack trace on
+ConnectionRefused. Issue 9258
+
+2022-09-24: Remove another source of accidentally quadratic
+behavior in graph db: transactions. They make a copy of the
+array for each child. Since the array is append only we can
+rollback by truncating the array. Issue 10572
+
+2022-09-24: Try to handle handoff (remote clipboard)
+correctly. I can't find any official docs on how to do this
+- they probably assume pasting files pastes their content?
+So I'll com.apple.is-remote-clipboard to tell if it smells
+like a URL whose content should be pasted. Also it only
+seems to have attributed strings and plaintext is just
+pasted directly. Issue 10579
+
+2022-09-22: Add pref to avoid blocking shutdown on quit
+confirmation. Issue 5009
+
+2022-09-21: Default to zsh in a few places that call
+iTermOpenDirectory.userShell
+
+2022-09-21: Don't crash if open directory is disabled. Issue
+10590
+
+2022-09-21: Offer to turn off mouse reporting on sus beeps.
+Don't require audible reports for focus reporting offer.
+Issue 10351
+
+2022-09-20: Set MetalCaptureEnabled in beta/nightly
+Info.plist so startCaptureWithDescriptor will succeed. Don't
+log a critical error if it fails. Issue 10587
+
+2022-09-20: Allow multiple selection for import and export
+
+2022-09-15: 3.5.0beta7
+
 2022-09-15: Preallocate children for graph encoder arrays.
 Issue 10572, sample from Rhongomiant on 9/15/22 at 10:33 am
 
@@ -33,165 +126,3 @@ repeatedly overwritten
 
 2022-09-03: Fix a bug where LegacyView could be on top of
 PTYScrollView when creating a split pane. Issue 10561
-
-2022-08-31: Tell iTermTextView it's the field editor. Issue
-10536
-
-2022-08-31: Make status bar item image a template. Remove
-the unused alt image.
-
-2022-08-30: Fix alignment of checkmark/warning in text
-fields in prefs and remove the search label from toolbar
-
-2022-08-30: Fix edgeDragSize wording for issue 9338
-
-2022-08-29: Fix SGR0 when using 'Copy with Control
-Sequences' (#478)
-
-I found that when I use **Edit -> Copy with Control
-Sequences** on `Build 3.5.20220828-nightly`, the resulting
-copied text has `\x1b[0` *without* a trailing `m` before
-newlines and at the end of the text.
-
-I could definitely be confused here (ECMA-48 is a bit dense
-haha), but it *seemed* like the SGR sequences are required
-to end in the character `m` (aka `\x6d` aka 06/13).
-Specifically it says
-
-> **8.3.117 SGR - SELECT GRAPHIC RENDITION** > Notation:
-(Ps...) > Representation: CSI Ps... 06/13 > Parameter
-default value: Ps = 0
-
-If this is intentional (aka, there's some part of the spec
-I'm missing, which is more than likely) then we can just
-close this out.
-
-Note: I had trouble getting this to build locally (kept
-failing with `No account for team "H7V7XYVQ7D"` despite
-changing it to `Sign to Run Locally`), but I can try again
-if you'd like me to specifically verify the change locally.
-2022-08-29: Hook up the ssh integration flag
-
-2022-08-27: Add option to mirror tmux paste buffer to local
-clipboard
-
-2022-08-27: Change left margin of tab color menu item when
-no siblings are checked. Inspired by PR 477 by Dave Nicolson
-
-2022-08-24: Use a custom field editor under PseudoTerminal
-(it had to happen eventually) so that Edit>Find works even
-when the find panel has first responder. Issue 10551
-
-2022-08-24: Fix a crash when tmux disconnects while opening
-a window
-
-2022-08-23: Add debug logging for issue 9978
-
-2022-08-23: Log callstack when user defaults change and
-remote prefs are marked as needing saved for issue 10549
-
-2022-08-23: Add fn key to remappable modifiers
-
-2022-08-23: Only show secure keyboard entry warning once per
-launch
-
-2022-08-23: Don't use local home directory for ssh profiles
-
-2022-08-23: Fix bug where login shells didn't get SI
-injected
-
-2022-08-23: Fix bug where the wrong path was used for zsh
-shell integration injection
-
-2022-08-22: Remove iTermTimerProxy debug info because it was
-super slow for some users. Issue 10505
-
-2022-08-22: Fix window resize loop where a non-tmux tab
-would cause the window to grow when we get a layout change,
-causing us to tell tmux the window grew, and so on forever.
-Issue 10249
-
-2022-08-17: Allow link drag operations to paste the
-filename. Issue 10538
-
-2022-08-17: Ensure status bar components in the stable
-layout algorithm are never smaller than their minimum size.
-Because the desired size is initialized to 0, the code that
-uses apportionment to ensure width distribution makes
-progress could inadvertantly create too-small components.
-This can happen when there's a flexible spacer with a high
-spring constant as seen in issue 10533
-
-2022-08-17: Fix build
-
-2022-08-16: Make 1password token fetching async and cache
-biometrics availability to improve perf. Issue 10501
-
-2022-08-14: Don't use an opaque background for the add-tab
-button. Issue 10499
-
-2022-08-14: Add Window graphics for open quickly window
-browsing feature
-
-2022-08-14: Fix capitalization in Check for Updates and
-regenerate mainmenu.py. See PR #476
-
-2022-08-13: Add escape code for rich notifications.
-
-Based on PR #472 by gawashburn <geoff@washburght.org>.
-
-2022-08-13: Don't set the dirty flag when scrolling the
-screen up. VT100Grid already tracks whether it has scrolled
-via  and we can use that instead. This changed with the
-great multithreading of '22 - I modified it to set all lines
-dirty when scrolling so they'd be synced, but that isn't
-actually necessary. Doing so introduced a bug (issue 10524)
-because the dirty flag has a second purpose of tracking
-which search results should be erased on a line-by-line
-basis.
-
-2022-08-13: Add support for windows to open quickly. Issue
-10523
-
-2022-08-10: Include timestamp in iTermFileProvider code
-signature
-
-2022-08-07: Update increase_font_size to support additional
-param in font name
-
-2022-08-07: Add support for stylistic alternatives to the
-font picker. Issue 9290
-
-2022-08-05: Change fileDropCoprocess to use a slient
-coprocess and accept multiple files. Issue 10498
-
-2022-08-05: [tmux integration] Fix a bug where window size
-was miscalculated when a pane is zoomed. Issue 10249
-
-2022-08-04: Correction to previous commit - when scroller
-style changes don't adjust window's frame if it exactly
-touches the right edge.
-
-2022-08-04: When scroller style changes don't adjust
-window's frame if it goes edge-to-edge. Issue 10482. See
-also issue 9946 that started all this.
-
-2022-08-04: Fix zero-width space treatment. See issue 9786
-
-2022-08-03: Fix wording around terminal clipboard access in
-UI
-
-2022-08-03: Fix it2copy. Issue 10502
-
-2022-08-02: Make the status bar search field have an
-appearance that matches its effective background color for
-non-minimal themes
-
-2022-08-02: Fix nightly build
-
-2022-08-02: Missed a few
-
-2022-08-02: Elminiate todo case because they are all todone
-
-2022-08-01: Add option to reenable warn on shortlived
-sessions to session profile prefs
