@@ -1,3 +1,12 @@
+2022-11-14: Add exception info to crashlogs
+
+2022-11-14: Fix buffer overflow when padding a long screen
+char array
+
+2022-11-06: Add link to REPL from docs for
+iterm2.async_connect.
+
+
 2022-10-25: Avoid creating an iTermFlagsChangedEventTap when
 using a shortcut input view or when terminating since that
 prompts for event tap permission. Also fix a bug where
@@ -41,106 +50,3 @@ changes. Issue 10598
 obnoxious
 
 2022-10-02: Clean up file provider debug logging
-
-2022-09-29: Add support for powerline extended symbols.
-Issue 10180
-
-2022-09-29: Add utf16_to_utf8.py
-
-2022-09-29: Log stack when showing a warning
-
-2022-09-29: Tolerate missing font in profile. Issue 10582
-
-2022-09-29: Optimize -[LineBuffer
-numberOfWrappedLinesWithWidth:upToAbsoluteBlockNumber:]
-which became a bottleneck in search. I think the
-multithreaded design causes there to be many more (smaller)
-blocks. Issue 10600
-
-2022-09-29: Tolerate NSBitmapImageRep without CGImage. Issue
-10583
-
-2022-09-27: Fix a bug in the port of iTermProcessInfo. Issue
-10594
-
-2022-09-27: Change Mutex to use os_unfair_lock to avoid
-running into priority inversions seen with dispatch
-semaphores
-
-2022-09-27: Ensure session title bar ordinals are correct
-after pane move/swap. Issue 10592
-
-2022-09-27: Add homebrew path to copy_api
-
-2022-09-27: [python] Avoid printing stack trace on
-ConnectionRefused. Issue 9258
-
-2022-09-24: Remove another source of accidentally quadratic
-behavior in graph db: transactions. They make a copy of the
-array for each child. Since the array is append only we can
-rollback by truncating the array. Issue 10572
-
-2022-09-24: Try to handle handoff (remote clipboard)
-correctly. I can't find any official docs on how to do this
-- they probably assume pasting files pastes their content?
-So I'll com.apple.is-remote-clipboard to tell if it smells
-like a URL whose content should be pasted. Also it only
-seems to have attributed strings and plaintext is just
-pasted directly. Issue 10579
-
-2022-09-22: Add pref to avoid blocking shutdown on quit
-confirmation. Issue 5009
-
-2022-09-21: Default to zsh in a few places that call
-iTermOpenDirectory.userShell
-
-2022-09-21: Don't crash if open directory is disabled. Issue
-10590
-
-2022-09-21: Offer to turn off mouse reporting on sus beeps.
-Don't require audible reports for focus reporting offer.
-Issue 10351
-
-2022-09-20: Set MetalCaptureEnabled in beta/nightly
-Info.plist so startCaptureWithDescriptor will succeed. Don't
-log a critical error if it fails. Issue 10587
-
-2022-09-20: Allow multiple selection for import and export
-
-2022-09-15: 3.5.0beta7
-
-2022-09-15: Preallocate children for graph encoder arrays.
-Issue 10572, sample from Rhongomiant on 9/15/22 at 10:33 am
-
-2022-09-14: Squelch audible beeps that come within 100ms of
-sending a focus report (and not a keystroke, mouse report,
-etc.) and offer to turn off focus reporting. Issue 10351
-
-2022-09-12: Hack updateVersion to use homebrew python3. I'm
-not quite sure how this ever worked before.
-
-2022-09-11: Fix some accidentally quadratic behavior in
-graph encoding. Issue 10572
-
-2022-09-08: Fix wrong sgr codes for
-copy-with-control-sequences for bright ANSI colors. Issue
-10568
-
-2022-09-08: Fix the priority inversion by using synchronous
-dispatch from main queue to token executor. This has a
-pretty good chance of being correct. See previous commit for
-more details and helpless flailing
-
-2022-09-08: Attempt to fix a priority inversion error. I
-really don't know if I succeeded, and I think I probably
-didn't. We'll see if tsan complains again. If it does read
-these tea leaves:
-https://developer.apple.com/documentation/xcode/diagnosing-performance-issues-early?language=objc
-
-2022-09-04: Try to release images that are overwritten. This
-is definitely imperfect but it's an improvement over the
-status quo, especially for issue 10565 where an image is
-repeatedly overwritten
-
-2022-09-03: Fix a bug where LegacyView could be on top of
-PTYScrollView when creating a split pane. Issue 10561
