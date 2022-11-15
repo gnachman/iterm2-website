@@ -1,104 +1,59 @@
-3.5.0beta7
+3.5.0beta8
 
-New features
-- There is a nascent SSH integration feature
-  available for testing. Warning: it definitely
-  has a lot of bugs. You can try it by setting the
-  profile's command to SSH. The integration lets
-  you export environment variables and copy files
-  to the remote host. If Python 3.7 or later is
-  available on the remote host, various features
-  such as the Jobs status bar and toolbar
-  components will reflect data from the remote
-  rather than the local. There's also a
-  barely-working feature that automatically mounts
-  the remote host's filesystem as a cloud
-  filesystem.
-- There's a new control sequence for rich
-  notifications:
-[esc]1337;Notification=[params][control-G]
-  Where params is a semicolon-delimited list of
-  key value pairs:
-  message=[text]
-    The text to display.
-  title=[text]
-    Optional notification title.
-  subtitle=[text]
-    Optional notification subtitle.
-  image=[data]
-    Optional base64-encoded image.
-- You can now remap the fn key if you have a
-  MacBook.
+This release fixes a security issue related to
+DECRQSS responses. You should upgrade.
 
-Bug fixes
-- Fix memory leaks.
-- Fix a bug where combining marks sometimes didn't
-  appear.
-- Work around tmux's new limit on passthrough
-  control sequences to fix copy to pasteboard in
-  tmux integration.
-- Fix file descriptor leak in pidinfo helper job.
-- Fix a bug where varation selector 16 didn't work
-  with code points outside the basic multilingual
-  plane.
-- Fix various crashes.
-- Fix a bug in the shell integration installer
-  where it assumed .bash_profile ends with a
-  newline.
-- Fix a discrepancy between GPU and non-GPU
-  renderers for image drawing.
-- Fix drawing of inline images when the machine's
-  main display is non-Retina.
-- Fix a bug where compact opaque windows with
-  image backgrounds and 1 tab and no tabbar showed
-  the image under the titlebar.
-- Fix a bug where it2copy didn't work sometimes.
-- Fix a bug in handling of zero-width spaces.
-- Fix a bug where changing the type of scroller
-  could cause a window to move away from a
-  screen's edge.
-- Fix bugs with zoomed panes in tmux integration
-  causing the window to resize itself.
-- The Open Quickly feature now includes terminal
-  windows in search results.
-- Fix bugs in the status bar layout algorithm that
-  could create too-small components.
-- Fix a bug where dragging from Fork, or other
-  apps that treat dragging a file as dragging
-  a link, that caused the drop to be rejected.
-- FIx occasional hang affecting only beta and
-  nightly build users.
-- Fix a bug where shell integration injection
-  didn't work for login shells.
-- Don't show the secure keyboard input warning
-  more than once per app launch.
-- Fix copy with control sequences, which encoded
-  SGR 0 and bright ANSI colors incorrectly.
+New Features:
+- Add support for native rendering of the
+  following powerline extended symbols:
+    U+E0A3: column-number
+    U+E0B0: Powerline_normal-left
+    U+E0B2: Powerline_normal-right
+    U+E0B4: right-half-circle-thick
+    U+E0B5: right-half-circle-thin
+    U+E0B6: left-half-circle-thick
+    U+E0B7: left-half-circle-thin
+    U+E0B8: lower-left-triangle
+    U+E0C0: flame-thick
+    U+E0C1: flame-thin
+    U+E0CE: lego_separator
+    U+E0CF: lego_separator_thin
+    U+E0D0: lego_block_facing_WIP
+    U+E0D1: lego_block_sideways
+    U+E0D3: lego_block_facing_WIP-3d-good
 
-Other improvements
-- There are new key binding actions for Windows
-  refugees who want to use Control-C and Control-V
-  to copy and paste. "Copy or Send ^C" and "Paste
-  or Send ^V" will copy (if there's a selection)
-  or paste (if the clibpoard has text)
-  and otherwise send the control character.
-- Offer to replace an existing file when
-  downloading.
-- Improve readability of preferences search in
-  dark mode.
-- Support variation selector 16 except in
-  alternate screen mode.
-- Many improvements to the 1password integration.
-- Many performance improvements.
-- Improve appearance of status bar search field
-  with non-default background colors.
-- The font picker now supports stylistic
-  alternatives.
-- Miscellaneous visual improvements.
-- In the next version of tmux you'll be able to
-  mirror its paste buffer to the local clipboard.
-- Fix memory leak when onscreen images are
-  overwritten.
-- Squelch audible beeps when focus reporting is
-  the likely cause.
+Other Improvements:
+- Allow multiple selections for importing and
+  exporting scripts.
+- Offer to turn off mouse reporting for BEL when
+  they seem to be correlated.
+- Add a preference to avoid blocking system
+  shutdown.
+- Performance improvements for saving state.
+- Various performance improvements.
+- Minor UI improvements to preferences related to
+  shell integration injection.
+- Add support for WebStorm and Rider to semantic
+  history.
+- Limit REP to 64k to avoid DOS.
+- Increase max size of OSC 8 URLs to 2 megabytes.
+- Notify Python API clients of resizes.
+
+Bug Fixes:
+- Fix capturing metal frames for debugging, which
+  sometimes failed.
+- Fix crash when open directory is disabled.
+- Use zsh as the default shell when open directory
+  doesn't provide one.
+- Handle pasing from remote clipboards (handoff)
+  better.
+- Fix a bug where the split pane shortcut numbers
+  were wrong after moving them.
+- Fix crashes.
+- Fix a bug where scrollbar background colors
+  could be wrong sometimes.
+- Fix about window rendering in Ventura.
+- Fix a bug where the mouse cursor was left in the
+  wrong state after using the leader shortcut.
+
 
