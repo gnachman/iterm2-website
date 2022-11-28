@@ -1,3 +1,32 @@
+2022-11-27: Avoid setting a profile hotkey's window
+controller from async completion block if it already has
+one. I don't know exactly how this happens, but it did cause
+a crash.
+
+2022-11-27: Fix crash when releasing an image mark that
+doesn't have a progenitor. Not quite sure how this would
+happen.
+
+2022-11-27: Change iTermMetalRowData to keep a
+ScreenCharArray instead of iTermData with raw
+screen_char_t's to make it safer. I think this will fix
+crashes like 1668676252.1560332786.txt.
+
+Fix a bug where IME vertical shifts were not taken into
+account. This has been broken since 3.4.7 by commit
+55ee59d3b0777ba31c963e0a7a194642a53ce7be.
+
+Refactor -[iTermMetalPerFrameState copyMarkedText:] and
+delete some dead code.
+
+Fix an OOB read in -[iTermMetalPerFrameState
+metalGetGlyphKeys:] that was previously safe because line
+stored an extra cell.
+
+2022-11-27: Try to fix a common crash I started seeing in
+3.5.0beta8 + ventura. See crash report
+1668647028.1759995893.txt for an example.
+
 2022-11-26: Initialize session size when creating a
 synthetic session to try to fix issue 10678. Improve debug
 logging
