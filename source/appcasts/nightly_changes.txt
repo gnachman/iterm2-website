@@ -1,3 +1,18 @@
+2022-12-09: Previous commit didn't work under xcbuild but
+the reason is elusive. Let's try a different approach
+
+2022-12-09: Mess with build settings to fix the nightly
+build. It was broken by
+c31b70021eb78a1b48920b3c747011c9c742d4b6
+
+2022-12-08: Make the sandboxed worker not depend on swift
+concurrency which breaks deployment to older macos versions.
+ARCify DebugLogging.m
+
+2022-12-08: Avoid crashing when you click in PTYSplitView
+right of the last subview. See email subject 'recent crashes
+in 3.5.0beta8 tied to selections'
+
 2022-12-06: Add key action to alert on next mark
 
 2022-12-06: Add apply modes to actions as a better solution
@@ -43,11 +58,11 @@ Fix a bug where IME vertical shifts were not taken into
 account. This has been broken since 3.4.7 by commit
 55ee59d3b0777ba31c963e0a7a194642a53ce7be.
 
-Refactor -[iTermMetalPerFrameState copyMarkedText:] and
+Refactor -[iTermMetalPerFrameState copyMarkedText:…] and
 delete some dead code.
 
 Fix an OOB read in -[iTermMetalPerFrameState
-metalGetGlyphKeys:] that was previously safe because line
+metalGetGlyphKeys:…] that was previously safe because line
 stored an extra cell.
 
 2022-11-27: Try to fix a common crash I started seeing in
