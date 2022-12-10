@@ -1,3 +1,12 @@
+2022-12-09: Improve the dot-prefixed font name hack to more
+accurately match the hack in CoreText.
+
+2022-12-09: Work around CoreText insanely giving you times
+roman instead of the system font. Issue 10625
+
+2022-12-09: Sync after changing VT100ScreenSize but before
+restarting tail find. Issue 10635
+
 2022-12-09: Previous commit didn't work under xcbuild but
 the reason is elusive. Let's try a different approach
 
@@ -58,11 +67,11 @@ Fix a bug where IME vertical shifts were not taken into
 account. This has been broken since 3.4.7 by commit
 55ee59d3b0777ba31c963e0a7a194642a53ce7be.
 
-Refactor -[iTermMetalPerFrameState copyMarkedText:…] and
+Refactor -[iTermMetalPerFrameState copyMarkedText:] and
 delete some dead code.
 
 Fix an OOB read in -[iTermMetalPerFrameState
-metalGetGlyphKeys:…] that was previously safe because line
+metalGetGlyphKeys:] that was previously safe because line
 stored an extra cell.
 
 2022-11-27: Try to fix a common crash I started seeing in
