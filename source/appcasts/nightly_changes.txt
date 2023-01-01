@@ -1,3 +1,9 @@
+2023-01-01: improve collection behavior logging for issue
+10695
+
+2023-01-01: Format shorcuts referring to nonexistent
+profiles more nicely. Issue 10729
+
 2022-12-30: Add advanced pref addUtilitiesToPATH
 
 2022-12-30: Add path to it2ssh to
@@ -113,90 +119,3 @@ to the problem noted in PR 480
 2022-12-02: Change PSM to use tracking areas instead of
 tracking rects. The hope is to work around a crash that
 doesn't make any sense. Issue 10684
-
-2022-11-29: Handle Logitech's drivers changing
-isSwipeTrackingFromScrollEventsEnabled after a swipe begins,
-which caused a very common hang. I hope. Issue 10707
-
-2022-11-29: Add debug logging for 10606
-
-2022-11-28: Revert b9d8081 (eager mouse reporting
-accidentally left on detection) because it's incompatible
-with Emacs but keep the part about not needing an audible
-beep. Issue 10679.
-
-2022-11-28: Return success on XTGETTCAP request for number
-of colors and direct color width. Issue 10668
-
-2022-11-27: Avoid setting a profile hotkey's window
-controller from async completion block if it already has
-one. I don't know exactly how this happens, but it did cause
-a crash.
-
-2022-11-27: Fix crash when releasing an image mark that
-doesn't have a progenitor. Not quite sure how this would
-happen.
-
-2022-11-27: Change iTermMetalRowData to keep a
-ScreenCharArray instead of iTermData with raw
-screen_char_t's to make it safer. I think this will fix
-crashes like 1668676252.1560332786.txt.
-
-Fix a bug where IME vertical shifts were not taken into
-account. This has been broken since 3.4.7 by commit
-55ee59d3b0777ba31c963e0a7a194642a53ce7be.
-
-Refactor -[iTermMetalPerFrameState copyMarkedText:] and
-delete some dead code.
-
-Fix an OOB read in -[iTermMetalPerFrameState
-metalGetGlyphKeys:] that was previously safe because line
-stored an extra cell.
-
-2022-11-27: Try to fix a common crash I started seeing in
-3.5.0beta8 + ventura. See crash report
-1668647028.1759995893.txt for an example.
-
-2022-11-26: Initialize session size when creating a
-synthetic session to try to fix issue 10678. Improve debug
-logging
-
-2022-11-21: Fix new warnings from xcode 14 and from 10.15
-deployment target
-
-2022-11-21: Change profile list view item dragging to use
-non-deprecated API
-
-2022-11-21: Remove file provider from UI
-
-2022-11-21: Bump deployment target to 10.15
-
-2022-11-20: [tmux] rename paste-changed to
-paste-buffer-changed. Issue 10691
-
-2022-11-20: Bump shell integration
-
-2022-11-19: Add UI for choosing locale. Issue 10687
-
-2022-11-16: Use XDG_CONFIG_HOME if homedir is not writable.
-Improve error message when the config folder can't be used.
-Issue 10688
-
-2022-11-15: Do send payload to DECRQSS on good requests
-because it's known to be safe and is also necessary to be
-correct
-
-2022-11-15: 3.5.0beta8
-
-2022-11-15: Fix double tracking tag removal. Issue 10683
-
-2022-11-15: Elide pt from DECRQSS response
-
-2022-11-14: Add exception info to crashlogs
-
-2022-11-14: Fix buffer overflow when padding a long screen
-char array
-
-2022-11-06: Add link to REPL from docs for
-iterm2.async_connect.
-
