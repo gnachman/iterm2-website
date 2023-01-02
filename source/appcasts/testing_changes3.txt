@@ -1,59 +1,68 @@
-3.5.0beta8
+3.5.0beta9
 
-This release fixes a security issue related to
-DECRQSS responses. You should upgrade.
+This version of iTerm2 requires macOS 10.15.
+Support for 10.14 had to be dropped.
 
 New Features:
-- Add support for native rendering of the
-  following powerline extended symbols:
-    U+E0A3: column-number
-    U+E0B0: Powerline_normal-left
-    U+E0B2: Powerline_normal-right
-    U+E0B4: right-half-circle-thick
-    U+E0B5: right-half-circle-thin
-    U+E0B6: left-half-circle-thick
-    U+E0B7: left-half-circle-thin
-    U+E0B8: lower-left-triangle
-    U+E0C0: flame-thick
-    U+E0C1: flame-thin
-    U+E0CE: lego_separator
-    U+E0CF: lego_separator_thin
-    U+E0D0: lego_block_facing_WIP
-    U+E0D1: lego_block_sideways
-    U+E0D3: lego_block_facing_WIP-3d-good
+- Add AI-powered natural language command
+  generation. Enter a prompt in the composer and
+  select Edit > Engage Artificial Intelligence.
+  You will need to provide an OpenAI API key since
+  GPT costs money to use.
+- Add Window > Move session to tab
+- Key bindings can now be applied to multiple
+  sessions (e.g., all sessions in this window)..
+- You can now customize copy mode shortcuts by
+  placing a file in ~/Library/Application
+  Support/iTerm2/CopyModeKeyBindings.dict.
+  See the simliarly named file in the app bundle
+  for a reference.
+- Add menu item to clear instant replay.
+- Add ability for composer to enqueue a command.
+- ssh integration is now easily usable from the
+  command line. Use it2ssh instead of ssh.
 
 Other Improvements:
-- Allow multiple selections for importing and
-  exporting scripts.
-- Offer to turn off mouse reporting for BEL when
-  they seem to be correlated.
-- Add a preference to avoid blocking system
-  shutdown.
-- Performance improvements for saving state.
-- Various performance improvements.
-- Minor UI improvements to preferences related to
-  shell integration injection.
-- Add support for WebStorm and Rider to semantic
-  history.
-- Limit REP to 64k to avoid DOS.
-- Increase max size of OSC 8 URLs to 2 megabytes.
-- Notify Python API clients of resizes.
+- Use XDG_CONFIG_HOME for .iterm2 folder when set.
+- When the country+language do not match a valid
+  POSIX locale, present a UI to select one.
+- There's a new key binding action to alert on the
+  next mark.
+- Emoji flags now draw as double-width.
+- Don't sync the most recent coprocess commands
+  with remote prefs.
+- Make certain powerline symbols draw wider.
+- Add option to enable GPU renderer in low power
+  mode.
+- Show tilde in place of local home directory in
+  tab/window titles.
+- Add 'interpret key bindings based on physical
+  key, ignoring input language' setting.
+- Add missing powerline extra symbols.
+- Restore terminal state when an ssh session ends
+  when using it2ssh.
+- Make the tmux-256color terminfo available by
+  default. Improves various problems in tmux
+  integration such as function keys sending the
+  wrong codes.
+- Add option to notify of noncritical shell
+  integration updates.
 
 Bug Fixes:
-- Fix capturing metal frames for debugging, which
-  sometimes failed.
-- Fix crash when open directory is disabled.
-- Use zsh as the default shell when open directory
-  doesn't provide one.
-- Handle pasing from remote clipboards (handoff)
-  better.
-- Fix a bug where the split pane shortcut numbers
-  were wrong after moving them.
-- Fix crashes.
-- Fix a bug where scrollbar background colors
-  could be wrong sometimes.
-- Fix about window rendering in Ventura.
-- Fix a bug where the mouse cursor was left in the
-  wrong state after using the leader shortcut.
-
-
+- Fix crashes
+- Fix a bug where long lines in the input method
+  editor didn't draw correctly.
+- Fix the response for XTGETTCAP when requiesting
+  the number of colors and direct color width.
+- Don't prompt to disable mouse reporting in emacs
+  when scrolling too far.
+- Work around Logitech mouse driver foolishness
+  that caused hangs.
+- Fix a bug where the status bar font would change
+  to Times Roman.
+- Round timestamps to the nearest second to make
+  them stable.
+- Fix a bug where the hyperlink trigger used the
+  wrong range of cells sometimes.
+- Fix bug where swiping horizontally on pane
+  titlebar didn't change tabs.
