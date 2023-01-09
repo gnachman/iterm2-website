@@ -100,7 +100,7 @@ Function</strong>, and giving it the invocation
     <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="c1"># This regex splits the font into its name and size. Fonts always end with</span>
     <span class="c1"># their size in points, preceded by a space.</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(.* )(\d*)$&#39;</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([^ ]* )(\d*)(.*)$&#39;</span><span class="p">)</span>
 
     <span class="nd">@iterm2</span><span class="o">.</span><span class="n">RPC</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">increase_font_size</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
@@ -118,10 +118,11 @@ Function</strong>, and giving it the invocation
         <span class="n">groups</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">remainder</span> <span class="o">=</span> <span class="n">groups</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
         <span class="c1"># Prepare an update to the profile that increases the font size</span>
         <span class="c1"># by 6 points.</span>
-        <span class="n">replacement</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="n">replacement</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span> <span class="o">+</span> <span class="n">remainder</span>
         <span class="n">change</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">LocalWriteOnlyProfile</span><span class="p">()</span>
         <span class="n">change</span><span class="o">.</span><span class="n">set_normal_font</span><span class="p">(</span><span class="n">replacement</span><span class="p">)</span>
 
