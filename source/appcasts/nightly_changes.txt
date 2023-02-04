@@ -1,3 +1,74 @@
+2023-02-03: Add support for file transfer over ssh
+integration
+
+2023-02-02: Make double tap modifier activate on key up, not
+key down. Issue 10775
+
+2023-01-31: Bump libssh2 to 1.10 and rebuild NMSSH
+
+2023-01-30: Fix typo
+
+2023-01-29: Add Alert on Marks in Offscreen Sessions. See PR
+#480
+
+These alerts will be temporarily disabled for sessions
+created from an arrangement, so long as they aren't also
+attaching to a server. This prevents false alerts most of
+the sessions in a multi-tab arrangement.
+
+2023-01-29: Fix a race in removing overwritten images where
+the progenitor could become nil between testing if it's nil
+and adding it to an array because it is a weak ref in the
+image mark. Issue 10767
+
+2023-01-29: Upgrade slowcat to python 3
+
+2023-01-28: Fix cursor color in reverse video. Issue 10761
+
+2023-01-27: Fix undefined use of dlog
+
+2023-01-27: remove logTrackingChange which has a terrible
+performance penalty and doesn't seem to be needed any more.
+Issue 10756
+
+2023-01-27: Greatly improve logging of failures to copy
+launch requests
+
+2023-01-27: Improve assertions in copyLaunchRequest: to
+diagnose crash
+
+2023-01-25: Add support for horizontal scrolling to mouse
+reporting. Also make textViewReportMouseEvent return true
+even if scrolling deltas are 0 to avoid swipintg between
+tabs when you haven't scrolled far enough yet.
+
+2023-01-25: RFC: Report extra mouse buttons, issue 10689
+
+This is a POC to add support for extra mouse buttons
+support. Things still need to be done:
+
+* report multiple scroll left & right events * handle scroll
+left & right switching to different tabs collision * add
+button 10 & 11
+
+Fixes: https://gitlab.com/gnachman/iterm2/-/issues/10689
+Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
+
+2023-01-25: Change minimum value of blending level from 5 to
+0. Issue 10772 (#482)
+
+This fixes the bug of not being able to enter values like
+10, 20, etc. when setting the blending level from the
+textbox alongside the slider in Preferences -> Window tab.
+2023-01-18: Add advanced pref to disable window resizing
+
+2023-01-17: Preserve current directory in stacks of SSH when
+duplicating or (if the session's type is ssh, not login
+shell etc) restoring arrangements
+
+2023-01-16: Add support for duplicating ssh sessions. Add
+Duplicte Session to main menu
+
 2023-01-09: Fix rpath for sandboxed worker. Issue 10713
 
 2023-01-08: [python example] Update asymmetric broadcast
@@ -93,119 +164,3 @@ sends backslash-t instead of a tab.
 
 2023-01-01: Format shorcuts referring to nonexistent
 profiles more nicely. Issue 10729
-
-2022-12-30: Add advanced pref addUtilitiesToPATH
-
-2022-12-30: Add path to it2ssh to
-/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware
-Fusion.app/Contents/Public:/opt/X11/bin:/Library/Apple/usr/bin:/Users/gnachman/git/iterm2-alt2/Build/Development/iTerm2.app/Contents/Resources/utilities
-
-2022-12-30: Restore terminal state when it2ssh session ends.
-Issue 10351
-
-2022-12-28: Add debug logging for python environment/script
-installation stuff. Fix a bug where canceling a download
-leaves the python private queue wedged
-
-2022-12-28: Fix bug where swiping horizontally on pane
-titlebar didn't change tabs. Issue 10704
-
-2022-12-27: Add aiterm.png
-
-2022-12-27: Add missing powerline extra symbols
-
-2022-12-27: Add 'interpret key bindings based on physical
-key, ignoring input language' setting. Issue 10573
-
-2022-12-26: Improve AI prompt. Pass shell and uname to it.
-Add shell and uname variables to session scope. Update them
-in ssh integration. Fix result coming in after canceling
-aiterm.
-
-2022-12-21: In ssh integration mode with framer get home
-directory from remote so tab titles can use tilde for
-brevity. Adds sshIntegrationLevel and homeDirectory
-session-scope variables. Issue 8755
-
-2022-12-21: Show tilde in place of local home directory in
-tab/window titles. Issue 8755
-
-2022-12-20: Add option to enable GPU renderer in low power
-mode. Issue 10671
-
-2022-12-20: Fix how the make-hyperlink trigger finds the
-range of cells to modify. Issue 10670
-
-2022-12-19: Fix typo
-
-2022-12-19: Add ability for composer to enqueue a command.
-Issue 10662
-
-2022-12-19: Add menu item to clear instant replay. Issue
-10661
-
-2022-12-19: Add missing files
-
-2022-12-19: Add AI-powered natural language command
-generation
-
-2022-12-17: Add advanced pref to disable doublewidth
-powerline rendering
-
-2022-12-17: Make certain powerline symbols draw wider. Issue
-10180
-
-2022-12-16: Move iTermCopyModeKeyBindings.dict to
-OtherResources. Remove unused variable
-
-2022-12-16: Store copy mode shortcuts in a .dict file is
-DefaultKeyBindings. Allow the user to provide one by placing
-a file in ~/Library/Application
-Support/iTerm2/CopyModeKeyBindings.dict. Issue 10636
-
-2022-12-15: Round timestamps in line info metadata in an
-attempt to fix 10633. Really not sure this'll work but I
-can't see any reason why this would happen.
-
-2022-12-12: Add Coprocess MRU to nonsyncable keys. Issue
-10653
-
-2022-12-12: Make flags double width by default with new
-experimental flag. Issue 10509
-
-2022-12-09: Improve the dot-prefixed font name hack to more
-accurately match the hack in CoreText.
-
-2022-12-09: Work around CoreText insanely giving you times
-roman instead of the system font. Issue 10625
-
-2022-12-09: Sync after changing VT100ScreenSize but before
-restarting tail find. Issue 10635
-
-2022-12-09: Previous commit didn't work under xcbuild but
-the reason is elusive. Let's try a different approach
-
-2022-12-09: Mess with build settings to fix the nightly
-build. It was broken by
-c31b70021eb78a1b48920b3c747011c9c742d4b6
-
-2022-12-08: Make the sandboxed worker not depend on swift
-concurrency which breaks deployment to older macos versions.
-ARCify DebugLogging.m
-
-2022-12-08: Avoid crashing when you click in PTYSplitView
-right of the last subview. See email subject 'recent crashes
-in 3.5.0beta8 tied to selections'
-
-2022-12-06: Add key action to alert on next mark
-
-2022-12-06: Add apply modes to actions as a better solution
-to the problem noted in PR 480
-
-2022-12-04: Add Window > Move session to tab. Issue 10626
-
-2022-12-04: Fix OOB read when cursor in margin
-
-2022-12-02: Change PSM to use tracking areas instead of
-tracking rects. The hope is to work around a crash that
-doesn't make any sense. Issue 10684
