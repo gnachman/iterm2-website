@@ -148,3 +148,7 @@ A: If you have problems where doing a reverse search or wrapping a long command 
 
 #### Q: What is "CSI u mode"?
 A: This is a way of reporting keystrokes which is mostly backwards compatible but enables more combinations of keys and modifiers to be properly reported. For example, it standardizes how option+arrow key works. Neovim has support out of the box. <a href="https://gist.github.com/gnachman/b4fb1e643e7e82a546bc9f86f30360e4">Emacs can be persuaded to work by adding this to your `.emacs`.</a>
+
+#### Q: When I use `open` the app's window doesn't come to the foreground.
+A: This is a security feature of macOS when Secure Keyboard Entry is enabled. It prevents an app from stealing keyboard focus while you're entering sensitive text. Disable the menu item **iTerm2 > Secure Keyboard Entry** to resolve the issue.
+
