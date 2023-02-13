@@ -1,3 +1,53 @@
+2023-02-12: Fix a bug where the search buffer got out of
+sync with the readonline linebuffer. It happened because
+state was shared and so the current line buffer was ahead of
+the search buffer, getting us wrong line numbers. The fix is
+to never try to search with shared state and also to sync
+the search buffer when exiting shared state so it doesn't
+get left behind. Issue 10635
+
+2023-02-12: Update shell integration. Don't send xattrs to
+GNU tar in it2ul. Issue 10787
+
+2023-02-12: Bump shell integration submodule
+
+2023-02-12: Adds support for detecting line number in
+filename(line number). Issue 10786
+
+2023-02-12: Get tests passing. Disable some big ones that
+are gonna be a ton of work to fix.
+
+2023-02-12: Add the ability to remap right control. Disable
+reset button when no remapping is on
+
+2023-02-12: Add reset button to modifier remapping ui.
+Indicate which are remapped by changing the label color
+
+2023-02-12: Fix overrelease of event tap's event source
+
+2023-02-12: Add window.isHotkeyWindow variable. Issue 10785
+
+2023-02-11: Tweak bounds of powerline glyphs to avoid going
+too far right or down.
+https://gitlab.com/gnachman/iterm2/-/issues/10180#note_1248291486
+
+2023-02-11: Call updateTrackingAreas on SessionView rather
+than PTYTextView when mouse reporting is enabled. Also make
+sure it's called when the refusal point is changed. Issue
+10783
+
+2023-02-10: Fix ssh when iTerm2 is installed in a folder
+with a space in its name
+
+2023-02-10: 3.5.0beta10
+
+2023-02-10: Fix a bug in duplicate session where the custom
+command wasn't preserved
+
+2023-02-10: Bump shell integration submodule
+
+2023-02-10: Bump shell integration submodule
+
 2023-02-04: Updaet shell integration to send conductor.sh
 inband rather than as an argument to ssh to try to deal with
 issue 10774
