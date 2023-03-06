@@ -1,3 +1,87 @@
+2023-03-05: Introduce CompressibleCharacterBuffer, which in
+the future will be able to compress its contents but for the
+moment is just a box to hold LineBlock's raw_buffer.
+
+2023-03-05: Remove some unnecessary spaces
+
+2023-03-05: Rename LineBlock's ivars to use standard naming
+conventions
+
+2023-03-05: Fix antiquated style
+
+2023-03-05: Replace direct uses of start_offset with
+-bufferStartOffset
+
+2023-03-05: Replace direct uses of buffer_size with
+-rawBufferSize
+
+2023-03-05: Eliminate LineBlock.buffer_start which was
+redundant with start_offset + raw_buffer.
+
+2023-03-05: Fix a crash in removeObjectsPassingTest that
+happens when removing those objects causes a LineBlock to be
+dealloced, triggering a reentrant call into
+removeObjectsPassingTest. The only purpose of this code is
+to compact the array so it's cheap and doing it async should
+be harmless.
+
+2023-03-05: Add createCharacterBufferWithUncompressedData
+
+2023-03-05: Add setBufferStartOffset
+
+2023-03-05: Add createCharacterBufferOfSize
+
+2023-03-05: Replace a few ivars of LineBulock with
+properties so that a future commit can decomrpess as needed
+when accessing the raw buffers
+
+2023-03-05: Add UniqueWeakBox
+
+2023-03-05: Add mutex.mutableAccess to give an inout
+reference to the value safely
+
+2023-03-05: Add ProcessInfo.ownCPUUsage, which will be
+needed by a forthcoming change
+
+2023-03-05: Add it_timeIntervalForAbsoluteTime to make
+mach_absolute_time() storable and convertible to
+TimeInterval later
+
+2023-03-05: Make ScreenCharacterAttributesEqual take values
+instead of non-const pointers to make future use from Swift
+easier
+
+2023-03-05: Make
+iTermTemporaryDoubleBufferedGridController.h includable from
+objc++
+
+2023-03-05: Make iTermParser.h includable from objc++
+
+2023-03-05: Make iTermBuiltInFunctions.h includable from
+objc++
+
+2023-03-05: Improve ScreenCharArray's debug description to
+include continuation
+
+2023-03-05: Fix incorrect implementation of Mutex
+
+2023-03-05: Remove unneeded test code
+
+2023-03-05: Add missing typecast to amek CVector usable from
+C++
+
+2023-03-05: Fix possible out of bounds reads in Autocomplete
+
+2023-03-05: Fix a bug in backwards non-regex search. When
+there are combining marks it didn't calculate the right end
+location for the second haystack. This is visible with
+Zalgo. Add a unit test for it.
+
+Also fix a few other problems: build issues for the test
+target, improper handling of images in screen_char_t to
+String conversions, remove dead code, and fix text
+extractor's classification of images.
+
 2023-02-24: Add menu item to install already-downloaded
 runtime
 
@@ -102,164 +186,3 @@ integration
 
 2023-02-02: Make double tap modifier activate on key up, not
 key down. Issue 10775
-
-2023-01-31: Bump libssh2 to 1.10 and rebuild NMSSH
-
-2023-01-30: Fix typo
-
-2023-01-29: Add Alert on Marks in Offscreen Sessions. See PR
-#480
-
-These alerts will be temporarily disabled for sessions
-created from an arrangement, so long as they aren't also
-attaching to a server. This prevents false alerts most of
-the sessions in a multi-tab arrangement.
-
-2023-01-29: Fix a race in removing overwritten images where
-the progenitor could become nil between testing if it's nil
-and adding it to an array because it is a weak ref in the
-image mark. Issue 10767
-
-2023-01-29: Upgrade slowcat to python 3
-
-2023-01-28: Fix cursor color in reverse video. Issue 10761
-
-2023-01-27: Fix undefined use of dlog
-
-2023-01-27: remove logTrackingChange which has a terrible
-performance penalty and doesn't seem to be needed any more.
-Issue 10756
-
-2023-01-27: Greatly improve logging of failures to copy
-launch requests
-
-2023-01-27: Improve assertions in copyLaunchRequest: to
-diagnose crash
-
-2023-01-25: Add support for horizontal scrolling to mouse
-reporting. Also make textViewReportMouseEvent return true
-even if scrolling deltas are 0 to avoid swipintg between
-tabs when you haven't scrolled far enough yet.
-
-2023-01-25: RFC: Report extra mouse buttons, issue 10689
-
-This is a POC to add support for extra mouse buttons
-support. Things still need to be done:
-
-* report multiple scroll left & right events * handle scroll
-left & right switching to different tabs collision * add
-button 10 & 11
-
-Fixes: https://gitlab.com/gnachman/iterm2/-/issues/10689
-Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
-
-2023-01-25: Change minimum value of blending level from 5 to
-0. Issue 10772 (#482)
-
-This fixes the bug of not being able to enter values like
-10, 20, etc. when setting the blending level from the
-textbox alongside the slider in Preferences -> Window tab.
-2023-01-18: Add advanced pref to disable window resizing
-
-2023-01-17: Preserve current directory in stacks of SSH when
-duplicating or (if the session's type is ssh, not login
-shell etc) restoring arrangements
-
-2023-01-16: Add support for duplicating ssh sessions. Add
-Duplicte Session to main menu
-
-2023-01-09: Fix rpath for sandboxed worker. Issue 10713
-
-2023-01-08: [python example] Update asymmetric broadcast
-input to send to lower left for issue 10749
-
-2023-01-08: Fix neigh-incomprehensible warnings about
-sendable in file provider code that is likely never to be
-used. This could well be broken.
-
-2023-01-08: Fix warning
-
-2023-01-08: Fix warnings
-
-2023-01-08: Fix warning due to run scripts phase of
-iTerm2SharedArc because deps were wrong
-
-2023-01-08: Delete dead code and fix warnings
-
-2023-01-08: Remove deprecated URLs and simplify some ancient
-scheme handling code
-
-2023-01-08: Fix warning
-
-2023-01-08: Remove todo that in nearly dead code
-
-2023-01-08: Remove deprecated API from SIGKeychain
-
-2023-01-08: Remove unused const
-
-2023-01-08: Fix warning and deprecated API
-
-2023-01-08: Tell xcode to always run updateVersion.py to
-remove a warning
-
-2023-01-08: Remove deprecated APIs from SSKeychain
-
-2023-01-08: Apply modifier remapping to mouse events. Issue
-10748
-
-2023-01-07: [python] Clarify activation behavior. Issue
-10746
-
-2023-01-07: Reduce default latency for detecting filesystem
-changes affecting dynamic profiles and add an advanced pref
-to make it configurable. Issue 10742
-
-2023-01-07: Add support for horizontal scrolling in
-alternate scroll mode (send arrow keys in alt screen). Issue
-6498
-
-2023-01-06: Render inline SVGs. Issue 6479
-
-2023-01-06: Fix a bug where visible images got released if
-there was scrollback overflow. I was using absolute line
-numbers where I should have been using relative.
-
-2023-01-03: Add iTermAtomicMutableArrayOfWeakObjects with
-some sanity checking to figure out how the heck the call to
-removeObjectsPassingTest: in -[LineBlock dealloc] is
-throwing an exception that we're removing indexes past the
-end of the array. The only way that could happen is a
-synchronization bug. It looks airtight to me, but hopefully
-the new assertions will turn something up.
-
-Fix a bug when dropping part of a raw line. The LineBlock's
-metadata caches the number of wrapped lines. When the
-mutation thread drops excess lines, the metadata is updated
-in the progenitor but that update was not reflected in its
-clients. Later on a wrong cached value was used causing a
-negative length in _wrappedLineWithWrapWidth and therefore a
-negative length for a ScreenCharArray leading to a bad
-memcpy when trying to pad the line.
-
-2023-01-03: Remove capture GPU frame from release builds
-because they lack the required Info.plist key to make them
-work. Issue 10733
-
-2023-01-03: Switch to text-davinici-003 by default
-
-2023-01-02: Add sources/iTermLatestVersionByShell.h
-
-2023-01-01: Add option to notify of noncritical shell
-integration updates. Issue 10632
-
-2023-01-01: Add a workaround for the tmux tab bug where it
-sends backslash-t instead of a tab.
-
-2023-01-01: Add tmux-256color to pre-build terminfos. Issue
-10717
-
-2023-01-01: improve collection behavior logging for issue
-10695
-
-2023-01-01: Format shorcuts referring to nonexistent
-profiles more nicely. Issue 10729
