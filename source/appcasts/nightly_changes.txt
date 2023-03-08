@@ -1,3 +1,82 @@
+2023-03-07: Remove ivars from public header of LineBlock
+
+2023-03-07: Make spam print double width characters
+
+2023-03-07: Avoid decompression when converting search
+result coords
+
+2023-03-07: Optimize extracting strings from LineBlocks to
+avoid decompression
+
+2023-03-07: Avoid decompression in
+VT100ScreenState.screenCharArrayForLine
+
+2023-03-07: Avoid decomrpessing buffer to get metadata
+
+2023-03-07: Remove unused variable
+
+2023-03-07: Remove unreachable code path since I can't test
+it
+
+2023-03-07: Fix makeSafe to not assume an extra cell for a
+continuation mark. I audited the callers and this is
+correct.
+
+2023-03-07: Modify
+LineBlock.screenCharArrayForWrappedLineWithWrapWidth to
+avoid decompression when creating the ScreenCharArray
+
+2023-03-07: Pass an offset rather than a pointer to
+offsetOfWrappedLineInBufferAtOffset
+
+2023-03-07: Avoid decompressing the buffer when getting its
+offset in the new SCA accessor
+
+2023-03-07: Plumb through padding to LineBlock, but still
+unoptimized
+
+2023-03-07: Add a new SCA accessor to LineBuffer that in the
+future will have support for padding to make it fast with
+compressed buffers
+
+2023-03-07: Add SCA accessor to LineBlock
+
+2023-03-07: Allow a nil pointer to _wrappedLineWithWrapWidth
+so that in the future we can avoid decompression
+
+2023-03-07: Minor refactor to pass in buffer pointer to
+_wrappedLineWithWrapWidth so that later we can do lookups
+directly in compressed blocks
+
+2023-03-07: Minor refactoring of _wrappedLineWithWrapWidth
+to support future addition of SCA accessor
+
+2023-03-07: Give an extra cell to safe ScreenCharArrays to
+handle unaccounted for past-the-end continuation marks
+
+2023-03-06: Optimize counting wrapped lines when buffer is
+compressed. Look into the compressed buffer rather than
+decompressing it
+
+2023-03-06: Improve
+CompressibleCharacterBuffer.debugDescription
+
+2023-03-06: Defer resizing buffers to smaller sizes to avoid
+thrashing (shrink - compress - decompress). Instead, record
+the desired size, and eventually compress will do the right
+thing.
+
+2023-03-06: Add some missing calls to insert compressible
+buffers into the context
+
+2023-03-06: Fix search tests
+
+2023-03-06: Shrink line blocks right away when they get a
+successor so that compression can avoid keeping unused
+characters at the end.
+
+2023-03-06: Add logic to compress blocks when idle
+
 2023-03-06: Add support for compressing line blocks.
 
 2023-03-05: Add encoding/decoding to
