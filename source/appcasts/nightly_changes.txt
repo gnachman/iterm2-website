@@ -1,3 +1,46 @@
+2023-03-20: Get rid of duplicate prefs search results
+
+2023-03-20: Add support for custom python API script paths.
+Issue 10803
+
+2023-03-20: Remove tempfile
+
+2023-03-20: Swap left and right mouse reporting directions
+for consistency with natural scroll direction setting
+
+2023-03-19: Implement Special Exceptions. Issue 10180
+
+2023-03-15: Add comments to updateVersion explaining how to
+get the right Python
+
+2023-03-14: Disable local code signing for dev
+
+2023-03-10: Bump shell integration
+
+2023-03-10: Hardcode system netcat in it2ssh for issue 10802
+because GNU netcat doesn't have -U
+
+2023-03-10: Bump shell integration for issue 10802
+
+2023-03-10: Change how we handle arguments to it2ssh. Issue
+10802
+
+When you click an ssh link like ssh://localhost/tmp we run
+  it2ssh localhost cd /tmp; $SHELL -l
+
+But the way it was run differed from what openssh does.
+Openssh runs $SHELL -c cd /tmp; $SHELL -l, and now we do
+too.
+
+2023-03-10: Correctly detect when a hotkey window is opening
+over split fullscreen windows. Issue 9978
+
+2023-03-09: Allow 100% transparency. Issue 10842
+
+2023-03-09: Prioritize responding to reports over sending
+kystrokes. This gives a marginal advtantage to correctness
+in the race between a request for a report and its response.
+
 2023-03-07: Remove ivars from public header of LineBlock
 
 2023-03-07: Make spam print double width characters
