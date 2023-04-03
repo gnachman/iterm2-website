@@ -45,7 +45,7 @@ VTE and iTerm2 support OSC 8 for defining hyperlinks, much like HTML's anchor ta
 
 If the **url** is absent then that ends the hyperlink. Typical usage would look like:
 
-    OSC 8 ; ; https://example.com/ ST Link to example website OSC ] 8 ; ; ST
+    OSC 8 ; ; https://example.com/ ST Link to example website OSC 8 ; ; ST
 
 To open a link, hold Command and click the link.
 
