@@ -1,340 +1,75 @@
-2023-03-22: Add debug logging for issue 10776
+2023-05-01: Fix build
 
-2023-03-22: Show an error when setting a background image in
-prefs fails
+2023-05-01: Add builtin functions iterm2.paste() and
+iterm2.focus(). Add support for calling sequences of
+functions anywhere you can enter an invocation, such as
+mouse bindings. Issue 10144
 
-2023-03-22: Increase max time for building the scripts menu
-to avoid false positives
+2023-04-29: Fix typo
 
-2023-03-22: Add images for share and import buttons in
-special exceptions editor.
+2023-04-29: Improve latency
 
-2023-03-22: Fix duplicate menu item identifier
+2023-04-28: Add auto composer.
 
-2023-03-21: Add variable 'line' to scope when evaluating a
-trigger's interpolated string. Issue 10821
+Conductor with framer can now monitor echo & icanon to
+detect password prompt on remote host.
 
-2023-03-21: Improve logging for issue 10741
+Add support for stat() to pidinfo.
 
-2023-03-20: Get rid of duplicate prefs search results
+Use chat endpoint for GPT.
 
-2023-03-20: Add support for custom python API script paths.
-Issue 10803
+Add a popop hosting abstraction so popups can take context
+from the composer or the terminal.
 
-2023-03-20: Remove tempfile
+Add shortDebugDescription to interval tree objects for
+better compact debug dumps.
 
-2023-03-20: Swap left and right mouse reporting directions
-for consistency with natural scroll direction setting
+Add option to sort history chronologically, which is used by
+the auto composer.
 
-2023-03-19: Implement Special Exceptions. Issue 10180
+Add previews to popups.
 
-2023-03-15: Add comments to updateVersion explaining how to
-get the right Python
+Add syntax highlighting to compser.
 
-2023-03-14: Disable local code signing for dev
+Add support for a prefix to ComposerTextView, which is
+non-editable string that precedes the editable portion.
 
-2023-03-10: Bump shell integration
+Add a bunch of keyboard shortcuts to the composer for more
+natural use at the prompt.
 
-2023-03-10: Hardcode system netcat in it2ssh for issue 10802
-because GNU netcat doesn't have -U
+Fix a deadlock when comparing a compressible character
+buffer to itself.
 
-2023-03-10: Bump shell integration for issue 10802
+Add FileChecker, which efficiently and asynchronously checks
+if a file exists either locally or remotely.
 
-2023-03-10: Change how we handle arguments to it2ssh. Issue
-10802
+Add priority for file operations in Conductor so we can stat
+interactively during syntax highlighting.
 
-When you click an ssh link like ssh://localhost/tmp we run
-  it2ssh localhost cd /tmp; $SHELL -l
+Make LineBuffer.popAndCopyLastLineInto remove trailing empty
+blocks before assuming the last block is not empty.
 
-But the way it was run differed from what openssh does.
-Openssh runs $SHELL -c cd /tmp; $SHELL -l, and now we do
-too.
+Give iTermMetalRowData the screen index so it can suppress
+drawing certain lines under the auto composer.
 
-2023-03-10: Correctly detect when a hotkey window is opening
-over split fullscreen windows. Issue 9978
+Add line-style mark rendering.
 
-2023-03-09: Allow 100% transparency. Issue 10842
+Fix a bunch of bugs in MultiCursorTextView.
 
-2023-03-09: Prioritize responding to reports over sending
-kystrokes. This gives a marginal advtantage to correctness
-in the race between a request for a report and its response.
+Don't show offscreen command line if screen is very short.
 
-2023-03-07: Remove ivars from public header of LineBlock
+Avoid running triggers in various places that would wreak
+havoc.
 
-2023-03-07: Make spam print double width characters
+2023-04-04: Add option to save timestamps with content.
+Issue 4635
 
-2023-03-07: Avoid decompression when converting search
-result coords
+2023-04-03: Fix bug in key binding emulation that
+currentDict wasn't initialized for the first keystroke. This
+caused copy mode to ignore the first command
 
-2023-03-07: Optimize extracting strings from LineBlocks to
-avoid decompression
+2023-04-03: Add tooltop to password manager's Enter User
+Name button with shortcut
 
-2023-03-07: Avoid decompression in
-VT100ScreenState.screenCharArrayForLine
-
-2023-03-07: Avoid decomrpessing buffer to get metadata
-
-2023-03-07: Remove unused variable
-
-2023-03-07: Remove unreachable code path since I can't test
-it
-
-2023-03-07: Fix makeSafe to not assume an extra cell for a
-continuation mark. I audited the callers and this is
-correct.
-
-2023-03-07: Modify
-LineBlock.screenCharArrayForWrappedLineWithWrapWidth to
-avoid decompression when creating the ScreenCharArray
-
-2023-03-07: Pass an offset rather than a pointer to
-offsetOfWrappedLineInBufferAtOffset
-
-2023-03-07: Avoid decompressing the buffer when getting its
-offset in the new SCA accessor
-
-2023-03-07: Plumb through padding to LineBlock, but still
-unoptimized
-
-2023-03-07: Add a new SCA accessor to LineBuffer that in the
-future will have support for padding to make it fast with
-compressed buffers
-
-2023-03-07: Add SCA accessor to LineBlock
-
-2023-03-07: Allow a nil pointer to _wrappedLineWithWrapWidth
-so that in the future we can avoid decompression
-
-2023-03-07: Minor refactor to pass in buffer pointer to
-_wrappedLineWithWrapWidth so that later we can do lookups
-directly in compressed blocks
-
-2023-03-07: Minor refactoring of _wrappedLineWithWrapWidth
-to support future addition of SCA accessor
-
-2023-03-07: Give an extra cell to safe ScreenCharArrays to
-handle unaccounted for past-the-end continuation marks
-
-2023-03-06: Optimize counting wrapped lines when buffer is
-compressed. Look into the compressed buffer rather than
-decompressing it
-
-2023-03-06: Improve
-CompressibleCharacterBuffer.debugDescription
-
-2023-03-06: Defer resizing buffers to smaller sizes to avoid
-thrashing (shrink - compress - decompress). Instead, record
-the desired size, and eventually compress will do the right
-thing.
-
-2023-03-06: Add some missing calls to insert compressible
-buffers into the context
-
-2023-03-06: Fix search tests
-
-2023-03-06: Shrink line blocks right away when they get a
-successor so that compression can avoid keeping unused
-characters at the end.
-
-2023-03-06: Add logic to compress blocks when idle
-
-2023-03-06: Add support for compressing line blocks.
-
-2023-03-05: Add encoding/decoding to
-CompressibleCharacterBuffer. In the future it will be able
-to encode its compressed representation.
-
-2023-03-05: Add debug descriptions to compressible character
-buffer
-
-2023-03-05: Add Buffer.uninitialized which will simplify a
-few code paths
-
-2023-03-05: Introduce CompressibleCharacterBuffer, which in
-the future will be able to compress its contents but for the
-moment is just a box to hold LineBlock's raw_buffer.
-
-2023-03-05: Remove some unnecessary spaces
-
-2023-03-05: Rename LineBlock's ivars to use standard naming
-conventions
-
-2023-03-05: Fix antiquated style
-
-2023-03-05: Replace direct uses of start_offset with
--bufferStartOffset
-
-2023-03-05: Replace direct uses of buffer_size with
--rawBufferSize
-
-2023-03-05: Eliminate LineBlock.buffer_start which was
-redundant with start_offset + raw_buffer.
-
-2023-03-05: Fix a crash in removeObjectsPassingTest that
-happens when removing those objects causes a LineBlock to be
-dealloced, triggering a reentrant call into
-removeObjectsPassingTest. The only purpose of this code is
-to compact the array so it's cheap and doing it async should
-be harmless.
-
-2023-03-05: Add createCharacterBufferWithUncompressedData
-
-2023-03-05: Add setBufferStartOffset
-
-2023-03-05: Add createCharacterBufferOfSize
-
-2023-03-05: Replace a few ivars of LineBulock with
-properties so that a future commit can decomrpess as needed
-when accessing the raw buffers
-
-2023-03-05: Add UniqueWeakBox
-
-2023-03-05: Add mutex.mutableAccess to give an inout
-reference to the value safely
-
-2023-03-05: Add ProcessInfo.ownCPUUsage, which will be
-needed by a forthcoming change
-
-2023-03-05: Add it_timeIntervalForAbsoluteTime to make
-mach_absolute_time() storable and convertible to
-TimeInterval later
-
-2023-03-05: Make ScreenCharacterAttributesEqual take values
-instead of non-const pointers to make future use from Swift
-easier
-
-2023-03-05: Make
-iTermTemporaryDoubleBufferedGridController.h includable from
-objc++
-
-2023-03-05: Make iTermParser.h includable from objc++
-
-2023-03-05: Make iTermBuiltInFunctions.h includable from
-objc++
-
-2023-03-05: Improve ScreenCharArray's debug description to
-include continuation
-
-2023-03-05: Fix incorrect implementation of Mutex
-
-2023-03-05: Remove unneeded test code
-
-2023-03-05: Add missing typecast to amek CVector usable from
-C++
-
-2023-03-05: Fix possible out of bounds reads in Autocomplete
-
-2023-03-05: Fix a bug in backwards non-regex search. When
-there are combining marks it didn't calculate the right end
-location for the second haystack. This is visible with
-Zalgo. Add a unit test for it.
-
-Also fix a few other problems: build issues for the test
-target, improper handling of images in screen_char_t to
-String conversions, remove dead code, and fix text
-extractor's classification of images.
-
-2023-02-24: Add menu item to install already-downloaded
-runtime
-
-2023-02-23: Add 'enter user name' to key view order and add
-cmd-U shortcut for enter user name. Issue 10808
-
-2023-02-22: Add option to disable selected text color. Issue
-8761
-
-2023-02-17: Fix mouse cursor overlay rendering with
-non-standard cursors, like Mousecape. Issue 10806
-
-2023-02-17: Fix priority inversion
-
-2023-02-17: Fix updateVersion to use system python instead
-of Xcode's
-
-2023-02-17: Add support for 1password OTP. Issue 10805
-
-2023-02-17: Add gemini and titan scheme handlers. Issue
-10800
-
-2023-02-17: Report mouse button 10 & 11 (#484)
-
-
-2023-02-16: Support keeping window size the same when font
-changes in tmux. Issue 9534
-
-2023-02-16: Double click on splitter equalizes sizes of
-views adjacent to it. Issue 2866
-
-2023-02-16: Tweak offscreen commandline colors
-
-2023-02-16: Don't show offscreen command line while the
-command is still running. This works around the problem with
-git log. Turn it on by default.
-
-2023-02-15: Turn off offscreen commandline by default
-because 'git log' doesn't use alternate screen mode.
-
-2023-02-15: Draw offscreen commandlines. Issue 10792
-
-2023-02-13: Tweak box drawing characters to not be blurry in
-lowdpi. Issue 10791
-
-2023-02-12: Fix a bug where the search buffer got out of
-sync with the readonline linebuffer. It happened because
-state was shared and so the current line buffer was ahead of
-the search buffer, getting us wrong line numbers. The fix is
-to never try to search with shared state and also to sync
-the search buffer when exiting shared state so it doesn't
-get left behind. Issue 10635
-
-2023-02-12: Update shell integration. Don't send xattrs to
-GNU tar in it2ul. Issue 10787
-
-2023-02-12: Bump shell integration submodule
-
-2023-02-12: Adds support for detecting line number in
-filename(line number). Issue 10786
-
-2023-02-12: Get tests passing. Disable some big ones that
-are gonna be a ton of work to fix.
-
-2023-02-12: Add the ability to remap right control. Disable
-reset button when no remapping is on
-
-2023-02-12: Add reset button to modifier remapping ui.
-Indicate which are remapped by changing the label color
-
-2023-02-12: Fix overrelease of event tap's event source
-
-2023-02-12: Add window.isHotkeyWindow variable. Issue 10785
-
-2023-02-11: Tweak bounds of powerline glyphs to avoid going
-too far right or down.
-https://gitlab.com/gnachman/iterm2/-/issues/10180#note_1248291486
-
-2023-02-11: Call updateTrackingAreas on SessionView rather
-than PTYTextView when mouse reporting is enabled. Also make
-sure it's called when the refusal point is changed. Issue
-10783
-
-2023-02-10: Fix ssh when iTerm2 is installed in a folder
-with a space in its name
-
-2023-02-10: 3.5.0beta10
-
-2023-02-10: Fix a bug in duplicate session where the custom
-command wasn't preserved
-
-2023-02-10: Bump shell integration submodule
-
-2023-02-10: Bump shell integration submodule
-
-2023-02-04: Updaet shell integration to send conductor.sh
-inband rather than as an argument to ssh to try to deal with
-issue 10774
-
-2023-02-03: Add support for file transfer over ssh
-integration
-
-2023-02-02: Make double tap modifier activate on key up, not
-key down. Issue 10775
+2023-04-03: Add support for multipart file downloads for
+tmux support for it2dl. Issue 9550
