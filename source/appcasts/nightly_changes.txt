@@ -1,3 +1,39 @@
+2023-05-04: When appending grid to linebuffer don't make the
+last line partial even if it ends with the cursor. This was
+changed for the benefit of filtering since it keeps a
+linebuffer that it appends to after appending the grid, but
+in all other use cases (like resizing) we want to preserve
+the fidelity of the continuation mark on the last line of
+the screen so when we pop it remains a hard EOL. This is
+important for resizing because if it's soft then we add all
+the nulls on the last line of the grid to the line buffer
+and then pop them into a narrower window, causing a blank
+line to be added at the bottom. To reproduce, add a few
+screenfuls of text with ls and then narrow the window by one
+column twice. Issue 10861
+
+2023-05-04: Fix a bug where use nonascii font was ignored.
+Issue 10860
+
+2023-05-04: Support reentrant performBlockWithoutTriggers
+
+2023-05-04: Fix an incorrect assumption that OSC 7 precedes
+the prompt, when in fact it comes after. Also fix a
+performance issue with PromptStateMachine - in Swift getting
+the length of a string is an O(N) operation, it seems. This
+caused performance problems when the state machine was
+confused (e.g., start in tcsh with shell integration then
+run zsh which sends OSC 7 and it gets stuck in the
+'accruing' state). My dream is that some day I can enjoy the
+quality of life I had in Turbo Pascal where counting the
+length of a string could be done in constant time.
+
+2023-05-04: Fix a bug where the 1password biometric hint
+wouldn't stay hidden. Issue 10801
+
+2023-05-04: Add quick look for URLs to context menu. Issue
+10859
+
 2023-05-02: Add prioritizeSmartSelectionActions for issue
 10841
 
