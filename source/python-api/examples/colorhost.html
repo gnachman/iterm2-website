@@ -93,7 +93,7 @@
              <span class="s2">&quot;Georges-iMac.local&quot;</span><span class="p">:</span> <span class="s2">&quot;Light Background&quot;</span> <span class="p">}</span>
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">SetPresetInSession</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">preset_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Change the colors in session to the color preset named `preset_name`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Change the colors in session to the color preset named `preset_name`.</span>
 <span class="sd">    Does not modify the underlying profile.&quot;&quot;&quot;</span>
     <span class="n">preset</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">ColorPreset</span><span class="o">.</span><span class="n">async_get</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">preset_name</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">preset</span><span class="p">:</span>
@@ -104,7 +104,7 @@
     <span class="k">await</span> <span class="n">profile</span><span class="o">.</span><span class="n">async_set_color_preset</span><span class="p">(</span><span class="n">preset</span><span class="p">)</span>
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">MonitorSession</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Called when a new session is created.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called when a new session is created.&quot;&quot;&quot;</span>
     <span class="n">hostname</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_get_variable</span><span class="p">(</span><span class="s2">&quot;hostname&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">hostname</span> <span class="ow">in</span> <span class="n">colormap</span><span class="p">:</span>
         <span class="k">await</span> <span class="n">SetPresetInSession</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">colormap</span><span class="p">[</span><span class="n">hostname</span><span class="p">])</span>

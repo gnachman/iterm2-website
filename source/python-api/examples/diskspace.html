@@ -82,7 +82,7 @@
 	    
   <section id="free-disk-space-status-bar-component">
 <span id="diskspace-example"></span><h1>Free Disk Space Status Bar Component<a class="headerlink" href="#free-disk-space-status-bar-component" title="Permalink to this headline">¶</a></h1>
-<p>This program defines a status bar component that shows the amount of free disk space. It demonstrates a status bar component that updates itself on a timer.</p>
+<p>This program defines a status bar component that shows the amount of free disk space. It demonstrates a status bar component that shows a possibly expensive-to-compute value that is the same across all instances. To minimize the cost, disk space is measured periodically and saved in an iTerm2 variable in the global scope.</p>
 <p>You’ll need to place the script in <cite>~/Library/Application Support/iTerm2/Scripts/AutoLaunch</cite>. Then manually launch it or restart the app. Then, navigate to <strong>Preferences &gt; Profiles &gt; Session</strong>. Turn on <strong>Status Bar Enabled</strong> and select <strong>Configure Status Bar</strong>. Drag the <strong>123 Fb 💾</strong> component into the bottom section.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.7</span>
 
@@ -101,6 +101,8 @@
     <span class="n">statvfs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">statvfs</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">FormatBytes</span><span class="p">(</span><span class="n">statvfs</span><span class="o">.</span><span class="n">f_frsize</span> <span class="o">*</span> <span class="n">statvfs</span><span class="o">.</span><span class="n">f_bavail</span><span class="p">)</span>
 
+<span class="n">task</span> <span class="o">=</span> <span class="kc">None</span>
+
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
@@ -108,14 +110,26 @@
         <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;Free Space&quot;</span><span class="p">,</span>
         <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Shows the amount of free disk space&quot;</span><span class="p">,</span>
         <span class="n">knobs</span><span class="o">=</span><span class="p">[],</span>
-        <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;💾 &quot;</span> <span class="o">+</span> <span class="n">GetFreeSpace</span><span class="p">(),</span>
-        <span class="n">update_cadence</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;💾 &quot;</span> <span class="o">+</span> <span class="n">FormatBytes</span><span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mf">2.1</span><span class="p">),</span>
+        <span class="n">update_cadence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.disk-space&quot;</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">poll</span><span class="p">():</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">space</span> <span class="o">=</span> <span class="n">GetFreeSpace</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Measure disk space&quot;</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_set_variable</span><span class="p">(</span><span class="s2">&quot;user.diskspace&quot;</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">task</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">poll</span><span class="p">())</span>
 
     <span class="c1"># This function gets called once per second.</span>
     <span class="nd">@iterm2</span><span class="o">.</span><span class="n">StatusBarRPC</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">knobs</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;iterm2.user.diskspace&quot;</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;💾 &quot;</span> <span class="o">+</span> <span class="n">GetFreeSpace</span><span class="p">())</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span><span class="n">knobs</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;iterm2.user.diskspace?&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">space</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Measuring&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;💾 &quot;</span> <span class="o">+</span> <span class="n">space</span><span class="p">)</span>
 
     <span class="c1"># Register the component.</span>
     <span class="k">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">)</span>
