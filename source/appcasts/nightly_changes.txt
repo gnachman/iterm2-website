@@ -1,3 +1,6 @@
+2023-06-04: CPU usage status bar component now gets values
+over ssh on mac and linux remotes
+
 2023-05-29: Avoid overflow when growing VT100Parser buffer.
 Issue 10866
 
@@ -207,72 +210,3 @@ changes
 iterm2.focus(). Add support for calling sequences of
 functions anywhere you can enter an invocation, such as
 mouse bindings. Issue 10144
-
-2023-04-29: Fix typo
-
-2023-04-29: Improve latency
-
-2023-04-28: Add auto composer.
-
-Conductor with framer can now monitor echo & icanon to
-detect password prompt on remote host.
-
-Add support for stat() to pidinfo.
-
-Use chat endpoint for GPT.
-
-Add a popop hosting abstraction so popups can take context
-from the composer or the terminal.
-
-Add shortDebugDescription to interval tree objects for
-better compact debug dumps.
-
-Add option to sort history chronologically, which is used by
-the auto composer.
-
-Add previews to popups.
-
-Add syntax highlighting to compser.
-
-Add support for a prefix to ComposerTextView, which is
-non-editable string that precedes the editable portion.
-
-Add a bunch of keyboard shortcuts to the composer for more
-natural use at the prompt.
-
-Fix a deadlock when comparing a compressible character
-buffer to itself.
-
-Add FileChecker, which efficiently and asynchronously checks
-if a file exists either locally or remotely.
-
-Add priority for file operations in Conductor so we can stat
-interactively during syntax highlighting.
-
-Make LineBuffer.popAndCopyLastLineInto remove trailing empty
-blocks before assuming the last block is not empty.
-
-Give iTermMetalRowData the screen index so it can suppress
-drawing certain lines under the auto composer.
-
-Add line-style mark rendering.
-
-Fix a bunch of bugs in MultiCursorTextView.
-
-Don't show offscreen command line if screen is very short.
-
-Avoid running triggers in various places that would wreak
-havoc.
-
-2023-04-04: Add option to save timestamps with content.
-Issue 4635
-
-2023-04-03: Fix bug in key binding emulation that
-currentDict wasn't initialized for the first keystroke. This
-caused copy mode to ignore the first command
-
-2023-04-03: Add tooltop to password manager's Enter User
-Name button with shortcut
-
-2023-04-03: Add support for multipart file downloads for
-tmux support for it2dl. Issue 9550
