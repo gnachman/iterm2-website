@@ -1,3 +1,77 @@
+2023-07-15: Add missing key images
+
+2023-07-15: Improve visibility of secure keyboard entry
+indicator on dark backgrouns and make the text clearer when
+another app has enabled it
+
+2023-07-15: Add OSC 1337 OpenURL=:(base64-encoded URL).
+Issue 10994
+
+2023-07-11: Stop parsing OSC after 1 meg payload. Fix a few
+bugs in it2dl with it2ssh
+
+2023-07-10: Fix bounds of status bar config numeric knob
+steppers
+
+2023-07-10: Add versioning check for move_session
+
+2023-07-10: Add App.async_move_session which uses the new
+iterm2.move_session. Add supports for booleans to the
+function calling syntax. Issue 11000
+
+Also fix a bug when splitting a non-current tab that would
+leave split panes with the wrong blur or missing titlebars
+and wrong tab color.
+
+2023-07-09: Add main menu to status bar icon when in
+UIElement mode for issue 10695
+
+2023-07-08: Update how passwords are saved in the keychain.
+Instead of storing both the account name and username in the
+Account field and setting Label to iTerm2, store account
+name in Label and username in Account. Issue 10998
+
+2023-07-08: Avoid double accrual of pretyped commands into
+the auto composer in Fish which does crazy prompt drawing
+
+2023-07-08: Don't create a side effect while editing the
+prompt for the benefit of the auto composer unless auto
+composer is enabled. Issue 10938.
+
+2023-07-06: Add a tooltip to 2-factor code in password
+manager
+
+2023-07-06: Fix alert.run_modal docs. Issue 10994
+
+2023-07-05: Control-C to exit search field. Issue 10993
+
+2023-07-05: Prevent reentrant joined threads during side
+effect when changing background color in minimal theme
+(reproducible with Open Quickly)
+
+2023-07-05: Update system window restoration disabled
+warning for ventura. Issue 10990
+
+2023-07-03: Make context menu conversions copyable. ISsue
+10987
+
+2023-07-03: Make helpful synonyms copyable. Issue 10987
+
+2023-07-03: Add id_ed25519 to scp key paths for issue 5485
+
+2023-07-03: Add advanced pref for horizontal scroll
+sensitivity. Issue 10814
+
+2023-07-03: Accept backslash-u in interpolated strings since
+they are json encoded. Issue 10982
+
+2023-06-26: Bump shell integration
+
+2023-06-26: Avoid searching for last command mark on sync
+
+2023-06-26: Fix drawing problems with password-prompt
+cursor. 10887
+
 2023-06-20: Change how signing works so you only need to
 make changes at the project level rather than at the target
 level. This will probably break MacPorts, sorry in advance.
@@ -22,213 +96,3 @@ reporting/alternate mouse scroll. Issue 10814
 
 2023-06-04: CPU usage status bar component now gets values
 over ssh on mac and linux remotes
-
-2023-05-29: Avoid overflow when growing VT100Parser buffer.
-Issue 10866
-
-2023-05-29: Turn on MetalCaptureEnabled via user defaults so
-the feature is still there but doesn't cause hangs
-
-2023-05-29: Remove MetalCaptureEnabled. It's not used much
-and it seems to cause instability. Issue 10840
-
-2023-05-29: Require a slash to consider a string a URL.
-Issue 10947
-
-2023-05-29: Make captured output tool remember the line you
-cleared at so when more output appears the previously
-cleared items do not reappear. Also make it look nicer.
-Issue 10946
-
-2023-05-29: NSLog to DLog
-
-2023-05-28: Encode URLStore more efficiently to avoid doing
-duplicate work when there's no change or a small change.
-Issue 10934
-
-2023-05-24: Make darkness of inactive tabs in non-minimal
-theme adjustable. Issue 10932
-
-2023-05-24: Add option to silence user notifications
-
-2023-05-24: Avoid ordering windows forward with focus
-follows mouse when closing a popup. Issue 10925
-
-2023-05-23: Copy mode improvements. Issue 10924
-
-2023-05-23: Bump shell integration submodule
-
-2023-05-23: Improve the appearance of upload/download menu
-items
-
-2023-05-23: Make opacity of faint text configurable. Issue
-10920
-
-2023-05-22: Add support for setting badge colors using
-SetColors. Issue 10919
-
-2023-05-22: Reset move flag in MovePaneController when
-performing a drag operation. If you previously swapped that
-would be remembered but swapping a tab with a session
-doesn't work. Issue 10915
-
-2023-05-22: Handle x-man-page URLs properly. Improve the UI
-for viewing man pages. Issue 10911
-
-2023-05-22: Fix a bug where fake bold/italic was always
-used. Issue 10910
-
-2023-05-21: Add named marks.
-
-2023-05-21: Add support for VSCodium's second bundle ID. As
-far as I can tell, the old one is still in use by Flatpak
-distribution. Issue 10909
-
-2023-05-21: Disable big sur hack for macOS 12 and later. It
-was causing some drawing artifacts in the tabbar, which I'm
-not quite sure how to reproduce consistently.
-
-2023-05-21: Set appearance of SessionView when in minimal so
-Hamburger button is visible. Issue 10906
-
-2023-05-18: Add option to broadcast clear session
-
-2023-05-16: Fix crash on quit
-
-2023-05-16: Fix crash in syntax highlighting
-
-2023-05-16: Fix signing BS
-
-2023-05-15: Use a less insane way to read local user
-defaults. Issue 10776
-
-2023-05-15: Fix build
-
-2023-05-12: Add support for filename completion over ssh
-
-2023-05-12: When you press backspace in composer command
-history accept the selection and delete the last character
-
-2023-05-12: Regenerate menu_ids.rst
-
-2023-05-12: Fix totally broken diskspace example. Issue
-10886
-
-2023-05-12: Fix crash when parsing a call has an error
-
-2023-05-11: Add mode=wide to OSC 1337;File to force wide
-mode. Issue 1790
-
-2023-05-11: Add advanced pref for default wide mode in
-portholes. Issue 1790
-
-2023-05-10: Prevent natural scroll direction from affecting
-horizontal scroll wheel mouse reporting. Issue 10881
-
-2023-05-09: Set deployment target for libssh2 correctly.
-
-Bump to xcode 14.3
-
-Fix new warnings.
-
-Fix bug in it_fromKeyValueCodedData which always failed if
-there were non-dictionary values. Not sure if this is a
-change in the 14.3 SDK or if it never worked.
-
-Fix boolean instead of logical OR in PTYMouseHandler.
-
-Fix rebuild-deps-if-needed to only update last-xcode-version
-if the build succeeds.
-
-2023-05-09: Fix use of unavailable API in colorpicker.
-
-2023-05-09: Bump BFP's deployment target
-
-2023-05-09: Switch back to development build config
-
-2023-05-09: Fix signing more
-
-2023-05-09: Try to fix signing
-
-2023-05-08: Tie make DepsIfNeeded to xcode project
-
-2023-05-08: Make dependency rebuilding work
-
-2023-05-08: Change default AITerm prompt
-
-2023-05-08: Add DepsIfNeeded makefile target to rebuild
-binary dependencies if the xcode version has changed
-
-2023-05-08: Fix retain count for iTermCallback
-
-2023-05-08: Fix retain cycle in iTermProcessInfo. Issue
-10873
-
-2023-05-07: Make new tab/window with current profile respect
-tmux integration. Issue 10867
-
-2023-05-07: Add support for importing and exporting all data
-for issue 10803
-
-2023-05-04: When appending grid to linebuffer don't make the
-last line partial even if it ends with the cursor. This was
-changed for the benefit of filtering since it keeps a
-linebuffer that it appends to after appending the grid, but
-in all other use cases (like resizing) we want to preserve
-the fidelity of the continuation mark on the last line of
-the screen so when we pop it remains a hard EOL. This is
-important for resizing because if it's soft then we add all
-the nulls on the last line of the grid to the line buffer
-and then pop them into a narrower window, causing a blank
-line to be added at the bottom. To reproduce, add a few
-screenfuls of text with ls and then narrow the window by one
-column twice. Issue 10861
-
-2023-05-04: Fix a bug where use nonascii font was ignored.
-Issue 10860
-
-2023-05-04: Support reentrant performBlockWithoutTriggers
-
-2023-05-04: Fix an incorrect assumption that OSC 7 precedes
-the prompt, when in fact it comes after. Also fix a
-performance issue with PromptStateMachine - in Swift getting
-the length of a string is an O(N) operation, it seems. This
-caused performance problems when the state machine was
-confused (e.g., start in tcsh with shell integration then
-run zsh which sends OSC 7 and it gets stuck in the
-'accruing' state). My dream is that some day I can enjoy the
-quality of life I had in Turbo Pascal where counting the
-length of a string could be done in constant time.
-
-2023-05-04: Fix a bug where the 1password biometric hint
-wouldn't stay hidden. Issue 10801
-
-2023-05-04: Add quick look for URLs to context menu. Issue
-10859
-
-2023-05-02: Add prioritizeSmartSelectionActions for issue
-10841
-
-2023-05-02: Fix a bunch of bugs in AutoresizingTextView
-
-2023-05-01: Reduce point size of announcement text to make
-it fit. Truncate if it still doesn't. Make the full text
-available as a tooltip. Issue 10837
-
-2023-05-01: Avoid recreating tracking areas while mouse is
-moving when mouse reporting with movements is on. Issue 8640
-
-2023-05-01: Allow PTYTextView to become first responder if
-you click in it.
-
-2023-05-01: Fix warning
-
-2023-05-01: Keep composer prompt up to date as colormap
-changes
-
-2023-05-01: Fix build
-
-2023-05-01: Add builtin functions iterm2.paste() and
-iterm2.focus(). Add support for calling sequences of
-functions anywhere you can enter an invocation, such as
-mouse bindings. Issue 10144
