@@ -11,4 +11,5 @@ Bug reports and feature requests live on Gitlab. Please select the appropriate l
 <li><a href="https://gitlab.com/gnachman/iterm2/-/issues/new?issuable_template=Performance%20Issues">Report performance issues</a></li>
 <li><a href="https://gitlab.com/gnachman/iterm2/-/issues/new?issuable_template=Feature%20Request">Request a new feature</a></li>
 <li><a href="https://gitlab.com/gnachman/iterm2/-/issues/new?issuable_template=Bug">Report a bug</a></li>
+<li><a href="https://gitlab.com/gnachman/iterm2/-/issues/new?issuable_template=Security">Report a security issue</a></li>
 </ul>
