@@ -1,40 +1,133 @@
-3.5.0beta10
+3.5.0beta11
+
+This release fixes a couple security problems. You
+are encouraged to upgrade right away. More details
+here: https://iterm2.com/news.html
 
 New Features:
-- Add support for inline SVGs.
-- Mouse reporting now supports horizontal
-  scrolling and more mouse buttons.
-- Add "Duplicate Session". It supports ssh
-  integration, even with jump hosts!
-- Add "Add Alert on Marks in Offscreen Sessions"
-  which is a sticky setting that lets you know
-  when a command in a not-currently-visible
-  session finishes. Requires shell integration.
+- If you use shell integration and the output of a
+  command goes past the top of the screen, the
+  command will be shown at the top.
+- Scrollback history is now lazily compressed to
+  save memory.
+- You can now assign fonts to specific ranges of
+  unicode. There is a built-in shortcut to get all
+  the powerline symbols, including downloading the
+  requisite fonts.
+- You can now import and export *all* the
+  iTerm2-related data in Settings > General >
+  Preferences > Export/Import All Settings And
+  Data.
+- Add "named marks" which make it easier to find
+  your spot in history.
 
 Other Improvements:
-- The artificial intelligence feature defaults to
-  GPT-3 rather than codex. While it isn't free, it
-  works much better. Use the advanced setting
-  "OpenAI Model name" to adjust the model.
-- Changes to dynamic profiles are now detected
-  more quickly.
-- Fix UI glitch in background image blending
-  controls.
-- Upgrade libssh2 to 1.10.
-- Double-tap modifier hotkeys now activate on key
-  up rather than key down to avoid false
-  activations.
-- When using ssh integration, file transfers no
-  longer require a new connection. They share the
-  existing channel.
+- Add isHotkeyWindow variable to window scope.
+- Add a reset button to the modifier remapping UI.
+- Add ability to remap the right control key.
+- Semantic history now supports "[filename](line
+  number])" and "[filename] line [line number]"
+- Update it2ul to avoid sending xattrs to GNU tar.
+- Double-clicking a pane spliter equalizes the
+  sizes of views adjacent to it.
+- Make "Adjust window when changing font size"
+  work in tmux integration.
+- Add support for mouse reporting buttons 10 and
+  11 and horizontal scrolling.
+- Add handlers for titan and gemini schemes.
+- Add support for MFA in 1password integration.
+- Having a separate color for selected text is now
+  optional.
+- Add a menu item to install an already-downloaded
+  Python runtime.
+- Window transparency can now be set to 100%.
+- Add a pref for the location of Python API
+  scripts.
+- Add a variable "line" when evaluating a
+  trigger's interpolated string, giving the line
+  number since the start of history.
+- Make it2dl more reliable in tmux integration.
+- Add option to include timestamps in saved
+  content.
+- Add an experimental "auto composer" feature that
+  replaces the command line with a native control.
+  This is still a work in progress.
+- Add builtin functions "iterm2.paste()" and
+  "iterm2.focus()".
+- You can now invoke script functions from mouse
+  bindings.
+- Script invocations can use semicolons to call
+  multiple functions.
+- Improve default AI prompt.
+- Add mode=wide to OSC 1337;File to force wide
+  mode.
+- Clearing the buffer while broadcasting
+  keystrokes now gives the option to clear all
+  broadcasted-to sessions.
+- Add support for the new VSCodium bundle ID.
+- Add setting to select opacity of faint text.
+- Add new copy mode commands: ^e and ^y to scroll
+  by one line, ^d and ^u to scroll by half a
+  screen, and you can now precede a command with a
+  number to apply it repeatedly.
+- Make captured output tool remember the line you
+  cleared at so when more output appears the
+  previously cleared items do not reappear. Also
+  make it look nicer.
+- CPU usage status bar component now gets values
+  over ssh on mac and linux remotes when using ssh
+  integration.
+- Improve appearance of password-prompt cursor.
+- Support id_ed25519 for secure copy via semantic
+  history.
+- Informative values in context menu (e.g.,
+  hex-to-decimal conversions) are now copyable.
+- Control-C in Find on Page now focuses terminal.
+- Improve how the password manager stores
+  passwords in keychain so they make more sense in
+  Keychain Access.
+- The status bar icon now includes the full main
+  menu.
+- Stop parsing OSC after 1 megabyte.
+- Add OSC 1337 OpenURL=:(base64-encoded URL)
+- In Ventura, the tab bar now remains visible in
+  native full screen mode when revealing the title
+  bar.
 
 Bug Fixes:
 - Fix crashes.
-- Fix a bug where images disappear prematurely.
-- Remap modifiers on mouse clicks like we do for
-  keypresses.
-- Fix cursor color in reverse video mode. It
-  should also be reversed.
-- Fix ssh integration on systems whose /bin/sh is
-  POSIX but not Bash.
+- Fix memory leaks.
+- Fix a bug where mouse reporting sometimes
+  wouldn't work until switching to another app and
+  back.
+- Improve appearance of powerline glyphs and box
+  drawing characters.
+- Fix non-standard mouse cursors, like Mousecape.
+- Fix support for combining marks in reverse
+  non-regex search where the wrong region was
+  highlighted.
+- Fix truncation in fullscreen hotkey windows over
+  spitscreen fullscreen windows of other apps.
+- Fix clicking ssh: links to open ssh integration.
+- Fix a bug where the first keystroke in copy mode
+  could be ignored.
+- Performnace improvements when mouse tracking is
+  on.
+- Performance improvements if you have lots of OSC
+  8 URLs in restorable history.
+- Performance improvements for nushell.
+- Make new tab/window with current profile respect
+  tmux integration.
+- Fix appearance of the pane titlebar menu button
+  in Minimal mode with dark background.
+- Fix support for x-man-page URLs.
+- Avoid ordering windows forward with focus
+  follows mouse when closing a popup.
+- Work around a macOS bug where focus follows
+  mouse could activate the wrong pane.
+- Fix a bug in opening menus in status bar
+  components that caused them to appear twice.
+- Fix a bug where session colors didn't respond to
+  dark mode/light mode changing when in the
+  Minimal theme.
 
