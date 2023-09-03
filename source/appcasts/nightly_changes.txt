@@ -1,3 +1,22 @@
+2023-09-03: Sanitize paths in x-man-page URL
+
+2023-09-03: Don't close or clear composer when executing a
+command and auto composer is not enabled. Issue 11085
+
+2023-09-01: Add a button to the command info screen to
+remove the offscreen command line
+
+2023-09-01: Fix a bug where the wrong external attribute
+index was used for offscreen command lines in both legacy
+and GPU renderer. Issue 11082
+
+2023-08-31: Fix a bug where the commandRangew as wrong with
+scrollback overflow. This probably broke a lot of things,
+but it definitely broke offscreen command lines. Issue 11080
+
+2023-08-31: Use the range of the command, not the prompt,
+for the offscreen command line. Issue 11080
+
 2023-08-28: Add NSPhotoLibraryUsageDescription for issue
 11078
 
@@ -25,7 +44,7 @@ I used to use
 2023-08-26: Increase width of font picker panel. Issue 11063
 
 2023-08-26: Don't set input source if input source forcing
-is not enabled. Issue 10973
+is not enabled. Issue 10973　
 
 2023-08-21: Avoid out of bounds access in
 urlActionForString. Issue 10972
@@ -109,87 +128,3 @@ it's a target in its own command queue. Issue 11028
 
 2023-08-01: Arcify TmuxController and TmuxGateway. Make
 gateway's delegate weak. Issue 11028
-
-2023-07-28: Add optimizations for looking up a font and for
-checking for overwritten images.
-
-2023-07-24: Make git status bar not respond to both click
-and mousedown to open menu since they can both happen. Mouse
-down seems to be sufficient. Issue 11023
-
-2023-07-24: Don't make focus follow mouse on mouseEntered if
-the event fails a hit test. Looks like a bug in macOS 13
-that you can get mouseEntered on the wrong view while there
-is scroll momentum. Issue 11009
-
-2023-07-23: Bump shell integration
-
-2023-07-18: Add support for 'filename line [number] in
-semantic history. Issue 11022
-
-2023-07-15: Add missing key images
-
-2023-07-15: Improve visibility of secure keyboard entry
-indicator on dark backgrouns and make the text clearer when
-another app has enabled it
-
-2023-07-15: Add OSC 1337 OpenURL=:(base64-encoded URL).
-Issue 10994
-
-2023-07-11: Stop parsing OSC after 1 meg payload. Fix a few
-bugs in it2dl with it2ssh
-
-2023-07-10: Fix bounds of status bar config numeric knob
-steppers
-
-2023-07-10: Add versioning check for move_session
-
-2023-07-10: Add App.async_move_session which uses the new
-iterm2.move_session. Add supports for booleans to the
-function calling syntax. Issue 11000
-
-Also fix a bug when splitting a non-current tab that would
-leave split panes with the wrong blur or missing titlebars
-and wrong tab color.
-
-2023-07-09: Add main menu to status bar icon when in
-UIElement mode for issue 10695
-
-2023-07-08: Update how passwords are saved in the keychain.
-Instead of storing both the account name and username in the
-Account field and setting Label to iTerm2, store account
-name in Label and username in Account. Issue 10998
-
-2023-07-08: Avoid double accrual of pretyped commands into
-the auto composer in Fish which does crazy prompt drawing
-
-2023-07-08: Don't create a side effect while editing the
-prompt for the benefit of the auto composer unless auto
-composer is enabled. Issue 10938.
-
-2023-07-06: Add a tooltip to 2-factor code in password
-manager
-
-2023-07-06: Fix alert.run_modal docs. Issue 10994
-
-2023-07-05: Control-C to exit search field. Issue 10993
-
-2023-07-05: Prevent reentrant joined threads during side
-effect when changing background color in minimal theme
-(reproducible with Open Quickly)
-
-2023-07-05: Update system window restoration disabled
-warning for ventura. Issue 10990
-
-2023-07-03: Make context menu conversions copyable. ISsue
-10987
-
-2023-07-03: Make helpful synonyms copyable. Issue 10987
-
-2023-07-03: Add id_ed25519 to scp key paths for issue 5485
-
-2023-07-03: Add advanced pref for horizontal scroll
-sensitivity. Issue 10814
-
-2023-07-03: Accept backslash-u in interpolated strings since
-they are json encoded. Issue 10982
