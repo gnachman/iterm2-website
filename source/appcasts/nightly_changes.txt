@@ -1,3 +1,42 @@
+2023-10-06: Fix path to TerminalButton.metal
+
+2023-10-06: Add TerminalButton.metal
+
+2023-10-06: Change subtitle asyncronously to avoid reentrant
+sync. Issue 11160
+
+2023-10-06: Fix crash on pre-macos 11
+
+2023-10-05: Remember sort order of dynamic profiles
+
+2023-10-05: Prevent assertion
+
+2023-10-03: Don't store NSData in a status bar's
+configuration because it's not JSON encodable. Issue 8913
+
+2023-10-01: Don't crash if job name is nil. Issue 11131
+
+2023-10-01: Fix crash on mouseEnter over top margin
+
+2023-10-01: Optimize removing from the head of SortedArray.
+Issue 11135
+
+2023-09-30: Implement copy button
+
+2023-09-29: Add control sequence to add a clickable button
+
+2023-09-28: Remove echos from release_beta.sh
+
+2023-09-28: Betas are 10.15
+
+2023-09-28: Fix hang in SortedArray
+
+2023-09-28: Fix a bug in padding screen char arrays where
+the continuation was not extended, causing background colors
+to be wrong when drawn from scrollback
+
+2023-09-28: Add support for code blocks and terminal buttons
+
 2023-09-26: Use -ld_classic to unbreak old OS versions.
 Issue 11127
 
@@ -92,122 +131,3 @@ remove the offscreen command line
 2023-09-01: Fix a bug where the wrong external attribute
 index was used for offscreen command lines in both legacy
 and GPU renderer. Issue 11082
-
-2023-08-31: Fix a bug where the commandRangew as wrong with
-scrollback overflow. This probably broke a lot of things,
-but it definitely broke offscreen command lines. Issue 11080
-
-2023-08-31: Use the range of the command, not the prompt,
-for the offscreen command line. Issue 11080
-
-2023-08-28: Add NSPhotoLibraryUsageDescription for issue
-11078
-
-2023-08-28: Warn before connecting via scp to an never
-before seen host. Strip control characters from RemoteHost.
-Issue 11077
-
-2023-08-27: Add Unicode 15 emoji. Issue 11075
-
-2023-08-27: When you click on the invalid command warning,
-show a popover explaining what's going on
-
-2023-08-27: Warn if the profile's command doesn't exist
-since the shell's path isn't loaded. Issue 11072 and about a
-million others
-
-2023-08-27: Add example of dim
-
-2023-08-27: Add zalgo
-
-2023-08-27: Add tool to convert between different Unicode
-encodings since Google is too shite to find the online tools
-I used to use
-
-2023-08-26: Increase width of font picker panel. Issue 11063
-
-2023-08-26: Don't set input source if input source forcing
-is not enabled. Issue 10973
-
-2023-08-21: Avoid out of bounds access in
-urlActionForString. Issue 10972
-
-2023-08-21: Add missing sponsor logo
-
-2023-08-21: Don't insert a newline before a mark when a
-trigger detects a prompt but line-style marks are not
-enabled. Issue 11067
-
-2023-08-21: When dark mode changes, update the session's
-configuration's profile fields since minimum contrast comes
-from config.minimumContrast. This fixes a bug where minimum
-contrast (and other related fields) didn't update on dark
-mode change. Issue 11066
-
-2023-08-20: Add workaround for titlebar accessory bug. Issue
-11058.
-
-2023-08-20: Add recently used profiles to dock menu (even
-when app isn't running). Issue 1040
-
-2023-08-19: Draw indicators over offscreen command line when
-it is visible
-
-2023-08-14: Add a sponsor icon, plus machinery to make this
-possible.
-
-2023-08-14: Add an advanced pref for automatically enabling
-secure keyboard input. Add support for secure user defaults
-to advanced settings for booleans. Issue 11061.
-
-2023-08-13: Fix CGColor leak. Issue 11021
-
-2023-08-12: Python API: Making *Knob classes subclasses of
-Knob and moving Knob over to BaseKnob (#485)
-
-Make *Knob classes subclasses of Knob
-
-2023-08-12: When an expectation has a pending match, fail to
-copy it rather than creating a copy with a nil regex. Issue
-11052
-
-2023-08-11: Ensure decompressed buffers have at least `size`
-bytes. Issue 11055
-
-2023-08-11: Shift underlines in GPU rendered offscreen
-command lines. Issue 11057
-
-2023-08-07: 3.5.0beta11
-
-2023-08-07: Fix ReportUpload vulnerability
-
-2023-08-07: Fix for method 1 and 2.
-
-Send ^C as the first character of output when entering tmux
-integration mode.
-
-2023-08-07: Fixes for method 1.
-
-Remove DECSCPP and DECNLS.  Sanitize title reports to remove
-risky characters.
-
-2023-08-06: Make minimal theme change colors according to
-profile's separate light/dark mode values. Issue 11029
-
-2023-08-06: Add pref to force keyboard locale. Issue 10973
-
-2023-08-06: Add template for security report
-
-2023-08-06: Put the tabbar back in the titlebar as an
-accessory in Ventura. Issue 11038
-
-2023-08-06: Update LetsMove
-
-2023-08-05: Add tags to snippets. Add an advanced profile
-pref to filter snippets by tag. Issue 11024
-
-2023-08-01: Prevent cyclic reference to TmuxGateway when
-it's a target in its own command queue. Issue 11028
-
-2023-08-01: Arcify TmuxController and TmuxGateway. Make
-gateway's delegate weak. Issue 11028
