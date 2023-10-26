@@ -1,3 +1,23 @@
+2023-10-26: Set appearance of status bar in minimal theme.
+Issue 11186
+
+2023-10-26: Fix build
+
+2023-10-25: Try to fix issue 10712.
+
+Banish auto layout from table view cells.  Fix minimum
+height for tools Fix layout in job tool Collapse tools when
+they don't fit to avoid constraint violations because auto
+layout is maybe not completely avoidable
+
+If anything in the window uses auto layout then autoresizing
+*breaks* because the constraints that are supposed to
+emulate auto layout simply don't work the same (for example,
+hidden views constrain the movement of other views, which
+can prevent the window from resizing). When the day comes
+that I can no longer avoid auto layout I really don't know
+what I'll do.
+
 2023-10-24: Revert "Adhoc build 0.20231009_181325-adhoc"
 
 This reverts commit
