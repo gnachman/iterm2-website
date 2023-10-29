@@ -9,6 +9,11 @@ active-state: news
 
 Version 3.4.20 and 3.5.0beta11 have been released today. They address security vulnerabilities related to control sequences that send responses which can be used to cause iTerm2 to issue commands under certain circumstances. Credit goes to Github user solid-snail for the discovery. Please read <a href="https://blog.solidsnail.com/posts/2023-08-28-iterm2-rce">From Terminal Output to Arbitrary Remote Code Execution</a> for more information.
 
+Updated 10/29/2023: The CVE numbers finally came in. They are:
+
+  * CVE-2023-46300
+  * CVE-2023-46301
+
 #### iTerm2 Version 3.4 Released
 <i>Sunnyvale, CA&mdash;November 10, 2020</i>
 
