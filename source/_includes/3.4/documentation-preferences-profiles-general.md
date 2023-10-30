@@ -32,6 +32,8 @@ This menu contains items which may be separately enabled. They are combined to f
 
 If a script that installs a custom title provider is running, its offerings will be added to the bottom of the list. For a working demo, see the <a href="https://iterm2.com/python-api/examples/georges_title.html">George's Title Algorithm</a> example.
 
+<a href="https://iterm2.com/documentation-session-title.html">Learn more about session titles.</a>
+
 #### Applications in terminal may change the title
 When enabled, a control sequence can change a session's or window's title.
 
