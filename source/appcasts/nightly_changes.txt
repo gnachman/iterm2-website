@@ -1,3 +1,19 @@
+2023-11-02: Add invoke function to open quickly. Issue 11190
+
+2023-11-02: Switch release_beta and release_stable to use
+notarytool
+
+2023-11-02: Change nightly.sh to use notarytool
+
+2023-11-02: Don't allow blocks in alternate screen mode.
+Update the cached block ID->location map when resizing
+
+2023-10-31: Fix syntax error
+
+2023-10-31: When the profile is configured to use CSI u make
+sure disambiguateEscape is always at the top of the stack.
+Issue 10376
+
 2023-10-30: Optimize PromptStateMachine.handle(token:)
 (#488)
 
@@ -148,114 +164,3 @@ configuration because it's not JSON encodable. Issue 8913
 
 2023-10-01: Optimize removing from the head of SortedArray.
 Issue 11135
-
-2023-09-30: Implement copy button
-
-2023-09-29: Add control sequence to add a clickable button
-
-2023-09-28: Remove echos from release_beta.sh
-
-2023-09-28: Betas are 10.15
-
-2023-09-28: Fix hang in SortedArray
-
-2023-09-28: Fix a bug in padding screen char arrays where
-the continuation was not extended, causing background colors
-to be wrong when drawn from scrollback
-
-2023-09-28: Add support for code blocks and terminal buttons
-
-2023-09-26: Use -ld_classic to unbreak old OS versions.
-Issue 11127
-
-2023-09-25: Tolerate missing locations in sorted array
-
-2023-09-25: Add 1337 code Block to define long markdown
-documents
-
-2023-09-25: Work around bug with nil screenCharLine in
-non-debug builds
-
-2023-09-25: Always clip drawRect to view bounds
-
-2023-09-25: Add assertion that the screen gives us good
-screen char arrays. I hit a null dereference but I'm not
-sure how
-
-2023-09-25: Make SolidColorView draw within its bounds
-
-2023-09-25: Add SortedArray to the project
-
-2023-09-25: Add explicit conformance to NSWindowRestoration
-for iTermProfilesWindowRestorer. Issue 11121
-
-2023-09-24: Intersect the dirty rect passed to drawRect with
-the view's bounds because something changed in Sonoma. I
-probably have a lot more of this bug.
-
-2023-09-24: Optimimze finding range of output of a command.
-
-2023-09-24: Reword 'show border around windows' to clarify
-its new purpose. Issue 11115
-
-2023-09-24: Use a layer-backed division view to work around
-a Sonoma bug. Issue 11118
-
-2023-09-23: Conform to NSWindowRestoration to fix crash on
-launch in Sonoma
-
-2023-09-23: Fix makefile
-
-2023-09-21: Fix crash when opening prefs
-
-2023-09-21: Fix beta plist
-
-2023-09-21: Continue to hack on updateVersion. I think it
-works now
-
-2023-09-21: gitignore plists/iTerm2.plist since it is
-generated at build time
-
-2023-09-21: Fix updateVersion to modify plists/iTerm2.plist
-in place since xcode seems to now copy the plist later than
-it used to
-
-2023-09-21: Finish rebuilding deps and make fixes for xcode
-15
-
-2023-09-21: Rebuild deps with xcode 15 and -ld64
-
-2023-09-21: Add missing code
-
-2023-09-15: Add option to disable history compression
-
-2023-09-15: Add default icon if command is unrecognized.
-Issue 11106
-
-2023-09-13: Avoid a paused side effect when setting window
-title. It adds several ms of latency and tends to happen
-just before drawing a prompt, which can lead to an annoying
-extra draw. Issue 11094
-
-2023-09-07: Improve checking of ssh hostnames
-
-2023-09-07: Add menu item to remove recents from dock menu.
-Issue 11089
-
-2023-09-06: Fix support for modern openAI APIs. Switch to
-gpt-3.5-turbo by default. Fix UI issues in composer. Issue
-11092
-
-2023-09-03: Make VT100Grid.debugString not use so much stack
-
-2023-09-03: Sanitize paths in x-man-page URL
-
-2023-09-03: Don't close or clear composer when executing a
-command and auto composer is not enabled. Issue 11085
-
-2023-09-01: Add a button to the command info screen to
-remove the offscreen command line
-
-2023-09-01: Fix a bug where the wrong external attribute
-index was used for offscreen command lines in both legacy
-and GPU renderer. Issue 11082
