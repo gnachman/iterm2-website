@@ -1,3 +1,26 @@
+2023-11-24: Fix checking python version in ssh. For some
+reason running the command as $* gives strange output on my
+Linux host.
+
+Simplify how CPU utilization is distributed. There was a bug
+where routers ended up with too many consumers. I never
+really got to the bottom of it because it was just
+architected badly.
+
+iTermLocalCPUUtilizationPublisher is now responsible for
+publishing local CPU usage. It goes to each
+iTermCPUUtilization which distributes it to routers and then
+to consumers. SSH-based values from from the SSH process
+info provider, which takes a similar role to
+iTermLocalCPUUtilizationPublisher.
+
+When the underlying publisher changes, the status bar
+component restarts its drawing state.
+
+Also avoid drawing when there is no window.
+
+Issue 11216
+
 2023-11-21: Generalize sponsors code. Fix mouseover bug for
 whitebox
 
@@ -222,10 +245,3 @@ sync. Issue 11160
 
 2023-10-03: Don't store NSData in a status bar's
 configuration because it's not JSON encodable. Issue 8913
-
-2023-10-01: Don't crash if job name is nil. Issue 11131
-
-2023-10-01: Fix crash on mouseEnter over top margin
-
-2023-10-01: Optimize removing from the head of SortedArray.
-Issue 11135
