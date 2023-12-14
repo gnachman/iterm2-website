@@ -1,3 +1,44 @@
+2023-12-13: Allow turning on smart cursor color for all
+cursor styles since they can be changed by a control
+sequence. Issue 11249
+
+2023-12-13: Fix a bug where native rendering isn't
+immediately visible when GPU rendering is on
+
+2023-12-13: Move non-fullscreen floating hotkey windows
+under notification center. Issue 11242
+
+2023-12-11: Remove incorrect smglr from hacked terminfo.
+`tabs -2` would output a bogus control sequence.
+
+2023-12-08: Create a new tab in general settings for AI. Add
+model selection and max tokens to settings and remove them
+from advanced settings. Also, enhance Codecierge with
+functions for shell command execution and file writing.
+
+2023-12-07: Turn off recent documents by default
+
+2023-12-07: Minor polish to codecierge
+
+2023-12-07: Give codecierge the ability to run commands
+automatically.
+
+2023-12-07: Add Codecierge
+
+2023-12-01: Add Shell>Duplicate window. Issue 11238
+
+2023-11-29: Add antialiased to MetalGlyphKey so that when
+you change the non-ascii antialiased flag we're forced to
+build new textures. Issue 11235
+
+2023-11-29: Don't call PTYTextView.setNeedsDisplay because
+it's always the legacy view or metal view that needs
+display. This improves performance when a porthole is
+present.
+
+2023-11-29: Don't alpha-out PTYTextView when a porthole or
+annotation is visible. Enable metal in this case.
+
 2023-11-28: Fix a bug in accessibility screen coords where
 the Y value increases as it goes down and y=0 is the top of
 the main screen. Whoever did this should feel bad about
@@ -139,160 +180,3 @@ notarytool
 
 2023-11-02: Don't allow blocks in alternate screen mode.
 Update the cached block ID->location map when resizing
-
-2023-10-31: Fix syntax error
-
-2023-10-31: When the profile is configured to use CSI u make
-sure disambiguateEscape is always at the top of the stack.
-Issue 10376
-
-2023-10-30: Optimize PromptStateMachine.handle(token:)
-(#488)
-
-Some code used for debugging was actually quite expensive,
-so reduce it a bit when not relevant.  2023-10-29: Check for
-python3 in conductor more carefully. Issue 11193
-
-2023-10-29: Make deps.sb more restrictive
-
-2023-10-29: Clean up Makefile for rebuilding dependencies
-
-This also allows the build to run in parallel.
-
-2023-10-29: Fix a bug where natively rendered selections
-lost their attributes when resizing
-
-2023-10-29: Turn off the idiotic xcode 15 console. I'm so
-tired of this shit
-
-2023-10-29: Bump
-
-2023-10-29: Add logging
-
-2023-10-26: Fix a bug where the shared prefs panel has no
-toolbar after opening the session prefs panel
-
-2023-10-26: Set appearance of status bar in minimal theme.
-Issue 11186
-
-2023-10-26: Fix build
-
-2023-10-25: Try to fix issue 10712.
-
-Banish auto layout from table view cells.  Fix minimum
-height for tools Fix layout in job tool Collapse tools when
-they don't fit to avoid constraint violations because auto
-layout is maybe not completely avoidable
-
-If anything in the window uses auto layout then autoresizing
-*breaks* because the constraints that are supposed to
-emulate auto layout simply don't work the same (for example,
-hidden views constrain the movement of other views, which
-can prevent the window from resizing). When the day comes
-that I can no longer avoid auto layout I really don't know
-what I'll do.
-
-2023-10-24: Revert "Adhoc build 0.20231009_181325-adhoc"
-
-This reverts commit
-e068ab0f871388a87ef06873c4e8970199078b9d.
-
-2023-10-22: Force move window to screen if _moveToScreen
-fails to do anything because it is a dumb and buggy poopoo.
-Also fix a bug where isMovingScreen was never reset, and
-change build config to Devel. Issue 11165
-
-2023-10-20: Adhoc build 0.20231009_181325-adhoc
-
-2023-10-20: Don't set PTYSplitView's frame if it's already
-correct when laying out toolbelt. Issue 10712
-
-2023-10-20: Add search field to snippets tool
-
-2023-10-20: Use PDF instead of EPS for pwerline symbols
-because macOS dropped EPS support
-
-2023-10-17: Try to fix window > move to screen. Issue 11165
-
-2023-10-16: Fix VALID_ARCHS for iTerm2ImportStatus, which
-was an ancient x86+i386 value
-
-2023-10-15: Rebuild deps with fat libssh2
-
-2023-10-15: Makefile fixes
-
-2023-10-15: Disable verbose logging
-
-2023-10-15: Catch exceptions when generating suggestions in
-framer
-
-2023-10-15: Remove 'disable offscreen command line' when
-command info is shown from a context menu rather than by
-right clicking an offscreen command line
-
-2023-10-15: Add share button to command info view
-
-2023-10-14: Add terminal buttons when line-style marks are
-present. Add support for
-iterm2://username@hostname/command?c=cmd&d=directory to
-share commands
-
-2023-10-10: Fix hover buttons
-
-2023-10-10: Retry activating the app. Works around a bug in
-macOS sonoma where a modifer doubletap leading to activation
-does nothing, but if you try 'a little later' it works.
-Issue 11129
-
-2023-10-09: Redraw when dimming amount changes. Issue 11122
-
-2023-10-09: Update app presentation after exiting full
-screen window
-
-2023-10-09: Debug logging improvement
-
-2023-10-09: Fixes for system settings changes in ventura.
-Issue 11146
-
-2023-10-09: Create temporary find driver if needed when
-searching for URLs
-
-2023-10-09: Fix path in system settings. Issue 11146
-
-2023-10-09: Fix alignment of 'disable showing offscreen
-command' button in popup and fix clipping bug in status bar
-time serieses
-
-2023-10-09: Fix clipping of graphical status bar items.
-Issue 11164
-
-2023-10-09: Fix sonoma crash in mousing over Main Menu in
-status bar menu
-
-2023-10-06: fix bug where double-tap doesn't work in sonoma.
-Issue 11129
-
-2023-10-06: Fix TerminalButton target
-
-2023-10-06: Fix path to TerminalButton.metal
-
-2023-10-06: Add TerminalButton.metal
-
-2023-10-06: Change subtitle asyncronously to avoid reentrant
-sync. Issue 11160
-
-2023-10-06: Fix crash on pre-macos 11
-
-2023-10-05: Remember sort order of dynamic profiles
-
-2023-10-05: Prevent assertion
-
-2023-10-03: Don't store NSData in a status bar's
-configuration because it's not JSON encodable. Issue 8913
-
-2023-10-01: Don't crash if job name is nil. Issue 11131
-
-2023-10-01: Fix crash on mouseEnter over top margin
-
-2023-10-01: Optimize removing from the head of SortedArray.
-Issue 11135
