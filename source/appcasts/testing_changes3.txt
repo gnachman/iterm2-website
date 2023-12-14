@@ -1,42 +1,65 @@
-3.5.0beta17
+3.5.0beta18
 
-This is the same as beta 16 but fixes the
-following bugs:
+New Features
+- A new AI feature in the Toolbelt, "Codecierge",
+  lets you set a goal and then walks you
+  step-by-step to completing it by watching the
+  terminal contents. It requires you to supply an
+  OpenAI API key.
+- You can now invoke API-registered functions from
+  Open Quickly.
+- Add "Move session to tab" to context menu.
+- You can now cmd-click on the command prompt to
+  get info about the command.
+- Add IntelliJ UE support to semantic history.
+- Fix support for VSCode Insiders in semantic
+  history.
+- Add Shell > Duplicate Window.
 
-* Don't turn debug logging on by default.
-* Ensure Window > Move to [display] always works.
+Other Improvements
+- Performance improvements.
+- Work better when using both control sequences
+  and triggers to do shell integration.
+- Exclude loopback interfaces in network status
+  bar component.
+- Make Window>Arrange spit panes preserve
+  horizontality of splits in common cases.
+- When a hotkey window rolls out restore the
+  previously active app only if it was rolled out
+  because of a keypress.
+- Tip of the day is now draggable.
+- Remove recents from dock menu because it
+  misbehaved mysteriously.
+- Non-fullscreen floating hotkey windows now
+  appear under notifications.
+- You can now turn on smart cursor color even if
+  the default cursor is not a box.
 
-Release notes from 3.5.0beta16 follow:
-
-Improvements:
-- Remember the order of dynamic profiles after you
-  hand-edit them in settings, even if they are
-  later removed and re-added.
-- When using auto-composer, add buttons above the
-  command line for frequent actions.
-- Add a search field to the snippets tool.
-
-Bug Fixes:
-- Fix a bug where double-tapping a modifier to
-  open a hotkey window doesn't work on macOS
+Bug Fixes
+- Fix layout issues when toolbar is open.
+- Fix wrong light/dark mode in status bar
+  popovers.
+- Fix missing prefs toolbar.
+- Fix bugs when resizing with natively rendered
+  sections.
+- Fix how ssh integration handles missing Python.
+- Enable the autolaunch folder in the script
+  export file picker.
+- Fix bug where offscreen command line rendered
+  the wrong line when the session is scrolled all
+  the way up.
+- Fix bug where job name in jobs tool overlapped
+  the pid column.
+- Fix crashes.
+- Fix memory leaks.
+- Fix disclosable view accessories in alerts on
   Sonoma.
-- Fix crashes
-- Fix a bug where profiles with a Python API-based
-  status bar component could not be exported as
-  JSON.
-- Fix drawing of status bar items with graphs in
-  Sonoma.
-- Fix link to open system settings in Sonoma.
-- Fix a bug where searching for a URL doesn't do
-  anything sometimes.
-- Fix bug where dock is hidden after exiting
-  fullscreen mode sometimes.
-- Fix a bug where panes' dimmed status is not
-  updated after switching panes sometimes.
-- Fix x86 support.
-- Fix a bug where Window > Move to [screen]
-  sometimes didn't work.
-- Fix a bug where certain powerline symbols
-  weren't drawn on macOS Sonoma.
-
+- Fix a bug where dimming didn't always update
+  when changing panes.
+- Fix a flash when toggling GPU rendering.
+- Fix a bug where accessibility coordinates were
+  wrong, leading to various issues.
+- Fix a bug where changing whether non-ascii
+  characters are anti-aliased wouldn't update the
+  display if GPU rendering was on.
 
