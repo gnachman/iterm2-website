@@ -1,3 +1,50 @@
+2023-12-26: Add advanced pref to bounce dock icon when bell
+rings
+
+2023-12-26: CSI u mode in profile enables CSI u but *not*
+Disambiguate Escapes, which escapes breaking backward
+compatibility (e.g., ^C gets escaped). That's for issue
+10376. But be careful not to regress issue 10376 where
+exiting neovim should leave you in CSI u mode if that's what
+your profile specified. The fix for that bug turned on
+Disambiguate Escape when the profile specifies CSI u, which
+was a step too far.
+
+This commit also adds Disambiguate Escape to the terminal
+state menus.
+
+2023-12-26: Fix incorrect bounding box in character source
+and incorrect quad for rendering ASCII text that is wider
+than the glyph size. This can happen because we introduced
+an 'ascii offset' to correct for glyphs with a negative X
+offset in their bounding box but didn't increase the size of
+the glyph we draw by the same amount. Issue 11267
+
+2023-12-26: Rebuild deps for xcode 15.1
+
+2023-12-23: Fix crash when creating sessions with
+Applescript. Issue 11264
+
+2023-12-23: Add context menu to paste history tool. Issue
+11259
+
+2023-12-19: Allow `xtermParseColorArgument` to accept
+four-digit hex values. Issue 11258 (#492)
+
+
+2023-12-19: Use round instead of floor for newer baseline
+calculation to fix Iosevka for issue 6238. It doesn't seem
+to hurt Input Mono Condensed (issue 6159) either.
+
+2023-12-18: Undo showing session name in title after popping
+icon name, which was meant to be temporary when the icon
+name was set. Issue 11253
+
+2023-12-18: Ensure that iTermController is cleaned up when
+the app terminates even if it doesn't get released. Cleaning
+up from dealloc is a dumb idea anyway since it might not run
+on the main thread. Issue 11220
+
 2023-12-13: Allow turning on smart cursor color for all
 cursor styles since they can be changed by a control
 sequence. Issue 11249
