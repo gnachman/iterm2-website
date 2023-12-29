@@ -1,3 +1,50 @@
+2023-12-27: Support opening to line number in Xcode (#490)
+
+
+2023-12-27: Fix zipping. NSFileCoordinator doesn't seem to
+work with symlinks
+
+2023-12-27: Rebuild deps with proper deployment targets
+
+2023-12-27: Update submodules
+
+2023-12-27: Bump submodules
+
+2023-12-27: Move throughput pref to Magic out of GPU prefs.
+When not maximizing throughput pause token executor while a
+sync is pending. This allows us to easily hit 120 fps. Issue
+11277
+
+2023-12-27: Hide terminal contents from codecierge when it
+is not visible.
+
+2023-12-27: Tweak max token calculation to include functions
+
+2023-12-27: Use the app's dark mode setting rather than the
+view's effective appearance to decide whether to use the
+light or dark color suite.
+
+This addresses two problems:
+
+1. If your light-mode suite has a dark background and you've
+selected the Minimal theme, then Edit Session opens to the
+dark suite and it appears to be broken.  2. If your
+light-mode suite has a dark background and your dark-mode
+suite has a light background and you've selected the Minimal
+theme, then it flashes between the two suites. This is
+because, before this commit:
+
+Light suite -> View gets a light appearance -> Amended key
+uses the Light suffix -> Dark background color is selected
+-> View gets a dark appearance -> Amended key uses the Dark
+suffix -> Light background color is selected -> repeat
+
+Now we simply use NSApp.effectiveAppearance to decide which
+key suffix to use instead of basing it on the value selected
+by the suffix.
+
+2023-12-27: Use only ascii spaces in plain text logs
+
 2023-12-26: Add advanced pref to bounce dock icon when bell
 rings
 
