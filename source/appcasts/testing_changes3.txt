@@ -1,65 +1,34 @@
-3.5.0beta18
+3.5.0beta19
 
 New Features
-- A new AI feature in the Toolbelt, "Codecierge",
-  lets you set a goal and then walks you
-  step-by-step to completing it by watching the
-  terminal contents. It requires you to supply an
-  OpenAI API key.
-- You can now invoke API-registered functions from
-  Open Quickly.
-- Add "Move session to tab" to context menu.
-- You can now cmd-click on the command prompt to
-  get info about the command.
-- Add IntelliJ UE support to semantic history.
-- Fix support for VSCode Insiders in semantic
-  history.
-- Add Shell > Duplicate Window.
+- Semantic history can now open to line number in
+  Xcode.
 
 Other Improvements
-- Performance improvements.
-- Work better when using both control sequences
-  and triggers to do shell integration.
-- Exclude loopback interfaces in network status
-  bar component.
-- Make Window>Arrange spit panes preserve
-  horizontality of splits in common cases.
-- When a hotkey window rolls out restore the
-  previously active app only if it was rolled out
-  because of a keypress.
-- Tip of the day is now draggable.
-- Remove recents from dock menu because it
-  misbehaved mysteriously.
-- Non-fullscreen floating hotkey windows now
-  appear under notifications.
-- You can now turn on smart cursor color even if
-  the default cursor is not a box.
+- Change shortcut for AI to Cmd-Y because Cmd-B is
+  reserved for the Leader key.
+- Control sequences that set color values accept
+  4-digit hex values now.
+- The paste history tool now has a context menu.
+- Enabling CSI u mode in your profile does not
+  enable Disambiguate Escapes now. This additional
+  setting is now exposed in the Terminal State menu.
+- Use only ASCII spaces in plain-text logs.
+- Make counting ChatGPT tokens more conservative.
+- Prevent Codecierge from seeing terminal contents
+  when the tool is not visible.
 
 Bug Fixes
-- Fix layout issues when toolbar is open.
-- Fix wrong light/dark mode in status bar
-  popovers.
-- Fix missing prefs toolbar.
-- Fix bugs when resizing with natively rendered
-  sections.
-- Fix how ssh integration handles missing Python.
-- Enable the autolaunch folder in the script
-  export file picker.
-- Fix bug where offscreen command line rendered
-  the wrong line when the session is scrolled all
-  the way up.
-- Fix bug where job name in jobs tool overlapped
-  the pid column.
-- Fix crashes.
-- Fix memory leaks.
-- Fix disclosable view accessories in alerts on
-  Sonoma.
-- Fix a bug where dimming didn't always update
-  when changing panes.
-- Fix a flash when toggling GPU rendering.
-- Fix a bug where accessibility coordinates were
-  wrong, leading to various issues.
-- Fix a bug where changing whether non-ascii
-  characters are anti-aliased wouldn't update the
-  display if GPU rendering was on.
+- Fix various crashes.
+- Fix a bug where quitting didn't always kill
+  sessions.
+- Fix drawing issues with fonts that have very
+  wide ASCII glyphs.
+- Fix a bug where light/dark color modes
+  misbehaved in Minimal when the light theme had a
+  dark background.
+- Fix a bug where "interpret key bindings based on
+  physical key" disregarded key bindings without a
+  keycode, which is all old key bindings including
+  factory defaults.
 
