@@ -1,3 +1,40 @@
+2024-01-28: Prevent triggers from creating annotations in
+alternate screen mode. Issue 11324
+
+2024-01-28: Change how SCPFile dispatches to the main thread
+because it ended up in a strange menu-related state
+(according to the stack trace) where the mouse didn't work
+right when interacting with modal alerts. I don't know why
+this happened. This also fixes a data race where session was
+accessed on the main thread. Issue 11322
+
+2024-01-28: Fix a longstanding bug in
+it_appearanceForCurrentTheme that picked the default
+appearance rather than the app's effective appearance for
+regular windows causing some things to be tinted
+incorrectly.
+
+2024-01-28: Use 'source in' compositing for tinting images
+to avoid mixing the tint color with the template color
+
+2024-01-28: Force annotations to use an overlay scrollbar.
+Replace delete button with trash button
+
+2024-01-28: Add pinned indicator images forgotten in
+previous commit
+
+2024-01-27: Fix a bunch of bugs with showing annotations
+
+2024-01-27: Tweak outline color for offscreen command line
+to help distinguish it from text.
+
+2024-01-27: Remove 1password biometric tip because the URL's
+broken and you don't need to enable it as a separate step
+any more
+
+2024-01-27: Add pinned indicator for hotkey windows. Off by
+default in advanced settings. Issue 11316
+
 2024-01-26: Add autoSearch advanced setting. Issue 11312
 
 2024-01-26: Move AI url to advanced setting. Issue 11309
