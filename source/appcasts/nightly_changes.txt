@@ -1,3 +1,13 @@
+2024-01-30: Use deferred side effects for flags changed (in
+particular linefeed) and cursor-did-change-line notifs. This
+lets us batch more related updates as seen in issue 11332 to
+avoid redraws as inopportune times. The basic idea is to
+handle more tokens in a batch with the hope of avoiding a
+sync between DECRESET 25 and DECSET25.
+
+2024-01-30: Fix browse button for picking custom Python API
+scripts folder. Issue 11281
+
 2024-01-30: Make dictionaryValuePreservingColorSpace
 tolerate catalog colors. To repro, switch the color picker
 to the system picker. Choose the third tab (squares) and
