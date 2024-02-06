@@ -1,34 +1,55 @@
-3.5.0beta19
+3.5.0beta20
 
 New Features
-- Semantic history can now open to line number in
-  Xcode.
 
 Other Improvements
-- Change shortcut for AI to Cmd-Y because Cmd-B is
-  reserved for the Leader key.
-- Control sequences that set color values accept
-  4-digit hex values now.
-- The paste history tool now has a context menu.
-- Enabling CSI u mode in your profile does not
-  enable Disambiguate Escapes now. This additional
-  setting is now exposed in the Terminal State menu.
-- Use only ASCII spaces in plain-text logs.
-- Make counting ChatGPT tokens more conservative.
-- Prevent Codecierge from seeing terminal contents
-  when the tool is not visible.
+- Performance improvements.
+- Finish renaming Preferences to Settings.
+- libssh upgraded to 1.11.0
+- The user agent for web views (e.g., QuickLook)
+  is now like Safari's to defeat stupid websites
+  using user agent to detect unsupported browsers.
+- In ssh integration, you can now download
+  folders.
+- When you do Cmd-E results will immediately be
+  highlighted.
+- Snippets in settings gets a search field.
+- Hotkey windows now show an indicator in the
+  session if they are pinned.
+- Various minor visual improvements.
+- Triggers are now prevented from creating
+  annotations in alternate screen mode because
+  doing so is cursed.
+- More kinds of status bar components support
+  being hidden when empty.
+- Automatic profile switching will now match
+  /foo/bar against a rule like /*/bar
+- Automatic profile switching folders do not need
+  to end in a slash any more.
+- If you run the `open` command and nothing
+  happens and secure keyboard entry is on, show a
+  nag explaining what happened.
 
 Bug Fixes
 - Fix various crashes.
-- Fix a bug where quitting didn't always kill
-  sessions.
-- Fix drawing issues with fonts that have very
-  wide ASCII glyphs.
-- Fix a bug where light/dark color modes
-  misbehaved in Minimal when the light theme had a
-  dark background.
-- Fix a bug where "interpret key bindings based on
-  physical key" disregarded key bindings without a
-  keycode, which is all old key bindings including
-  factory defaults.
+- Fixed a memory leak.
+- Fix wrong margins for tab color menu items in
+  Sonoma.
+- Make internet-free shell integration install
+  work in more BSDs.
+- Fix a bug where light/dark theme changes didn't
+  always work in the Minimal theme.
+- Don't crash if a file download has an empty
+  name.
+- Fix compose sequences in DefaultKeyBindings
+  handler.
+- Fix drawing bugs when double clicking on split
+  pane dividers.
+- Better error handling for AI features.
+- Fix bugs where annotations didn't always appear
+  when they should have.
+- Fix the button in settings to browse for the
+  custom Python API scripts folder.
+- Fix a bug where restoring settings and data
+  failed to restore settings.
 
