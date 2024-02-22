@@ -1,3 +1,66 @@
+2024-02-22: Add dice.png
+
+2024-02-21: Don't show new-output indicator if it's
+apparently because of a jiggle. Issue 11367
+
+2024-02-21: Add advanced setting to exclude utun from
+network utilization (#497)
+
+* Add advanced setting to exclude utun from network
+utilization. Issue 11369
+
+* Update iTermAdvancedSettingsModel.m
+
+Enable utun flag by default
+
+---------
+
+Co-authored-by: George Nachman <gnachman+github@gmail.com>
+2024-02-21: Add an experimental flag to disclaim ownership
+of children of iTermServer. Issue 10360.
+
+The existing (and still default) behavior is for an app that
+uses a protected resource that requires TCC permission
+(e.g., bluetooth) to crash if iTerm2 does not have a reason
+string in its info.plist. I try to have all the reason
+strings, so this is mostly not a problem, but Apple likes to
+add new ones all the time, so it can be a problem.
+
+Confusingly, disclaiming ownership of a child causes iTerm2
+to be held responsible for its behavior rather than the
+child just crashing.
+
+In order to disclaim ownership you have to use posix_spawn
+instead of fork + exec. But posix_spawn is broken for ttys,
+so you have to use fork + posix_spawn along with the
+POSIX_SPAWN_SETEXEC flag, which makes posix_spawn act like
+exec.
+
+To verify existing bug:
+
+1. Remove the bluetooth reason string 2. Run the sample app
+in the aforementioned issue 3. It will crash
+
+To test the fix:
+
+1. Turn on Advanced > Disclaim ownership of children 2.
+Delete ~/Library/Application Support/iTerm2/iTermServer* 3.
+Kill all running iTermServer processes.  4. Relaunch iTerm2
+to ensure the most up-to-date iTermServer is running.  5.
+Run the sample app in the aforementioned issue 6. Get a TCC
+request: "iTerm2.app" would like to access bluetooth
+
+I have left this flag off by default to avoid introducing
+risk into the forthcoming 3.5 release which already has more
+that enough risk. I don't think it's terribly dangerous so
+once 3.5 settles down this can be flipped on in a beta.
+
+2024-02-20: Add button to generate random password. Issue
+11370
+
+2024-02-20: Replace timer in InputSourceForcer with
+notification observer. Issue 11356
+
 2024-02-17: Add logging for issue 11358
 
 2024-02-17: Fix AI in auto composer
