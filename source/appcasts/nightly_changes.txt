@@ -1,3 +1,23 @@
+2024-03-01: Add missing files
+
+2024-03-01: Optimize the dickens out of token processing.
+
+The great multithreadization and introduction of history
+compression introduced a ton of overhead, which this commit
+fixes.
+
+* Remove support for compression. The abstraction was just
+too expensive.  * Replace compressible character buffer with
+an objc class to encapsulate an array of characters.  *
+Optimize line block observers by replacing them with
+generation counts.  * Add gobs of microoptimizations, mostly
+replacing Swift with ObjC or C++. Swift is a much better
+language than both, but it you care about performance it's
+just not ready for prime time yet.
+
+2024-03-01: Don't extract text in codecierge if it's not
+enabled
+
 2024-02-22: Add dice.png
 
 2024-02-21: Don't show new-output indicator if it's
@@ -118,165 +138,3 @@ secure keyboard entry is on
 2024-02-03: Tweak APS path matching so that a rule of /*/bar
 will match /foo/bar. Also fixes a problem where a rule had
 to end in a slash. Issue 11341
-
-2024-01-31: Tolerate missing ~/.iterm2 folder when exporting
-all settings. Issue 11336
-
-2024-01-30: Use deferred side effects for flags changed (in
-particular linefeed) and cursor-did-change-line notifs. This
-lets us batch more related updates as seen in issue 11332 to
-avoid redraws as inopportune times. The basic idea is to
-handle more tokens in a batch with the hope of avoiding a
-sync between DECRESET 25 and DECSET25.
-
-2024-01-30: Fix browse button for picking custom Python API
-scripts folder. Issue 11281
-
-2024-01-30: Make dictionaryValuePreservingColorSpace
-tolerate catalog colors. To repro, switch the color picker
-to the system picker. Choose the third tab (squares) and
-then pick Developer. Then pick any of the system colors.
-Issue 11298
-
-2024-01-30: Remove stray characters
-
-2024-01-29: Add support for removing empty status bar
-components for text components and RPC-provided components.
-Issue 11329
-
-2024-01-29: Add logging to updateMetalDriver. Don't adjust
-glyphSize on macOS 10.15
-
-2024-01-29: Increase glyph size by ascii offset. Issue 11267
-
-2024-01-28: Prevent triggers from creating annotations in
-alternate screen mode. Issue 11324
-
-2024-01-28: Change how SCPFile dispatches to the main thread
-because it ended up in a strange menu-related state
-(according to the stack trace) where the mouse didn't work
-right when interacting with modal alerts. I don't know why
-this happened. This also fixes a data race where session was
-accessed on the main thread. Issue 11322
-
-2024-01-28: Fix a longstanding bug in
-it_appearanceForCurrentTheme that picked the default
-appearance rather than the app's effective appearance for
-regular windows causing some things to be tinted
-incorrectly.
-
-2024-01-28: Use 'source in' compositing for tinting images
-to avoid mixing the tint color with the template color
-
-2024-01-28: Force annotations to use an overlay scrollbar.
-Replace delete button with trash button
-
-2024-01-28: Add pinned indicator images forgotten in
-previous commit
-
-2024-01-27: Fix a bunch of bugs with showing annotations
-
-2024-01-27: Tweak outline color for offscreen command line
-to help distinguish it from text.
-
-2024-01-27: Remove 1password biometric tip because the URL's
-broken and you don't need to enable it as a separate step
-any more
-
-2024-01-27: Add pinned indicator for hotkey windows. Off by
-default in advanced settings. Issue 11316
-
-2024-01-26: Add autoSearch advanced setting. Issue 11312
-
-2024-01-26: Move AI url to advanced setting. Issue 11309
-
-2024-01-26: Improve error and registration handling in
-AITerm
-
-2024-01-26: Make AITerm logo a template image
-
-2024-01-26: Remove stray character
-
-2024-01-26: Add a search field to snippet settings. Issue
-11168
-
-2024-01-25: Call splitview did resize subviews after
-handling doubleclick on divider. Issue 11303
-
-2024-01-25: When you set the search string with cmd-E (even
-if Find panel is not open) force a search to be done since
-screen contents may have changed. Issue 11302
-
-2024-01-24: Fix compose sequences in key binding emulator.
-Issue 11300
-
-2024-01-23: In ssh integration allow downloads of folders.
-Issue 11296
-
-2024-01-23: Don't crash if a terminal file download has an
-empty name. Issue 11293
-
-2024-01-23: Reload color map when system appearance changes
-in minimal theme even if the session view's appearance did
-not change. See
-https://gitlab.com/gnachman/iterm2/-/issues/11029#note_1712601182
-
-2024-01-23: Change default user agent to Safari so xitter
-works
-
-2024-01-23: Add user agent advanced setting. Issue 11290
-
-2024-01-22: Use base64 -d instead of base64 --decode. I
-originally used -D which is BSD only. --decode works in GNU
-as well, but BSD only supports -d. Issue 11287
-
-2024-01-22: Tweak insets for tab colors menu item in Sonoma
-
-2024-01-22: Rebuild dependencies to get libssh2 1.11.0
-
-2024-01-22: Bump libssh2 submodule to 1.11.0
-
-2024-01-22: Fix retain cycle in iTermProcessInfo because of
-lazy var
-
-2024-01-22: Rename preferences to settings all over the
-place
-
-2024-01-18: Tolerate missing color that was causing a crash
-
-2024-01-18: Tolerate missing triggers settings in profile
-which caused a crash
-
-2024-01-18: Tolerate ScreenCharToStr returning nil
-
-2024-01-18: Try to prevent a crash with nil screenCharArray
-
-2024-01-18: Tolerate missing lines in accessibility helper's
-allText to fix crash
-
-2024-01-18: Fix typo (#495)
-
-
-2024-01-16: Change shortcut for AI to Cmd-Y so we can save
-Cmd-B for Leader
-
-2024-01-16: Fix a bug in language-agnostic key bindings
-where preexisting keybindings (which did not include a
-virtual keycode) failed to work when the setting was
-enabled. This also affected factory defaults.
-
-2024-01-16: Update OpenAI api keys URL
-
-2024-01-16: Layout improvements
-
-2024-01-16: Remove 'remove recent profiles from dock menu'
-menu item when the feature is disabled
-
-2024-01-15: Fix typo in AI setup (#493)
-
-
-2024-01-07: Add percent encoding when printing URL from
-OpenURL.
-
-2024-01-05: Move shell integration submodule to 3.5 branch.
-Base64 encode ssh integration commands. Fix various bugs
