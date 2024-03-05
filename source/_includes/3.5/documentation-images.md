@@ -68,6 +68,8 @@ The width and height are given as a number followed by a unit, or the word "auto
   * *N*%: *N* percent of the session's width or height.</li>
   * auto: The image's inherent size will be used to determine an appropriate dimension.</li>
 
+The cursor will be left at the cell that follows the bottom-rightmost cell of the image.
+
 ### More on File Transfers
 
 By omitting the <code>inline</code> argument (or setting its value to 0), files will be downloaded and saved in the *Downloads* folder instead of being displayed inline. Any kind of file may be downloaded, but only images will display inline. Any image format that macOS supports will display inline, including PDF, PICT, or any number of bitmap data formats (PNG, GIF, etc.). A new menu item titled *Downloads* will be added to the menu bar after a download begins, where progress can be monitored and the file can be located, opened, or removed.
