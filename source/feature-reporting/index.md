@@ -63,7 +63,7 @@ Note: While terminals must be able to ignore sequences with multiple intermediat
 
 #### Testing
 
-The scripts [aliasing.sh](aliasing.sh) and [parser_unknown.sh](parser_unknown.sh) contain some basic but be far not complete tests.
+The scripts [aliasing.sh](aliasing.sh) and [parser_unknown.sh](parser_unknown.sh) contain some basic tests.
 
 
 ### 256 Colors
@@ -296,7 +296,7 @@ Like `Button event tracking mode`, but includes movements of the mouse while no 
 
 Terminals usually use an outmoded and problematic encoding of mouse state in their default configuration. `DECSET(1006)` enables the modern reporting sequence, as described below.
 
-When repeating that a button was released, send:
+When reporting that a button was released, send:
 
 ```
 CSI < {params} m
@@ -330,7 +330,7 @@ The button/modifiers value is calculated by bitwise ORing values from this table
 
 The behavior when multiple buttons are pressed at the same time is platform-defined.
 
-Because of the limitations of the platform that a terminal emulator operates in, some combinations of mouse buttons and modifiers may not be supported. Terminal emulators may report this feature so long as left mouse button down, up, and drag works.
+Because of the limitations of the platform that a terminal emulator operates in, some combinations of mouse buttons and modifiers may not be supported. Terminal emulators may report this feature so long as left mouse button down, up, and drag work.
 
 **DECSET(1007): Alternate scroll**
 
@@ -628,7 +628,7 @@ It is documented at [Inline Images Protocol](/documentation-images.html).
 
 #### Tests
 
-Print [download.txt](download.txt) to iniate a file download.
+Print [download.txt](download.txt) to initiate a file download.
 
 Set your terminal to 185 cells wide by 55 rows tall with 7x13 pixel cells and run [inline_media.sh](inline_media.sh) to test your terminal's rendering of inline images.
 
@@ -652,7 +652,8 @@ OSC 1337 ; Capabilities = {FeatureString} ST
 ```
 
 The environment variable `TERM_FEATURES` will take the value `{FeatureString}`.
-#### Encoding - OPTION 1
+
+#### Encoding
 
 `{FeatureString}` is a string formed by concatenating an encoding of each feature’s value.
 
@@ -708,34 +709,6 @@ The codes are:
 |Boolean|NOTIFICATIONS|No|
 |Boolean|SIXEL|Sx|
 |Boolean|FILE|F|
-
-#### Encoding - OPTION 2
-
-`{FeatureString}` is a base-64 encoded byte array. It will not contain carriage returns, line feeds, or any other white space. If a character outside the legal Base-64 character set is found, remove everything from that character on prior to decoding. The legal characters are:
-
-```
-A-Z
-a-z
-0-9
-+
-/
-=
-```
-
-The first 8 bits form a UInt that gives the version number of the spec. The current version number is 0.
-
-Feature values begin at bit offset 8 (after the version number) and progress in the order given in the spec (starting with `24BIT`). Booleans take a single bit, where 0 signifies that the feature is unavailable and 1 signifies that the feature is available. UInts take the number of bits given in the feature's type specification. Each value begins at a bit offset located after the last used bit offset. To convert a bit offset of a particular feature to a byte offset and bitmask in a decoded `{FeatureString}` use this formula:
-
-```
-byte_offset = floor(bit_offset ÷ 8)
-bit_mask = 1 << (bit_offset % 8)
-```
-
-For UInts, the most significant bit is at the smallest bit offset while the least significant bit is at the largest bit offset.
-
-`{FeatureString}` is expected to remain backward compatible for the foreseeable future. If the decoded value is longer than expected, ignore any values that are not defined in the version of the spec you used.
-
-If the version indicated in the first 8 bits is 255, do not use it. It is not backward compatible.
 
 ## Open Source License
 
