@@ -76,6 +76,10 @@ By omitting the <code>inline</code> argument (or setting its value to 0), files 
 
 If the file's size exceeds the declared size, the transfer may be canceled. This is a security measure to prevent a download gone wrong from using unbounded memory.
 
+### Discovery
+
+You can use the [Report Cell Size](documentation-escape-codes.md) control sequence to discover the availability of the protocol. A terminal emulator that responds to Report Cell Size can be expected to implement this protocol. Alternately, if the [Capabilities](feature-reporting) control sequence is supported, the presence of the `F` feature indicates support for this protocol.
+
 ### Sample Code
 
 Sample code for displaying images may be found here.

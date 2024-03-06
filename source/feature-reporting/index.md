@@ -431,7 +431,7 @@ The values are:
 |0|No unicode support is claimed.|
 |8|Unicode version 8 or less.|
 |9 or greater|The Unicode version equal to the value is supported.|
-|Special encoding-dependent value, if applicable|Equal to or larger than maximum encodable version. TODO: Make this more specific when we pick an encoding.|
+|Special encoding-dependent value, if applicable|Equal to or larger than maximum encodable version.|
 
 #### Tests
 
@@ -624,73 +624,7 @@ To conform, printing [snake.six](snake.six) should cause this image to be render
 
 Boolean. Indicates if the terminal supports the `OSC 1337 File` protocol for transfer/display of files such as images or video, including those using lossy compression.
 
-```
-OSC 1337 ; File = {arguments} : {base64-encoded contents} ST
-```
-
-`{arguments}` is a `;`-delimited list of key-value argument pairs, encoded as `{key}={value}`.
-
-The `{base64-encoded contents}` may contain linefeeds and carriage returns in its encoded form. The decoded value may contain any kind of file.
-
-Terminal emulators must ignore unrecognized arguments. The following arguments must be supported:
-
-|`{key}`|Meaning of `{value}`|
-|---|---|
-|`name`|base64-encoded file name. If unspecified, the terminal emulator should choose a default name. Optional.|
-|`size`|Size of `{base64-encoded contents}` after decoding. The terminal emulator may ignore the control sequence or display an error if the actual payload exceeds this size. Required.|
-|`width`|Width hint. Default value is `auto`. See below for the syntax. Optional.|
-|`height`|Height hint. Default value is `auto`. See below for the syntax. Optional.|
-|`preserveAspectRatio`|0 to allow the rendered file to be stretched as the terminal emulator sees fit. 1 (the default) to require the aspect ratio as presented to match that of the native image. Optional.|
-|`inline`|`1` to display the file rendered inline, or 0 (the default) to download without displaying. Optional.|
-
-#### Inline
-
-When `inline=0`, the `{base64-encoded contents}` should be base64 decoded and saved,. The `width`, `height`, and `preserveAspectRatio` arguments should be ignored.
-
-#### Width and Height Hint Syntax
-
-In the description below, a `{number}` is a series of decimal digits forming a nonnegative integer, such as `123`.  Terminal emulators may choose to interpret `pixel` as the platform's preferred unit of measure for graphics instead of a pixel on the attached display. For example, such a measure may refer to a different number of screen pixels for high-DPI displays versus low-DPI displays.
-
-The `{value}` for a `width` or `height` argument should conform to one of the following:
-
-|Syntax|Meaning|
-|---|---|
-|`{number}`|The number of cells the rendered file should occupy.|
-|`{number}px`| The number of pixels the rendered file should occupy. `{number}` should be positive.|
-|`{number}%`|The percentage of the screen's width or height the rendered file should occupy. Terminal emulators may choose to use treat values larger than 100% as 100%.|
-|`auto`|Use the file's inherent size pixel to determine the size of the rendition.|
-
-`width` and `height` may use different kinds of values. For example, `width=100%;height=1px` requests a one pixel tall rendition that fills the width of the terminal. As these are hints, the terminal emulator may not always be able to respect them. For example, the number of cells or pixels requested might exceed the available space. When a hint cannot be honored, the terminal emulator should choose a value as close as possible to what was requested. For example, if an 80 column wide terminal receives `width=90`, it should use `80` instead.
-
-#### Size Calculation
-
-For a file that carries an inherent pixel size, such as most image formats, the `auto` size indicates that this size should be used. If it won't fit, the terminal emulator may choose a smaller size. `auto` should never cause upscaling, but a combination of `auto` and another hint type may. For a file that does not have an inherent size, such as vector art, the terminal emulator is free to choose an appropriate size for `auto` dimensions.
-
-The terminal emulator should first determine the appropriate size for the rendition in cells and then present the file centered within it.
-
-If exactly one of `width` or `height` is `auto` and `preserveAspectRatio` is on, the terminal emulator should calculate the number of cells that the *non*-auto value takes first and then calculate the value for the `auto` dimension.
-
-Terminal emulators must not needlessly waste space when using `auto`: there should be no completely cells outside the bounds of the rendered file along an `auto` dimension.
-
-The terminal emulator must calculate a size small enough to avoid wrapping around the right margin.
-
-#### Interaction with Cells
-
-The top left corner of the rendered file will be the cursor's location at the time the `FILE` control sequence was parsed. Once the terminal emulator has computed the size in cells that the rendition will take, it should erase content in a rectangle of that size and position the cursor once cell past the bottom-rightmost cell. Left-right margins and scrolling regions should be ignored. The cells of an image should be treated like any other cells, and can be erased or modified as usual. The behavior for reflowing cells of a rendition when the viewport changes size is implementation-dependent.
-
-#### Stretching
-
-If `preserveAspectRatio` is 0 on the rendition may be distorted by streching. 
-
-If `preserveAspectRatio` is 1, the rendition should be centered within the rectangle of cells in which it will be displayed.
-
-#### Error Handling
-
-If the file cannot be decoded for any reason, the terminal emulator should provide a graphical representation of an error in place of the file's contents. It should choose an appropriate value for the inherent pixel size to display the error.
-
-#### Application Notes
-
-Terminal emulators are encouraged to support common media formats such as PNG and JPEG, but no specific formats are required to be supported: this is implementation-dependent. Terminal emulators are advised to decode images in an environment with minimal permissions, such as an out-of-process sandbox, as a security measure. This control sequence originated in iTerm2. A copy of iTerm2's documentation is in [file.md](file.md).
+It is documented at [Inline Images Protocol](/documentation-images.html).
 
 #### Tests
 
@@ -705,18 +639,16 @@ Terminals have two mechanisms they may use to publish their feature set:
 * An environment variable, `TERM_FEATURES`.
 * A control sequence that responds with a report containing the features.
 
-**TODO: I am bad at this! Feedback is requested for these control sequences.**
-
 The control sequence is:
 
 ```
-CSI > 1 q
+OSC 1337 ; Capabilities ST
 ```
 
 The terminal will respond with:
 
 ```
-DCS > 1 q {FeatureString} ST
+OSC 1337 ; Capabilities = {FeatureString} ST
 ```
 
 The environment variable `TERM_FEATURES` will take the value `{FeatureString}`.
