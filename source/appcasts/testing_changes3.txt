@@ -1,55 +1,44 @@
-3.5.0beta20
+3.5.0beta21
 
 New Features
+- The background color of Find results is now
+  configurable.
+- The password manager can now generate random
+  passwords.
+- Show the "what's new" window when upgrading from
+  3.4.x to 3.5.x.
 
 Other Improvements
 - Performance improvements.
-- Finish renaming Preferences to Settings.
-- libssh upgraded to 1.11.0
-- The user agent for web views (e.g., QuickLook)
-  is now like Safari's to defeat stupid websites
-  using user agent to detect unsupported browsers.
-- In ssh integration, you can now download
-  folders.
-- When you do Cmd-E results will immediately be
-  highlighted.
-- Snippets in settings gets a search field.
-- Hotkey windows now show an indicator in the
-  session if they are pinned.
-- Various minor visual improvements.
-- Triggers are now prevented from creating
-  annotations in alternate screen mode because
-  doing so is cursed.
-- More kinds of status bar components support
-  being hidden when empty.
-- Automatic profile switching will now match
-  /foo/bar against a rule like /*/bar
-- Automatic profile switching folders do not need
-  to end in a slash any more.
-- If you run the `open` command and nothing
-  happens and secure keyboard entry is on, show a
-  nag explaining what happened.
+- Fix a crash.
+- If the app's theme is Light or Dark warn when
+  trying to configure automatic color switching.
+- Force Keyboard is faster and will only set the
+  input source when the app is activated so you
+  can override it manually temporarily.
+- In network usage status bar component exclude
+  utun interfaces, which cause double-counting of
+  VPN traffic.
+- Don't show new-output indicator if the new
+  output is caused by something like a color
+  change forcing a redaw.
+- Control-[ now closes the find view.
+- Snippets are now stored in a file under
+  Application Support rather than in user defaults
+  to avoid the 4 meg user defaults limit.
+- Make Search and Filter status bar components
+  larger if the status bar is tall enough to
+  support a large-size control.
+- Queue input while connecting to SSH.
+- Add a built-in Neovim icon.
+- Set TERM_FEATURES. A spec for terminal emulator
+  feature discovery will be forthcoming.
 
 Bug Fixes
-- Fix various crashes.
-- Fixed a memory leak.
-- Fix wrong margins for tab color menu items in
-  Sonoma.
-- Make internet-free shell integration install
-  work in more BSDs.
-- Fix a bug where light/dark theme changes didn't
-  always work in the Minimal theme.
-- Don't crash if a file download has an empty
-  name.
-- Fix compose sequences in DefaultKeyBindings
-  handler.
-- Fix drawing bugs when double clicking on split
-  pane dividers.
-- Better error handling for AI features.
-- Fix bugs where annotations didn't always appear
-  when they should have.
-- Fix the button in settings to browse for the
-  custom Python API scripts folder.
-- Fix a bug where restoring settings and data
-  failed to restore settings.
+- Fix incorrect shortcut in composer help.
+
+Things made worse
+- Support for history compression was removed
+  because it imposed too much overhead.
+
 
