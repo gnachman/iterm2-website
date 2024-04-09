@@ -1,3 +1,11 @@
+2024-04-08: Fix some bugs with filtering. Issue 10637
+
+2024-04-04: Clean up of various things related to selected
+commands. Fix bugs, including various races and drawing
+problems, add logging.
+
+2024-04-02: Fix drawing with selected command
+
 2024-03-28: Suppress drawing buttons under auto composer
 
 2024-03-28: Fix vertical position of selected command
@@ -157,124 +165,3 @@ just not ready for prime time yet.
 
 2024-03-01: Don't extract text in codecierge if it's not
 enabled
-
-2024-02-22: Add dice.png
-
-2024-02-21: Don't show new-output indicator if it's
-apparently because of a jiggle. Issue 11367
-
-2024-02-21: Add advanced setting to exclude utun from
-network utilization (#497)
-
-* Add advanced setting to exclude utun from network
-utilization. Issue 11369
-
-* Update iTermAdvancedSettingsModel.m
-
-Enable utun flag by default
-
----------
-
-Co-authored-by: George Nachman <gnachman+github@gmail.com>
-2024-02-21: Add an experimental flag to disclaim ownership
-of children of iTermServer. Issue 10360.
-
-The existing (and still default) behavior is for an app that
-uses a protected resource that requires TCC permission
-(e.g., bluetooth) to crash if iTerm2 does not have a reason
-string in its info.plist. I try to have all the reason
-strings, so this is mostly not a problem, but Apple likes to
-add new ones all the time, so it can be a problem.
-
-Confusingly, disclaiming ownership of a child causes iTerm2
-to be held responsible for its behavior rather than the
-child just crashing.
-
-In order to disclaim ownership you have to use posix_spawn
-instead of fork + exec. But posix_spawn is broken for ttys,
-so you have to use fork + posix_spawn along with the
-POSIX_SPAWN_SETEXEC flag, which makes posix_spawn act like
-exec.
-
-To verify existing bug:
-
-1. Remove the bluetooth reason string 2. Run the sample app
-in the aforementioned issue 3. It will crash
-
-To test the fix:
-
-1. Turn on Advanced > Disclaim ownership of children 2.
-Delete ~/Library/Application Support/iTerm2/iTermServer* 3.
-Kill all running iTermServer processes.  4. Relaunch iTerm2
-to ensure the most up-to-date iTermServer is running.  5.
-Run the sample app in the aforementioned issue 6. Get a TCC
-request: "iTerm2.app" would like to access bluetooth
-
-I have left this flag off by default to avoid introducing
-risk into the forthcoming 3.5 release which already has more
-that enough risk. I don't think it's terribly dangerous so
-once 3.5 settles down this can be flipped on in a beta.
-
-2024-02-20: Add button to generate random password. Issue
-11370
-
-2024-02-20: Replace timer in InputSourceForcer with
-notification observer. Issue 11356
-
-2024-02-17: Add logging for issue 11358
-
-2024-02-17: Fix AI in auto composer
-
-2024-02-13: Add advanced setting to do cleverer logging with
-auto composer. Issue 11262
-
-2024-02-13: Add /usr/local/bin to PATH in makefile since
-some people need automake when building libsixel (I don't
-have this problem but I don't know why). Issue 11349
-
-2024-02-12: Make search result background match color
-configurable. Issue 4164
-
-2024-02-12: Oxford comma
-
-2024-02-12: Use a timer to set keyboard when Force Keyboard
-is enabled because the system setting 'Automatically switch
-to a documents input source' cannot be defeated peacefully.
-Issue 11356
-
-2024-02-12: Fix wrong shortcut in comnpser help. Issue 11354
-
-2024-02-12: Remove dead code and unused scripting bridge
-framework
-
-2024-02-12: Show a warning when your theme prevents
-automatic color switching. Fix a bug where popovers left
-space for a horizontal scrollbar.
-
-2024-02-11: Optionally disable Cmd-Click opening Command
-Info (#496)
-
-This adds an advanced setting which defaults to the current
-behaviour, but when switched off, disables the feature that
-Cmd-Click in a prompt opens the Command Info window. The
-Cmd-Click instead falls back to Smart Selection. The window
-can still be accessed via right click as normal.
-2024-02-06: Add assertions for issue 11347
-
-2024-02-05: Cache 1password version
-
-2024-02-04: Fix a bug where settings weren't loaded when
-restoring all settings and data. Issue 11343
-
-2024-02-03: Performance improvements
-
-2024-02-03: Avoid highlighting matches when the find
-pasteboard changes when the find view is closed and the
-change was caused by another app. Issue 11302
-
-2024-02-03: Show a warning if the open command fails when
-secure keyboard entry is on
-
-2024-02-03: Tweak APS path matching so that a rule of /*/bar
-will match /foo/bar. Also fixes a problem where a rule had
-to end in a slash. Issue 11341
