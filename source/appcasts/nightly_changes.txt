@@ -1,3 +1,16 @@
+2024-04-15: Fix formatting of 24 hour time in context menu.
+When you select an already-formatted date, convert it to
+unix timestamp. Issue 11414
+
+2024-04-15: Fix a bug where SCPFile's performOnMainThread
+didn't block, causing fingerprint and other checks to return
+wrong results. Luckily the bug causes connection failures
+only. Issue 11413
+
+2024-04-15: Keep a stack of hosts and the key mode for each,
+saved just before a new host begins. Restore key mode when
+an old host resumes. Issue 11412
+
 2024-04-14: Make search bergin at the find cursor and stop
 when it wraps back around to it. This greatly improves the
 'search for smart selection results' feature when scrolled
