@@ -4,4 +4,4 @@ title: Advanced Profile Preferences - Documentation - iTerm2 - macOS Terminal Re
 active-state: documentation
 subhead: Preferences
 ---
-{% include 3.4/documentation-preferences-profiles-advanced.md %}
+{% include 3.5/documentation-preferences-profiles-advanced.md %}

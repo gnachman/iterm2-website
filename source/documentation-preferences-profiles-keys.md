@@ -4,4 +4,4 @@ title: Keys Profiles Preferences - Documentation - iTerm2 - macOS Terminal Repla
 active-state: documentation
 subhead: Preferences
 ---
-{% include 3.4/documentation-preferences-profiles-keys.md %}
+{% include 3.5/documentation-preferences-profiles-keys.md %}

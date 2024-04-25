@@ -1,23 +1,17 @@
 #### Shell > New Window/Tab
 This creates a new window or tab with the default profile. If the current session is a tmux integration session, then you will be prompted for whether to create a local or tmux session.
 
-#### Shell > New Window/Tab with Current Profile
-This creates a new window or tab using the same profile as the current session rather than the default profile.
+#### Shell > New Tab with Current Profile
+This creates a new tab using the same profile as the current session rather than the default profile.
 
 #### Shell > Duplicate Tab
 Creates another tab with the same arrangement of split panes, profile, etc.
-
-#### Shell > Duplicate Window
-Creates another window with the same tabs.
 
 #### Shell > Split Vertically/Horizontally
 These menu items allow you to divide a tab into two or more split panes. The panes can be adjusted by dragging the line that divides them. They will use the default profile.
 
 #### Shell > Split Vertically/Horizontally with Current Profile
 These menu items allow you to divide a tab into two or more split panes. The panes can be adjusted by dragging the line that divides them. They will use the profile of the current session.
-
-#### Shell > Save Contents
-Saves the contents of the session to a file.
 
 #### Shell > Save Selected Text
 Saves the selected text to a file.
@@ -46,20 +40,4 @@ These commands let you interact with the tmux integration
   * **Detach**: Detaches from the tmux session associated with the current pane. It remains running in the tmux server.
   * **New tmux Window/Tab**: Creates a new tmux window, which appears in either a native window or tab, as requested.
   8 **Dashboard**: The tmux dashboard is a view that lets you see all your tmux sessions and windows at a glance, adjust which are visible, rename them, and change the current tmux session.
-
-#### Shell > ssh > disconnect
-This is used with ssh integration to disconnect a hung ssh session.
-
-#### Shell > Page Setup
-Opens the standard page setup dialog to configure printing.
-
-#### Shell > Print > Screen
-Prints the currently visible contents of the session.
-
-#### Shell > Print > Selection
-Prints the selected region.
-
-#### Shell > Print > Buffer
-Print everything in the session.
-
 

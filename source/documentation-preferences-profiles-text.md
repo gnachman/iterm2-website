@@ -4,4 +4,4 @@ title: Text Profile Preferences - Documentation - iTerm2 - macOS Terminal Replac
 active-state: documentation
 subhead: Preferences
 ---
-{% include 3.4/documentation-preferences-profiles-text.md %}
+{% include 3.5/documentation-preferences-profiles-text.md %}

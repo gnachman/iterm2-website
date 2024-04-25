@@ -16,7 +16,7 @@ function show(name) {
 }
 </script>
 
-iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more&mdash;even over ssh. This enables several useful features.
+iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more--even over ssh. This enables several useful features.
 
 ### How To Enable Shell Integration
 The easiest way to install shell integration is to select the *iTerm2&gt;Install Shell Integration* menu item. It will download and run a shell script as described below. You should do this on every host you ssh to as well as your local machine. The following shells are supported: tcsh, zsh, bash, and fish 2.3 or later. Contributions for other shells are most welcome.
@@ -69,10 +69,9 @@ Next, you need to load the script at login time. Add this to the end of ~/.login
 <pre>source ~/.iterm2_shell_integration.tcsh</pre>
 </div>
 
+
 Don't want to or can't install a login script? See the workaround at the end of this document using
 triggers.
-
-Elvish users: Diego Zamboni maintains a <a href="https://github.com/zzamboni/elvish-modules/blob/master/iterm2.org">shell integration script for Elvish on Github.</a>
 
 ### Features
 Shell Integration enables numerous features:
@@ -261,7 +260,13 @@ give a parameter like `example.com`.
 
 ### Limitations
 
-Shell Integration does not work with tmux or screen.
+By default, shell Integration does not work with tmux or screen. If you'd like to use it with tmux, add this to your login script prior to loading shell integration:
+
+<pre>
+export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=1
+</pre>
+
+It works well with tmux integration (`tmux -CC`) but not with the regular tmux UI.
 
 #### A Note on SCP
 iTerm2 can do uploads and downloads with scp as described above. There are a few things you should know.

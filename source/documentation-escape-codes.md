@@ -4,4 +4,4 @@ title: Proprietary Escape Codes - Documentation - iTerm2 - macOS Terminal Replac
 active-state: documentation
 subhead: Proprietary Escape Codes
 ---
-{% include 3.4/documentation-escape-codes.md %}
+{% include 3.5/documentation-escape-codes.md %}

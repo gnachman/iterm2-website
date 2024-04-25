@@ -4,4 +4,4 @@ title: General Profiles Preferences - Documentation - iTerm2 - macOS Terminal Re
 active-state: documentation
 subhead: Preferences
 ---
-{% include 3.4/documentation-preferences-profiles-general.md %}
+{% include 3.5/documentation-preferences-profiles-general.md %}

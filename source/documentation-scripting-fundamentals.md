@@ -4,6 +4,6 @@ title: Scripting Fundamentals - Documentation - iTerm2 - macOS Terminal Replacem
 active-state: documentation
 subhead: Scripting Fundamentals
 ---
-{% include 3.4/documentation-scripting-fundamentals.md %}
+{% include 3.5/documentation-scripting-fundamentals.md %}
 
 

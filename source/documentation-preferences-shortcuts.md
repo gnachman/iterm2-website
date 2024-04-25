@@ -4,5 +4,5 @@ title: Shortcuts Preferences - Documentation - iTerm2 - macOS Terminal Replaceme
 active-state: documentation
 subhead: Shortcuts
 ---
-{% include 3.4/documentation-preferences-shortcuts.md %}
+{% include 3.5/documentation-preferences-shortcuts.md %}
 

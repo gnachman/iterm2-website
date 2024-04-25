@@ -1,7 +1,5 @@
 This is an example of the Applescript syntax available in version 3.0 and later.
 
-Note: Applescript support is no longer receiving improvements. Use the <a href="/python-api">Python API</a> instead.
-
 <pre>
 tell application iTerm2
   -- application-level commands

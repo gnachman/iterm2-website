@@ -10,59 +10,49 @@ The Utilities Package contains the following programs:
 
 The `imgcat` program displays images inline in your terminal.
 
-<img src="/images/inline_image_sparky_demo.png">
+<img src="images/inline_image_sparky_demo.png">
 
 It supports all standard image formats, including animated GIFs.
 
+<pre>
 Usage:
-
-`imgcat filename [filename...]`
+imgcat filename [filename...]
 
 or
 
-`cat image | imgcat`
+cat image | imgcat
+</pre>
 
 #### imgls
 
 Lists the files in a directory with thumbnail previews for images.
 
+<pre>
 Usage:
-
-`imgls [filename...]`
+imgls [filename...]
+</pre>
 
 #### it2attention
 
-Requests attention. Can bounce the dock icon or show a fireworks animation at the application cursor position.
+Requests attention. Can bounce the dock icon or show a fireworks animation at the cursor position.
 
+<pre>
 Usage:
-
-<ul>
-<li>`it2attention start`
-<br/>
-Begin bouncing the dock icon if another app is active
-</li>
-
-<li>`it2attention stop`
-<br/>
-Stop bouncing the dock icon if another app is active
-</li>
-<li>
-`it2attention fireworks`
-<br/>
-Show an explosion animation at the cursor
-</li>
-</ul>
-
-#### it2cat
-Prints a file and renders it natively. For example, `it2cat README.md` will show a markdown file with proper fonts, bullets, etc. rather than the ASCII source.
+it2attention start
+  Begin bouncing the dock icon if another app is active
+it2attention stop
+  Stop bouncing the dock icon if another app is active
+it2attention fireworks
+  Show an explosion animation at the cursor
+</pre>
 
 #### it2check
 
 Checks if the terminal emulator is iTerm2.
 
+<pre>
 Example:
 
-<pre>
 it2check && echo This is iTerm2 || echo This is not iTerm2
 </pre>
 
@@ -70,9 +60,9 @@ it2check && echo This is iTerm2 || echo This is not iTerm2
 
 Copies text to the pasteboard. Works over ssh. Accepts either standard input or a named file.
 
+<pre>
 Examples:
 
-<pre>
 cat file.txt | it2copy
 it2copy file.txt
 </pre>
@@ -85,162 +75,97 @@ The `it2dl` program downloads files. This is useful when you are ssh'ed to a rem
 
 #### it2getvar
 
-Fetches a session variable. For information about variables, see <a href="documentation-scripting-fundamentals.html">Scripting Fundamentals</a>.
-
-Example:
+Fetches a session variable. For a list of session variables, see the <a href="documentation-badges.html">Badges</a> page.
 
 <pre>
+Example:
+
 it2getvar session.name
 </pre>
 
-#### it2profile
-Gets or sets the current profile.
-
-`it2profile -s ProfileName` sets the profile. If `ProfileName` is the empty string then the default profile will be used.
-
-`it2profile -g` causes the current profile name to be printed.
-
-`it2profile -r` resets the session to the initial profile.
 #### it2setcolor
 
 Configures iTerm2's colors.
 
-Usage:
+<pre>
+Usage
 
-<ol>
-<li>To set a specific color to an RGB value:
-<pre>
+1) To set a specific color to an RGB value:
   it2setcolor name color [name color...]
-</pre>
 For example:
-<pre>
   it2setcolor fg fff
-</pre>
 
 name is one of:
-<ul>
-<li>`fg`</li>
-<li>`bg`</li>
-<li>`bold`</li>
-<li>`link`</li>
-<li>`selbg`</li>
-<li>`selfg`</li>
-<li>`curbg`</li>
-<li>`curfg`</li>
-<li>`underline`</li>
-<li>`tab`</li>
-<li>`black`</li>
-<li>`red`</li>
-<li>`green`</li>
-<li>`yellow`</li>
-<li>`blue`</li>
-<li>`magenta`</li>
-<li>`cyan`</li>
-<li>`white`</li>
-<li>`br_black`</li>
-<li>`br_red`</li>
-<li>`br_green`</li>
-<li>`br_yellow`</li>
-<li>`br_blue`</li>
-<li>`br_magenta`</li>
-<li>`br_cyan`</li>
-<li>`br_white`</li>
-</ul>
+  fg bg bold link selbg selfg curbg curfg underline tab
+  black red green yellow blue magenta cyan white
+  br_black br_red br_green br_yellow br_blue br_magenta br_cyan br_white
 
 color is of the format:
-<ul>
-<li>`RGB`       (three hex digits, like fff)</li>
-<li>`RRGGBB`    (six hex digits, like f0f0f0)</li>
-<li>`cs:RGB`    (cs is a color space name)</li>
-<li>`cs:RRGGBB` (cs is a color space name)</li>
-</ul>
+  RGB        (three hex digits, like fff)
+  RRGGBB     (six hex digits, like f0f0f0)
+  cs:RGB     (cs is a color space name)
+  cs:RRGGBB  (cs is a color space name)
 
-The color space names accepted in the color are:
-<ul>
-<li>`srgb`      (sRGB, the default if none is specified)</li>
-<li>`rgb`       (Apple's old device-independent colorspace)</li>
-<li>`p3`        (Apple's fancy large-gamut colorspace)</li>
-</ul>
-</li>
+  The color space names accepted in the color are:
+    srgb       (sRGB, the default if none is specified)
+    rgb        (Apple's old device-independent colorspace)
+    p3         (Apple's fancy large-gamut colorspace)
 
-<li>To switch to a named color preset:
-<pre>
+2) To switch to a named color preset:
   it2setcolor preset name
-</pre>
-
 For example:
-<pre>
   it2setcolor preset 'Light Background'
-</pre>
-</li>
 
-<li>To reset the current tab's color to the system default:
-<pre>
+3) To reset the current tab's color to the system default:
   it2setcolor tab default
 </pre>
-</li>
 
 #### it2setkeylabel
 
 Configures touch bar function key labels.
 
+<pre>
 Usage:
-
-<ul>
-<li>`it2setkeylabel set Fn Label`<br/>
-     Where n is a value from 1 to 20</li>
-<li>`it2setkeylabel set status Label`<br/>
-     Sets the Touch Bar "status" button's label</li>
-<li>`it2setkeylabel push [name]`<br/>
-     Saves the current labels with an optional name. Resets labels to their default value, unless name begins with a . character.</li>
-<li>`it2setkeylabel pop [name]`<br/>
-     If name is given, all key labels up to and including the one with the matching name are popped.</li>
-</ul>
+   it2setkeylabel set Fn Label
+     Where n is a value from 1 to 20
+   it2setkeylabel set status Label
+     Sets the Touch Bar "status" button's label
+   it2setkeylabel push [name]
+     Saves the current labels with an optional name. Resets labels to their default value, unless name begins with a . character.
+   it2setkeylabel pop [name]
+     If name is given, all key labels up to and including the one with the matching name are popped.
+</pre>
 
 Recommended usage for customizing an application is to set key labels and then push with a *name* of a concatenation of the app's name (e.g., "emacs") and a random number. When the app exists, pop to that same name.
-
-#### it2ssh
-
-Initiates ssh to a remote host using SSH integration. This feature is still in beta.
-
-#### it2tip
-Prints the tip of the day.
 
 #### it2ul
 
 Uploads a file. Works over ssh.
 
-Usage:
-
 <pre>
-it2ul [destination [tar flags]]
+Usage: it2ul [destination [tar flags]]
+  If given, the destination specifies the directory to place downloaded files.
+  Further options are passed through to tar. See your system's manpage for tar for details.
 </pre>
 
-If given, the `destination` specifies the directory to place downloaded files.
-Further options are passed through to tar. See your system's manpage for tar for details.
-
-If used without arguments, the file goes to the current directory. When you run this, you'll be prompted to select one or more files. Next, iTerm2 creates a `tar.gz` file containing those files and base-64 encodes them. The it2ul script receives it, decodes it, and untars it with `-xzfC`. Any arguments you provide go after a lone `-` argument,
+If used without arguments, the file goes to the current directory. When you run this, you'll be prompted to select one or more files. Next, iTerm2 creates a tar.gz file containing those files and base-64 encodes them. The it2ul script receives it, decodes it, and untars it with -xzfC. Any arguments you provide go after a lone - argument,
 
 #### it2universion
 
 Sets the unicode version for the current session. The key difference is that unicode 8 and unicode 9 use different width tables for emoji. Most apps aren't updated to use the unicode 9 tables, but Unicode 9 produces nicer results with fewer overlapping characters.
 
+<pre>
 Usage:
-
-<ul>
-<li>`it2universion set 8`</li>
-<li>`it2universion set 9`</li>
-<li>`it2universion push [name]`<br/>
-     Saves the current version with an optional `name`.</li>
-<li>`it2universion pop [name]`<br/>
-     If `name` is given, all versions up to and including the one with the matching name are popped.</li>
-</ul>
-
-#### it2dl
-
-Usage:
+  it2universion set 8
+  it2universion set 9
+  it2universion push [name]
+     Saves the current version with an optional name.
+  it2universion pop [name]
+     If name is given, all versions up to and including the one with the matching name are popped.
+</pre>
 
 <pre>
+Usage:
 it2dl filename
 </pre>
 
