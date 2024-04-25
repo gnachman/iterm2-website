@@ -15,10 +15,6 @@ While iTerm2 runs, it monitors the contents of that folder. Any time the folder'
 
 Files in this folder are expected to be formatted as Apple <a href="https://en.wikipedia.org/wiki/Property_list">Property Lists</a>. No particular file extension is required. All files in the folder must be valid property lists. If any is malformed, then no changes will be processed.
 
-Files ending in `~` are ignored.
-
-Both the DynamicProfiles folder as well as files within the folder may be symbolic links.
-
 ### Property List Format
 
 A property list describes a data structure consisting of arrays, dictionaries, strings, integers, and boolean values. Property lists may be written in JSON or XML. Here's an example of the skeletal structure of a JSON property list that iTerm2 expects for Dynamic Profiles:
@@ -103,7 +99,7 @@ The *Dynamic* will automatically be added to all Dynamic Profiles.
 
 ### Troubleshooting
 
-If something goes wrong loading a Dynamic Profile, errors will be logged to the scripting console under iTerm2 App. You can open it under **Scripts > Manage > Console**.
+If something goes wrong loading a Dynamic Profile, errors will be logged to Console.app.
 
 ### Triggers
 

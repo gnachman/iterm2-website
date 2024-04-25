@@ -52,7 +52,6 @@ You may prefix a phrase in the search query with an *operator* to narrow your qu
 
  * The *name:* operator only tries to match words in the profile's name.
  * The *tag:* operator only tries to match words in the profile's tags.
- * The `-` operator requires the phrase not to appear. It can be combined with other operators so long as it comes first.
 
 ### Quoting
 
@@ -157,8 +156,3 @@ name:^George's$
 
 A word having the prefix, suffix, or exactly matching "George's" must occur in the profile's name to match these queries, respectively.
 
-<pre>-linux</pre>
-Profiles not including the word `linux`.
-
-<pre>-tag:linux</pre>
-Profiles not including the tag `linux`.

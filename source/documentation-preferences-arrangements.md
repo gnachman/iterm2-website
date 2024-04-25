@@ -4,4 +4,4 @@ title: Arrangements Preferences - Documentation - iTerm2 - macOS Terminal Replac
 active-state: documentation
 subhead: Preferences
 ---
-{% include 3.4/documentation-preferences-arrangements.md %}
+{% include 3.5/documentation-preferences-arrangements.md %}

@@ -100,7 +100,7 @@ iTerm2 can display images inline, including animated GIFs. The easiest way to us
 If you accidentally close a session, you get five seconds (by default; configurable in Preferences > Profiles > Session) to undo it by pressing Cmd-Z.
 
 #### Shell Integration
-Shell Integration is a feature exclusive to iTerm2 that uses knowledge about your shell prompt to help you navigate from one shell prompt to another, record your command history, suggest most used directories, helps you re-run commands, download files from remote hosts with a click, upload files to remote hosts with drag and drop, and more. See the <a href="documentation-shell-integration.html">Shell Integration</a> documentation for all the details.
+Shell Integration is a feature exclusive to iTerm2 that uses knowledge about your shell prompt to help you navigate from one shell prompt to another, record your command history, suggest most used directories, helps you re-run commands, download files from remote hosts with a click, upload files to remote hosts with drag and drop, and more. See the <a href="shell_integration.html">Shell Integration</a> documentation for all the details.
 
 #### Password Manager
 iTerm2 can save your passwords in the Keychain. Use the Window > Password Manager menu item to open the password manager and enter your passwords.
@@ -117,8 +117,3 @@ If you have lots of sessions you can quickly find the one you're looking for wit
 #### Shell Integration and Utilities
 Shell integration consists of a shell script that's loaded when you create a new session or ssh to a remote host. It modifies your prompt so iTerm2 knows where it is. This enables a number of features, such as Copy Output of Last Command, Automatic Profile Switching when changing hosts, and more as described in <a href="documentation-shell-integration.html">Shell Integration</a>. When you install Shell Integration you'll be prompted to also install its Utilities. The Utilities are a collection of shell scripts that use iTerm2's unique features and make them easy to use. For example, you can upload or download files from a remote host, copy to the pasteboard from the command line (even over ssh!), and make fireworks explode from the cursor. It's described in <a href="documentation-utilities.html">Utilities</a>.
 
-#### Python Scripting API
-iTerm2 can be customized with its <a href="/python-api">Python API</a>.
-
-#### Status Bar
-You can configure a <a href="documentation-status-bar.html">status bar</a> to show information about your environment at the top or bottom of the window.

@@ -55,14 +55,6 @@ opening the file. It may optionally include a line number, like
 `file:///tmp/file.txt#123` or line number and column number like
 `file:///tmp/file.txt#123:45`.
 
-#### Open URL
-
-To request that iTerm2 open a URL, send:
-
-    OSC 1337 ; OpenURL= : [base64 encoded url] ST
-
-The user will be prompted to consent for each distinct hostname.
-
 #### Set cursor shape
 
     OSC 1337 ; CursorShape=[N] ST
@@ -104,29 +96,12 @@ To post a notification:
 
     OSC 9 ; [Message content goes here] ST
 
-Rich notifications are also supported. Use:
-
-    OSC 1337 ; Notification = [attributes] ST
-
-Attributes are formatted as `key=value` where `value` is base64-encoded. Attributes are delimited by semicolons. All attributes are optional. The following attributes are defined:
-
- * `message`: The detail content. Defaults to the empty string.
- * `title`: The heading.
- * `subtitle`: The sub-heading.
- * `image`: The image to show with the notifications.
-
 #### Change profile
 To change the session's profile on the fly:
 
     OSC 1337 SetProfile=[new profile name] ST
 
 #### Copy to clipboard
-There are three ways to copy text to the clipboard for reasons that have been lost to history.
-
-**OSC 1337 CopyToClipboard**
-
-This method allows you to copy to various macOS-specific pasteboards. This is probably not useful to you unless you have very specialized needs. It is also the worst in terms of backwards compatibility because other terminals will simply display the text you wished to copy.
-
 To place text in the pasteboard:
 
     OSC 1337 ; CopyToClipboard=[clipboard name] ST
@@ -134,53 +109,6 @@ To place text in the pasteboard:
 Where name is one of "rule", "find", "font", or empty to mean the general pasteboard (which is what you normally want). After this is sent, all text received is placed in the pasteboard until this code comes in:
 
     OSC 1337 ; EndCopy ST
-
-**OSC 1337 Copy**
-
-This is an alternative to OSC 52. The implementation is a bit more efficient for very large values.
-
-You can place a string in the system's pasteboard with this sequence:
-
-    OSC 1337 ; Copy=:[base64] ST
-
-Where `[base64]` is the base64-encoded string to copy to the pasteboard.
-
-An alternate way to use this code is to split it into multiple codes. This is used with tmux, which does not allow very long control sequences.
-
-First send:
-
-    OSC 1337 ; Copy=2 ; [unique identifier] ST
-
-Then, using the same unique identifier, send one or more of:
-
-    OSC 1337 ; Copy=3 ; [unique identifier] ; [chunk of base64-encoded content] ST
-
-Last, using the same unique identifier, send:
-
-    OSC 1337 ; Copy=4 ; [unique identifier] ST
-
-**OSC 52**
-
-This is not a proprietary control sequence. It's probably your best choice since it'll work with other terminal emulators.
-
-To write to the pasteboard:
-
-    OSC 52 ; Pc ; [base64 encoded string] ST
-
-The `Pc` parameter is ignored. xterm uses it to choose among various clipboards, most of which do not exist in macOS.
-
-In version 3.5 and later, iTerm2 supports the sequence to query the clipboard:
-
-    OSC 52 ; Pc ; ? ST
-
-The clipboard contents are reported with:
-
-    OSC 52 ; Pc; [base64 encoded string] ST
-
-Where Pc is the same as in the request.
-
-User consent is required both to read and write the pasteboard.
-
 
 #### Set window title and tab chrome background color
 To set the window title and tab color use this escape sequence:
@@ -305,6 +233,15 @@ Or, in newer versions:
 `[height]` and `[width]` are floating point values giving the size in points of a single character cell. For example:
 
     OSC 1337 ; ReportCellSize=17.50;8.00;2.0 ST
+
+#### Copy to Pasteboard
+
+You can place a string in the system's pasteboard with this sequence:
+
+    OSC 1337 ; Copy=:[base64] ST
+
+Where `[base64]` is the base64-encoded string to copy to the pasteboard.
+
 
 #### Report Variable
 
@@ -550,78 +487,3 @@ iTerm2 will respond with:
     ESC P > | iTerm2 [version] ST
 
 Where [version] is the version of iTerm2, such as `3.4.0`.
-
-#### Blocks
-
-A "block" is a series of consecutive lines that can be copied to the clipboard via an onscreen affordance that is shown when the mouse hovers over the block. It's useful when showing code the user might want to copy, such as when displaying a markdown document with a code block.
-
-To begin a block:
-
-    OSC 1337 ; Block = id = [unique identifier] ; attr = start [; optional arguments] ST
-
-The only optional argument defined for attr=start is `type=t` where `t` is a mime type (e.g., `text/html`) or file extension (e.g., `html`).
-
-To end a block:
-
-    OSC 1337 ; Block = id = [unique identifier] ; attr = end [; optional arguments] ST
-
-The unique identifier should correspond to the identifier used in the attr=start code.
-
-The only optional argument defined for attr=end is `render=1`. If provided, then the block will be rendered natively rather than as regular terminal contents. For example, markdown when rendered natively gets different font sizes for headers.
-
-#### Buttons
-
-You can add a clickable button at the current cursor position with the following code:
-
-    OSC 1337 ; Button = type=copy ; block=[block identifier] ST
-
-The block identifier corresponds to the identifier given in a preceding `OSC 1337 ; Block...` code. When the user clicks this button iTerm2 copies the contents of that block to the clipboard.
-
-#### Capabilities
-
-You can query iTerm2 for its capabilities with:
-
-    OSC 1337 ; Capabilities ST
-
-iTerm2 will respond with:
-
-    OSC 1337 ; Capabilities = [caps] ^G
-
-Where `caps` is a concatenated list of values indicating which capabilities are available. Each value will begin with a capital letter. Some values take a numeric parameter and will be formatted as the name concatenated with the parameter. For example, Uw8 means the `Uw` attribute has parameter `8`. The following capabilities are defined:
-
- * `Cw`: Clipboard is writable.
- * `Aw`: Ambiguous-width characters are treated as wide.
- * `Uw`: The unicode version used for width calculation. Takes a parameter, typically 8 or 9.
-
-Other values may be sent, which should be ignored.
-
-#### SSH Integration
-
-A number of control sequences are defined for SSH integration. You shouldn't use these directly; they are meant to be used by the it2ssh script. They are documented here for completeness.
-
-To request that some environment variables be set on the remote host, send:
-
-    OSC 1337 ; Env = report = all : [vars] ST
-
-Where `vars` is a base-64 encoded string. That string consists of lines formatted as `KEY=VALUE`. For example, if `OSC 1337 ; Env=report=all:TERM=xterm ST` is sent then the `TERM` variable will be set to `xterm` in the remote session.
-
-To switch into ssh mode:
-
-    OSC 1337 ; it2ssh = [token] [unique ID] [binaryargs] [ssh args] ST
-
-Where:
-
- * `token` is a secret token gotten by reading from the unix domain socket at one of:  `~/.config/iterm2/sockets/secrets` `~/.iterm2/sockets/secrets` `~/.iterm2-1/sockets/secrets`. This is used to prove it2ssh was run on the same machine as iTerm2 is running on. The special value of `none` means it2ssh was not run locally.
- * `unique ID` is a random number identifying this ssh session.
- * `binaryargs` is a base64-encoded value giving the flags to ssh that do not take a parameter.
- * `ssh args` is the base64-encoded arguments that were passed to ssh (e.g., hostname, flags, etc.).
-
-To request iTerm2 to send the script that drives SSH integration send:
-
-    OSC 1337 ; SendConductor ST
-
-To end an SSH integration session, send
-
-    OSC 1337 ; EndSSH = [unique ID]
-
-Where `unique ID` corresponds to the ID the session was started with.

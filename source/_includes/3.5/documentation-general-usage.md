@@ -8,8 +8,8 @@ By default, the label of each tab is the name of the job that's running in that 
 
 Tab labels have indicators that tell you their status. A blue dot means new input was received. An activity indicator means new out is being received. When the session ends, a  ⃠ icon appears in the tab. You can customize these indicators in Preferences > Appearance.
 
-#### Edit Session
-The *Edit Session* panel (accessible from the Session menu) lets you modify the appearance of a single session. If you customize some attribute of the session (for example, by changing the default text color) then subsequent changes to that same attribute in the profile will not affect the customized session. However, changes to other attributes of the profile will affect the customized session.
+#### Edit Current Session
+The *Edit Current Session* panel lets you modify the appearance of a single session. If you customize some attribute of the session (for example, by changing the default text color) then subsequent changes to that same attribute in the profile will not affect the customized session. However, changes to other attributes of the profile will affect the customized session.
 
 #### Pointer
 The primary use of the mouse in iTerm2 is to select text, and (by default) text is copied to the clipboard immediately upon being selected. You can click and drag to perform a normal selection. Double-clicking selects a whole word. Triple-clicking selects an entire line. Quadruple-clicking performs a "smart select", matching recognized strings such as URLs and email addresses. You can add custom pointer actions in Preferences > Pointer. I recommend using three-finger tap for smart selection, but you must ensure that *System Preferences > Trackpad* does not have any other action already assigned to three-finger tap.

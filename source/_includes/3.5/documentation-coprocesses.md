@@ -23,9 +23,5 @@ There are two ways to start a coprocess.
 
 #### Usage
 A session can not have more than one coprocess at a time. When a coprocess is active, an icon will indicate that in the top right of the session.
-
-#### Troubleshooting
-If a coprocess fails you will receive a notification in the terminal window that gives you the option to view its output to stderr.
-
 #### Technical Details
 The coprocess's stdin is a byte-for-byte copy of the input from the session's pty, beginning at the time the coprocess starts. In the case of a trigger-started coprocess, the line of input that triggered it MAY be the first line of input to the coprocess, but this is not guaranteed. If a coprocess is running, triggers with a Run Coprocess action will not fire. The coprocess's stdout stream will be treated the same as keyboard input. A small amount of buffering is provided for both input and output of the coprocess. When a buffer fills, the coprocess will block.
