@@ -1,3 +1,35 @@
+2024-05-06: Randomize donate text
+
+2024-05-06: Avoid crashing when restoring state with a
+preposterously long line
+
+2024-05-06: Fall back to old image for indicator if SF
+symbols is not available (e.g. on macOS 12)
+
+2024-05-06: Add missing onboarding image
+
+2024-05-05: Show a popover the first time you select a
+command explaining it and helping you disable the feature.
+Also fix a bug in prefs panel where revealing a control on
+another tab didn't work. Issue 11444
+
+2024-05-05: Fix a crash seen on Intel macs when restoring
+state with compressed regions. I think Data might be moving
+its contents around so the pointer returned by
+EfficientDecoder was dangling. This change makes it less
+efficient. Issue 11439
+
+2024-05-05: Update onboarding to include command selection
+
+2024-04-25: Modernize indicators appearance
+
+2024-04-25: Show a more precise warning when broadcasting
+input
+
+2024-04-25: Add a note about billing to AI onboarding dialog
+
+2024-04-25: Add a note about billing to AI settings
+
 2024-04-24: Fix title of settings window
 
 2024-04-24: Use arrayWithCapacity initializer in fix 799afde
@@ -127,163 +159,3 @@ commands. Fix bugs, including various races and drawing
 problems, add logging.
 
 2024-04-02: Fix drawing with selected command
-
-2024-03-28: Suppress drawing buttons under auto composer
-
-2024-03-28: Fix vertical position of selected command
-outline
-
-2024-03-28: Don't draw background color in auto composer
-prompt
-
-2024-03-28: Fix rendering discrepancies in terminal buttons
-bewteen renderers
-
-2024-03-27: Add the concept of a selected command. Draw a
-blue box around it and dim the background of other regions.
-If there's a line-style mark just below the blue box shift
-buttons down a touch so they don't intersect.
-
-Limit search to the selected command.
-
-Other changes: Fix data race with terminal buttons being
-used in metal thread.
-
-Focus auto composer when you type or paste (or it changes
-for any other reason).
-
-2024-03-19: Make minimum contrast apply to box drawing
-characters that are not block-like. Issue 6993
-
-2024-03-19: Try to fix crash in issue 11396
-
-2024-03-18: Update tips of the day
-
-2024-03-17: When the command prompt appears only make auto
-composer first responder if the session was already first
-responder
-
-2024-03-17: Add missing header
-
-2024-03-17: Add onboarding images
-
-2024-03-17: Rebuild binary deps for xcode 15.3
-
-2024-03-17: Don't show completions in composer if there are
-none to show. Do show executable completions if the prefix
-looks like a path
-
-2024-03-17: Bump shell integration with suggestion from
-issue 11392
-
-2024-03-17: Remove recents if the advanced setting is off.
-Issue 11198
-
-2024-03-16: Change how terminal buttons positions are
-stored. Don't store the abs coord in the button since it's
-sensitive to resizing. Instead, calculate it from the mark
-each time.
-
-2024-03-15: Make line style mark buttons stick to the right
-side
-
-2024-03-12: When the composer is open (auto or standard
-large minimal composer) add PTYTextView to the responder
-chain after it so menu items continue to work
-
-2024-03-12: Respect key bindings in auto composer, except
-those that send text on navigationy keys like arrows
-
-2024-03-12: Fix a bug where the composer manager would get
-stuck as autocomposer after disabling the setting
-
-2024-03-12: Remove drag handles from auto composer
-
-2024-03-12: Improve composer suggestions. Don't complete
-filenames for first word of a command. Get more results,
-variable number depending on ssh and whether a list of files
-was requested by the user or is happening automatically.
-Forward keystrokes from popup to minimal composer vc.
-
-2024-03-12: Improve composer completions. Press tab to get a
-popup of filename/command completions.
-
-2024-03-12: Keep auto composer as first responder when you
-click in a text field.
-
-2024-03-12: Ensure the line buffer doesn't have empty blocks
-at the end when beginning a resize because popping fails
-when there is a terminal empty block. Issue 11391
-
-2024-03-11: Really fix bugs with terminal buttons. Drawing
-helper had outdated cached metrics when updating button
-desired frames.
-
-2024-03-11: Fix incorrect underline vertical offset when
-glyph size != cell size. Issue 11386
-
-2024-03-11: Fix bug where terminal buttons would disappear
-when there's scrollback overflow
-
-2024-03-07: Fix warnings
-
-2024-03-06: Set TERM_FEATURES
-
-2024-03-06: Fix bug where a letter after an image corrupted
-a cell of the image
-
-2024-03-05: Remove old onboarding images
-
-2024-03-05: Update onboarding
-
-2024-03-05: Fix nil dereference when computing offscreen
-command line
-
-2024-03-05: Log key-up
-
-2024-03-05: Add tool to extract input bytes from debu glog
-
-2024-03-04: Update control after canceling changing a
-setting that warns you that the setting is dumb. Issue 11373
-
-2024-03-04: Add neovim icon. Issue 11384
-
-2024-03-02: Fix colors in banners and related drawing.
-
-2024-03-02: Queue input while connecting to SSH. Issue 11378
-
-2024-03-02: Make search and filter status bar components use
-large controls if space permits
-
-2024-03-02: Store snippets in a plist file rather than user
-defaults because there's a 4 meg limit on user defaults
-
-2024-03-02: Allow manual input source changes to stick when
-force keyboard is on. Issue 11356
-
-2024-03-02: Accept control- to close find view. Issue 11383
-
-2024-03-02: Fix infinite recursion. Issue 11379. Also fix a
-bug where windowed ranges sometimes used -1,-1 for the
-window; that confuses the text extract, which expects 0,0
-for when there is no window.
-
-2024-03-01: Add missing files
-
-2024-03-01: Optimize the dickens out of token processing.
-
-The great multithreadization and introduction of history
-compression introduced a ton of overhead, which this commit
-fixes.
-
-* Remove support for compression. The abstraction was just
-too expensive.  * Replace compressible character buffer with
-an objc class to encapsulate an array of characters.  *
-Optimize line block observers by replacing them with
-generation counts.  * Add gobs of microoptimizations, mostly
-replacing Swift with ObjC or C++. Swift is a much better
-language than both, but it you care about performance it's
-just not ready for prime time yet.
-
-2024-03-01: Don't extract text in codecierge if it's not
-enabled
