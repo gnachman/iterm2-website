@@ -1,22 +1,38 @@
-3.5.0beta25
+3.5.0beta26
 
 This is a release candidate.
 
 Improvements
-- Make AI mode request a prompt when shell
-  integration and the Composer are not in use.
-- Use VS0 and VS1 to disambiguate width of U+2018,
-  U+2019, U+201C, and U+201D.
-- Indicators (icons that appear in the top right
-  of the window to indicate status) modernized.
-- The first time you click to select a command,
-  show a popover with a link to disable the
-  command selecion feature.
+- Give the terminal keyboard focus when you click
+  the copy button in Codecierge.
+- Make it harder to accidentally select a command
+  when clicking in the terminal
+- New app icon.
+- Add support for silent command URLs like
+  iterm2:///command?silent&c=command%20to%20run.
+- Add a built-in function
+  iterm2.urlEncode(string:).
+- Don't default to using SSH integration for ssh:
+  URL opening.
+- When you click on a command to select it, show
+  buttons like in auto composer mode.
 
 Bug Fixes
-- Fix crashes.
-- Fix bugs in color picker when dragging in colors
-  while it's open.
-- Fix hang when showing shell integration
-  information alert box.
+- Remove search results after you make a selection
+  in Find URLs/Find all smart selection
+  matches/Pick result to open.
+- Disable rich text for AI prompt textview.
+- Reduce delay when hiding a hotkey window before
+  you can type in the newly activated app.
+- Make floating hotkey windows stay above other
+  terminal windows but not above non-terminal
+  windows like alerts and settings.
+- Prevent horizontal scrolling in preferences
+- Fix it2ssh not allowing you to interact with
+  prompts prior to connection (e.g., unknown host
+  permission).
+- Fix named marks tool not working when you select
+  an item.
+- Fix a bunch of UI bugs in the iterm2:/command
+  handler.
 
