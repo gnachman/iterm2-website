@@ -1,8 +1,1027 @@
-3.4.23
+3.5.0
 
-Bug fixes:
-- Fix a bug where windows may not be restored
-  properly.
-- Fix a bug where modifier double-tap hotkeys
-  don't work in macOS Sonoma.
+This version of iTerm2 represents over two years
+of work and it has an awful lot of changes.
+
+Here are the most important improvements:
+
+- If you use shell integration and the output of a
+  command goes past the top of the screen, the
+  command will be shown at the top.
+
+- A new menu item, Edit > Find > Filter, lets you
+  hide lines not matching a substring or regular
+  expression. This is useful for analyzing logs.
+
+- You can click a command to select it. Search,
+  Filter, and Select All will then be restricted
+  to the selected command. You can disable this
+  feature in Settings > General > Selection.
+
+- Add support for separate light/dark mode colors.
+
+- Using OpenAI's ChatGPT API, iTerm2 can now write
+  commands for you, interpret the output of
+  commands, and guide you towards a goal. See the
+  AI section below for details.
+
+- Add "Render Selection", which replaces a chunk
+  of selected text with a natively rendered view.
+  For example, JSON gets pretty-printed and syntax
+  highlighted. Rendered selections have the option
+  of scrolling horizontally to make navigating
+  logs easier. They are searchable. Over 150
+  different languages are supported for syntax
+  highlighting. Markdown gets special treatment
+  and displays its rendered format.
+
+- The password manager can now use LastPass or
+  1Password rather than the keychain. Use the (⋯)
+  menu next to the search field to configure it.
+
+There are some new experimental features. There
+are not fully baked, but feedback on them is
+welcome.
+
+- There is a nascent SSH integration feature
+  available for testing. You can try it by setting
+  a profile's command to SSH. The integration lets
+  you export environment variables and copy files
+  to the remote host. If Python 3.7 or later is
+  available on the remote host, various features
+  such as the Jobs status bar and toolbar
+  components will reflect data from the remote
+  rather than the local.
+
+- Add an experimental "auto composer" feature that
+  replaces the command line with a native control.
+  This is still a work in progress.
+
+The full list of new features follows:
+
+Performance Improvements
+========================
+- Highlight triggers evaluate much faster now.
+- Input is now handled off the main thread. This
+  increases throughput and decreases latency. We
+  can now redraw at a higher frame rate without
+  impacting throughput significantly.
+- Selecting a bunch of text used to lock up the UI
+  for a long time, but it is now instant. The hard
+  work is deferred until you actually paste the
+  text.
+- Semantic history (cmd-clicking on a filename)
+  used to search the filesystem on the main thread
+  which could cause hangs (such as on slow network
+  filesystems). This work has been moved to a
+  separate process to keep the UI responsive.
+- Trigger evaluation, especially when you have
+  many triggers, is significantly faster now.
+
+AI
+==
+- Add AI-powered natural language command
+  generation. Enter a prompt in the composer and
+  select Edit > Engage Artificial Intelligence.
+  You will need to provide an OpenAI API key since
+  GPT costs money to use.
+- A new AI feature in the Toolbelt, "Codecierge",
+  lets you set a goal and then walks you
+  step-by-step to completing it by watching the
+  terminal contents. It requires you to supply an
+  OpenAI API key.
+
+
+UI
+==
+- Tabs now have a separate configurable subtitle
+  under the main title.
+- The tab bar in the Minimal theme now uses the
+  same transparency as the rest of the window.
+- Add support for 120hz.
+- The vertical line and horizontal line cursors
+  now have a subtle shadow to improve their
+  visibility.
+- Add "Convert Matches to Selections" menu item.
+- Make menu items searchable in key bindings and
+  pointer bindings.
+- The P3 color space is now supported. The color
+  picker uses P3 and control sequences that accept
+  a color space now accept p3.
+- Selecting URLs (cmd-opt-u) now enables shortcuts
+  to jump to them by number.
+- Use the running program's first letter as the
+  tab icon if there is no built-in icon.
+- Add "Find All Smart Selection Matches", which
+  searches for any string matching a smart
+  selection. Those that are initially visible can be
+  copied with a keystroke or immediately sent with
+  option+keystroke.
+
+Quality-of-Life Improvements
+============================
+- Add "named marks" which make it easier to find
+  your spot in history.
+- Clear Buffer can now be broadcast like keyboard
+  input.
+- Add "Add tab on right" to tab context menu.
+- Option-cmd-click now selects the second smart
+  selection action.
+- Add "Duplicate Session". It supports ssh
+  integration, even with jump hosts!
+- Add Shell > Duplicate Window.
+- Add "Add Alert on Marks in Offscreen Sessions"
+  which is a sticky setting that lets you know
+  when a command in a not-currently-visible
+  session finishes. Requires shell integration.
+- Add "Move session to tab" to context menu.
+- Add Window > Move session to tab
+- Right-clicking on a number in scientific
+  notation like 6.022e23 shows its expanded form
+  in the context menu.
+- You can now search the tty and foreground job
+  process ID in the Open Quickly window.
+- Add key binding actions for next/previous pane.
+- There are new key binding actions for Windows
+  refugees who want to use Control-C and Control-V
+  to copy and paste. "Copy or Send ^C" and "Paste
+  or Send ^V" will copy (if there's a selection)
+  or paste (if the clibpoard has text)
+  and otherwise send the control character.
+- Squelch audible beeps when focus reporting is
+  the likely cause.
+- Offer to turn off mouse reporting for BEL when
+  they seem to be correlated.
+- Add a menu item to install an already-downloaded
+  Python runtime.
+- Informative values in context menu (e.g.,
+  hex-to-decimal conversions) are now copyable.
+- Add option to enable GPU renderer in low power
+  mode.
+- The paste history tool now has a context menu.
+
+Text
+====
+- Add Unicode 15 emoji.
+- Emoji flags now draw as double-width.
+- You can now assign fonts to specific ranges of
+  unicode. There is a built-in shortcut to get all
+  the powerline symbols, including downloading the
+  requisite fonts.
+- Make certain powerline symbols draw wider.
+- Add support for native rendering of the
+  following powerline extended symbols:
+    U+E0A3: column-number
+    U+E0B0: Powerline_normal-left
+    U+E0B2: Powerline_normal-right
+    U+E0B4: right-half-circle-thick
+    U+E0B5: right-half-circle-thin
+    U+E0B6: left-half-circle-thick
+    U+E0B7: left-half-circle-thin
+    U+E0B8: lower-left-triangle
+    U+E0C0: flame-thick
+    U+E0C1: flame-thin
+    U+E0CE: lego_separator
+    U+E0CF: lego_separator_thin
+    U+E0D0: lego_block_facing_WIP
+    U+E0D1: lego_block_sideways
+    U+E0D3: lego_block_facing_WIP-3d-good
+- Support variation selector 16 except in
+  alternate screen mode.
+- The font picker now supports stylistic
+  alternatives.
+- Add setting to select opacity of faint text.
+
+Settings
+========
+- Add View > Disable transparency in key window.
+  This lets you have transparency/blur in
+  background windows.
+- Add a preference to force creating a new window
+  on launch, even if there is a hotkey window.
+- You can now bind "select menu item" to pointer
+  events (clicks and gestures).
+- Add a setting to preserve windows' spaces on
+  restoration.
+- You can configure a shortcut to be a "leader".
+  This allows you to define two-keystroke
+  shortcuts, composed of leader + some other
+  shortcut. For example, if you make cmd-B the
+  leader then you can create a key binding for
+  leader+h/j/k/l to navigate among split panes.
+- Add "copy" as a new smart selection action.
+- Add a new kind of key binding action called
+  "sequence" that performs any number of other key
+  binding actions in order.
+- You can now remap the fn key if you have a
+  MacBook.
+- You can now import and export *all* the
+  iTerm2-related data in Settings > General >
+  Preferences > Export/Import All Settings And
+  Data.
+- Key bindings can now be applied to multiple
+  sessions (e.g., all sessions in this window).
+- You can now customize copy mode shortcuts by
+  placing a file in ~/Library/Application
+  Support/iTerm2/CopyModeKeyBindings.dict.
+  See the similarly named file in the app bundle
+  for a reference.
+- Add menu item to clear instant replay.
+- Code points 0xf000-0xf003 can now be rendered.
+  These are sometimes used in nerd fonts.
+- Add a reset button to the modifier remapping UI.
+- Add ability to remap the right control key.
+- Having a separate color for selected text is now
+  optional.
+- Add a preference to avoid blocking system
+  shutdown.
+- There's a new key binding action to alert on the
+  next mark.
+- Add 'interpret key bindings based on physical
+  key, ignoring input language' setting so your
+  key bindings stay the same when changing
+  keyboard layout.
+- Add option to notify of noncritical shell
+  integration updates.
+
+
+Terminal
+========
+- Claim to be xterm version 314 and a vt220. This
+  will enable new features in various programs,
+  such as better key reporting in vim and emacs.
+  It may introduce new incompatibilities too!
+  Please let me know if something breaks.
+- Add support for various control sequences that
+  affect colors (OSC 12, 17, 19, 104, 110, 111,
+  112, 117, and 119).
+- Add support for OSC 22 to set mouse cursor. The
+  following styles are supported:
+    X_cursor, arrow, based_arrow_down,
+    based_arrow_up, cross, cross_reverse,
+    crosshair, hand1, hand2, left_ptr, left_side,
+    right_side, sb_h_double_arrow, sb_left_arrow,
+    sb_right_arrow, sb_up_arrow,
+    sb_v_double_arrow, tcross, xterm
+
+- Add support for colored underlines.
+- Add support for SGR 8 (invisible text).
+- Function keys now send modifier flags as long as
+  TERM begins with `xterm`.
+- Compatibility improvements to "modifyOtherKeys"
+  mode.
+- Add support for various control sequences:
+  - CSI ^
+  - CSI a
+  - DEC(RE)SET 1007
+  - DEC(RE)SET 1016
+  - DEC(RE)SET 1047
+  - DEC(RE)SET 1048
+  - DEC(RE)SET 12 (blinking cursor: disabled by
+    default in new pref)
+  - DEC(RE)SET 66
+  - DECBI
+  - DECCARA
+  - DECCRA
+  - DECDC
+  - DECDSR
+  - DECERA
+  - DECFI
+  - DECFRA
+  - DECIC
+  - DECNCSM
+  - DECRARA (yeah! let's go!)
+  - DECRQPSR
+  - DECRQSS
+  - DECRSPS
+  - DECSACE
+  - DECSCA
+  - DECSCPP
+  - DECSED
+  - DECSEL
+  - DECSERA
+  - DECSLPP
+  - DECSNLS
+  - EPA
+  - HPA
+  - SGR 21 (double underline)
+  - SL
+  - SPA
+  - SR
+  - Tertiary DA
+  - XTPOPSGR
+  - XTPUSHSGR
+  - XTSETTCAP
+  - XTSMGRAPHICS
+  - push/pop/report colors
+- Provide a modified termcap that advertises
+  Setulc (underline color support) for
+  xterm-256color.
+- Clipboard content reporting via control sequence
+  OSC 52 is now supported, but requires user
+  consent to enable.
+- There's a new control sequence for rich
+  notifications:
+[esc]1337;Notification=[params][control-G]
+  Where params is a semicolon-delimited list of
+  key value pairs:
+  message=[text]
+    The text to display.
+  title=[text]
+    Optional notification title.
+  subtitle=[text]
+    Optional notification subtitle.
+  image=[data]
+    Optional base64-encoded image.
+- Add support for inline SVGs.
+- Mouse reporting now supports horizontal
+  scrolling and more mouse buttons.
+- Add DECSET 2026 for synchronized updates.
+- Add support for mouse reporting buttons 10 and
+  11 and horizontal scrolling.
+- Stop parsing OSC control sequences after 1
+  megabyte.
+- Add OSC 1337 OpenURL=:(base64-encoded URL)
+- Control sequences that set color values accept
+  4-digit hex values now.
+- Enabling CSI u mode in your profile does not
+  enable Disambiguate Escapes now. This additional
+  setting is now exposed in the Terminal State menu.
+
+Triggers
+========
+- Add Inject trigger. It injects input to the
+  terminal as though it had been read from the
+  running app.
+- Add a new trigger action to set a user-defined
+  variable.
+- Add Triggers status bar component to make it
+  easier to manage your triggers.
+- Add a variable "line" when evaluating a
+  trigger's interpolated string, giving the line
+  number since the start of history.
+
+Titles
+======
+- Add session size as a feature you can show in
+  tab titles.
+
+Scripting
+=========
+- Add a mouseInfo variable that exposes info about
+  the last button event to Python API scripts.
+- You can now invoke API-registered functions from
+  Open Quickly.
+- Set ITERM2_COOKIE in coprocesses so they can use
+  the Python API without an extra authentication
+  step. All other environment variables that
+  sessions have are also now provided to
+  coprocesses.
+- Add a setting for the location of Python API
+  scripts.
+- Add builtin functions "iterm2.paste()" and
+  "iterm2.focus()".
+- You can now invoke script functions from mouse
+  bindings.
+- Script invocations can use semicolons to call
+  multiple functions.
+- Allow multiple selections for importing and
+  exporting scripts.
+- Notify Python API clients of resizes.
+
+Snippets
+========
+- Snippets now have configurable escaping modes so
+  you can use literal text without worrying about
+  backslashes.
+- Hold option when sending a snippet to open it in
+  Advanced Paste for editing.
+- Hold shift when selecting a snippet to open it
+  in the composer.
+- Add a search field to the snippets toolbelt tool.
+- Large snippets won't cause problems saving
+  settings any more. They are now stored
+  separately.
+
+Logging
+=======
+- You can now save logs in HTML.
+- Automatic logging filename is now a profile
+  setting instead of an advanced setting.
+- The folder for automatic logging is now an
+  interpolated string.
+- Enable logging as asciicast, which is playable
+  by asciinema.
+- Add option to include timestamps in saved
+  content.
+- Use only ASCII spaces in plain-text logs.
+
+Password Manager
+================
+- You can now disable probing for a password
+  prompt in the settings menu of the password
+  manager.
+- Add option not to require a password to open the
+  password manager.
+- Improve how the password manager stores
+  passwords in keychain so they make more sense in
+  Keychain Access.
+- The password manager can now generate passwords.
+
+Shell Integration
+=================
+- There's a new Utility, it2tip, which implements
+  the tip of the day as a command line app.
+  Install shell integration and utilities to get
+  it.
+- Shell integration can now be injected
+  automatically as part of creating a login shell.
+  Explicit installation is no longer needed on
+  localhost (except for tcsh users, who are still
+  stuck in 1995. Sorry).
+- You can now cmd-click on the command prompt to
+  get info about the command.
+- imgcat has a bunch of new options. You'll need
+  to reinstall shell integration utilities to get
+  it.
+
+tmux
+====
+- Offer to detach after closing the last tmux tab.
+- Enable focus reporting in tmux integration.
+- In tmux integration, key bindings are
+  automatically created to emulate tmux's
+  shortcuts with the leader in place of tmux's
+  prefix key.
+  You can set up the leader in Prefs > Keys >
+  Leader.
+- In tmux 3.4 you'll be able to mirror its paste
+  buffer to the local clipboard.
+- Make "Adjust window when changing font size"
+  work in tmux integration.
+- Make the tmux-256color terminfo available by
+  default. Improves various problems in tmux
+  integration such as function keys sending the
+  wrong codes.
+
+Composer
+========
+- The composer (cmd-shift-.) now supports multiple
+  cursors. Use ctrl-shift-up/down or option-drag to
+  create them. You can also convert search results
+  to cursors with Edit > Find > Select Matches.
+- Selecting Advanced Paste while in the composer
+  moves the composer's content into the advanced
+  paste window.
+- The composer now supports search.
+- You can resize the composer's height by dragging
+  its bottom edge.
+- Cmd-click in the composer opens the command in
+  explainshell.com.
+- In the composer, option-shift-enter sends the
+  command at the cursor and removes it from the
+  composer.
+- Add a "compose" action (prefs > shortcuts >
+  actions).
+- Add ability for composer to enqueue a command.
+- ssh integration is now easily usable from the
+  command line. Use it2ssh instead of ssh.
+
+Profiles
+========
+- Searches for profiles now allow you to exclude
+  terms using the minus operator. For example:
+  -tag:dynamic
+- Remember the order of dynamic profiles after you
+  hand-edit them in settings, even if they are
+  later removed and re-added.
+
+Semantic History
+================
+- Add IntelliJ UE support to semantic history.
+- Fix support for VSCode Insiders in semantic
+  history.
+- Add support for the new VSCodium bundle ID.
+- Add support for the Nova editor to semantic
+  history.
+- Add support for WebStorm and Rider to semantic
+  history.
+- Semantic history now supports "[filename](line
+  number])" and "[filename] line [line number]"
+- Semantic history can now open to line number in
+  Xcode.
+
+Copy Mode
+=========
+- Copy mode now supports previous/next mark
+  navigation.
+- Add new copy mode commands: ^e and ^y to scroll
+  by one line, ^d and ^u to scroll by half a
+  screen, and you can now precede a command with a
+  number to apply it repeatedly.
+
+Other
+=====
+- You can now reveal a session by opening a URL
+  like iterm2:///reveal?sessionid=w0t0p0.guid
+  where the parameter comes from the
+  ITERM_SESSION_ID environment variable.
+- Add handlers for titan and gemini schemes.
+
+
+Other Improvements
+------------------
+
+UI
+==
+- When you drag a top statusbar in a no-titlebar
+  window with a single tab and no split panes drag
+  the window instead of the tab.
+- Use session font for timestamps.
+- Make font configurable in text status bar
+  components.
+- Use fixed-pitch fonts in various places in
+  settings where they make sense.
+- Show an indicator in all sessions when debug
+  logging is enabled.
+- Clicking on indicator icons in the top right of
+  a session now shows help text.
+- Broadcast to all panes/tabs is now a toggle.
+- Double clicking on the tabbar now behaves the
+  same as double clicking on the title bar: it
+  respects the system setting for title bar double
+  clicks.
+- Improve legibility of tab labels in the Minimal
+  theme.
+- Support resolutions larger than 4k pixels per
+  dimension in GPU renderer.
+- Up/down arrows wrap around in open quickly
+  window.
+- Emacs and Python now get the correct tab icons.
+- Rate limit alerts and notification triggers to
+  avoid spamming you to death.
+- Make the tab bar look prettier in Monterey.
+- Tweak sorting of command history to make age a
+  slightly stronger factor.
+- Visual improvements to the toolbelt.
+- Warn about changes in macOS 12 when secure
+  keyboard entry is enabled.
+- Show an indicator in the current session when
+  secure keyboard input is enabled.
+- Add text labels to the macOS-style color
+  picker's custom icons.
+- Visual improvements to profile list views.
+- Visual improvements to the Jobs tool.
+- Ensure the URL preview box does not overlap the
+  hyperlink being previewed.
+- Avoid causing the window contents to jump when
+  colors change.
+- Visual improvements to minimal theme with
+  transparent windows.
+- UI improvements to the password manager for
+  adding a new password.
+- Tweak status bar colors to look nicer in the
+  Minimal theme.
+- Tweak the status icon (shown in the menu bar
+  when you've excluded iTerm2 from the dock) to
+  have a more modern design.
+- GPU renderer is now usable when background
+  images are shared across panes.
+- Improve readability of preferences search in
+  dark mode.
+- Improve appearance of status bar search field
+  with non-default background colors.
+- Double-clicking a pane splitter equalizes the
+  sizes of views adjacent to it.
+- Window transparency can now be set to 100%.
+- Improve appearance of password-prompt cursor.
+- The status bar icon now includes the full main
+  menu.
+- In Ventura, the tab bar now remains visible in
+  native full screen mode when revealing the title
+  bar.
+- Increase width of font picker panel to avoid
+  truncation.
+- Make Window>Arrange spit panes preserve
+  horizontality of splits in common cases.
+- Tip of the day is now draggable.
+- Non-fullscreen floating hotkey windows now
+  appear under notifications.
+- The background color of search results is now
+  configurable.
+
+Terminal
+========
+- Add modified terminfo for xterm, xterm-256color,
+  and xterm-new that support Smulx (undercurl).
+- Add support for HTML-style #rrggbb colors in OSC
+  4 and related sequences.
+- Limit REP to 64k to avoid DOS.
+- Increase max size of OSC 8 URLs.
+
+Performance
+===========
+- Prompt to delete the restoration db if verifying
+  its integrity takes over 10 seconds.
+- Limit CPU usage of helper tasks to 50%.
+- Reduce energy usage when a progress indicator is
+  visible in the tab bar.
+- Reduce frame rate of animated status bar
+  components to reduce WindowServer's CPU usage.
+- Defer database janitorial work until after app
+  launch to avoid blocking it.
+
+Quality of Life
+===============
+- If a session is short lived, uses a login shell,
+  the shell does not exist, and the profile can be
+  changed offer to change the shell to /bin/zsh
+  which will always exist to get the user unstuck.
+- Make captured output tool remember the line you
+  cleared at so when more output appears the
+  previously cleared items do not reappear. Also
+  make it look nicer.
+- Provide a more helpful error if a profile's
+  command cannot be found.
+- Strip control characters from RemoteHost.
+- Exclude loopback interfaces in network status
+  bar component.
+- You can now turn on smart cursor color even if
+  the default cursor is not a box since it could
+  be changed to a box by a control sequence.
+- Use XDG_CONFIG_HOME for .iterm2 folder when set.
+- When the country+language do not match a valid
+  POSIX locale, present a UI to select one.
+- Don't sync the most recent coprocess commands
+  with remote prefs.
+- Show tilde in place of local home directory in
+  tab/window titles.
+
+tmux
+====
+- tmux integration now remembers which windows had
+  the toolbelt open.
+- tmux integration now remembers tab title
+  overrides.
+- Synchronize selected window, tab, and pane in
+  tmux integration when another client changes it.
+- When attaching to tmux, if a window is 95%
+  offscreen move it onto the nearest display as
+  much as possible.
+- Optimize bandwidth for sending keystrokes to
+  tmux in tmux integration mode.
+
+Settings
+========
+- Saving prefs no longer clobbers symlinks.
+- The list of displays in profile window settings
+  now uses meaningful names for screens.
+
+Selection
+=========
+- Smart selection action parameters are now
+  interpolated strings.
+
+Search
+======
+- Don't reset the start location for search when a
+  search finds zero results.
+- Performing find next/previous without a search
+  bar open will highlight all search results now.
+- Automatically highlight matches when the search
+  UI is open and the query changes because another
+  app changed the value to be searched for.
+- Search history completion now works on words
+  instead of entire phrases.
+- A find indicator now displays search results to
+  highlight the current one with an animation.
+- Control-C in Find on Page now focuses terminal.
+
+Profiles
+========
+- "Save all profiles as JSON" now preserves the
+  order of profiles.
+- Changes to dynamic profiles are now detected
+  more quickly.
+
+Hotkey Windows
+==============
+- Pressing a non-modifier key will now cancel a
+  double-tap of a modifier key that opens a hotkey
+  window.
+- Double-tap modifier hotkeys now activate on key
+  up rather than key down to avoid false
+  activations.
+- When a hotkey window rolls out restore the
+  previously active app only if it was rolled out
+  because of a keypress.
+
+General
+=======
+- Allow apps running in the terminal to request
+  bluetooth access.
+- Add NSPhotoLibraryUsageDescription so apps that
+  use your photo library get a proper permission
+  dialog.
+
+Scripting
+=========
+- Data injected by the Python API during a silent
+  coprocess is now made visible.
+- Add isHotkeyWindow variable to window scope.
+
+File Transfer
+=============
+- Offer to replace an existing file when
+  downloading.
+- When using ssh integration, file transfers no
+  longer require a new connection. They share the
+  existing channel.
+- Support id_ed25519 for secure copy via semantic
+  history.
+- Warn before connecting via scp to a
+  never-before-seen host.
+
+Semantic History
+================
+- Update it2ul to avoid sending xattrs to GNU tar.
+- Make it2dl more reliable in tmux integration.
+
+Bug fixes
+---------
+
+Security fixes
+==============
+Thanks to vin01 for discovering these issuse:
+* Sanitize paths in x-man-page URLs.
+* Sanitize ssh hostnames in URLs to guard against
+  malicious URLs.
+* Prevent hang on enormous OSC sequences.
+
+Other bug fixes
+===============
+- When global search finds a result in a hidden
+  pane because a sibling is maximized an d you
+  select it, change which pane is maximized.
+- Fix memory leaks.
+- Mouse reporting now reports mouse up more than
+  once when multiple buttons were pressed at the
+  same time.
+- Fix a bug where the scroll wheel could stop
+  working after a session terminates.
+- Fix a bug when overwriting the second half of a
+  double-width character.
+- Fix a bug in mouse reporting with tmux.
+- Fix how colors are reported to improve
+  compatibility with emacs.
+- Terminate buried sessions when quitting.
+- Fix a bug where some apps would use the wrong
+  colors because of a terminfo problem.
+- Fix a bug where using the contextual menu to
+  hide a Python API-provided status bar component
+  could hide the wrong one.
+- Fix a bug where fish could be confused about the
+  size of a new session.
+- Fix a bug where expanding a disclosure triangle
+  in an alert box didn't increase its size,
+  leaving the text unreadable.
+- Widen prefs panel so legacy scrollbars don't
+  overlap controls.
+- ESC c (RIS) now restores colors from the
+  underlying profile, including those changed by
+  OSC 4.
+- Fix a bug where cmd-enter wouldn't toggle
+  fullscreen for a hotkey window when native
+  fullscreen was enabled.
+- Control-backspace now sends ^H.
+- Fix DECRQCRA interpretation of params (first is
+  now request ID).
+- Fix corrupted scroll regions after a resize.
+- Fix DECCOLM to reset margins on change and to
+  preserve the cursor's position.
+- Work around a bug in old versions of tmux where
+  they didn't accept control-space like other
+  keys, causing 0x0 to be printed.
+- Fix tmux integration for tmux 1.8.
+- Turn off smart substitution in the snippets
+  value text view.
+- Open hotkey windows beneath menu bar when
+  opening over another app's fullscreen window.
+- Fix the appearance of dragged tabs.
+- Fix flashing white line at top of screen in dark
+  mode full screen.
+- Fix discrepancy between GPU and non-GPU renderer
+  in the presence of blending.
+- OSC no longer requires a semicolon after the
+  mode if there is no argument.
+- Fix a bug where both a per-pane and per-window
+  background image could be visible at the same
+  time.
+- Turn off mouse movement tracking when it isn't
+  needed to reduce idle CPU.
+- Fix discrepancy in rendering of composed
+  characters in GPU renderer vs legacy renderer.
+- When "Enable full keyboard access" is turned on
+  in system prefs, iTerm2 now accepts the spacebar
+  as input.
+- Restore window title when unburying a session
+  that causes the window to be resurrected.
+- Fix cmd-clicking on URLs without a scheme but
+  with a fragment.
+- Fix a bug where windows would restore with the
+  wrong width when scroller style changes.
+- Fix occasional disconnect when typing in tmux
+  integration.
+- SGR 4 with no subparameter now resets the
+  underline style to single.
+- Ensure Rosetta is installed before running the
+  Python API.
+- Fix a bug where clicking the dock icon while the
+  tip of the day was open wouldn't open a new
+  window.
+- Fix bugs in positioning the badge, indicators,
+  and broadcast stripes when a per-pane status bar
+  or per-pane title bar is present.
+- Fix a bug where the Jobs toolbelt would show a
+  process with pid 0 after the login shell
+  terminates.
+- Fix bugs in handling newlines in control
+  sequences that set the title.
+- Fix a bug where marks were sometimes not removed
+  when the screen was cleared.
+- Fix memory leaks.
+- Fix a bug where marks were drawn upside-down
+  in the GPU renderer.
+- Fix a bug where faint text could render
+  incorrectly.
+- Fix a bug where window transparency could be
+  wrong when the window is first created.
+- Improve appearance of tabs being dragged.
+- Select Current Command now selects past the
+  cursor if needed.
+- Fix a bug where crash reports weren't sent on
+  macOS 12.
+- Fix a bug where errors were shown after an
+  upload finished.
+- When a session needs a Python API script to be
+  running but it hasn't started yet, retry for
+  five seconds.
+- Fix rendering of background images in non-GPU
+  renderer when toggling "separate background
+  images per pane".
+- Fix a bug where output on stderr could be lost.
+- Fix a bug in rendering marks on non-retina
+  displays.
+- Fix a bug where split panes can't be dragged
+  after moving them.
+- Temporarily disable secure keyboard entry when
+  exiting a hotkey window so the other app's
+  window can be revealed.
+- Tolerate errors in tmux.conf when starting tmux
+  integration.
+- Fix a bug where find could select the wrong
+  range on new input.
+- Fix a bug where combining marks sometimes didn't
+  appear.
+- Work around tmux's new limit on passthrough
+  control sequences to fix copy to pasteboard in
+  tmux integration.
+- Fix file descriptor leak in pidinfo helper job.
+- Fix a bug in the shell integration installer
+  where it assumed .bash_profile ends with a
+  newline.
+- Fix a discrepancy between GPU and non-GPU
+  renderers for image drawing.
+- Fix drawing of inline images when the machine's
+  main display is non-Retina.
+- Fix a bug where compact opaque windows with
+  image backgrounds and 1 tab and no tabbar showed
+  the image under the titlebar.
+- Fix a bug where it2copy didn't work sometimes.
+- Fix a bug in handling of zero-width spaces.
+- Fix a bug where changing the type of scroller
+  could cause a window to move away from a
+  screen's edge.
+- Fix bugs with zoomed panes in tmux integration
+  causing the window to resize itself.
+- The Open Quickly feature now includes terminal
+  windows in search results.
+- Fix bugs in the status bar layout algorithm that
+  could create too-small components.
+- Fix a bug where dragging from Fork, or other
+  apps that treat dragging a file as dragging
+  a link, that caused the drop to be rejected.
+- Fix a bug where images disappear prematurely.
+- Remap modifiers on mouse clicks like we do for
+  keypresses.
+- Fix cursor color in reverse video mode. It
+  should also be reversed.
+- Fix a bug where mouse reporting sometimes
+  wouldn't work until switching to another app and
+  back.
+- Improve appearance of powerline glyphs and box
+  drawing characters.
+- Fix non-standard mouse cursors, like Mousecape.
+- Fix support for combining marks in reverse
+  non-regex search where the wrong region was
+  highlighted.
+- Fix truncation in fullscreen hotkey windows over
+  spitscreen fullscreen windows of other apps.
+- Fix a bug where the first keystroke in copy mode
+  could be ignored.
+- Performance improvements for nushell.
+- Make new tab/window with current profile respect
+  tmux integration.
+- Fix appearance of the pane titlebar menu button
+  in Minimal mode with dark background.
+- Fix support for x-man-page URLs.
+- Avoid ordering windows forward with focus
+  follows mouse when closing a popup.
+- Work around a macOS bug where focus follows
+  mouse could activate the wrong pane.
+- Fix a bug in opening menus in status bar
+  components that caused them to appear twice.
+- Support multi-line prompts when showing an
+  offscreen command line at the top of the screen.
+- Fix a bug where double-tapping a modifier to
+  open a hotkey window doesn't work on macOS
+  Sonoma.
+- Fix a bug where profiles with a Python API-based
+  status bar component could not be exported as
+  JSON.
+- Fix drawing of status bar items with graphs in
+  Sonoma.
+- Fix link to open system settings in Sonoma.
+- Fix a bug where searching for a URL doesn't do
+  anything sometimes.
+- Fix bug where dock is hidden after exiting
+  fullscreen mode sometimes.
+- Fix a bug where panes' dimmed status is not
+  updated after switching panes sometimes.
+- Fix a bug where Window > Move to [screen]
+  sometimes didn't work.
+- Fix a bug where certain powerline symbols
+  weren't drawn on macOS Sonoma.
+- Fix wrong light/dark mode in status bar
+  popovers.
+- Enable the autolaunch folder in the script
+  export file picker.
+- Fix bug where job name in jobs tool overlapped
+  the pid column.
+- Fix disclosable view accessories in alerts on
+  Sonoma.
+- Fix a flash when toggling GPU rendering.
+- Fix a bug where accessibility coordinates were
+  wrong, leading to various issues.
+- Fix a bug where changing whether non-ascii
+  characters are anti-aliased wouldn't update the
+  display if GPU rendering was on.
+- Use zsh as the default shell when OpenDirectory
+  doesn't provide one.
+- Handle pasing from remote clipboards (handoff)
+  better.
+- Fix a bug where the split pane shortcut numbers
+  were wrong after moving them.
+- Fix a bug where scrollbar background colors
+  could be wrong sometimes.
+- Fix About window rendering in Ventura.
+- Fix a bug where long lines in the input method
+  editor didn't draw correctly.
+- Fix the response for XTGETTCAP when requiesting
+  the number of colors and direct color width.
+- Don't prompt to disable mouse reporting in emacs
+  when scrolling too far.
+- Fix a bug where the status bar font would change
+  to Times Roman.
+- Round timestamps to the nearest second to make
+  them stable.
+- Fix a bug where the hyperlink trigger used the
+  wrong range of cells sometimes.
+- Fix bug where swiping horizontally on pane
+  titlebar didn't change tabs.
+- Fix memory leak when onscreen images are
+  overwritten.
+- Fix UI glitch in background image blending
+  controls.
+- Fix a bug where quitting didn't always kill
+  sessions.
+- Fix drawing issues with fonts that have very
+  wide ASCII glyphs.
+- VPN traffic is no longer double counted in the
+  network status bar component.
+
+Breaking Changes
+----------------
+- Change XTGETTCAP's response to "TN" to give
+  $TERM rather than the name of the terminal
+  emulator. This will probably break your code if
+  you relied on it.
+- The response to Primary DA now indicates VT
+  level 400. Hopefully this doesn't break
+  anything, but it's hard to test!  Please let me
+  know if programs start misbehaving.
+- The response to Secondary DA now gives xterm
+  patch level 2500. This unlocks features in some
+  apps (like better key handling in Emacs) but
+  will probably break things I don't know exist.
 
