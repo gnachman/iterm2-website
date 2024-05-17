@@ -4,7 +4,7 @@ iTerm2 can use information it knows about your current path, host name, user nam
 You must install <a href="documentation-shell-integration.html">Shell Integration</a> on all machines and all user accounts where you plan to use Automatic Profile Switching (either by using the scripts or the Triggers workaround described in the Shell Integration docs).
 
 #### Rule Syntax
-In *Preferences&gt;Profiles&gt;Advanced*, you may specify a set of rules.
+In *Settings&gt;Profiles&gt;Advanced*, you may specify a set of rules.
 
 <img src="/images/AutomaticProfileSwitching.png">
 

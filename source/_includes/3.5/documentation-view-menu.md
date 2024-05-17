@@ -2,10 +2,10 @@
 If enabled, tabs are shown in fullscreen windows.
 
 #### View > Toggle Full Screen
-Enters or exists full screen mode. iTerm2 supports both the standard macoS full screen mode, where the window occupies its own Space, and its traditional full screen mode that shares a Space with other windows. You can control which is used in **Preferences > General > Native full screen windows**.
+Enters or exists full screen mode. iTerm2 supports both the standard macoS full screen mode, where the window occupies its own Space, and its traditional full screen mode that shares a Space with other windows. You can control which is used in **Settings > General > Native full screen windows**.
 
 #### View > Use Transparency
-This toggles transparency. It only has an effect if you have configured your session to be transparent under Preferences > Profiles > Window > Transparency. When Full Screen mode is entered, transparency is turned off by default, but you can select this menu item to re-enable it.
+This toggles transparency. It only has an effect if you have configured your session to be transparent under Settings > Profiles > Window > Transparency. When Full Screen mode is entered, transparency is turned off by default, but you can select this menu item to re-enable it.
 
 #### View > Zoom In on Selection
 When a selection is present this is enabled. Zooming on a selection removes all other text from the session and lets you focus on just the zoomed-in-on text. Pressing escape will invoke Zoom Out when you are in the Zoom In state.
@@ -35,7 +35,7 @@ If you have lots of sessions you can quickly find the one you're looking for wit
 When there are split panes present, this toggles whether a given pane expands to fill the tab. When a maximized pane is present, the tab will be inscribed with a dotted outline.
 
 #### View > Start Instant Replay
-Stepping through time allows you to see what was on the screen at a previous time. This is different than going back through the scrollback buffer, as interactive programs sometimes overwrite the screen contents without having them scroll back. Once in this mode, you can use the left and right arrow keys to step back and forward, respectively. The "esc" key exits this mode, as does clicking the close button in the bar that appears on the bottom. You can adjust the amount of memory dedicated to this feature in Preferences > Instant Replay uses xx MB per session. The more memory you assign, the further back in time you can step.
+Stepping through time allows you to see what was on the screen at a previous time. This is different than going back through the scrollback buffer, as interactive programs sometimes overwrite the screen contents without having them scroll back. Once in this mode, you can use the left and right arrow keys to step back and forward, respectively. The "esc" key exits this mode, as does clicking the close button in the bar that appears on the bottom. You can adjust the amount of memory dedicated to this feature in Settings > Instant Replay uses xx MB per session. The more memory you assign, the further back in time you can step.
 
 #### View > Tab Color
-Allows you to select a tint color for the tab, to make it easier to distinguish. You can also change the tab color in Profiles > Preferences > Colors.
+Allows you to select a tint color for the tab, to make it easier to distinguish. You can also change the tab color in Settings > Profiles > Colors.

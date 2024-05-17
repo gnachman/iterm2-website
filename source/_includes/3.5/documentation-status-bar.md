@@ -2,7 +2,7 @@ iTerm2 offers a configurable, scriptable status bar. The purpose of the status b
 
 ### Setup
 
-Go to **Preferences > Profiles > Session**. Turn on **Status bar enabled**. Then click **Configure Status Bar** to begin setting up your status bar configuration.
+Go to **Settings > Profiles > Session**. Turn on **Status bar enabled**. Then click **Configure Status Bar** to begin setting up your status bar configuration.
 
 ### Components
 

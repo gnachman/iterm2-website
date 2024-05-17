@@ -30,8 +30,8 @@ This panel shows key mappings. You can double-click on a mapping to edit it. Whe
   * *Ignore* - The keypress will do nothing.
   * *Select Menu Item...* - This action allows you to enter the name of an iTerm2 menu item. It must be entered exactly the same as it appears in the menu. Ellipses can be typed with option-semicolon.
 
-  * *Do not remap modifiers* - If modifier remapping is in effect (set under **Preferences > Keys**), it can be disabled for certain key combinations. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
-  * *Remap modifiers in iTerm2 only* - If modifier remapping is in effect (set under **Preferences > Keys**), it can be set to not affect other applications that may listen for global hotkeys. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
+  * *Do not remap modifiers* - If modifier remapping is in effect (set under **Settings > Keys**), it can be disabled for certain key combinations. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
+  * *Remap modifiers in iTerm2 only* - If modifier remapping is in effect (set under **Settings > Keys**), it can be set to not affect other applications that may listen for global hotkeys. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
 
   * *Cycle Tabs Forward/Backward* - This implements tab switching the same way Cmd-Tab (or Cmd-Shift-Tab) switches windows, with the most-recently-used stack.
 
@@ -77,8 +77,8 @@ This panel shows key mappings. You can double-click on a mapping to edit it. Whe
   * *Find Regular Expression* - Performs a search for a saved regular expression.
   * *Find Again Up/Down* - Repeats the search, finding the next result at an earlier/later position.
 
-  * *Paste* - Like **Edit > Paste**, but you can set advanced paste preferences to use.
-  * *Paste From Selection* - Like **Edit > Paste and Edit > Paste Special > Paste Selection**, but you can set advanced paste preferences to use.
+  * *Paste* - Like **Edit > Paste**, but you can set advanced paste settings to use.
+  * *Paste From Selection* - Like **Edit > Paste and Edit > Paste Special > Paste Selection**, but you can set advanced paste settings to use.
   * *Copy or send ^C* - If there is a selection, copy it. Otherwise, send the literal Control-C keystroke.
   * *Paste or send ^V* - If there is text in the pasteboard, paste it. Otherwise, send a literal Control-V keystroke.
 

@@ -1,5 +1,5 @@
 #### Edit > Undo Close Session/Tab/Window
-After you close a session, tab, or window then you have five seconds to undo it. The amount of time is configurable in PReferences > Profiles > Session.
+After you close a session, tab, or window then you have five seconds to undo it. The amount of time is configurable in Settings > Profiles > Session.
 
 #### Edit > Copy (With Styles)
 Hold down Option to turn Copy into Copy With Styles, which includes fonts and color information in the copied text.

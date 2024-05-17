@@ -6,13 +6,13 @@ Tabs in iTerm2 behave like tabs in other programs, most notably web browsers lik
 
 By default, the label of each tab is the name of the job that's running in that session. Some systems are configured to augment this with additional information such as the hostname you're logged in to or your current directory (this is done by sending a special code of ESC]0;string ^G).
 
-Tab labels have indicators that tell you their status. A blue dot means new input was received. An activity indicator means new out is being received. When the session ends, a  ⃠ icon appears in the tab. You can customize these indicators in Preferences > Appearance.
+Tab labels have indicators that tell you their status. A blue dot means new input was received. An activity indicator means new out is being received. When the session ends, a  ⃠ icon appears in the tab. You can customize these indicators in Settings > Appearance.
 
 #### Edit Current Session
 The *Edit Current Session* panel lets you modify the appearance of a single session. If you customize some attribute of the session (for example, by changing the default text color) then subsequent changes to that same attribute in the profile will not affect the customized session. However, changes to other attributes of the profile will affect the customized session.
 
 #### Pointer
-The primary use of the mouse in iTerm2 is to select text, and (by default) text is copied to the clipboard immediately upon being selected. You can click and drag to perform a normal selection. Double-clicking selects a whole word. Triple-clicking selects an entire line. Quadruple-clicking performs a "smart select", matching recognized strings such as URLs and email addresses. You can add custom pointer actions in Preferences > Pointer. I recommend using three-finger tap for smart selection, but you must ensure that *System Preferences > Trackpad* does not have any other action already assigned to three-finger tap.
+The primary use of the mouse in iTerm2 is to select text, and (by default) text is copied to the clipboard immediately upon being selected. You can click and drag to perform a normal selection. Double-clicking selects a whole word. Triple-clicking selects an entire line. Quadruple-clicking performs a "smart select", matching recognized strings such as URLs and email addresses. You can add custom pointer actions in Settings > Pointer. I recommend using three-finger tap for smart selection, but you must ensure that *System Settings > Trackpad* does not have any other action already assigned to three-finger tap.
 
 If you hold shift while clicking the existing selection is extended. In fact, you can single click in one location and shift click in an other location to make a selection: no dragging needed.
 
@@ -22,14 +22,14 @@ If you hold cmd and click on a URL it will be opened. If you hold cmd and click 
 
 If you hold cmd and option while selecting, a rectangular selection will be made.
 
-If mouse reporting is enabled (in Preferences > Profile > Terminal) and the currently running terminal application is using it, pressing option will temporarily disable it so you can make a selection.
+If mouse reporting is enabled (in Settings > Profile > Terminal) and the currently running terminal application is using it, pressing option will temporarily disable it so you can make a selection.
 
 Right clicking on certain values shows helpful information in the context menu:
 
   * Right-clicking on a number shows its conversion to or from hex, or if it looks like a unix timestamp its representation in local time will be shown. 
   * Right-clicking on a non-ASCII character shows its code point and UTF-8 representation.
 
-You can configure your pointing device's scroll gesture to send arrow keys in interactive programs by turning on Preferences > Advanced > Scroll wheel sends arrow keys when in alternate screen mode, but it will only work if **Preferences > Profiles > Terminal > Disable save/restore alternate screen** is turned off.
+You can configure your pointing device's scroll gesture to send arrow keys in interactive programs by turning on Settings > Advanced > Scroll wheel sends arrow keys when in alternate screen mode, but it will only work if **Settings > Profiles > Terminal > Disable save/restore alternate screen** is turned off.
 
 A three-finger swipe left or right on a trackpad (if configured to "navigate") will select an adjacent tab.
 
@@ -45,9 +45,9 @@ Every aspect of the keyboard can be configured in iTerm2. These keystrokes may b
 <li>Cmd+Option+Arrow keys navigate among split panes.</li>
 <li>Cmd+] and Cmd+[ navigates among split panes in order of use.</li>
 </ul>
-You can configure any key combination to perform any action in two places: in Preferences > Keys, you can define global key shortcuts that affect all profiles. In Preferences > Profiles > Keys, you can define key shortcuts that affect only a single profile.
+You can configure any key combination to perform any action in two places: in Settings > Keys, you can define global key shortcuts that affect all profiles. In Settings > Profiles > Keys, you can define key shortcuts that affect only a single profile.
 
-You can remap modifiers like Option and Cmd within iTerm2. Some users find that pressing Option frequently is uncomfortable, and configure iTerm2 to swap the function of the Option and Cmd keys. This is done in Preferences > Keys under Remap Modifier Keys. If there is some key combination that you don't want to be affected by this change (such as Cmd-tab) add a new global shortcut key with the action Do Not Remap.
+You can remap modifiers like Option and Cmd within iTerm2. Some users find that pressing Option frequently is uncomfortable, and configure iTerm2 to swap the function of the Option and Cmd keys. This is done in Settings > Keys under Remap Modifier Keys. If there is some key combination that you don't want to be affected by this change (such as Cmd-tab) add a new global shortcut key with the action Do Not Remap.
 
 iTerm2 allows you to define a global hotkey. This is a single keystroke that iTerm2 listens for even when another application has keyboard focus. When it is pressed, iTerm2 comes to the front. Press it again, and iTerm2 goes away. You can choose to bind the hotkey to a single dedicated window. For more on the hotkey window and other uses of hotkeys, see <a href="documentation-hotkey.html">Hotkeys</a>.
 

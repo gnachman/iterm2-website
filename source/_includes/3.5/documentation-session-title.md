@@ -8,7 +8,7 @@ The session title may be composed of one or more built-in elements. Alternately,
 
 ### Elements
 
-A menu in **Preferences > Profiles > General** labeled **Title** allows you to select the elements that will appear in the session title. The first three options are mutually exclusive.
+A menu in **Settings > Profiles > General** labeled **Title** allows you to select the elements that will appear in the session title. The first three options are mutually exclusive.
 
 #### Session Name
 

@@ -144,13 +144,13 @@ If enabled, fullscreen windows will animate into a special desktop, as is typica
 The OSC 0 and OSC 2 control sequences set the window title. This setting controls whether such a control sequence changes the window title associated with all sessions in the window, or only with the one in which it was received.
 
 <hr>
-### Preferences
+### Settings
 
-#### Load preferences from a custom folder or URL:
-If enabled, iTerm2 will load its preferences from the specified folder or URL. After setting this, you'll be prompted when you quit iTerm2 if you'd like to save changes to the folder.
+#### Load settings from a custom folder or URL:
+If enabled, iTerm2 will load its settings from the specified folder or URL. After setting this, you'll be prompted when you quit iTerm2 if you'd like to save changes to the folder.
 
 #### Save changes to folder when iTerm2 quits
-When you've turned on *Load preferences from a custom folder* and this is on then any changes you make to your settings will be written to the custom folder.
+When you've turned on *Load settings from a custom folder* and this is on then any changes you make to your settings will be written to the custom folder.
 
 #### Export/Import All Settings and Data
 If you need to back up/restore all of your settings, such as when moving to a new computer, use these buttons. The following are included:

@@ -2,7 +2,7 @@
 When you start using iTerm2 it will offer to show you a daily tip describing a feature. You can show a tip immediately by selecting this item.
 
 #### iTerm2 > Check for Updates
-Checks to see if a new version of iTerm2 is available. If Preferences > General > Prompt for test-release updates is turned on then this includes beta versions; otherwise only stable versions are downloaded.
+Checks to see if a new version of iTerm2 is available. If Settings > General > Prompt for test-release updates is turned on then this includes beta versions; otherwise only stable versions are downloaded.
 
 #### iTerm2 > Toggle Debug Logging
 This saves helpful debugging information in memory. When it is toggled off it is saved to /tmp/debuglog.txt.

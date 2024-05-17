@@ -68,7 +68,7 @@ A reference to the window that most recently had keyboard focus.
 
 <p class="script-entry">windows</p></p>
 
-A `windows` property exposes an array of terminal windows. Other windows, like the preferences panel, are not included.
+A `windows` property exposes an array of terminal windows. Other windows, like the Settings panel, are not included.
 The following are standard Applescript idioms for accessing elements of an array of objects:
 
     tell first window

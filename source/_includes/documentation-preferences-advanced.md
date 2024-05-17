@@ -1,4 +1,4 @@
 ## Advanced
 
-Advanced preferences are self-documenting. Use the search field to find what you're looking for, as there are quite a few of them. Some work better than others. Proceed with caution.
+Advanced Settings are self-documenting. Use the search field to find what you're looking for, as there are quite a few of them. Some work better than others. Proceed with caution.
 

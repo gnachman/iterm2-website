@@ -2,7 +2,7 @@
 ### General
 
 #### Name
-Gives the name of the profile which is shown in menus, preferences, and the profiles window. This serves as the default session name for sessions created with this profile, which is an interpolated string.
+Gives the name of the profile which is shown in menus, Settings, and the profiles window. This serves as the default session name for sessions created with this profile, which is an interpolated string.
 
 #### Shortcut key
 This shortcut can be used to open a new window or tab. By default, it opens a new tab, but if you hold down the option key while pressing the shortcut, a new window will be opened instead.

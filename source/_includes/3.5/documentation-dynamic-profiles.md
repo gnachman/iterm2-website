@@ -1,4 +1,4 @@
-*Dynamic Profiles* is a feature that allows you to store your profiles in a file outside the usual macOS preferences database. Profiles may be changed at runtime by editing one or more plist files (formatted as JSON, XML, or in binary). Changes are picked up immediately.
+*Dynamic Profiles* is a feature that allows you to store your profiles in a file outside the usual macOS settings database. Profiles may be changed at runtime by editing one or more plist files (formatted as JSON, XML, or in binary). Changes are picked up immediately.
 
 ### Availability
 
@@ -40,7 +40,7 @@ There are two required fields for each profile:
 
 The "Guid" is a globally unique identifier. It is used to track changes to the profile over time. No other profile should ever have the same guid. One easy way to generate a Guid is to use the *uuidgen* program, which comes standard with macOS.
 
-The "Name" is the name, as seen in the Profiles window or in Preferences.
+The "Name" is the name, as seen in the Profiles window or in Settings.
 
 Here is a fully formed (but minimal) Dynamic Profiles plist:
 
@@ -57,7 +57,7 @@ Here is a fully formed (but minimal) Dynamic Profiles plist:
 
 ### Editing
 
-The only way to change a dynamic profile is to modify its parent profile or to modify the property list file. If you change its properties through the preferences UI those changes will *not* be reflected in the property list.
+The only way to change a dynamic profile is to modify its parent profile or to modify the property list file. If you change its properties through the Settings UI those changes will *not* be reflected in the property list.
 
 ### Attributes
 
@@ -65,7 +65,7 @@ Every profile preference that iTerm2 supports may be an attribute of a Dynamic P
 
 The easiest way to find the name and legal value of a profile attribute is to copy it from a known-good reference. To get the JSON for a profile you already have, follow these steps:
 
-  1. Open Preferences &gt; Profiles
+  1. Open Settings &gt; Profiles
   2. Select a profile
   3. Open the *Other Actions* menu beneath the list of profiles
   4. Select *Save Profile as JSON*
@@ -75,7 +75,7 @@ If you use this as the basis of a Dynamic Profile, remember to chantge the Guid.
 
 #### Parent Profiles
 
-Normally, a dynamic profile inherits any attributes you don't explicitly specify from the default profile. You may also specify a particular profile to inherit from using the `Dynamic Profile Parent Name` attribute. The value it takes is a profile name (that is, the name you see listed in the list of profiles in Preferences box). Profile names are not guaranteed to be unique, but they are more convenient than GUIDs. If no profile with the specified name is found, the default profile is used instead. For example:
+Normally, a dynamic profile inherits any attributes you don't explicitly specify from the default profile. You may also specify a particular profile to inherit from using the `Dynamic Profile Parent Name` attribute. The value it takes is a profile name (that is, the name you see listed in the list of profiles in Settings box). Profile names are not guaranteed to be unique, but they are more convenient than GUIDs. If no profile with the specified name is found, the default profile is used instead. For example:
 
 Starting in version 3.4.9, `Dynamic Profile Parent GUID` is another way to specify a parent. It takes precedence over `Dynamic Profile Parent Name`.
 

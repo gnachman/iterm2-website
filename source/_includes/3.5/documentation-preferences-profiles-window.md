@@ -42,7 +42,7 @@ This allows you to select how the image is scaled to fit the window:
   * *Scale to Fill* - The image is scaled up or down preserving the aspect ratio so that it completely fills the window. Parts of the image may be cropped out.
   * *Scale to Fit* - The image is scaled to exactly fill the window either horizontally or vertically. Its aspect raio is preserved. Letterboxes or pillarboxes may be added.
 
-See also: *Preferences > Appearance > Panes > Separate background images per pane*.
+See also: *Settings > Appearance > Panes > Separate background images per pane*.
 
 #### Blending
 The blending slider determines how strongly the image dominates over the text's background color.
@@ -51,7 +51,7 @@ The blending slider determines how strongly the image dominates over the text's 
 This defines the window style.
 
   * *Normal* - A regular window with a title bar.
-  * *Full Screen* - A full screen window. See *Preferences>General>Window>Native full screen windows*.
+  * *Full Screen* - A full screen window. See *Settings>General>Window>Native full screen windows*.
   * *Maximized* - The window has a normal title bar but is forced to be as large as possible on the the screen it is on.
   * *No title bar* - A window without a title bar. It is hard to move but is as minimal as can be.
   * *Full-width bottom/left/top/right of screen* - A window that fills the display edge-to-edge along one dimension and is stuck to one edge of the screen. The rows or columns setting will be disregarded.

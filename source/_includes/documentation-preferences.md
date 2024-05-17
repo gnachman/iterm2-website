@@ -43,11 +43,11 @@ If enabled, iTerm2 will periodically check if a new version of iTerm2 exists, an
 #### Prompt for test-release updates
 If enabled, iTerm2 will periodically check if a new unstable version of iTerm2 exists, and if so it will prompt you to download and upgrade.
 
-#### Load preferences from a custom folder or URL:
-If enabled, iTerm2 will load its preferences from the specified folder or URL. After setting this, you'll be prompted when you quit iTerm2 if you'd like to save changes to the folder.
+#### Load settings from a custom folder or URL:
+If enabled, iTerm2 will load its settings from the specified folder or URL. After setting this, you'll be prompted when you quit iTerm2 if you'd like to save changes to the folder.
 
 #### Save changes to folder when iTerm2 quits
-When you've turned on *Load preferences from a custom folder* and this is on then any changes you make to your settings will be written to the custom folder.
+When you've turned on *Load settings from a custom folder* and this is on then any changes you make to your settings will be written to the custom folder.
 
 #### Copy to pasteboard on selection
 If enabled, text is copied to the clipboard immediately upon selection. If not selected, you must select **Edit > Copy** to copy it.
@@ -123,7 +123,7 @@ When a tab has split panes, this option controls whether each split pane will ha
 When native fullscreen mode is disabled (in **Prefs > General**), this option is available. If you'd like the menu bar to remain visible when a fullscreen window is present on a screen with a menu bar, turn this on.
 
 #### Exclude from Dock and Cmd-Tab Application Switcher
-When this setting is enabled, iTerm2 will disappear from the dock and you won't be able to switch to it with Cmd-Tab. An icon will be added to the right side of the menu bar that lets you get back to iTerm2's preferences. This is useful if you only use hotkey windows and you want iTerm2 to keep a low profile.
+When this setting is enabled, iTerm2 will disappear from the dock and you won't be able to switch to it with Cmd-Tab. An icon will be added to the right side of the menu bar that lets you get back to iTerm2's settings. This is useful if you only use hotkey windows and you want iTerm2 to keep a low profile.
 
 #### Show window number
 If selected, window titles include the window number. You can navigate to a window by pressing cmd-opt-N where N is the window number.
@@ -165,7 +165,7 @@ When enabled, an icon representing the current directory is added to the window'
 <hr>
 
 #### Name
-Gives the name of the profile which is shown in menus, preferences, and the profiles window.
+Gives the name of the profile which is shown in menus, settings, and the profiles window.
 
 #### Shortcut key
 This shortcut can be used to open a new window or tab. By default, it opens a new tab, but if you hold down the option key while pressing the shortcut, a new window will be opened instead.
@@ -289,7 +289,7 @@ If enabled, a window created with this profile will immediately miniaturize afte
 If enabled, a window created with this profile will feature an open toolbelt.
 
 #### Preserve profile name in tab title
-You can specify that profile names are shown in window and tab titles under **Preferences > Appearance > Show Profile Name**. If that is not set, then this option is irrelevant. When in use, a host may send an escape code that changes the window title. This setting causes the profile name to be preserved in that session-set title.
+You can specify that profile names are shown in window and tab titles under **Settings > Appearance > Show Profile Name**. If that is not set, then this option is irrelevant. When in use, a host may send an escape code that changes the window title. This setting causes the profile name to be preserved in that session-set title.
 
 #### Background Image
 This allows you to select an image to display behind the terminal's text. If Tile image is selected, then the image will be shown at its actual size and tessellated; otherwise, it will be stretched to fit the whole pane. The blending slider determines how strongly the image dominates over the text's background color.
@@ -385,7 +385,7 @@ When you close a session, window, or tab the shell is not terminated until X sec
 When a session will close, you can choose when to be prompted with a modal alert.
 
 #### Automatically log session input to files in:
-If enabled, every session's output will be logged to a file in the specified directory. File names are formatted as Date_Time.ProfileName.TerminalID.ProcessId.RandomNumber.log. You can customize the filename in **Preferences > Advanced > Format for automatic session log filenames**.
+If enabled, every session's output will be logged to a file in the specified directory. File names are formatted as Date_Time.ProfileName.TerminalID.ProcessId.RandomNumber.log. You can customize the filename in **Settings > Advanced > Format for automatic session log filenames**.
 
 #### When idle, send ASCII code X every Y seconds.
 If selected, the specified ASCII code "X" (a number from 0 to 255) will be transmitted every Y seconds while nothing is happening. Don't use this unless you know what you're doing as it can have unexpected consequences. Seriously, it's probably not what you want.
@@ -401,10 +401,10 @@ This panel shows key mappings. You can double-click on a mapping to edit it. Whe
 The keypress will do nothing.
 
 #### Do not remap modifiers
-If modifier remapping is in effect (set under **Preferences > Keys**), it can be disabled for certain key combinations. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
+If modifier remapping is in effect (set under **Settings > Keys**), it can be disabled for certain key combinations. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
 
 #### Remap modifiers in iTerm2 only
-If modifier remapping is in effect (set under **Preferences > Keys**), it can be set to not affect other applications that may listen for global hotkeys. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
+If modifier remapping is in effect (set under **Settings > Keys**), it can be set to not affect other applications that may listen for global hotkeys. When you choose this action, modifier remapping is temporarily disabled so you can press the key combination unremapped in the key field.
 
 #### Change Profile
 This action changes the profile of the current session.
@@ -528,7 +528,7 @@ Tabs are normally navigated with cmd+number, but you can change the modifier use
 Windows are normally navigated with cmd+opt+number, but you can change the modifier used for that function here.
 
 #### Show/Hide iTerm2 all windows with a system-wide hotkey
-When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assistive devices in the Universal Access panel of System Preferences. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.
+When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assistive devices in the Universal Access panel of System Settings. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.
 
 #### Create a Dedicated Hotkey WIndow
 Sets up a new hotkey window profile if you don't already have one. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.

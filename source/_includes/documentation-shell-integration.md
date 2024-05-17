@@ -167,7 +167,7 @@ With shell integration, iTerm2 can track your command history. The command histo
 You can view and search the command history with *Session&gt;Open Command History...* (Shift-Cmd-;).
 
 ##### Autocomplete
-Commands in command history are also added to Autocomplete (Cmd-;). If *Preferences&gt;General&gt;Save copy/paste history and command history to disk* is enabled, then command history will be preserved across runs of iTerm2 (up to 200 commands per user/hostname).
+Commands in command history are also added to Autocomplete (Cmd-;). If *Settings&gt;General&gt;Save copy/paste history and command history to disk* is enabled, then command history will be preserved across runs of iTerm2 (up to 200 commands per user/hostname).
 
 ##### Toolbelt
 A command history tool may be added to the toolbelt by selecting *Toolbelt&gt;Command History*.

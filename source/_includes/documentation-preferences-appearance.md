@@ -32,7 +32,7 @@ Defines where the status bar appears, if enabled.
 When native fullscreen mode is disabled (in **Prefs > General**), this option is available. If you'd like the menu bar to remain visible when a fullscreen window is present on a screen with a menu bar, turn this on.
 
 #### Exclude from Dock and Cmd-Tab Application Switcher
-When this setting is enabled, iTerm2 will disappear from the dock and you won't be able to switch to it with Cmd-Tab. An icon will be added to the right side of the menu bar that lets you get back to iTerm2's preferences. This is useful if you only use hotkey windows and you want iTerm2 to keep a low profile. You should be warned that this is a buggy part of macOS and sometimes things misbehave in small ways when this is enabled.
+When this setting is enabled, iTerm2 will disappear from the dock and you won't be able to switch to it with Cmd-Tab. An icon will be added to the right side of the menu bar that lets you get back to iTerm2's Settings. This is useful if you only use hotkey windows and you want iTerm2 to keep a low profile. You should be warned that this is a buggy part of macOS and sometimes things misbehave in small ways when this is enabled.
 
 When selected, you can also enable **but only if all windows are hotkey windows** to bring back the dock icon when a non-hotkey window exists.
 
@@ -40,7 +40,7 @@ When selected, you can also enable **but only if all windows are hotkey windows*
 ### Windows
 
 #### Show window number in title bar
-If selected, window titles include the window number. You can navigate to a window by pressing cmd-opt-N where N is the window number. You can also change which modifiers are used in **Preferences > Keys**.
+If selected, window titles include the window number. You can navigate to a window by pressing cmd-opt-N where N is the window number. You can also change which modifiers are used in **Settings > Keys**.
 
 #### Heavy border around windows in light mode
 In light mode (or when there is a pane with transparency), window borders can be hard to see. Enabling this setting draws a thicker border around windows.

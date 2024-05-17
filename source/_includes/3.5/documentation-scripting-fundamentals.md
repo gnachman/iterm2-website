@@ -178,7 +178,7 @@ a variable defined in the session context, and iTerm2 defines it to be the name
 of the current hostname, the session's name will appear as something like
 `The current host name is example.com`.
 
-Here's an example showing the interpolated string in the preferences window and
+Here's an example showing the interpolated string in the Settings window and
 the resulting session title:
 
 <img src="/images/interpolated-string-demo.png" width="674" height="190" />

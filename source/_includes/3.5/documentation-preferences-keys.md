@@ -5,7 +5,7 @@
 
 This interface works like the keyboard shortcut system in profiles (described above) but it affects all profiles. Settings here are overridden by those in a profile's key mappings.
 
-See the list of key binding actions at <a href="documentation-preferences-profiles-keys.html">Preferences&nbsp;>&nbsp;Profiles&nbsp;>&nbsp;Keys</a>.
+See the list of key binding actions at <a href="documentation-preferences-profiles-keys.html">Settings&nbsp;>&nbsp;Profiles&nbsp;>&nbsp;Keys</a>.
 
 #### Add Touch Bar Item
 This button is only visible if your OS version supports touch bars. By pressing this button, you can define a new custom touch bar button with any of the actions you can assign to a key (see below). You can then add the custom button to your touch bar with **View > Customize Touch Bar**.
@@ -54,7 +54,7 @@ If your keyboard layout requires you to hold Shift (or some other modifier) to p
 Sets up a new hotkey window profile if you don't already have one. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.
 
 #### Show/Hide iTerm2 all windows with a system-wide hotkey
-When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assistive devices in the Universal Access panel of System Preferences. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.
+When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assistive devices in the Universal Access panel of System Settings. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.
 
 ### Remap Modifiers
 
