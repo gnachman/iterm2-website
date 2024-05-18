@@ -5,7 +5,7 @@ active-state: news
 ---
 
 #### iTerm2 version 3.5 released
-<i>Sunnyvale, CA&mdash;April 25, 2024</i>
+<i>Sunnyvale, CA&mdash;May 20, 2024</i>
 Version 3.5 of iTerm2 has been released. It adds a number of new features, such as improved navigation, filtering, light/dark mode color schemes, ChatGPT integration, and integration with 1Password. Read the <a href="https://iterm2.com/downloads/stable/iTerm2-3_5_0.changelog">release notes</a> for details.
 
 #### Security updates for 3.4 and 3.5 beta
