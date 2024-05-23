@@ -1,0 +1,100 @@
+3.5.1beta2
+
+This beta adds some safety valves to eliminate the
+risk of private information leaving the terminal
+via the AI endpoints. While an API key and
+explicit user action were always needed to use AI
+features, some users asked for an impenetrable
+firewall for safety and regulatory purposes.
+
+To that end, there are three relevant changes:
+
+1. Code that communicates with AI providers has
+been moved into a plugin that you must install
+separately. Enterprise system admins can block
+bundle id com.googlecode.iterm2.iTermAI to prevent
+it from being installed in the first place.
+
+See here for details:
+https://iterm2.com/ai-plugin.html
+
+2. In addition, you must manually enable AI
+features in Settings. Doing so requires admin
+access.
+
+3. Administrators who wish to disable iTerm2's AI
+access may set the user default GenerativeAIAllowed
+to False in their MDM systems.
+
+New Features
+- Cmd-shift-click on a command's output to select
+  it.
+
+Improvements
+- Prompts for Codecierge are now in advanced
+  settings.
+- Scroll-to-end keybindings are now broadcast when
+  input broadcasting is on.
+- Previously it was easy to choose a locale
+  without the right character encoding. Detect
+  this and offer a chance to try again.
+- For users who did fall into this trap, ask them
+  to try again.
+- Various controls for AI have been moved to the
+  main Settings panel so it's easier to use a
+  local model.
+- Add an advanced setting to disable the secure
+  keyboard entry indicator.
+- Indicators get an outline to make them stand out
+  from the background.
+- Codecierge gets a larger text box to enter your
+  goal.
+- Various powerline characters no longer respond
+  to minimum contrast so their colors can match
+  adjacent background colors.
+
+Bug Fixes
+- Fix gpt-4o support which had too many response
+  tokens.
+- Support responses from LLMs without an index
+  field.
+- Fix a bug where there were stray pixels above
+  some characters.
+- Fix alignment of box-drawing characters in GPU
+  renderer.
+- Control-[ closes the find bar when it's in the
+  status bar.
+- Fix a bug where modifier remapping didn't work
+  with some actions such as cmd-clicking links.
+- The "offscreen command line" shown at the top
+  when part of a command's output is truncated now
+  includes the background colors of the command
+  line.
+- Fix a bug where focus-follows-mouse didn't
+  activate a window when the cursor only enters
+  the scrollbar.
+- Fix a bug where the background image could
+  overflow the bounds of the image control and
+  fill the settings window. It was a very pretty
+  bug.
+- Fix discrepancies between GPU and legacy
+  renderers that drew things in different orders.
+- Fix a crash with the smart selection action "run
+  command in window".
+- Fix bugs in dragging dividers between tools in
+  Toolbelt.
+
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+a50701b18b3e15ee49e9cdfc84756f35b37485fe9dea0c84785cbce3949c5b10
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCZk/E8QAKCRB0Et0TaFtK
+rK7DAP9ogU1UQzFgN3m8kDMuTLPSYB9Brf9WlZK+PphdDlhXgwD/YQ+I5PlgKRE+
+jB7ggWfvAg5K+huDDEw0oXAbBrZ1Ycs=
+=jLgQ
+-----END PGP SIGNATURE-----
