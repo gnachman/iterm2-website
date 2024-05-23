@@ -19,7 +19,21 @@ When editing rules, it is advised that you experiment with different precision l
 When Smart Selection is activated, iTerm2 tries each regular expression. For a given regex, various strings on the screen are tested until the longest match is found. Only matches that include the character under the cursor are of interest. The longest such match is added to a pool of "selection candidates". Each candidate is assigned a score equal to its length in characters. Among the candidates in the highest precision class (where Very High is the highest class and Very Low is the lowest) with any matches, the higheset scoring one is used as the selection.
 
 #### Actions
-Actions may be associated with smart selection rules. When you right click in a terminal, smart selection is performed at the cursor's location. Any smart selection rule that matches that location will be searched for associated actions, and those actions will be added to the context menu. Actions may open a file, open a URL, run a command, or start a coprocess. A cmd-click on text matching a smart selection rule will invoke the first rule.
+Actions may be associated with smart selection rules. When you right click in a terminal, smart selection is performed at the cursor's location. Any smart selection rule that matches that location will be searched for associated actions, and those actions will be added to the context menu. A cmd-click on text matching a smart selection rule will invoke the first rule.
+
+Each action has a parameter, which is an [interpolated string](documentation-scripting-fundamentals.html). The use of the parameter is dependent on the action. For example, it may give the name of a file, the value of a string, or the command to act on.
+
+The following actions are defined:
+
+ * Open File: Opens the file using the default system application.
+ * Open URL: Opens the URL using the default system browser.
+ * Run Command: Runs the command using `/bin/sh -c` in the background. Output goes to the Script Console.
+ * Run Coprocess: Starts a [coprocess](documentation-coprocesses.html).
+ * Send Text: Sends text as though it was typed by the user.
+ * Run Command in Window: Opens a new window and runs the command in it.
+ * Copy: Copies the string to the pasteboard.
+
+</ul>
 
 #### Regular Expressions
 Regular expressions conform to the <a href="https://unicode-org.github.io/icu/userguide/strings/regexp.html">ICU regular expressions</a> rules.
