@@ -13,5 +13,5 @@ It provides necessary functionality for iTerm2 to make network requests. It exis
 Download the package and unzip it. Place in `/Applications`. You don't need to run it; iTerm2 will locate it automatically.
 
 <div class="text-center">
-        <a href="https://iterm2.com/downloads/ai-plugin/iTermAI-1.0.zip"><img src="img/download-button.png"></a>
+        <a href="https://iterm2.com/downloads/ai-plugin/iTermAI-1.1.zip"><img src="img/download-button.png"></a>
 </div>
