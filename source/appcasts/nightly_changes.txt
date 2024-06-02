@@ -1,3 +1,33 @@
+2024-06-01: Don't seal line blocks under 1kb because having
+a ton of line blocks hurts save/restore performance. Issue
+11485
+
+2024-06-01: Commit ai plugin sandbox
+
+2024-05-31: Add support for --command=cmd to open a window
+running that command
+
+2024-05-31: Run iTermAIPlugin in a sandbox so it can't evade
+cert check
+
+2024-05-31: Fix rendering of selected commands and offscreen
+command line in GPU
+
+2024-05-31: Implement deselected region shading in legacy
+renderer
+
+2024-05-30: Rip out deselected region drawing code
+
+2024-05-30: Change grouping in share command menu
+
+2024-05-30: Allow copying of selected command, which copies
+the command line and output
+
+2024-05-30: Don't trim whitespace when copying with control
+sequences
+
+2024-05-30: Fix warnings
+
 2024-05-30: Select command when navigating to a mark.
 Improve logic for when to disallow command selection in
 alternate screen mode.
@@ -313,142 +343,3 @@ EfficientDecoder was dangling. This change makes it less
 efficient. Issue 11439
 
 2024-05-05: Update onboarding to include command selection
-
-2024-04-25: Modernize indicators appearance
-
-2024-04-25: Show a more precise warning when broadcasting
-input
-
-2024-04-25: Add a note about billing to AI onboarding dialog
-
-2024-04-25: Add a note about billing to AI settings
-
-2024-04-24: Fix title of settings window
-
-2024-04-24: Use arrayWithCapacity initializer in fix 799afde
-(#499)
-
-
-2024-04-24: Use VS0 and VS1 to disambiguate width of U+2018,
-U+2019, U+201C, and U+201D.
-https://gitlab.freedesktop.org/terminal-wg/specifications/-/issues/9#note_2385362
-
-2024-04-24: Make AI mode work even when there's no prompt
-command or composer by showing a dialog. Should make it
-easier to use.
-
-2024-04-24: Attach shell integration alert to the
-appropriate window
-
-2024-04-24: [CPK] Update popover/panel when a color is
-dropped while open. Add logging.
-
-2024-04-24: Update sponsors
-
-2024-04-24: 3.5.0beta24
-
-2024-04-23: Soften selected command outline color
-
-2024-04-22: Fix bug where sequences would always swap with
-the next pane.
-
-2024-04-22: Make the profiles window remember whether tags
-is open even if window restoration isn't working. Issue
-11435
-
-2024-04-22: Add setting to disable command selection. Issue
-11429
-
-2024-04-22: Don't include suggestion in AITerm prompt from
-composer
-
-2024-04-22: Update built in GPT models to remove those that
-no longer exist and add gpt-4-turbo
-
-2024-04-22: Improve AITerm prompt for GPT-4.  Issue 11427
-
-2024-04-21: Fix bug in cloning copy buttons that lost their
-absCoordForDesiredFrame breaking them in the GPU renderer
-
-2024-04-21: Fix crash when you do cmd-k with a selected
-command
-
-2024-04-21: Add support for OSC 22 to set mouse cursor
-shape. Issue 11421
-
-2024-04-20: Rename NSFileManager(iTerm).temporaryDirectory
-to fix metal debugger crash
-
-2024-04-16: Select dragged tab when drag finishes. Issue
-11418
-
-2024-04-16: Round timestamps before formatting to try to fix
-instability. Issue 11415
-
-2024-04-16: Hold option in shortcut nav for alternate
-behavior (copy url/write smart selection match). Issue 11410
-
-2024-04-15: Fix formatting of 24 hour time in context menu.
-When you select an already-formatted date, convert it to
-unix timestamp. Issue 11414
-
-2024-04-15: Fix a bug where SCPFile's performOnMainThread
-didn't block, causing fingerprint and other checks to return
-wrong results. Luckily the bug causes connection failures
-only. Issue 11413
-
-2024-04-15: Keep a stack of hosts and the key mode for each,
-saved just before a new host begins. Restore key mode when
-an old host resumes. Issue 11412
-
-2024-04-14: Make search bergin at the find cursor and stop
-when it wraps back around to it. This greatly improves the
-'search for smart selection results' feature when scrolled
-up
-
-2024-04-14: Fix crash in Find All Smart Selection Matches
-when using default rules
-
-2024-04-13: Add Find Visible Smart Selection Actions
-
-2024-04-13: Fix bugs in select URLs with selected command
-missing things
-
-2024-04-13: Fix warnings
-
-2024-04-13: Env PATH is unset and we want to append the
-utilities folder to it use PATH_STDPATH rather than
-PATH_DEFPATH because the former omits sbin. Issue 11406
-
-2024-04-12: Deselect selected command on double (or more)
-click
-
-2024-04-12: Don't crash when a compressed character buffer
-contains an empty block. Issue 11243
-
-2024-04-12: Increase max searchable line length from 500k to
-30M
-
-2024-04-12: Don't preserve LineBlock guid when copying a
-block. Try to fix crash in 11405
-
-2024-04-12: Fix assertion failure when capturing a GPU frame
-if the destination is not 8 bits per sample (seems to happen
-with GPU debugging)
-
-2024-04-12: Fix broadcast stripes being backwards in GPU
-renderer
-
-2024-04-12: Fix drawing issues with offscreen command line
-and top margin. Issue 11401
-
-2024-04-12: Make auto composer keystrokes take precedence
-over all text-sending and navigation shortcuts
-
-2024-04-08: Fix some bugs with filtering. Issue 10637
-
-2024-04-04: Clean up of various things related to selected
-commands. Fix bugs, including various races and drawing
-problems, add logging.
-
-2024-04-02: Fix drawing with selected command
