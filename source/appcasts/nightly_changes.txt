@@ -1,3 +1,86 @@
+2024-06-04: Run launch command specified with --command
+through the user's shell to search path
+
+2024-06-04: Use performWindowDragWithEvent instead of
+implementing my own runloop. I don't know why I did it that
+way but it caused issue 11585
+
+2024-06-04: Release metadata when popping a line from a line
+block
+
+2024-06-04: Turn on  malloc stack logging and zombies to
+track down a crash related to dangling lineMetadata
+
+2024-06-04: Add debug logging for custom prefs bug in issue
+11579
+
+2024-06-04: Avoid logging entire line buffers
+
+2024-06-04: Fix a bug where a debug log with invalid utf-16
+couldn't be saved
+
+2024-06-04: Add debug logging for issue 11579
+
+2024-06-04: Make composer first responder after AI prompt
+dialog dismisses. Issue 11427
+
+2024-06-04: Encourage ai prompt window to put first
+responder in text field. Issue 11427
+
+2024-06-04: Make composer first responder when it gets an AI
+response. Improve help text for shift enter.
+
+2024-06-04: If there's a selection in the composer send it
+without a newline. Issue 11587
+
+2024-06-03: Fix a bug in the porting of process info. The
+deepest foreground job may have children as long as none of
+them is a foreground job. Issue 11527
+
+2024-06-03: Bump shell integration submodule. I did this
+wrong a few commits back for the it2ssh bashism fix
+
+2024-06-03: Remove cursed NSFileProvider stuff
+
+2024-06-03: Fix triggers that match on bell. Issue 4982
+
+2024-06-03: Fix drawing of box characters in Metal. The
+legacy renderer started placing them lower when there is
+spacing but GPU didn't. Issue 11577
+
+2024-06-03: Add script-with-input-logging, which is like
+Unix script but it saves input separately from output so you
+can analyze what other terminals do for key reporting
+
+2024-06-03: Improve logging in prompt state machine
+
+2024-06-03: Fix missing category in advanced pref
+
+2024-06-03: Refactor LLM code to maybe work with azure.
+Issue 11416
+
+2024-06-03: Bump shell integration submodule
+
+2024-06-03: Tweak powerline drawing because symbols that
+should color the left or right edge completely were getting
+it alpha-ed out. I think when the vector is rendered it
+didn't land exactly on the right edge and antialiasing
+brought in some of the just offscreen clear pixels. The fix
+is to draw a solid line on the left or right. Issue 11539
+
+2024-06-03: Make cursor guide full width as suggested in
+11542
+
+2024-06-03: Add advanced setting to delay for double click
+when selecting a command
+
+2024-06-03: Limit the length of a prompt stored in the
+prompt state machine to the last 4 lines. Prompts are rarely
+more than 2 lines and there's a performance issue possibly
+related to a bug or bad config in issue 11496
+
+2024-06-03: Improve logging in ai code
+
 2024-06-02: Use javascript for AI plugin to avoid code
 signing races
 
