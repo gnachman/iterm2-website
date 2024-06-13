@@ -1,0 +1,98 @@
+3.5.3beta1
+
+This beta fixes a security issue. There was a bug
+where the 'Terminal may report window title'
+setting was not honored. This can lead to remote
+code execution. Please upgrade right away if you
+are on an older beta.
+
+New Features
+- You can now run iTerm2 from a script with
+  --command=xxx to open a window running the
+  specified command.
+- If you make a selection in the composer prior to
+  pressing shift-enter, only the selection is sent
+  (and no newline is appended).
+- Add support for multi-line search queries.
+- Add support for DECRQDE.
+
+Improvements
+- When using focus follows mouse and the mouse
+  exits the search panel give the terminal
+  keyboard focus.
+- Add "share command output" to the command share
+  menu (the share button visible when using auto
+  composer).
+- Add option to copy both command and output to
+  the command share menu.
+- Reorganize command share menu to make mroe sense.
+- When navigating to a mark, select its command
+  automatically.
+- Improve appearance of cursor guide.
+- Fix a bug where cmd-0 didn't reset the font
+  correctly when a non-ascii font isn't in use.
+- When you do cmd-E and the search mode is regex,
+  escape the string so it matches.
+- Don't show offscreen command line if the cursor
+  is under it.
+- Improve locale picking dialog. You can now
+  choose a minimal locale if you just want UTF-8
+  support but no localizations.
+- Add info button to past commands when auto
+  composer is in use.
+- Make snippet search work like profile search.
+
+Bug Fixes
+- Fix a bug where 'Terminal may report window
+  title' was not honored.
+- Fix crashes.
+- Fix autocomplete, which was completely broken.
+- Don't trim whitespace when copying with control
+  sequences.
+- Greatly improve the appearance of selected
+  commands when a background image is present.
+- Improve appearance of offscreen command line in
+  GPU renderer.
+- Fix incorrectly drawn powerline symbols.
+- Fix incorrectly drawn box characters.
+- Fix a bug where triggers that match on the bell
+  didn't work.
+- Fix performance problems some users experienced
+  with ssh.
+- Fix a bug where some programs weren't correctly
+  detected as the active job (e.g., in session
+  titles).
+- Fix a bug where the composer didn't get keyboard
+  focus when AI produces a command.
+- Fix nonstandard behavior when dragging a window.
+- Fix Copy when auto composer is in use and the
+  terminal has a selection but the composer does
+  not.
+- Fix a bug where modifier remapping didn't do the
+  right thing when releasing a key, causing
+  problems with cmd-tab.
+- Fix a bug where cmd-0 didn't reset the font
+  correctly when a non-ascii font isn't in use.
+- Fix a bug where some controls were the wrong
+  colors against dark backgrounds.
+- Fix discrepancy in box drawing characters gpu vs
+  legacy.
+- Fix bug in escaping regexes that have
+  backslashes.
+- Improve IME support in Composer.
+- Fix font selection visual bugs in macOS 10.15.
+
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+2ef0bdca361458fa21a2cf9be753d809c500e76648bb99dfb65bfae6828669fd
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCZmt26QAKCRB0Et0TaFtK
+rBDQAP9yfw7sEdrV3drXgWY8KtGS8DnEpR8ZnsTiz7klxRjeJAEA0cc5upJLjTQm
+HxF4CEfkqcNKmBr1IVtNOeNqcPMG+BE=
+=ClVG
+-----END PGP SIGNATURE-----
