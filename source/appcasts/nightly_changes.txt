@@ -1,3 +1,25 @@
+2024-06-17: Make focus follows mouse try to behave better
+with subviews of SessionView that can be first responder. IF
+the cursor is over them when they open, exiting restores
+focus to the terminal. If the cursor is over the terminal,
+then only moving the cursor out of the terminal restores
+regular ffm. If the cursor is over neither, use regular
+behavior. Issue 11558
+
+2024-06-17: Remove unnecessary NSLog
+
+2024-06-17: Use existing $PATH in iTerm2.app's environment
+as a basis for the modified path including utilities. Issue
+11604
+
+2024-06-17: Fix bugs in underlining semantic history text.
+Fixes a bug where it remains highlighted. Also fixes a bug
+where URLs on the same line as a prompt when clicked would
+open command info
+
+2024-06-17: Fix a crash when copying with styles and the
+string is over 1000 lines. Issue 11649
+
 2024-06-17: Move alpha last in metal textures after resizing
 to ensure it stays like that
 
