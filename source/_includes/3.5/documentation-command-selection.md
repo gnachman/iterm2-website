@@ -6,18 +6,18 @@ When a command is selected:
 
  * Search is restricted to the selected region.
  * Filtering is restricted to the selected region.
- * `Select All` is restricted to the selected region.
+ * **Select All** is restricted to the selected region.
 
 Additionally, various buttons appear at the top right of the selected region:
 
  * An Info button, which opens the Command Info panel. This reveals information about the command such as how long it ran and its exit status and gives you controls to re-send, copy, share, and more.
  * A Share button, which opens a menu allowing you to save, copy, or share the command.
- * A bookmark button, which allows you to create a "named mark". You can find named marks under `Edit > Named Marks` or in the `Named Marks` tool in the toolbelt. This makes it easy to navigate back to a command later on.
+ * A bookmark button, which allows you to create a "named mark". You can find named marks under **Edit > Named Marks** or in the **Named Marks** tool in the toolbelt. This makes it easy to navigate back to a command later on.
  * A copy button, which lets you copy the command or its output.
 
 ### Disabling
 
-To disable command selection turn off `Settings > General > Selection > Clicking on a command selects it to restrict Find and Filter`.
+To disable command selection turn off **Settings > General > Selection > Clicking on a command selects it to restrict Find and Filter**.
 
 ### Command URLs
 
