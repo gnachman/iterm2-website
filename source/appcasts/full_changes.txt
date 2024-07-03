@@ -1,148 +1,96 @@
-3.5.2
-
-This version of iTerm2 patches a security issue
-present in previous builds of 3.5, including
-betas. Please upgrade right away.
-
-The issue has been assigned CVE-2024-38396.
-
-Bug Fixes
----------
-- Fix a bug where the "Terminal may report window
-  title" setting was not respected. This makes a
-  remote code execution attack possible.
-- Disable controls in Settings when generative AI
-  is disabled in advanced settings or by MDM.
-
-
-Since 3.5.1 was a short-lived release, the release
-notes for 3.5.1 follow:
-
-3.5.1
-
-This release adds some safety valves to eliminate
-the risk of private information leaving the
-terminal via the AI endpoints. While an API key
-and explicit user action were always needed to use
-AI features, some users asked for an impenetrable
-firewall for safety and regulatory purposes.
-
-To that end, there are three relevant changes:
-
-1. Code that communicates with AI providers such
-as OpenAI has been moved into a plugin that you
-must install separately. Enterprise system admins
-can block bundle id com.googlecode.iterm2.iTermAI
-to prevent it from being installed in the first
-place.
-
-See here for details:
-https://iterm2.com/ai-plugin.html
-
-2. In addition, you must manually enable AI
-features in Settings. Doing so requires admin
-access.
-
-3. Enterprise administrators who wish to disable
-iTerm2's AI access may set the user default
-GenerativeAIAllowed to False in their MDM systems.
-
+3.5.3
 
 New Features
-------------
-- Cmd-shift-click on a command's output to select
-  it.
+- You can now run iTerm2 from a script with
+  --command=xxx to open a window running the
+  specified command.
+- If you make a selection in the composer prior to
+  pressing shift-enter, only the selection is sent
+  (and no newline is appended).
+- Add support for multi-line search queries.
+- Add support for DECRQDE.
 
 Improvements
-------------
-- Previously it was easy to choose a locale
-  without the right character encoding. Detect
-  this and offer a chance to try again. For users
-  who did fall into this trap, ask them to try
-- Add an option to use LC_CTYPE=UTF-8 as your
-  locale.
-- Keypresses in SSH integration no longer wait for
-  one to ACK before the next is sent.
-- Move OpenAI API key to the keychain.
-- Add gpt-4o model.
-- Fix drag-drop to upload with SSH integration
-  when using ~/.ssh/config where Host isn't equal
-  to Hostname.
-- Prompts for Codecierge are now in advanced
-  settings.
-- Scroll-to-end keybindings are now broadcast when
-  input broadcasting is on.
-- Various controls for AI have been moved to the
-  main Settings panel so it's easier to use a
-  local model.
-- Add an advanced setting to disable the secure
-  keyboard entry indicator.
-- Indicators get an outline to make them stand out
-  from the background.
-- Codecierge gets a larger text box to enter your
-  goal.
-- Various powerline characters no longer respond
-  to minimum contrast so their colors can match
-  adjacent background colors.
-- Improve error reporting in AI code.
-- Make canceling an AI request work faster.
-- Only ask for accessibility permission once per
-  app version.
-- Use selection color to outline selected command.
-- Add a setting to disable horizontal scroll
-  reporting. This fixes a problem where swiping to
-  switch tabs didn't work when mouse reporting was
-  on.
+- Saved arrangements with invalid locales can now
+  be updated by the same UI that helps you pick a
+  valid locale.
+- When using focus follows mouse and the mouse
+  exits the search panel give the terminal
+  keyboard focus.
+- Add "share command output" to the command share
+  menu (the share button visible when using auto
+  composer).
+- Add option to copy both command and output to
+  the command share menu.
+- Reorganize command share menu to make mroe sense.
+- When navigating to a mark, select its command
+  automatically.
+- Improve appearance of cursor guide.
+- Fix a bug where cmd-0 didn't reset the font
+  correctly when a non-ASCII font isn't in use.
+- When you do cmd-E and the search mode is regex,
+  escape the string so it matches.
+- Don't show offscreen command line if the cursor
+  is under it.
+- Improve locale-picking dialog. You can now
+  choose a minimal locale if you just want UTF-8
+  support but no localizations.
+- Add Info button to past commands when auto
+  composer is in use.
+- Make snippet search work like profile search.
 
 Bug Fixes
-- Fix a bug where adding items to the password
-  manager would overwrite other items.
-- Fix a bug where the background image could
-  overflow the bounds of the image control and
-  fill the settings window. It was a very pretty
-  bug.
-- Fix a bug where autocomplete didn't work at all.
-- Fix a bug in it2ssh when connecting to hosts
-  that don't use bash as /bin/sh.
+- Fix crashes
+- Fix a bug where the customized terminfo provided
+  by iTerm2 had compatibility problems.
+- Fix a bug where colors in background images were
+  wrong.
+- Fix a bug where cmd-hover didn't alwasy show a
+  link preview.
+- Fix a bug where $PATH was sometimes missing
+  expected values.
+- Fix a bug where OSC 8 URLs didn't always work.
+- Fix a bug where the Auto Composer's height was
+  too short.
+- Fix a bug where sending a snippet with a tag
+  filter from the Toolbelt could send the wrong
+  snippet.
+- Fix a bug where 'Terminal may report window
+  title' was not honored.
 - Fix crashes.
-- Fix a performance problem with long scrollback
-  history. Existing history will need to be
-  cleared before the benefit is seen.
-- Fix double-paste when drag-dropping text.
-- Fix support for non-OpenAI LLMs.
-- Typing while it2ssh is connecting no longer
-  breaks it.
-- Fix performance issue with very long window
-  titles.
-- Fix gpt-4o support which had too many response
-  tokens.
-- Support responses from LLMs without an index
-  field.
-- Fix a bug where there were stray pixels above
-  some characters.
-- Fix alignment of box-drawing characters in GPU
-  renderer.
-- Control-[ closes the find bar when it's in the
-  status bar.
-- Fix a bug where modifier remapping didn't work
-  with some actions such as cmd-clicking links.
-- The "offscreen command line" shown at the top
-  when part of a command's output is truncated now
-  includes the background colors of the command
-  line.
-- Fix a bug where focus-follows-mouse didn't
-  activate a window when the cursor only enters
-  the scrollbar.
-- Fix discrepancies between GPU and legacy
-  renderers that drew things in different orders.
-- Fix a crash with the smart selection action "run
-  command in window".
-- Fix bugs in dragging dividers between tools in
-  Toolbelt.
-- Fix a bug where scroll-to-end keybindings didn't
-  work.
-- Fix a bug where tab or window titles sometimes
-  wouldn't show the current job's name.
-- Rename preferences to settings in tip of the
-  day.
+- Fix autocomplete, which was completely broken.
+- Don't trim whitespace when copying with control
+  sequences.
+- Greatly improve the appearance of selected
+  commands when a background image is present.
+- Improve appearance of offscreen command line in
+  GPU renderer.
+- Fix incorrectly drawn powerline symbols.
+- Fix incorrectly drawn box characters.
+- Fix a bug where triggers that match on the bell
+  didn't work.
+- Fix performance problems some users experienced
+  with ssh.
+- Fix a bug where some programs weren't correctly
+  detected as the active job (e.g., in session
+  titles).
+- Fix a bug where the composer didn't get keyboard
+  focus when AI produces a command.
+- Fix nonstandard behavior when dragging a window.
+- Fix Copy when auto composer is in use and the
+  terminal has a selection but the composer does
+  not.
+- Fix a bug where modifier remapping didn't do the
+  right thing when releasing a key, causing
+  problems with cmd-tab.
+- Fix a bug where cmd-0 didn't reset the font
+  correctly when a non-ascii font isn't in use.
+- Fix a bug where some controls were the wrong
+  colors against dark backgrounds.
+- Fix discrepancy in box drawing characters gpu vs
+  legacy.
+- Fix bug in escaping regexes that have
+  backslashes.
+- Improve IME support in Composer.
+- Fix font selection visual bugs in macOS 10.15.
 
