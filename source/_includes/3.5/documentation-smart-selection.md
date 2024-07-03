@@ -21,8 +21,6 @@ When Smart Selection is activated, iTerm2 tries each regular expression. For a g
 #### Actions
 Actions may be associated with smart selection rules. When you right click in a terminal, smart selection is performed at the cursor's location. Any smart selection rule that matches that location will be searched for associated actions, and those actions will be added to the context menu. A cmd-click on text matching a smart selection rule will invoke the first rule.
 
-Each action has a parameter, which is an [interpolated string](documentation-scripting-fundamentals.html). The use of the parameter is dependent on the action. For example, it may give the name of a file, the value of a string, or the command to act on.
-
 The following actions are defined:
 
  * Open File: Opens the file using the default system application.
@@ -33,7 +31,16 @@ The following actions are defined:
  * Run Command in Window: Opens a new window and runs the command in it.
  * Copy: Copies the string to the pasteboard.
 
-</ul>
+Each action has a parameter. The meaning of the parameter depends on the action. For example, for the **Open URL** action the parameter should be a URL. The value you put in the `Parameter` field may contain special substrings which get substituted with values determined at runtime. By default, a legacy syntax is used with the following substitutions:
+
+ * `\0`: The full text of the match.
+ * `\1`: The first match group (captured using parentheses in the regular expression).
+ * `\2`...`\9`: Subsequent match groups.
+ * `\d`: The current directory.
+ * `\u`: The current user name. If you're sshed then you must install [Shell Integration](documentation-shell-integration.html) for this to be known.
+ * `\h`: The current host name. If you're sshed then you must install [Shell Integration](documentation-shell-integration.html) for this to be known.
+
+If you check the **Use interpolated strings for parameters** checkbox, then a more modern syntax is used. See the [interpolated string](documentation-scripting-fundamentals.html) documentation for details. For example, a parameter of `\(path)` is equivalent to the legacy syntax `\d`. In addition to the standard variables that are available in an interpolated string evaluated in a Session context, an array of strings called `matches` is defined. `matches[0]` is the full text of the match and `matches[i]` is the `i`th capture group for `i` > 0.
 
 #### Regular Expressions
 Regular expressions conform to the <a href="https://unicode-org.github.io/icu/userguide/strings/regexp.html">ICU regular expressions</a> rules.
