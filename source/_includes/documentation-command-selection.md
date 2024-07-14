@@ -1,4 +1,4 @@
-If you have [Shell Integration](documentation-smart-selection.html) installed, you can click on a command or its output to select it.
+If you have [Shell Integration](documentation-shell-integration.html) installed, you can click on a command or its output to select it.
 
 The selection is indicated by drawing a colored line around the command and its output. Other areas are dimmed.
 
