@@ -1,3 +1,59 @@
+2024-07-15: Support double-dollar substitutions in custom
+working directory. Issue 11715
+
+2024-07-15: Fix a bug introduced in commit 5edec84 that
+broke searching profile tags. Issue 11713
+
+2024-07-15: Fix a bug where the text gpu renderer
+incorrectly thought a successor character was underlined
+when it wasn't in the case where glyph width is quite large.
+This happened with 12pt MesloGS NF. Use the cell width
+instead of glyph width to test if one character abuts
+another. I hope this doesn't introduce new bugs but I
+wouldn't be surprised if it did. Issue 11698
+
+2024-07-15: Document the absurdity that is it_ligatureLevel
+
+2024-07-15: Allow ligatures in MenloNF
+
+2024-07-14: Replace a swift fatalError with something that
+gets written to a crash log
+
+2024-07-14: Fix a crash when broadcasting a password
+
+2024-07-14: Serialize access to mutable dictionary in
+_recursiveOpenPartialAttachments, where there were some
+corrupted locks. I think if you have multiple daemons the
+completion callback could run concurrently on two threads.
+
+2024-07-14: Prevent a crash when the snapshot requests a
+line out of bounds. I'm not quite sure how this would
+happen.
+
+2024-07-14: Try to fix a common crash in RectangleRenderer.
+Based on the disassembly I think renderEncoder was nil.
+There was one comment from a user who said they got the
+crash when waking (maybe headless). There must be a weird
+edge case where it is nil.
+
+2024-07-10: Fix a bug where there were two cancel buttons in
+the new script panel
+
+2024-07-10: Fix a crash when two instances of iTerm2 are
+running and you quit the first and then save restorable
+state in the second
+
+2024-07-10: Move selection when a scroll region scrolls up.
+Issue 11660
+
+2024-07-09: Check both hostname nad host of SSHIdentity when
+comparing to an SCPPath. Issue 11682
+
+2024-07-09: Remove NSNulls from external attribute
+dictionaries
+
+2024-07-09: Commit a file I missed in the previous commit
+
 2024-07-08: Add menu item to save color preset for issue
 9539. Also fix a bug where colors weren't restored after
 previewing a preset
@@ -370,9 +426,3 @@ related to a bug or bad config in issue 11496
 
 2024-06-02: Use javascript for AI plugin to avoid code
 signing races
-
-2024-06-01: Don't seal line blocks under 1kb because having
-a ton of line blocks hurts save/restore performance. Issue
-11485
-
-2024-06-01: Commit ai plugin sandbox
