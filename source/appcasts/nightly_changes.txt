@@ -1,3 +1,37 @@
+2024-07-18: Add command: operator for searching profiles.
+Issue 11726
+
+2024-07-18: Avoid writing to the terminal immediately after
+getting the TMUX DCS code because if you run 'tmux -CC
+list-windows' (or anything other than new or attach) tmux
+may terminate right away, causing that stuff to go to the
+command line. Instead, wait to read %session-changed before
+sending any commands. Tmux won't send notifications unless
+it's in control mode. We still send control-C immediately,
+but wait to get %session-changed to send the phony command.
+Issue 11728
+
+2024-07-18: Add support for DECSET 2048 to send inband
+resize notifications. Issue 11735
+
+2024-07-18: Bump shell integration
+
+2024-07-18: Fix dash in fish_prompt in
+iterm2_shell_integration.fish (#503)
+
+* Fix dash in fish_prompt in iterm2_shell_integration.fish
+
+Fixed string join interpreting a dash character in
+fish_prompt as a command option
+
+---------
+
+Co-authored-by: George Nachman <gnachman+github@gmail.com>
+2024-07-18: Rework how we handle XTGETTCAP so that it works
+for all terminfo keys. In the process abstract out terminfo
+stuff into iTermTerminfo so that it can be used from any
+thread. Add Ms to my hacked xterm-256color. Issue 11723
+
 2024-07-15: Support double-dollar substitutions in custom
 working directory. Issue 11715
 
@@ -426,3 +460,9 @@ related to a bug or bad config in issue 11496
 
 2024-06-02: Use javascript for AI plugin to avoid code
 signing races
+
+2024-06-01: Don't seal line blocks under 1kb because having
+a ton of line blocks hurts save/restore performance. Issue
+11485
+
+2024-06-01: Commit ai plugin sandbox
