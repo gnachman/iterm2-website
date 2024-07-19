@@ -48,10 +48,11 @@ Each word in the search query must match at least one word in either the title o
 
 ### Operators
 
-You may prefix a phrase in the search query with an *operator* to narrow your query. Only two operators are defined:
+You may prefix a phrase in the search query with an *operator* to narrow your query. These operators are defined:
 
  * The *name:* operator only tries to match words in the profile's name.
  * The *tag:* operator only tries to match words in the profile's tags.
+ * The *command:* operator only tries to match words in the proifle's command. Note that the command is only searched for words that explicitly use the `command` operator. Available in iTerm2 version 3.5.5 and later.
 
 ### Quoting
 
