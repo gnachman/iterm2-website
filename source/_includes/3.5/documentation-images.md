@@ -25,11 +25,27 @@ iTerm2 extends the xterm protocol with a set of proprietary escape sequences. In
 
 Whitespace is shown here for ease of reading: in practice, no spaces should be used.
 
-For file transfer and inline images, the code is:
+For file transfer and inline images, there are two control sequences. The original one, which works on all remotely modern versions of iTerm2 is:
 
 <pre>ESC ] 1337 ; File = [optional arguments] : base-64 encoded file contents ^G</pre>
 
-The optional arguments are formatted as <code>key=value</code> with a semicolon between each key-value pair. They are described below:
+The optional arguments are formatted as <code>key=value</code> with a semicolon between each key-value pair. They are described below.
+
+A new way of sending files was introduced in iTerm2 version 3.5 which works in tmux integration mode by splitting the giant control sequence into a number of smaller ones:
+
+First, send:
+
+<pre>ESC ] 1337 ; MultipartFile = [optional arguments] ^G</pre>
+
+Then, send one or more of:
+
+<pre>ESC ] 1337 ; FilePart = base64 encoded file contents ^G</pre>
+
+What size chunks should you use? Older versions of tmux have a limit of 256 bytes for the entire sequence. In newer versions of tmux, the limit is 1,048,576 bytes. iTerm2 also imposes a limit of 1,048,576 bytes.
+
+Finally, send:
+
+<pre>ESC ] 1337 ; FileEnd ^G</pre>
 
 <table>
 <tr>
