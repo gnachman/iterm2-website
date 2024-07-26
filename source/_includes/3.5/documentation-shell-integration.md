@@ -16,23 +16,27 @@ function show(name) {
 }
 </script>
 
-iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more--even over ssh. This enables several useful features. Shell integration is compatible with zsh, bash, fish (2.3 and later), and tcsh. Shell integration is implemented by scripts that configure your shell to tell iTerm2 where the prompt begins and ends and where command output begins and ends, as well as the result of the last command. You can also set up shell integration using triggers if you prefer not to modify your shell's configuration.
+iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more--even over ssh. This enables several useful features.
+
+Shell integration is compatible with zsh, bash, fish (2.3 and later), and tcsh.
 
 ### How To Enable Shell Integration
 
 This section describes the four ways to enable shell integration:
 
 1. <a href="#load-automatically">Load it automatically.</a>
-2. <a href="#download-and-run">Use the *Install Shell Integration* menu item.</a>
+2. <a href="#download-and-run">Use the **Install Shell Integration** menu item.</a>
 4. <a href="#install-by-hand">Install it by hand.</a>
 5. <a href="#triggers">Configure triggers appropriately.</a>
 
 <a name="load-automatically" />
+<hr/>
 #### Load Automatically
 
-In iTerm2 version 3.5 and later you can enable shell integration by enabling **Load shell integration automatically** in *Settings > Profiles > General* in the *Command* section. This is available if your `Command` is set to `SSH` or if it's set to `Login Shell` and your shell is supported.
+In iTerm2 version 3.5 and later you can enable shell integration by enabling **Load shell integration automatically** in **Settings > Profiles > General** in the **Command** section. This is available if your `Command` is set to `SSH` or if it's set to `Login Shell` and your shell is supported.
 
 <a name="download-and-run" />
+<hr/>
 #### Install Shell Integration Menu Item
 
 To modify your shell's dotfiles to load shell integration, you can select the menu item **iTerm2 > Install Shell Integration**. You'll first be asked whether you wish to install the Utilities. Utilities consist of a number of shell scripts that provide useful functionality, such as displaying inline images, performing file transfer, or customizing the display.
@@ -43,9 +47,10 @@ The download-and-run option will type this command for you:
 
 <pre>curl -L https://iterm2.com/shell_integration/install_shell_integration.sh | bash</pre>
 
-Alternately, select *Internet-Free Install*. This runs a sequence of commands to determine your shell, install files, and modify your dotfiles to load shell integration automiatcally.
+Alternately, select **Internet-Free Install**. This runs a sequence of commands to determine your shell, install files, and modify your dotfiles to load shell integration automiatcally.
 
 <a name="install-by-hand" />
+<hr/>
 #### Install By Hand
 
 If you prefer to have control over the process of modifying your environment, you can manually install shell integration by creating files and editing your shell's configuration. Select your shell to see the appropriate instructions: 
@@ -93,8 +98,8 @@ Next, you need to load the script at login time. Add this to the end of ~/.login
 </div>
 
 <a name="triggers" />
+<hr/>
 #### Triggers
-
 Installing a login script on every host you connect to is not always an option. To be sure, modifying root's login script is usually a bad idea. In these cases you can get the benefits of shell integration by defining triggers. The following triggers are of interest:
 
   * Report User &amp; Host
@@ -119,7 +124,7 @@ It captures the username and hostname from the example prompt above. Select the 
 \1@\2
 </pre>
 
-Then create another trigger with the action *Report Directory*. This regular expression will extract
+Then create another trigger with the action **Report Directory**. This regular expression will extract
 the directory from the example prompt:
 
 <pre>
@@ -132,11 +137,11 @@ Set this trigger's parameter to
 \1
 </pre>
 
-Make sure both triggers have their *Instant* checkbox enabled so they'll take effect before a newline is received.
+Make sure both triggers have their **Instant** checkbox enabled so they'll take effect before a newline is received.
 
 Finally, add a regular expression that matches the start of your prompt and give the "Prompt Detected" action. This causes a "mark" to be added, which is a blue triangle visible to the left of this line (or a horizontal line above, if Auto Composer is enabled).
 
-You may specify a user name or host name alone to *Report Host &amp; User*. If you give just a user name then the previous host name will be preserved; if you give just a host name then the previous user name will be preserved. To change the user name only, give a parameter like `user@`. To change the host name only, give a parameter like `example.com`.
+You may specify a user name or host name alone to **Report Host &amp; User**. If you give just a user name then the previous host name will be preserved; if you give just a host name then the previous user name will be preserved. To change the user name only, give a parameter like `user@`. To change the host name only, give a parameter like `example.com`.
 
 ### Features
 
@@ -146,7 +151,7 @@ Shell Integration enables numerous features:
 These are saved locations in history. They make it easy to navigate to previous shell prompts or other locations of interest.
 
 #### Select Output of Last Command
-The menu item under *Edit* selects the output of the last-run command.
+The menu item under **Edit** selects the output of the last-run command.
 
 #### Alert when current command finishes running.
 iTerm2 will present a modal alert when a long-running command finishes, if you ask it to.
@@ -155,7 +160,7 @@ iTerm2 will present a modal alert when a long-running command finishes, if you a
 You can see the return status code, working directory, running time, and more for shell commands entered at the prompt in the past.
 
 #### Download files from remote hosts with a click.
-You can right click on a filename (e.g., in the output of *ls*) to download it.
+You can right click on a filename (e.g., in the output of **ls**) to download it.
 
 #### Drag-drop files to upload with scp.
 Hold down option and drag-drop a file from Finder into iTerm2 to upload it.
@@ -180,7 +185,7 @@ When part of a command's output is scrolled off the top of the screen, the origi
 Auto Composer replaces your shell's prompt with a macOS-native text view that uses native editing conventions.
 
 #### Command Selection
-Click on a command to select it; then *Find*, *Filter*, and *Select All* will be restricted to that command's output.
+Click on a command to select it; then **Find**, **Filter**, and **Select All** will be restricted to that command's output.
 
 ### How it works
 Shell Integration works by configuring your shell on each host you log into to send special escape codes that convey the following information:
@@ -217,7 +222,7 @@ This feature is not supported in tcsh.
 For zsh and bash users: if you are unable to modify PS1 directly (for example, if you use a zsh theme that wants to control PS1), you must take an extra step. Add `export ITERM2_SQUELCH_MARK=1` before the shell integration script is sourced. Add the `iterm2_prompt_mark` as directed above to your prompt through those means available to you.
 
 #### Alert on next mark
-iTerm2 can show an alert box when a mark appears. This is useful when you start a long-running command. Select *Edit&gt;Marks and Annotations&gt;Alert on next mark* (Cmd-Opt-A) after starting a command, and you can go do something else in another window or tab. When the command prompt returns, a modal alert will appear, calling attention to the finished job.
+iTerm2 can show an alert box when a mark appears. This is useful when you start a long-running command. Select **Edit&gt;Marks and Annotations&gt;Alert on next mark** (Cmd-Opt-A) after starting a command, and you can go do something else in another window or tab. When the command prompt returns, a modal alert will appear, calling attention to the finished job.
 
 <img src="/images/AlertOnMark.png">
 
@@ -227,44 +232,44 @@ The mark on a command line will turn red if a command fails. You can right click
 <img src="/images/FailedCommandMenu.png">
 
 #### Download with scp
-You can right-click on a filename (e.g., in the output of *ls*) and select *Download with scp from *hostname**, and iTerm2 will download the file for you.
+You can right-click on a filename (e.g., in the output of **ls**) and select **Download with scp from hostname**, and iTerm2 will download the file for you.
 
 <img src="/images/DownloadWithScp.png">
 
-A new menu bar item will be added called *Downloads* that lets you view downloaded files and track their progress.
+A new menu bar item will be added called **Downloads** that lets you view downloaded files and track their progress.
 
 <img src="/images/DownloadsMenu.png">
 
 #### Upload with scp
-If you drop a file (e.g., from Finder) into iTerm2 while holding the option key, iTerm2 will offer to upload the file via scp to the remote host into the directory you were in on the line you dropped the file on. A new menu bar item will be added called *Uploads* that lets you view uploaded files and track their progress.
+If you drop a file (e.g., from Finder) into iTerm2 while holding the option key, iTerm2 will offer to upload the file via scp to the remote host into the directory you were in on the line you dropped the file on. A new menu bar item will be added called **Uploads** that lets you view uploaded files and track their progress.
 
 #### Command history
 With shell integration, iTerm2 can track your command history. The command history is stored separately for each username+hostname combination. There are four places where this is exposed in the UI:
 
 ##### Command history popup
-You can view and search the command history with *Session&gt;Open Command History...* (Shift-Cmd-;).
+You can view and search the command history with **Session&gt;Open Command History...** (Shift-Cmd-;).
 
 ##### Autocomplete
-Commands in command history are also added to Autocomplete (Cmd-;). If *Settings&gt;General&gt;Save copy/paste history and command history to disk* is enabled, then command history will be preserved across runs of iTerm2 (up to 200 commands per user/hostname).
+Commands in command history are also added to Autocomplete (Cmd-;). If **Settings&gt;General&gt;Save copy/paste history and command history to disk** is enabled, then command history will be preserved across runs of iTerm2 (up to 200 commands per user/hostname).
 
 ##### Toolbelt
-A command history tool may be added to the toolbelt by selecting *Toolbelt&gt;Command History*.
+A command history tool may be added to the toolbelt by selecting **Toolbelt&gt;Command History**.
 
 <img src="/images/CommandHistory.png" width=207 height=301>
 
 Bold commands are from the current session. Clicking on one will scroll to reveal it. Double-clicking enters the command for you. Option-double-clicking will output a "cd" command to go to the directory you were in when it was last run.
 
 ##### Command Completion
-iTerm2 will present command completion suggestions automatically when *View&gt;Auto Command Completion* is selected.
+iTerm2 will present command completion suggestions automatically when **View&gt;Auto Command Completion** is selected.
 
 #### Recent Directories
 With shell integration, iTerm2 will remember which directories you have used recently. The list of preferred directories is stored separately for each username+hostname combination. It is sorted by "frecency" (frequency and recency of use). There are two places it is exposed in the UI:
 
 ##### Recent Directories popup
-You can view and search your recently and frequently used directories in *Session&gt;Open Recent Directories...* (Cmd-Opt-/).
+You can view and search your recently and frequently used directories in **Session&gt;Open Recent Directories...** (Cmd-Opt-/).
 
 ##### Toolbelt
-A *Recent Directories* tool may be added to the toolbelt by selecting *Toolbelt&gt;Recent Directories*.
+A **Recent Directories** tool may be added to the toolbelt by selecting **Toolbelt&gt;Recent Directories**.
 <img src="/images/DirectoriesTool.png" style='border:1px solid #aaa'>
 
 Double-clicking a directory will type its path for you into the current terminal. Option-double-click will enter a "cd" command for you. You can also right-click on a directory to toggle its "starred" status. A starred directory will always appear at the bottom of the list so it is easy to find.
@@ -306,7 +311,7 @@ iTerm2 respects ssh_config files, but only a subset of the commands are understo
   * Port
   * IdentityFile
 
-Settings pulled from ssh_config override the hostname and user name provided by shell integration. The shell integration-provided host name is used as the text against which *Host* patterns are matched.
+Settings pulled from ssh_config override the hostname and user name provided by shell integration. The shell integration-provided host name is used as the text against which **Host** patterns are matched.
 
 The following files are parsed as ssh_config files, in order of priority:
 
