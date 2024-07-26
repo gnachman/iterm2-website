@@ -16,16 +16,39 @@ function show(name) {
 }
 </script>
 
-iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more--even over ssh. This enables several useful features.
+iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more--even over ssh. This enables several useful features. Shell integration is compatible with zsh, bash, fish (2.3 and later), and tcsh. Shell integration is implemented by scripts that configure your shell to tell iTerm2 where the prompt begins and ends and where command output begins and ends, as well as the result of the last command. You can also set up shell integration using triggers if you prefer not to modify your shell's configuration.
 
 ### How To Enable Shell Integration
-The easiest way to install shell integration is to select the *iTerm2&gt;Install Shell Integration* menu item. It will download and run a shell script as described below. You should do this on every host you ssh to as well as your local machine. The following shells are supported: tcsh, zsh, bash, and fish 2.3 or later. Contributions for other shells are most welcome.
 
-When you select the *iTerm2&gt;Install Shell Integration* menu item, it types this for you:
+This section describes the four ways to enable shell integration:
+
+1. <a href="#load-automatically">Load it automatically.</a>
+2. <a href="#download-and-run">Use the *Install Shell Integration* menu item.</a>
+4. <a href="#install-by-hand">Install it by hand.</a>
+5. <a href="#triggers">Configure triggers appropriately.</a>
+
+<a name="load-automatically" />
+#### Load Automatically
+
+In iTerm2 version 3.5 and later you can enable shell integration by enabling **Load shell integration automatically** in *Settings > Profiles > General* in the *Command* section. This is available if your `Command` is set to `SSH` or if it's set to `Login Shell` and your shell is supported.
+
+<a name="download-and-run" />
+#### Install Shell Integration Menu Item
+
+To modify your shell's dotfiles to load shell integration, you can select the menu item **iTerm2 > Install Shell Integration**. You'll first be asked whether you wish to install the Utilities. Utilities consist of a number of shell scripts that provide useful functionality, such as displaying inline images, performing file transfer, or customizing the display.
+
+Next you can choose to download and run an installer or to do an internet-free install.
+
+The download-and-run option will type this command for you:
 
 <pre>curl -L https://iterm2.com/shell_integration/install_shell_integration.sh | bash</pre>
 
-Don't care for piping curl to bash? Do it by hand. This is also what you must do if you use a shell that isn't your login shell. Select your shell to see the appropriate instructions: 
+Alternately, select *Internet-Free Install*. This runs a sequence of commands to determine your shell, install files, and modify your dotfiles to load shell integration automiatcally.
+
+<a name="install-by-hand" />
+#### Install By Hand
+
+If you prefer to have control over the process of modifying your environment, you can manually install shell integration by creating files and editing your shell's configuration. Select your shell to see the appropriate instructions: 
 
 <a id="opt_bash" style="cursor:pointer; color:black; text-decoration:underline" onclick="show('bash')">bash</a> |
 <a id="opt_fish" style="cursor:pointer;" onclick="show('fish')">fish</a> |
@@ -69,15 +92,61 @@ Next, you need to load the script at login time. Add this to the end of ~/.login
 <pre>source ~/.iterm2_shell_integration.tcsh</pre>
 </div>
 
+<a name="triggers" />
+#### Triggers
 
-Don't want to or can't install a login script? See the workaround at the end of this document using
-triggers.
+Installing a login script on every host you connect to is not always an option. To be sure, modifying root's login script is usually a bad idea. In these cases you can get the benefits of shell integration by defining triggers. The following triggers are of interest:
+
+  * Report User &amp; Host
+  * Report Directory
+  * Prompt Detected
+
+Use these triggers to tell iTerm2 your current username, hostname, directory, and the location of the shell prompt. Suppose you have a shell prompt that looks like this:
+
+<pre>
+george@example.com:/home/george%
+</pre>
+
+It exposes the username, hostname, and working directory. We can harvest those with a regular expression. First, define a trigger with this regex:
+
+<pre>
+^(\w+)@([\w.]+):.+%
+</pre>
+
+It captures the username and hostname from the example prompt above. Select the action "Report User &amp; Host". Set the trigger's parameter to:
+
+<pre>
+\1@\2
+</pre>
+
+Then create another trigger with the action *Report Directory*. This regular expression will extract
+the directory from the example prompt:
+
+<pre>
+^\w+@[\w.]+:([^%]+)%
+</pre>
+
+Set this trigger's parameter to
+
+<pre>
+\1
+</pre>
+
+Make sure both triggers have their *Instant* checkbox enabled so they'll take effect before a newline is received.
+
+Finally, add a regular expression that matches the start of your prompt and give the "Prompt Detected" action. This causes a "mark" to be added, which is a blue triangle visible to the left of this line (or a horizontal line above, if Auto Composer is enabled).
+
+You may specify a user name or host name alone to *Report Host &amp; User*. If you give just a user name then the previous host name will be preserved; if you give just a host name then the previous user name will be preserved. To change the user name only, give a parameter like `user@`. To change the host name only, give a parameter like `example.com`.
 
 ### Features
+
 Shell Integration enables numerous features:
 
 #### Marks
 These are saved locations in history. They make it easy to navigate to previous shell prompts or other locations of interest.
+
+#### Select Output of Last Command
+The menu item under *Edit* selects the output of the last-run command.
 
 #### Alert when current command finishes running.
 iTerm2 will present a modal alert when a long-running command finishes, if you ask it to.
@@ -103,6 +172,15 @@ Sessions will automatically switch profiles as you log in and out according to r
 #### Ensures the command prompt always starts at the left column, even when the last command didn't end in a newline.
 
 Each of these features are described in more detail below.
+
+#### Offscreen Command Line
+When part of a command's output is scrolled off the top of the screen, the originating prompt is shown there.
+
+#### Auto Composer
+Auto Composer replaces your shell's prompt with a macOS-native text view that uses native editing conventions.
+
+#### Command Selection
+Click on a command to select it; then *Find*, *Filter*, and *Select All* will be restricted to that command's output.
 
 ### How it works
 Shell Integration works by configuring your shell on each host you log into to send special escape codes that convey the following information:
@@ -203,60 +281,7 @@ options. The first option, presuming you use bash, is to become root with `sudo
 test $(whoami) == root && source "${HOME}/.iterm2_shell_integration.bash"
 </pre>
 
-The alternative is to use Triggers to emulate shell integration as described in the following section.
-
-#### Triggers
-For some users, installing a login script on every host they connect to is not
-an option. To be sure, modifying root's login script is usually a bad idea. In these cases
-you can get the benefits of shell integration by defining triggers. The following triggers are of interest:
-
-  * Report User &amp; Host
-  * Report Directory
-  * Prompt Detected
-
-Use these triggers to tell iTerm2 your current username,
-hostname, and directory. Suppose you have a shell prompt that looks like this:
-
-<pre>
-george@example.com:/home/george%
-</pre>
-
-It exposes the username, hostname, and working directory. We can harvest those with a regular
-expression. First, define a trigger with this regex:
-
-<pre>
-^(\w+)@([\w.]+):.+%
-</pre>
-
-It captures the username and hostname from the example prompt above. Select the action "Report User &amp; Host". Set the trigger's parameter to:
-
-<pre>
-\1@\2
-</pre>
-
-Then create another trigger with the action *Report Directory*. This regular expression will extract
-the directory from the example prompt:
-
-<pre>
-^\w+@[\w.]+:([^%]+)%
-</pre>
-
-Set this trigger's parameter to
-
-<pre>
-\1
-</pre>
-
-Make sure both triggers have their *Instant* checkbox enabled so they'll take effect before a
-newline is received.
-
-Finally, add a regular expression that matches the start of your prompt and give the "Prompt Detected" action. This causes a "mark" to be added, which is a blue triangle visible to the left of this line. You can navigate from mark to mark with Cmd-Shift-Up/Down Arrow.
-
-You may specify a user name or host name alone to *Report Host &amp; User*. If
-you give just a user name then the previous host name will be preserved; if you
-give just a host name then the previous user name will be preserved. To change
-the user name only, give a parameter like `user@`. To change the host name only,
-give a parameter like `example.com`.
+The alternative is to use Triggers to emulate shell integration as described above.
 
 ### Limitations
 
@@ -289,6 +314,7 @@ The following files are parsed as ssh_config files, in order of priority:
   * ~/.ssh/config
   * /etc/ssh_config
 
-The scp code is relatively new. If you are in a high-security environment, please keep this in mind.
+If you have trouble, see <a href="https://gitlab.com/gnachman/iterm2/-/wikis/scp-not-connecting">SCP Not Connecting</a> on the wiki.
 
+If you use SSH Integration then file transfer happens over the SSH Integration framing protocol rather than by using scp. This is generally more reliable because it doesn't require opening a new connection.
 
