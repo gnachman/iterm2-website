@@ -29,6 +29,7 @@ Lists the files in a directory with thumbnail previews for images.
 
 <pre>
 Usage:
+
 imgls [filename...]
 </pre>
 
@@ -38,6 +39,7 @@ Requests attention. Can bounce the dock icon or show a fireworks animation at th
 
 <pre>
 Usage:
+
 it2attention start
   Begin bouncing the dock icon if another app is active
 it2attention stop
@@ -73,14 +75,20 @@ For this to work you must enable **Prefs > General > Applications in terminal ma
 
 The `it2dl` program downloads files. This is useful when you are ssh'ed to a remote host. The downloaded files are placed in your *Downloads* folder.
 
+<pre>
+Usage:
+
+it2dl [filename]
+</pre>
+
 #### it2getvar
 
 Fetches a session variable. For a list of session variables, see the <a href="documentation-badges.html">Badges</a> page.
 
 <pre>
-Example:
+Usage:
 
-it2getvar session.name
+it2getvar [session.name]
 </pre>
 
 #### it2setcolor
@@ -88,7 +96,7 @@ it2getvar session.name
 Configures iTerm2's colors.
 
 <pre>
-Usage
+Usage:
 
 1) To set a specific color to an RGB value:
   it2setcolor name color [name color...]
@@ -112,7 +120,7 @@ color is of the format:
     p3         (Apple's fancy large-gamut colorspace)
 
 2) To switch to a named color preset:
-  it2setcolor preset name
+  it2setcolor preset [name]
 For example:
   it2setcolor preset 'Light Background'
 
@@ -164,12 +172,7 @@ Usage:
      If name is given, all versions up to and including the one with the matching name are popped.
 </pre>
 
-<pre>
-Usage:
-it2dl filename
-</pre>
 
 ### Location
 
 The Utilities Package places shell scripts in `$HOME/.iterm2/` and creates aliases to them at the bottom of `$HOME/.iterm2_shell_integration.$SHELL`.
-
