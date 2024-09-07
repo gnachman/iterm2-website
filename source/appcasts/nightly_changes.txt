@@ -1,3 +1,29 @@
+2024-09-06: Fix vertical alignment of box-drawing characters
+in the presence of vertical spacing. I think the problem was
+that the text renderer centers glyphs within their
+cell-including-spacing, which requires shifting glyphs by
+half the height of the extra spacing but that logic was not
+properly replicated in iTermCharacterSource. This commit
+carefully ensures we draw the glyph in exactly the rect that
+the text renderer expects it to be in. Issue 11478
+
+2024-09-06: Fix a bug where the most recent mark sometimes
+couldn't be found
+
+2024-09-06: Update AI URL when changing model. Issue 11836
+
+2024-09-06: Fix bulk copy for colors. Issue 11835
+
+2024-09-06: Improve tooltip for command selection. Issue
+11834
+
+2024-09-06: In modifyOtherKeys mode 1, option-return should
+send esc-return. This pleases emacs. I don't think xterm
+implements its own spec correctly when it comes to this, so
+it's just the wild west here. Issue 11833
+
+2024-09-06: Improve script-with-input-logging
+
 2024-09-05: Hide offscreen command line when the last
 command's output is visible starting at the first line of
 the screen and the command line is exactly one line above
