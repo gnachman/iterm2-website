@@ -1,0 +1,121 @@
+3.5.4beta2, built on September 9, 2024.
+
+New Features
+- Add support for the Kitty key reporting
+  protocol.
+- Add support for the Kitty graphics protocol
+  (except animation).
+- Show a warning in the settings window's titlebar
+  when there are unsaved changes and manual saving
+  was selected.
+- Custom working directory now supports $$
+  variables.
+- XTGETTCAP now supports all terminfo keys.
+- Add support for DECSET 2048 (send in-band resize
+  notifications).
+- There is a new search operator for Profile
+  search. Prefix a term with command: to search
+  only the profile's custom command for that word.
+- Add support for VT levels. You can now use
+  DECSCL to set the current VT level and commands
+  with higher levels will be ignored. Fixes a
+  problem VMS users noticed.
+- Add a hue/chroma visualization to the colors
+  panel so you can see if you have a nice spread
+  for the ANSI colors.
+- If you use a / in a snippet tag, that creates a
+  tag hierarchy as reflected in the main menu's
+  snippets.
+- Add a setting to disable alternate mouse scroll
+  (sending arrow keys when using the scroll wheel
+  while in the alternate screen).
+
+Improvements
+- Open Quickly now shows search results even with
+  an empty query.
+- Add a menu item to save color presets.
+- Move selection when the selected text scrolls
+  within a scroll region.
+- Improve filename suggestions in auto composer to
+  include subdirectories.
+- When focus follows mouse is on in tmux
+  integration don't automatically raise windows.
+- Upload and download colors for the network
+  status bar component are customizable now.
+- When exporting a Python API script the UI now
+  offers a checkbox to make it offer to
+  autolaunch.
+- Show cert expiration dates in Python API script
+  export UI.
+- All the shell integration utilities are now in
+  the default $PATH.
+- The new AI model is gpt-4o-mini.
+- Cmd-clicking on a link or semantic history match
+  will not report it via mouse reporting.
+- Add "Move session to split pane" to the Window
+  menu to enable keybindings.
+- Add extended powerline symbols u+0ed6 and
+  u+e0d7.
+- When saving a window arrangement with multiple
+  windows, save them in the same order as their
+  shortcut numbers so they can be restored and
+  preserve the shortcuts.
+- Add Cursor editor support to semantic history.
+- Improve appearance of various settings screens.
+- Hide offscreen command line when the last
+  command line is just above the screen to avoid
+  blocking its output when you do clear;something
+- When you change the AI model, automatically
+  update the URL in settings. Add ollama to
+  default models.
+- The snippet editing UI now has a right click
+  menu to simplify editing actions.
+
+Bug Fixes
+- Fix various crashes.
+- Fix performance issues.
+- Fix file transfers in ssh integration when the
+  directory uses tilde for home.
+- Fix failing transfers in ssh integration when
+  using a host alias defined in ssh config.
+- Fix a bug where underlines were sometimes wrong
+  in the GPU renderer.
+- Fix a bug when duplicating a session that broke
+  working directory recycling.
+- Fix a bug where windows in tmux integration
+  could be the wrong size of the tmux connecting
+  session is automatically buried.
+- Fix a bug where the cursor in the terminal
+  blinked despite the composer having focus.
+- Fix a bug where we offered to turn off focus
+  reporting even when the user asked not to do so.
+- Fix a bug where we responded to DECRQDE with the
+  wrong sequence.
+- Fix a bug where VS16 was ignored if it was not
+  immediately after the base character.
+- Fix a bug where pressing cmd-F didn't select the
+  find text in the status bar search bar.
+- Remove option to compress history in background,
+  which didn't do anything (the feature was
+  removed for performance reasons).
+- Fix meta-return in Emacs.
+- Fix a bug where bulk copy for colors didn't work
+  when using different colors for light and dark
+  mode.
+- Fix a bug where box-drawing characters could
+  have gaps between lines.
+
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+f43576fa813c562b7c4ab96564f943567b1bcf5a4671a84ff4bdba21a7352d1b
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCZt+TIwAKCRB0Et0TaFtK
+rALTAQCPpJFcg89yMV7d4AeGUTwybvBStGlN+uTBrbJNhW9qQAD+OXKU0F6pG/E/
+JgNEtuQhMmA8v9OQhgX2Q/svTgXaOcI=
+=yrvt
+-----END PGP SIGNATURE-----
