@@ -1,0 +1,58 @@
+3.5.5beta2, built on September 19, 2024.
+
+New Features
+- Snippet search now supports using | as logical
+  OR.
+
+Improvements
+- The option key now acts as Alt rather than Meta
+  for keystrokes like function keys and arrows.
+  This fixes some things like option-arrow in
+  Emacs and probably breaks other workflows.
+  You can revert to the old behavior with the
+  profile setting "Treat ⌥ as Alt".
+- Improvements to how tmux window sizing works.
+  This is the new behavior:
+
+  When attaching to an existing session:
+    If "When attaching, restore windows as" is set
+    to "Tabs in the attaching window", the window
+    will not resize. Tabs are just added.
+
+    Otherwise, restore previous tmux window sizes.
+
+  When creating a new tab:
+    The window will not to resize (unless a tab
+    bar comes or goes).
+
+  When creating a new window:
+    The window size in the profile under the
+    Window tab is respected.
+- 1Password Credentials with the tag iTerm2 are
+  now usable in the password manager when the
+  1Password integration is enabled.
+- Disable the menu shown when you hover or
+  right-click on the window's zoom button because
+  it caused a lot of hangs. You can reenable it
+  with an advanced setting.
+- Asciicast logs now include resize events.
+- o1-preview and o1-mini OpenAI models added.
+
+Bug Fixes
+- Fix a very frequent crash.
+- Fix a bug where "apps can change how keys are
+  reported" was not always respected.
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+9733c921e072f030b02c456839ce965ebea7e956e80bfe191e93269b1f7e1e6d
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCZuyyjAAKCRB0Et0TaFtK
+rP+SAPwJS1U36Yj6ubbJB2hwwc4ovJXJ3zU0zPmQdFSMGyWciwEAtvNYwlVV6C71
+SC7Tnuf67qjvdQNE26y+TOQEKhoMm/k=
+=0YDv
+-----END PGP SIGNATURE-----

@@ -355,6 +355,12 @@ per-profile preferences; see the profile submodule for that)</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="iterm2.PreferenceKey.MAXIMIZE_THROUGHPUT">
+<span class="sig-name descname"><span class="pre">MAXIMIZE_THROUGHPUT</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'metalMaximizeThroughput'</span></em><a class="headerlink" href="#iterm2.PreferenceKey.MAXIMIZE_THROUGHPUT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximize throughput vs framerate?  Takes a boolean.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="iterm2.PreferenceKey.MAX_VERTICALLY">
 <span class="sig-name descname"><span class="pre">MAX_VERTICALLY</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'MaxVertically'</span></em><a class="headerlink" href="#iterm2.PreferenceKey.MAX_VERTICALLY" title="Permalink to this definition">¶</a></dt>
 <dd><p>When maximizing a window, grow it only vertically?  Takes a boolean.</p>
@@ -363,7 +369,7 @@ per-profile preferences; see the profile submodule for that)</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="iterm2.PreferenceKey.METAL_MAXIMIZE_THROUGHPUT">
 <span class="sig-name descname"><span class="pre">METAL_MAXIMIZE_THROUGHPUT</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'metalMaximizeThroughput'</span></em><a class="headerlink" href="#iterm2.PreferenceKey.METAL_MAXIMIZE_THROUGHPUT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximize throughput for GPU renderer, vs framerate?  Takes a boolean.</p>
+<dd><p>Deprecated. Use MAXIMIZE_THROUGHPUT (which is identical besides the name) instead.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -658,7 +664,7 @@ per-profile preferences; see the profile submodule for that)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="iterm2.async_get_preference">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get_preference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#iterm2.PreferenceKey" title="iterm2.preferences.PreferenceKey"><span class="pre">iterm2.preferences.PreferenceKey</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.async_get_preference" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get_preference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#iterm2.PreferenceKey" title="iterm2.preferences.PreferenceKey"><span class="pre">iterm2.preferences.PreferenceKey</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.async_get_preference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets a preference by key.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -667,6 +673,23 @@ per-profile preferences; see the profile submodule for that)</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An object with the preferences value, or <cite>None</cite> if unset and no
 default exists.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="iterm2.async_set_preference">
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_set_preference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.PreferenceKey" title="iterm2.preferences.PreferenceKey"><span class="pre">iterm2.preferences.PreferenceKey</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><a class="headerlink" href="#iterm2.async_set_preference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a preference by key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – The preference key, either from the <cite>PreferenceKey</cite> enum or a
+string. Note that older versions of the API expect a <cite>str</cite> here. You
+may want to use the <cite>PreferenceKey</cite>’s <cite>value</cite> for backward
+compatibility.</p></li>
+<li><p><strong>value</strong> – An object with the preference value, or <cite>None</cite> to unset.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

@@ -1,107 +1,46 @@
-3.5.4beta2, built on September 9, 2024.
+3.5.5beta2, built on September 19, 2024.
 
 New Features
-- Add support for the Kitty key reporting
-  protocol.
-- Add support for the Kitty graphics protocol
-  (except animation).
-- Show a warning in the settings window's titlebar
-  when there are unsaved changes and manual saving
-  was selected.
-- Custom working directory now supports $$
-  variables.
-- XTGETTCAP now supports all terminfo keys.
-- Add support for DECSET 2048 (send in-band resize
-  notifications).
-- There is a new search operator for Profile
-  search. Prefix a term with command: to search
-  only the profile's custom command for that word.
-- Add support for VT levels. You can now use
-  DECSCL to set the current VT level and commands
-  with higher levels will be ignored. Fixes a
-  problem VMS users noticed.
-- Add a hue/chroma visualization to the colors
-  panel so you can see if you have a nice spread
-  for the ANSI colors.
-- If you use a / in a snippet tag, that creates a
-  tag hierarchy as reflected in the main menu's
-  snippets.
-- Add a setting to disable alternate mouse scroll
-  (sending arrow keys when using the scroll wheel
-  while in the alternate screen).
+- Snippet search now supports using | as logical
+  OR.
 
 Improvements
-- Open Quickly now shows search results even with
-  an empty query.
-- Add a menu item to save color presets.
-- Move selection when the selected text scrolls
-  within a scroll region.
-- Improve filename suggestions in auto composer to
-  include subdirectories.
-- When focus follows mouse is on in tmux
-  integration don't automatically raise windows.
-- Upload and download colors for the network
-  status bar component are customizable now.
-- When exporting a Python API script the UI now
-  offers a checkbox to make it offer to
-  autolaunch.
-- Show cert expiration dates in Python API script
-  export UI.
-- All the shell integration utilities are now in
-  the default $PATH.
-- The new AI model is gpt-4o-mini.
-- Cmd-clicking on a link or semantic history match
-  will not report it via mouse reporting.
-- Add "Move session to split pane" to the Window
-  menu to enable keybindings.
-- Add extended powerline symbols u+0ed6 and
-  u+e0d7.
-- When saving a window arrangement with multiple
-  windows, save them in the same order as their
-  shortcut numbers so they can be restored and
-  preserve the shortcuts.
-- Add Cursor editor support to semantic history.
-- Improve appearance of various settings screens.
-- Hide offscreen command line when the last
-  command line is just above the screen to avoid
-  blocking its output when you do clear;something
-- When you change the AI model, automatically
-  update the URL in settings. Add ollama to
-  default models.
-- The snippet editing UI now has a right click
-  menu to simplify editing actions.
+- The option key now acts as Alt rather than Meta
+  for keystrokes like function keys and arrows.
+  This fixes some things like option-arrow in
+  Emacs and probably breaks other workflows.
+  You can revert to the old behavior with the
+  profile setting "Treat ⌥ as Alt".
+- Improvements to how tmux window sizing works.
+  This is the new behavior:
+
+  When attaching to an existing session:
+    If "When attaching, restore windows as" is set
+    to "Tabs in the attaching window", the window
+    will not resize. Tabs are just added.
+
+    Otherwise, restore previous tmux window sizes.
+
+  When creating a new tab:
+    The window will not to resize (unless a tab
+    bar comes or goes).
+
+  When creating a new window:
+    The window size in the profile under the
+    Window tab is respected.
+- 1Password Credentials with the tag iTerm2 are
+  now usable in the password manager when the
+  1Password integration is enabled.
+- Disable the menu shown when you hover or
+  right-click on the window's zoom button because
+  it caused a lot of hangs. You can reenable it
+  with an advanced setting.
+- Asciicast logs now include resize events.
+- o1-preview and o1-mini OpenAI models added.
 
 Bug Fixes
-- Fix various crashes.
-- Fix performance issues.
-- Fix file transfers in ssh integration when the
-  directory uses tilde for home.
-- Fix failing transfers in ssh integration when
-  using a host alias defined in ssh config.
-- Fix a bug where underlines were sometimes wrong
-  in the GPU renderer.
-- Fix a bug when duplicating a session that broke
-  working directory recycling.
-- Fix a bug where windows in tmux integration
-  could be the wrong size of the tmux connecting
-  session is automatically buried.
-- Fix a bug where the cursor in the terminal
-  blinked despite the composer having focus.
-- Fix a bug where we offered to turn off focus
-  reporting even when the user asked not to do so.
-- Fix a bug where we responded to DECRQDE with the
-  wrong sequence.
-- Fix a bug where VS16 was ignored if it was not
-  immediately after the base character.
-- Fix a bug where pressing cmd-F didn't select the
-  find text in the status bar search bar.
-- Remove option to compress history in background,
-  which didn't do anything (the feature was
-  removed for performance reasons).
-- Fix meta-return in Emacs.
-- Fix a bug where bulk copy for colors didn't work
-  when using different colors for light and dark
-  mode.
-- Fix a bug where box-drawing characters could
-  have gaps between lines.
+- Fix a very frequent crash.
+- Fix a bug where "apps can change how keys are
+  reported" was not always respected.
+
 
