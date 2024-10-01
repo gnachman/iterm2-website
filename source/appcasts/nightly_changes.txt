@@ -1,3 +1,17 @@
+2024-09-30: When key reporting flags are set don't check CSI
+u mode in menus
+
+2024-09-30: Ignore empty host/user in OSC 7 URL. Issue 11773
+
+2024-09-30: Clear hostStack on reset
+
+2024-09-30: Add zed to supported editors for semantic
+history. Issue 11859
+
+2024-09-30: Looks like apple fixed the nonsensical way that
+accessibilityConvertScreenRect used bounds in macOS 15.
+Convert screen points to view points sanely. Issue 11862
+
 2024-09-29: Fix how the width of the text field of
 iTermSlider is calculated. Issue 11864
 
@@ -203,77 +217,3 @@ the same time and there is a porthole. Issue 11759
 
 2024-09-03: Use slash in snippet tags to create hierarchy.
 Issue 9523
-
-2024-08-31: Log character source descriptor when drawing a
-box-drawing character
-
-2024-08-29: Defer sanity checks within
-performBlockWithTemporaryChanges
-
-2024-08-29: Remove assertion hit in issue 11819
-
-2024-08-29: Move misplaced sanity check
-
-2024-08-29: Fix the signature of async_set_preference to
-indicate that it accepts either str or PreferenceKey and
-note that str should be used for backward compatibility
-
-2024-08-29: Generate docs for iterm2.async_set_preference.
-Fix a bug where it claims to accept a PreferenceKey but
-actually wants a str. Issue 11824
-
-2024-08-29: Add move session to split pane to Window menu
-
-2024-08-29: Fix a bug where changing a color didn't update
-the oklab visualization
-
-2024-08-28: Add sanity checks for cached numlines getting
-out of sync with reality
-
-2024-08-27: Implement Kitty graphics protocol, except
-animation.
-
-2024-08-15: Fix alignment of smart box cursor color checkbox
-in color settings
-
-2024-08-15: Fix a race that could cause the colors pallette
-not to be properly initialized when first opened. Issue
-11767
-
-2024-08-15: Fix build break
-
-2024-08-14: Don't report clicks in underlined ranges. Issue
-11803
-
-2024-08-13: Add OKLab hue/chroma visualization to color
-panel
-
-2024-08-13: Default AI model to new gpt-4o-mini (#506)
-
-
-2024-08-10: Add all utilities to the default path
-
-2024-08-10: Bump shell integration
-
-2024-08-09: Fix response to DECRQDE to be CSI not OSC. Issue
-11690
-
-2024-08-09: Fix a bug where we offer to turn off focus
-reporting due to a bell. It didn't check the user default.
-Issue 6907
-
-2024-08-09: Make cursor not blink when textview is in the
-active session but not first responder (e.g., cursor is in
-the search field). Issue 11774
-
-2024-08-08: Fix adhoc builder to use notarytool
-
-2024-08-08: Fix a crash when complex char codes somehow get
-out of range of a unichar. Issue 11776
-
-2024-08-08: Bump shell integration for
-https://github.com/gnachman/iTerm2-shell-integration/pull/16
-
-2024-08-08: Bump shell integration
-
-2024-08-08: Implement Kitty's key reporting protocol.
