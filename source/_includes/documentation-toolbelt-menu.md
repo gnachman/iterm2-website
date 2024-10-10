@@ -1,7 +1,7 @@
 #### Toolbelt > Set Default Width
 Saves the current window's toolbelt width as the default width for new windows' toolbelts.
 
-#### Tolbelt > Captured Output
+#### Toolbelt > Captured Output
 This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="captured_output.html">Captured Output</a> for more information.
 
 #### Toolbelt > Command History

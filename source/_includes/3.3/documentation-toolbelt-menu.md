@@ -4,7 +4,7 @@ Saves the current window's toolbelt width as the default width for new windows' 
 #### Toolbelt > Actions
 This toggles the visibility of the Actions tools. It has a list of user-defined actions (for example, send a canned string of text). The tool provides an interface for editing the actions as well as invoking them.
 
-#### Tolbelt > Captured Output
+#### Toolbelt > Captured Output
 This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="captured_output.html">Captured Output</a> for more information.
 
 #### Toolbelt > Command History
