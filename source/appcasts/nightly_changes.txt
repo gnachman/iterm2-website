@@ -1,3 +1,45 @@
+2024-10-16: Add support for Gemini. Issue 11900
+
+2024-10-16: Fix crash when broadcasting password. Issue
+11914
+
+2024-10-16: Fix warning
+
+2024-10-16: Change how the status bar calculates memory
+usage to be closer to activity monitor
+
+2024-10-16: Remind the user when a codecierge session has
+gone on for 10 commands. Issue 11912
+
+2024-10-15: Fix debug-only race condition with AATree's
+debug journal
+
+2024-10-15: Fix a bug in dynamic profiles where colors are
+not respected if the parent profile has separate light/dark
+colors enabled but the flag isn't set in the child profile.
+See mailing list post with subject Importing profiles from
+the command line
+
+2024-10-15: Clear the number of wrapped lines in the
+per-raw-line cache of the first raw line in LineBlock when
+dropping lines. Hopefully fixes a common crash. For the sake
+of safety, also clear it in setBufferStartOffset. If the
+metadata array is empty, don't try to dereference the first
+item when clearing the cache. Improve debug logging in case
+it isn't actually fixed.
+
+2024-10-15: Add SentinelOne checking to Sparkle.
+
+Before installing an app update, check if SentinelAgent is
+running. If so, wait 10 seconds and re-validate the
+extracted app bundle.
+
+Additionally, if the original app was code signed then the
+update bundle must also be code signed. See the conversation
+here:
+
+https://github.com/sparkle-project/Sparkle/discussions/2641
+
 2024-10-11: 3.5.6beta1
 
 2024-10-11: Add bonjour to info.plist for sequoia
