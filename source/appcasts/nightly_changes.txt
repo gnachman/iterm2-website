@@ -1,3 +1,33 @@
+2024-10-17: Fix a bug where non-ansi colors were in the
+hue/chroma vis
+
+2024-10-17: Don't crash if a profile is missing ANSI colors.
+Issue 11915.
+
+2024-10-17: Update libssh2 to version 1.11.1
+
+2024-10-17: When realizing a read-only copy of MarkCache,
+some marks won't have entries yet. This happens because the
+side-effect that adds the mark to the interval tree can run
+after a side effect that uses the mark cache (e.g.,
+setReturnCodeOfLastCommand). The early realization of the
+mark cache caused no-entry marks to be dropped. This was
+wrong, leading to a bug where the offscreen command line was
+incorrect because the wrong mark was retrieved. This commit
+changes MarkCache to track dropped marks and to add them to
+`sorted` when they are found to have an interval. This check
+is done before using `sorted` to ensure it is up to date. It
+could be slow but in practice I doubt there will ever be
+more than one dropped mark at a time. Issue 11904
+
+2024-10-17: Carve out an exception for unicode hex input
+since it doesn't use marked text so that we can avoid
+sending control sequences in modifyOtherKeys mode when the
+user is typing hex digits. Issue 11905
+
+2024-10-17: Allow reporting scroll events in background
+windows. Issue 11866
+
 2024-10-16: Add support for Gemini. Issue 11900
 
 2024-10-16: Fix crash when broadcasting password. Issue
