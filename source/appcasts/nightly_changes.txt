@@ -1,3 +1,34 @@
+2024-10-25: Add option to disable sending OTP for 1password
+entries. Issue 11674
+
+2024-10-25: Make UI around 'Disable transparency for
+fullscreen windows by default' setting less confusing. Issue
+11928
+
+2024-10-25: Don't require a path when using the conservative
+URL guesser. Issue 11938
+
+2024-10-25: When a region is scrolled into history, absolute
+line numbers referring to positions in the grid need to be
+invalidated. The easiest place to see this is that search
+highlights in the lower lines of the grid move up when the
+top lines of the grid are scrolled up. Simply mark the whole
+grid dirty when this happens. This is a significant change
+to the meaning of dirty. It now means that *externally
+stored metadata about the grid* could be invalid, not just
+that the contents of the grid itself. Issue 11937
+
+2024-10-25: Allow short drags of the add-tab button to act
+like a click. Issue 11933
+
+2024-10-25: When entering soft alternate screen mode, if
+save scrollback in alternate screen mode is disabled, scroll
+the screen into history. Previously, if you had disabled
+alternate screen mode and you didn't allow appending to
+history in alternate screen mode, the terminal contents
+prior to entering alternate screen mode would be lost. Issue
+324
+
 2024-10-24: Trivial fixes
 
 2024-10-24: Make the pointer setting for 'control-click
