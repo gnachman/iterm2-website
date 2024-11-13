@@ -1,3 +1,32 @@
+2024-11-13: Make the AI prompt bypassable and provide a
+reason string when the proposed prompt was long. Issue 11948
+
+2024-11-13: Show prompt editing dialog before sending API
+call. Issue 11948
+
+2024-11-13: Delete dead code
+
+2024-11-13: Fix up promptRange and commandRange in
+VT100ScreenMark when resizing. Fix a horrific bug where
+dataWithBytesNoCopy sometimes allocated new memory casuing
+getLineAtIndex to return an empty line. This showed up when
+debugging resizing code. Not sure how anything at all
+worked.
+
+2024-11-13: Turn off 'wait for prompt before pasting each
+line' when the shell swallows newlines when paste bracketing
+is on. Issue 11941
+
+2024-11-13: Add an advanced setting to not turn on 'wait for
+shell prompt before pasting each line' in advanced paste by
+default. Issue 9320
+
+2024-11-13: Cancel hotkey window rollout when presenting a
+modal sheet. Issue 11950
+
+2024-11-13: Move cached parsers to caches directory instead
+of app support. Issue 11951
+
 2024-11-12: Add support for DEC private mode 80 (sixel
 scrolling) and leave the cursor in the right place after a
 sixel image. See
@@ -207,8 +236,3 @@ minimal locale. Issue 11597
 
 2024-10-01: Add the ability to lock the width of a split
 pane under Window > Lock Split Pane Width. Issue 11863
-
-2024-10-01: Fix a bug where the bottom margin and excess
-were not drawn dimmed by GPU renderer when there was a
-selected command region. Also make the region extend all the
-way to the right edge of the view.
