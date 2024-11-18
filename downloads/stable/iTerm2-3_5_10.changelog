@@ -1,0 +1,135 @@
+Version 3.5.10 of iTerm2 was built on November 18, 2024.
+
+This build fixes a bug in reporting repeated
+keypresses.
+
+Version 3.5.9 was short-lived and its release
+notes follow.
+
+Version 3.5.9 introduces a few important fixes:
+
+- Fix a bug where certain keys didn't work
+  properly in certain applications (specifically,
+  in disambiguate escapes mode). This affected
+  neovim in particular.
+- Adds a UI to repair saved arrangements that were
+  broken by a bug in 3.5.7.
+- Fixes a new crash introduced by version 3.5.7.
+
+Version 3.5.7 had a possible data loss bug that
+could break the saved copy of a profile in a saved
+arrangement when migrating key bindings. The only
+change in 3.5.8 is to fix this issue.
+
+It is almost the same as version 3.5.6, but with
+one crashing bug fixed. Version 3.5.6 was not
+widely released. The release notes for 3.5.6
+follow.
+
+New Features
+- You can now "fold" a section, which collapses it
+  down to a single line. If you use shell
+  integration, you can fold by clicking on the blue
+  arrow next to the shell prompt. Alternately,
+  select the command by clicking it once and then
+  click the new fold button at the top of the
+  selected region. If you don't use shell
+  integration, you can select a range of lines and
+  choose Fold from the context menu or Edit > Fold
+  Selected Lines.
+
+  To unfold, click the arrow in the margin or
+  right click on the line and select Unfold or
+  select Edit > Unfold in Selection.
+
+- When saving a window arrangement you can now
+  choose to save it to a file including the
+  windows' contents. You can load an arrangement
+  file with Window > Load Arrangement from File.
+
+- Added `Window > Lock Split Pane Width` which
+  tries to preserve the width of a split pane as
+  the window's geometry changes.
+
+- You can now choose to play a sound when the next
+  mark is received, under Edit > Marks and
+  Annotations > Alerts.
+
+
+Other Improvements
+- Some silly default key bindings interfered with
+  macOS Sequoia's window tiling shortcuts. A new
+  migration process offers to remove them for you.
+- SentinelOne users will be warned when upgrading
+  from this version to the next if the update
+  would be classified as malware.
+- Show a warning when a Codecierge session goes on
+  for a long time.
+- Change how the status bar measures memory used
+  to more closely match Activity Monitor.
+- Add Gemini to the list of supported AI models.
+- Scroll events now get reported when you mouse
+  over an inactive window and use the scroll
+  wheel/scroll gesture.
+- Upgrade libssh2 to version 1.11.1. This affects
+  the Download with scp feature.
+- When you drag a window by its titlebar in the
+  Minimal or Compact themese, bring the window to
+  the front immediately.
+- Global Search now searches the main screen of a
+  session even if it is currently displaying the
+  alternate screen.
+- When mouse reporting is on and you click in a
+  window that is not currently active, that click
+  will not be reported.
+- Add zed to the list of Semantic History editors.
+- When you manually reset, clear the stack of
+  hostnames to avoid incorrectly changing the key
+  reporting mode.
+- In macOS 15, if control-return would be
+  reported, don't show the context menu.
+- If you run iTerm2 from the command line, the
+  --help argument now gives usage info.
+- Remove special support for control-page up/down
+  to scroll, which interfered with window tiling
+  shortcuts. It was only there because of a
+  misunderstanding 14 years ago.
+
+Bug Fixes
+- Fix some very common crashes.
+- Fix a bug where colors in a dynamic profile
+  might not be respected if the parent/default
+  profile uses separate light/dark mode colors
+  but the dynamic profile does not.
+- Don't report option+keystrokes when using the
+  Unicode Hex Input keyboard.
+- Fix a bug where the offscreen command line could
+  be wrong sometimes.
+- Fix a bug where non-ANSI colors showed up in the
+  hue/chroma visualization in colors settings.
+- Hopefully fixed accessing machines on the local
+  network and bonjour hosts on macOS Sequoia.
+- Fix a bug where locale settings didn't correctly
+  update arrangements sometimes.
+- Fix a bug where the number 100 sometimes didn't
+  fit in numeric fields in settings.
+- Fix accessibility bugs in macOS 15.
+- Ignore empty host or user in OSC 7 URLs.
+- Don't show that CSI u mode is enabled when key
+  reporting flags are set.
+- Fix minor drawing bugs.
+
+SHA-256 of the zip file is
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+4e42bb79ed285bc6aaea45f01bfe5c65d2d418bc7860a8e22a1313252f768fbb
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCZzur5AAKCRB0Et0TaFtK
+rF2ZAP4vvCVJDdntyyhPOT6BjsueFkT66I7/6UBeyecneUj6FQD/SPzNtmMlEpWx
+dDxTNCYZvMnrx3w//ZV4hyxkszmOpEM=
+=yIoy
+-----END PGP SIGNATURE-----
