@@ -1,3 +1,40 @@
+2024-11-26: Remove bogus assert
+
+2024-11-26: 3.5.11
+
+2024-11-26: Don't crash if the path to ssh can't be found
+
+2024-11-26: Fix a truly infuriating crash. If you try to use
+Swift Process in a static property initializer, then Process
+will spin an inner runloop, allowing it to become re-entrant
+and crash. I know it's in poor taste to block the main loop
+to run an executable, but sometimes you don't have a choice
+and this is far worse than any reasonably forseeable
+outcome. Replace the shiny Swift thing with an old and
+busted Objective C thing that works sanely
+
+2024-11-26: Somehow it's possible for
+tableView:setObjectValue:forTableColumn:row: to be called
+for a row that has no value. Don't crash in this case.
+
+2024-11-26: Refactor the double-width character line cache
+into its own class. Don't try to use it if the length has
+changed. This is an attempt to fix a crash I'm having a hard
+time tracking down (the assertion beginning with [1]).
+
+2024-11-26: Don't crash if your font doesn't have a bold
+version when displaying timestamps
+
+Signed-off-by: George Nachman <gnachman@gmail.com>
+
+2024-11-26: Don't crash if you try to get bidi info for an
+out of bounds line
+
+2024-11-26: Don't pass -j to make since it happens
+automatically. Fix dependencies between deps and fatlibssh2.
+Remove duplicate build of libcrypt and libssl. See
+https://github.com/gnachman/iTerm2/commit/0b1add58dac8fcb5ddb3f8dd69f72743775dc19d#commitcomment-149537484
+
 2024-11-25: Add support for RTL and ligatures in the GPU
 renderer.
 
@@ -281,3 +318,8 @@ minimal locale. Issue 11597
 
 2024-10-01: Add the ability to lock the width of a split
 pane under Window > Lock Split Pane Width. Issue 11863
+
+2024-10-01: Fix a bug where the bottom margin and excess
+were not drawn dimmed by GPU renderer when there was a
+selected command region. Also make the region extend all the
+way to the right edge of the view.
