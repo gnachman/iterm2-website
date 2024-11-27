@@ -1,0 +1,77 @@
+Version 3.5.11beta1 of iTerm2 was built on November 26, 2024.
+
+New Features
+- Right-to-left text is now rendered properly.
+  Enable it in Advanced Settings by searching for
+  "right-to-left". Please file bugs for any
+  problems you find.
+- Dynamic profiles can now be written to when you
+  make changes in the Settings UI. You'll need to
+  add a property named "Rewritable" to dynamic
+  profiles that you wish to have this ability,
+  and set it to True. When you attempt to change a
+  dynamic profile in settings, you'll be prompted
+  to have this done for you automatically.
+
+Improvements
+- AI now gets the output of `uname -s` rather than
+  `uname`. The other info uname provided was not
+  useful.
+- If you have enabled "^-Click reported to apps,
+  does not open menu", control-click will now work
+  normally when mouse reporting is off.
+- When alternate screen mode is disabled, scroll
+  the current screen contents into history when an
+  app attempts to enter alternate screen mode.
+- Short drags of the "new tab" button now act as a
+  click.
+- UI improvements for the "disable transparency
+  for fullscreen windows by default" setting.
+- If you use the 1password integration, you can
+  now right-click on an account to toggle whether
+  an OTP will be sent.
+- Added a new button to reveal the location of
+  the AI plugin, and another button to force
+  iTerm2 to re-check if it is installed.
+- Add support for DEC private mode 80 (sixel
+  scrolling).
+- Move some files from application support to
+  caches.
+- Cancel hiding a hotkey window if it has a modal
+  sheet attached.
+- In advanced paste, turn off "wait for prompt
+  before pasting each line" for shells that use
+  paste bracketing because that would deadlock.
+- Various minor improvements to AI UIs.
+- Add a UI to fix broken saved arrangements.
+- When an app tries to resize the window but is
+  denied, notify the user.
+
+Bug Fixes
+- Fix various crashes.
+- Fix the delete key, function keys,
+  option+letter, and repeated keys in nvim.
+- Don't snap to grid when using macOS's new tiling
+  features.
+- Fix a bug that screwed up saved arrangements,
+  deleting their profiles.
+- Fix a bug in sending inband resize
+  notifications where the terminal letter of the
+  control sequence was missing.
+- Fix a bug where the cursor was in the wrong
+  place after showing a Sixel image.
+
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+332ee330698c8190994a2d2a30cf76e2377f62f5305ddcd533a8a6627168138e
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCZ0ZoXwAKCRB0Et0TaFtK
+rOEyAP0TzEIHHWgQXgZ6MUCt4Yl+AaOELI0FOx1DrROH7uGRBQD/b16FDajtbjWx
+tZo7UclJiDOItaRy26DjPL6oREAoWpc=
+=QdJG
+-----END PGP SIGNATURE-----
