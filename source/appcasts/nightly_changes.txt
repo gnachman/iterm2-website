@@ -1,3 +1,15 @@
+2024-12-03: Bump NMSSH
+
+2024-12-03: Add trigger sharing. Allow multiple
+selection/deletion in triggers panel. Issue 19978
+
+2024-12-03: Fix a bug where performNaturalLanguageQuery
+didn't work when using a status bar composer. Add better
+interfaces to composer manager. Make AI from command info
+always use the large composer since it always produces two
+lines and doesn't work well with the status bar composer.
+Issue 11991
+
 2024-11-29: Document async_get_prompt_by_id
 
 2024-11-29: Add runcommand example
@@ -158,181 +170,3 @@ referring to option sends esc
 2024-11-04: Rebuild bindary dependencies for xcode 16.1.
 Bump openssl to 3.4.0. Tweak build sandbox to allow homebrew
 perl
-
-2024-10-26: Various developer quality of life improvements
-for loading settings from a URL. Make unsaved settings
-controller understand URL-loaded settings and offer to
-disable. Detect when a gitlab URL is on the pasteboard and
-offer to use it on launch. Offer to retry without a timeout
-if load fails because of a timeout.
-
-2024-10-26: Turn off snap to grid when resizing because of
-the zoom menu's tiling or the new tiling items in the Window
-menu. Issue 11918
-
-2024-10-25: Add option to disable sending OTP for 1password
-entries. Issue 11674
-
-2024-10-25: Make UI around 'Disable transparency for
-fullscreen windows by default' setting less confusing. Issue
-11928
-
-2024-10-25: Don't require a path when using the conservative
-URL guesser. Issue 11938
-
-2024-10-25: When a region is scrolled into history, absolute
-line numbers referring to positions in the grid need to be
-invalidated. The easiest place to see this is that search
-highlights in the lower lines of the grid move up when the
-top lines of the grid are scrolled up. Simply mark the whole
-grid dirty when this happens. This is a significant change
-to the meaning of dirty. It now means that *externally
-stored metadata about the grid* could be invalid, not just
-that the contents of the grid itself. Issue 11937
-
-2024-10-25: Allow short drags of the add-tab button to act
-like a click. Issue 11933
-
-2024-10-25: When entering soft alternate screen mode, if
-save scrollback in alternate screen mode is disabled, scroll
-the screen into history. Previously, if you had disabled
-alternate screen mode and you didn't allow appending to
-history in alternate screen mode, the terminal contents
-prior to entering alternate screen mode would be lost. Issue
-324
-
-2024-10-24: Trivial fixes
-
-2024-10-24: Make the pointer setting for 'control-click
-reported to apps' take effect only when reporting is on. Add
-a new setting for 'right click reported to apps' that does
-the same thing but for physical right click or two-finger
-tap/click. Issue 11925
-
-2024-10-24: Switch uname to uname -s and make it
-configurable. Issue 11541
-
-2024-10-24: In disambiguate escape, send CSI 3 ~ for forward
-delete. Issue 11929
-
-2024-10-23: Make dynamic profiles rewritable. Issue 11931
-
-2024-10-23: Add advanced setting to disallow dragging by the
-Add Tab button. Issue 11933
-
-2024-10-22: Add SearchEngine. This moves the logic for
-search into a new object and out of VT100Screen. It has the
-ability to do the CPU-intensive work of searching in a
-separate dispatch queue to unburden the main thread.
-
-2024-10-17: Fix a bug where non-ansi colors were in the
-hue/chroma vis
-
-2024-10-17: Don't crash if a profile is missing ANSI colors.
-Issue 11915.
-
-2024-10-17: Update libssh2 to version 1.11.1
-
-2024-10-17: When realizing a read-only copy of MarkCache,
-some marks won't have entries yet. This happens because the
-side-effect that adds the mark to the interval tree can run
-after a side effect that uses the mark cache (e.g.,
-setReturnCodeOfLastCommand). The early realization of the
-mark cache caused no-entry marks to be dropped. This was
-wrong, leading to a bug where the offscreen command line was
-incorrect because the wrong mark was retrieved. This commit
-changes MarkCache to track dropped marks and to add them to
-`sorted` when they are found to have an interval. This check
-is done before using `sorted` to ensure it is up to date. It
-could be slow but in practice I doubt there will ever be
-more than one dropped mark at a time. Issue 11904
-
-2024-10-17: Carve out an exception for unicode hex input
-since it doesn't use marked text so that we can avoid
-sending control sequences in modifyOtherKeys mode when the
-user is typing hex digits. Issue 11905
-
-2024-10-17: Allow reporting scroll events in background
-windows. Issue 11866
-
-2024-10-16: Add support for Gemini. Issue 11900
-
-2024-10-16: Fix crash when broadcasting password. Issue
-11914
-
-2024-10-16: Fix warning
-
-2024-10-16: Change how the status bar calculates memory
-usage to be closer to activity monitor
-
-2024-10-16: Remind the user when a codecierge session has
-gone on for 10 commands. Issue 11912
-
-2024-10-15: Fix debug-only race condition with AATree's
-debug journal
-
-2024-10-15: Fix a bug in dynamic profiles where colors are
-not respected if the parent profile has separate light/dark
-colors enabled but the flag isn't set in the child profile.
-See mailing list post with subject Importing profiles from
-the command line
-
-2024-10-15: Clear the number of wrapped lines in the
-per-raw-line cache of the first raw line in LineBlock when
-dropping lines. Hopefully fixes a common crash. For the sake
-of safety, also clear it in setBufferStartOffset. If the
-metadata array is empty, don't try to dereference the first
-item when clearing the cache. Improve debug logging in case
-it isn't actually fixed.
-
-2024-10-15: Add SentinelOne checking to Sparkle.
-
-Before installing an app update, check if SentinelAgent is
-running. If so, wait 10 seconds and re-validate the
-extracted app bundle.
-
-Additionally, if the original app was code signed then the
-update bundle must also be code signed. See the conversation
-here:
-
-https://github.com/sparkle-project/Sparkle/discussions/2641
-
-2024-10-11: 3.5.6beta1
-
-2024-10-11: Add bonjour to info.plist for sequoia
-
-2024-10-11: Add NSLocalNetworkUsageDescription
-
-2024-10-11: Rest of the commit for playing sounds on marks
-
-2024-10-11: Add missing file
-
-2024-10-11: Add the option to play a sound on mark
-
-2024-10-10: Add an advanced pref to suppress URL preview for
-semantic history matches. Issue 11903
-
-2024-10-10: Fix window tiling shortcuts
-
-- Deprecate key bindings for function/arrow keys. Add a
-migration to remove them from profiles. Update preset
-keyboard mappings to remove them.  - Remove old dumb code to
-make control+page up/down scroll. This conflicts with the
-defaults for window tiling in Sequoia.
-
-2024-10-10: Print usage when you run iTerm2 --help
-
-2024-10-07: Don't show context menu when control-return
-would be reported. Implement NSViewContentSelectionInfo in
-PTYTextView. Issue 11878.
-
-2024-10-06: Improve debug logging for failing assertion in
-offsetOfWrappedLineInBufferAtOffset
-
-2024-10-02: Update CodeRabbit image
-
-2024-10-01: Save locale settings to arrangements when using
-minimal locale. Issue 11597
-
-2024-10-01: Add the ability to lock the width of a split
-pane under Window > Lock Split Pane Width. Issue 11863
