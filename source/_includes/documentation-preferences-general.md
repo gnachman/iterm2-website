@@ -72,7 +72,7 @@ When enabled, scrollback history gets compressed when the app is idle. This caus
 ### AI
 
 #### OpenAI API Key
-Because AI features depend on ChatGPT's API, which is not free, users must provide their own API keys. You can get one from https://platform.openai.com/api-keys after creating an account.
+Because AI features depend on ChatGPT's API, which is not free, users must provide their own API keys. You can get one from https://platform.openai.com/api-keys after creating an account. Unlike most settings (which are saved in user defaults), the AI key is stored in the keychain to prevent unauthorized access.
 
 #### AI Prompt
 When using the "Engage Artificial Intelligence" feature, the text you've provided (such as an English sentence in the Composer) is transformed with this string. This value is an interpolated string. The variable `ai.prompt` is defined, containing the string the user entered. Other variables come from the session context. See https://iterm2.com/documentation-variables.html for a list of all variables.
