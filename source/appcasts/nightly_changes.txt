@@ -1,3 +1,20 @@
+2024-12-31: Don't allow fold triggers in interactive apps
+
+2024-12-31: Log process type change notif
+
+2024-12-31: If the browser bundle ID is empty don't call
+URLForApplicationWithBundleIdentifier since it'll do
+something random.  Issue 12079
+
+2024-12-31: Allow saving setting for keep both/replace when
+downloading a file. Issue 12089
+
+2024-12-31: Add SetNamedMark trigger and FoldTrigger. Issue
+11346
+
+2024-12-31: Optimize measuring length of timestamps. Issue
+12084
+
 2024-12-30: Fix a crash when divorcing a dynamic profile.
 Issue 12081
 
@@ -196,164 +213,3 @@ interfaces to composer manager. Make AI from command info
 always use the large composer since it always produces two
 lines and doesn't work well with the status bar composer.
 Issue 11991
-
-2024-11-29: Document async_get_prompt_by_id
-
-2024-11-29: Add runcommand example
-
-2024-11-29: Fix Session.async_get_contents to return styles
-
-2024-11-28: Bump python API version
-
-2024-11-27: Fix crash in drawClip. Issue 12024
-
-2024-11-27: Try to prevent a crash in TextClipDrawing
-
-2024-11-27: Move shell integration submodule to main to pick
-up an imgcat fix for issue 11947
-
-2024-11-27: Use legacy websockets connect function. Based on
-jamesrtnz's pr https://github.com/gnachman/iTerm2/pull/511
-
-2024-11-26: Remove bogus assert
-
-2024-11-26: 3.5.11
-
-2024-11-26: Don't crash if the path to ssh can't be found
-
-2024-11-26: Fix a truly infuriating crash. If you try to use
-Swift Process in a static property initializer, then Process
-will spin an inner runloop, allowing it to become re-entrant
-and crash. I know it's in poor taste to block the main loop
-to run an executable, but sometimes you don't have a choice
-and this is far worse than any reasonably forseeable
-outcome. Replace the shiny Swift thing with an old and
-busted Objective C thing that works sanely
-
-2024-11-26: Somehow it's possible for
-tableView:setObjectValue:forTableColumn:row: to be called
-for a row that has no value. Don't crash in this case.
-
-2024-11-26: Refactor the double-width character line cache
-into its own class. Don't try to use it if the length has
-changed. This is an attempt to fix a crash I'm having a hard
-time tracking down (the assertion beginning with [1]).
-
-2024-11-26: Don't crash if your font doesn't have a bold
-version when displaying timestamps
-
-Signed-off-by: George Nachman <gnachman@gmail.com>
-
-2024-11-26: Don't crash if you try to get bidi info for an
-out of bounds line
-
-2024-11-26: Don't pass -j to make since it happens
-automatically. Fix dependencies between deps and fatlibssh2.
-Remove duplicate build of libcrypt and libssl. See
-https://github.com/gnachman/iTerm2/commit/0b1add58dac8fcb5ddb3f8dd69f72743775dc19d#commitcomment-149537484
-
-2024-11-25: Add support for RTL and ligatures in the GPU
-renderer.
-
-2024-11-19: Bump NMSSH
-
-2024-11-19: Rebuild NMSSH with 10.15 deployment target
-
-2024-11-19: Make openssl build parallel. It seems to work
-
-2024-11-19: Fix building libssh2
-
-2024-11-19: Fix how repeats are reported in disambiguate
-escape. Change how home and end are reported to be
-compatible with nvim. Issue 11982
-
-2024-11-19: Fix a crash in ProfileListView when command is
-somehow nil
-
-2024-11-19: Fix hard-to-explain crash
-
-2024-11-19: Fix crash
-
-2024-11-19: Fix option+letter behavior in disambiguate
-escape mode. issue 11977
-
-2024-11-19: Try to fix crash in issue 11979
-
-2024-11-14: Add button to reload AI plugin
-
-2024-11-14: Let the user know when an attempted resize was
-denied.
-
-2024-11-14: Add debug logging to PSMRolloverButton for issue
-11975
-
-2024-11-14: Restore colors from profile on user reset when
-using separate light/dark schemes
-
-2024-11-14: Add nag to fix broken arrangements that were
-corrupted by the keybinding migration bug
-
-2024-11-13: Fix a bug where some F keys were not reported
-properly in Disambiguate Escape. Also fix a bug where the Fn
-key was reported. Issue 11967
-
-2024-11-13: Make the AI prompt bypassable and provide a
-reason string when the proposed prompt was long. Issue 11948
-
-2024-11-13: Show prompt editing dialog before sending API
-call. Issue 11948
-
-2024-11-13: Delete dead code
-
-2024-11-13: Fix up promptRange and commandRange in
-VT100ScreenMark when resizing. Fix a horrific bug where
-dataWithBytesNoCopy sometimes allocated new memory casuing
-getLineAtIndex to return an empty line. This showed up when
-debugging resizing code. Not sure how anything at all
-worked.
-
-2024-11-13: Turn off 'wait for prompt before pasting each
-line' when the shell swallows newlines when paste bracketing
-is on. Issue 11941
-
-2024-11-13: Add an advanced setting to not turn on 'wait for
-shell prompt before pasting each line' in advanced paste by
-default. Issue 9320
-
-2024-11-13: Cancel hotkey window rollout when presenting a
-modal sheet. Issue 11950
-
-2024-11-13: Move cached parsers to caches directory instead
-of app support. Issue 11951
-
-2024-11-12: Add support for DEC private mode 80 (sixel
-scrolling) and leave the cursor in the right place after a
-sixel image. See
-https://vt100.net/docs/vt3xx-gp/chapter14.html and issue
-11949
-
-2024-11-12: Fix inband resize notifs. Issue 11961
-
-2024-11-12: Fix bug that destroyed profiles in arrangements
-when migrating key mappings
-
-2024-11-12: Make it possible to reveal the location of the
-AI plugin
-
-2024-11-11: Fix async_set_broadcast_domains example (#509)
-
-The example was missing the required first arg,
-"connection".  2024-11-11: Fix crash when TERM is not in the
-local terminfo db. Issue 11959.
-
-2024-11-04: Correct misspelling of 'session' (#508)
-
-
-2024-11-04: Improve tooltip of 'apps can change this'
-referring to option sends esc
-
-2024-11-04: Make log timestamp format configurable
-
-2024-11-04: Rebuild bindary dependencies for xcode 16.1.
-Bump openssl to 3.4.0. Tweak build sandbox to allow homebrew
-perl
