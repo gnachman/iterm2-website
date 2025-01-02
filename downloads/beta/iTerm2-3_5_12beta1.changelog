@@ -1,0 +1,71 @@
+Version 3.5.12beta1 of iTerm2 was built on January 2, 2025.
+
+This release contains a critical security fix. I
+strongly recommend updating immediately.
+
+Who is affected?
+----------------
+You may be affected if you used the SSH
+integration feature in any of the following
+versions:
+
+* 3.5.6
+* 3.5.7
+* 3.5.8
+* 3.5.9
+* 3.5.10
+* Any beta versions of 3.5.6 and later.
+
+What is the issue?
+------------------
+A bug in the SSH integration feature caused input
+and output to be logged to a file on the remote
+host. This file, /tmp/framer.txt, may be readable
+by other users on the remote host.
+
+When does this occur?
+---------------------
+The issue occurs if both of the following conditions are true:
+
+1. Either:
+   a) You used the it2ssh command, or
+   b) In Settings > Profiles > General, the
+      Command popup menu was set to "SSH" (not
+      "Login Shell", "Command", or "Custom
+      Command") AND "SSH Integration" was checked
+      in the SSH configuration dialog. That dialog
+      is shown when you click the Configure button
+      next to the ssh arguments field in Settings.
+2. The remote host has Python 3.7 or later
+   installed in its default search path.
+
+What should you do?
+-------------------
+* Upgrade immediately to version 3.5.11.
+* Delete /tmp/framer.txt on affected hosts.
+
+How I'm addressing this
+-----------------------
+I deeply regret this mistake and will take steps
+to ensure it never happens again.
+
+The code to write to log files in SSH integration
+has been deleted and will not be publicly released
+again.
+
+If you have questions you can contact me at
+gnachman@gmail.com.
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+825414c7aee75ee191a543f4b3d4fc25dfd1682c2d441d6038211f67dee5c5cd
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCZ3btcwAKCRB0Et0TaFtK
+rPA8AQDww2gyGXo0Q+vsiQ74RePN4jHYzWlCQK5XE0gBtEeVWQEAqcgg2e5B/hoi
+7adZIEAIfeaLROYs+CQm9o8I5C8XD5I=
+=Qmg8
+-----END PGP SIGNATURE-----
