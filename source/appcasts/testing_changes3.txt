@@ -1,58 +1,53 @@
-Version 3.5.12beta1 of iTerm2 was built on January 2, 2025.
+Version 3.5.12beta2 of iTerm2 was built on January 27, 2025.
 
-This release contains a critical security fix. I
-strongly recommend updating immediately.
+New Features:
+- In apps that support the new key reporting
+  protocol (notably neovim) you can now map
+  keys to Hyper, Super, and Meta.
+- You can now opt to highlight non-default values
+  in settings. Toggle it with the dropdown menu on
+  the loupe in the settings search bar.
 
-Who is affected?
-----------------
-You may be affected if you used the SSH
-integration feature in any of the following
-versions:
+Other Improvements:
+- Fix a hang on machines with contested GPU memory
+  when using the GPU renderer.
+- The zoom button menu is now enabled by default.
+- Improve performance when uploading large files
+  or pasting enormous strings.
+- Some menu items moved around to reduce the size
+  of the Window menu.
+- You can now disable the secure keyboard input
+  indicator by clicking on it and then following a
+  link in the popover.
+- When using a directory from Directory History at
+  the prompt, escape characters like space.
+- There's a new advanced setting to enable
+  right-to-left text in alternate screen mode.
 
-* 3.5.6
-* 3.5.7
-* 3.5.8
-* 3.5.9
-* 3.5.10
-* Any beta versions of 3.5.6 and later.
-
-What is the issue?
-------------------
-A bug in the SSH integration feature caused input
-and output to be logged to a file on the remote
-host. This file, /tmp/framer.txt, may be readable
-by other users on the remote host.
-
-When does this occur?
----------------------
-The issue occurs if both of the following conditions are true:
-
-1. Either:
-   a) You used the it2ssh command, or
-   b) In Settings > Profiles > General, the
-      Command popup menu was set to "SSH" (not
-      "Login Shell", "Command", or "Custom
-      Command") AND "SSH Integration" was checked
-      in the SSH configuration dialog. That dialog
-      is shown when you click the Configure button
-      next to the ssh arguments field in Settings.
-2. The remote host has Python 3.7 or later
-   installed in its default search path.
-
-What should you do?
--------------------
-* Upgrade immediately to version 3.5.11.
-* Delete /tmp/framer.txt on affected hosts.
-
-How I'm addressing this
------------------------
-I deeply regret this mistake and will take steps
-to ensure it never happens again.
-
-The code to write to log files in SSH integration
-has been deleted and will not be publicly released
-again.
-
-If you have questions you can contact me at
-gnachman@gmail.com.
-
+Bug Fixes:
+- Fix crashes.
+- Add a setting to Profiles > Terminal to use
+  newline rather than carriage return for tmux
+  integration. This fixes a hang when starting
+  tmux integration on old/weird unixes.
+- Fix a bug where the session hangs after a failed
+  download.
+- Fix a bug where all tmux connections in a window
+  were detached when only a single one should have
+  been.
+- Fix various key reporting bugs, which mostly
+  affects neovim.
+- Fix a bug in the Jobs tool where entering an
+  illegal signal name made the signal name combo
+  box disabled.
+- Fix a bug where the search result and mark
+  indicators under the scroll bar didn't always
+  fill the entire scrollbar region.
+- Fix a bug in focus follows mouse mode where
+  window order was unexpected and activating a
+  window might switch desktops.
+- Fix a bug where the initial window's size might
+  be wrong on macOS 15.
+- Fix a bug where shell integration injection
+  didn't work in the presence of a custom shell if
+  you have .hushlogin in your home directory.
