@@ -1,3 +1,30 @@
+2025-03-07: Store secure user defaults in /usr/local if
+/Users/gnachman is a network mount. Issue 12162
+
+2025-03-07: Fix a race condition that could cause an
+untitled window to open in addition to windows being
+restored
+
+2025-03-07: Don't discard any SSH tokens when there is a
+mute coprocess. We need begin/end, side channels, etc.
+
+2025-03-07: Fix bug where cursor goes offscreen in chat
+input box
+
+2025-03-07: Fix silent coprocesses with ssh integration. The
+tty->coprocess communication didn't work because normally
+TaskNotifier would append to the coprocess's output buffer
+but that doesn't make sense when input is framed. When using
+ssh integration, a different code path is taken now:
+VT100Parser emits SSH_OUTPUT, TokenExecutor does not discard
+it, and it makes its way to
+VT100ScreenMutableState+TerminalDelegate, which sends it to
+PTYSession to append to the coprocess's output buffer.
+Similarly, simulated typing of data from from the coprocess
+are now intercepted in -[PTYTask writeTask:coprocess] and
+sent to PTYSession rather than just being written to the
+task's file descriptor. Issue 12157
+
 2025-03-06: Fix chat scrolling. Add create file function
 
 2025-03-05: Add an advanced setting to keep tab close
