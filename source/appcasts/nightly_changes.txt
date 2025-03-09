@@ -1,3 +1,19 @@
+2025-03-08: When restoring a window arrangement, set the
+frame and then canonicalize as the last step. In issue 12167
+we see that restoring tabs, which may cause
+makeKeyAndOrderFront: to be called, can change the window
+frame to move it to an undesired screen! This attempts to
+fix that problem by forcing the window back to its saved
+frame (which ought to put it on the right screen) and then
+canonicalizing the frame so it's valid for its window style.
+
+2025-03-08: Reflow saved cursor position from DECSC when
+resizing. Issue 12166
+
+2025-03-08: Make allowed ssh username characters
+configurable and show an error when it fails for having an
+illegal character. Issue 12164
+
 2025-03-07: Store secure user defaults in /usr/local if
 /Users/gnachman is a network mount. Issue 12162
 
