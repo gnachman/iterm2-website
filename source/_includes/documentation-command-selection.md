@@ -7,6 +7,7 @@ When a command is selected:
  * Search is restricted to the selected region.
  * Filtering is restricted to the selected region.
  * **Select All** is restricted to the selected region.
+ * You can use Cmd-Up and Cmd-Down to navigate to the previous and next commands.
 
 Additionally, various buttons appear at the top right of the selected region:
 
