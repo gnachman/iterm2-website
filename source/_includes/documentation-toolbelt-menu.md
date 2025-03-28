@@ -14,7 +14,7 @@ This toggles the visibility of the Toolbelt on the right side of all windows.
 This toggles the visibility of the Jobs tool, which shows the running jobs in the current session, and allows you to send them signals.
 
 #### Toolbelt > Notes
-This toggles the visibility of the Notes tool, which provides a freeform scratchpad in the toolbelt.
+This toggles the visibility of the Notes tool, which provides a freeform scratchpad in the toolbelt. Notes persist across restarts of the app and are saved in `~/Library/Application Support/iTerm2/notes.rtfd`.
 
 #### Toolbelt > Paste History
 This toggles the visibility of the Paste History tool, which shows recently pasted strings in the toolbelt.
