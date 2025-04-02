@@ -1,3 +1,46 @@
+2025-04-01: Don't let resize announcements pile up
+
+2025-04-01: Log when the dock icon is clicked
+
+2025-04-01: Bump shell integration
+
+2025-04-01: Allow customizing SSH path
+
+2025-04-01: Add CommandSelectionHelp.md
+
+2025-04-01: Add debug logging for command buttons
+
+2025-04-01: Fix remote for openssl to be my fork, which has
+a patch to fix building on ARM
+
+2025-04-01: Add debug logging for secure user defaults
+
+2025-03-31: Fix stretching of terminal buttons in GPU
+renderer
+
+2025-03-31: Refactor mark button creation. Add help to the
+settings menu. Ensure help popups start at the top if they
+are long
+
+2025-03-31: Fix a bunch of bugs with removing and renaming
+named marks. Improve appearance of highlighted bookmark
+button. Fix crash when searching backwards for the previous
+prompt
+
+2025-03-31: Add settings button to command buttons
+
+2025-03-31: Disable invocations in open quickly because it
+makes debugging awful
+
+2025-03-31: Convert some NSLog statements to DLog
+
+2025-03-31: Fix UI problems with ai plugin version errors
+(truncation)
+
+2025-03-31: Make an icon for iTermAI. I'm re-releasing this
+as 1.1 because existing iTerm2 installations won't run a
+newer version
+
 2025-03-30: Fix a bug where folds could pick the wrong
 length replacement, throwing everything off
 
@@ -197,80 +240,3 @@ task's file descriptor. Issue 12157
 buttons always visible
 
 2025-03-05: Add support for AI completion
-
-2025-02-27: Tweak colors, set min window size for AI chat
-
-2025-02-27: Show a warning when copy interpolated string
-fails evaluation
-
-2025-02-27: Add Copy Interpolated String key binding action.
-Issue 12155
-
-2025-02-26: Fix emoji
-
-2025-02-25: When showing the app with a systemwide hotkey
-use NSRunningApplication.activateWithOptions rather than
-NSApplication.activateIgnoringOtherApps. It seems to work
-more reliably. To nobody's surprise, the documentation does
-not reveal any useful information
-
-2025-02-25: Tweak default AI prompt
-
-2025-02-25: Add AI Chat UI
-
-2025-02-08: Add more debug logging for issue 11684
-
-2025-02-08: Trim whitespace from AI api keys. Issue 12144
-
-2025-02-08: Add debug logging for conductor
-
-2025-02-08: Rebuild menu IDs
-
-2025-02-07: Re-sign all its files with non-expired
-certificate
-
-2025-02-07: Remove bogus assertions
-
-2025-02-07: Log all sessions interval trees in debug log
-header and footer
-
-2025-02-07: Add debug menu item to git component
-
-2025-02-06: Revert "Turn on posix_spawn for beta"
-
-This reverts commit
-a1ddb0695b5410e80a772b0e5018260c1b30f1b7.
-
-It doesn't work for me when using login shell. login exits
-with status 1. Not sure why.
-
-2025-02-06: Make fd server log exit reason
-
-2025-02-06: Turn on posix_spawn for beta
-
-2025-02-06: Handle missing image more gracefully
-
-2025-02-06: Improve error reporting when iTermServer fails
-to launch a child because forkpty failed
-
-2025-02-05: Fix jump to selection
-
-2025-02-05: Prompt the user if autolog directory creation
-fails
-
-2025-02-05: Add debug logging to keystroke formatter
-
-2025-02-05: Fix a bug where an empty window remains visible
-after making a traditional fullscreen window another style.
-The underlying problem is a very hard to diagnose leak of
-the NSWindow, which I'll keep looking for. Issue 12097
-
-2025-02-05: Add ability to show timestamps adjacent to
-content. Issue 12122 and many others
-
-2025-02-05: Fix warnings
-
-2025-02-05: Fix warning
-
-2025-02-01: Change syntax for tmux_format() from f()=>var to
-f(&var)
