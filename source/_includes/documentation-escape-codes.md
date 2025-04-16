@@ -487,3 +487,11 @@ iTerm2 will respond with:
     ESC P > | iTerm2 [version] ST
 
 Where [version] is the version of iTerm2, such as `3.4.0`.
+
+#### Open URL
+
+To request that iTerm2 open a URL:
+
+    OSC 1337 ; OpenURL=: [url] ST
+
+Where [url] is a base64-encoded URL. The user must grant permission, and the feature can also be disabled.
