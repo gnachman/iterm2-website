@@ -13,4 +13,4 @@ You can specify rules that, when satisified, changes any session's profile to th
 </p>
 
 #### Snippets Filter
-The Snippets feature lets you save a collection of strings to re-send later on. Each snappit may have one or more tags associated with it. If you would like to show only certain snippets when working in a particular profile, you can name tags in the Snippets Filter that are required for a snippet to be available in the context of a session with this profile.
+The Snippets feature lets you save a collection of strings to re-send later on. Each snippet may have one or more tags associated with it. If you would like to show only certain snippets when working in a particular profile, you can name tags in the Snippets Filter that are required for a snippet to be available in the context of a session with this profile.
