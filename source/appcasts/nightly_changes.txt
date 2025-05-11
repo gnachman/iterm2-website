@@ -1,3 +1,109 @@
+2025-05-10: Add ModernTests/VT100ScreenTests.swift
+
+2025-05-10: Fix a bug in getting the coordinate of a
+location at the end of a non-empty line at the end of a
+LineBlock. Add a bunch of unit tests
+
+2025-05-10: Fix a bug in edit triggers where focus got
+pulled away from the text field you were editing
+
+2025-05-10: Fix some bugs in content navigation and allow
+multi-letter shortcuts. Issue 12261
+
+2025-05-10: Fix vertical alignment issue in triggers panel
+
+2025-05-08: Add debug logging for cursor animation
+
+2025-05-08: Fix bugs in modifying blockID lists
+
+2025-05-08: Add option to not send return after password.
+Issue 11443
+
+2025-05-08: Don't show trigger slowness warning if there are
+no triggers. Expectations could cause this too. See comment
+here:
+https://gitlab.com/gnachman/iterm2/-/wikis/Slow-Triggers#note_2480967241
+
+2025-05-07: fix: Python examples doc line break (#515)
+
+
+2025-05-07: Bump python API version (#516)
+
+
+2025-05-07: Include CR and LF alongside ascii tokens for
+better performance
+
+2025-05-07: Fix a bug where the background color of the last
+column was rendered wrong in legacy renderer
+
+2025-05-07: Remove iTermString from the hot path. Sigh
+
+2025-05-07: Encode/decode iTermString
+
+2025-05-07: Fix failing tests
+
+2025-05-07: Make iTermLineString use metadata for rtlFound
+and timestamp, which is faster
+
+2025-05-07: Many optimizations
+
+2025-05-07: Start reducing the use of screen_char_t arrays
+
+2025-05-07: Fix data race in CopyOnWrite
+
+2025-05-07: Add more tests
+
+2025-05-07: Finish initial writing of line block tests
+
+2025-05-07: Add VT100Grid tests
+
+2025-05-07: More cleanup, add iTermBaseString
+
+2025-05-07: Crash on oob test
+
+2025-05-07: Test all the things
+
+2025-05-07: Brute force prototype of udpating line block to
+use fancy strings
+
+2025-05-07: Rename iTermMutableString to iTermMutableRope
+
+2025-05-07: Fix all the places I could find where we use
+line[width] for the continuation character
+
+2025-05-07: Fix various bugs in filter Ensure ropes don't
+have mutable strings in their segments Fix some SCAs that
+were expected to have trailing continuation marks Fix bug in
+iTermUniformString.usedLength not doing the right thing for
+nulls Fix wrong end-Y coord in convertPositions when using
+expanded result ranges.  Batch up filter updates for better
+performance.  Fix a bug in token executor. puase would only
+pause one executor. I added a global pause for all executors
+and simplified how whilePaused works. Also put a limit on
+how long it will blcok when maximize throughput is on.  Add
+appendOptimizedStringAtCursor to VT100Grid Don't prepopulate
+screen chars in ascii VT100Token.  Fix nullabillity bug in
+external attributes that caused spurious blocks.
+
+2025-05-07: Add assertions, fix a few bugs
+
+2025-05-07: Add VT100ByteStreamConsumer
+
+2025-05-07: Introduce VT100ByteStream
+
+2025-05-07: Use NSData in PTYTask reading
+
+2025-05-07: CHeckpoint
+
+2025-05-07: Initial effort at avoiding screen_char_t
+encoding
+
+2025-05-07: Add isDefault and isEmpty to the external
+attribute index
+
+2025-05-07: Improve test for validity of schemes to avoid
+annoying objc exceptions
+
 2025-04-24: Add missing files
 
 2025-04-24: Fix wrong splitting of metadat when popping from
