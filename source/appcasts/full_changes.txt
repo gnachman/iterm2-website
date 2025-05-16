@@ -1,107 +1,15 @@
-Version 3.5.13 of iTerm2 was built on April 10, 2025
+Version 3.5.14 of iTerm2 was built on May 15, 2025
 
-Version 3.5.13 fixes a number of crashing bugs in
-3.5.12 and also fixes a bug where window tiling
-shortcuts didn't work properly.
+This is a quick bugfix release.
 
-Release notes for 3.5.12 follow:
-Version 3.5.12 of iTerm2 was built on April 3, 2025
-
-New Features:
-- In apps that support the new key reporting
-  protocol (notably neovim) you can now map
-  keys to Hyper, Super, and Meta. Look in
-  Settings > Profiles > Keys > General.
-- You can now opt to highlight non-default values
-  in settings. Toggle it with the dropdown menu on
-  the loupe in the settings search bar.
-- You can now share triggers. Select one or more
-  triggers in Settings and click the Share button
-  on the bottom.
-- You can now modify a profile in a saved
-  arrangement with
-  Session > Change Profile in Arrangement.
-- Cursor movement can now be animated, making it
-  easier to track cursor location. Enable Animate
-  Movement in profiles text settings.
-- You can now drag the composer window vertically.
-- Added a new trigger to set a named mark.
-- Added a new trigger to fold a section of
-  terminal contents.
-
-Other Improvements:
-- Fix a hang on machines with contested GPU memory
-  when using the GPU renderer.
-- The zoom button menu is now enabled by default.
-- Improve performance when uploading large files
-  or pasting enormous strings.
-- Some menu items moved around to reduce the size
-  of the Window menu.
-- You can now disable the secure keyboard input
-  indicator by clicking on it and then following a
-  link in the popover.
-- When using a directory from Directory History at
-  the prompt, escape characters like space.
-- There's a new advanced setting to enable
-  right-to-left text in alternate screen mode.
-- The Terminal.app Compatibility key presets have
-  been updated for parity.
-- The Command field in profile settings can now be
-  expanded so you have more room to edit long
-  commands.
-- OpenAI's reasoning models are now supported.
-- Fix wrong hash algorithm name in "known host"
-  message when using scp.
-- If tmux doesn't respond to a request to
-  disconnect in a reasonable amount of time, offer
-  to forcibly disconnect.
-- If you pick a Leader shortcut that's likely to
-  conflict with regular app usage, warn about it.
-- UI update for settings.
-
-Bug Fixes:
-- Fix a bug where filter didn't work when you have
-  a status bar.
-- Fix crashes.
-- Add a setting to Profiles > Terminal to use
-  newline rather than carriage return for tmux
-  integration. This fixes a hang when starting
-  tmux integration on old/weird unixes.
-- Fix a bug where the session hangs after a failed
-  download.
-- Fix a bug where all tmux connections in a window
-  were detached when only a single one should have
-  been.
-- Fix various key reporting bugs, which mostly
-  affects neovim.
-- Fix a bug in the Jobs tool where entering an
-  illegal signal name made the signal name combo
-  box disabled.
-- Fix a bug where the search result and mark
-  indicators under the scroll bar didn't always
-  fill the entire scrollbar region.
-- Fix a bug in focus follows mouse mode where
-  window order was unexpected and activating a
-  window might switch desktops.
-- Fix a bug where the initial window's size might
-  be wrong on macOS 15.
-- Fix a bug where shell integration injection
-  didn't work in the presence of a custom shell if
-  you have .hushlogin in your home directory.
-- Fix a bug where advanced GPU settings could
-  appear outside of settings.
-- Fix a bug where opening a command from a URL
-  could add an empty `cd` command.
-- Fix a bug where empty windows could sometimes
-  remain visible after changing window style.
-- Fix a bug where emoji did not render properly
-  with the GPU renderer.
-- Fix some discrepancies in key reporting when
-  using the Kitty protocol.
-- Fix a bug when replacing text in history (such
-  as when rendering content natively).
-- Fix a bug where control-arrow keys didn't always
-  work.
-- Make Tip of the Day look better in dark mode.
-
+- Fix a bug where the background color of the
+  rightmost column was not always rendered
+  properly.
+- Fix a bug where reattaching to tmux on restart
+  didn't work.
+- Fix a bug where jump to selection didn't work.
+- Fix a bug where empty windows would sometimes
+  appear.
+- Fix a crash when the GPU is under high memory
+  pressure.
 
