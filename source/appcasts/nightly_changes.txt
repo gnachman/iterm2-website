@@ -1,3 +1,67 @@
+2025-07-04: Logging improvements. Make background service
+webview always in view hierarchy and ping it once a second
+
+2025-07-04: Get console.log working
+
+2025-07-04: Add logging
+
+2025-07-04: Remove test code from non-test sources
+
+2025-07-04: Logging improvements, fix tests
+
+2025-07-04: Tests are passing
+
+2025-07-04: Improvements to background service
+
+2025-07-04: Make extension ID a UUID
+
+2025-07-04: Implement WKContentWorld separation for
+background script isolation
+
+- DOM nuke script runs in .page world to shadow DOM globals
+- Extension background scripts run in .defaultClient world
+for isolation - Added separate WKWebsiteDataStore per
+extension for storage isolation - Added comprehensive
+navigation/UI security delegates - Fixed DOM property
+shadowing using Object.defineProperty instead of delete -
+Added runtime validation and comprehensive test coverage
+
+ Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
+2025-07-03: Implement BrowserExtensionBackgroundService for
+background script execution
+
+- Added BrowserExtensionBackgroundService protocol and
+implementation - Background scripts run in hidden WKWebViews
+with process isolation - Each extension gets its own
+WKWebView instance - Support for ephemeral data stores for
+incognito mode - Comprehensive test suite including
+isolation tests - DOM nuke script implemented but disabled
+due to execution timing issues
+
+Note: testBackgroundScriptIsolation is occasionally flaky
+due to script execution timing.  This will be addressed in a
+future update.
+
+ Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
+2025-07-03: Rename iTermProxy to iTermSwiftPackages since it
+will be the build target where things that use swift
+packages must go. This is because it's nearly impossible to
+convert the rest of the code from a static lib (which cannot
+use swift packages) to something else like a framework. The
+net effect is that code may gradually migrate into this
+package.
+
+Add web extensions, a very very very experimental idea to
+see if I can get extensions running in the browser. Link it
+in and it basically works. Just set the advanced settings to
+the path of an extension and the content script gets loaded.
+
 2025-07-03: Fix Swift package problems in xcodebuild-driven
 builds
 
