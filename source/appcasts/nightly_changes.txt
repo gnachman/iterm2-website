@@ -1,3 +1,173 @@
+2025-07-09: Disable asan in xcodebuild command line
+
+2025-07-09: Fix a crash when using the named marks tool
+
+2025-07-09: Fix a bug where fold to named mark would pick
+the first one with a given name rather than the last one
+with that name. Also fix that it picks the wrong screen line
+for the collapsed state. Issue 12341
+
+2025-07-09: Expand tildes in autolog paths
+
+2025-07-09: Integrate content manager and add
+iterm2-about:dev
+
+2025-07-09: Fix content manager bugs
+
+2025-07-09: Extract JavaScript code from Swift files to
+separate resource files
+
+- Move large JavaScript blocks from Swift string literals to
+separate .js files - Create dom-nuke.js for DOM globals
+removal from background scripts - Create console-override.js
+for console.log interception - Create
+content-script-injector.js for content script injection
+logic - Create chrome-runtime-api.js for Chrome runtime API
+setup - Create onmessage-listeners.js for message listener
+management - Add BrowserExtensionTemplateLoader for loading
+JavaScript resources - Update Package.swift to bundle
+JavaScript resources - Update Swift code to use template
+loader instead of inline JavaScript
+
+Note: Tests currently fail due to resource bundling issue
+that needs investigation
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
+2025-07-09: Add BrowserExtensionUserContentManager with
+comprehensive tests
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
+2025-07-09: Add background script support with DOM isolation
+and console handling
+
+2025-07-09: Fix content world bugs
+
+2025-07-09: Implement chrome.runtime.sendMessage and
+onMessage APIs with full type safety
+
+This adds comprehensive Chrome extension messaging support
+with proper handling of null, undefined, and all
+JSON-serializable types through a robust encoding system
+that maintains compatibility with Chrome and Firefox
+extension APIs.
+
+**Architecture decisions:**
+
+- **BrowserExtensionEncodedValue**: Created custom encoding
+system because Chrome
+  extension messaging only supports JSON-compatible types,
+  but JavaScript needs to distinguish between null,
+  undefined, Date objects, etc. The encoding uses `{value:
+  "null|undefined"}` for special cases and `{json: "..."}`
+  for everything else.
+
+- **Type-safe protocol design**:
+BrowserExtensionJSONRepresentable ensures all
+  handler return types can be safely encoded, preventing
+  runtime encoding failures and maintaining Swift's type
+  safety guarantees.
+
+- **Separate message handlers**: Split API requests
+(BrowserExtensionAPIRequestMessageHandler)
+  from listener responses
+  (BrowserExtensionListenerResponseHandler) for clear
+  separation of concerns and easier debugging.
+
+- **Continuation-based router**: Uses Swift's async/await
+with CheckedContinuation
+  to handle the async nature of message routing between
+  webviews without blocking threads or risking double-resume
+  crashes.
+
+- **Network topology**: BrowserExtensionNetwork tracks
+webview relationships and
+  enables proper message routing between background scripts,
+  content scripts, and different extension contexts.
+
+**Chrome API compatibility:** - Implements proper lastError
+semantics (set lastError AND call callback with undefined) -
+Supports async responses via `return true` from listeners -
+Handles multiple listeners with first-response-wins behavior
+- Maintains listener isolation between internal and external
+messages - Proper exception handling in listeners doesn't
+crash the system
+
+**Error handling strategy:** - `noMessageReceiver` when no
+listeners exist → sets lastError, calls callback with
+undefined - Listener exceptions are caught and logged but
+don't prevent other listeners from running - Invalid message
+encoding throws with detailed error messages for debugging -
+Router prevents double-resume of continuations through
+careful state management
+
+**Testing approach:** - 14 comprehensive test cases covering
+all edge cases including null/undefined handling - Real
+WebKit JavaScript execution (not mocked) to ensure actual
+browser compatibility - Tests verify both successful message
+exchange and proper error conditions - Includes complex
+message data, async responses, multiple listeners, and
+exception scenarios
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
+2025-07-09: Add onMessage
+
+2025-07-09: Add the send side of sendMessage
+
+2025-07-09: Implement chrome.runtime.sendMessage with full
+argument parsing support
+
+- Added comprehensive argument parsing for all sendMessage
+signatures:
+  * sendMessage(message) * sendMessage(message, options) /
+  sendMessage(extensionId, message) *
+  sendMessage(extensionId, message, options)
+- Modified VariableArgsFunction to always create callbacks
+for Promise preparation
+  * Fire-and-forget calls now use no-op callbacks to consume
+  responses * Prepares for webextension-polyfill Promise
+  support
+- Added comprehensive test suite with real WKWebView
+integration - All argument combinations and error cases
+properly tested - Follows TDD approach: tests written first,
+implementation follows
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
+2025-07-09: Lock things down
+
+2025-07-09: Modify codegen for sendMessage
+
+2025-07-09: Add code generation for chrome.* APIs
+
+2025-07-09: Make id synchronous
+
+2025-07-09: Add getPlatform. Improve security of callbacks
+
+2025-07-09: Get an end to end test of adding a chrome api
+
+2025-07-09: Lay out a new plan for attacking extension
+support
+
+2025-07-09: Remove dead docs
+
+2025-07-09: Refactor webview creation into a new factory
+
+2025-07-09: Fix leak of browser manager
+
+2025-07-09: Correct offset by vmargin and by
+per-pane-titlebar height of buttons
+
 2025-07-04: Logging improvements. Make background service
 webview always in view hierarchy and ping it once a second
 
@@ -26,7 +196,7 @@ navigation/UI security delegates - Fixed DOM property
 shadowing using Object.defineProperty instead of delete -
 Added runtime validation and comprehensive test coverage
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -45,7 +215,7 @@ Note: testBackgroundScriptIsolation is occasionally flaky
 due to script execution timing.  This will be addressed in a
 future update.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -213,7 +383,7 @@ Aggressive hiding: Uses multiple CSS properties to ensure
 stubborn ads disappear - Backdrop skip: Avoids removing
 large page containers in targeted mode
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -264,7 +434,7 @@ SessionView - Scroll event handling to clear hover when
 links move - Throttled scroll handling to maintain
 performance - Uses existing SessionView hover infrastructure
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -275,7 +445,7 @@ focused, select all text instead of doing nothing. This
 matches standard browser behavior where Cmd-L always results
 in selected text.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -298,7 +468,7 @@ preference. When enabled, text selections are automatically
 copied to the clipboard and saved to pasteboard history on
 mouseUp and smart selection events.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -343,7 +513,7 @@ QuickLook panel - Add download cancellation when QuickLook
 panel is closed - Move all download logic to QuickLookHelper
 for better separation of concerns
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -365,7 +535,7 @@ synthetic mouse events directly to WKWebView - Create
 JavaScript templates for all coordinate-based operations -
 Add comprehensive coordinate debugging tools and test page
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -433,7 +603,7 @@ placeholder is present - Update iTermBrowserSettingsHandler
 to handle search command messages - Add setSearchCommand
 method to iTermAdvancedSettingsModel
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -459,7 +629,7 @@ parsing - Add reader mode JavaScript implementation with
 styling - Update toolbar delegate to support reader mode
 toggle
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -476,7 +646,7 @@ becomes visible or restoration completes - Improves startup
 performance by avoiding concurrent WKWebView loading during
 restoration
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -497,7 +667,7 @@ This improves user experience by keeping related browsing
 within the same window while maintaining the option to
 switch back to window behavior via configuration.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -514,7 +684,7 @@ KEY_INITIAL_URL in openSingleUserBrowserWindowWithURL method
 so the target URL is properly passed to the new browser
 session.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -534,7 +704,7 @@ scrollbars - Remove external dependencies for security and
 reliability - Gracefully fallback to DOM source if network
 fetch fails
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -572,13 +742,13 @@ operation
 File Organization: - Moved page saving components to
 dedicated Browser/Page Saver/ directory - Relocated context
 menu handler to Browser/UI/ for better organization -
-Updated context menu text for consistency (Save Page As,
-Print)
+Updated context menu text for consistency (Save Page As…,
+Print…)
 
 This ensures users can save pages without breaking the
 original browsing experience.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -613,7 +783,7 @@ The page saving functionality ensures saved pages work
 offline with all resources properly referenced locally,
 maintaining visual and functional fidelity.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -631,7 +801,7 @@ Implement auto-close on navigation and escape key - Add
 retry logic for robust tag/bookmark loading - Use delegate
 pattern to avoid dependency cycles
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
