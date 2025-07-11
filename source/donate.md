@@ -58,3 +58,5 @@ Mountain View, CA<br/>
 </div>
 
 <hr/>
+
+I'm just a guy on the internet, not a nonprofit. You probably won't get a tax break. You may experience warm fuzzy feelings, though. This is not medical or tax advice.
