@@ -1,3 +1,77 @@
+2025-07-24: Remove bogus dylib from project
+
+2025-07-24: Add support for global search to the browser.
+Improve efficiency of protocol between js and swift
+
+2025-07-22: refactor global search
+
+2025-07-22: Integrate browser search more with built-in
+search. Regex now works. And it can expand sections as
+needed to reveal hidden results
+
+2025-07-22: Move find functionalaity into javascript
+
+2025-07-22: Make browser find manager mainactor
+
+2025-07-22: Make the webview first responder, not the view
+controller. This makes selections blue rather than gray
+
+2025-07-22: Add a few files that were missed in the last
+commit
+
+2025-07-21: Add comprehensive AI-browser integration with
+customizable system prompts
+
+This major feature enhancement introduces deep integration
+between AI chat and browser functionality, enabling AI to
+interact with web pages as first-class citizens alongside
+terminal sessions.
+
+Key Features: - AI Browser Commands: New functions for web
+interaction (find_on_page, load_url, web_search,
+get_current_url, read_web_page) - Markdown Conversion:
+JavaScript-based page-to-markdown conversion using Turndown
+library with media stripping and chrome skipping -
+Customizable AI Prompts: Multiple prompt templates for
+different AI contexts (chat-only, terminal access, browser
+access, combined permissions) - Enhanced Chat System:
+Support for both terminal and browser session linking with
+improved database schema - Reader Mode Integration: Advanced
+markdown conversion for AI processing of web content -
+Improved Focus Management: Enhanced focus-follows-mouse with
+@MainActor thread safety
+
+Technical Improvements: - Added browser permission category
+actInWebBrowser for fine-grained AI control - Enhanced
+preference UI with prompt selector and help documentation -
+Improved geolocation handler with proper async/await
+patterns
+
+2025-07-21: Change control to set AI API key to a button and
+an alert instead of trying to make a secure text field do
+the job. It was too messy to make it work while not also
+reading from the keychain when opening settings.
+
+2025-07-21: Avoid reading from keychain when opening
+settings
+
+2025-07-21: Copy libhudsucker_ffi.dylib to Frameworks
+
+2025-07-21: Enable browser profiles by default
+
+2025-07-21: Fix absolute path in libhudsucker_ffi.dylib that
+broke loading
+
+2025-07-20: Draw cursor guide over text when native
+powerline glyphs are enabled. Issue 12348
+
+2025-07-20: Match APS job rule against full command line as
+well as simple job name. Issue 9467
+
+2025-07-20: Ignore logprobs which is an array
+
+2025-07-20: Make ad blocker more aggressive
+
 2025-07-19: Remove code that cleaned up active page contexts
 for local pages because the nav callbacks don't happen
 reliably. Fix a bug where rust adblocking didn't listen to
@@ -167,14 +241,14 @@ loader instead of inline JavaScript
 Note: Tests currently fail due to resource bundling issue
 that needs investigation
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
 2025-07-09: Add BrowserExtensionUserContentManager with
 comprehensive tests
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -234,7 +308,7 @@ messages - Proper exception handling in listeners doesn't
 crash the system
 
 **Error handling strategy:** - `noMessageReceiver` when no
-listeners exist  sets lastError, calls callback with
+listeners exist → sets lastError, calls callback with
 undefined - Listener exceptions are caught and logged but
 don't prevent other listeners from running - Invalid message
 encoding throws with detailed error messages for debugging -
@@ -249,7 +323,7 @@ exchange and proper error conditions - Includes complex
 message data, async responses, multiple listeners, and
 exception scenarios
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -275,7 +349,7 @@ integration - All argument combinations and error cases
 properly tested - Follows TDD approach: tests written first,
 implementation follows
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -331,7 +405,7 @@ navigation/UI security delegates - Fixed DOM property
 shadowing using Object.defineProperty instead of delete -
 Added runtime validation and comprehensive test coverage
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -350,7 +424,7 @@ Note: testBackgroundScriptIsolation is occasionally flaky
 due to script execution timing.  This will be addressed in a
 future update.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -518,7 +592,7 @@ Aggressive hiding: Uses multiple CSS properties to ensure
 stubborn ads disappear - Backdrop skip: Avoids removing
 large page containers in targeted mode
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -569,7 +643,7 @@ SessionView - Scroll event handling to clear hover when
 links move - Throttled scroll handling to maintain
 performance - Uses existing SessionView hover infrastructure
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -580,7 +654,7 @@ focused, select all text instead of doing nothing. This
 matches standard browser behavior where Cmd-L always results
 in selected text.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -603,7 +677,7 @@ preference. When enabled, text selections are automatically
 copied to the clipboard and saved to pasteboard history on
 mouseUp and smart selection events.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -648,7 +722,7 @@ QuickLook panel - Add download cancellation when QuickLook
 panel is closed - Move all download logic to QuickLookHelper
 for better separation of concerns
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -670,7 +744,7 @@ synthetic mouse events directly to WKWebView - Create
 JavaScript templates for all coordinate-based operations -
 Add comprehensive coordinate debugging tools and test page
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -738,7 +812,7 @@ placeholder is present - Update iTermBrowserSettingsHandler
 to handle search command messages - Add setSearchCommand
 method to iTermAdvancedSettingsModel
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -764,7 +838,7 @@ parsing - Add reader mode JavaScript implementation with
 styling - Update toolbar delegate to support reader mode
 toggle
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -781,7 +855,7 @@ becomes visible or restoration completes - Improves startup
 performance by avoiding concurrent WKWebView loading during
 restoration
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -802,7 +876,7 @@ This improves user experience by keeping related browsing
 within the same window while maintaining the option to
 switch back to window behavior via configuration.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -819,7 +893,7 @@ KEY_INITIAL_URL in openSingleUserBrowserWindowWithURL method
 so the target URL is properly passed to the new browser
 session.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -839,7 +913,7 @@ scrollbars - Remove external dependencies for security and
 reliability - Gracefully fallback to DOM source if network
 fetch fails
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -877,13 +951,13 @@ operation
 File Organization: - Moved page saving components to
 dedicated Browser/Page Saver/ directory - Relocated context
 menu handler to Browser/UI/ for better organization -
-Updated context menu text for consistency (Save Page As,
-Print)
+Updated context menu text for consistency (Save Page As…,
+Print…)
 
 This ensures users can save pages without breaking the
 original browsing experience.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -918,7 +992,7 @@ The page saving functionality ensures saved pages work
 offline with all resources properly referenced locally,
 maintaining visual and functional fidelity.
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -936,7 +1010,7 @@ Implement auto-close on navigation and escape key - Add
 retry logic for robust tag/bookmark loading - Use delegate
 pattern to avoid dependency cycles
 
- Generated with [Claude Code](https://claude.ai/code)
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
