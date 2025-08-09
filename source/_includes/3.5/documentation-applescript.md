@@ -44,6 +44,7 @@ tell application iTerm2
       close
     end tell
     tell current tab
+      log title
       repeat with aSession in sessions
         tell aSession
           write text "Hello"
