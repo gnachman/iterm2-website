@@ -1,58 +1,29 @@
-Version 3.6.0beta1 of iTerm2 was built on July 28, 2025
+Version 3.6.0beta2 of iTerm2 was built on August 20, 2025
 
-Only macOS 12 and later are supported for this
-release. Sorry :(
+New features:
 
-New Features:
-- iTerm2 is now a web browser as well as a
-  terminal emulator! In Settings > Profiles >
-  General, set "Profile Type" to "Web Browser".
-  Many existing features already work in browser
-  sessions, such as key bindings, smart selection,
-  navigation, open quickly, focus follows mouse,
-  and the password manager. Form filling, adblock,
-  reader mode, and removal of distracting elements
-  are already there. More will come as we progress
-  towards a stable release of 3.6.0.
+- Filter now supports regular expressions.
+- If you connect to a remote host with ssh
+  integration, you can view files there in the
+  in-app browser by cmd-clicking on them.
+- Most save and open dialogs now let you pick
+  files on remote hosts you are connected to using
+  ssh integration.
+- AI chat can now interact with the browser.
+- All iTerm2 features that make sense are now
+  available in browser profiles.
+- Add support for gpt-5
 
-Other Improvements:
-- Anthropic is now available as an AI provider.
-- Delay sending text at start until the window
-  finishes entering full screen mode.
-- Tildes are now expanded in the folder for
-  automatic logging.
-- Various performance improvements.
-- Automatic profile switching job rules now match
-  against the full command line as well as just
-  the job name.
-- Draw cursor guide over powerline glyphs when
-  native powerling glyphs are enabled.
-- Don't require keychain access to open settings
-  window.
-- Background colors now extend all the way to the
-  edges by default. You can disable this with
-  Settings > Advanced > Extend background color into
-  margins in alternate screen mode.
+Other improvements:
+- Inactive sessions can not resize the window.
+  Mitigates an nvim bug.
+- http is now allowed in Quicklook
+- Illegal values are allowed temporarily while
+  editing numeric fields in settings.
+- AI chat gained a stop button, a model selector,
+  and a button to toggle reasoning.
 
-Bug Fixes:
-- Fix crashes.
-- Fix a bug where relative timestamps could be
-  incorrect.
-- Fix a crashw hen right clicking in some text
-  fields in settings.
-- Fix crazy weird animations when animating cursor
-  movement.
-- Make "fold to named mark" pick the last mark
-  with a given name.
-- Fix a bug where folding to named mark would
-  sometimes place the collapsed line in the wrong
-  place.
-- Fix a bug where an invisible composer window
-  could be left behind, preventing you from
-  clicking on the top of the terminal.
-- Don't add snippets to the top level menu if they
-  have tags.
-- Fix a crash when modifying a dynamic profile
-  through the settings UI.
-
-
+Bug fixes:
+- Fix a bug in replacing content with decoded
+  base64 where it sometimes was not available when
+  it should have been.
