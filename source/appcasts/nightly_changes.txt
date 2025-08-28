@@ -1,3 +1,17 @@
+2025-08-27: Ensure out-of-selected-command-range search
+results are not used. This can happen on findNext which
+searches forwards, and the algorithm in LineBuffer is not
+prepared to exclude those results. At some point I need to
+fix it in LineBuffer which will be more efficient but I
+haven't the time now
+
+2025-08-27: Show a warning in dropdown find view that search
+is restricted to a line range. Issue 12388
+
+2025-08-27: Fix a bug where navigating to a split pane by
+numeric shortcut did not make it visible when another pane
+was maximized. Issue 12389
+
 2025-08-26: Improve help text for key binding actions that
 are perenially confusing. Fix a bug where the help button
 was clipped. Issue 6394
