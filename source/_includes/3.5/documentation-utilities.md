@@ -73,6 +73,11 @@ For this to work you must enable **Prefs > General > Applications in terminal ma
 
 The `it2dl` program downloads files. This is useful when you are ssh'ed to a remote host. The downloaded files are placed in your *Downloads* folder.
 
+<pre>
+Usage:
+it2dl filename
+</pre>
+
 #### it2getvar
 
 Fetches a session variable. For a list of session variables, see the <a href="documentation-badges.html">Badges</a> page.
@@ -162,11 +167,6 @@ Usage:
      Saves the current version with an optional name.
   it2universion pop [name]
      If name is given, all versions up to and including the one with the matching name are popped.
-</pre>
-
-<pre>
-Usage:
-it2dl filename
 </pre>
 
 ### Location
