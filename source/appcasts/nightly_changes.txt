@@ -1,3 +1,36 @@
+2025-09-02: Add welcome page
+
+2025-09-02: Browser onboarding
+
+2025-09-02: Make audio detection more robust
+
+2025-09-02: Add claude rules
+
+2025-09-02: Rebuild character set data for current unicode
+
+2025-09-02: Don't access trigger histograms from main thread
+
+2025-09-02: Make 'remember frames' a first class citizen for
+issue 12395
+
+2025-09-02: Remove some incomprehensible logic that dates
+back to 2009 (commit ed38bb49b in the old-iterm repo) that
+tweaked the Y origin of windows whose frames were saved by
+the difference in height between the default frame and then
+restored frame. That code was ported over but I never
+understood the rationale, and after staring at it for a
+while I still don't understand it. Perhaps it was to hack
+around some bug in an earlyish version of macOS? If you're
+gonna save frames, you should restore them as they were
+saved is the new rationale, so at least there is one now.
+This was inspired by issue 12395 but it doesn't fix their
+problem, which is that auto frame restoration surprisingly
+causes the desired size in the profile to be ignored
+sometimes. I have never loved auto frame restoration for
+this reason but I am reluctant to eliminate it because I'm
+sure some people expect it to continue working as it always
+has.
+
 2025-09-01: Update unicode building scripts
 
 2025-08-28: Ensure Conductor callbacks never get run more
