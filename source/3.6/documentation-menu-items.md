@@ -53,11 +53,11 @@ subhead: Menu Items
 {{ profiles | markdownify }}
 </div>
 
-{% capture toolbelt %}{% include 3.6/documentation-toolbelt-menu.md %}{% endcapture %}
-<a href="javascript:showId('menu-toolbelt')" id='showmenu-toolbelt'>&#x25b8; Toolbelt Menu</a>
-<a href="javascript:hideId('menu-toolbelt')" id='hidemenu-toolbelt' style="display: none">&#x25be; Toolbelt Menu</a>
-<div id="changelistmenu-toolbelt" style="display: none">
-{{ toolbelt | markdownify }}
+{% capture web %}{% include 3.6/documentation-web-menu.md %}{% endcapture %}
+<a href="javascript:showId('menu-web')" id='showmenu-web'>&#x25b8; Web Menu</a>
+<a href="javascript:hideId('menu-web')" id='hidemenu-web' style="display: none">&#x25be; Web Menu</a>
+<div id="changelistmenu-web" style="display: none">
+{{ web | markdownify }}
 </div>
 
 {% capture window %}{% include 3.6/documentation-window-menu.md %}{% endcapture %}

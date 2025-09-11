@@ -97,8 +97,8 @@ active-state: documentation
 {% include 3.6/subdoc.md title="Profiles Menu" anchor="documentation-profiles-menu.md" %}
 {% include 3.6/documentation-profiles-menu.md %}
 
-{% include 3.6/subdoc.md title="Toolbelt Menu" anchor="documentation-toolbelt-menu.md" %}
-{% include 3.6/documentation-toolbelt-menu.md %}
+{% include 3.6/subdoc.md title="Web Menu" anchor="documentation-web-menu.md" %}
+{% include 3.6/documentation-web-menu.md %}
 
 {% include 3.6/subdoc.md title="Window Menu" anchor="documentation-window-menu.md" %}
 {% include 3.6/documentation-window-menu.md %}

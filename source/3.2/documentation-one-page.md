@@ -36,31 +36,31 @@ active-state: documentation
 ## Menu Items
 
 {% include subdoc_old.md title="iTerm2 Menu" anchor="documentation-iterm2-menu.md" %}
-{% include documentation-iterm2-menu.md %}
+{% include 3.2/documentation-iterm2-menu.md %}
 
 {% include subdoc_old.md title="Shell Menu" anchor="documentation-shell-menu.md" %}
-{% include documentation-shell-menu.md %}
+{% include 3.2/documentation-shell-menu.md %}
 
 {% include subdoc_old.md title="Edit Menu" anchor="documentation-edit-menu.md" %}
-{% include documentation-edit-menu.md %}
+{% include 3.2/documentation-edit-menu.md %}
 
 {% include subdoc_old.md title="View Menu" anchor="documentation-view-menu.md" %}
-{% include documentation-view-menu.md %}
+{% include 3.2/documentation-view-menu.md %}
 
 {% include subdoc_old.md title="Session Menu" anchor="documentation-session-menu.md" %}
-{% include documentation-session-menu.md %}
+{% include 3.2/documentation-session-menu.md %}
 
 {% include subdoc_old.md title="Scripts Menu" anchor="documentation-scripts-menu.md" %}
-{% include documentation-scripts-menu.md %}
+{% include 3.2/documentation-scripts-menu.md %}
 
 {% include subdoc_old.md title="Profiles Menu" anchor="documentation-profiles-menu.md" %}
-{% include documentation-profiles-menu.md %}
+{% include 3.2/documentation-profiles-menu.md %}
 
 {% include subdoc_old.md title="Toolbelt Menu" anchor="documentation-toolbelt-menu.md" %}
-{% include documentation-toolbelt-menu.md %}
+{% include 3.2/documentation-toolbelt-menu.md %}
 
 {% include subdoc_old.md title="Window Menu" anchor="documentation-window-menu.md" %}
-{% include documentation-window-menu.md %}
+{% include 3.2/documentation-window-menu.md %}
 
 {% include subdoc_old.md title="Hotkeys" anchor="documentation-hotkey.html" %}
 {% include documentation-hotkey.md %}
