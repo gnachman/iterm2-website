@@ -1,7 +1,7 @@
 ---
 layout: subdoc33
-title: Colors Profiles Preferences - Documentation - iTerm2 - macOS Terminal Replacement
+title: Colors Profiles Settings - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
-subhead: Preferences
+subhead: Settings
 ---
-{% include 3.5/documentation-preferences-profiles-colors.md %}
+{% include 3.6/documentation-preferences-profiles-colors.md %}

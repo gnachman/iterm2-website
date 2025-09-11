@@ -8,7 +8,7 @@ active-state: faq
 A: iTerm2 is for macOS only. See the downloads page for which OS versions are supported by each version of the app.
 
 #### Q: I don't like the way that iTerm2 renders bold fonts.
-A: Go to Preferences->Profiles->Text and change the "Draw bold text in bold font" and "Draw bold text in bright colors" settings. Try running this command in bash to see the difference between the two behaviors:
+A: Go to Settings->Profiles->Text and change the "Draw bold text in bold font" and "Draw bold text in bright colors" settings. Try running this command in bash to see the difference between the two behaviors:
 
     printf '\e[0;31mplain\n\e[1;31mbold\n'\
     '\e[0;91mhighlight\n\e[1;91mbold+highlight\n\e[0m'
@@ -18,10 +18,10 @@ A: Go to Preferences->Profiles->Text and change the "Draw bold text in bold font
 A: Make sure you are running the latest version. Disable transparency and blur. Use a solid background color rather than an image. If you are on 3.2 or later, ensure the GPU renderer is enabled and that it can be used per the restrictions described at <a href="https://gitlab.com/gnachman/iterm2/wikis/Metal-Renderer">Metal Renderer</a>.
 
 #### Q: Why my arrow/HOME/END keys are not working?
-A: Check that the `$TERM` variable is correct. `xterm-256color` is recommended. `xterm-new` will also work. Make sure you do not have custom key bindings in **Preferences > Keys** or **Preferences > Profiles > Keys** for these keys. Disabling **Preferences > Profiles > Keys > Allow application keypad mode** will prevent your terminal from getting stuck in application keypad mode, which often has the effect of breaking keys that normally work.
+A: Check that the `$TERM` variable is correct. `xterm-256color` is recommended. `xterm-new` will also work. Make sure you do not have custom key bindings in **Settings > Keys** or **Settings > Profiles > Keys** for these keys. Disabling **Settings > Profiles > Keys > Allow application keypad mode** will prevent your terminal from getting stuck in application keypad mode, which often has the effect of breaking keys that normally work.
 
 #### Q: Where does iTerm2 store its settings?
-A: Preferences, including profiles, are stored in ~/Library/Preferences/com.googlecode.iterm2.plist. To modify it, use the "defaults" command. For example, to delete all settings, run:
+A: Settings, including profiles, are stored in ~/Library/Preferences/com.googlecode.iterm2.plist. To modify it, use the "defaults" command. For example, to delete all settings, run:
 <pre>
 defaults delete com.googlecode.iterm2
 </pre>
@@ -31,13 +31,13 @@ A: iTerm2 lets you to specify two fonts. If you only use English or western euro
 
 #### Q: Some characters appear to be twice as wide as others, and things aren't lining up correctly.
 #### Q: I'm a Chinese, Japanese, or Korean user and some characters don't line up because they are not rendered in double-width.
-A: Go to **Preferences > Profiles > Text** and change the setting of "Treat ambiguous-width characters as double-width."
+A: Go to **Settings > Profiles > Text** and change the setting of "Treat ambiguous-width characters as double-width."
 
 #### Q: Why can't I set my session's shortcut key to Ctrl-Cmd-D?
 A: That key is used by macOS's Dictionary program.
 
 #### Q: How do I make the option/alt key act like Meta or send escape codes?
-A: Go to **Preferences > Profiles** tab. Select your profile on the left, and then open the Keyboard tab. At the bottom is a set of buttons that lets you select the behavior of the Option key. For most users, <i>Esc+</i> will be the best choice.
+A: Go to **Settings > Profiles** tab. Select your profile on the left, and then open the Keyboard tab. At the bottom is a set of buttons that lets you select the behavior of the Option key. For most users, <i>Esc+</i> will be the best choice.
 
 #### Q: What modifier keys affect marking a selection for copy and paste?
 A: If you hold down modifier keys while making a selection, the behavior changes in various ways:
@@ -50,7 +50,7 @@ A: If you hold down modifier keys while making a selection, the behavior changes
 
 Additionally, you can affect other mouse-related activities with modifier keys:
 
-  * Dragging a selection copies and pastes it. If you keep doing this by accident, turn on **Preferences > Advanced > To drag images or selected text, you must hold ⌘. This prevents accidental drags.**.
+  * Dragging a selection copies and pastes it. If you keep doing this by accident, turn on **Settings > Advanced > To drag images or selected text, you must hold ⌘. This prevents accidental drags.**.
   * Cmd+click on a URL opens it.
 
 #### Q: How do I change a tab's title?
@@ -62,13 +62,13 @@ A: Press Cmd-I (or View->Edit Current Session...) and enter a new title in the "
 A: Two steps:
 
 1. Create a new profile called "ssh". In the General tab, select the Command: button and enter $$ as the command.
-2. In Preferences->Profiles->General, select "ssh" for "Select URL Schemes...."
+2. In Settings->Profiles->General, select "ssh" for "Select URL Schemes...."
 
 #### Q: How can I open a profile from the Profiles window in a new window without using the mouse?
 A: Select a profile with the up and down arrow keys and press shift-enter.
 
 #### Q: How do I get 256 color mode working in vim?
-A: The recommended way is to set your terminal type to xterm-256color in **Preferences > Profiles > Terminal > Report Terminal Type**. You may also need to put set background=light or set background=dark in your .vimrc.
+A: The recommended way is to set your terminal type to xterm-256color in **Settings > Profiles > Terminal > Report Terminal Type**. You may also need to put set background=light or set background=dark in your .vimrc.
 
 #### Q: Mouse reporting in vim doesn't work for some rows/columns in a big terminal window.
 A: Older mouse reporting protocols didn't work in large terminals. Recent versions of vim (at least 7.4) support the "SGR" protocol, which does not have any practical limits on terminal size. To enable it in vim, add this to your .vimrc:
@@ -96,14 +96,14 @@ A: This is the simple but dumb way:
 <a href="https://www.emacswiki.org/emacs/SmoothScrolling">The rabbit hole goes deep.</a>
 
 #### Q: Why is my text all black and white?
-A: The most common cause is that "minimum contrast" (under **Preferences > Profiles > Colors**) is turned up all the way.
+A: The most common cause is that "minimum contrast" (under **Settings > Profiles > Colors**) is turned up all the way.
 
 #### Q: How can I make the tab bar visible in fullscreen mode?
 A: Toggle Show Tabs in Fullscreen under the View menu (cmd-shift-T).
 
 #### Q: When I use a third-party app like SizeUp, Spectacle to make an iTerm2 window fill the screen it doesn't quite fill it.
 #### Q: When I use Magnet to move iTerm2 windows they do unexpected things (like not moving where I told them to).
-A: This is a side-effect of making the window size a multiple of the size of a single character's cell. Turn on **Preferences > Advanced > Terminal windows resize smoothly** to disable this behavior and that usually fixes the issue.
+A: This is a side-effect of making the window size a multiple of the size of a single character's cell. Turn on **Settings > Advanced > Terminal windows resize smoothly** to disable this behavior and that usually fixes the issue.
 
 #### Q: Where is the source code?
 A: <a href="https://github.com/gnachman/iTerm2">See gnachman's Github iTerm2 project.</a>
@@ -112,13 +112,13 @@ A: <a href="https://github.com/gnachman/iTerm2">See gnachman's Github iTerm2 pro
 A: Right-click on the directory and select **Services > New iTerm2 Tab Here**.
 
 #### Q: How can I keep the cursor guide always visible?
-A: Turn on the **Cursor Guide** checkbox in **Preferences>Profiles>Colors**.
+A: Turn on the **Cursor Guide** checkbox in **Settings>Profiles>Colors**.
 
 #### Q: How can I make the toolbelt open automatically?
-A: Turn on the **Open Toolbelt** checkbox in **Preferences>Profiles>Window**.
+A: Turn on the **Open Toolbelt** checkbox in **Settings>Profiles>Window**.
 
 #### Q: How can I prevent the window from resizing when I change the font with cmd-+ and cmd--?
-A: Turn off **Preferences>General>Adjust window when changing font size**.
+A: Turn off **Settings>General>Adjust window when changing font size**.
 
 #### Q: tmux integeration and mosh don't play nice together
 A: mosh is not a reliable transport. You have a few options if ssh is driving you nuts:

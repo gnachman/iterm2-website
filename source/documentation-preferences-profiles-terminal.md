@@ -1,7 +1,7 @@
 ---
 layout: subdoc33
-title: Terminal Profile Preferences - Documentation - iTerm2 - macOS Terminal Replacement
+title: Terminal Profile Settings - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
-subhead: Preferences
+subhead: Settings
 ---
-{% include 3.5/documentation-preferences-profiles-terminal.md %}
+{% include 3.6/documentation-preferences-profiles-terminal.md %}
