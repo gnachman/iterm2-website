@@ -79,7 +79,7 @@ Performing a quad-click does a "smart selection," which selects text under the p
 #### Triggers
 Triggers are user-configurable regular expressions with associated actions that run when text is received that matches the regex. Actions include highlighting the matching text, showing an alert, sending text back, and more.
 
-One advanced use of a trigger is to capture output matching a regex and display just those matching lines in the toolbelt. For example, you could create a trigger that matches compiler errors. When you run Make the errors will appear on the side of your window and you can click each to jump right to it. More information is available at the <a href="captured_output.html">Captured Output</a> manual.
+One advanced use of a trigger is to capture output matching a regex and display just those matching lines in the toolbelt. For example, you could create a trigger that matches compiler errors. When you run Make the errors will appear on the side of your window and you can click each to jump right to it. More information is available at the <a href="documentation-captured-output.html">Captured Output</a> manual.
 
 #### Tmux Integration
 iTerm2 is tightly integrated with tmux. The integration allows you to see tmux windows as native iTerm2 windows or tabs. The tmux prefix key is not needed, as native menu commands operate on tmux windows. For more information, please see the <a href="documentation-tmux-integration.html">iTerm2-tmux Integration</a> document.
@@ -100,7 +100,7 @@ iTerm2 can display images inline, including animated GIFs. The easiest way to us
 If you accidentally close a session, you get five seconds (by default; configurable in Settings > Profiles > Session) to undo it by pressing Cmd-Z.
 
 #### Shell Integration
-Shell Integration is a feature exclusive to iTerm2 that uses knowledge about your shell prompt to help you navigate from one shell prompt to another, record your command history, suggest most used directories, helps you re-run commands, download files from remote hosts with a click, upload files to remote hosts with drag and drop, and more. See the <a href="shell_integration.html">Shell Integration</a> documentation for all the details.
+Shell Integration is a feature exclusive to iTerm2 that uses knowledge about your shell prompt to help you navigate from one shell prompt to another, record your command history, suggest most used directories, helps you re-run commands, download files from remote hosts with a click, upload files to remote hosts with drag and drop, and more. See the <a href="documentation-shell-integration.html">Shell Integration</a> documentation for all the details.
 
 #### Password Manager
 iTerm2 can save your passwords in the Keychain. Use the Window > Password Manager menu item to open the password manager and enter your passwords.

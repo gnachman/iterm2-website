@@ -1,4 +1,4 @@
-iTerm2 has a collection of shell scripts that help you take advantage of some of its unique features. When you install <a href="shell_integration.html">Shell Integration</a>, you're asked if you'd like to install the Utilities Package as well. This page describes these utilities.
+iTerm2 has a collection of shell scripts that help you take advantage of some of its unique features. When you install <a href="documentation-shell-integration.html">Shell Integration</a>, you're asked if you'd like to install the Utilities Package as well. This page describes these utilities.
 
 ### Components
 

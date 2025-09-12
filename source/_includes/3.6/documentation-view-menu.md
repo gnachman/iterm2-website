@@ -14,13 +14,13 @@ This toggles the visibility of the Toolbelt on the right side of all windows.
 This toggles the visibility of the Actions tool, which shows actions you have configured under **Settings > Shortcuts > Actions**.
 
 #### View > Toolbelt > Captured Output
-This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="captured_output.html">Captured Output</a> for more information.
+This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="documentation-captured-output.html">Captured Output</a> for more information.
 
 #### View > Toolbelt > Codecierge
 This toggle the visibility of an AI assitant that helps you complete tasks in the terminal.
 
 #### View > Toolbelt > Command History
-This toggles the visibility of the Command History tool. It shows recently used commands. You must install <a href="shell_integration.html">Shell Integration</a> for this to know your command history.
+This toggles the visibility of the Command History tool. It shows recently used commands. You must install <a href="documentation-shell-integration.html">Shell Integration</a> for this to know your command history.
 
 #### View > Toolbelt > Jobs
 This toggles the visibility of the Jobs tool, which shows the running jobs in the current session, and allows you to send them signals.
@@ -38,7 +38,7 @@ This toggles the visibility of the Paste History tool, which shows recently past
 This toggles the visibility of the Profiles tool, which lets you select profiles to open new windows, tabs, and split panes.
 
 #### View > Toolbelt > Recent Directories
-This toggles the visibility of the Recent Directories tool. It shows recently used directories sorted by a combination of recency and frequency of use. You must install <a href="shell_integration.html">Shell Integration</a> for this to know your directory history. You can right click a directory to open a context menu that allows you to "start" a directory. This keeps it pinned at the bottom of the list so it's easy to find.
+This toggles the visibility of the Recent Directories tool. It shows recently used directories sorted by a combination of recency and frequency of use. You must install <a href="documentation-shell-integration.html">Shell Integration</a> for this to know your directory history. You can right click a directory to open a context menu that allows you to "start" a directory. This keeps it pinned at the bottom of the list so it's easy to find.
 
 #### View > Toolbelt > Snippets
 This toggles the visibility of the Snippets tool, which helps you send frequently used text strings.
@@ -71,10 +71,10 @@ Toggles the visibility of annotations.
 Toggles the visibility of the Composer, a text area that you can edit using native macOS keystrokes. This is convenient for preparing complex inputs.
 
 #### View > Auto Command Completion
-Automatically shows a window with command completion suggestions as you type. Only usable when you have command history built up with <a href="shell_integration.html">Shell Integration</a>.
+Automatically shows a window with command completion suggestions as you type. Only usable when you have command history built up with <a href="documentation-shell-integration.html">Shell Integration</a>.
 
 #### View > Auto Composer
-Replaces the shell prompt with a macOS native text editing control. It offers filename and command completion, including over ssh when using SSH Integration. It requires <a href="shell_integration.html">Shell Integration</a> to be installed in order to work.
+Replaces the shell prompt with a macOS native text editing control. It offers filename and command completion, including over ssh when using SSH Integration. It requires <a href="documentation-shell-integration.html">Shell Integration</a> to be installed in order to work.
 
 #### View > Open Quickly
 If you have lots of sessions you can quickly find the one you're looking for with Open Quickly. Select the View > Open Quickly menu item (cmd-shift-O) and then enter a search query. You can search by tab title, command name, host name, user name, profile name, directory name, badge label, and more. Queries are scored according to relevance and sorted by score. Open Quickly also lets you create new tabs, change the current session's profile, and open arrangements. If you start your query with a / then that gives you a shortcut to various commands. /a followed by an arrangement name restores the arrangement. /f restricts the query to existing sessions, excluding options to open new tabs, etc. /p restrics the query to profile names to switch the current session to. /t restricts the results to "open new tab" for matching profile names.

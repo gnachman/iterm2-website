@@ -14,7 +14,7 @@ This shortcut can be used to open a new window or tab. By default, it opens a ne
 Tags are a collection of words or phrases that annotate a profile. When you search your profiles (for instance, in the profiles window), the tag names are searched in addition to the profile name. If a tag name contains a slash that defines a hierarchy of menu items in the **Profiles** menu.
 
 #### Badge
-The badge is a large label visible in the top right of a terminal session behind its text. For more information see <a href="badges.html">Badges</a>. This is an interpolated string.
+The badge is a large label visible in the top right of a terminal session behind its text. For more information see <a href="documentation-badges.html">Badges</a>. This is an interpolated string.
 
 Click the *Edit...* button to configure the position, maximum size, and typeface of the badge.
 

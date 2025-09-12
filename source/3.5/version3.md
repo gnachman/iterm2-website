@@ -119,7 +119,7 @@ iTerm2 tracks the last-modified time of each line in history so you can see how 
 
 #### Captured Output
 
-Use iTerm2 as your IDE. You can define regular expressions to match lines of text like error messages from a compiler. The matching lines are shown in the toolbelt on the side of your terminal. You can click to jump to the line or double-click to run a coprocess, which can open the file in your favorite editor right to the line number you need. <a href="/captured_output.html">Learn more about Captured Output.</a>
+Use iTerm2 as your IDE. You can define regular expressions to match lines of text like error messages from a compiler. The matching lines are shown in the toolbelt on the side of your terminal. You can click to jump to the line or double-click to run a coprocess, which can open the file in your favorite editor right to the line number you need. <a href="/documentation-captured-output.html">Learn more about Captured Output.</a>
 
 #### All the Small Things
 

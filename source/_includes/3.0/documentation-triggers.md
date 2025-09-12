@@ -12,15 +12,15 @@ Regular expressions conform to the <a href="https://unicode-org.github.io/icu/us
 The following actions are available:
 <ul>
         <li>Bounce Dock Icon: Makes the dock icon bounce until the iTerm2 window becomes key.</li>
-        <li>Capture Output: Save the line to the Captured Output toolbelt tool. See <a href="captured_output.html">Captured Output</a>. The parameter is text to send (as though it had been typed) when you double-click on an entry in the Captured Output tool.</li>
+        <li>Capture Output: Save the line to the Captured Output toolbelt tool. See <a href="documentation-captured-output.html">Captured Output</a>. The parameter is text to send (as though it had been typed) when you double-click on an entry in the Captured Output tool.</li>
         <li>Highlight Text: The text matching the regex in the trigger will change color. The parameter sets the color.</li>
         <li>Open Password Manager: Opens the password manager. You can specify which account to select by default.</li>
         <li>Post Notification: Posts a notification with Growl (if available) or Notification Center.</li>
-        <li>Report Directory: Tells iTerm2 what your current directory is. You can use this to enable <a href="shell_integration.html">Shell Integration</a> features without installing the scripts. The parameter is your current directory.</li>
-        <li>Report User & Host: Tells iTerm2 what your user or host name is. You can use this to enable <a href="shell_integration.html">Shell Integration</a> features without installing the scripts. To specify just a user name, say `user@`. For just a host, say `@host`. For both, say `user@host`.</li>
+        <li>Report Directory: Tells iTerm2 what your current directory is. You can use this to enable <a href="documentation-shell-integration.html">Shell Integration</a> features without installing the scripts. The parameter is your current directory.</li>
+        <li>Report User & Host: Tells iTerm2 what your user or host name is. You can use this to enable <a href="documentation-shell-integration.html">Shell Integration</a> features without installing the scripts. To specify just a user name, say `user@`. For just a host, say `@host`. For both, say `user@host`.</li>
         <li>Ring Bell: Plays the standard system bell sound once.</li>
         <li>Run Command: Runs a user-defined command.</li>
-        <li>Run Coprocess: Runs a <a href="coprocesses.html">Coprocess</a>.</li>
+        <li>Run Coprocess: Runs a <a href="documentation-coprocesses.html">Coprocess</a>.</li>
         <li>Send Text: Sends user-defined text back to the terminal as though the user had typed it.</li>
         <li>Set Mark: Sets a mark. You can specify whether you'd like the display to stop scrolling after the trigger fires.</li>
         <li>Show Alert: Shows an alert box with user-defined text.</li>

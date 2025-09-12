@@ -257,11 +257,11 @@ Where `[base64]` is a base64-encoded value.
 
 #### Badge
 
-The badge has custom escape sequences described <a href="badges.html">here</a>.
+The badge has custom escape sequences described <a href="documentation-badges.html">here</a>.
 
 #### Downloads
 
-For information on file downloads and inline images, see <a href="images.html">here</a>.
+For information on file downloads and inline images, see <a href="documentation-images.html">here</a>.
 
 #### Uploads
 

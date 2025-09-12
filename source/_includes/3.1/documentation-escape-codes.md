@@ -204,7 +204,7 @@ Where `base64` is the base64-encoded string to copy to the pasteboard.
 
 #### Report Variable
 
-Each iTerm2 session has internal variables (as described in <a href="badges.html">Badges</a>). This escape sequence reports a variable's value:
+Each iTerm2 session has internal variables (as described in <a href="documentation-badges.html">Badges</a>). This escape sequence reports a variable's value:
 
     ^[]1337;ReportVariable=base64^G
 
@@ -216,11 +216,11 @@ Where `base64` is a base64-encoded value.
 
 #### Badge
 
-The badge has custom escape sequences described <a href="badges.html">here</a>.
+The badge has custom escape sequences described <a href="documentation-badges.html">here</a>.
 
 #### Downloads
 
-For information on file downloads and inline images, see <a href="images.html">here</a>.
+For information on file downloads and inline images, see <a href="documentation-images.html">here</a>.
 
 #### Uploads
 
@@ -268,7 +268,7 @@ You can push the current value on a stack and pop it off to return to the previo
 
 ## Shell Integration/FinalTerm
 
-iTerm2's <a href="shell_integration.html">Shell Integration</a> feature is made
+iTerm2's <a href="documentation-shell-integration.html">Shell Integration</a> feature is made
 possible by proprietary escape sequences pioneered by the FinalTerm emulator.
 FinalTerm is defunct, but the escape sequences are documented here.
 

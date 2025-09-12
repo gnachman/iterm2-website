@@ -9,7 +9,7 @@ Full details can be found at <a href="documentation-triggers.html">Triggers</a>.
 [Smart Selection](/documentation-smart-selection.html) defines regular expressions that are used to select text on quad-click. 
 
 #### Automatic Profile Switching
-You can specify rules that, when satisified, changes any session's profile to this one. See <a href="automatic-profile-switching.html">Automatic Profile Switching</a> for all the details.
+You can specify rules that, when satisified, changes any session's profile to this one. See <a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a> for all the details.
 </p>
 
 #### Snippets Filter

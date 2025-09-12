@@ -79,7 +79,7 @@ Performing a quad-click does a "smart selection," which selects text under the p
 #### Triggers
 Triggers are user-configurable regular expressions with associated actions that run when text is received that matches the regex. Actions include highlighting the matching text, showing an alert, sending text back, and more.
 
-One advanced use of a trigger is to capture output matching a regex and display just those matching lines in the toolbelt. For example, you could create a trigger that matches compiler errors. When you run Make the errors will appear on the side of your window and you can click each to jump right to it. More information is available at the <a href="captured_output.html">Captured Output</a> manual.
+One advanced use of a trigger is to capture output matching a regex and display just those matching lines in the toolbelt. For example, you could create a trigger that matches compiler errors. When you run Make the errors will appear on the side of your window and you can click each to jump right to it. More information is available at the <a href="documentation-captured-output.html">Captured Output</a> manual.
 
 #### Tmux Integration
 iTerm2 is tightly integrated with tmux. The integration allows you to see tmux windows as native iTerm2 windows or tabs. The tmux prefix key is not needed, as native menu commands operate on tmux windows. For more information, please see the <a href="https://gitlab.com/gnachman/iterm2/wikis/TmuxIntegration">iTerm2-tmux Integration</a> document.
@@ -88,19 +88,19 @@ iTerm2 is tightly integrated with tmux. The integration allows you to see tmux w
 Coprocesses are programs that run alongside iTerm2 and are bound to a single session. All output bound for the session is also routed as input to the coprocess. The coprocess's output acts like the user typing at the keyboard. Coprocesses can be used to automate tasks. For more information, see the <a href="documentation-coprocesses.html">Coprocess</a> document.
 
 #### Dynamic Profiles
-If you have hundreds or thousands of profiles, look in to <a href="dynamic-profiles.html">Dynamic Profiles</a>. This feature allows you to define profiles in JSON.
+If you have hundreds or thousands of profiles, look in to <a href="documentation-dynamic-profiles.html">Dynamic Profiles</a>. This feature allows you to define profiles in JSON.
 
 #### Automatic Profile Switching
-You can automatically change the current session's profile using <a href="automatic-profile-switching.html">Automatic Profile Switching</a>. For example, this would allow you to change the background color when you are on a production system.
+You can automatically change the current session's profile using <a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a>. For example, this would allow you to change the background color when you are on a production system.
 
 #### Inline Images
-iTerm2 can display images inline, including animated GIFs. More information is available at the <a href="images.html">Inline Images</a> document. An extension of this feature allows you to download files from a remote host over ssh simply by running a shell script. This script can be installed for you automatically when you install Shell Integration, described below.
+iTerm2 can display images inline, including animated GIFs. More information is available at the <a href="documentation-images.html">Inline Images</a> document. An extension of this feature allows you to download files from a remote host over ssh simply by running a shell script. This script can be installed for you automatically when you install Shell Integration, described below.
 
 #### Undo Close
 If you accidentally close a session, you get five seconds (by default; configurable in Preferences > Profiles > Session) to undo it by pressing Cmd-Z.
 
 #### Shell Integration
-Shell Integration is a feature exclusive to iTerm2 that uses knowledge about your shell prompt to help you navigate from one shell prompt to another, record your command history, suggest most used directories, helps you re-run commands, download files from remote hosts with a click, upload files to remote hosts with drag and drop, and more. See the <a href="shell_integration.html">Shell Integration</a> documentation for all the details.
+Shell Integration is a feature exclusive to iTerm2 that uses knowledge about your shell prompt to help you navigate from one shell prompt to another, record your command history, suggest most used directories, helps you re-run commands, download files from remote hosts with a click, upload files to remote hosts with drag and drop, and more. See the <a href="documentation-shell-integration.html">Shell Integration</a> documentation for all the details.
 
 #### Password Manager
 iTerm2 can save your passwords in the Keychain. Use the Window > Password Manager menu item to open the password manager and enter your passwords.

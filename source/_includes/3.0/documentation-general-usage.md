@@ -18,7 +18,7 @@ If you hold shift while clicking the existing selection is extended. In fact, yo
 
 If you hold cmd while dragging it will create a noncontinguous selection.
 
-If you hold cmd and click on a URL it will be opened. If you hold cmd and click on a filename, it will be opened. There is special support for MacVim, TextMate, and BBEdit when you cmd-click on a text file's name: if it is followed by a colon and line number, the file will be opened at that line number. The current directory is tracked if you have your shell prompt set the window title, <a href="http://www.faqs.org/docs/Linux-mini/Xterm-Title.html#toc4">as described here</a>, or if you have <a href="shell_integration.html">Shell Integration</a> installed.
+If you hold cmd and click on a URL it will be opened. If you hold cmd and click on a filename, it will be opened. There is special support for MacVim, TextMate, and BBEdit when you cmd-click on a text file's name: if it is followed by a colon and line number, the file will be opened at that line number. The current directory is tracked if you have your shell prompt set the window title, <a href="http://www.faqs.org/docs/Linux-mini/Xterm-Title.html#toc4">as described here</a>, or if you have <a href="documentation-shell-integration.html">Shell Integration</a> installed.
 
 If you hold cmd you can drag and drop selected text.
 

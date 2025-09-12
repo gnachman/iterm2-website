@@ -53,17 +53,17 @@ The following variables are defined by iTerm2:
 
   <tr>
     <td>session.hostname</td>
-    <td>The current hostname. Only set if <a href="shell_integration.html">Shell Integration</a> is installed.</td>
+    <td>The current hostname. Only set if <a href="documentation-shell-integration.html">Shell Integration</a> is installed.</td>
   </tr>
 
   <tr>
     <td>session.username</td>
-    <td>The current username. Only set if <a href="shell_integration.html">Shell Integration</a> is installed.</td>
+    <td>The current username. Only set if <a href="documentation-shell-integration.html">Shell Integration</a> is installed.</td>
   </tr>
 
   <tr>
     <td>session.path</td>
-    <td>The current path. Works best if <a href="shell_integration.html">Shell Integration</a> is installed.</td>
+    <td>The current path. Works best if <a href="documentation-shell-integration.html">Shell Integration</a> is installed.</td>
   </tr>
 </table>
 

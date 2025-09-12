@@ -26,10 +26,10 @@ Indicate the time of last modification of each line on the screen.
 Toggles the visibility of annotations.
 
 #### View > Auto Command Completion
-Automatically shows a window with command completion suggestions as you type. Only usable when you have command history built up with <a href="shell_integration.html">Shell Integration</a>.
+Automatically shows a window with command completion suggestions as you type. Only usable when you have command history built up with <a href="documentation-shell-integration.html">Shell Integration</a>.
 
 #### View > Auto Composer
-Replaces the shell prompt with a macOS native text editing control. It offers filename and command completion, including over ssh when using SSH Integration. It requires <a href="shell_integration.html">Shell Integration</a> to be installed in order to work.
+Replaces the shell prompt with a macOS native text editing control. It offers filename and command completion, including over ssh when using SSH Integration. It requires <a href="documentation-shell-integration.html">Shell Integration</a> to be installed in order to work.
 
 #### View > Open Quickly
 If you have lots of sessions you can quickly find the one you're looking for with Open Quickly. Select the View > Open Quickly menu item (cmd-shift-O) and then enter a search query. You can search by tab title, command name, host name, user name, profile name, directory name, badge label, and more. Queries are scored according to relevance and sorted by score. Open Quickly also lets you create new tabs, change the current session's profile, and open arrangements. If you start your query with a / then that gives you a shortcut to various commands. /a followed by an arrangement name restores the arrangement. /f restricts the query to existing sessions, excluding options to open new tabs, etc. /p restrics the query to profile names to switch the current session to. /t restricts the results to "open new tab" for matching profile names.

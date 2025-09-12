@@ -59,7 +59,7 @@ Records the current scroll position. Use Edit > Jump to Mark to restore the scro
 Adds an annotation to the word beginning at the cursor. An annotation is a scratchpad for you to write notes about a chunk of text in your history.
 
 #### Edit > Marks and Annotations > Alerts > Alert on Next Mark
-When a mark is set (typically by <a href="shell_integration.html">Shell Integration</a> when the currently running shell command terminates) then show an alert. 
+When a mark is set (typically by <a href="documentation-shell-integration.html">Shell Integration</a> when the currently running shell command terminates) then show an alert. 
 
 #### Edit > Clear Buffer
 Clears the entire terminal history and the mutable area.

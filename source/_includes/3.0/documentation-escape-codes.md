@@ -153,15 +153,15 @@ Where *height* and *width* are floating point values giving the size in points o
 
 #### Badge
 
-The badge has custom escape sequences described <a href="badges.html">here</a>.
+The badge has custom escape sequences described <a href="documentation-badges.html">here</a>.
 
 #### Downloads
 
-For information on file downloads and inline images, see <a href="images.html">here</a>.
+For information on file downloads and inline images, see <a href="documentation-images.html">here</a>.
 
 ## Shell Integration/FinalTerm
 
-iTerm2's <a href="shell_integration.html">Shell Integration</a> feature is made
+iTerm2's <a href="documentation-shell-integration.html">Shell Integration</a> feature is made
 possible by proprietary escape sequences pioneered by the FinalTerm emulator.
 FinalTerm is defunct, but the escape sequences are documented here.
 

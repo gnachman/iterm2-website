@@ -91,10 +91,10 @@ Shows the autocomplete window, which offers to finish typing a word that you've 
 This opens a window that lets you change the settings of the current session without affecting any other sessions. Changes made in this panel will not be overridden by subsequent changes to the profile. Settings *not* cahnged in this panel will be affected by changes to the profile.
 
 #### Edit > Open Command History...
-If you use <a href="shell_integration.html">Shell Integration</a> then Open Command History presents a list of recently used commands to select from.
+If you use <a href="documentation-shell-integration.html">Shell Integration</a> then Open Command History presents a list of recently used commands to select from.
 
 #### Edit > Open Recent Directories...
-If you use <a href="shell_integration.html">Shell Integration</a> then Open Recent Directories presents a list of recently used directories to select from.
+If you use <a href="documentation-shell-integration.html">Shell Integration</a> then Open Recent Directories presents a list of recently used directories to select from.
 
 #### Edit > Open Paste History...
 "Open Paste History" opens a window showing up to the last 20 values that were copied or pasted in iTerm2. You can search its contents by typing a (non-necessarily-consecutive) subsequence of characters that appear in the value. You can use arrow keys and enter to make a selection, or you can click on an item to choose it, and it will be pasted. If you enable the Save copy/pate history to disk preference then these values will persist across sessions of iTerm2.
@@ -109,7 +109,7 @@ Records the current scroll position. Use Edit > Jump to Mark to restore the scro
 Adds an annotation to the word beginning at the cursor. An annotation is a scratchpad for you to write notes about a chunk of text in your history.
 
 #### Edit > Marks and Annotations > Alerts > Alert on Next Mark
-When a mark is set (typically by <a href="shell_integration.html">Shell Integration</a> when the currently running shell command terminates) then show an alert. 
+When a mark is set (typically by <a href="documentation-shell-integration.html">Shell Integration</a> when the currently running shell command terminates) then show an alert. 
 
 <hr/>
 ### View Menu
@@ -136,7 +136,7 @@ Indicate the time of last modification of each line on the screen.
 Toggles the visibility of annotations.
 
 #### View > Auto Command Completion
-Automatically shows a window with command completion suggestions as you type. Only usable when you have command history built up with <a href="shell_integration.html">Shell Integration</a>.
+Automatically shows a window with command completion suggestions as you type. Only usable when you have command history built up with <a href="documentation-shell-integration.html">Shell Integration</a>.
 
 #### View > Open Quickly
 If you have lots of sessions you can quickly find the one you're looking for with Open Quickly. Select the View > Open Quickly menu item (cmd-shift-O) and then enter a search query. You can search by tab title, command name, host name, user name, profile name, directory name, badge label, and more. Queries are scored according to relevance and sorted by score. Open Quickly also lets you create new tabs, change the current session's profile, and open arrangements. If you start your query with a / then that gives you a shortcut to various commands. /a followed by an arrangement name restores the arrangement. /f restricts the query to existing sessions, excluding options to open new tabs, etc. /p restrics the query to profile names to switch the current session to. /t restricts the results to "open new tab" for matching profile names.
@@ -168,10 +168,10 @@ If you have scripts located in `$HOME/Library/Application Support/iTerm/Scripts`
 Saves the current window's toolbelt width as the default width for new windows' toolbelts.
 
 #### Toolbelt > Captured Output
-This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="captured_output.html">Captured Output</a> for more information.
+This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="documentation-captured-output.html">Captured Output</a> for more information.
 
 #### Toolbelt > Command History
-This toggles the visibility of the Command History tool. It shows recently used commands. You must install <a href="shell_integration.html">Shell Integration</a> for this to know your command history.
+This toggles the visibility of the Command History tool. It shows recently used commands. You must install <a href="documentation-shell-integration.html">Shell Integration</a> for this to know your command history.
 
 #### Toolbelt > Show Toolbelt
 This toggles the visibility of the Toolbelt on the right side of all windows.
@@ -189,7 +189,7 @@ This toggles the visibility of the Paste History tool, which shows recently past
 This toggles the visibility of the Profiles tool, which lets you select profiles to open new windows, tabs, and split panes.
 
 #### Toolbelt > Recent Directories
-This toggles the visibility of the Recent Directories tool. It shows recently used directories sorted by a combination of recency and frequency of use. You must install <a href="shell_integration.html">Shell Integration</a> for this to know your directory history. You can right click a directory to open a context menu that allows you to "start" a directory. This keeps it pinned at the bottom of the list so it's easy to find.
+This toggles the visibility of the Recent Directories tool. It shows recently used directories sorted by a combination of recency and frequency of use. You must install <a href="documentation-shell-integration.html">Shell Integration</a> for this to know your directory history. You can right click a directory to open a context menu that allows you to "start" a directory. This keeps it pinned at the bottom of the list so it's easy to find.
 
 <hr/>
 ### Window Menu

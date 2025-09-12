@@ -29,12 +29,10 @@ You can log in the following formats:
  * *asciinema* - Produces a file viewable with <a href="https://asciinema.org/">asciinema</a>, which preserves time as well as more font attributes.
 
 #### Folder
-The folder in which to place logs. This is an [interpolated string](https://iterm2.com/documentation-scri
-pting-fundamentals.html#interpolated-strings).
+The folder in which to place logs. This is an [interpolated string](https://iterm2.com/documentation-scripting-fundamentals.html#interpolated-strings).
 
 #### Filename
-The name to give the log file. This is an [interpolated string](https://iterm2.com/documentation-scri
-pting-fundamentals.html#interpolated-strings).
+The name to give the log file. This is an [interpolated string](https://iterm2.com/documentation-scripting-fundamentals.html#interpolated-strings).
 
 #### Open password manager automatically
 If enabled the password manager will be opened when a session with this profile is created.

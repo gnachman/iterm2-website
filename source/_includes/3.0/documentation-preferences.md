@@ -2,7 +2,7 @@
 ### General
 <hr>
 #### Startup
-The first dropdown box lets you select how windows will be opened when iTerm2 is launched. Most users will want *Use System Window Restoration Setting* as it works best with <a href="restoration.html">Session Restoration</a>. Users who exclusively use the Hotkey Window may prefer *Don't Open Any Windows*. If you have a default window arrangement saved then *Open Default Window Arrangement* will be available.
+The first dropdown box lets you select how windows will be opened when iTerm2 is launched. Most users will want *Use System Window Restoration Setting* as it works best with <a href="documentation-restoration.html">Session Restoration</a>. Users who exclusively use the Hotkey Window may prefer *Don't Open Any Windows*. If you have a default window arrangement saved then *Open Default Window Arrangement* will be available.
 
 #### Open profiles window
 If selected, the Profiles Window will automatically open when iTerm2 is started.
@@ -20,7 +20,7 @@ If selected, the Quit iTerm2 (cmd-Q) command will be confirmed if any terminal w
 This setting specifies the maximum amount of memory allocated to instant replay for each tab or split pane. More memory means instant replay is able to go farther back into the past. You can enter instant replay with View > Step Back in Time.
 
 #### Save copy/paste and command history to disk
-If selected, every time text is copied or pasted in iTerm2 it will be saved to disk. The last 20 values are recorded. They can be accessed with Edit > Open Paste History.... If you use <a href="shell_integration.html">Shell Integration</a> then when this is enabled your command history, directory history, and remote hostname and usernames will also be saved to disk. Unchecking this will erase all of the saved information.
+If selected, every time text is copied or pasted in iTerm2 it will be saved to disk. The last 20 values are recorded. They can be accessed with Edit > Open Paste History.... If you use <a href="documentation-shell-integration.html">Shell Integration</a> then when this is enabled your command history, directory history, and remote hostname and usernames will also be saved to disk. Unchecking this will erase all of the saved information.
 
 #### Add Bonjour hosts to profiles
 If selected, all Bonjour hosts on the local network have a profile created for them as long as they're around.
@@ -147,7 +147,7 @@ This shortcut can be used to open a new window or tab. By default, it opens a ne
 Tags are a collection of words or phrases that annotate a profile. When you search your profiles (for instance, in the profiles window), the tag names are searched in addition to the profile name. If a tag name contains a slash that defines a hierarchy of menu items in the **Profiles** menu.
 
 #### Badge
-The badge is a large label visible in the top right of a terminal session behind its text. For more information see <a href="badges.html">Badges</a>.
+The badge is a large label visible in the top right of a terminal session behind its text. For more information see <a href="documentation-badges.html">Badges</a>.
 
 #### Command
 This is the command that is executed when a new session with the profile is created. If *login shell* is chosen, then `login` is invoked. You can put special terms surrounded by $$ in this field (example: $$USERNAME$$). When a new session is created, you will be prompted to enter a value for each such term. See the description of URL Schemes below for details about the special "$$" value that can go in this field.
@@ -325,10 +325,10 @@ If selected, tabs will indicate that a bell has rung by displaying a bell graphi
 If enabled, LANG and LC_CTYPE environment variables will be set based on your machine's language settings.
 
 #### Insert newline before start of command prompt if needed
-If you have <a href="shell_integration.html">Shell Integration</a> installed and a command's output does not end in a newline, this setting will ensure your prompt does not begin in the middle of the line.
+If you have <a href="documentation-shell-integration.html">Shell Integration</a> installed and a command's output does not end in a newline, this setting will ensure your prompt does not begin in the middle of the line.
 
 #### Show mark indicators
-If you have <a href="shell_integration.html">Shell Integration</a> and this setting is selected then a blue or red arrow appears next to each shell prompt. Turn this off to hide the arrow.
+If you have <a href="documentation-shell-integration.html">Shell Integration</a> and this setting is selected then a blue or red arrow appears next to each shell prompt. Turn this off to hide the arrow.
 
 ### Profiles > Session
 <hr>
@@ -449,7 +449,7 @@ Full details can be found at <a href="documentation-triggers.html">Triggers</a>.
 Semantic history is used to open a file when you Cmd-Click on it. The current working directory for each line in the terminal is tracked to help find files. If Semantic History is set to "Open with default app," then files are passed to the OS to be opened with whatever is associated. Alternatively, you can choose "Open URL..." to open a specific URL (with \1 replaced with the filename and \2 replaced with the line number, if applicable). If you choose "Open with editor..." then text files will be opened with the designated editor, while other files are opened with the default app for their file type. For more flexibility, choose "Run command..." and specify a command to execute. \1 will be replaced with the file name, \2 will be replaced with the line number (if applicable), \3 with text in the line prior to the click location, \4 with text in the line subsequent to the click location, and \5 for the working directory of the line clicked on. Finally, "Always run command..." is like "Run command...," but takes effect even if the object clicked on is not an existing filename.
 
 #### Automatic Profile Switching
-You can specify rules that, when satisified, changes any session's profile to this one. See <a href="automatic-profile-switching.html">Automatic Profile Switching</a> for all the details.
+You can specify rules that, when satisified, changes any session's profile to this one. See <a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a> for all the details.
 </p>
 
 ### Keys

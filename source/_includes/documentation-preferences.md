@@ -5,7 +5,7 @@
 
 #### Window restoration policy
 
-This setting determines how windows will be opened when iTerm2 is launched. Most users will want *Use System Window Restoration Setting* as it works best with <a href="restoration.html">Session Restoration</a>. Users who exclusively use the Hotkey Window may prefer *Only Restore Hotkey Window*, which will not restore regular windows but will restore the hotkey window. If you have a default window arrangement saved then *Open Default Window Arrangement* will be available.
+This setting determines how windows will be opened when iTerm2 is launched. Most users will want *Use System Window Restoration Setting* as it works best with <a href="documentation-restoration.html">Session Restoration</a>. Users who exclusively use the Hotkey Window may prefer *Only Restore Hotkey Window*, which will not restore regular windows but will restore the hotkey window. If you have a default window arrangement saved then *Open Default Window Arrangement* will be available.
 
 #### Open profiles window
 If selected, the Profiles Window will automatically open when iTerm2 is started.
@@ -44,7 +44,7 @@ If selected, all Bonjour hosts on the local network have a profile created for t
 This setting specifies the maximum amount of memory allocated to instant replay for each tab or split pane. More memory means instant replay is able to go farther back into the past. You can enter instant replay with **View > Step Back in Time**.
 
 #### Save copy/paste and command history to disk
-If selected, every time text is copied or pasted in iTerm2 it will be saved to disk. The last 20 values are recorded. They can be accessed with **Edit > Open Paste History...**. If you use <a href="shell_integration.html">Shell Integration</a> then when this is enabled your command history, directory history, and remote hostname and usernames will also be saved to disk. Unchecking this will erase all of the saved information.
+If selected, every time text is copied or pasted in iTerm2 it will be saved to disk. The last 20 values are recorded. They can be accessed with **Edit > Open Paste History...**. If you use <a href="documentation-shell-integration.html">Shell Integration</a> then when this is enabled your command history, directory history, and remote hostname and usernames will also be saved to disk. Unchecking this will erase all of the saved information.
 
 #### Enable Python API
 Toggles the availability of the Pythono API. See <a href="/python-api-auth.html">Python API Authentication</a> for details on the security model.
@@ -411,7 +411,7 @@ This shortcut can be used to open a new window or tab. By default, it opens a ne
 Tags are a collection of words or phrases that annotate a profile. When you search your profiles (for instance, in the profiles window), the tag names are searched in addition to the profile name. If a tag name contains a slash that defines a hierarchy of menu items in the **Profiles** menu.
 
 #### Badge
-The badge is a large label visible in the top right of a terminal session behind its text. For more information see <a href="badges.html">Badges</a>. This is an interpolated string.
+The badge is a large label visible in the top right of a terminal session behind its text. For more information see <a href="documentation-badges.html">Badges</a>. This is an interpolated string.
 
 Click the *Edit...* button to configure the position, maximum size, and typeface of the badge.
 
@@ -799,12 +799,10 @@ You can log in the following formats:
  * *asciinema* - Produces a file viewable with <a href="https://asciinema.org/">asciinema</a>, which preserves time as well as more font attributes.
 
 #### Folder
-The folder in which to place logs. This is an [interpolated string](https://iterm2.com/documentation-scri
-pting-fundamentals.html#interpolated-strings).
+The folder in which to place logs. This is an [interpolated string](https://iterm2.com/documentation-scripting-fundamentals.html#interpolated-strings).
 
 #### Filename
-The name to give the log file. This is an [interpolated string](https://iterm2.com/documentation-scri
-pting-fundamentals.html#interpolated-strings).
+The name to give the log file. This is an [interpolated string](https://iterm2.com/documentation-scripting-fundamentals.html#interpolated-strings).
 
 #### Open password manager automatically
 If enabled the password manager will be opened when a session with this profile is created.
@@ -940,7 +938,7 @@ Full details can be found at <a href="documentation-triggers.html">Triggers</a>.
 [Smart Selection](/documentation-smart-selection.html) defines regular expressions that are used to select text on quad-click. 
 
 #### Automatic Profile Switching
-You can specify rules that, when satisified, changes any session's profile to this one. See <a href="automatic-profile-switching.html">Automatic Profile Switching</a> for all the details.
+You can specify rules that, when satisified, changes any session's profile to this one. See <a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a> for all the details.
 </p>
 
 #### Snippets Filter
