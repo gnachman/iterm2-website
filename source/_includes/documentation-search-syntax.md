@@ -1,4 +1,4 @@
-When iTerm2 presents a list of profiles, it usually includes a search box. The search box uses a special syntax that letes you tailor your searches to quickly find what you're looking for.
+When iTerm2 presents a list of profiles, it usually includes a search box. The search box uses a special syntax that lets you tailor your searches to quickly find what you're looking for.
 
 ### Searching Profiles
 
@@ -52,7 +52,7 @@ You may prefix a phrase in the search query with an *operator* to narrow your qu
 
  * The *name:* operator only tries to match words in the profile's name.
  * The *tag:* operator only tries to match words in the profile's tags.
- * The *command:* operator only tries to match words in the proifle's command. Note that the command is only searched for words that explicitly use the `command` operator. Available in iTerm2 version 3.5.5 and later.
+ * The *command:* operator only tries to match words in the profile's command. Note that the command is only searched for words that explicitly use the `command` operator. Available in iTerm2 version 3.5.5 and later.
 
 ### Quoting
 

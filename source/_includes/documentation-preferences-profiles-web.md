@@ -1,5 +1,7 @@
 ## Web
 
+This is only visible in web browser profiles.
+
 #### Page Zoom
 Turn this up to increase the size of web pages to improve legibility.
 

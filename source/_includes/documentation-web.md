@@ -1,83 +1,110 @@
-iTerm2 has some basic web browsing capabilities. To enable them, create a profile and in **Settings > Profiles > General** set **Profile Type** to **Web Browser**.
+## Overview
 
-The web browser pretends to be Safari. It is based on WKWebView. Its reasons for existing are, in no particular order:
+iTerm2 includes built-in web browsing capabilities. Web browser sessions fit into iTerm2's existing window > tab > split pane hierarchy just like terminal sessions, allowing you to browse the web alongside your terminal work.
 
- * A lot of iTerm2's features seemed to me like they would be useful in a web browser. See below for details on this.
- * A former colleague suggested this idea in 2014 and I haven't been able to stop thinking about it.
- * I am maybe having a midlife crisis and this is cheaper than a sports car.
+## Getting Started
 
-Since iTerm2 is still mostly a terminal, you'll need to install a [plugin to enable browser functionality](https://iterm2.com/browser-plugin.html). This is meant to make life easier on enterprise administrators who need to keep things locked down. They can block bundle ID `com.googlecode.iterm2.iTermBrowserPlugin` to prevent its installation.
+### Enabling the Browser
 
-If the presence of a browser offends you, set **Settings > Advanced > Enable browser-style profiles** to **No** and the feature will be completely hidden from view.
+1. Install the [browser plugin](https://iterm2.com/browser-plugin.html) to enable full functionality
+2. Create a new profile
+3. Go to **Settings > Profiles > General**
+4. Set **Profile Type** to **Web Browser**
 
-I doubt this will be many people's primary browser, but my hunch is that it will still be useful enough to keep around. Time will tell!
+**Note for Enterprise Users:** Administrators can block the browser plugin by restricting bundle ID `com.googlecode.iterm2.iTermBrowserPlugin`.
 
-## Features
+### Disabling Browser Features
 
-A web browser profile fits into the existing window > tab > split pane hierarchy just like a terminal session. That means that the existing navigation features work almost identically. The only exception is ⌘-[ and ⌘-], which normally navigate among split panes, is overridden to do Back and Forward in browser sessions. That notwithstanding, you can use hotkey windows, Open Quickly, navigation shortcuts, per-session hotkeys, and so on just as you would with a terminal session.
+If you prefer not to use browser features, you can completely hide them by setting **Settings > Advanced > Enable browser-style profiles** to **No**.
 
-Instant Replay is available in browser sessions. It uses macOS's Screen Capture API to make a screen recording. When you enable Instant Replay, you'll be asked to grant Screen Capture permission. This will cost a bit of CPU and a configurable amount of RAM. The CPU hit depends on your hardware; on my M4 Pro it is barely noticeable.
+## Core Features
 
-AI chat is integrated with the browser. You can link a browser session to an AI chat and discuss a web page, such as to summarize it.
+### Navigation and Window Management
 
-Copy to clipboard on selection works in the browser in the same was as in a terminal window.
+- Browser profiles work within iTerm2's standard window/tab/split pane hierarchy.
+- Use hotkey windows, Open Quickly, navigation shortcuts, and per-session hotkeys as with terminal sessions.
+- **Exception:** ⌘-[ and ⌘-] perform Back/Forward navigation instead of pane switching in browser sessions.
+- **Cmd+click** opens links in new tabs.
+- **Cmd+Shift+click** opens links in new vertical split panes.
+- **Cmd+Shift+Option+click** opens links in new horizontal split panes.
 
-If you use SSH Integration the browser can view files on remote hosts using URLs of the form `iterm2-ssh://example.com/home/gnachman/puppy.jpg`.
+### Text and Selection
 
-You can configure a profile to use **/dev/null mode**, which is a browsing mode in which no data is saved to disk.
+- **Copy on selection** works identically to terminal windows.
+- **Smart Selection** works identically to terminal windows. Smart Selection Actions appear in the context menu.
+- **Copy Mode** uses the same keystrokes as terminal sessions.
+- **Jump to Selection** functions as in terminal sessions.
+- **Find** supports regular expressions and case-sensitive search, just like in a terminal.
 
-Named Marks in browser profiles behave like a bookmark for a particular part of a web page. You can select some text, right click, and choose Add Named Mark. Existing features like Open Quickly or the Named Marks Toolbelt tool work as you would expect.
+### AI Integration
 
-Key Bindings work in browser profiles. Some actions are unavailable since they wouldn't make sense in a web context.
+- Link browser sessions to AI chat to discuss web pages.
+- Click hamburger menu → **Ask AI** to create a new AI chat with the reader-mode content of the current page attached.
+- Summarize, analyze, or ask questions about the current page.
 
-Triggers work by performing matching when the page finishes loading. Trigger actions are different for web profiles since few of the terminal trigger actions would make sense.
+### Privacy and Security
 
-Smart Selection works in browser sessions the same was as it does in terminal sessions. Smart selection actions are available in the context menu.
+- **/dev/null mode** is a mode for browsing privately that prevents any data from being saved to disk.
+- Built-in popup blocking blocks popups not initiated by user action.
+- Simple ad blocking using WebKit content blocker rules (configure via hamburger menu → **Settings**).
+- CONNECT proxy support for proxy-based adblockers.
+- The existing password manager has been integrated. Browser passwords are stored separately from terminal passwords.
+- Password manager integration for 1Password, and LastPass will use your existing web passwords.
 
-Pointer bindings work the same as in a terminal window, minus a few actions that didn't make sense. Same with Actions.
+### Remote Access
 
-Snippets work as you'd expect. They insert text into the focused field.
+- View files on remote hosts via SSH Integration using URLs like: `iterm2-ssh://example.com/home/user/file.jpg`
 
-Find works like in the terminal. That means you get regular expression search, case sensitive search, and so on.
+## Advanced Features
 
-The password manager works. Browser passwords are stored separately from terminal passwords. If you use the 1Password or LastPass integrations, that should also work and your existing passwords will already be available.
+### Bookmarks and Organization
 
-You can click the hamburger menu in the browser toolbar and select **Ask AI** to create a new AI chat with a reader-mode copy of the current page as an attachment that you can converse with it about.
+- **Named Marks** act as bookmarks for specific page sections (right-click → Add Named Mark).
+- Standard bookmarks available via hamburger menu.
+- Named Marks and Bookmarks work with Open Quickly and the Named Marks Toolbelt tool.
 
-Simple ad blocking functionality is available using WebKit content blocker rules. You can configure this by clicking the hamburger menu in the browser toolbar and selecting **Settings**. You can configure a CONNECT proxy in settings if you use a proxy-based adblocker. Popups not initiated by user action are always blocked.
+### Recording and History
 
-The browser supports bookmarks. You can add or manage them with the hamburger menu in the browser toolbar.
+- **Instant Replay** captures browser sessions using macOS Screen Capture API.
+- Like instant replay in terminal windows, the RAM limit is respected.
+- **Global Search** can search across browser sessions.
 
-Copy Mode works in the browser. It uses the same keystrokes as in the terminal.
+### Automation and Customization
 
-Basic auto-fill functionality exists. The browser users your contact card to get name, address, phone number, etc. to fill forms with.
+- **Key Bindings** work in browser profiles (some terminal-specific actions are unavailable).
+- **Triggers** match when pages finish loading with web-specific actions.
+- **Pointer bindings** and **Actions** available, minus some terminal-specific options.
+- **Snippets** insert text into a focused form field.
+- **Broadcast Input** works across browser sessions.
+- **Advanced Paste** available, minus some terminal-specific features.
+- **Composer** functions in browser sessions.
 
-Jump to Selection works the same as in a terminal session.
+### Content Management
 
-Global Search is able to search browser sessions.
+- **Reader Mode** is avilable in the hamburger menu.
+- **Distraction removal mode** similar to Safari's is also in the hamburger menu.
+- Right-click → **Remove Element** to hide cookie panels or other unwanted elements.
+- **Shell > Save Contents** saves web pages with resources.
+- Basic auto-fill of form fields is available, using your contact card information.
+- Search suggestions in URL bar.
+- Automatic audio detection and muting.
 
-Broadcast Input works with browser sessions.
+## Technical Details
 
-Advanced Paste works in browser sessions, minus a few features that don't make sense there.
-
-The Composer works in browser sessions.
-
-Under the hamburger menu you will find a toggle for Reader Mode.
-
-You can right click on an element and select "Remove Element" to get rid of cookie panels and the like. There is also a distration removal mode similar to Safari's which you can activate from the hamburger menu.
-
-**Shell > Save Contents** saves the web page and its resources, as you would expect.
-
-The browser detects when audio is playing and mutes it automatically.
-
-The URL bar supports search suggestions.
-
-Hold cmd to open a link in a new tab. Hold cmd+shift to open a link in a new vertical split pane. Hold cmd+shift+option to open a link in a new horizontal split pane.
+The browser is built on WKWebView and identifies as Safari to ensure compatibility with most websites.
 
 ## Limitations
 
-The Python API does not yet have any APIs specific to browser features. [File an issue](https://iterm2.com/bugs) and let me know what you would find useful.
+- **Python API** No browser-specific APIs yet. [File a feature request](https://iterm2.com/bugs) if you have ideas.
+- **Passkeys** Not supported due to Apple-imposed WKWebView restrictions.
+- **Advanced ad blocking:** Limited by Apple's resource fetching API restrictions.
 
-Passkeys can't be supported because Apple has blocked browsers built on WKWebView from implementing them, except for the developer's own site.
+## About This Feature
 
-Similarly, adblocking functionality is limited because Apple doesn't expose hooks into resource fetching. You can kind of work around it with a proxy but without knowing what a resource is (image, HTML, Javascript, etc.) an adblocker is hamstrung. Such a proxy would need a trusted root cert to be able to adblock on secure sites, which is too scary to consider.
+This feature exists because:
+- Many iTerm2 features translate well to web browsing
+- It provides a unified terminal and browser experience
+- A former colleague suggested this idea in 2014 and I haven't been able to stop thinking about it.
+- I am maybe having a midlife crisis and this is cheaper than a sports car.
+
+While not intended as a primary browser, iTerm2's web capabilities provide a useful tool for integrated terminal and web workflows.

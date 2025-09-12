@@ -6,7 +6,7 @@ Tabs in iTerm2 behave like tabs in other programs, most notably web browsers lik
 
 By default, the label of each tab is the name of the job that's running in that session. Some systems are configured to augment this with additional information such as the hostname you're logged in to or your current directory (this is done by sending a special code of ESC]0;string ^G).
 
-Tab labels have indicators that tell you their status. A blue dot means new input was received. An activity indicator means new out is being received. When the session ends, a  ⃠ icon appears in the tab. You can customize these indicators in Settings > Appearance.
+Tab labels have indicators that tell you their status. A blue dot means new input was received. An activity indicator means new output is being received. When the session ends, a  ⃠ icon appears in the tab. You can customize these indicators in Settings > Appearance.
 
 #### Edit Current Session
 The *Edit Current Session* panel lets you modify the appearance of a single session. If you customize some attribute of the session (for example, by changing the default text color) then subsequent changes to that same attribute in the profile will not affect the customized session. However, changes to other attributes of the profile will affect the customized session.
@@ -16,7 +16,7 @@ The primary use of the mouse in iTerm2 is to select text, and (by default) text 
 
 If you hold shift while clicking the existing selection is extended. In fact, you can single click in one location and shift click in an other location to make a selection: no dragging needed.
 
-If you hold cmd while dragging it will create a noncontinguous selection.
+If you hold cmd while dragging it will create a noncontiguous selection.
 
 If you hold cmd and click on a URL it will be opened. If you hold cmd and click on a filename, it will be opened. There is special support for MacVim, TextMate, and BBEdit when you cmd-click on a text file's name: if it is followed by a colon and line number, the file will be opened at that line number. The current directory is tracked if you have your shell prompt set the window title, <a href="http://www.faqs.org/docs/Linux-mini/Xterm-Title.html#toc4">as described here</a>, or if you have <a href="documentation-shell-integration.html">Shell Integration</a> installed.
 

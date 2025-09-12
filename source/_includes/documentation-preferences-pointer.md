@@ -27,7 +27,7 @@ When enabled, right-clicking or middle-clicking on a window will give it keyboar
 You may assign custom actions to mouse clicks and trackpad gestures. The left mouse button is not configurable because its behavior is rather complex, however. This is especially useful if you have a mouse with many buttons. Any combination of mouse button + number of clicks + modifiers may be assigned an action. For gestures, three finger taps and swipes may be configured in combination with modifiers. The following actions are available:
 
   * *Extend selection* - The text selection will grow, either from its beginning or end, to the location of the pointer.
-  * *Ignore* - Preform no action
+  * *Ignore* - Perform no action
   * *Invoke script function* - Call a Python API-defined function.
   * *Move pane* - The current pane will turn green. Click in another window's tab bar or in another pane to split to move the now-green pane.
   * *New Horizontal/Vertical split with profile* - The pane under the pointer will be split and the new split will use the specified profile.

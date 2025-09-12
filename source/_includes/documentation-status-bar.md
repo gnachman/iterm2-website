@@ -21,7 +21,7 @@ A status bar is composed of components. iTerm2 ships with a number of components
   * **Host Name** - Shows the current hostname. Use Shell Integration to keep this accurate when sshing.
   * **User Name** - Shows the current username. Use Shell Integration to keep this accurate when sshing.
   * **Job Name** - Shows the name of the current foreground job and its parent processes.
-  * **git state** - Shows the current git branch, wheter it's dirty, and the number of commits ahead or behind of `origin`.
+  * **git state** - Shows the current git branch, whether it's dirty, and the number of commits ahead or behind of `origin`.
 
 #### Miscellaneous
 
@@ -84,7 +84,7 @@ The interpolated string component has a `String Value` parameter where you can e
 
 #### Function Call
 
-The function call comonent has a `Label` that is displayed in the status bar and a `Function call` parameter that gives the Python API function call to invoke when the component is clicked.
+The function call component has a `Label` that is displayed in the status bar and a `Function call` parameter that gives the Python API function call to invoke when the component is clicked.
 
 ### Interactions
 

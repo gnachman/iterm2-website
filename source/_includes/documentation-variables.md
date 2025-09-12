@@ -66,7 +66,7 @@ These values require shell integration to be installed.
   * `tmuxStatusRight` - In tmux integration, the value of the right side of the status bar.
   * `tmuxWindowPane` - In tmux integration, this gives the window pane number.
   * `tmuxWindowTitle` - If tmux integration is in use, this gives the name of the window title from tmux.
-  _ `tmuxWindowPaneIndex` - In tmux integration, this gives the index of the window pane. It corresponds to the `pane_index` property in tmux.
+  * `tmuxWindowPaneIndex` - In tmux integration, this gives the index of the window pane. It corresponds to the `pane_index` property in tmux.
 
 #### References to Other Contexts
   * `iterm2` - A reference to the variables belonging to the application (i.e., the global context)

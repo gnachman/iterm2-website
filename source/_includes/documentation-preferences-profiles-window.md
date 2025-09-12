@@ -40,7 +40,7 @@ This allows you to select how the image is scaled to fit the window:
   * *Stretch* - The image is distorted to exactly fill the window.
   * *Tile* - The image is not scaled. It is tessellated.
   * *Scale to Fill* - The image is scaled up or down preserving the aspect ratio so that it completely fills the window. Parts of the image may be cropped out.
-  * *Scale to Fit* - The image is scaled to exactly fill the window either horizontally or vertically. Its aspect raio is preserved. Letterboxes or pillarboxes may be added.
+  * *Scale to Fit* - The image is scaled to exactly fill the window either horizontally or vertically. Its aspect ratio is preserved. Letterboxes or pillarboxes may be added.
 
 See also: *Settings > Appearance > Panes > Separate background images per pane*.
 
