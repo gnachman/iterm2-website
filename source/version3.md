@@ -138,7 +138,7 @@ Many third-party programs have already been updated. Please ensure you have the 
 
 ### Alfred Support
 
-Although Applescript has changed, you can still get Alfred to work. Go to Alfred Settings and choose Features. Pick *Terminal/Shell* and for *Application* choose *Custom*. Then paste the <a href="https://gist.githubusercontent.com/gnachman/4cbe6743baa7fe07536b/raw/61fceba4a0b2624850ac1b4a20ac8ca48e07f7d2/gistfile1.txt">iTerm2 3.0 Alfred Script</a> into the text field. <a href="/images/AlfredForiTerm2Version3.png">Perhaps a crude illustration will help.</a></p>
+Although Applescript has changed, you can still get Alfred to work. Go to Alfred Preferences and choose Features. Pick *Terminal/Shell* and for *Application* choose *Custom*. Then paste the <a href="https://gist.githubusercontent.com/gnachman/4cbe6743baa7fe07536b/raw/61fceba4a0b2624850ac1b4a20ac8ca48e07f7d2/gistfile1.txt">iTerm2 3.0 Alfred Script</a> into the text field. <a href="/images/AlfredForiTerm2Version3.png">Perhaps a crude illustration will help.</a></p>
 
 <script>
 function show(name) {

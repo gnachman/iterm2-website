@@ -1,6 +1,6 @@
 ---
-layout: subdoc33
-title: Shortcuts Settings - Documentation - iTerm2 - macOS Terminal Replacement
+layout: subdoc36
+title: Shortcuts Preferences - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Shortcuts
 ---

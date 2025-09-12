@@ -1,8 +1,8 @@
 ---
-layout: subdoc33
-title: Settings - Documentation - iTerm2 - macOS Terminal Replacement
+layout: subdoc36
+title: Preferences - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
-subhead: Settings
+subhead: Preferences
 ---
 
 The preferences dialog contains the following sections:

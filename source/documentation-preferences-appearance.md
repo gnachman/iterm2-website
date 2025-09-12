@@ -1,7 +1,7 @@
 ---
-layout: subdoc33
-title: Appearance Settings - Documentation - iTerm2 - macOS Terminal Replacement
+layout: subdoc36
+title: Appearance Preferences - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
-subhead: Settings
+subhead: Preferences
 ---
 {% include 3.6/documentation-preferences-appearance.md %}

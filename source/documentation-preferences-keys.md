@@ -1,7 +1,7 @@
 ---
-layout: subdoc33
-title: Keys Settings - Documentation - iTerm2 - macOS Terminal Replacement
+layout: subdoc36
+title: Keys Preferences - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
-subhead: Settings
+subhead: Preferences
 ---
 {% include 3.6/documentation-preferences-keys.md %}

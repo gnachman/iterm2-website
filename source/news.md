@@ -4,10 +4,6 @@ title: iTerm2 - macOS Terminal Replacement
 active-state: news
 ---
 
-#### iTerm2 version 3.6 released
-<i>Sunnyvale, CA&mdash;September 16, 2025</i>
-Version 3.6 of iTerm2 has been released. It adds a number of new features, including AI chat and a web browser. Read the <a href="https://iterm2.com/downloads/stable/iTerm2-3_6_0.changelog">release notes</a> for details.
-
 #### iTerm2 version 3.5 released
 <i>Sunnyvale, CA&mdash;May 20, 2024</i>
 Version 3.5 of iTerm2 has been released. It adds a number of new features, such as improved navigation, filtering, light/dark mode color schemes, ChatGPT integration, and integration with 1Password. Read the <a href="https://iterm2.com/downloads/stable/iTerm2-3_5_0.changelog">release notes</a> for details.
