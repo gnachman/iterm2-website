@@ -1,5 +1,5 @@
 ---
-layout: docs_old
+layout: docs32_old
 title: Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 ---
