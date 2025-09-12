@@ -1,3 +1,9 @@
+---
+layout: subdoc36
+title: Copy Mode - Documentation - iTerm2 - macOS Terminal Replacement
+active-state: documentation
+subhead: Copy Mode
+---
 Copy Mode allows you to make selections using the keyboard. To enter or exit Copy Mode, select Edit > Copy Mode. You can also enter copy mode by pressing <S-Arrow> immediately after making a selection with the mouse. A special cursor rendered as a downward-pointing arrow is visible while in Copy Mode.
 
 While in Copy Mode, the session’s contents will not change. You can use the keyboard to move the cursor and modify the selection using these keystrokes:

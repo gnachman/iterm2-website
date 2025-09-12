@@ -50,7 +50,7 @@ If your keyboard layout requires you to hold Shift (or some other modifier) to p
 
 ### Hotkey
 
-#### Create a Dedicated Hotkey WIndow
+#### Create a Dedicated Hotkey Window
 Sets up a new hotkey window profile if you don't already have one. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.
 
 #### Show/Hide iTerm2 all windows with a system-wide hotkey

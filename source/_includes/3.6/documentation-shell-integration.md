@@ -47,7 +47,7 @@ The download-and-run option will type this command for you:
 
 <pre>curl -L https://iterm2.com/shell_integration/install_shell_integration.sh | bash</pre>
 
-Alternately, select **Internet-Free Install**. This runs a sequence of commands to determine your shell, install files, and modify your dotfiles to load shell integration automiatcally.
+Alternately, select **Internet-Free Install**. This runs a sequence of commands to determine your shell, install files, and modify your dotfiles to load shell integration automatically.
 
 <a name="install-by-hand" />
 <hr/>

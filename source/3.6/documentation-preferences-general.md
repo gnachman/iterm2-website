@@ -1,5 +1,5 @@
 ---
-layout: subdoc33
+layout: subdoc36
 title: General Preferences - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Preferences

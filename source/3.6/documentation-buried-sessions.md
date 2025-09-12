@@ -1,5 +1,5 @@
 ---
-layout: subdoc33
+layout: subdoc36
 title: Buried Sessions - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Buried Sessions

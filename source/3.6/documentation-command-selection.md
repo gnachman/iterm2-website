@@ -1,5 +1,5 @@
 ---
-layout: subdoc33
+layout: subdoc36
 title: Command Selection and Command URLs - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Command Selection and Command URLs Syntax

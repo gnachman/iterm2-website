@@ -43,4 +43,4 @@ PS1='\s-\v\$\[$(~/.iterm2/it2setkeylabel set status \
 
 
 #### Custom Buttons
-You can define custom touch bar buttons in **Prefs > Keys > Add Touch Bar Item**. You can then add the item to you touch bar from **View > Customize Touch Bar**.
+You can define custom touch bar buttons in **Prefs > Keys > Add Touch Bar Item**. You can then add the item to your touch bar from **View > Customize Touch Bar**.

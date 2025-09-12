@@ -11,6 +11,7 @@ Profiles preferences contains the following sections:
 
   * <a href="documentation-preferences-profiles-general.html">General</a>
   * <a href="documentation-preferences-profiles-colors.html">Colors</a>
+  * <a href="documentation-preferences-profiles-web.html">Web</a>
   * <a href="documentation-preferences-profiles-text.html">Text</a>
   * <a href="documentation-preferences-profiles-window.html">Window</a>
   * <a href="documentation-preferences-profiles-terminal.html">Terminal</a>

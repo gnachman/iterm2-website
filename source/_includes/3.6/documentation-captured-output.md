@@ -38,7 +38,7 @@ Open the Toolbelt by selecting the menu item Toolbelt &gt; Show Toolbelt. Enable
 
 Kick off the build by running make. It spits out thousands of lines of output.
 
-#### Step 4: Examine the Captued Output tool
+#### Step 4: Examine the Captured Output tool
 
 Any errors or warnings that appear in the compiler output will appear in the Captured Output tool.
 
@@ -47,7 +47,7 @@ Select an entry in the tool. iTerm2 scrolls to display the line and briefly high
 
 #### Step 5: Open the file containing the error
 
-The Trigger created in step 1 takes an optional parameter. It is a command for iTerm2 to exceute as a <a href="https://www.iterm2.com/coprocesses.html">Coprocess</a> when you double-click an entry in the Captured Output tool. An example command is:
+The Trigger created in step 1 takes an optional parameter. It is a command for iTerm2 to execute as a <a href="https://www.iterm2.com/coprocesses.html">Coprocess</a> when you double-click an entry in the Captured Output tool. An example command is:
 
 <pre>
 echo vim \1; sleep 0.5; echo \2G
@@ -56,14 +56,14 @@ echo vim \1; sleep 0.5; echo \2G
 This coprocess command assumes you are at the command line, and it enters a command to open the offending file to the line number with an error. This is where the capture groups in the regular expression from step 1 become useful. For example, if the filename was "filename.c" and the error was on line 20, as in this error message:
 
 <pre>
-filename:c:20:9 error: use of undeclared identifier 'foo'
+filename.c:20:9 error: use of undeclared identifier 'foo'
 </pre>
 
 The coprocess would:
 
-  * Type "vim filename.c", followed by enter, as though you were typing it at the keyboard.</li>
-  * Wait half a second.</li>
-  * Type "20G".</li>
+  <li>Type "vim filename.c", followed by enter, as though you were typing it at the keyboard.</li>
+  <li>Wait half a second.</li>
+  <li>Type "20G".</li>
 
 #### Step 6: Check it off the list
 
