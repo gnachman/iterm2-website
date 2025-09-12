@@ -4,4 +4,4 @@ title: Automatic Profile Switching - Documentation - iTerm2 - macOS Terminal Rep
 active-state: documentation
 subhead: Automatic Profile Switching
 ---
-{% include documentation-automatic-profile-switching.md %}
+{% include 3.2/documentation-automatic-profile-switching.md %}

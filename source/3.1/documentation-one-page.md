@@ -3,7 +3,7 @@ layout: docs_old
 title: Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 ---
-{% include documentation.md %}
+{% include 3.1/documentation.md %}
 
 ### Table of Contents
 <UL>
