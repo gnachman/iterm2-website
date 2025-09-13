@@ -1,0 +1,250 @@
+iTerm2 version 3.6.0 was released on September 16, 2025
+
+Major New Features:
+- A new AI Chat feature was added. The assistant
+  can interact with the terminal, subject to your
+  permission. It can also explain command output,
+  adding annotations right in the terminal.
+
+- You can now configure a profile to be a web
+  browser. In Settings > Profiles >
+  General, set "Profile Type" to "Web Browser".
+  Many existing features already work in browser
+  sessions, such as key bindings, smart selection,
+  navigation, open quickly, focus follows mouse,
+  and the password manager.
+
+New Features in Terminal Sessions:
+- The context menu now shows how strings would be
+  base64 (en/de)coded.
+- Added "Settings > Profiles > Terminal >
+  Click on a path in a shell prompt to open
+  Navigator" to provide a new way to navigate the
+  filesystem.
+- Timestamps can now be shown adjacent to terminal
+  content rather than overlapping. They can also
+  be configured to be relative to a particular
+  line by right-clicking and selecting "Set
+  Baseline for Relative Timestamps".
+- Navigating to the next or previous mark now
+  selects the command if command selection is
+  enabled.
+- Added the option to hide the cursor when
+  keyboard focus is lost.
+- You can now select a block of JSON and select
+  "Edit > Replace Selection > Replace with
+  Pretty-Printed JSON" to make it legible.
+  Same with encoding and decoding base64.
+
+Settings Improvements:
+- Tildes are now expanded in the folder for
+  automatic logging.
+- Background image path can now be interpolated
+  strings.
+- Dimming is temporarily disabled while in colors
+  settings.
+- You can now right click on a text field in
+  settings and select "Reset to default value".
+- Settings search now uses a Porter stemmer for
+  better recall. You can quote words or
+  phrases to do literal search.
+- When opening settings the default profile is now
+  automatically selected.
+- Added Settings > General > Experimental for
+  features that are almost but not quite ready for
+  prime time. Right-to-left text support and SSH
+  Integration for ssh: URLs is there.
+
+New Key Binding Actions:
+- There is a new key binding action, Copy Mode
+  Commands, that lets you perform copy mode
+  actions (e.g., enter copy mode, move the cursor
+  around, make a selection, and so on).
+- Add a new key binding action "Copy Interpolated
+  String".
+- Add a new key action, Bypass Terminal, that
+  allows systemwide shortcuts to be handled
+  without the terminal window taking them.
+
+Triggers Improvements:
+- Added a new trigger that lets you modify any
+  stylistic attribute of text by using SGR codes.
+- The triggers and smart selection settings UIs
+  were revamped.
+
+UI Improvements:
+- The Snippets Toolbelt tool was revamped to show
+  hierarchy (tags with slashes define
+  directories).
+- If you try to set a hotkey to a commonly used
+  shortcut, you'll be asked to confirm it.
+- Improve appearances of some natively rendered
+  powerline glyphs.
+- Improve the appearance of in-terminal buttons
+  when they overlap text.
+- The UI for setting "send text at start" in
+  settings now has an expanding text box if you
+  feel like writing a lot.
+- Some menu items now show a floating window that
+  explains their purpose when you hover over them.
+- Improvements to the appearance of the Composer.
+- Added a settings button to the selected command
+  buttons so you can disable command selection.
+- Menu items were moved around to make the Window
+  menu less absurdly large.
+- The appearance of announcements has been
+  updated.
+- Add support for macOS 15's feature where double
+  clicking a title bar can be set in system
+  settings to fill the screen.
+- Detect when there is a non-default background
+  color and extend it into the margins. In
+  Minimal, it is also extended into window chrome.
+
+Open Quickly Improvements:
+- Esc now closes the Open Quickly window.
+- In Open Quickly, you can now use /A to restrict
+  results to open arrangements in tabs.
+- Menu items are now accessible through Open
+  Quickly, making it into a command palette.
+- Named marks are now accessible through Open
+  Quickly.
+
+AI Improvements:
+- You can now configure AI to use the recommended
+  model which will update for you automatically
+  when new models are released.
+
+Core Improvements:
+- Performance improvements when showing lots of
+  text (provided there are no triggers).
+- Automatic profile switching job rules now match
+  against the full command line as well as just
+  the job name
+
+Semantic History Improvements:
+- Semantic history now searches ancestors of the
+  working directory if the path you click has a
+  prefix in common with a suffix of the working
+  directory.
+- Semantic history can now be configured to send
+  text instead of opening a file.
+- Windsurf added to Semantic History editors.
+
+Terminal Emulation Improvements:
+- Saved cursor position from DECSC is now reflowed
+  when resizing.
+- Detect when mouse reporting and DEC 2048
+  reporting was accidentally left on by watching
+  for characters being echoed back.
+- DEC 2048 is turned off automatically when
+  the current hostname is detected to have
+  changed.
+- There is a new profile setting to automatically
+  turn on alternate mouse scroll in alternate
+  screen mode and another to restrict it to
+  vertical movement.
+
+SSH Integration Improvements:
+- SSH integration now lets you set the path to
+  ssh. You can set it in the UI under Settings >
+  Profiles > General > Configure or by setting the
+  SSH environment variable if you use it2ssh.
+- File open/save panels now have the option to
+  show SSH hosts when you are connected with SSH
+  integration. So, for example, when you use
+  `it2ul` to upload a file, you could pick a file on
+  a different host that you're already connected
+  to.
+- When using SSH integration, there is a new menu
+  item "Shell > ssh > Download Files" that opens a
+  file picker that lists files on the remote host
+  to download. Transfers go over ssh integration
+  so no new connection needs to be made.
+
+Security Improvements:
+- Secure settings are now used to record which
+  hostnames can have URLs opened by control
+  sequence.
+
+
+Bug fixes:
+- Fix various crashes.
+- Fix a bug where "send text at start" didn't work
+  when a profile's windows are full screen.
+- Draw cursor guide over powerline glyphs when
+  native powerling glyphs are enabled.
+- Fix bad animations when animating cursor
+  movement.
+- Make "fold to named mark" pick the last mark
+  with a given name.
+- Fix a bug where folding to named mark would
+  sometimes place the collapsed line in the wrong
+  place.
+- Fix a bug where an invisible composer window
+  could be left behind, preventing you from
+  clicking on the top of the terminal.
+- Don't add snippets to the top level menu if they
+  have tags.
+- Secure settings are now stored in /usr/local if
+  your home directory is a network mount.
+- Fix a bug when copying a session's settings to a
+  profile where the per-session hotkey was also
+  copied over.
+- Fix a bug where an empty cd command was issued
+  when running a command from an iterm: URL in an
+  existing session..
+- Fix a bug where an empty "gray" window could be
+  left behind.
+- Fix a bug where jump to selection didn't work.
+- Systemwide hotkey is now hopefully more
+  reliable.
+- Fix a bug where silent coprocesses didn't work
+  right with ssh integration.
+- Fix a bug where restoring a window arrangement
+  could cause windows to appear on the wrong
+  screen.
+- Fix some bugs in key reporting that differed
+  from Kitty's behavior.
+- Inline HEIC images now work.
+- Fix a visual bug when selecting half of a
+  double-width character.
+- Fix many bugs in SIXEL image decoding.
+- Fix a bug where reattaching to tmux integration
+  after relaunching the app didn't work.
+- Rich text is de-richified when pasting into
+  Codecierge.
+- Fix a bug with fish were you could end up with
+  two prompt marks on adjacent lines.
+- Fix various bugs with fold/unfold in conjunction
+  with auto composer.
+- Fix a bug where selecting a title provider
+  vended by a Python API script sometimes did not
+  work.
+- Fix a bug where SSH Integration tabs would have
+  an activity indicator when they were idle.
+- Fix it2dl over ssh integration.
+- Fix a bug where you could do Move Pane to Tab
+  more than once concurrently.
+- Prevent the accent menu from appearing behind
+  hotkey windows.
+
+Things Made Worse:
+- Stylstic alternatives are now only available when
+  ligatures are enabled to avoid taking a slow code
+  path that most people don't want.
+
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+e6df715afcbed8742c6783bc506ad721163b7bbf8601edb957dbff6b4bc3e44a
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREIAB0WIQSAPIQGkYVsjnBRo2J0Et0TaFtKrAUCaMS03AAKCRB0Et0TaFtK
+rIT8AQDGTzI4jSxbJNr21/IPIb5VQ032xutuMq8O0nSwxBbbIwD/ey/+3lD8JjdO
+n8eBon8kdI+lun21PZQoKiJ46cN0YRc=
+=Zx8i
+-----END PGP SIGNATURE-----
