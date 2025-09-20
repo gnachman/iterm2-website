@@ -1,3 +1,51 @@
+2025-09-19: Add move tab to new window menu item. Inspired
+by pr 521 by cbowns
+
+2025-09-19: Add browser triggers that inject JS
+
+2025-09-19: Fix release icon
+
+2025-09-19: Fix a bug where we make the browser view first
+responder before it's in the view hierarchy
+
+2025-09-19: Add a missing iife call
+
+2025-09-19: Log evaluated js
+
+2025-09-19: Delete some leftover rust adblock code that
+broke CONNECT proxy support
+
+2025-09-19: Fix auto layout hell when adding a browser split
+pane which prevented the window from becoming narrower. I
+don't know why this fix works but I'm grateful for it
+nonethe less. I did try literally everything else: making
+all the auto resizing masks [.width,.height], setting
+.translatesAutoResizingMaskToConstraints=false on
+everything, and even hackily removing constraints. None of
+this did a damn thing. NSSplitView turns on
+translatesAutoResizingMaskToConstraints on its views and
+also changes their autoresizing masks to
+[.maxWidth,.maxHeight]. I tried hacking around that but that
+didn't work either. I also tried interposing a view that
+uses auto layout intentionally to allow arbitrary resizing
+but that still had no effect. It seems like the bad
+autoresizing mask->constraint translation happens instantly
+everywhere, so things like the window title constrain the
+window's size because the translation is done more or less
+incompetently. I still do not understand why it constrained
+the window's minimum width but not its maximum. As far as I
+can tell it is impossible to analyze in any meaningful way.
+With as much sincerity as I can muster, fuck auto layout.
+
+2025-09-19: Fix crash when resizing when a command range is
+invalid. This is not a good fix, just a band aid
+
+2025-09-19: Improve iterm_recursiveDescription to show auto
+resizing mask
+
+2025-09-19: Try to delay crashing when the pw manager's xib
+is broken
+
 2025-09-18: Remove unneeded message in release notes
 
 2025-09-18: Rebuild libsixel
