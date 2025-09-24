@@ -1,3 +1,49 @@
+2025-09-23: Fix audio muting to work on
+https://archillect.com/tv. Issue 12429
+
+2025-09-23: Disable parallel tool use by Claude until I have
+time to implement it. Issue 12422
+
+2025-09-23: Handle Tahoe's larger i-beam cursor frame
+correctly. The hotspot was wrong since I assumed a given
+size. I think it's safe to say the hotspot is just in the
+middle. Issue 12419
+
+2025-09-23: Make min distance for cursor movement animation
+configurable for issue 9627
+
+2025-09-23: Add an option to respect symbolic hotkeys like
+control-f2 to open the app menu. Issue 12414
+
+2025-09-23: Fix a bug where the AI API key text field didn't
+accept keyboard shortcuts
+
+2025-09-23: Fix up prompt marks' outputStart when resizing
+
+2025-09-23: Use outputStart when getting the range of a
+command mark's output instead of using the interval itself.
+This fixes issue 12445 with two line prompts selecting part
+of the prompt
+
+2025-09-23: Fix a bug where aborting a command because of
+FTCS sequences would leave a bogus screen mark in the mark
+cache
+
+2025-09-23: Add more debug logging for prompt marks
+
+2025-09-23: Reuse prompt marks. You could get a dup by
+CurrentDirectory followed by FTCS A. Fixes a bug where copy
+output got confused.
+
+2025-09-23: On FTCS C if the cursor is not on the first
+column, assume output begins at the start of the next line
+
+2025-09-23: Add debug logging to VT100ScreenMark
+
+2025-09-23: Fix a bug where selecting a command's output
+selected full lines rather than the actual range with proper
+x coordinates
+
 2025-09-22: Terminate browser sessions hard so audio doesn't
 keep playing after close. Issue 12446
 
