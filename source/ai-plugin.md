@@ -14,4 +14,6 @@ Download the package and unzip it. Place in `/Applications`. You don't need to r
 
 <div class="text-center">
         <a href="https://iterm2.com/downloads/ai-plugin/iTermAI-1.1.zip"><img src="img/download-button.png"></a>
+<br/>
+<a href="https://github.com/gnachman/iterm2-website/raw/refs/heads/master/downloads/ai-plugin/iTermAI-1.1.zip">Download from Github</a>
 </div>
