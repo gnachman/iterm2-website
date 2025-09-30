@@ -39,8 +39,12 @@ Each action has a parameter. The meaning of the parameter depends on the action.
  * `\d`: The current directory.
  * `\u`: The current user name. If you're sshed then you must install [Shell Integration](documentation-shell-integration.html) for this to be known.
  * `\h`: The current host name. If you're sshed then you must install [Shell Integration](documentation-shell-integration.html) for this to be known.
+ * `\n`: Newline
+ * `\\`: Backslash
 
 If you check the **Use interpolated strings for parameters** checkbox, then a more modern syntax is used. See the [interpolated string](documentation-scripting-fundamentals.html) documentation for details. For example, a parameter of `\(path)` is equivalent to the legacy syntax `\d`. In addition to the standard variables that are available in an interpolated string evaluated in a Session context, an array of strings called `matches` is defined. `matches[0]` is the full text of the match and `matches[i]` is the `i`th capture group for `i` > 0.
+
+When using interpolated strings, the <a href="documentation-scripting-fundamentals.md#interpolated-strings">usual escaping rules</a> apply.
 
 #### Regular Expressions
 Regular expressions conform to the <a href="https://unicode-org.github.io/icu/userguide/strings/regexp.html">ICU regular expressions</a> rules.

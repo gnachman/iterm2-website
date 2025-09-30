@@ -158,7 +158,8 @@ Variables in the current context can be referred to by a path like `jobName`,
 but you can also specify multi-part paths that refer to variables in different
 contexts. See the section **Following Context References**, below.
 
-## Interpolated Strings {#interpolated-strings}
+<a name="#interpolated-strings" />
+## Interpolated Strings
 
 Another way that varibles are exposed in iTerm2's user interface is through
 *interpolated strings*. An interpolated string is a string of text that
@@ -206,6 +207,18 @@ interpolated string:
 ```
 
 Its value would be `Lorem ipsum dolor sit amet`.
+
+### Escaping
+
+Interpolated strings use the following escaping rules:
+
+ * `\n` -> Newline
+ * `\a` -> Bel
+ * `\t` -> Tab
+ * `\r` -> Carriage return
+ * `\\` -> Backspace
+ * `\e` -> Esc
+ * `\uxxxx` -> where x is a hex digit, gives the unicode codepoint
 
 ### Contexts
 
