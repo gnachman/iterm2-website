@@ -1,3 +1,33 @@
+2025-09-29: Fix scoring of menu item results in open
+quickly. Documents scores are relative to their position in
+the list and the tooltip should come first because it is
+lower precision. Also reduce the multiplier for menu item
+scoring because it's better to get real items for
+arrangements,  profiles, and bookmarks than the menu item
+equivalents for those things. Inspired by issue 12499
+
+2025-09-29: Bring arrangements back to open quickly. Issue
+12499
+
+2025-09-29: Bring back 'Fix lookups of profile row and
+columns that don't fall back to default values', originally
+in commit 7829c74d5ed2990654fab63e3bfbe06395107d68, which
+was reverted by commit
+e70e2d2a880fe6d07c23b87d742b299f14d3e8e4. The actual problem
+was mixing up rows and columns in
+iTermAdjustFontSizeHelper.m. See the comment here:
+https://gitlab.com/gnachman/iterm2/-/issues/12482#note_2782630310
+
+2025-09-29: Make filter field's placeholder color consistent
+when it is key. Issue 12502
+
+2025-09-29: Fix global search which was totally broken.
+Issue 12470
+
+2025-09-28: Improve AI registration to be less
+openai-centric and not require an API key for self-hosted
+models. Issue 12477
+
 2025-09-28: Tweak info.plist for web tech
 
 2025-09-28: Revert "Fix lookups of profile row and columns
@@ -992,3 +1022,13 @@ window
 2025-08-02: Disable coprocess menu item for browers session
 
 2025-08-02: Instant replay for web browser
+
+2025-08-01: Disable more menu items that are nonsense in the
+browser
+
+2025-08-01: Disable menu items that don't make sense in
+browser
+
+2025-08-01: Jump to selection in browser
+
+2025-08-01: Copy mode in browser
