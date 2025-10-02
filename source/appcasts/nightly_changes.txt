@@ -1,3 +1,81 @@
+2025-10-01: Make cmd-shift-click on url open it in a split
+pane.
+
+2025-10-01: Don't crash in clear to selection when the
+absolute line numbers are out of range. I'm not sure why,
+could be arithmetic overflow
+
+2025-10-01: Don't assert if a session can't be revived. It
+will leave things in a bad state but it's better than
+crashing
+
+2025-10-01: Add logging to debug divorce assertion
+
+2025-10-01: Avoid -[PseudoTerminal description] being
+reentrant if the window is not loaded
+
+2025-10-01: Mutate main thread colormap in paused side
+effect since it may cause layout
+
+2025-10-01: Add initializer to Range to convert NSRange more
+safely and avoid overflow in iTermGlobalSearchEngineCursor
+
+2025-10-01: Fix version.txt, which fixes the nightly build
+
+2025-10-01: Handle profiles with string where color
+dictionaries were expected without crashing
+
+2025-10-01: Prevent the settings search engine from
+returning documents belonging to a profile type other than
+the current profile's type
+
+2025-10-01: Prevent coordForPoint:allowRightMarginOverflow:
+from returning negative values, which can cause a crash
+
+2025-10-01: Fix excess file descriptor closing crash due to
+password manager. The root cause was that DispatchIO wants
+to own the file descriptor but the passed-in Pipes also own
+them.
+
+2025-10-01: Fix crash for categoryless input sources
+
+2025-10-01: Try to fix crash when clicking a tip of the day
+button
+
+2025-10-01: Add paranoid bounds check
+
+2025-09-30: Remove leftover code that should've been deleted
+in fc16a77
+
+2025-09-30: Defend against strings in profile settings where
+numbers belong
+
+2025-09-30: Dispatch notification center's callbacks to main
+queue
+
+2025-09-30: Show a warning if smart selection default rules
+are missing
+
+2025-09-30: Show a warning if the encodings plist is missing
+
+2025-09-30: Fix crash from using grapheme indices when
+UTF-16 was intended
+
+2025-09-30: Prevent crash in registerMenuTips
+
+2025-09-30: Fix data race in FontTable
+
+2025-09-30: Fix race in accessing the browser database.
+Swift actors are evil
+
+2025-09-30: Don't force unwrap renderEncoder
+
+2025-09-30: Throw if you try to download something that is
+not a regular file or a folder
+
+2025-09-30: Fix a bug where trigger regex was not
+prepopulated
+
 2025-09-30: Fix how smart selection UI updates profile model
 to take effect immediately.
 
