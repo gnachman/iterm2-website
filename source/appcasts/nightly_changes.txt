@@ -1,3 +1,15 @@
+2025-10-02: Fix opening terminal sessions by URL. Issue
+12511
+
+2025-10-02: Reset overflow when doing a mutation
+thread-initiated sync because the subsequent call to
+refreshAfterSync: will adjust the scrollview for scrollback
+overflow when there is userscroll so it stays locked to the
+same location. If we do not reset overflow, then that
+overflow will be applied doubly, causing the scroll position
+to drift upwards. See email with subject line 'Change in
+Scroll Behavior During Continuous Output'
+
 2025-10-01: Make cmd-shift-click on url open it in a split
 pane.
 
