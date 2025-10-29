@@ -1,3 +1,257 @@
+2025-10-29: Add missing file
+
+2025-10-29: Fix a bug where typing in the regular expression
+field in Edit Triggers made it lose first responder because
+the tableview got reloaded. Issue 12577
+
+2025-10-29: Polish up the toggle setting key binding action
+
+2025-10-28: Add key binding action to toggle a checkbox in
+settings. Issue 12579
+
+2025-10-28: Fix filter in status bar and refactor core
+search. Issue 12580
+
+- Extract search logic into new iTermCoreSearch module with
+clean API - Replace RegexKitLite with NSRegularExpression
+and add thread-safe LRU cache - Simplify algorithm: find all
+matches once, then filter by position - Remove complex regex
+anchor handling; rely on NSRegularExpression native ^ and $
+- Fix filter mode persistence bug in SessionView - Only
+recreate find driver when view controllers change - Fix
+stale filter updates in PTYSession doubling up content - Add
+filter mode selection menu to MiniFilterViewController
+
+2025-10-27: Improve how we handle newline-swallowing shells
+when advanced paste waits for a prompt. Do not bracket
+newlines. That allows us to paste multiple commands. Issue
+12569
+
+2025-10-27: Avoid some weird inexplicable crashes
+
+2025-10-27: Fix a bug in timer proxy that could cause a
+block to be called with nil self
+
+2025-10-27: Fix possible multithreaded races in CAMetalLayer
+usage where we change something like its size or pixel
+format while in nextDrawable
+
+2025-10-25: remove assign-only variable in iTermMetalView
+
+2025-10-25: Add nullability annotations to NSString+iTerm
+
+2025-10-24: Fix code that called into NSImage categories
+that had their nullability annotations changed
+
+2025-10-24: Improve logging for missing default smart
+selection rules
+
+2025-10-24: Add nullability annotations to NSImage+iTerm.h.
+Fixes a crash when an image is missing.
+
+2025-10-24: Fix how client-server protocol reallocs space
+
+2025-10-23: Remove tail find timer when it's idle to improve
+performance when not using tail find (before it would make a
+snapshot on every sync)
+
+2025-10-23: Add some places where I missed the window
+paramter to URL opening
+
+2025-10-23: Show the openURL beg screen as a sheet to avoid
+annoying non-sheet behavior. Issue 12570
+
+2025-10-23: Improve performance of moving cursor
+horizontally. Issue 12571
+
+2025-10-23: Fix a bug where moving the cursor horizontally
+to an unreachable coordinate could cause an infinite loop.
+Issue 12571
+
+2025-10-23: Fix Python 3.14 support. Asyncio decided to
+break get_event_loop.
+
+2025-10-22: Add plugin based password manager and
+implementation for keepass
+
+2025-10-21: Search non-recursively for crashlogs. Issue
+12558
+
+2025-10-21: Offer to reset red tmux tabs. Issue 12542
+
+2025-10-21: Try to prevent a crash by not calling
+adjustSubviews on a NSSplitView with no subviews
+
+2025-10-21: Prevent NSEvent.CGEvent from crashing when it
+throws an exception which is not even documented to do <3
+apple
+
+2025-10-21: Improve how we crash when the bundle is damaged
+when getting encodings
+
+2025-10-21: ARCify tip of the day to try to fix crash in
+buttonPressed:
+
+2025-10-21: Fix a bug where triggers that detected a prompt
+that wrapped to multiple lines would do an oob read because
+the trigger treated the captured range's upper bound as a
+coordinate
+
+2025-10-21: Guard against negative inputs to
+screenCharArrayByRemovingLast
+
+2025-10-21: Do sanity check of PTYFontInfo to track down a
+crash
+
+2025-10-21: Fix various places where we don't handle a nil
+datasource
+
+2025-10-21: Add debug logging for crash in graph db
+
+2025-10-21: Add option to show per-pane title bars even when
+this only one pane
+
+2025-10-21: Tweak tahoe tab text colors to improve
+legibility against dark background colors
+
+2025-10-21: Tweak background color of non-selected Tahoe
+tabs with a tab color to show the tab color with a low alpha
+
+2025-10-21: Fix light/dark (with or without high contrast)
+tab style in Tahoe for compact windows. Mailing list thread
+subject 'Any way to go back to the old tab colors'
+
+2025-10-20: Left align minimal title label
+
+2025-10-20: Tweak position of titlebar accessory in macOS 26
+
+2025-10-20: Fix vertical alignment of window shortcut
+titlebar accessory
+
+2025-10-20: Provide useful diagnostic info when a command
+fails to exec
+
+2025-10-20: Fix broken delete button in annotations.
+Mentioned on mailing list thread 'Can't delete annotations'
+
+2025-10-20: Conditionally enable the menu item: (#523)
+
+Only allow move to new window when there's > 1 tab
+2025-10-20: Support multiple rows of colors in tab color
+menu item and update for macOS 26. Based on PR 526 by
+theanotherwise
+
+2025-10-20: Update shell integration
+
+2025-10-19: Add support for OSC 52 in DA response.
+
+2025-10-19: Fix drag drop or panes and tabs into browser
+sessions
+
+2025-10-19: Fix bugs in page zoom that mixed up 0-1 vs 0-100
+scales. Issue 12541
+
+2025-10-19: Fix drawing of dividers in tahoe tab bar and
+tweak various colors to more closely match the system. Issue
+12543
+
+2025-10-18: Fix a bug where images disappear when folding
+and unfolding a region containing an image; also, when
+folding, restarting & restoring state, and then unfolding
+would also lose the image. Issue 12547
+
+2025-10-18: Kitty image rendering cares about having a
+correct scaledSize which was previously not preserved. Fix
+that. The bug only affected out-of-process image decoding,
+which went through an encode-decode. During decoding, the
+scaled size was not preserved, so fix that too. Issue 11766
+
+2025-10-18: Fix a race where paste bracketing could write
+before the expectation was installed in the mutation thread.
+Modify expectations to always call willExpect even if they
+have already expired since operations like writing happen in
+willExpect and it needs to be reliable.
+
+2025-10-18: Fix a race condition with AI running commands
+that complete quickly beating the expectation getting
+installed. Issue 12548
+
+2025-10-18: Fix brittle code that could cause oob write. See
+https://gitlab.com/gnachman/iterm2/-/issues/12544#note_2814755803
+
+2025-10-18: Add a COPYING file to clarify license. Issue
+12556
+
+2025-10-18: Add a subtle bezel to the app icon so it doesn't
+look tilted. Issue 12561
+
+2025-10-10: Fix a bug where tabs were red when attaching to
+tmux session. Issue 12542
+
+2025-10-10: Try to prevent a crash when clicking a tip card
+button
+
+2025-10-10: Don't crash if a vectorStoreCreated message
+somehow gets into a chat
+
+2025-10-10: Fix function key offset for shift + meta (4)
+
+https://invisible-island.net/xterm/xterm-function-keys.html
+
+Index 6 of offsets was set to 74, which was skipping 2
+entries.  Shift + Meta F5 and F6 were duplicated Shift +
+Meta F7 to F10 were off by 1 Shift + Meta F11 and F12 were
+off by 2 Cases 73 and 74 were ignored (60 offset + 12 gives
+72 max)
+
+2025-10-09: Don't crash on invalid trigger dictionaries
+
+2025-10-09: Allow window to resize during restoration if it
+is entering fullscreen. Fixes a crash, probably infinite
+recursion smashing the stack.
+
+2025-10-09: Fix infinite recursion with Remap Locally
+
+2025-10-09: Fix missing rowID assertion failures in graph
+database recovery
+
+The graph database would fail with missing rowID assertions
+when save operations failed and left in-memory records in a
+corrupted state. Recovery now creates a fresh encoder with
+no previous revision, treating all records as inserts rather
+than updates/deletes, which avoids the need for valid rowIDs
+in the "before" state. On recovery failure, self.record is
+now cleared to prevent corrupted state from propagating to
+subsequent save attempts.
+
+Additional fixes: - Create fresh FMDatabase instance during
+recovery to avoid corrupted cached state - Fix PRAGMA
+queries to use executeQuery instead of executeUpdate,
+cleaning up
+  result sets.
+- Improve error propagation in delta encoder to halt on
+first error - Fix transaction rollback to always return NO
+when block fails to properly
+  propagate failures.
+
+2025-10-09: Fix crash when margin color changes
+
+2025-10-09: Tweak open quickly appearance in Tahoe
+
+2025-10-09: Fix first responder bug in browser
+
+2025-10-09: Increase opacity of open quickly tint to improve
+legibility
+
+2025-10-09: Fix crash in browser smart selection
+
+2025-10-08: Fix a layout loop crash. Can't invalidate
+intrinsic size constraints in -layout
+
+2025-10-08: Fix crash when folding without a datasource
+
+2025-10-08: Fix crash when clicking chat toolbar menu button
+
 2025-10-08: Fix colorpicker eyedropper colorspace support
 
 2025-10-08: Update color picker to support switching between
