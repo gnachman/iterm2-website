@@ -1,3 +1,25 @@
+2025-11-03: Make the conductor run hostname -f when starting
+framer to discover the hostname that might be used by shell
+integration to fix a bug where downloads would sometimes be
+over scp. Issue 5485 (2025 discussion)
+
+2025-11-03: Fix a bunch of bugs related to full screen. The
+window buttons were incorrectly shown/hidden when exiting
+fullscreen. Sometimes the window title remained visible
+after exiting. The tabbar height was wrong in compact.
+
+2025-11-03: Change how stoplight buttons work on macOS 26.
+Copying the buttons (using
+standardWindowButton:forStyleMask:) is cursed - I have no
+idea why this API exists if it doesn't produce a usable
+button, but whatever - so instead we do more or less what
+Chrome has done and only use the "real" buttons but hide
+them or fade them in and out as needed. This fixes a bug
+where buttons did the wrong thing on hover, and hopefully
+fixes a bug where they'd flicker sometimes. We do still have
+the ability to tweak the vertical position of the buttons
+with the private _titleHeight override. Issue 12474
+
 2025-11-02: Automatically unbury tmux integration clients
 when restoring them and unable to attach. Issue 12589
 
