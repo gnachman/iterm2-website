@@ -1,3 +1,49 @@
+2025-11-09: Make traffic light buttons hover properly
+
+2025-11-09: Fix layout of left-tabs with nonstandard tab
+height
+
+2025-11-09: Revert "Change how stoplight buttons work on
+macOS 26. Copying the buttons (using
+standardWindowButton:forStyleMask:) is cursed - I have no
+idea why this API exists if it doesn't produce a usable
+button, but whatever - so instead we do more or less what
+Chrome has done and only use the "real" buttons but hide
+them or fade them in and out as needed. This fixes a bug
+where buttons did the wrong thing on hover, and hopefully
+fixes a bug where they'd flicker sometimes. We do still have
+the ability to tweak the vertical position of the buttons
+with the private _titleHeight override. Issue 12474"
+
+This reverts commit
+7b8903e0454e63905b1e8d4f94b320592ead222c.
+
+2025-11-09: Revert "Fix a bunch of bugs related to full
+screen. The window buttons were incorrectly shown/hidden
+when exiting fullscreen. Sometimes the window title remained
+visible after exiting. The tabbar height was wrong in
+compact."
+
+This reverts commit
+a01e0e78f91f6a687e5e3c3d054fefe3ed2b0aa3.
+
+2025-11-09: Fix light/dark mode of tooltips. Issue 12524
+
+2025-11-09: Fix vertical misalignment: move stoplight
+buttons down in minimal+left side tabs on macOS 26
+
+2025-11-09: Respect tabbar height from advanced settings in
+vertical tahoe tab bars. Issue 12530
+
+2025-11-09: Allow 1337 reports in tmux integration since
+tmux will never handle those anyway. Issue 12599
+
+2025-11-09: Fix a bug where the python API HTTP connection's
+file descriptor could be closed while a dispatch stream
+using hasn't finished
+
+2025-11-09: Fix buffer overrun
+
 2025-11-07: Bump python api version
 
 2025-11-07: Fix return type of polymodal alert
