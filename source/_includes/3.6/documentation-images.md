@@ -76,6 +76,10 @@ The width and height are given as a number followed by a unit, or the word "auto
 
 By omitting the <code>inline</code> argument (or setting its value to 0), files will be downloaded and saved in the *Downloads* folder instead of being displayed inline. Any kind of file may be downloaded, but only images will display inline. Any image format that macOS supports will display inline, including PDF, PICT, or any number of bitmap data formats (PNG, GIF, etc.). A new menu item titled *Downloads* will be added to the menu bar after a download begins, where progress can be monitored and the file can be located, opened, or removed.
 
+### Detection
+
+Use the [Feature Reporting](/feature-reporting) protocol to detect the availability of inline images.
+
 ### Sample Code
 
 Sample code for displaying images may be found here.
