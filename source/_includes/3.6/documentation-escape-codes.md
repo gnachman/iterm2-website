@@ -526,5 +526,7 @@ To create a copy button that, when clicked, copies a code block:
 
 The `identifier` should reference the identifier of a clode block defined with `OSC 1337;Block=...`.
 
+#### Feature Reporting
 
+To detect which features the terminal supports, use the protocol described in [feature reporting](https://iterm2.com/feature-reporting/).
 
