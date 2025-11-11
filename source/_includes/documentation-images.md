@@ -23,7 +23,7 @@ iTerm2 extends the xterm protocol with a set of proprietary escape sequences. In
 
 <pre>ESC ] 1337 ; key = value ^G</pre>
 
-Whitespace is shown here for ease of reading: in practice, no spaces should be used.
+Whitespace is shown here for ease of reading: in practice, no spaces should be used. ^G is the BEL character. You can use ST in place of ^G anywhere it is mentioned in this document. ST is the standard terminator for OSC sequences, and is formed by `ESC \`.
 
 For file transfer and inline images, there are two control sequences. The original one, which works on all remotely modern versions of iTerm2 is:
 
