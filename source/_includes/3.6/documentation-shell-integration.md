@@ -169,7 +169,7 @@ Hold down option and drag-drop a file from Finder into iTerm2 to upload it.
 It can be seen and searched in the toolbelt or quickly accessed in a popup window.
 
 #### Easy access to recently and frequently used directories.
-iTerm2 remembers the directories you use, sorting them by "frecency" and giving you access to them in the toolbelt and in a popup window.
+iTerm2 remembers the directories you use, sorting them by "frecency" (frequency and recency of use) and giving you access to them in the toolbelt and in a popup window.
 
 #### Assign profiles to hostnames, usernames, or username+hostname combinations.
 Sessions will automatically switch profiles as you log in and out according to rules you define.
@@ -263,7 +263,7 @@ Bold commands are from the current session. Clicking on one will scroll to revea
 iTerm2 will present command completion suggestions automatically when **View&gt;Auto Command Completion** is selected.
 
 #### Recent Directories
-With shell integration, iTerm2 will remember which directories you have used recently. The list of preferred directories is stored separately for each username+hostname combination. It is sorted by "frecency" (frequency and recency of use). There are two places it is exposed in the UI:
+With shell integration, iTerm2 will remember which directories you have used recently. The list of preferred directories is stored separately for each username+hostname combination. It is sorted by "frecency". There are two places it is exposed in the UI:
 
 ##### Recent Directories popup
 You can view and search your recently and frequently used directories in **Session&gt;Open Recent Directories...** (Cmd-Opt-/).
