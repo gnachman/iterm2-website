@@ -6,7 +6,9 @@ active-state: documentation
 # Terminal Feature Reporting
 
 ### Summary
-This specification defines a way for terminal emulators to report their capabilities to applications. This proposed standard defines a collection of values that terminals will communicate to apps. It will be exposed through a new `TERM_FEATURES` environment variable and also a to-be-determined control sequence.
+This specification defines a way for terminal emulators to report their capabilities to applications. This protocol defines a collection of values that terminals communicate to apps. It is exposed through a new `TERM_FEATURES` environment variable and a reporting control sequence.
+
+This document describes a modification of the [proposed standard in the now-defunct terminals-wg](https://gitlab.freedesktop.org/terminal-wg/specifications/-/merge_requests/8/diffs).
 
 ### Motivation
 Terminal emulators need a flexible way to report their capabilities to applications that communicate with them. The existing mechanism of `$TERM` is too slow to change because terminfo updates happen too infrequently in practice, and individual users may have no ability to fix it without root access.
