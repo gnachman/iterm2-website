@@ -768,7 +768,7 @@ Unsplash grants you an irrevocable, nonexclusive, worldwide copyright license to
 
 Fetched from https://gitlab.gnome.org/GNOME/vte/-/raw/master/perf/hyperlink-demo.txt?inline=false on 7/15/2020.
 
-Licensed under Creative Commons Attribution 4.0 International per https://gitlab.gnome.org/GNOME/vte/-/blob/master/COPYING.CC-BY-4-0
+Licensed under GNU Lesser General Public License, version 3 per https://gitlab.gnome.org/GNOME/vte/-/blob/master/COPYING.README?ref_type=heads
 
 #### Hyperlinks_in_Terminal_Emulators.html
 
