@@ -1,27 +1,92 @@
-iTerm2 version 3.6.5 was released on
-October 19, 2025
+iTerm2 version 3.6.6 was released on
+November 17, 2025.
+
+New Features:
+- Added setting to show per-pane title bars when
+  there is only one pane.
+- If the previous release left you with red tabs
+  in a tmux window, this one will offer to fix
+  them.
+- Add KeePassXC integration in password manager.
+- There's a new key binding action to toggle a
+  checkbox of your choosing in settings.
+- Add support for OSC 9;4 progress bars.
+- Add support for DECDSR 997 and DECSET/DECRESET
+  2031 for dark mode reporting.
+- Cursor animation can now be enabled always.
+  Previously it only happened in interactive apps.
 
 Improvements:
-- Improve legibility of Open Quickly against
-  certain backgrounds.
-- Tweak app icon to look better on older versions
-  of macOS.
+- Reduce an occasional jitter after a command
+  prompt.
+- Add support for symbolic hotkeys to older macOS
+  versions.
+- You can now switch between color spaces in the
+  color picker.
+- Added support for the device colorspace in the
+  color picker.
+- Added support for OSC 52 in DA response.
+- Provide useful information when a profile's
+  command fails to start.
+- Improve visibility of selected tab in Tahoe when
+  using tab colors.
+- Improve performance of moving cursor a long
+  distance with option-click.
+- Fix performance issue after using search.
+- When doing bracketed paste from advanced paste
+  with "wait for prompt" enabled, do not include
+  brackets around newlines. That way the commands
+  will be sent for shells like zsh and fish.
+- When a force touch could do either quicklook or
+  dictionary lookup, show a disambiguation menu.
+- Add support for undo/redo in "engage AI" dialog
+  box.
+- Add more options for how to position and size
+  windows. Make the default more like 3.5.x, which
+  respsected the profile's size, but using Smart
+  Placement.
+- AI commands can now optionally be run through
+  Apple Intelligence as a safety check. If ChatGPT
+  decides it wants to pwn you, this makes it a
+  little harder.
+- Command info now shows the number of lines of
+  output.
+- Baseline-relative timestamps are now
+  color-coded.
+- Browser will show better SSL errors.
+- In tmux integration, terminal reports in
+  response to OSC 1337 codes are now sent.
+- Tooltips in Minimal now use the proper
+  light/dark theme.
+- All AI chat messages are now copyable.
+- AI models updated.
 
 Bug Fixes:
-- Fix a bug where tabs were red after attaching to
-  tmux.
-- Fix a bug where web pages didn't draw a cursor.
-- Fix downloads in ssh integration using it2dl.
-- Fix bugs in Kitty image protocol.
-- Fix variuos crashes.
-- Fix bugs with restoring full screen windows.
-- Fix certain shift+optional function keys that
-  sent the wrong code.
-- Fix a bug where AI didn't always detect a
-  command finishing if it executed quickly.
-- Improve reliability of detecting paste
-  bracketing echoing control characters.
-- Fix bugs where browser zoom got messed up.
-- Fix drag-drop of tabs or sessions over browser
-  sessions.
+- Automatically unbury tmux integration clients
+  when we can't restore the tmux session on
+  attach. If you get a zillion windows on first
+  launch of this version, that could be why (they
+  tended to pile up).
+- Fix various crashes.
+- Fix $$HOST$$ and $$USER$$ substitution.
+- The colorpicker's eyedropper is now smarter
+  about color spaces.
+- Fix a bug where images would disappear after
+  folding and unfolding a region.
+- Fix various graphical imperfections in Tahoe.
+- Disable menu item "Move to new window" when
+  there is only one tab.
+- Fixed a bug where you couldn't delete
+  annotations.
+- Fix bugs in the status bar filter component.
+- Fix UI bugs in editing triggers.
+- Fix a bug where the context menu incorrectly
+  characterized ssh integration downloads as scp.
+- Make the stoplight buttons behave better on
+  macOS 26.
+- Fix a bug where ssh integration downloads would
+  sometimes happen over scp.
+- Fix a bug where some items were missing from the
+  list of key binding actions.
+
 
