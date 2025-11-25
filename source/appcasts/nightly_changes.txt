@@ -1,3 +1,35 @@
+2025-11-24: Remove whitespace from mini search field
+placeholder. Issue 12622
+
+2025-11-24: Cmd-shift-click on OSC 8 url should open in
+split pane. Issue 12624
+
+2025-11-24: Fix Kitty image protocol showing wrong image for
+Unicode placeholders. Issue 12626
+
+  - Use image identifier (i=) instead of imageNumber (I=)
+  for virtual
+    placement lookups. The identifier is unique; imageNumber
+    is optional and often zero.
+
+  - Fix variable shadowing in
+  iTermFindKittyImageDrawForVirtualPlaceholder:
+    the fallback lookup referenced nil 'draw' instead of
+    'element', causing image ID lookups to always fail.
+
+  - Change sentinel for optional third diacritic from 0 to
+  -1. Diacritic
+    index 0 is valid, so using 0 as "unset" prevented
+    parsing the image ID MSB.
+
+  - Only match by placementID when non-zero; zero means "use
+  imageID"
+    rather than "match draws with placementID 0".
+
+  - Update iTermMetalPerFrameState to use the corrected
+  lookup function
+    when creating KittyImageRuns.
+
 2025-11-21: OSC 9;4 Crash Fix (#533)
 
 * Fix "\e]9;4\a" (Missing Progress Bar Param) Crash
