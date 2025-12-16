@@ -8,6 +8,7 @@ function show(name) {
   document.getElementById("bash").style.display="none";
   document.getElementById("fish").style.display="none";
   document.getElementById("tcsh").style.display="none";
+  document.getElementById("xonsh").style.display="none";
   document.getElementById("zsh").style.display="none";
   document.getElementById(name).style.display="";
 
@@ -18,7 +19,7 @@ function show(name) {
 
 iTerm2 may be integrated with the unix shell so that it can keep track of your command history, current working directory, host name, and more--even over ssh. This enables several useful features.
 
-Shell integration is compatible with zsh, bash, fish (2.3 and later), and tcsh.
+Shell integration is compatible with bash, fish (2.3 and later), tcsh, xonsh and zsh.
 
 ### How To Enable Shell Integration
 
@@ -58,7 +59,8 @@ If you prefer to have control over the process of modifying your environment, yo
 <a id="opt_bash" style="cursor:pointer; color:black; text-decoration:underline" onclick="show('bash')">bash</a> |
 <a id="opt_fish" style="cursor:pointer;" onclick="show('fish')">fish</a> |
 <a id="opt_tcsh" style="cursor:pointer;" onclick="show('tcsh')">tcsh</a> |
-<a id="opt_zsh" style="cursor:pointer;" onclick="show('zsh')">zsh</a>
+<a id="opt_xonsh" style="cursor:pointer;" onclick="show('xonsh')">tcsh</a> |
+<a id="opt_zsh" style="cursor:pointer;" onclick="show('zsh')">zsh</a> 
 
 <div id="bash">
 <pre>curl -L https://iterm2.com/shell_integration/bash \
@@ -95,6 +97,15 @@ Next, you need to load the script at login time. Add this to the end of ~/.confi
 Next, you need to load the script at login time. Add this to the end of ~/.login:
 
 <pre>source ~/.iterm2_shell_integration.tcsh</pre>
+</div>
+
+<div id="xonsh" style="display: none">
+<pre>curl -L https://iterm2.com/shell_integration/xonsh \
+-o ~/.iterm2_shell_integration.xonsh</pre>
+
+Next, you need to load the script at login time. Add this to the end of ~/.xonshrc:
+
+<pre>source ~/.iterm2_shell_integration.xonsh</pre>
 </div>
 
 <a name="triggers" />
@@ -216,6 +227,9 @@ For bash:
 
 Fish users can place this line somewhere in their fish_prompt function:
 <pre>iterm2_prompt_mark</pre>
+
+Xonsh users can put marks to PROMPT in xonsh RC file explicitly:
+<pre>$PROMPT = '{iterm2_prompt_start}' + $PROMPT + '{iterm2_prompt_end}'</pre>
 
 This feature is not supported in tcsh.
 
