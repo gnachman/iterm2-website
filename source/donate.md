@@ -11,7 +11,7 @@ Support free software! It's a nice way to say thanks, and it helps me buy coffee
     <a href="https://github.com/sponsors/gnachman"><img src="images/github-sponsors.png" width="132" height="41" /></a>
 </div>
 
-Sponsor me on Github! It's a convenient way to make monthly donations.
+Sponsor me on GitHub! It's a convenient way to make monthly donations.
 
 <hr/>
 

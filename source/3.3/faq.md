@@ -102,7 +102,7 @@ A: Toggle Show Tabs in Fullscreen under the View menu (cmd-shift-T).
 A: Turn on **Preferences > Advanced > Terminal windows resize smoothly**.
 
 #### Q: Where is the source code?
-A: <a href="https://github.com/gnachman/iTerm2">See gnachman's Github iTerm2 project.</a>
+A: <a href="https://github.com/gnachman/iTerm2">See gnachman's GitHub iTerm2 project.</a>
 
 #### Q: How can I open iTerm2 to a directory from Finder?
 A: Right-click on the directory and select **Services > New iTerm2 Tab Here**.

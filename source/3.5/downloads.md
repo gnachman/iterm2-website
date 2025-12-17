@@ -19924,7 +19924,7 @@ Built on September 21, 2023.
 
 <h3>Nightly Builds</h3>
 <hr style="margin-top: 0pt; margin-bottom: 4pt" />
-A nightly build is made at midnight Pacific time on days where a change was committed. The change log may be seen <a href="https://github.com/gnachman/iTerm2/commits/master">on Github</a>. Nightly builds sometimes have serious bugs.
+A nightly build is made at midnight Pacific time on days where a change was committed. The change log may be seen <a href="https://github.com/gnachman/iTerm2/commits/master">on GitHub</a>. Nightly builds sometimes have serious bugs.
 </p>
 <h4 style="margin-top: 4pt">
 <a href="/nightly/latest">

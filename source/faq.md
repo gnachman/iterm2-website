@@ -106,7 +106,7 @@ A: Toggle Show Tabs in Fullscreen under the View menu (cmd-shift-T).
 A: This is a side-effect of making the window size a multiple of the size of a single character's cell. Turn on **Preferences > Advanced > Terminal windows resize smoothly** to disable this behavior and that usually fixes the issue.
 
 #### Q: Where is the source code?
-A: <a href="https://github.com/gnachman/iTerm2">See gnachman's Github iTerm2 project.</a>
+A: <a href="https://github.com/gnachman/iTerm2">See gnachman's GitHub iTerm2 project.</a>
 
 #### Q: How can I open iTerm2 to a directory from Finder?
 A: Right-click on the directory and select **Services > New iTerm2 Tab Here**.
