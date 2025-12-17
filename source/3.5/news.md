@@ -11,7 +11,7 @@ Version 3.5 of iTerm2 has been released. It adds a number of new features, such 
 #### Security updates for 3.4 and 3.5 beta
 <i>Sunnyvale, CA&mdash;August 10, 2023</i>
 
-Version 3.4.20 and 3.5.0beta11 have been released today. They address security vulnerabilities related to control sequences that send responses which can be used to cause iTerm2 to issue commands under certain circumstances. Credit goes to Github user solid-snail for the discovery. Please read <a href="https://blog.solidsnail.com/posts/2023-08-28-iterm2-rce">From Terminal Output to Arbitrary Remote Code Execution</a> for more information.
+Version 3.4.20 and 3.5.0beta11 have been released today. They address security vulnerabilities related to control sequences that send responses which can be used to cause iTerm2 to issue commands under certain circumstances. Credit goes to GitHub user solid-snail for the discovery. Please read <a href="https://blog.solidsnail.com/posts/2023-08-28-iterm2-rce">From Terminal Output to Arbitrary Remote Code Execution</a> for more information.
 
 Updated 10/29/2023: The CVE numbers finally came in. They are:
 
