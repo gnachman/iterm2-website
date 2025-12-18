@@ -26,7 +26,7 @@ The share button introduces the concept of command URLs. Here is a simple exampl
 
 The scheme is always `iterm2` and the path is always `/command`.
 
-If a hostname is present, iTerm2 will attempt to ssh to the host to run the command. For exmaple, `iterm2:gnachman@example.com/command?c=date` runs `date` on host `example.com` as user `gnachman`.
+If a hostname is present, iTerm2 will attempt to ssh to the host to run the command. For example, `iterm2:gnachman@example.com/command?c=date` runs `date` on host `example.com` as user `gnachman`.
 
 The optional `d` query parameter gives a directory to change into prior to running the command.
 

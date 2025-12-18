@@ -52,7 +52,7 @@ You may prefix a phrase in the search query with an *operator* to narrow your qu
 
  * The *name:* operator only tries to match words in the profile's name.
  * The *tag:* operator only tries to match words in the profile's tags.
- * The *command:* operator only tries to match words in the proifle's command. Note that the command is only searched for words that explicitly use the `command` operator. Available in iTerm2 version 3.5.5 and later.
+ * The *command:* operator only tries to match words in the profile's command. Note that the command is only searched for words that explicitly use the `command` operator. Available in iTerm2 version 3.5.5 and later.
 
 ### Quoting
 

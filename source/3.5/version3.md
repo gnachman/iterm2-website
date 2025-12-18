@@ -53,7 +53,7 @@ Version 3 of iTerm2 is now out as a "stable" build, meaning there are no known m
 
 ### What do I need to know?
 
-There are dozens of new features. Many bugs have been fixed. Performance is significantly improved. The look and feel has been updated. Applescript support has been updated, but it's not backwards compatible.
+There are dozens of new features. Many bugs have been fixed. Performance is significantly improved. The look and feel has been updated. AppleScript support has been updated, but it's not backwards compatible.
 
 ### Where do I get it?
 
@@ -125,20 +125,20 @@ Use iTerm2 as your IDE. You can define regular expressions to match lines of tex
 
 Performance is greatly improved by parsing the incoming bytes off the main thread. Hundreds of bugs have been fixed. Lots of details have been improved: for example, if you print a binary file to the console, you're offered the option to silence the bell. You can edit strings before you paste them. You get warned before pasting tabs at your shell prompt. And much more!
 
-### Applescript Not Backwards Compatible
+### AppleScript Not Backwards Compatible
 
-The good news is that iTerm2's Applescript makes a lot more sense than it used to. You can manipulate split panes, and scripting will receive more love and support in the future.
+The good news is that iTerm2's AppleScript makes a lot more sense than it used to. You can manipulate split panes, and scripting will receive more love and support in the future.
 
-The bad news is that existing Applescript won't work any more.
+The bad news is that existing AppleScript won't work any more.
 
-The good news is that it's pretty easy to fix. <a href="/applescript.html">The new Applescript syntax is described here.</a>
+The good news is that it's pretty easy to fix. <a href="/applescript.html">The new AppleScript syntax is described here.</a>
 
 Many third-party programs have already been updated. Please ensure you have the latest version of any program that integrates with iTerm2.
 <hr>
 
 ### Alfred Support
 
-Although Applescript has changed, you can still get Alfred to work. Go to Alfred Preferences and choose Features. Pick *Terminal/Shell* and for *Application* choose *Custom*. Then paste the <a href="https://gist.githubusercontent.com/gnachman/4cbe6743baa7fe07536b/raw/61fceba4a0b2624850ac1b4a20ac8ca48e07f7d2/gistfile1.txt">iTerm2 3.0 Alfred Script</a> into the text field. <a href="/images/AlfredForiTerm2Version3.png">Perhaps a crude illustration will help.</a></p>
+Although AppleScript has changed, you can still get Alfred to work. Go to Alfred Preferences and choose Features. Pick *Terminal/Shell* and for *Application* choose *Custom*. Then paste the <a href="https://gist.githubusercontent.com/gnachman/4cbe6743baa7fe07536b/raw/61fceba4a0b2624850ac1b4a20ac8ca48e07f7d2/gistfile1.txt">iTerm2 3.0 Alfred Script</a> into the text field. <a href="/images/AlfredForiTerm2Version3.png">Perhaps a crude illustration will help.</a></p>
 
 <script>
 function show(name) {

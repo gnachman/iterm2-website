@@ -5,7 +5,7 @@ Saves all of the window's positions, tabs, and split panes. You can opt to save 
 Loads a saved arrangement file, which includes window contents.
 
 #### Window > Change Profile in Arrangement
-Use this to edit an existing arrangment. First, restore the arrangement. Then activate one of the sessions from the restored arrangement. Select **Change Profile in Arrangement** and you'll be asked to choose a profile. The arrangement will then be updated to use the selected profile for the corresponding session.
+Use this to edit an existing arrangement. First, restore the arrangement. Then activate one of the sessions from the restored arrangement. Select **Change Profile in Arrangement** and you'll be asked to choose a profile. The arrangement will then be updated to use the selected profile for the corresponding session.
 
 #### Window > Edit Window Title
 Opens a dialog that lets you specify a window title as an interpolated string.

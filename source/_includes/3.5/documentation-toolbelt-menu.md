@@ -2,7 +2,7 @@
 Saves the current window's toolbelt width as the default width for new windows' toolbelts.
 
 #### Toolbelt > Captured Output
-This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="documentation-captured-output.html">Captured Output</a> for more information.
+This toggles the visibility of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="documentation-captured-output.html">Captured Output</a> for more information.
 
 #### Toolbelt > Command History
 This toggles the visibility of the Command History tool. It shows recently used commands. You must install <a href="documentation-shell-integration.html">Shell Integration</a> for this to know your command history.

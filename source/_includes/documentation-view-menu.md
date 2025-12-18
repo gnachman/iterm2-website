@@ -14,10 +14,10 @@ This toggles the visibility of the Toolbelt on the right side of all windows.
 This toggles the visibility of the Actions tool, which shows actions you have configured under **Settings > Shortcuts > Actions**.
 
 #### View > Toolbelt > Captured Output
-This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="documentation-captured-output.html">Captured Output</a> for more information.
+This toggles the visibility of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="documentation-captured-output.html">Captured Output</a> for more information.
 
 #### View > Toolbelt > Codecierge
-This toggle the visibility of an AI assitant that helps you complete tasks in the terminal.
+This toggle the visibility of an AI assistant that helps you complete tasks in the terminal.
 
 #### View > Toolbelt > Command History
 This toggles the visibility of the Command History tool. It shows recently used commands. You must install <a href="documentation-shell-integration.html">Shell Integration</a> for this to know your command history.
@@ -59,7 +59,7 @@ Exits the *Zoom In on Selection* mode.
 Reveals the current cursor position.
 
 #### View > Show Cursor Guide
-Toggles the visiblity of the cursor guide which is a horizontal rule showing the location of the cursor.
+Toggles the visibility of the cursor guide which is a horizontal rule showing the location of the cursor.
 
 #### View > Show Timestamps
 Indicate the time of last modification of each line on the screen.
@@ -77,7 +77,7 @@ Automatically shows a window with command completion suggestions as you type. On
 Replaces the shell prompt with a macOS native text editing control. It offers filename and command completion, including over ssh when using SSH Integration. It requires <a href="documentation-shell-integration.html">Shell Integration</a> to be installed in order to work.
 
 #### View > Open Quickly
-If you have lots of sessions you can quickly find the one you're looking for with Open Quickly. Select the View > Open Quickly menu item (cmd-shift-O) and then enter a search query. You can search by tab title, command name, host name, user name, profile name, directory name, badge label, and more. Queries are scored according to relevance and sorted by score. Open Quickly also lets you create new tabs, change the current session's profile, and open arrangements. If you start your query with a / then that gives you a shortcut to various commands. /a followed by an arrangement name restores the arrangement. /f restricts the query to existing sessions, excluding options to open new tabs, etc. /p restrics the query to profile names to switch the current session to. /t restricts the results to "open new tab" for matching profile names.
+If you have lots of sessions you can quickly find the one you're looking for with Open Quickly. Select the View > Open Quickly menu item (cmd-shift-O) and then enter a search query. You can search by tab title, command name, host name, user name, profile name, directory name, badge label, and more. Queries are scored according to relevance and sorted by score. Open Quickly also lets you create new tabs, change the current session's profile, and open arrangements. If you start your query with a / then that gives you a shortcut to various commands. /a followed by an arrangement name restores the arrangement. /f restricts the query to existing sessions, excluding options to open new tabs, etc. /p restricts the query to profile names to switch the current session to. /t restricts the results to "open new tab" for matching profile names.
 
 #### View > Maximize Active Pane
 When there are split panes present, this toggles whether a given pane expands to fill the tab. When a maximized pane is present, the tab will be inscribed with a dotted outline.

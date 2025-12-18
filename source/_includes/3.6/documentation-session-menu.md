@@ -1,5 +1,5 @@
 #### Session > Edit Session
-This opens a window that lets you change the settings of the current session without affecting any other sessions. Changes made in this panel will not be overridden by subsequent changes to the profile. Settings *not* cahnged in this panel will be affected by changes to the profile.
+This opens a window that lets you change the settings of the current session without affecting any other sessions. Changes made in this panel will not be overridden by subsequent changes to the profile. Settings *not* changed in this panel will be affected by changes to the profile.
 
 #### Session > Run/Stop Coprocess
 Allows you to start and stop a coprocess linked to the current session. <a href="/documentation-coprocesses.html">Learn more about coprocesses</a>.

@@ -49,7 +49,7 @@ You can add a new keymapping by pressing "+". You can remove an existing mapping
 If you are on a legacy system that does not accept ^? for backspace, select this and it will add a key mapping for you.
 
 #### Allow Application Keypad Mode
-Some full-screen progarms (like emacs) switch the keyboard into application keypad mode, which changes how the numeric keypad behaves. Disabling this option causes iTerm2 to never enter application keypad mode.
+Some full-screen programs (like emacs) switch the keyboard into application keypad mode, which changes how the numeric keypad behaves. Disabling this option causes iTerm2 to never enter application keypad mode.
 
 #### Report modifiers using CSI u
 Enables a more powerful keyboard reporting algorithm that some applications may use to enable the use of modifiers on more keys and more combinations of modifiers.

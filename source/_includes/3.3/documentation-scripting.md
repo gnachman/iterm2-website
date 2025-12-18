@@ -1,18 +1,18 @@
 ## Deprecation Warning
 
-Applescript in iTerm2 is deprecated. It will continue to receive bug fixes, but new features will not be added. Please see the <a href="/python-api">Python API docs</a> for a much better alternative.
+AppleScript in iTerm2 is deprecated. It will continue to receive bug fixes, but new features will not be added. Please see the <a href="/python-api">Python API docs</a> for a much better alternative.
 
-Note: Applescript support is in maintenance mode. New code should use the <a href="/python-api">Python API</a> if possible.
+Note: AppleScript support is in maintenance mode. New code should use the <a href="/python-api">Python API</a> if possible.
 
-### Applescript
-iTerm2 features Applescript support which allows you to automate many aspects of its behavior. Quite a bit of customization is also possible by writing shell scripts.
+### AppleScript
+iTerm2 features AppleScript support which allows you to automate many aspects of its behavior. Quite a bit of customization is also possible by writing shell scripts.
 
-iTerm2 has sophisticated Applescript support allowing one to write stand-alone scripts to launch the application and open multiple sessions with profiles into either new tabs or new windows. You can also set some other parameters for a session such as foreground and background colors, and transparency.
+iTerm2 has sophisticated AppleScript support allowing one to write stand-alone scripts to launch the application and open multiple sessions with profiles into either new tabs or new windows. You can also set some other parameters for a session such as foreground and background colors, and transparency.
 
 These scripts can then be saved as stand-alone executable applications.
 
 #### Autolaunching Scripts
-iTerm2 also supports autolaunching of an Applescript on startup. On startup, iTerm2 looks for an Applescript file in "~/Library/Application Support/iTerm2/Scripts/AutoLaunch.scpt". If it is found, the "AutoLaunch.scpt" script is launched and executed.
+iTerm2 also supports autolaunching of an AppleScript on startup. On startup, iTerm2 looks for an AppleScript file in "~/Library/Application Support/iTerm2/Scripts/AutoLaunch.scpt". If it is found, the "AutoLaunch.scpt" script is launched and executed.
 
 If that folder does not exist, the legacy path of "~/Library/Application Support/iTerm/Scripts/AutoLaunch.scpt" will be used.
 
@@ -37,7 +37,7 @@ The application exposes various properties and provides functions that are descr
 #### Bridges to Python API
 
 <p class="script-entry">invoke API expression "<i>expression</i>"<br/>
-Invokes a Python API expression. This creates a bridge from Applescript to the <a href="/python-api">Python API</a>. You can use it to call a <a href="https://iterm2.com/python-api/tutorial/rpcs.html">registered RPC</a>, or to evaluate other kinds of expressions used in the Python API, such as <a href="documentation-variables.html">variables</a> in the global scope.
+Invokes a Python API expression. This creates a bridge from AppleScript to the <a href="/python-api">Python API</a>. You can use it to call a <a href="https://iterm2.com/python-api/tutorial/rpcs.html">registered RPC</a>, or to evaluate other kinds of expressions used in the Python API, such as <a href="documentation-variables.html">variables</a> in the global scope.
 
 Example:
 
@@ -93,7 +93,7 @@ A reference to the window that most recently had keyboard focus.
 <p class="script-entry">windows</p></p>
 
 A `windows` property exposes an array of terminal windows. Other windows, like the preferences panel, are not included.
-The following are standard Applescript idioms for accessing elements of an array of objects:
+The following are standard AppleScript idioms for accessing elements of an array of objects:
 
     tell first window
     ...
@@ -114,7 +114,7 @@ These functions and properties are provided by windows. For example:
       end tell
     end tell
 
-There are many standard Applescript functions (e.g., to get the window's size and position) that are not documented here.
+There are many standard AppleScript functions (e.g., to get the window's size and position) that are not documented here.
 
 <p class="script-entry">create tab with default profile<br/>
 create tab with default profile command "<i>command</i>"
@@ -221,7 +221,7 @@ An example:
 
     set foreground color to {65535, 0, 0, 0}
 
-Because Applescript is kind of a dumpster fire, the standard syntax for a color is `{red, green, blue, alpha}` where each value is a number between 0 and 65535.
+Because AppleScript is kind of a dumpster fire, the standard syntax for a color is `{red, green, blue, alpha}` where each value is a number between 0 and 65535.
 
 <p class="script-entry">answerback string</p>
 
@@ -361,7 +361,7 @@ The index from 0 of the tab in its window.
 
 ## Supporting both old and new versions of iTerm2
 
-If your application needs to support both the old and new Applescript syntax, this is the recommended technique:
+If your application needs to support both the old and new AppleScript syntax, this is the recommended technique:
 
 <pre>
 on theSplit(theString, theDelimiter)

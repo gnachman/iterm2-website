@@ -81,7 +81,7 @@ If you prefer not to use browser features, you can completely hide them by setti
 
 ### Content Management
 
-- **Reader Mode** is avilable in the hamburger menu.
+- **Reader Mode** is available in the hamburger menu.
 - **Distraction removal mode** similar to Safari's is also in the hamburger menu.
 - Right-click → **Remove Element** to hide cookie panels or other unwanted elements.
 - **Shell > Save Contents** saves web pages with resources.

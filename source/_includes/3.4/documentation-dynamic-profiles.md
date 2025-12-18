@@ -71,7 +71,7 @@ The easiest way to find the name and legal value of a profile attribute is to co
   4. Select *Save Profile as JSON*
   5. Open the file in your favorite editor.
 
-If you use this as the basis of a Dynamic Profile, remember to chantge the Guid. A Dynamic Profile with a Guid equal to an existing Guid of a regular profile will be ignored.
+If you use this as the basis of a Dynamic Profile, remember to change the Guid. A Dynamic Profile with a Guid equal to an existing Guid of a regular profile will be ignored.
 
 #### Parent Profiles
 

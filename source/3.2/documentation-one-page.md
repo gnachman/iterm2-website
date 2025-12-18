@@ -22,7 +22,7 @@ active-state: documentation
 {% include 3.2/subdoc_old.md title="Scripting" anchor="documentation-scripting.html" %}
 {% include 3.2/documentation-scripting.md %}
 
-{% include 3.2/subdoc_old.md title="Applescript Examples" anchor="documentation-applescript.html" %}
+{% include 3.2/subdoc_old.md title="AppleScript Examples" anchor="documentation-applescript.html" %}
 {% include 3.2/documentation-applescript.md %}
 
 {% include 3.2/subdoc_old.md title="Buried Sessions" anchor="documentation-buried-sessions.html" %}

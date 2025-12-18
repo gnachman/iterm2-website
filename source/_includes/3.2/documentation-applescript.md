@@ -1,4 +1,4 @@
-This is an example of the Applescript syntax available in version 3.0 and later.
+This is an example of the AppleScript syntax available in version 3.0 and later.
 
 <pre>
 tell application iTerm2
@@ -140,7 +140,7 @@ end tell
 
 ### Supporting both old and new versions of iTerm2
 
-If your application needs to support both the old and new Applescript syntax, this is the recommended technique:
+If your application needs to support both the old and new AppleScript syntax, this is the recommended technique:
 
 <pre>
 on theSplit(theString, theDelimiter)
