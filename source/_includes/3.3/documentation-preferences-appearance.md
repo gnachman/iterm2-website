@@ -66,7 +66,7 @@ If selected, tabs will indicate their keyboard shortcut.
 If selected, tabs show close buttons. If not selected, the close buttons only appear when the mouse hovers over the tab.
 
 #### Show activity indicator
-If selected, the activity indicator in each tab will be displayed when new output is recevied and the tab is not selected.
+If selected, the activity indicator in each tab will be displayed when new output is received and the tab is not selected.
 
 #### Show new-output indicator
 If selected, non-selected tabs will indicate they have unseen output with a blue circle in the tab.

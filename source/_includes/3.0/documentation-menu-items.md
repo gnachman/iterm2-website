@@ -58,7 +58,7 @@ Hold down Option to turn Copy into Copy With Styles, which includes fonts and co
 After you close a session, tab, or window then you have five seconds to undo it. The amount of time is configurable in PReferences > Profiles > Session.
 
 #### Edit > Paste Special > Advanced Paste
-This opens the Advanced Paste window which lets you select a string from the pasteboard in recent history, select different representations of the current pasteboard, and modify the string before pasting it. You can modify it by appling a regex substitution, using various built-in modifiers (such as base-64 encoding), or edit it by hand.
+This opens the Advanced Paste window which lets you select a string from the pasteboard in recent history, select different representations of the current pasteboard, and modify the string before pasting it. You can modify it by applying a regex substitution, using various built-in modifiers (such as base-64 encoding), or edit it by hand.
 
 #### Edit > Paste Special > Paste Selection
 Pastes the currently selected text (which may differ from the text in the pasteboard).
@@ -88,7 +88,7 @@ When enabled, vertical lines of pipe characters `|` will be interpreted as pane 
 Shows the autocomplete window, which offers to finish typing a word that you've begun. <a href="documentation-highlights.html">Learn more about autocomplete on highlights page</a>.
 
 #### Edit > Edit Current Session
-This opens a window that lets you change the settings of the current session without affecting any other sessions. Changes made in this panel will not be overridden by subsequent changes to the profile. Settings *not* cahnged in this panel will be affected by changes to the profile.
+This opens a window that lets you change the settings of the current session without affecting any other sessions. Changes made in this panel will not be overridden by subsequent changes to the profile. Settings *not* changed in this panel will be affected by changes to the profile.
 
 #### Edit > Open Command History...
 If you use <a href="documentation-shell-integration.html">Shell Integration</a> then Open Command History presents a list of recently used commands to select from.
@@ -127,7 +127,7 @@ Reveals the current cursor position.
 When a selection is present this is enabled. Zooming on a selection removes all other text from the session and lets you focus on just the zoomed-in-on text. Pressing escape will invoke Zoom Out when you are in the Zoom In state.
 
 #### View > Show Cursor Guide
-Toggles the visiblity of the cursor guide which is a horizontal rule showing the location of the cursor.
+Toggles the visibility of the cursor guide which is a horizontal rule showing the location of the cursor.
 
 #### View > Show Timestamps
 Indicate the time of last modification of each line on the screen.
@@ -139,7 +139,7 @@ Toggles the visibility of annotations.
 Automatically shows a window with command completion suggestions as you type. Only usable when you have command history built up with <a href="documentation-shell-integration.html">Shell Integration</a>.
 
 #### View > Open Quickly
-If you have lots of sessions you can quickly find the one you're looking for with Open Quickly. Select the View > Open Quickly menu item (cmd-shift-O) and then enter a search query. You can search by tab title, command name, host name, user name, profile name, directory name, badge label, and more. Queries are scored according to relevance and sorted by score. Open Quickly also lets you create new tabs, change the current session's profile, and open arrangements. If you start your query with a / then that gives you a shortcut to various commands. /a followed by an arrangement name restores the arrangement. /f restricts the query to existing sessions, excluding options to open new tabs, etc. /p restrics the query to profile names to switch the current session to. /t restricts the results to "open new tab" for matching profile names.
+If you have lots of sessions you can quickly find the one you're looking for with Open Quickly. Select the View > Open Quickly menu item (cmd-shift-O) and then enter a search query. You can search by tab title, command name, host name, user name, profile name, directory name, badge label, and more. Queries are scored according to relevance and sorted by score. Open Quickly also lets you create new tabs, change the current session's profile, and open arrangements. If you start your query with a / then that gives you a shortcut to various commands. /a followed by an arrangement name restores the arrangement. /f restricts the query to existing sessions, excluding options to open new tabs, etc. /p restricts the query to profile names to switch the current session to. /t restricts the results to "open new tab" for matching profile names.
 
 #### View > Maximize Active Pane
 When there are split panes present, this toggles whether a given pane expands to fill the tab. When a maximized pane is present, the tab will be inscribed with a dotted outline.
@@ -168,7 +168,7 @@ If you have scripts located in `$HOME/Library/Application Support/iTerm/Scripts`
 Saves the current window's toolbelt width as the default width for new windows' toolbelts.
 
 #### Toolbelt > Captured Output
-This toggles the visibilty of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="documentation-captured-output.html">Captured Output</a> for more information.
+This toggles the visibility of the Captured Output tool. It shows captured output located with the Capture Output trigger. See <a href="documentation-captured-output.html">Captured Output</a> for more information.
 
 #### Toolbelt > Command History
 This toggles the visibility of the Command History tool. It shows recently used commands. You must install <a href="documentation-shell-integration.html">Shell Integration</a> for this to know your command history.

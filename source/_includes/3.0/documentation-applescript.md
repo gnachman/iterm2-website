@@ -1,4 +1,4 @@
-This is an example of the new Applescript syntax available in version 3.0.
+This is an example of the new AppleScript syntax available in version 3.0.
 
 **Note:** in iTerm2 3.0.0, sessions had a property called *contents*. That
 conflicted with a reserved word, and has been renamed to *text*. The example
@@ -143,7 +143,7 @@ end tell
 
 ### Supporting both old and new versions of iTerm2
 
-If your application needs to support both the old and new Applescript syntax, this is the recommended technique:
+If your application needs to support both the old and new AppleScript syntax, this is the recommended technique:
 
 <pre>
 on theSplit(theString, theDelimiter)

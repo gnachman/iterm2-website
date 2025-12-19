@@ -130,5 +130,5 @@ This is the default algorithm.
 
 ### Auto-Rainbow
 
-Pressing this buton assigns text colors to the active components in a pleasing variety of rainbow colors. No unicorns were harmed in the making of this feature.
+Pressing this button assigns text colors to the active components in a pleasing variety of rainbow colors. No unicorns were harmed in the making of this feature.
 

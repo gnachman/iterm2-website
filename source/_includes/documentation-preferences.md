@@ -347,7 +347,7 @@ If selected, tabs will indicate their keyboard shortcut.
 If selected, tabs show close buttons. If not selected, the close buttons only appear when the mouse hovers over the tab.
 
 #### Show activity indicator
-If selected, the activity indicator in each tab will be displayed when new output is recevied and the tab is not selected.
+If selected, the activity indicator in each tab will be displayed when new output is received and the tab is not selected.
 
 #### Show new-output indicator
 If selected, non-selected tabs will indicate they have unseen output with a blue circle in the tab.
@@ -590,7 +590,7 @@ All non-ASCII text (many accented Latin letters, non-Latin text, less-common sym
 When enabled and you have a font that supports ligatures (such as FiraCode) then text will be rendered with ligatures. This makes drawing much slower for two reasons: first, it disables the GPU renderer. Second, it uses a slower API. Users on less-than-stellar hardware may not want to enable it.
 
 #### Special Exceptions
-When the non-ASCII font is enabled you'll have the option to manage special exceptions. A special exception is a rule that maps a range of codes from another font into the terminal, possibly at a different range. This is useful if you work in multiple languages. For example, if you want to use a different font for Korean versus Chinese, you could create sepcial exceptions for Korean characters to pull from a different font.
+When the non-ASCII font is enabled you'll have the option to manage special exceptions. A special exception is a rule that maps a range of codes from another font into the terminal, possibly at a different range. This is useful if you work in multiple languages. For example, if you want to use a different font for Korean versus Chinese, you could create special exceptions for Korean characters to pull from a different font.
 
 This is more frequently used by Powerline (or "nerd font") users to mix graphical characters from different fonts. After opening the Special Exceptions panel, you can use the `Install Nerd Font Bundle` to get a good default configuration of powerline glyphs from a number of fonts.
 
@@ -822,7 +822,7 @@ When selected, the screen will slightly delay redraws while the cursor is hidden
 ### Keys > General
 
 #### Allow Application Keypad Mode
-Some full-screen progarms (like emacs) switch the keyboard into application keypad mode, which changes how the numeric keypad behaves. Disabling this option causes iTerm2 to never enter application keypad mode.
+Some full-screen programs (like emacs) switch the keyboard into application keypad mode, which changes how the numeric keypad behaves. Disabling this option causes iTerm2 to never enter application keypad mode.
 
 #### Report modifiers using CSI u
 Enables a more powerful keyboard reporting algorithm that some applications may use to enable the use of modifiers on more keys and more combinations of modifiers. This is not recommended. Applications should use the [Kitty keyboard protocol](https://sw.kovidgoyal.net/kitty/keyboard-protocol/#functional-key-definitions) instead.
@@ -839,7 +839,7 @@ When reporting function keys (such as arrows) to apps running in the terminal, t
 #### Left/Right Option Key
 It is common to use a modifier to send so-called "meta keys". For most users, selecting "+Esc" here is the right choice. The "Meta" option sets the high bit of the input character, and is not compatible with modern systems.
 
-The corresponding *Apps can change this* setting can be disabled to prevent apps in the terminal from modifiying your setting with a control sequence.
+The corresponding *Apps can change this* setting can be disabled to prevent apps in the terminal from modifying your setting with a control sequence.
 
 #### Left/Right Control/Command, fn key
 Some programs support extended modifier keys of Hyper, Meta, and Super. You can configure existing modifier keys to act as these extended keys. This setting will be in effect only when running a program that uses the Kitty keyboard protocol; otherwise, they will act like regular control, command, and fn keys.
@@ -938,7 +938,7 @@ Full details can be found at <a href="documentation-triggers.html">Triggers</a>.
 [Smart Selection](/documentation-smart-selection.html) defines regular expressions that are used to select text on quad-click. 
 
 #### Automatic Profile Switching
-You can specify rules that, when satisified, changes any session's profile to this one. See <a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a> for all the details.
+You can specify rules that, when satisfied, changes any session's profile to this one. See <a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a> for all the details.
 </p>
 
 #### Snippets Filter
@@ -964,7 +964,7 @@ This opens a panel with these options:
 
  * *Haptic feedback when pressing esc* When you press esc on a touchbar, this makes the trackpad vibrate to provide feedback.
  * *Key click for virtual esc key* When you press esc on a touchbar, this causes a click sound to be played.
- * *Visual esc key indicator* When you press esc on a touchbar, make the cursor change shape briefly to provid feedback.
+ * *Visual esc key indicator* When you press esc on a touchbar, make the cursor change shape briefly to provide feedback.
 
 #### Presets > Factory Defaults
 Restores key bindings to the iTerm2 defaults.

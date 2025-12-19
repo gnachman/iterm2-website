@@ -2,7 +2,7 @@
 ### Keys > General
 
 #### Allow Application Keypad Mode
-Some full-screen progarms (like emacs) switch the keyboard into application keypad mode, which changes how the numeric keypad behaves. Disabling this option causes iTerm2 to never enter application keypad mode.
+Some full-screen programs (like emacs) switch the keyboard into application keypad mode, which changes how the numeric keypad behaves. Disabling this option causes iTerm2 to never enter application keypad mode.
 
 #### Report modifiers using CSI u
 Enables a more powerful keyboard reporting algorithm that some applications may use to enable the use of modifiers on more keys and more combinations of modifiers.
@@ -16,7 +16,7 @@ When enabled, these keys move the viewport unless you are running an interactive
 #### Left/Right Option Key
 It is common to use a modifier to send so-called "meta keys". For most users, selecting "+Esc" here is the right choice. The "Meta" option sets the high bit of the input character, and is not compatible with modern systems.
 
-The corresponding *Apps can change this* setting can be disabled to prevent apps in the terminal from modifiying your setting with a control sequence.
+The corresponding *Apps can change this* setting can be disabled to prevent apps in the terminal from modifying your setting with a control sequence.
 
 #### A hotkey opens a dedicated window with this profile
 When enabled, a dedicated hotkey window is attached to this profile. The **Configure Hotkey Window** button lets you configure the hotkey and other attributes of the window. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.

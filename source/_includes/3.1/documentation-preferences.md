@@ -90,7 +90,7 @@ If selected, tabs will indicate their keyboard shortcut.
 If selected, tabs show close buttons. If not selected, the close buttons only appear when the mouse hovers over the tab.
 
 #### Show activity indicator
-If selected, the activity indicator in each tab will be displayed when new output is recevied and the tab is not selected.
+If selected, the activity indicator in each tab will be displayed when new output is received and the tab is not selected.
 
 #### Show new-output indicator
 If selected, non-selected tabs will indicate they have unseen output with a blue circle in the tab.
@@ -477,7 +477,7 @@ You can add a new keymapping by pressing "+". You can remove an existing mapping
 If you are on a legacy system that does not accept ^? for backspace, select this and it will add a key mapping for you.
 
 #### Allow Application Keypad Mode
-Some full-screen progarms (like emacs) switch the keyboard into application keypad mode, which changes how the numeric keypad behaves. Disabling this option causes iTerm2 to never enter application keypad mode.
+Some full-screen programs (like emacs) switch the keyboard into application keypad mode, which changes how the numeric keypad behaves. Disabling this option causes iTerm2 to never enter application keypad mode.
 
 #### Left/Right Option Key Acts As
 It is common to use a modifier to send so-called "meta keys". For most users, selecting "+Esc" here is the right choice. The "Meta" option sets the high bit of the input character, and is not compatible with modern systems.
@@ -497,7 +497,7 @@ Full details can be found at <a href="documentation-triggers.html">Triggers</a>.
 Semantic history is used to open a file when you Cmd-Click on it. The current working directory for each line in the terminal is tracked to help find files. If Semantic History is set to "Open with default app," then files are passed to the OS to be opened with whatever is associated. Alternatively, you can choose "Open URL..." to open a specific URL (with \1 replaced with the filename and \2 replaced with the line number, if applicable). If you choose "Open with editor..." then text files will be opened with the designated editor, while other files are opened with the default app for their file type. For more flexibility, choose "Run command..." and specify a command to execute. \1 will be replaced with the file name, \2 will be replaced with the line number (if applicable), \3 with text in the line prior to the click location, \4 with text in the line subsequent to the click location, and \5 for the working directory of the line clicked on. Finally, "Always run command..." is like "Run command...," but takes effect even if the object clicked on is not an existing filename.
 
 #### Automatic Profile Switching
-You can specify rules that, when satisified, changes any session's profile to this one. See <a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a> for all the details.
+You can specify rules that, when satisfied, changes any session's profile to this one. See <a href="documentation-automatic-profile-switching.html">Automatic Profile Switching</a> for all the details.
 </p>
 
 ### Keys

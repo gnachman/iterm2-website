@@ -1845,7 +1845,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -2019,7 +2019,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -2185,7 +2185,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -2352,7 +2352,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -2524,8 +2524,8 @@ Security Improvements
   There are now two ways to get permission:
 
   1. The UI prompts on every connection.
-  2. The app requests a cookie using Applescript.
-     Therefore, Applescript permission is
+  2. The app requests a cookie using AppleScript.
+     Therefore, AppleScript permission is
      required. This requires the user to
      consent only once per app that originates the
      connection.
@@ -2546,7 +2546,7 @@ New Features:
   profile.
 - Add support for opening files to line number
   with IntelliJ.
-- Applescript can now launch a Python API script
+- AppleScript can now launch a Python API script
   from an absolute path.
 
 Improvements:
@@ -2636,7 +2636,7 @@ command line of the
   Scripts menu would timeout improperly.
 - Fix escaping of single quotes in semantic
   history commands.
-- Fix a bug where new tabs created in Applescript
+- Fix a bug where new tabs created in AppleScript
   weren't always usable right away.
 - Disable performance statistics to try to
   find cause of memory corruption bug.
@@ -2678,8 +2678,8 @@ Security Improvements
   There are now two ways to get permission:
 
   1. The UI prompts on every connection.
-  2. The app requests a cookie using Applescript.
-     Therefore, Applescript permission is
+  2. The app requests a cookie using AppleScript.
+     Therefore, AppleScript permission is
      required. This requires the user to
      consent only once per app that originates the
      connection.
@@ -2700,7 +2700,7 @@ New Features:
   profile.
 - Add support for opening files to line number
   with IntelliJ.
-- Applescript can now launch a Python API script
+- AppleScript can now launch a Python API script
   from an absolute path.
 
 Improvements:
@@ -2790,7 +2790,7 @@ command line of the
   Scripts menu would timeout improperly.
 - Fix escaping of single quotes in semantic
   history commands.
-- Fix a bug where new tabs created in Applescript
+- Fix a bug where new tabs created in AppleScript
   weren't always usable right away.
 - Disable performance statistics to try to
   find cause of memory corruption bug.
@@ -3390,7 +3390,7 @@ New Features
   value of flashing indicators, like the bell.
 - New advanced pref to escape with quotes instead
   of backslashes for xonsh users.
-- Add two new Applescript commands:
+- Add two new AppleScript commands:
   1. invoke API function "f()"
   2. lauch API script with name "scriptname"
   This gives you a bridge to the modern world.
@@ -3670,7 +3670,7 @@ Bug fixes
 - Improve escaping of URLs in smart selection
   actions.
 - Fix escaping of tildes in secure copy paths.
-- Fix a bug where "set name" in Applescript didn't
+- Fix a bug where "set name" in AppleScript didn't
   work.
 - Fix a bug where double-clicking a window's
   shortcut label didn't work to zoom when there
@@ -4394,7 +4394,7 @@ Other Bug Fixes:
 - Fix resizing split panes on Mojave via menu or
   keyboard shortcut.
 - Add a usage description for Apple Events so
-  programs run within iTerm2 can use Applescript.
+  programs run within iTerm2 can use AppleScript.
 - Fix a bug where a "ghost" of text would remain
   behind in transparent windows.
 - Fix a bug where sessions might temporarily turn
@@ -4567,7 +4567,7 @@ New Features
   active?
 - New advanced pref: Underline Semantic History-selectable
   items under the cursor while holding cmd?
-- You can now escape $$ in an Applescript profile command
+- You can now escape $$ in an AppleScript profile command
   with $$$$
 - New advanced pref (affecting semantic history's URL
   detection): URLs must contain a scheme?
@@ -5009,7 +5009,7 @@ Marquee Features
 - Add copy mode, like tmux's.
   https://iterm2.com/documentation-copymode.html
 
-Applescript
+AppleScript
 - Adds new applescript support for hotkey windows.
 
 Arrangements
@@ -5218,7 +5218,7 @@ Marquee Features
 - Add copy mode, like tmux's.
   https://iterm2.com/documentation-copymode.html
 
-Applescript
+AppleScript
 - Adds new applescript support for hotkey windows.
 
 Arrangements
@@ -5905,7 +5905,7 @@ System Integration
 - Handle inserting emoji text in mavericks with cmd-ctrl-space.
 - Make dock and menu bar appear by moving mouse to top/bottom of screen in
   non-Lion fullscreen mode. Remove hold-cmd-for-tabs.
-- Make it possible to launch iTerm2 from Applescript so it won't open any
+- Make it possible to launch iTerm2 from AppleScript so it won't open any
   windows automatically.
 - Add support for Growl 1.3.
 - Support Lion's Restore functionality.
@@ -8133,7 +8133,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -8314,7 +8314,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -8487,7 +8487,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -8653,7 +8653,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -8823,7 +8823,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -8992,7 +8992,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -9207,7 +9207,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -9388,7 +9388,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -9623,7 +9623,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -9855,7 +9855,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -10083,7 +10083,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -10290,7 +10290,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -10499,7 +10499,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -10679,7 +10679,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -10874,7 +10874,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -10989,7 +10989,7 @@ Improvements
 - The Python API now uses a Unix Domain Socket
   instead of a TCP socket for better performance.
   The security model has also changed: apps can
-  authenticate via Applescript or you can choose
+  authenticate via AppleScript or you can choose
   to allow all programs running locally to use the
   API.
 - Use a single daemon process for all sessions
@@ -11178,8 +11178,8 @@ Security Improvements
   There are now two ways to get permission:
 
   1. The UI prompts on every connection.
-  2. The app requests a cookie using Applescript.
-     Therefore, Applescript permission is
+  2. The app requests a cookie using AppleScript.
+     Therefore, AppleScript permission is
      required. This requires the user to
      consent only once per app that originates the
      connection.
@@ -11200,7 +11200,7 @@ New Features:
   profile.
 - Add support for opening files to line number
   with IntelliJ.
-- Applescript can now launch a Python API script
+- AppleScript can now launch a Python API script
   from an absolute path.
 
 Improvements:
@@ -11290,7 +11290,7 @@ command line of the
   Scripts menu would timeout improperly.
 - Fix escaping of single quotes in semantic
   history commands.
-- Fix a bug where new tabs created in Applescript
+- Fix a bug where new tabs created in AppleScript
   weren't always usable right away.
 - Disable performance statistics to try to
   find cause of memory corruption bug.
@@ -11322,7 +11322,7 @@ Built on April 18, 2021.
 This is a release candidate for 3.3.10.
 
 Improvements;
-- Add an Applescript call to request a Python API
+- Add an AppleScript call to request a Python API
   cookie.
 - Make clearing command history faster.
 
@@ -11408,7 +11408,7 @@ Built on April 18, 2021.
 <pre id="changelist5916365896178247540" style="display: none">3.3.10beta2
 
 Improvements;
-- Applescript can now launch a script from an
+- AppleScript can now launch a script from an
   absolute path.
 - Add a delay before previewing a color preset to
   make it easier to navigate the menu quickly.
@@ -11435,7 +11435,7 @@ Bug Fixes:
   history commands.
 - Fix drawing of selected tab indicator in Minimal
   theme with colored tabs.
-- Fix a bug where new tabs created in Applescript
+- Fix a bug where new tabs created in AppleScript
   weren't always usable right away.
 - Disable performance statistics to try to
   find cause of memory corruption bug.
@@ -12168,7 +12168,7 @@ New Features
   value of flashing indicators, like the bell.
 - New advanced pref to escape with quotes instead
   of backslashes for xonsh users.
-- Add two new Applescript commands:
+- Add two new AppleScript commands:
   1. invoke API function "f()"
   2. lauch API script with name "scriptname"
   This gives you a bridge to the modern world.
@@ -12523,7 +12523,7 @@ Bug fixes
 - Improve escaping of URLs in smart selection
   actions.
 - Fix escaping of tildes in secure copy paths.
-- Fix a bug where "set name" in Applescript didn't
+- Fix a bug where "set name" in AppleScript didn't
   work.
 - Fix a bug where double-clicking a window's
   shortcut label didn't work to zoom when there
@@ -15743,7 +15743,7 @@ You should really upgrade. This has some important bug fixes.
 - Fix a bug where the terminal might not draw
   properly for a moment after creating it.
 - Fix a bug where programs couldn't use
-  Applescript inside iTerm2.
+  AppleScript inside iTerm2.
 
 3.2.2beta1 was very short-lived. Here are its changes:
 
@@ -16361,7 +16361,7 @@ New Features
   active?
 - New advanced pref: Underline Semantic History-selectable
   items under the cursor while holding cmd?
-- You can now escape $$ in an Applescript profile command
+- You can now escape $$ in an AppleScript profile command
   with $$$$
 - New advanced pref (affecting semantic history's URL
   detection): URLs must contain a scheme?
@@ -16637,7 +16637,7 @@ Bug Fixes:
   size bound will have fewer columns than it should.
 - Fix parsing of CSI 38:2 to accept a color type.
 - When opening a new window when the app isn't active, such
-  as with Applescript, wait for the app to become active
+  as with AppleScript, wait for the app to become active
   before making the new window key.
 - Don't offer to turn off mouse reporting, paste bracketing,
   or focus reporting when we transition from no hostname to
@@ -17071,7 +17071,7 @@ Bug fixes in beta 6:
 - Fix a crash on 10.13.
 - Fix a bug where tmux window titles wouldn't change if the gateway
   was buried.
-- Fix a bug where Applescript 'current window' would crash if there
+- Fix a bug where AppleScript 'current window' would crash if there
   was no current window
 - Fix a bug where modifiers weren't remapped at all if accessibility
   permission was missing (they now get mapped for
@@ -17347,7 +17347,7 @@ Marquee Features:
 
 New Features:
 -------------
-Applescript
+AppleScript
 - Adds new applescript support for hotkey windows.
 
 Arrangements
@@ -17813,7 +17813,7 @@ Built on April 18, 2021.
 <br>
 <p><a href="javascript:showId('4831059414101502952')" id='show4831059414101502952'>&#x25b8; Show Changelog</a></p>
 <a href="javascript:hideId('4831059414101502952')" id='hide4831059414101502952' style="display: none">&#x25be; Hide Changelog</a>
-<pre id="changelist4831059414101502952" style="display: none">- Fixes how windows are referred to by Applescript, which 3.0.3 broke.
+<pre id="changelist4831059414101502952" style="display: none">- Fixes how windows are referred to by AppleScript, which 3.0.3 broke.
 
 SHA-256 of the zip file is
 0cb3dc26a47ea7f76ac43156ff1c88163726c13154d695b254161a91ce948ad6
@@ -17881,7 +17881,7 @@ Bug fixes:
 - Fix a bug where editing text fields in Trigger prefs would lose your input
   when switching to another field.
 
-Applescript changes:
+AppleScript changes:
 - Add support for both "text" to get a session's content.
 
 New advanced prefs:
@@ -17929,7 +17929,7 @@ Bug fixes:
 - Fix a bug where restored sessions would have a nil "tty" applescript property.
 - Fix a problem where people upgrading from 2.1 had a broken binary.
 
-Applescript changes:
+AppleScript changes:
 - Add support for both "text" and "content" to get a sessions' content, and
   change the code used for "text" to the OS-standard value.
 
@@ -18574,7 +18574,7 @@ Bug fixes:
 - Improve appearance of find view as it's animating.
 - Rename "Search Google" to "Search Web" since the search engine's URL is
   configurable.
-- Prevent Applescript from activating iTerm2 when it creates a new session.
+- Prevent AppleScript from activating iTerm2 when it creates a new session.
 - Fix a bug where the initial titles on tmux integration tabs were not set
   properly.
 - Improve performance of the Advanced Settings tab.
@@ -18680,7 +18680,7 @@ New features:
   has shell integration installed.
 - Amount of time that tabs show in non-native fullscreen is configurable in advanced preferenes.
 - Make it possible to dismiss the Tip of the day by pressing esc.
-- Add profile name as a property of session in Applescript.
+- Add profile name as a property of session in AppleScript.
 - In the paste history tool, show the most recent entry at the bottom. This is consistent with the
   command history tool.
 - Get rid of the "hold cmd to show tabs in fullscreen". Holding cmd after changing tabs will keep
@@ -18725,7 +18725,7 @@ Bug fixes:
 - Don't perform rectangular selection if control+option+cmd is pressed.
 - Make cmd-click in an inactive pane in the key window activate semantic history without changing
   first responder.
-- Change Applescript windows element to return only terminal windows.
+- Change AppleScript windows element to return only terminal windows.
 - Make sure the cursor becomes visible after doing Find Cursor.
 - Reduce the number of tracking areas to try to improve performance.
 - Don't let a new split pane steal focus when focus follows mouse is on, as long as the pointer
@@ -18837,15 +18837,15 @@ New Features:
 
 - Add a profile preference to disable mark indicators.
 
-- Add “without newline” to the Applescript “write” verb.
+- Add “without newline” to the AppleScript “write” verb.
 
-- Make Applescript commands that create a new session, window, or tab return a
+- Make AppleScript commands that create a new session, window, or tab return a
   handle to the new object.
 
 - Performance improvements when shell integration is used to store command
   history.
 
-- Refer to sessions by unique ID instead of index in Applescript.
+- Refer to sessions by unique ID instead of index in AppleScript.
 
 - Offer to turn off mouse reporting when the current host changes.
 
@@ -18928,7 +18928,7 @@ Bug Fixes:
 
 - Fix a bug where windows would open one row too short.
 
-- Fix a bug where splitting a session in Applescript split the current session
+- Fix a bug where splitting a session in AppleScript split the current session
   rather than the one being “told”.
 
 - Fix a crash when downloading a file with scp using Shell Integration.
@@ -19245,7 +19245,7 @@ Built on April 18, 2021.
 <p><a href="javascript:showId('3511549866350293119')" id='show3511549866350293119'>&#x25b8; Show Changelog</a></p>
 <a href="javascript:hideId('3511549866350293119')" id='hide3511549866350293119' style="display: none">&#x25be; Hide Changelog</a>
 <pre id="changelist3511549866350293119" style="display: none">- Fixes a bug that would cause an occasional crash when using the minimum contrast feature.
-- Enables writing to tmux sessions with Applescript.
+- Enables writing to tmux sessions with AppleScript.
 - Fixes a bug with smart selection that would cause it to selct too much text prior to the true star
 t of the semantic object.
 - Fixes a crash when using smart selection with double-width characters.

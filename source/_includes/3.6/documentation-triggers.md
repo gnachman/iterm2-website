@@ -40,7 +40,7 @@ The following actions are available:
 </ul>
 
 #### Parameter?
-Various actions (Run Command, Run Coprocess, Post Notification, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. When the paramter is a text field with freeform entry, some special values are defined:
+Various actions (Run Command, Run Coprocess, Post Notification, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. When the parameter is a text field with freeform entry, some special values are defined:
 <table>
         <thead>
                 <tr>

@@ -41,7 +41,7 @@ If you'd like to match more text than you highlight with the **Highlight Text** 
 </pre>
 
 #### Parameter?
-Various actions (Run Command, Run Coprocess, Post Notification, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. When the paramter is a text field with freeform entry, some special values are defined. The interpretation of the parameter depends on whether *Use interpolated strings for parameters* (at the bottom of the Triggers window) is enabled.
+Various actions (Run Command, Run Coprocess, Post Notification, Send Text, and Show Alert) require additional information. This is specified in the "Parameters" field. When the parameter is a text field with freeform entry, some special values are defined. The interpretation of the parameter depends on whether *Use interpolated strings for parameters* (at the bottom of the Triggers window) is enabled.
 
 When *Use interpolated strings for parameters* is **off**:
 <table>

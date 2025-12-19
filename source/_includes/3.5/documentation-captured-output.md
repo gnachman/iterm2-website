@@ -38,7 +38,7 @@ Open the Toolbelt by selecting the menu item Toolbelt &gt; Show Toolbelt. Enable
 
 Kick off the build by running make. It spits out thousands of lines of output.
 
-#### Step 4: Examine the Captued Output tool
+#### Step 4: Examine the Captured Output tool
 
 Any errors or warnings that appear in the compiler output will appear in the Captured Output tool.
 
@@ -47,7 +47,7 @@ Select an entry in the tool. iTerm2 scrolls to display the line and briefly high
 
 #### Step 5: Open the file containing the error
 
-The Trigger created in step 1 takes an optional parameter. It is a command for iTerm2 to exceute as a <a href="https://www.iterm2.com/coprocesses.html">Coprocess</a> when you double-click an entry in the Captured Output tool. An example command is:
+The Trigger created in step 1 takes an optional parameter. It is a command for iTerm2 to execute as a <a href="https://www.iterm2.com/coprocesses.html">Coprocess</a> when you double-click an entry in the Captured Output tool. An example command is:
 
 <pre>
 echo vim \1; sleep 0.5; echo \2G

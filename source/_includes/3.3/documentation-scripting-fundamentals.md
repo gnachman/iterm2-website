@@ -160,7 +160,7 @@ contexts. See the section **Following Context References**, below.
 
 ## Interpolated Strings
 
-Another way that varibles are exposed in iTerm2's user interface is through
+Another way that variables are exposed in iTerm2's user interface is through
 *interpolated strings*. An interpolated string is a string of text that
 contains embedded function calls or references to variables.
 
@@ -273,7 +273,7 @@ iterm2_print_user_vars() {
 }
 </pre>
 
-You could then set your badge to `\(user.gitBranch)`, for exmaple.
+You could then set your badge to `\(user.gitBranch)`, for example.
 <br/>
 
 ### Control Sequence

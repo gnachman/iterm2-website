@@ -15,7 +15,7 @@ This opens a panel with these options:
 
  * *Haptic feedback when pressing esc* When you press esc on a touchbar, this makes the trackpad vibrate to provide feedback.
  * *Key click for virtual esc key* When you press esc on a touchbar, this causes a click sound to be played.
- * *Visual esc key indicator* When you press esc on a touchbar, make the cursor change shape briefly to provid feedback.
+ * *Visual esc key indicator* When you press esc on a touchbar, make the cursor change shape briefly to provide feedback.
 
 ### Navigation Shortcuts
 

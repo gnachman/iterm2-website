@@ -117,7 +117,7 @@ for details on setting them.
   * `iterm2` - A reference to the variables belonging to the application (i.e., the global context)
 
 #### Window Title
-  * `titleOverride` - The value from evaluating the interpeted string in `titleOverrideFormat`, if set.
+  * `titleOverride` - The value from evaluating the interpreted string in `titleOverrideFormat`, if set.
   * `titleOverrideFormat` - The window's interpolated string title. If not set, the current tab's title is used.
   * `currentTab` - The context of the current tab.
 

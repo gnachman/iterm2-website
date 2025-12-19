@@ -2,6 +2,6 @@
 layout: subdoc33
 title: Scripting - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
-subhead: Applescript
+subhead: AppleScript
 ---
 {% include 3.5/documentation-scripting.md %}

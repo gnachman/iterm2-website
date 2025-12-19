@@ -28,13 +28,13 @@ Python script connects to the unix domain socket, it passes along the cookie
 from its environment.
 
 When a program outside iTerm2 wishes to use the API, it needs to request a
-cookie. iTerm2 vends cookies using an Applescript API. The reason is that macOS
+cookie. iTerm2 vends cookies using an AppleScript API. The reason is that macOS
 provides a permission system that manages which pairs of apps can communicate
-with Applescript. By requiring an external program to acquire permission to use
-Applescript (formally known as "Automation" permission) before using the Python
+with AppleScript. By requiring an external program to acquire permission to use
+AppleScript (formally known as "Automation" permission) before using the Python
 API, the macOS-standard level of security is delivered.
 
-Some users may experience problems with Applescript, either due to bugs in
+Some users may experience problems with AppleScript, either due to bugs in
 macOS or limitations in the OS's ability to grant certain apps permission to
 use it. iTerm2 offers an escape hatch: you can elect to disable the cookie
 requirement by selecting **Allow all apps to connect** in **Prefs > General >
