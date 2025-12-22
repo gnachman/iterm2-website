@@ -9,7 +9,7 @@ Just want to try it out and don't care about the protocol? Use the imgcat tool. 
 
 Using the <a href="/utilities/imgcat">imgcat</a> script, one or more images may be displayed in a terminal session. For example:
 
-<img src="images/inline_image_sparky_demo.png">
+<img src="/images/inline_image_sparky_demo.png">
 
 Critically, animated GIFs are supported as of version 2.9.20150512.
 
