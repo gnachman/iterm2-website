@@ -353,7 +353,7 @@ You can push the current value on a stack and pop it off to return to the previo
 
 See <a href="documentation-images.html">Images</a> for details.
 
-Note that if the file is not an image but would benefit from native rendering, you can use this control sequence to display it with syntax highlighting and proporitonally spaced typograhy. For example, this is a good way to view a markdown file. In that case, the following optional arguments may be provided:
+Note that if the file is not an image but would benefit from native rendering, you can use this control sequence to display it with syntax highlighting and proporitonally spaced typography. For example, this is a good way to view a markdown file. In that case, the following optional arguments may be provided:
 
  * `type=` *mime type or extension*
  * `mode=` `regular` or `wide`

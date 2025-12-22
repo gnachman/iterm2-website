@@ -47,7 +47,7 @@ This setting specifies the maximum amount of memory allocated to instant replay 
 If selected, every time text is copied or pasted in iTerm2 it will be saved to disk. The last 20 values are recorded. They can be accessed with **Edit > Open Paste History...**. If you use <a href="documentation-shell-integration.html">Shell Integration</a> then when this is enabled your command history, directory history, and remote hostname and usernames will also be saved to disk. Unchecking this will erase all of the saved information.
 
 #### Enable Python API
-Toggles the availability of the Pythono API. See <a href="/python-api-auth.html">Python API Authentication</a> for details on the security model.
+Toggles the availability of the Python API. See <a href="/python-api-auth.html">Python API Authentication</a> for details on the security model.
 
 #### Custom Python API Scripts Folder
 Normally Python API scripts go in `~/Library/Application Support/iTerm2/Scripts` but if you'd prefer to have them elsewhere you can specify the path with this setting.
@@ -263,7 +263,7 @@ If enabled, a notification is shown when a pause is projected to occur within ha
 When enabled, this unpauses the tmux session as quickly as possible after it is paused by tmux. It does not completely eliminate the possibility of data loss.
 
 #### Mirror tmux paste buffer to local clipboard
-tmux has a "paste buffer" which acts like its clipboard. When this option is enabled, the contents of the tmux paste buffer and copied into the system clipbloard.
+tmux has a "paste buffer" which acts like its clipboard. When this option is enabled, the contents of the tmux paste buffer and copied into the system clipboard.
 
 ### Experimental
 

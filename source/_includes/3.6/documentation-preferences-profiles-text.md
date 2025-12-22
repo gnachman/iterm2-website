@@ -5,7 +5,7 @@
 This lets you select a cursor shape.
 
 #### Shadow
-This option is available for the underline and vertical bar cursors. It improves their visibility by adding a second line in a constrasting colorr next to the regular cursor.
+This option is available for the underline and vertical bar cursors. It improves their visibility by adding a second line in a constrasting color next to the regular cursor.
 
 #### Blink
 If checked, the cursor will blink slowly to improve visibility.

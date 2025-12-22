@@ -197,7 +197,7 @@ which were not long-lived. Their combined release
 notes may be found below.
 
 - Fix transparent open quickly and shell
-  integration intaller windows on macOS 12.
+  integration installer windows on macOS 12.
 - Fix incorrect inset on full screen displays on a
   screen with a notch.
 
@@ -527,7 +527,7 @@ Other Improvements
 - Change the full screen mode shortcut to the mac
   standard cmd-ctrl-F unless you have a profile
   whose shortcut is set to this. Continue to
-  acccept cmd-enter as well.
+  accept cmd-enter as well.
 - Minor performance improvements to legacy
   renderer.
 - Aesthetic improvements to the tabbar on big sur
@@ -731,7 +731,7 @@ Other Improvements
 - Change the full screen mode shortcut to the mac
   standard cmd-ctrl-F unless you have a profile
   whose shortcut is set to this. Continue to
-  acccept cmd-enter as well.
+  accept cmd-enter as well.
 - Minor performance improvements to legacy
   renderer.
 - Aesthetic improvements to the tabbar on big sur
@@ -1569,7 +1569,7 @@ Annoying things I'm sorry about
 New Features
 - Tab titles now parse very basic HTML tags for
   bold, italic, and underline. Less-than and
-  ampersand entites are also recognized.
+  ampersand entities are also recognized.
 - Margins are now adjustable in Prefs >
   Appearance > Panes.
 - Add an option to save prefs to a custom folder
@@ -2954,7 +2954,7 @@ Bug Fixes
 - Fix improper text alignment in font picker.
 - Duplicate Tab now respects the advanced pref that controls
   where new tabs are added.
-- Fix a bug where the shorcut for switching
+- Fix a bug where the shortcut for switching
   panes/tabs/window by number could show the wrong modifiers
   in the settings UI.
 - Don't convert control sequences from screen to xterm in
@@ -3108,7 +3108,7 @@ Bug Fixes
 - Fix improper text alignment in font picker.
 - Duplicate Tab now respects the advanced pref that controls
   where new tabs are added.
-- Fix a bug where the shorcut for switching
+- Fix a bug where the shortcut for switching
   panes/tabs/window by number could show the wrong modifiers
   in the settings UI.
 - Don't convert control sequences from screen to xterm in
@@ -3392,7 +3392,7 @@ New Features
   of backslashes for xonsh users.
 - Add two new AppleScript commands:
   1. invoke API function "f()"
-  2. lauch API script with name "scriptname"
+  2. launch API script with name "scriptname"
   This gives you a bridge to the modern world.
 - New window style "Maximized" that is an
   always-maximized window.
@@ -3556,7 +3556,7 @@ Bug fixes
   or title providers could not run concurrently if
   their callbacks had the same signature.
 - Fix a regression where control-| stopped sending
-  control-backslash on Japenese keyboards.
+  control-backslash on Japanese keyboards.
 - Fix flickering job name when using tmux
   integration locally.
 - Show a context menu when right clicking on the
@@ -4124,7 +4124,7 @@ Bug fixes
   trigger: it would fail if the trigger fired
   twice quickly.
 - Improve various wrong colors in Mojave.
-- Fix a bug wher elink underlines could be
+- Fix a bug where link underlines could be
   misaligned in the presence of double-width
   characters.
 - Add support for detecting column and line number
@@ -4491,7 +4491,7 @@ Other Improvements
   asking if you want to turn it off is removed.
 - Improved performance for memory-starved GPUs with GPU
   renderer.
-- Performance improvents when there is a badge and GPU
+- Performance improvements when there is a badge and GPU
   renderer is on.
 - Show "key" cursor icon at password prompt when GPU
   renderer is on.
@@ -4680,7 +4680,7 @@ New features:
 - Add an advanced pref that prevents wraparound when
   changing the active split pane directionally.
 - Add an advanced pref to allow tabs to wrap around.
-- Add a new advacned pref to disable middle-click closes a
+- Add a new advanced pref to disable middle-click closes a
   tab.
 - Add F21-F24 to touch bar.
 - Add GPU-based Metal renderer. It's off by default and
@@ -4816,7 +4816,7 @@ Bug fixes:
 - Prevent descenders from lines above the screen from
   hanging down into the screen area.
 - Add opt-forward delete as a shortcut for delete word
-  forward in the Natrual Text Editing preset.
+  forward in the Natural Text Editing preset.
 - Accept ~ in HTTP URLs for smart selection for new
   installs.
 - If you press Fn+Ctrl+Key send Ctrl+Key, not Key. A strange
@@ -5071,7 +5071,7 @@ Terminal Emulation
 - Add support for Unicode 9 (off by default)
 - Set COLORTERM=truecolor to advertise 24-bit capability.
 - Make the unicode normalization form configurable to None,
-  NFC, NFD, or HFS+. Change the defualt to None.
+  NFC, NFD, or HFS+. Change the default to None.
 
 tmux Integration
 - Tmux integration now supports the "initial directory"
@@ -5157,7 +5157,7 @@ Bug fixes:
   pane.
 - Improve how network automounts are detected. This helps us
   avoid stat()ing files on the network, which can cause
-  hangs when semantic history tries to discover if a file exsts.
+  hangs when semantic history tries to discover if a file exists.
 - Keep process monitoring from eating too much CPU.
 - Validate secure copy hostname and user name to ensure
   legal characters only are present.
@@ -5272,7 +5272,7 @@ Terminal Emulation
 - Add support for Unicode 9 (off by default)
 - Set COLORTERM=truecolor to advertise 24-bit capability.
 - Make the unicode normalization form configurable to None, NFC, NFD,
-  or HFS+. Change the defualt to None.
+  or HFS+. Change the default to None.
 
 tmux Integration
 - Tmux integration now supports the "initial directory" setting of the
@@ -5348,7 +5348,7 @@ Bug fixes:
 - Improve how focus follows mouse behaves when you split a pane.
 - Improve how network automounts are detected. This helps us avoid
   stat()ing files on the network, which can cause hangs when semantic
-  history tries to discover if a file exsts.
+  history tries to discover if a file exists.
 - Keep process monitoring from eating too much CPU.
 - Validate secure copy hostname and user name to ensure legal characters
   only are present.
@@ -6057,7 +6057,7 @@ Other Improvements:
 - Semantic history now supports "[filename](line
   number])" and "[filename] line [line number]"
 - Update it2ul to avoid sending xattrs to GNU tar.
-- Double-clicking a pane spliter equalizes the
+- Double-clicking a pane splitter equalizes the
   sizes of views adjacent to it.
 - Make "Adjust window when changing font size"
   work in tmux integration.
@@ -6140,7 +6140,7 @@ Bug Fixes:
 - Fix clicking ssh: links to open ssh integration.
 - Fix a bug where the first keystroke in copy mode
   could be ignored.
-- Performnace improvements when mouse tracking is
+- Performance improvements when mouse tracking is
   on.
 - Performance improvements if you have lots of OSC
   8 URLs in restorable history.
@@ -6264,7 +6264,7 @@ New Features:
 - You can now customize copy mode shortcuts by
   placing a file in ~/Library/Application
   Support/iTerm2/CopyModeKeyBindings.dict.
-  See the simliarly named file in the app bundle
+  See the similarly named file in the app bundle
   for a reference.
 - Add menu item to clear instant replay.
 - Add ability for composer to enqueue a command.
@@ -6386,7 +6386,7 @@ Bug Fixes:
 - Fix crash when open directory is disabled.
 - Use zsh as the default shell when open directory
   doesn't provide one.
-- Handle pasing from remote clipboards (handoff)
+- Handle passing from remote clipboards (handoff)
   better.
 - Fix a bug where the split pane shortcut numbers
   were wrong after moving them.
@@ -6460,7 +6460,7 @@ Bug fixes
   control sequences to fix copy to pasteboard in
   tmux integration.
 - Fix file descriptor leak in pidinfo helper job.
-- Fix a bug where varation selector 16 didn't work
+- Fix a bug where variation selector 16 didn't work
   with code points outside the basic multilingual
   plane.
 - Fix various crashes.
@@ -6502,7 +6502,7 @@ Other improvements
   refugees who want to use Control-C and Control-V
   to copy and paste. "Copy or Send ^C" and "Paste
   or Send ^V" will copy (if there's a selection)
-  or paste (if the clibpoard has text)
+  or paste (if the clipboard has text)
   and otherwise send the control character.
 - Offer to replace an existing file when
   downloading.
@@ -6827,7 +6827,7 @@ New Features
   This lets you have transparency/blur in
   background windows.
 - Add a preference to force creating a new window
-  on lauch, even if there is a hotkey window.
+  on launch, even if there is a hotkey window.
 
 Other Improvements
 - Add text labels to the macOS-style color
@@ -6954,7 +6954,7 @@ New Features
 - Add "Add tab on right" to tab context menu.
 - The folder for automatic logging is now an
   interpolated string.
-- There's a new Utilitiy, it2tip, which implements
+- There's a new Utility, it2tip, which implements
   the tip of the day as a command line app.
   Install shell integration and utilities to get
   it.
@@ -7341,7 +7341,7 @@ Other Improvements
 - Change the full screen mode shortcut to the mac
   standard cmd-ctrl-F unless you have a profile
   whose shortcut is set to this. Continue to
-  acccept cmd-enter as well.
+  accept cmd-enter as well.
 - Minor performance improvements to legacy
   renderer.
 - Aesthetic improvements to the tabbar on big sur
@@ -7381,7 +7381,7 @@ Bug Fixes
   'session contents restored' banner.
 - Fix bug where inline images were scaled
   incorrectly.
-- Fix insets of inline images to be mroe sensible.
+- Fix insets of inline images to be more sensible.
 - Fix a bug where a shadow could appear under the
   tabbar in full screen mode on Big Sur and also
   in the minimal theme.
@@ -10399,7 +10399,7 @@ Improvements
 - Exposé Tabs was removed in favor of a
   lighter-weight "Find Globally" feature.
 - Making a selection while viewing scrollback
-  history while reciving new content is more
+  history while receiving new content is more
   reliable now.
 - Job names now show the modified name if a
   process writes to its argv[0].
@@ -12170,7 +12170,7 @@ New Features
   of backslashes for xonsh users.
 - Add two new AppleScript commands:
   1. invoke API function "f()"
-  2. lauch API script with name "scriptname"
+  2. launch API script with name "scriptname"
   This gives you a bridge to the modern world.
 - New window style "Maximized" that is an
   always-maximized window.
@@ -12200,7 +12200,7 @@ Bug Fixes
   session after creating it in applescript.
 - Fix a bug where secure copy drop targets were
   not visible when using the GPU renderer.
-- Suport system preference for three-finger tap
+- Support system preference for three-finger tap
   Quicklook.
 - Fix incorrect tip of the day about compact
   window style, which was replaced by the compact
@@ -12384,7 +12384,7 @@ Bug fixes
   or title providers could not run concurrently if
   their callbacks had the same signature.
 - Fix a regression where control-| stopped sending
-  control-backslash on Japenese keyboards.
+  control-backslash on Japanese keyboards.
 - Fix flickering job name when using tmux
   integration locally.
 - Show a context menu when right clicking on the
@@ -12822,7 +12822,7 @@ Bug Fixes
   where the titlebar gets stuck on.
 
 Things Made Worse
-- The shorcut for "Zoom" (making a window fill the
+- The shortcut for "Zoom" (making a window fill the
   screen) changed to Cmd-Shift-0. macOS forces it
   to take this value on some machines. Better to
   be consistent. Sorry for breaking your workflow.
@@ -12886,7 +12886,7 @@ Bug Fixes
   where the titlebar gets stuck on.
 
 Things Made Worse
-- The shorcut for "Zoom" (making a window fill the
+- The shortcut for "Zoom" (making a window fill the
   screen) changed to Cmd-Shift-0. macOS forces it
   to take this value on some machines. Better to
   be consistent. Sorry for breaking your workflow.
@@ -14787,7 +14787,7 @@ Other Improvements
 - Reduce idle CPU usage when there are many split
   panes.
 - Reduce height of minimal+compact tabbar.
-- Improve the apperance of the window when
+- Improve the appearance of the window when
   dragging a tab.
 - Improve in-app docs for semantic history.
 - Python scripts can now repeatedly try connecting
@@ -16036,7 +16036,7 @@ Other Improvements
   asking if you want to turn it off is removed.
 - Improved performance for memory-starved GPUs with GPU
   renderer.
-- Performance improvents when there is a badge and GPU
+- Performance improvements when there is a badge and GPU
   renderer is on.
 - Show "key" cursor icon at password prompt when GPU
   renderer is on.
@@ -16260,7 +16260,7 @@ Built on April 18, 2021.
   showed the wrong name in the confirmation alert.
 - Fix a bug where the app would use 100% CPU while idle.
 
-Enhacements:
+Enhancements:
 - Improvements to adaptive frame rate. It is now off by
   default in interactive applications. This is controlled by
   a new advanced setting.
@@ -16699,7 +16699,7 @@ Built on April 18, 2021.
 - Prevent descenders from lines above the screen from
   hanging down into the screen area.
 - Add opt-forward delete as a shortcut for delete word
-  forward in the Natrual Text Editing preset.
+  forward in the Natural Text Editing preset.
 - Accept ~ in HTTP URLs for smart selection for new
   installs.
 
@@ -16986,7 +16986,7 @@ Built on April 18, 2021.
 - If you change the preferred screen of a profile with a hotkey
   window, it will now take effect immediately (used to have to close
   and re-create the window)
-- The app-wide hotkey now switches back to the prevous app when iTerm2
+- The app-wide hotkey now switches back to the previous app when iTerm2
   has a native fullscreen window.
 - Fix a hang when navigating among split panes.
 - Fix a bug where the wrong range of a URL would get underlined for
@@ -17179,7 +17179,7 @@ Bug fixes:
   the scroller.
 - Improve how network automounts are detected. This helps us avoid
   stat()ing files on the network, which can cause hangs when semantic
-  history tries to discover if a file exsts.
+  history tries to discover if a file exists.
 - Improve performance for moving line-by-line through a file by caching
   CTLineRef's.
 - Keep process monitoring from eating too much CPU.
@@ -17397,7 +17397,7 @@ Terminal Emulation
 - Add support for Unicode 9 (off by default)
 - Set COLORTERM=truecolor to advertise 24-bit capability.
 - Make the unicode normalization form configurable to None, NFC, NFD,
-  or HFS+. Change the defualt to None.
+  or HFS+. Change the default to None.
 
 tmux Integration
 - Tmux integration now supports the "initial directory" setting of the
@@ -18228,7 +18228,7 @@ Minor bug fixes:
 - Allow windows without a title bar to be miniaturized.
 - Fix the colors of Advanced Preferences when the preferences panel is not key.
 - Fix a bug where right mouse clicks were reported incorrectly.
-- Update TextMate's bundle identifier for the new version with captial letters.
+- Update TextMate's bundle identifier for the new version with capital letters.
 - Make the custom escape sequence SetBackgroundImageFile with an empty name
   remove the background image.
 - Fix a bug where launching Atom with shell integration would open two files.
@@ -18343,7 +18343,7 @@ Minor bug fixes:
 - Allow windows without a title bar to be miniaturized.
 - Fix the colors of Advanced Preferences when the preferences panel is not key.
 - Fix a bug where right mouse clicks were reported incorrectly.
-- Update TextMate's bundle identifier for the new version with captial letters.
+- Update TextMate's bundle identifier for the new version with capital letters.
 - Make the custom escape sequence SetBackgroundImageFile with an empty name
   remove the background image.
 - Fix a bug where launching Atom with shell integration would open two files.
@@ -18648,7 +18648,7 @@ Bug fixes:
   bar or tab bar.
 - Fix an assertion when two copies of iTerm2 are running at once because core
   data.
-- Turn off the flicker fixer by default to improve percieved latency when
+- Turn off the flicker fixer by default to improve perceived latency when
   typing.
 - Fix a bug where a right-click on changing text performs the selected action
   on the changed text rather than what you clicked on.
@@ -18678,7 +18678,7 @@ New features:
   words, and a safari view for URLs. You can customize it in the Pointer panel of preferences.
 - Make semantic history (cmd-click on a file) download with with scp if you're ssh'ed to a host that
   has shell integration installed.
-- Amount of time that tabs show in non-native fullscreen is configurable in advanced preferenes.
+- Amount of time that tabs show in non-native fullscreen is configurable in advanced preferences.
 - Make it possible to dismiss the Tip of the day by pressing esc.
 - Add profile name as a property of session in AppleScript.
 - In the paste history tool, show the most recent entry at the bottom. This is consistent with the
@@ -18764,7 +18764,7 @@ Bug fixes:
 - Fix a bug where CSI 2 J scrolled the wrong number of lines into history.
 - Improve image display to work better in tmux.
 - Respect ~/.ssh/config for upload and download.
-- Fix bug where hodling cmd in fullscreen doesn't flash tabs if automatic tab
+- Fix bug where holding cmd in fullscreen doesn't flash tabs if automatic tab
   flashing is turned off in Prefs > Appearance.
 - Improve reflow of text when resizing a window.
 - Fix a bug where the window size was computed incorrectly when tabs are on the
@@ -18775,7 +18775,7 @@ Bug fixes:
 - Improve messaging when downloading a file with scp.
 - Keep profiles window from changing spaces unpredictably. Now it stays put, but
   there is an advanced preference to make it follow you from space to space.
-- Fix a bug where an undesirable display referesh would occur at the start of a
+- Fix a bug where an undesirable display refresh would occur at the start of a
   new line.
 - Remove content shadow to fix ghosting issue with transparent windows.
 - Fix a bug where cmd-click on whitespace before a filename would select some of
@@ -18855,7 +18855,7 @@ New Features:
 
 - Make it easier to dismiss certain announcements by pressing a key.
 
-- Change $ITERM_SESISON_ID to include a session’s unique ID.
+- Change $ITERM_SESSION_ID to include a session’s unique ID.
 
 - Add an Edit Password button to the password manager.
 
@@ -19112,7 +19112,7 @@ Built on April 18, 2021.
 <br>
 <p><a href="javascript:showId('9214768227858470937')" id='show9214768227858470937'>&#x25b8; Show Changelog</a></p>
 <a href="javascript:hideId('9214768227858470937')" id='hide9214768227858470937' style="display: none">&#x25be; Hide Changelog</a>
-<pre id="changelist9214768227858470937" style="display: none">- Removes an unncessary test for whether Growl is running, which caused crashes.
+<pre id="changelist9214768227858470937" style="display: none">- Removes an unnecessary test for whether Growl is running, which caused crashes.
 - Removes assertions.
 </pre></p>
 </p>
@@ -19246,7 +19246,7 @@ Built on April 18, 2021.
 <a href="javascript:hideId('3511549866350293119')" id='hide3511549866350293119' style="display: none">&#x25be; Hide Changelog</a>
 <pre id="changelist3511549866350293119" style="display: none">- Fixes a bug that would cause an occasional crash when using the minimum contrast feature.
 - Enables writing to tmux sessions with AppleScript.
-- Fixes a bug with smart selection that would cause it to selct too much text prior to the true star
+- Fixes a bug with smart selection that would cause it to select too much text prior to the true star
 t of the semantic object.
 - Fixes a crash when using smart selection with double-width characters.
 - Improve rendering of characters with multiple combining marks.
@@ -19264,7 +19264,7 @@ Built on April 18, 2021.
 - Fix a crash when remapping modifiers or requesting permission to register a hotkey on OS 10.7 and 10.8.
 
 Changes present in 1.0.0.20131108:
-- Fix bug where arrange horizontally computed the wrapping position incorrecly if the screen's visible frame wasn't 0
+- Fix bug where arrange horizontally computed the wrapping position incorrectly if the screen's visible frame wasn't 0
 - Set coprocess file descriptors nonblocking to avoid deadlock in bug 2576
 - Revert to old text drawing methods
 - Fix bug where the char under the cursor wasn't drawn
@@ -19288,7 +19288,7 @@ Built on April 18, 2021.
 <br>
 <p><a href="javascript:showId('4452235776206760310')" id='show4452235776206760310'>&#x25b8; Show Changelog</a></p>
 <a href="javascript:hideId('4452235776206760310')" id='hide4452235776206760310' style="display: none">&#x25be; Hide Changelog</a>
-<pre id="changelist4452235776206760310" style="display: none">- Fix bug where arrange horizontally computed the wrapping position incorrecly if the screen's visible frame wasn't 0
+<pre id="changelist4452235776206760310" style="display: none">- Fix bug where arrange horizontally computed the wrapping position incorrectly if the screen's visible frame wasn't 0
 - Set coprocess file descriptors nonblocking to avoid deadlock in bug 2576
 - Revert to old text drawing methods
 - Fix bug where the char under the cursor wasn't drawn
@@ -19311,7 +19311,7 @@ Built on April 18, 2021.
 <br>
 <p><a href="javascript:showId('6891423439506518688')" id='show6891423439506518688'>&#x25b8; Show Changelog</a></p>
 <a href="javascript:hideId('6891423439506518688')" id='hide6891423439506518688' style="display: none">&#x25be; Hide Changelog</a>
-<pre id="changelist6891423439506518688" style="display: none">- Fix bug where arrange horizontally computed the wrapping position incorrecly if the screen's visible frame wasn't 0
+<pre id="changelist6891423439506518688" style="display: none">- Fix bug where arrange horizontally computed the wrapping position incorrectly if the screen's visible frame wasn't 0
 - Set coprocess file descriptors nonblocking to avoid deadlock in bug 2576
 - Revert to old text drawing methods
 - Fix bug where the char under the cursor wasn't drawn
@@ -19478,7 +19478,7 @@ Tmux integration bug fixes:
 - Make cmd-t and cmd-w open a tmux window/tab if the current session is tmux
 - Work around bug in tmux 1.8 where unlink-window will print %exit without %end
 - Turn off tmux verbose logging
-- Fix bug where dragging a tmux split vertically computes the wrong splitter index and wrong distance moved, probably beacuse convertPointFromBase: does crazy things on retina
+- Fix bug where dragging a tmux split vertically computes the wrong splitter index and wrong distance moved, probably because convertPointFromBase: does crazy things on retina
 - Fix bug where tmux window jumps to its previous coordinate when layout changes.
 - Work around bugs in post-1.8 tmux protocol
 - Split long send-keys commands into sub-1024-byte chunks to avoid crashing tmux 1.8
@@ -19535,7 +19535,7 @@ Tmux integration bug fixes:
 - Make cmd-t and cmd-w open a tmux window/tab if the current session is tmux
 - Work around bug in tmux 1.8 where unlink-window will print %exit without %end
 - Turn off tmux verbose logging
-- Fix bug where dragging a tmux split vertically computes the wrong splitter index and wrong distance moved, probably beacuse convertPointFromBase: does crazy things on retina
+- Fix bug where dragging a tmux split vertically computes the wrong splitter index and wrong distance moved, probably because convertPointFromBase: does crazy things on retina
 - Fix bug where tmux window jumps to its previous coordinate when layout changes.
 - Work around bugs in post-1.8 tmux protocol
 - Split long send-keys commands into sub-1024-byte chunks to avoid crashing tmux 1.8
