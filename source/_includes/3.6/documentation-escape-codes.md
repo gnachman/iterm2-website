@@ -96,6 +96,47 @@ To post a notification:
 
     OSC 9 ; [Message content goes here] ST
 
+#### Progress Bar
+
+The progress bar can be controlled using OSC 9 with a leading `4` parameter:
+
+    OSC 9 ; 4 ; [st] ; [pr] ST
+
+`[st]` specifies the state:
+<ul>
+    <li>0: Stop/clear the progress bar</li>
+    <li>1: Set progress to `[pr]` percent (success state)</li>
+    <li>2: Set error state, optionally with `[pr]` percent</li>
+    <li>3: Set indeterminate state (animates horizontally)</li>
+    <li>4: Set warning state with `[pr]` percent</li>
+</ul>
+
+`[pr]` is the progress value as a number from 0 to 100. It is required for states 1 and 4. For state 2, it is optional; when omitted, the progress indicator enters an indeterminate error state.
+
+To stop the progress bar, you can also use the abbreviated form:
+
+    OSC 9 ; 4 ST
+
+Examples in bash:
+
+    # Show 50% progress
+    echo -e "\033]9;4;1;50\a"
+
+    # Show indeterminate progress
+    echo -e "\033]9;4;3\a"
+
+    # Show error state at 75%
+    echo -e "\033]9;4;2;75\a"
+
+    # Show indeterminate error state
+    echo -e "\033]9;4;2\a"
+
+    # Show warning state at 25%
+    echo -e "\033]9;4;4;25\a"
+
+    # Clear the progress bar
+    echo -e "\033]9;4;0\a"
+
 #### Change profile
 To change the session's profile on the fly:
 
