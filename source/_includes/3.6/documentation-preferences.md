@@ -47,7 +47,7 @@ This setting specifies the maximum amount of memory allocated to instant replay 
 If selected, every time text is copied or pasted in iTerm2 it will be saved to disk. The last 20 values are recorded. They can be accessed with **Edit > Open Paste History...**. If you use <a href="documentation-shell-integration.html">Shell Integration</a> then when this is enabled your command history, directory history, and remote hostname and usernames will also be saved to disk. Unchecking this will erase all of the saved information.
 
 #### Enable Python API
-Toggles the availability of the Pythono API. See <a href="/python-api-auth.html">Python API Authentication</a> for details on the security model.
+Toggles the availability of the Python API. See <a href="/python-api-auth.html">Python API Authentication</a> for details on the security model.
 
 #### Custom Python API Scripts Folder
 Normally Python API scripts go in `~/Library/Application Support/iTerm2/Scripts` but if you'd prefer to have them elsewhere you can specify the path with this setting.
@@ -158,9 +158,9 @@ If enabled, iTerm2 will periodically check if a new unstable version of iTerm2 e
 If enabled, iTerm2 will periodically check if a new version of iTerm2 exists, and if so it will prompt you to download and upgrade.
 
 #### Ignore non-critical shell integration updates
-If enabled, you won't be notified of updates to shell integration unless there is a security problem or other critical issue. Shell integration update notificationss are shown when the shell integration script is loaded (when you log in or ssh somewhere that has it installed).
+If enabled, you won't be notified of updates to shell integration unless there is a security problem or other critical issue. Shell integration update notifications are shown when the shell integration script is loaded (when you log in or ssh somewhere that has it installed).
 
-#### Notify only for cricial shell integration updates
+#### Notify only for critical shell integration updates
 When disabled, iTerm2 will let you know whenever your shell integration scripts are out of date. When enabled, it will warn you only when a very important update is available (e.g., because of a security issue).
 
 <hr>

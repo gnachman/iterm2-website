@@ -393,7 +393,7 @@ Some terminal emulators allow interaction between `DECSCUSR` and the following c
 * `DECSET(14)`/`DECRST(14)`/`DECRQM(14)`.
 * `CSI {param} h` where `{param}` is `33` or `34`.
 
-This behavior is implemention-defined.
+This behavior is implementation-defined.
 
 ### UNICODE_BASIC
 
@@ -505,7 +505,7 @@ CSI 2 0 0 ~ {Pasted Text} CSI 2 0 1 ~
 
 Where `{Pasted Text}` is the text to be pasted (typically from the system's clipboard).
 
-When pasting text, terminal emulators should filter out ASCII control codes 0-8, 11, 12, and 14-31 inclusive (that is, everything but `Tab`, `CR`, and `LF`).  This ensures that `CSI 201 ~` is not embedded in the pasted contents, and also is a good security practice. Terminals must remove or modify embeded `CSI 201 ~` sequences to avoid confusing them with the terminal `CSI 201 ~`.
+When pasting text, terminal emulators should filter out ASCII control codes 0-8, 11, 12, and 14-31 inclusive (that is, everything but `Tab`, `CR`, and `LF`).  This ensures that `CSI 201 ~` is not embedded in the pasted contents, and also is a good security practice. Terminals must remove or modify embedded `CSI 201 ~` sequences to avoid confusing them with the terminal `CSI 201 ~`.
 
 #### Tests
 
