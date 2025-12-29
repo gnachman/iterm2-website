@@ -1,3 +1,34 @@
+2025-12-28: Fix tab switch rendering glitch on multi-monitor
+setups. Issue 11960
+
+Call resizeDrawable() in draw() to ensure drawable size is
+calculated with the current window's backing scale factor.
+This fixes the case where the view was sized before being
+added to a window, causing convertToBacking() to use the
+main display's scale instead.
+
+Also add a missing call to super.viewDidMoveToWindow.
+
+2025-12-28: fix inline images foregroundcolor enum error
+(#549)
+
+
+2025-12-28: Show smart selection action URL on hover. While
+doing that I noticed that if the interpolated string had a
+side effect (such as opening a save panel) it would happen
+multiple times including on hover. This change adds code to
+track whether side-effects are allowed by an interpolated
+string/function invocation. In cases where a side-effect is
+undesired (e.g., showing the hover URL) the function call is
+replaced with a placeholder.
+
+2025-12-28: Fix non unique xib identifiers
+
+2025-12-26: Fix how the main menu mangler determines whether
+the current session is a browser
+
+2025-12-22: Add test script for SetProfileProperty
+
 2025-12-22: Add control sequence SetProfileProperty. Issue
 4586
 
