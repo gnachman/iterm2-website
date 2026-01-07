@@ -1,3 +1,18 @@
+2026-01-06: Allow edge-attached windows to specify
+width/height as cells or screen percentage
+
+Edge-attached windows (top, bottom, left, right) can now
+independently configure their width and height as either a
+fixed number of cells or a percentage of the screen.
+Previously only the spanning dimension could be a
+percentage.
+
+- Change iTermPercentage from double to struct with
+width/height fields - Add separate units popups for rows and
+columns in preferences - Add FrameCanonicalizer to
+consolidate window frame calculations - Handle backward
+compatibility for old arrangements/profiles
+
 2026-01-01: Add send text without braodcasting key binding
 action. Issue 12663
 
