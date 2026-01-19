@@ -1,3 +1,51 @@
+2026-01-18: Cache margin preferences using FAST_INT_ACCESSOR
+(#553)
+
+* Cache margin preferences using FAST_INT_ACCESSOR
+
+Add FAST_INT_ACCESSOR pattern to cache integer preferences
+similar to existing FAST_BOOL_ACCESSOR. Apply to sideMargins
+and topBottomMargins which are called 55 times per render
+frame in the drawing hot path.
+
+- Add iTermPreferencesIntCache struct - Add
+FAST_INT_ACCESSOR macro - Add intWithCache: method - Add
+sideMargins and topBottomMargins fast accessors - Update 29
+call sites in iTermTextDrawingHelper.m - Update 26 call
+sites in PTYTextView.m
+
+* Use cached preference accessors in Metal renderers
+
+Replace direct intForKey:/boolForKey: calls with fast cached
+accessors (sideMargins, topBottomMargins,
+maximizeThroughput) in Metal rendering code.
+
+These preferences are read every frame at 60+ FPS. While the
+per-call savings are modest, eliminating NSUserDefaults lock
+acquisition reduces contention with other threads (main
+thread, mutation queue) that also access preferences.
+
+Files changed: - iTermMetalDriver.m: topBottomMargins,
+maximizeThroughput - iTermMetalCellRenderer.m: sideMargins,
+topBottomMargins - iTermMarkRenderer.m: sideMargins
+
+* Cache session configuration preference lookups
+
+Add FAST_BOOL_ACCESSOR for allowClipboardAccessFromTerminal
+and dimOnlyText preferences, used in
+updateConfigurationFields hot path.
+
+These preferences are accessed every frame during rendering
+and benefit from the same dispatch_once caching pattern used
+for other hot-path preferences.
+
+---------
+
+Co-authored-by: chall37 <chall37@users.noreply.github.com>
+2026-01-18: Don't block token processing of visible sessions
+by non-visible sessions (e.g., background tabs and minimized
+windows). Inspired by PR 555
+
 2026-01-12: Make tmux attaching window/tab setting sane.
 Issue 11424
 
