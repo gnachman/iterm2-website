@@ -634,6 +634,23 @@ Print [download.txt](download.txt) to initiate a file download.
 
 Set your terminal to 185 cells wide by 55 rows tall with 7x13 pixel cells and run [inline_media.sh](inline_media.sh) to test your terminal's rendering of inline images.
 
+### PROGRESS
+
+Boolean. Indicates if the terminal supports OSC 4;9 progress indicators. The sequences are:
+
+```
+OSC 9 ; 4 ; <state> ; <progress> ST
+```
+
+Where `state` is one of 0, 1, 2, 3, or 4.
+ * 0: Hides the progress bar.
+ * 1: Set progress value to `progress` in the "Default" state.
+ * 2: Set progress value to `progress` in the "Error" state.
+ * 3: Enters the "Indeterminate" state. This state ignores the `progress` value.
+ * 4: Set progress value to `progress` in the "Warning" state
+
+`progress` is a number between 0 and 100, inclusive.
+
 ## Publication
 
 Terminals have two mechanisms they may use to publish their feature set:
@@ -711,6 +728,7 @@ The codes are:
 |Boolean|NOTIFICATIONS|No|
 |Boolean|SIXEL|Sx|
 |Boolean|FILE|F|
+|Boolean|PROGRESS|P|
 
 ## Open Source License
 
