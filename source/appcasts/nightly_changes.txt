@@ -1,3 +1,55 @@
+2026-01-21: Re-enable GCD timer on macOS 26 (#564)
+
+The macOS 26 check that disabled GCD timer was added for
+issue 12415, but the root cause was actually
+NSAutoFillHeuristicController causing performance
+degradation (see Ghostty PR 8625). That issue is already
+addressed by disabling NSAutoFillHeuristicControllerEnabled.
+
+Testing shows GCD timer achieves ~24fps while NSTimer only
+achieves ~16fps at the 30fps cadence setting, due to
+aggressive timer coalescing by macOS when no tolerance is
+set. GCD timer's explicit 0.5ms tolerance prevents this
+coalescing.
+
+Co-authored-by: chall37 <chall37@users.noreply.github.com>
+2026-01-21: Fix adaptive framerate always overriding
+non-adaptive setting (#565)
+
+A refactoring in 29b3a39d9 (April 2019) converted nested
+if-else logic to early returns but missed adding a return
+after the non-adaptive framerate path. This caused the
+adaptive framerate code to always run and override the
+cadence, even when useAdaptiveFrameRate was false.
+
+The result was that disabling adaptive framerate had no
+effect - users would still get the slow adaptive cadence
+(15fps for non-Metal, 30fps for Metal) instead of the
+configured active update cadence.
+
+Co-authored-by: chall37 <chall37@users.noreply.github.com>
+2026-01-21: Show a message in settings when no profile is
+selected
+
+2026-01-21: Add hysteresis and fix various tab dragging
+glitches
+
+2026-01-21: Fix visual glitch when dragging Tahoe tabs -
+separators appeared and tabs resized when adding
+placeholders
+
+2026-01-21: Fix warning
+
+2026-01-21: Improve animation performance while dragging a
+tab and add some disabled timing debugging code.
+
+2026-01-21: Lock tab drags to be in the direction of the
+tabbar until they  move far enough so it's like they're on
+rails
+
+2026-01-21: Add a setting to suppress notifications from the
+active session
+
 2026-01-20: Add support for arithmetic expressions and
 comparison.
 
