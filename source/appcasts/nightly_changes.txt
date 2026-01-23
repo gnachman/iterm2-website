@@ -1,3 +1,17 @@
+2026-01-22: Centralize join context coordination in iTermGCD
+(#562)
+
+- Move gPerformingJoinedBlock from VT100ScreenMutableState.m
+to iTermGCD.m - Add comprehensive documentation explaining
+coordination signals:
+  - Join context (joined, performingJoinedBlock) - Queue
+  safety markers (for assertions) - Related state in
+  TokenExecutor (pauseCount, executingSideEffects, etc.)
+- Preserve atomic exchange semantics for
+setPerformingJoinedBlock: - Add forwarding accessors in
+VT100ScreenMutableState for compatibility
+
+Co-authored-by: chall37 <chall37@users.noreply.github.com>
 2026-01-21: Re-enable GCD timer on macOS 26 (#564)
 
 The macOS 26 check that disabled GCD timer was added for
