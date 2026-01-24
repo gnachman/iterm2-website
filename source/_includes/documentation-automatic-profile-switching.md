@@ -10,7 +10,7 @@ In *Settings&gt;Profiles&gt;Advanced*, you may specify a set of rules.
 
 When any session satisfies a rule in a given profile, it will switch to that profile. Rules consist of three optional components: the user name, the hostname, and the path. At least one component must be present, since an empty rule is not allowed. The hostname is required only when both a user name and a path are specified.
 
-A user name is a unix accont name (e.g., *root*) followed by an `@`.
+A user name is a unix account name (e.g., *root*) followed by an `@`.
 
 A path always begins with a `/`. Any time a hostname is followed by a path, they are separated by a `:`. For example, `iterm2.com:/users/george`. It may include `*` wildcards.
 
@@ -43,14 +43,40 @@ determined by a rule's score, which is computed by summing the scores for its
 matching parts. In order for a rule to be considered, all of its parts that are
 specified must match the current state.
 
-The scoring is defined as:
+#### Scoring
 
-  * An exact match for the hostname scores 16 points.
-  * A partial match for the hostname using a wildcard scores 8 points.
-  * A match on the job name (wildcard or not) scores 4 points.
-  * A match on the user name scores 2 points.
-  * An exact match on the path scores one point.
-  * A partial match on the path using a wildcard scores zero points, but does count as a match for the rule.
+Scores are additive. Each matching component contributes points:
+
+| Component | Match Type | Base Score |
+|-----------|------------|------------|
+| Hostname | Exact match | 32 |
+| Hostname | Glob pattern (e.g., `*.example.com`) | 16 × (1 + length factor) |
+| Hostname | `*` alone (catch-all) | 1 |
+| Job | Glob match on job name or command line | 8 |
+| Username | Exact match | 4 |
+| Path | Exact match | 2 |
+| Path | Glob pattern | 0 + length factor |
+
+**Length factor**: For glob patterns, longer patterns score slightly higher. The formula is `length / (length + 1)`, which approaches 1 for long patterns. This ensures `*.internal.example.com` beats `*.example.com`.
+
+**Zero means no match**: If any specified component fails to match, the entire rule scores 0 (no match).
+
+**Unspecified components don't penalize**: Only components you specify affect matching. An empty hostname field matches any hostname without reducing your score.
+
+#### Example Scores
+
+| Rule | Approximate Score |
+|------|-------------------|
+| `*` (catch-all) | 1 |
+| `/home/user/projects` (exact path) | 2 |
+| `admin@` (username only) | 4 |
+| `*.example.com` (hostname glob) | ~16.9 |
+| `server.example.com` (exact hostname) | 32 |
+| `admin@server.example.com` | 36 |
+
+#### Custom Expressions
+
+For complex logic, use expressions instead of the standard rule fields. Your expression returns the score directly. To outrank standard rules, return values greater than 64 (the maximum standard score). Return 0 for no match.
 
 The highest scoring rule, if any, will be used and the session's profile will be switched.
 
