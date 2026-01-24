@@ -107,10 +107,15 @@ supported:
   * Interpolated strings
   * Integers
   * Floating point
+  * Booleans
   * Array literals
   * Array dereferences
   * Function calls
   * Paths to variables
+  * Arithmetic expressions
+  * Comparison expressions
+  * Logical expressions
+  * Ternary (conditional) expressions
 
 ### Interpolated Strings
 
@@ -118,11 +123,15 @@ These are described below.
 
 ### Integers
 
-These are decimal integer literals. For example, `-3`, `0`, and `2`.
+These are decimal integer literals. For example, `0` and `2`.
 
 ### Floating point
 
 Floating point values look like `-1.2`, `0`, `2.3`, or `1.2e5`.
+
+### Booleans
+
+The keywords `true` and `false` represent boolean values.
 
 ### Array Literals
 
@@ -139,13 +148,11 @@ They may contain zero or more expressions.
 Array dereferences are of the form:
 
 ```
-path[index]
+path[expression]
 ```
 
-Where `path` is the path to a variable and `index` is a number. Yes, this is a
-very restrictive syntax! It is there for a very specific purpose (the `matches`
-array passed to Triggers' interpolated strings) and will be expanded in the
-future, if needed.
+Where `path` is the path to a variable and `expression` evaluates to a numeric
+index.
 
 ### Function calls
 
@@ -157,6 +164,82 @@ This implies that function calls may be composed.
 Variables in the current context can be referred to by a path like `jobName`,
 but you can also specify multi-part paths that refer to variables in different
 contexts. See the section **Following Context References**, below.
+
+### Arithmetic expressions
+
+*Note: Arithmetic, comparison, logical, and ternary expressions require iTerm2 version 3.6.8 or later.*
+
+You can perform arithmetic with the following operators:
+
+  * `+` Addition
+  * `-` Subtraction
+  * `*` Multiplication
+  * `/` Division
+  * `-` (unary) Negation
+
+Arithmetic operators require numeric operands. Parentheses can be used for
+grouping, e.g., `(2 + 3) * 4`.
+
+Standard operator precedence applies: unary negation binds most tightly,
+followed by multiplication and division, then addition and subtraction.
+
+**String coercion:** When both operands of a binary operator can be converted
+to numbers, they will be. Strings are converted to numbers if they represent
+valid integers or floating-point values. If either operand cannot be converted,
+no coercion occurs.
+
+### Comparison expressions
+
+Comparison operators return `1` for true or `0` for false:
+
+  * `==` Equal to
+  * `!=` Not equal to
+  * `<` Less than
+  * `>` Greater than
+  * `<=` Less than or equal to
+  * `>=` Greater than or equal to
+
+Equality operators (`==` and `!=`) work with any types. Different types are
+never equal. Relational operators (`<`, `>`, `<=`, `>=`) require operands of
+the same type: numbers, strings (compared lexicographically), or arrays
+(compared lexicographically element-by-element).
+
+### Logical expressions
+
+Logical operators work with numeric values where `0` is false and any non-zero
+value is true:
+
+  * `&&` Logical AND
+  * `||` Logical OR
+  * `!` Logical NOT
+
+These return `1` for true and `0` for false.
+
+### Ternary (conditional) expressions
+
+The ternary operator evaluates one of two expressions based on a condition:
+
+```
+condition ? trueValue : falseValue
+```
+
+If `condition` evaluates to a non-zero number, `trueValue` is returned;
+otherwise, `falseValue` is returned.
+
+### Operator precedence
+
+From highest to lowest precedence:
+
+  1. Unary operators: `-` (negation), `!` (logical NOT)
+  2. Multiplication/division: `*`, `/`
+  3. Addition/subtraction: `+`, `-`
+  4. Relational: `<`, `>`, `<=`, `>=`
+  5. Equality: `==`, `!=`
+  6. Logical AND: `&&`
+  7. Logical OR: `||`
+  8. Ternary: `? :`
+
+Parentheses can override precedence.
 
 <a name="interpolated-strings" />
 ## Interpolated Strings
