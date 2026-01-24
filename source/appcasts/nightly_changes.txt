@@ -1,3 +1,26 @@
+2026-01-23: Move a bunch of settings into
+VT100ScreenConfiguration
+
+2026-01-23: Make collectInputForPrinting private to
+VT100ScreenMutableState as it was never used in VT100Screen
+
+2026-01-23: Fix Kitty protocol a=T (transmit+display) with
+identifier=0 (#566)
+
+When using the Kitty graphics protocol with action=T
+(transmit and display) without an explicit image ID, the
+identifier defaults to 0. The image was correctly stored
+under lastImageKey in transmissionDidFinish(), but the
+lookup after transmission always used the identifier
+directly, causing "ENOENT:Image not found after
+transmission" errors.
+
+This fix makes the lookup behavior consistent with storage:
+use lastImageKey when identifier is 0, matching how
+executeDisplayCommand already handles this case.
+2026-01-23: Prevent deadlock is VT100ScreenMutableState is
+dealloced during a paused side effect
+
 2026-01-22: Centralize join context coordination in iTermGCD
 (#562)
 
