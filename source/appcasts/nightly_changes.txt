@@ -1,3 +1,25 @@
+2026-01-29: Fix Kitty image file transmission incorrectly
+rejecting paths containing /dev/ as a subdirectory. Issue
+12688
+
+2026-01-29: Reuse GCD timer instead of cancel/create on
+cadence changes (#571)
+
+Previously, every cadence change would cancel the dispatch
+source and create a new one. Now the timer is created once
+and dispatch_source_set_timer is used to update timing
+parameters, eliminating kernel call overhead.
+
+Co-authored-by: chall37 <chall37@users.noreply.github.com>
+2026-01-29: Add option to preserve window size on tab bar
+visibility change only when resizing would push window
+off-screen. Issue 12692
+
+2026-01-29: Remember user-set colors separately from those
+set by control sequences so when a control sequence resets
+colors it doesn't override the user's manually set value.
+Issue 12691
+
 2026-01-27: Clear Script Console text views when window
 closes to prevent unbounded memory growth. Issue 12690
 
