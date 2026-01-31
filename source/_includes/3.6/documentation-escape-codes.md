@@ -353,7 +353,7 @@ You can push the current value on a stack and pop it off to return to the previo
 
 See <a href="documentation-images.html">Images</a> for details.
 
-Note that if the file is not an image but would benefit from native rendering, you can use this control sequence to display it with syntax highlighting and proporitonally spaced typograhy. For example, this is a good way to view a markdown file. In that case, the following optional arguments may be provided:
+Note that if the file is not an image but would benefit from native rendering, you can use this control sequence to display it with syntax highlighting and proporitonally spaced typography. For example, this is a good way to view a markdown file. In that case, the following optional arguments may be provided:
 
  * `type=` *mime type or extension*
  * `mode=` `regular` or `wide`
@@ -555,9 +555,27 @@ To disinter a buried session, send:
 
 To define a region as a code block:
 
-    OSC 1337 ; Block=id=[identifier] ; attr=start|end 
+    OSC 1337 ; Block=id=[identifier] ; attr=start|end
 
 Use attr=start to begin a block and attr=end to end it, Use the same identifier for both.
+
+#### Update Block
+
+*Available in iTerm2 3.6.8 and later.*
+
+To fold or unfold an existing block:
+
+    OSC 1337 ; UpdateBlock=id=[identifier] ; action=fold|unfold ST
+
+Where `[identifier]` is the ID of a previously defined block. Use `action=fold` to collapse the block into a single line, or `action=unfold` to expand it back to its full content.
+
+Example in bash:
+
+    # Fold a block
+    echo -ne "\033]1337;UpdateBlock=id=myblock;action=fold\a"
+
+    # Unfold a block
+    echo -ne "\033]1337;UpdateBlock=id=myblock;action=unfold\a"
 
 #### Buttons
 
