@@ -583,7 +583,31 @@ To create a copy button that, when clicked, copies a code block:
 
     OSC 1337 ; Button=type=copy ; block=[identifier]
 
-The `identifier` should reference the identifier of a clode block defined with `OSC 1337;Block=...`.
+The `identifier` should reference the identifier of a code block defined with `OSC 1337;Block=...`.
+
+*Available in iTerm2 3.6.8 and later.*
+
+To create a custom button that sends an escape sequence when clicked:
+
+    OSC 1337 ; Button=type=custom ; code=[code] ; icon=[sf-symbol] ST
+
+Where `[code]` is a positive integer and `[sf-symbol]` is the name of an SF Symbol (e.g., `star.fill`, `checkmark.circle`). When the button is clicked, the terminal sends the following escape sequence to the running application:
+
+    CSI ? 1337 ; [code] ~
+
+For example, if `[code]` is 42, clicking the button sends `ESC [ ? 1337 ; 42 ~` (hex: `1b 5b 3f 31 33 33 37 3b 34 32 7e`).
+
+To invalidate all custom buttons (making them appear grayed out and non-interactive):
+
+    OSC 1337 ; Button=type=custom ST
+
+Example in bash:
+
+    # Create a custom button with code 42 and a star icon
+    echo -ne "\033]1337;Button=type=custom;code=42;icon=star.fill\a"
+
+    # Invalidate all custom buttons
+    echo -ne "\033]1337;Button=type=custom\a"
 
 #### Feature Reporting
 
