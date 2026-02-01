@@ -1,3 +1,55 @@
+2026-01-31: Add test script for UpdateBlock
+
+2026-01-31: Add control seqeunce to fold/unfold blocks
+
+2026-01-31: Improve placeholder text contrast in search and
+filter fields (#573)
+
+The search field placeholder now respects the user-defined
+tint color and both search and filter placeholders use
+improved contrast (75% opacity instead of 50%) for better
+visibility on dark backgrounds.  2026-01-31: Add the option
+to show offscreen command line for the current command.
+Issue 12700
+
+2026-01-31: Support git diff index/worktree path prefixes in
+semantic history (#572)
+
+* Support git diff index/worktree path prefixes (i/, w/, c/,
+o/) in semantic history path cleaning
+
+Extend pathByRemovingDiffPrefix to handle all git diff path
+prefixes documented in git-diff(1), not just a/ and b/. This
+fixes an issue where paths from git diff output using index
+(i/) and worktree (w/) prefixes were incorrectly treated as
+URLs instead of file paths.
+
+Git diff can use various prefixes depending on the command:
+- a/ and b/ - traditional diff format (old/new files) - i/
+and w/ - index and worktree (git diff
+--ita-visible-in-index) - c/ - commit - o/ - object
+
+Add comprehensive tests for all new prefix types following
+the existing test pattern for a/ and b/ prefixes.
+
+* Refactor git diff prefix tests to use parameterized loop
+
+Consolidate 6 separate test methods
+(testGetFullPathStripsLeading{A,B,I,W,C,O}Slash) into a
+single parameterized test that loops over all git diff
+prefixes. This follows the existing pattern used in
+testGetFullPathStripsDelimiters and
+testGetFullPathStripsTrailingPunctuation.
+
+Benefits: - Reduces code duplication (from ~110 lines to ~20
+lines) - Easier to maintain - adding new prefixes requires
+one line instead of a full test method - Maintains test
+coverage for all 6 git diff prefixes (a/, b/, i/, w/, c/,
+o/) - Adds descriptive assertion messages showing which
+prefix failed if a test fails 2026-01-31: Add repair button
+to fix key bindings corrupted by keycode 0 bug in versions
+3.4.x-3.5.x. Issue 12698
+
 2026-01-29: Fix Kitty image file transmission incorrectly
 rejecting paths containing /dev/ as a subdirectory. Issue
 12688
@@ -295,228 +347,3 @@ action. Issue 12663
 
 2026-01-01: Add ability to bind expressions to boolean
 settings
-
-2025-12-31: Add iTermSettingsCheckbox (not used yet) and
-refactor common bits out of iTermSettingsColorWell
-
-2025-12-31: Add the ability to bind a color to an
-expression. Issue 12662
-
-2025-12-30: Improve alignment of colors settings
-
-2025-12-29: Don't add a 'dynamic' tag to dynamic profiles.
-Issue 7845
-
-Add an advanced setting to restore the old behavior.
-
-2025-12-28: Fix tab switch rendering glitch on multi-monitor
-setups. Issue 11960
-
-Call resizeDrawable() in draw() to ensure drawable size is
-calculated with the current window's backing scale factor.
-This fixes the case where the view was sized before being
-added to a window, causing convertToBacking() to use the
-main display's scale instead.
-
-Also add a missing call to super.viewDidMoveToWindow.
-
-2025-12-28: fix inline images foregroundcolor enum error
-(#549)
-
-
-2025-12-28: Show smart selection action URL on hover. While
-doing that I noticed that if the interpolated string had a
-side effect (such as opening a save panel) it would happen
-multiple times including on hover. This change adds code to
-track whether side-effects are allowed by an interpolated
-string/function invocation. In cases where a side-effect is
-undesired (e.g., showing the hover URL) the function call is
-replaced with a placeholder.
-
-2025-12-28: Fix non unique xib identifiers
-
-2025-12-26: Fix how the main menu mangler determines whether
-the current session is a browser
-
-2025-12-22: Add test script for SetProfileProperty
-
-2025-12-22: Add control sequence SetProfileProperty. Issue
-4586
-
-2025-12-21: Add menu item to open new tab next to current
-tab/at end (whatever the opposite of the default is). Issue
-12655
-
-2025-12-21: Make determinate progress indicator in tabbar go
-clockwise from 12 o'clock. Issue 12659
-
-2025-12-21: Fix bug where the measured size of a Tahoe tab
-label used the wrong font. Issue 12658
-
-2025-12-21: Fix drawing of horizontal lines on non-retina
-displays. Lines were terminated half a point from the edges.
-Issue 12657
-
-2025-12-21: Fix missing window title in maximized-style
-windows. Issue 12656
-
-2025-12-19: Move 'new tabs open at end of tabbar' out of
-advanced settings. Issue 12655
-
-2025-12-19: Fix build break
-
-2025-12-19: Keep capture GPU frame except in release builds
-(fixes adhoc)
-
-2025-12-19: When metal capture is enabled set the
-MTL_CAPTURE_ENABLED environment variable so we get GPU
-traces
-
-2025-12-19: Tweak position and spacing of stoplight buttons
-in minimal in macOS 26. I can't do what apple wants, which
-is for the red button to be concentric with the window
-radius, because then the title and shortcut label would be
-weirdly high or weirdly unaligned since my tabbar is taller
-than standard. Hopefully the departure of Alan Dye will fix
-my problems because someone who uses computers can design
-this stuff. Issue 12474
-
-2025-12-19: Try to fix a bug where the Web menu isn't added
-
-2025-12-19: Bump shell integration
-
-2025-12-19: Make bottom/top/left/right of screen windows
-have a percentage span. Formerly they had to be
-fullwidth/fullheight.
-
-2025-12-17: Make the Open Profiles window move to the
-current Space to avoid switching spaces when you try to use
-it. Issue 12647
-
-2025-12-17: Make menu tips into xcassets to make them
-smaller
-
-2025-12-17: 3.6.7beta2
-
-2025-12-17: Add additions to osc8.txt
-
-2025-12-17: Turn off text completion in search fields
-
-2025-12-17: Improve assertion to help debug a crash
-
-2025-12-17: Try to fix crash when editing a session
-
-2025-12-17: Fix crash when dragging in color without a
-colorspace into a color well
-
-2025-12-16: Fix crash when snippets and folders are
-intermingled in the toolbelt tool
-
-2025-12-16: Fix a bug where two sessions could have the same
-divorced GUID
-
-2025-12-15: Prevent crashes when measureing number of lines
-of command output with wonky ranges. Not sure why the ranges
-are bad, but we should not crash.
-
-2025-12-15: Fix wrong height of comapct tabbar in full
-screen
-
-2025-12-15: Fix bug where full screen tabbar overlaps text.
-Issue 12623
-
-2025-12-15: Ignore session-window-changed notifications that
-we think are due to our own actions. Issue 12646
-
-2025-12-15: Bump shell integration. Issue 12641
-
-2025-12-12: Improve file type detection for portholes
-
-2025-12-12: Improve colors of comments in native rendering
-
-2025-12-12: Add Buffer Input trigger. See email with subject
-line 'input buffering'
-
-2025-12-12: Fix broken build
-
-2025-12-11: Add advanced setting to disable revealing
-exported settings in Finder. Requested by email in thread
-'request: option to stop launching folders when exporting
-settings'
-
-2025-12-11: Recommend cmd-b for leader
-
-2025-12-11: Consider a selection short if it is less than
-the window's width or less than 80 columns, to have sane
-behavior with tiny windows. Issue 12613
-
-2025-12-11: Add target parameter to OSC 8 to reuse a
-browser, provided it's the in-app browser. Issue 12629
-
-2025-12-10: Lower hotkey window level when a sheet modal
-exists. Issue 12630
-
-2025-12-10: Fix misalignments in settings
-
-2025-12-10: Add archiving feature. Issue 12632
-
-2025-12-07: Add support for missing underline styles. Issue
-12633
-
-2025-12-06: Fix hotspot of custom cursors. Issue 12615
-
-2025-12-06: Add more natively rendered shapes. Issue 11896
-
-2025-12-05: Bump Python module version
-
-2025-12-05: Fix run_until_complete takes too long to return
-(#546) for issue 12634
-
-
-2025-12-05: Bump shell integration for it2git fixes
-
-2025-12-05: Add comprehensive AGENTS.md documentation for AI
-agents (#545)
-
-
-2025-12-05: Add profile settings to customize progress bar
-(PR #542)
-
-2025-12-03: Add missing file
-
-2025-12-03: Bump shell integration
-
-2025-12-02: Add support for text replacements. Issue 9980
-
-2025-12-01: Fix vertical alignment of timestamps
-
-2025-12-01: Improve timestamp caching
-
-2025-12-01: Cache date formatters for timestamps
-
-2025-12-01: Fix build break
-
-2025-12-01: Add a new setting for which tab to select after
-closing. See email with subject line 'fix tab closing ux'
-
-2025-12-01: Modernize README with improved structure and
-design (#543)
-
-
-2025-12-01: Add .claude/*.local.json to gitignore (#544)
-
-Local Claude Code settings should not be committed to
-version control.  This allows developers to maintain
-personal Claude Code preferences while keeping shared
-configuration (like custom commands) in the repository.
-2025-12-01: Add configurable new instance open style
-preference (#537)
-
-Introduce a new advanced setting 'newInstanceOpenStyle' to
-control how new iTerm2 instances are opened when triggered
-by scripts or external applications. This setting allows
-users to specify whether new instances open in a new window,
-new tab (default), vertical split pane, or horizontal split
-pane, providing a more flexible and unified configuration.
-Updated the application delegate to respect this setting
-when opening files.
