@@ -1,3 +1,41 @@
+2026-02-05: Avoid making a snapshot when a command ends. Fix
+a bug where codecierge would truncate messages after tool
+use.
+
+2026-02-04: Fix line reflow, mark property updates during
+resize, and several resize bugs.
+
+Preserve soft line wraps during shell redraws: when shells
+like zsh send CR+EL to redraw a wrapped command line, skip
+the EOL_SOFT to EOL_HARD conversion if the previous line is
+full.
+
+Fix several bugs in resize code: - safeCoordRange: check
+start.x (not end.x twice) for validation.  - promptRange
+modulo: fix end.x %= end.x (always 0) to end.x %= width.  -
+positionRangeForCoordRange: handle lines shorter than the
+screen width.  - updateSavedIntervalTreeWithWidth: update
+VT100ScreenMark's
+  commandRange, promptRange, and outputStart when resizing
+  marks in the saved (alt screen) interval tree, matching
+  what updateIntervalTreeWithWidth already does for the
+  primary tree.
+
+2026-02-04: Isolate all data paths (Application Support,
+config dir, sockets, secure settings) when -suite is
+specified. This lets you run multiple copies of the app with
+different settings. Python API will still have issues
+because its socket is in a well known location, though.
+Usage:
+
+2026-02-04: Pass --suite=<reverse domain> to use a custom
+user defaults suite. This makes reproducible environments
+easier for testing
+
+2026-02-04: Improve handling of Fn key remapping. Sadly
+althoughit works better it can not work well because of how
+macOS handles Fn since Sequoia.
+
 2026-02-02: Cleanup
 
 2026-02-02: [wip] bug fixes
