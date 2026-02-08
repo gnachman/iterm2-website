@@ -1,3 +1,31 @@
+2026-02-07: [CHERRY PICK TO 3.6.7] Fix paste bracketing race
+condition causing out-of-order chunks. Issue 12704
+
+Bug: When pasting multi-line text with bracketed paste mode
+enabled, the first chunk (containing ESC[200~ start bracket)
+could arrive after subsequent chunks, causing applications
+like nano to hang.
+
+Root cause: Commit e0a6352 moved the first chunk write into
+the willExpect callback to ensure the expectation was
+installed before writing. However, this callback is invoked
+via a chain of dispatch_async calls (sync  updateExpectFrom
+copy  addExpectation  dispatch_async).  The paste timer
+could fire before this chain completed, writing subsequent
+chunks directly while the first chunk was still pending.
+
+Fix: Queue the first chunk synchronously before dispatching
+sync, using a reference counter (bracketedPastePending) to
+also queue subsequent chunks. When willExpect fires,
+bracketedPasteDidExpect decrements the counter and flushes
+the queue if all blocking conditions are cleared
+(_buffering, sendingIsBlocked, bracketedPastePending).
+
+This ensures: - First chunk is in queue before any
+subsequent chunks - All writes respect existing queuing
+conditions - Correct ordering is preserved when the queue is
+flushed
+
 2026-02-06: Bump shell integration
 
 2026-02-05: Resolve warning
