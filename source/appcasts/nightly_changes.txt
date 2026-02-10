@@ -1,3 +1,49 @@
+2026-02-09: Try to fix bug where deepseek gets confused
+after a tool call. Issue 12707
+
+2026-02-09: Revert "Fix parallel tool call handling for
+DeepSeek"
+
+This reverts commit
+a7afa58d984f056ce4e2ded1fdbe20a6a14562f8.
+
+2026-02-09: Fix parallel tool call handling for DeepSeek
+
+Only process tool call chunks with index == 0, ignoring
+parallel calls.  This keeps conversation history consistent
+(one tool_call, one response) and fixes "missing field id"
+errors when DeepSeek attempts parallel calls.
+
+2026-02-09: Try again when you enter a wrong passphrase
+
+2026-02-09: Improve detection of encrypted private keys
+
+2026-02-09: [CHERRY PICK] Fix a bug where canceling entering
+a passphrase for SCP went on to try an empty password
+
+2026-02-09: Don't terminate automatically when closing the
+alert box asking if you want to restore. Issue 12674
+
+2026-02-09: Make IME color configurable. Issue 12710
+
+2026-02-09: Hack around broken focus ring in search bar in
+macos 26
+
+2026-02-09: Fix missing web menu after installing browser
+plugin
+
+2026-02-09: Fix tests that were failing because we started
+accepting strings as numbers in numeric expressions
+
+2026-02-09: Add tests for the preceding commit
+
+2026-02-09: Once we receive and OSC 7 or a CurrentDirectory
+control sequence, stop using pwd poller's directory for the
+current path for the rest of the session. If you look at all
+the scenarios of shells that send OSC 7, shell integration
+(not) installed, and using local/remote hosts, this is
+always the right answer. Issue 12616
+
 2026-02-08: Simplify window radius algorithm and make it
 work better. The cubic root finding failed because there
 were multiple roots in the valid range.
