@@ -1,3 +1,93 @@
+2026-02-12: Move performance tests to a new test target
+which builds with optimizations
+
+Also adds some tests of the slow paths in gang token
+handling, saved from PR 576
+
+2026-02-12: Add GitHub Actions CI for running tests
+
+Set up automated testing on push to master and PRs: - Run
+ModernTests scheme on macos-15 with Xcode 26.2 - Smart retry
+logic for flaky ibtoold/asset catalog crashes
+  (known Xcode 26.2 issue on GitHub runners)
+- Only retry for infrastructure issues, fail fast on real
+test failures - Upload test results as artifacts for
+debugging - Fix HTTP server binding in tests for CI
+environment
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+
+2026-02-12: Add missing `typing.Optional` to Python API type
+annotations (#575)
+
+* Fix missing typing.Optional annotations in Python API
+
+Parameters with default value None were missing
+typing.Optional wrapper in window.py, alert.py,
+customcontrol.py, focus.py, and screen.py.
+
+* Fix missing typing.Optional for profile_customizations in
+Window.async_create 2026-02-11: Rebuild dependencies using
+Xcode 26.2
+
+2026-02-11: Temporarily remove CI workflow
+
+Will re-add after upgrading to Xcode 26.2 locally and
+running make paranoiddeps to build compatible dependencies.
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+
+2026-02-11: Add make paranoiddeps step for CI builds
+
+The build requires dependencies to be rebuilt when the Xcode
+version differs from what they were last built with.
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+
+2026-02-11: Select Xcode 26.2 explicitly and disable code
+signing for CI
+
+- Use /Applications/Xcode_26.2.app instead of default
+Xcode.app - Skip the full app build (tests build what they
+need) - Disable code signing since CI doesn't have
+certificates
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+
+2026-02-11: Use macos-15 runner for Xcode 26 support
+
+macos-14 only has Xcode 15.4, which can't read the project
+file.
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+
+2026-02-11: Add GitHub Actions workflow for running tests on
+push
+
+Also fix FakeSession to conform to VT100ScreenDelegate by
+adding the missing screenSendTmuxOSC4Report stub method.
+
+2026-02-11: Fix LineBlockTests compile errors from
+nullability annotations (#577)
+
+Commit 3602ebace added NS_ASSUME_NONNULL to LineBlock.h,
+making init, cowCopy, and copyWithAbsoluteBlockNumber return
+non-optional types in Swift. Also made
+screenCharArray(forRawLine:) non-optional and rawLine:
+explicitly nullable.
+
+- Remove ~69 force-unwraps on LineBlock init/copy/cowCopy
+calls - Remove optional chaining on non-optional
+ScreenCharArray returns - Convert if-let bindings to direct
+assignment for ScreenCharArray - Add force-unwraps on
+nullable rawLine: pointer passed to OffsetOfWrappedLine -
+Add explicit type annotation to closure parameter for type
+inference
+
+Co-authored-by: chall37 <chall37@users.noreply.github.com>
+2026-02-11: Respond to OSC 52 queries in tmux integration
+for tmux 3.6+. Issue 12385
+
 2026-02-10: Make toasts prettier and animated
 
 2026-02-10: Improve logging for password manager issue 8796
