@@ -1,3 +1,14 @@
+2026-02-13: Fix pwmplugin SwiftPM warnings by extracting
+shared protocol into a library target (#583)
+
+The bitwarden adapter had a duplicate copy of
+PasswordManagerProtocol.swift which caused SwiftPM to emit
+"unhandled files" warnings. Extract the shared protocol into
+a proper library target that both adapters depend on, remove
+the duplicate, and add public access modifiers for
+cross-module visibility.
+
+Co-authored-by: chall37 <chall37@users.noreply.github.com>
 2026-02-12: Move performance tests to a new test target
 which builds with optimizations
 
