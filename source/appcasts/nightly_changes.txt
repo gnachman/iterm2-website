@@ -1,3 +1,126 @@
+2026-02-15: Fix a bug where background tabs don't get
+rescheduled for token execution causing a hang
+
+2026-02-15: Improve stress test isolation and cleanup
+
+- Rename default suite from com.iterm2.defaults to
+com.iterm2.stress-test for clarity - Track the test iTerm2's
+PID and use it for cleanup instead of AppleScript quit
+(avoids killing the wrong instance) - Remove restorable
+state directory before launching to ensure clean startup
+
+Improve stress_load.py robustness and remove throttling:
+
+- Add defensive checks in flood mode: initialize proc before
+try block,
+  handle FileNotFoundError, check proc exists before
+  terminating
+- Add thread safety to title injection with a lock to
+prevent races
+  between timer callbacks and cancellation
+- Simplify mode iteration tracking with mode_start_iteration
+variable - Remove 1ms sleep every 100 iterations; let PTY
+backpressure provide
+  natural throttling for more realistic stress testing
+
+2026-02-15: Add performance testing infrastructure (PR 569)
+
+Core components: - run_stress_test.sh: Main harness with tab
+count sweeps, synchronized startup, DTrace metrics,
+interaction injection, suite presets - stress_load.py:
+Terminal output generator with multiple modes (normal,
+buffer, clearcodes, flood) for exercising text processing -
+Dashboard-style modes (htop, watch, progress, table, status)
+for cursor positioning stress - analyze_profile.py: Profiler
+output analysis for hotspot detection - tmux_wrapper.sh:
+Auto-cleanup tmux session management
+
+Self-time profiling (--self-time): - iterm_self_time.d:
+DTrace script with explicit section markers, duration/sample
+metadata, tick-based self-termination -
+analyze_self_time.py: Distinguishes raw leaf time from
+attributed callers, normalizes module names, reports
+coverage honestly
+
+DTrace integration: - Frame rate and UX metrics collection
+scripts - FairnessScheduler probes - Proper dtrace
+sequencing: -p before -s, attach detection via polling,
+SIGINT before quit for clean END block output - Use /tmp for
+sync dir with chmod 777 for root dtrace access
+
+Environment validation: - Check iTerm2 not running at script
+start - Detect power source and energy mode via pmset - Warn
+if not on AC power or high power mode - Capture build
+metadata (version, commit, branch, date) from app plist
+
+Suite presets (--suite=): - com.iterm2.defaults: Default
+preferences - com.iterm2.fairness: Fairness scheduler
+testing
+
+2026-02-15: FEAT: Add color picker and recent colors to tab
+color menu (#578)
+
+* Add custom color picker and recent colors to tab color
+menu
+
+Add an eyedropper icon to the tab color menu that opens
+NSColorPanel for picking any custom color. Show the current
+custom color as a swatch with checkmark when it differs from
+presets. Persist up to 12 recent tab colors in
+NSUserDefaults and display them as an accessory view in the
+color panel. Debounce saving while dragging in the picker to
+avoid flooding recents with near-identical colors.
+
+* Use CPKPopover for tab color picker and move delegate to
+Swift
+
+Move ColorsMenuItemViewDelegate conformance from
+PseudoTerminal.m to PseudoTerminal.swift. Use CPKPopover as
+the default color picker with NSColorPanel as a fallback,
+respecting the kCPKUseSystemColorPicker user preference. Fix
+popover anchoring to the actual tab cell.  Increase max
+recent tab colors from 12 to 14.
+
+Also fix a pre-existing bug in ColorsMenuItemView.m where
+MAX(1, ...) was used instead of MIN(1, ...) for saturation
+clamping in the swatch outline color, causing saturation to
+always clamp to 1.0.
+
+* Replace associated objects with ObjC property, fix curly
+quotes 2026-02-15: Make builds more contributor-friendly
+(#582)
+
+* Make builds more contributor-friendly
+
+- Default to unsigned builds; pass SIGNED=1 for code-signed
+builds - Default to native-arch-only deps; pass UNIVERSAL=1
+for fat binaries - Derive BUILD_DIR dynamically from
+xcodebuild with fail-fast validation - Discover rustup via
+PATH instead of hardcoding /opt/homebrew/bin/rustup -
+Normalize paranoid-* target names to
+paranoid-<exact-target-name> - Remove stale targets (Dep,
+canary, debug, paranoidrailroad, paranoidsclv) - Propagate
+SIGNING_FLAGS and ARCH_FLAGS to sub-Makefiles
+
+* Pass SIGNED=1 UNIVERSAL=1 in release scripts
+
+The Makefile now defaults to unsigned native-arch builds for
+contributors. Release scripts need to opt in to signing and
+universal binaries explicitly.
+
+* Remove obsolete release scripts
+
+Delete six scripts that are relics of previous release
+workflows: - full_release.sh, full_release2.sh:
+svn/googlecode era - notarize.sh: deprecated xcrun altool
+helper - release_preview.sh: references Growl, OS 10.8+,
+ruby signing - release_beta_built.sh: deprecated xcrun
+altool notarization - continuous.sh: untouched since 2014,
+replaced by GitHub Actions CI
+
+---------
+
+Co-authored-by: chall37 <chall37@users.noreply.github.com>
 2026-02-13: Fix pwmplugin SwiftPM warnings by extracting
 shared protocol into a library target (#583)
 
