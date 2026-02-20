@@ -1,92 +1,102 @@
-iTerm2 version 3.6.6 was released on
-November 17, 2025.
+Version 3.6.7 was built on February 19, 2026.
 
 New Features:
-- Added setting to show per-pane title bars when
-  there is only one pane.
-- If the previous release left you with red tabs
-  in a tmux window, this one will offer to fix
-  them.
-- Add KeePassXC integration in password manager.
-- There's a new key binding action to toggle a
-  checkbox of your choosing in settings.
-- Add support for OSC 9;4 progress bars.
-- Add support for DECDSR 997 and DECSET/DECRESET
-  2031 for dark mode reporting.
-- Cursor animation can now be enabled always.
-  Previously it only happened in interactive apps.
+- There is a new window style of "Centered".
+- You can now switch 1password accounts in the
+  password manager using the ... menu next to the
+  search field.
+- Added profile settings to disable and configure
+  progress bars.
+- Added support for macOS "text replacements".
+- Added session archiving. You can manually or
+  automatically archive a session, which writes
+  a full-fidelity copy of it to disk.
+- OSC 8 hyperlinks can take a target= parameter to
+  cause them to reuse an in-app browser.
+  Example:
+  OSC 8;target=example;https://example.com/ ST
+- Added a new trigger type, Buffer Input, which
+  you can use to defer sending keyboard input (for
+  example, while waiting for a program to launch).
 
 Improvements:
-- Reduce an occasional jitter after a command
-  prompt.
-- Add support for symbolic hotkeys to older macOS
-  versions.
-- You can now switch between color spaces in the
-  color picker.
-- Added support for the device colorspace in the
-  color picker.
-- Added support for OSC 52 in DA response.
-- Provide useful information when a profile's
-  command fails to start.
-- Improve visibility of selected tab in Tahoe when
-  using tab colors.
-- Improve performance of moving cursor a long
-  distance with option-click.
-- Fix performance issue after using search.
-- When doing bracketed paste from advanced paste
-  with "wait for prompt" enabled, do not include
-  brackets around newlines. That way the commands
-  will be sent for shells like zsh and fish.
-- When a force touch could do either quicklook or
-  dictionary lookup, show a disambiguation menu.
-- Add support for undo/redo in "engage AI" dialog
-  box.
-- Add more options for how to position and size
-  windows. Make the default more like 3.5.x, which
-  respsected the profile's size, but using Smart
-  Placement.
-- AI commands can now optionally be run through
-  Apple Intelligence as a safety check. If ChatGPT
-  decides it wants to pwn you, this makes it a
-  little harder.
-- Command info now shows the number of lines of
-  output.
-- Baseline-relative timestamps are now
-  color-coded.
-- Browser will show better SSL errors.
-- In tmux integration, terminal reports in
-  response to OSC 1337 codes are now sent.
-- Tooltips in Minimal now use the proper
-  light/dark theme.
-- All AI chat messages are now copyable.
 - AI models updated.
+- Web browser can now list directories with
+  file:/// urls.
+- Status bar search component is now
+  color-configurable.
+- Visual improvements to tab bar.
+- Put snippets before folders in toolbelt and
+  don't add top level snippets that have a folder.
+- Add browser setting for where terminal links
+  should open.
+- Use default colors rather than current SGR color
+  when scrolling lines into view.
+- The SSH file panels now pick up favorites on
+  Tahoe from Finder properly.
+- Various small improvements to the Jobs status bar
+  component.
+- Cmd-shift-click on OSC 8 URL opens it in a split
+  pane.
+- Visual improvements to some status bar
+  components.
+- Improve performance when timestamps are visible.
+- Visual improvements for timestamps.
+- Added many new natively rendered characters.
+- Added support for dotted and dashed underline
+  styles.
+- Improve behavior of certain items in the context
+  menu for very narrow windows.
+- Natively rendered code gets a more legible
+  comment color.
+- Improved file type detection for native
+  rendering of text (e.g., imgcat foo.yaml).
+- Improve the appearance of terminal buttons.
+- Improved contrast for the mono app icon style.
+- Make determinate progress indicator in tab bar
+  go clockwise from 12 o'clock.
+- Text replacement now matches macOS behavior.
+- Improve position and spacing of stoplight
+  buttons in Minimal theme on macOS 26.
+- The Open Profiles window now moves to the
+  current Space instead of switching spaces.
+- Offer to restore the tab and window title when
+  the remote host changes.
+- Reduced app size.
+- Add progress bars to $TERM_FEATURES as P.
+- Update AI models.
 
 Bug Fixes:
-- Automatically unbury tmux integration clients
-  when we can't restore the tmux session on
-  attach. If you get a zillion windows on first
-  launch of this version, that could be why (they
-  tended to pile up).
-- Fix various crashes.
-- Fix $$HOST$$ and $$USER$$ substitution.
-- The colorpicker's eyedropper is now smarter
-  about color spaces.
-- Fix a bug where images would disappear after
-  folding and unfolding a region.
-- Fix various graphical imperfections in Tahoe.
-- Disable menu item "Move to new window" when
-  there is only one tab.
-- Fixed a bug where you couldn't delete
-  annotations.
-- Fix bugs in the status bar filter component.
-- Fix UI bugs in editing triggers.
-- Fix a bug where the context menu incorrectly
-  characterized ssh integration downloads as scp.
-- Make the stoplight buttons behave better on
-  macOS 26.
-- Fix a bug where ssh integration downloads would
-  sometimes happen over scp.
-- Fix a bug where some items were missing from the
-  list of key binding actions.
+- Fix a bug where pastes could be corrupted.
+- Fix a bug where the tab bar would be invisible
+  in full screen.
+- Fix crashes
+- Fix a bug where edge drags on Minimal tabbars
+  dragged both the window and the tab.
+- Fix crash on OSC 9;4 without parameter.
+- Fix bugs in Kitty image protocol.
+- Fix various visual issues with tab bars.
+- Fix a bug where non-native mouse cursors had the
+  wrong hotspot.
+- Fix a problem where a modal alert could get
+  hidden by a hotkey window.
+- Fixed a bug where tabs would switch unexpectedly
+  in tmux integration.
+- Fix tab switch rendering glitch on multi-monitor
+  setups.
+- Fix a bug where italics in tmux integration were
+  displayed as reverse video when TERM contains
+  "tmux".
+- Fix a bug where the wrong session could be used
+  for GPU frame capture.
+- Fix incorrect truncation of Tahoe-style tab
+  labels.
+- Fix drawing of horizontal lines on non-retina
+  displays in the tab bar.
+- Fix a bug where the Web menu wasn't added when
+  a browser session was active.
+- Fix a bug where canceling entering a passphrase
+  for SCP could cause an empty password to be
+  tried.
 
 
