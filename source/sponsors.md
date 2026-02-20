@@ -7,18 +7,21 @@ title: Sponsors - iTerm2 - macOS Terminal Replacement
 
 iTerm2 is grateful for the support of our sponsors. Their contributions help make iTerm2 possible.
 
-<hr/>
+<div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center; margin: 30px 0;">
 
-<a href="https://whitebox.so/?utm_source=iTerm2"><img src="images/whitebox_logo@2x.png" width="46" height="46" alt="Whitebox"> Whitebox</a>
+<a href="https://whitebox.so/?utm_source=iTerm2" style="text-decoration: none; text-align: center;">
+<img src="images/whitebox_logo@2x.png" width="46" height="46" alt="Whitebox"><br>
+<span style="font-size: 14px;">Whitebox</span>
+</a>
 
-<hr/>
+<a href="https://coderabbit.ai/" style="text-decoration: none;">
+<img src="images/coderabbitai.png" width="160" height="36" alt="CodeRabbit">
+</a>
 
-<a href="https://coderabbit.ai/"><img src="images/coderabbitai.png" width="214" height="48" alt="CodeRabbit"> CodeRabbit</a>
+<a href="https://serpapi.com/?utm_source=iterm" style="text-decoration: none;">
+<img src="images/SerpApi.png" width="150" height="37" alt="SerpApi">
+</a>
 
-<hr/>
-
-<a href="https://serpapi.com/?utm_source=iterm"><img src="images/SerpApi.png" width="198" height="49" alt="SerpApi"> SerpApi</a>
-
-<hr/>
+</div>
 
 Interested in sponsoring iTerm2? Please <a href="mailto:gnachman@gmail.com">get in touch</a>.
