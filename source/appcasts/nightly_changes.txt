@@ -1,3 +1,17 @@
+2026-02-23: Fix rawLine: and offsetOfRawLine: ignoring
+bufferStartOffset after line drops (#589)
+
+Both methods hardcoded linenum == 0  start = 0 instead of
+checking linenum == _firstEntry  start = bufferStartOffset.
+After dropLines advances _firstEntry and sets
+bufferStartOffset to a non-zero value, they returned a
+pointer/offset that started too early in the buffer, reading
+dropped data and missing the tail of live data.
+
+The fix mirrors the existing correct logic in
+_lineRawOffset: and lengthOfRawLine:.
+
+Co-authored-by: chall37 <chall37@users.noreply.github.com>
 2026-02-19: Add paranoid-pwmadapters
 
 2026-02-19: Add SerpApi sponsor to about box
