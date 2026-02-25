@@ -1,3 +1,55 @@
+2026-02-24: Fix missing Tahoe dividers when there are 3 tabs
+or in dark mode
+
+2026-02-24: Fix HighlightTrigger.background_color property
+getter signature (#592)
+
+The @property getter had a stray `value` parameter copied
+from the setter, causing TypeError when accessing
+trigger.background_color.  2026-02-24: Fix CellStyle
+property return types to match actual behavior (#591)
+
+CellStyle.fg_color, bg_color, and URL.identifier can return
+None when protobuf oneof fields are unset, but their type
+annotations did not reflect this. Change return types to
+Optional to match reality.
+
+mypy flagged fg_color and bg_color as missing return
+statements (screen.py:175, 191) and identifier as returning
+incompatible type (screen.py:76).  2026-02-24: Add Python
+API tests to CI
+
+Runs pytest for the Python API library in parallel with the
+existing Xcode tests. Uses ubuntu-latest for faster
+execution.
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+
+2026-02-24: Add test targets to Makefile and ignore pytest
+artifacts
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+
+2026-02-24: Add unit testing infrastructure for Python API
+
+Set up pytest-based testing environment with initial tests
+for color, util, and binding modules. Add make test target
+for running tests.
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+
+2026-02-24: Add additional test of the bug fixed by
+b63e4de5a5563f9244e5f3a661cfe236f8df0918 that affected
+production code (barely)
+
+2026-02-24: Fix missing self. prefix in PasteConfiguration
+property getters
+
+All 15 property getters in PasteConfiguration referenced
+bare `__name` instead of `self.__name`, causing NameError at
+runtime when any getter was accessed. The setters were
+correct.
+
 2026-02-23: Fix rawLine: and offsetOfRawLine: ignoring
 bufferStartOffset after line drops (#589)
 
