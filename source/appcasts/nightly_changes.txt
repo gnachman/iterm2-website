@@ -1,3 +1,56 @@
+2026-02-25: Offer to enable touch ID for sudo
+
+2026-02-25: Refactor window layout calculation into
+iTermLayoutCalculator. Issue 12724
+
+Extract layout logic from iTermRootTerminalView into a pure
+iTermLayoutCalculator class for testability. This fixes a
+bug where the tab bar height was double-deducted when
+calculating the toolbelt frame in fullscreen.
+
+The bug occurred because two mechanisms could both subtract
+tab bar height: 1. shouldLeaveEmptyAreaAtTop added it to
+decorationHeightTop 2.
+tabViewFrameByShrinkingForFullScreenTabBar shrunk the frame
+
+These are now mutually exclusive - if
+shouldLeaveEmptyAreaAtTop is true, the frame shrinking is
+skipped.
+
+Also rename rootTerminalViewWindowHasFullSizeContentView to
+rootTerminalViewFullScreenTabBarAccessoryOverlapsContent for
+clarity.
+
+2026-02-25: Don't harmonize colors by default. Although it's
+a win for most users, I can't handle the amount of feedback
+this is likely to generate.
+
+2026-02-25: Fix status bar hidden behind tab bar in
+fullscreen. Issue 12724
+
+When entering Lion fullscreen with multiple tabs, the status
+bar was positioned behind the tab bar accessory view, making
+it invisible.
+
+The root cause traces back to commit e04f9988e which changed
+rootTerminalViewShouldLeaveEmptyAreaAtTop to return NO when
+the tab bar is a titlebar accessory. This was correct: when
+the tab bar is an accessory, we shouldn't add its height to
+decorationHeights.top because the tab bar is outside the
+content view.
+
+However, on windows with fullSizeContentView (determined by
+savedWindowType), the titlebar accessory overlaps the
+content view.  The tab view frame was already being adjusted
+for this overlap via
+tabViewFrameByShrinkingForFullScreenTabBar:window:, but the
+status bar's containing frame was not.
+
+The fix applies the same frame shrinking to the status bar's
+containing frame, ensuring consistent positioning of all
+subviews when the tab bar is a fullscreen titlebar accessory
+that overlaps the content.
+
 2026-02-24: Fix missing Tahoe dividers when there are 3 tabs
 or in dark mode
 
