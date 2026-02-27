@@ -1,3 +1,55 @@
+2026-02-26: Fix color space of block cursor in Metal. Issue
+12719
+
+2026-02-26: Treat 3 finger drag like regular drag for mouse
+reporting. Issue 12725
+
+2026-02-26: Revert d651e3a54 to restore BCE behavior. Issue
+12723
+
+This reverts commit d651e3a54 ("Use defaults rather than
+current SGR color when scrolling lines into view").
+
+The reverted commit broke BCE (Background Color Erase)
+compliance, which vim relies on. When vim sets a background
+color and scrolls, it expects scrolled-in lines to use the
+current SGR background color.  After the reverted commit,
+scrolled-in lines used terminal defaults instead, causing
+inconsistent background colors in vim.
+
+BCE behavior: when new lines scroll into view, they are
+filled with the current SGR background color (via grid's
+defaultChar). This is synchronized from the terminal before
+each token executes.
+
+Added unit tests for BCE behavior: -
+testBCE_ScrollingUsesDefaultCharBackgroundColor -
+testBCE_ScrollRectUsesDefaultCharBackgroundColor
+
+Note: This may reintroduce the behavior reported in issue
+12512, where scrolled-in lines retain their background color
+after SGR 49 reset. However, this is correct BCE behavior -
+SGR 49 affects future operations, not cells already written
+during scroll.
+
+2026-02-26: Tweak compact stoplight button insets. 12721
+
+2026-02-26: Bump python module version
+
+2026-02-26: Fix build break
+
+2026-02-26: Add python API to load URL in browser session
+
+2026-02-26: Improve modern ai model autodetection. Issue
+12707
+
+2026-02-26: Implement updateTrackingAreas in tabbar control.
+Issue 12726
+
+2026-02-26: Fix crash during Sparkle update by stopping
+MainMenuMangler observation before iTermController is
+released
+
 2026-02-25: Offer to enable touch ID for sudo
 
 2026-02-25: Refactor window layout calculation into
