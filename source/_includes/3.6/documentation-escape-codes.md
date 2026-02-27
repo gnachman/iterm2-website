@@ -561,7 +561,7 @@ Use attr=start to begin a block and attr=end to end it, Use the same identifier 
 
 #### Update Block
 
-*Available in iTerm2 3.6.8 and later.*
+*Available in iTerm2 3.6.9 and later.*
 
 To fold or unfold an existing block:
 
@@ -585,7 +585,7 @@ To create a copy button that, when clicked, copies a code block:
 
 The `identifier` should reference the identifier of a code block defined with `OSC 1337;Block=...`.
 
-*Available in iTerm2 3.6.8 and later.*
+*Available in iTerm2 3.6.9 and later.*
 
 To create a custom button that sends an escape sequence when clicked:
 
