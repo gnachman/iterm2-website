@@ -1,3 +1,33 @@
+2026-02-27: Fix traffic light position in Minimal theme with
+custom tab bar height on macOS 26.  Issue 12721
+
+The horizontal inset for stoplight buttons was derived from
+the tab bar height, causing buttons to be too close to the
+window edge when users configured a shorter tab bar. On
+macOS 26, use a fixed inset value instead to ensure
+consistent positioning regardless of tab bar height.
+
+2026-02-27: Fix disclosure button being outside its
+superview bounds. Issue 12729
+
+The centerX constraint on the label was pushing the
+disclosure button outside the view's leading edge, making it
+barely clickable.
+
+2026-02-27: Make annotations less ugly
+
+2026-02-27: Add Fold All. Fix a bug where various bits of
+prompt tracking state were wrong after folding
+
+2026-02-27: Use polled local directory for new local
+sessions. Issue 12616
+
+When SSHed with a shell that sends OSC 7 without a hostname
+(e.g., fish), the remote path was incorrectly used for new
+local tabs.  Now we track the true local directory from the
+pwd poller separately and use it when creating new local
+sessions.
+
 2026-02-26: Fix color space of block cursor in Metal. Issue
 12719
 
