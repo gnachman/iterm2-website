@@ -1,38 +1,201 @@
-Version 3.6.7beta3 was built on February 1, 2026.
+Version 3.6.9beta1 was built on February 27, 2026.
+
+New Features:
+- Add Edit > Fold All, which makes it easy to
+  collapse everything that's happened so far to
+  focus on what you're working on.
+- When you use sudo and get a password prompt,
+  you'll get an offer to enable touch ID.
+- Added "input buffering", which is a feature that
+  stores what you type in a buffer temporarily.
+  You can toggle it with Shell > Toggle Buffer
+  Input. It can be enabled or disabled by a
+  trigger, and sessions can start with input
+  buffering enabled by default with a new setting
+  in Settings > Profile > Session.
+- Added a setting in Profiles > Colors to match
+  colors in the 8-bit colorspace to your ANSI
+  colors.
+- The tab color menu has been extended to add a
+  color picker and to recall recent colors.
+- Added a pointer action to copy hyperlink
+  address.
+- Input method editor text color is now
+  configurable.
+- You can now enable an "active pane" border which
+  makes it easier to tell which pane of a window
+  is focused.
+- There is a new control sequence to append a
+  clickable button that sends a control sequence
+  when activated:
+  OSC 1337 ; Button=type=custom;code=N;icon=ICON ST
+  Where N is a positive integer code identifying
+  the button, ICON is an SF Symbol name like
+  "star.fill", and ST is ESC \ or BEL.
+  When clicked, iTerm2 sends back:
+  ESC [ ? 1337 ; N ~
+- Added control seqeunce to fold/unfold blocks.
+  OSC 1337 ; UpdateBlock=id=BLOCKID;action=ACTION ST
+  Where ACTION is "fold" or "unfold"
+- Added the option to show offscreen command line
+  for the current command.
+- Add Lock Size feature to prevent window resizing
+  via menu item and per-profile preference.
+- Added support for Bitwarden integration in
+  password manager.
+- When broadcasting input you can mark a session
+  as a "broadcast source" which means you can type
+  in it to send to others, but those sessions not
+  marked as sources ignore keyboard input.
+- Add a new key binding action to send text
+  without braodcasting key binding action.
+- Any boolean or color profile setting can be set
+  to take its value from an expression using the
+  same syntax as interpolated strings. Right click
+  on a checkbox in profile settings, click "bind to
+  exprsesion", and enter an expression like
+  "user.mySetting". See the docs on Scripting
+  Fundamentals and Scripting Variables for more
+  details.
+- Add a new control sequence to set a profile
+  property.
+  ESC ] 1337 ; SetProfileProperty=KEY1=VALUE1[;KEY2=VALUE2...] ST
+  KEY = profile property name (e.g., "Cursor
+    Type", "Blinking Cursor")
+  VALUE = base64-encoded JSON value
+  ST = string terminator (ESC \ or BEL)
+- Add menu item to tabbar context menu to open new
+  tab next to current tab/at end.
+- Most window types can now be configured to have
+  an initial size that is a percentage of screen
+  size rather than a fixed number of rows/columns.
+- You can now run multiple instances of iTerm2
+  concurrently with separate configurations by
+  passing `-suite <some unique name>` when
+  launching iTerm2 by executing
+  iTerm2.app/Contents/MacOS/iTerm2 directly with
+  that command line argument.
+- Move 'new tabs open at end of tabbar' out of
+  advanced settings.
+
 
 Improvements:
+- iTerm2 now responds to OSC 52 queries when using
+  tmux integration with tmux 3.6.
+- Support git diff index/worktree path prefixes in
+  semantic history
+- Add repair button to fix key bindings corrupted
+  by keycode 0 bug in versions 3.4.x-3.5.x.
+- Add option to preserve window size on tab bar
+  visibility change only when resizing would push
+  window off-screen.
+- Add session variable isBroadcastSource.
+- Add a setting to suppress notifications from the
+  active session.
+- Add support for arithmetic expressions and
+  comparison using the ternary operator ?: in
+  interpolated strings.
+- Add pane locking to prevent accidental
+  drag/drop. You can toggle it in the terminal's
+  context menu or the per-pane title bar's menu.
+- Make annotations less ugly
+- Treat 3 finger drag like regular drag for mouse
+  reporting.
+- Improve ai model protocol autodetection.
+- Performance improvements for extremely long
+  lines.
+- Make toasts prettier and animated.
+- In beta, function keys should now work as
+  compose/dead keys.
+- Improve detection of encrypted private keys when
+  making an SCP connection.
+- Update AI models to latest.
+- Searching for multiline queries now works
+  reliably.
 - Improve the appearance of terminal buttons.
-- Improved contrast for the mono app icon style.
-- Make determinate progress indicator in tab bar
-  go clockwise from 12 o'clock.
-- Text replacement now matches macOS behavior.
-- Improve position and spacing of stoplight
-  buttons in Minimal theme on macOS 26.
-- The Open Profiles window now moves to the
-  current Space instead of switching spaces.
-- Offer to restore the tab and window title when
-  the remote host changes.
-- Reduced app size.
-- Add progress bars to $TERM_FEATURES as P.
+- Improve placeholder text contrast in search and
+  filter fields.
+- Remember user-set colors separately from those
+  set by control sequences so when a control
+  sequence resets colors it doesn't override the
+  user's manually set value.
+- Clear Script Console text views when window
+  closes to prevent unbounded memory growth.
+- Scroll command marks to top of view instead of
+  centering when navigating with Previous/Next
+  Mark.
+- Show a message in settings when no profile is
+  selected.
+- Tab dragging is now much smoother and tabs fight
+  against leaving their tabbar a little bit.
+- Improved contrast for mono app icon style.
+- Prevent inactive tabs from starving the active
+  tab when both are very busy.
+- Make tmux attaching window/tab setting sane.
+- Offer to restore titles when an ssh session
+  ends.
+- Don't add a 'dynamic' tag to dynamic profiles.
+- Show smart selection action URL on hover.
+- Tweak position and spacing of stoplight buttons
+  in minimal in macOS 26.
+- Make the Open Profiles window move to the
+  current Space to avoid switching spaces when you
+  try to use it.
 
 Bug Fixes:
-- Fix various bugs in the Kitty image protocol:
-  file transmission with paths containing /dev/,
-  multipart base64 decoding, overly strict base64
-  validation, and a=T with identifier=0.
-- Fix tab switch rendering glitch on multi-monitor
-  setups.
-- Fix a bug where italics in tmux integration were
-  displayed as reverse video when TERM contains
-  "tmux".
-- Fix a bug where the wrong session could be used
-  for GPU frame capture.
-- Fix incorrect truncation of Tahoe-style tab
-  labels.
-- Fix drawing of horizontal lines on non-retina
-  displays in the tab bar.
-- Fix a bug where the Web menu wasn't added when
-  a browser session was active.
-- Fix typo in error message for browser SSH
-  connection.
+- Fix traffic light position in Minimal theme
+  with custom tab bar height on macOS 26, and in
+ Compact theme.
+- Fix disclosure button being hard to click in
+  quit dialog.
+- Fix color space of block cursor in Metal.
+- Fix crashes.
+- Fix missing statusbar in fullscreen.
+- Fix missing Tahoe dividers when there are 3 tabs
+  or in dark mode.
+- Fix support for dictation.
+- Fix clearing filter in maximized pane causing
+  window to shrink and pane to become 2 columns
+  wide after unmaximizing.
+- Fix smart selection falling back to word
+  selection when dragging into trailing nulls at
+  EOL.
+- Fix a bug where mark navigation would only visit
+  prompt marks, not trigger-created marks.
+- Try to fix bug where deepseek gets confused
+  after a tool call.
+- Improve UI when authenticating for SCP.
+- Don't terminate automatically when closing the
+  alert box asking if you want to restore.
+- Fix broken focus ring in search bar in macos 26.
+- Fix missing web menu after installing browser
+  plugin.
+- Always use the local directory when creating a
+  new session that reuses the previous session's
+  directory rather than one from shell integration.
+- Fix text replacement to look at whole words, not
+  substring prefixes.
+- Fix Kitty image file transmission incorrectly
+  rejecting paths containing /dev/ as a
+  subdirectory.
+- Fix bug with ctrl+option keypresses being
+  misreported as just option in modifyOtherKeys
+  mode.
+- Fix overly strict base64 decoding in KittyImageController.
+- Fix bugs with progress bars: they were hidden
+  behind per-pane title bars and the validation
+  block was wrong which prevented SetProfileProperty
+  from working.
+- Fix Kitty protocol a=T (transmit+display) with
+  identifier=0
+- Don't rewrite SGR 3 to SGR 7 in tmux integration
+  when TERM matches *tmux*. This should fix
+  reverse video/italics being mixed up.
+- Fix tab switch rendering glitch on multi-monitor setups.
+- Make determinate progress indicator in tabbar go
+  clockwise from 12 o'clock.
+- Fix improper truncation of tahoe tab titles.
+- Fix missing window title in maximized-style windows.
+- Fix a bug where close buttons might not appear
+  over tabs on hover.
 
