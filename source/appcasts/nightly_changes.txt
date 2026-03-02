@@ -1,5 +1,89 @@
-2026-02-27: Fix traffic light position in Minimal theme with
-custom tab bar height on macOS 26.  Issue 12721
+2026-03-01: Update python API for event triggers
+
+2026-03-01: Add event-based triggers. These triggers fire
+from events such a session ending or the hostname changing.
+Issue 12735
+
+2026-03-01: Add `_name` method to `Trigger` base class
+(#595)
+
+* Add _name method to Trigger base class
+
+Trigger.encode calls self._name() but the base class did not
+define it, causing AttributeError on unrecognized trigger
+types returned by decode_trigger.
+
+* Add tests for Trigger base class _name method
+
+Verify that: - Trigger base class has _name attribute -
+Trigger._name() returns "Trigger" - Trigger.encode does not
+crash on bare Trigger instances - Unrecognized trigger types
+can round-trip through decode/encode
+
+---------
+
+Co-authored-by: George Nachman <gnachman@gmail.com>
+2026-03-01: Add `deserialize` method to `Trigger` base class
+and annotate `classes` dict (#596)
+
+* Add deserialize method to Trigger base class and annotate
+classes dict
+
+The classes dict in decode_trigger was inferred as dict[str,
+type] by mypy, causing "type has no attribute deserialize"
+error. Add a type annotation and a base class deserialize
+method to fix this.
+
+* Add tests for Trigger.deserialize and decode_trigger
+2026-03-01: Fix return type of PromptMonitor._async_get to
+match 3-element tuple (#597)
+
+
+2026-03-01: Fix bugs in `Color.from_cocoa` and
+`from_legacy_trigger` (#598)
+
+* Fix undefined MissingDependency, int(str) typo, and tuple
+annotation in color.py
+
+- Define MissingDependency as a subclass of ImportError -
+Fix int(str) to int(s) in from_legacy_trigger - Fix return
+type annotation from ('Color', 'Color') to typing.Tuple
+
+* Add tests for MissingDependency exception 2026-03-01: Try
+to fix a bug where a minimal window with tabbar also had a
+visible standard title
+
+2026-03-01: fix: fix all mypy errors in gen_binding.py and
+regenerate binding.py (#599)
+
+Fix gen_binding.py (the generator for binding.py) to resolve
+all mypy errors in the generated code:
+
+1. Missing self. prefix: 15 property getters in
+PasteConfiguration
+   returned __field instead of self.__field, causing
+   NameError at runtime.
+
+2. Wrong type annotations: tab_stop_size typed as bool
+instead of int
+   in __init__, chunk_size getter/setter typed as bool
+   instead of int, regex getter/setter typed as bool instead
+   of str, substitution getter/setter typed as bool instead
+   of str.
+
+3. SnippetIdentifier.__title and __guid assigned None
+without Optional
+   type annotation, causing assignment type error.
+
+4. Bare list syntax [T] used instead of typing.List[T] for
+modifiers
+   parameter and async_get/set_global_key_bindings
+   return/parameter types.
+
+Regenerated binding.py from the fixed generator. All
+binding.py mypy errors are now resolved.  2026-02-27: Fix
+traffic light position in Minimal theme with custom tab bar
+height on macOS 26.  Issue 12721
 
 The horizontal inset for stoplight buttons was derived from
 the tab bar height, causing buttons to be too close to the
@@ -646,353 +730,3 @@ selected. Issue 12377
 Symbol icons and click-triggered escape codes. Issue 12703
 
 2026-02-01: Improve the appearance of terminal buttons
-
-2026-01-31: Add test script for UpdateBlock
-
-2026-01-31: Add control seqeunce to fold/unfold blocks
-
-2026-01-31: Improve placeholder text contrast in search and
-filter fields (#573)
-
-The search field placeholder now respects the user-defined
-tint color and both search and filter placeholders use
-improved contrast (75% opacity instead of 50%) for better
-visibility on dark backgrounds.  2026-01-31: Add the option
-to show offscreen command line for the current command.
-Issue 12700
-
-2026-01-31: Support git diff index/worktree path prefixes in
-semantic history (#572)
-
-* Support git diff index/worktree path prefixes (i/, w/, c/,
-o/) in semantic history path cleaning
-
-Extend pathByRemovingDiffPrefix to handle all git diff path
-prefixes documented in git-diff(1), not just a/ and b/. This
-fixes an issue where paths from git diff output using index
-(i/) and worktree (w/) prefixes were incorrectly treated as
-URLs instead of file paths.
-
-Git diff can use various prefixes depending on the command:
-- a/ and b/ - traditional diff format (old/new files) - i/
-and w/ - index and worktree (git diff
---ita-visible-in-index) - c/ - commit - o/ - object
-
-Add comprehensive tests for all new prefix types following
-the existing test pattern for a/ and b/ prefixes.
-
-* Refactor git diff prefix tests to use parameterized loop
-
-Consolidate 6 separate test methods
-(testGetFullPathStripsLeading{A,B,I,W,C,O}Slash) into a
-single parameterized test that loops over all git diff
-prefixes. This follows the existing pattern used in
-testGetFullPathStripsDelimiters and
-testGetFullPathStripsTrailingPunctuation.
-
-Benefits: - Reduces code duplication (from ~110 lines to ~20
-lines) - Easier to maintain - adding new prefixes requires
-one line instead of a full test method - Maintains test
-coverage for all 6 git diff prefixes (a/, b/, i/, w/, c/,
-o/) - Adds descriptive assertion messages showing which
-prefix failed if a test fails 2026-01-31: Add repair button
-to fix key bindings corrupted by keycode 0 bug in versions
-3.4.x-3.5.x. Issue 12698
-
-2026-01-29: Fix Kitty image file transmission incorrectly
-rejecting paths containing /dev/ as a subdirectory. Issue
-12688
-
-2026-01-29: Reuse GCD timer instead of cancel/create on
-cadence changes (#571)
-
-Previously, every cadence change would cancel the dispatch
-source and create a new one. Now the timer is created once
-and dispatch_source_set_timer is used to update timing
-parameters, eliminating kernel call overhead.
-
-Co-authored-by: chall37 <chall37@users.noreply.github.com>
-2026-01-29: Add option to preserve window size on tab bar
-visibility change only when resizing would push window
-off-screen. Issue 12692
-
-2026-01-29: Remember user-set colors separately from those
-set by control sequences so when a control sequence resets
-colors it doesn't override the user's manually set value.
-Issue 12691
-
-2026-01-27: Clear Script Console text views when window
-closes to prevent unbounded memory growth. Issue 12690
-
-2026-01-27: Add Lock Size feature to prevent window resizing
-via menu item and per-profile preference. Issue 12689
-
-2026-01-27: Fix case-sensitive comparison in
-it_isControlCodeWithOption that incorrectly identified US
-keyboards as requiring Option for control codes. Issue 12687
-
-2026-01-26: Scroll command marks to top of view instead of
-centering when navigating with Previous/Next Mark. Issue
-12685
-
-2026-01-26: Add advanced setting to allow function keys to
-go through macOS text input system for compose/dead key
-support. Issue 3578
-
-2026-01-26: Bump shell integration
-
-2026-01-26: Fix multipart Kitty image transmission to decode
-base64 per-chunk, allowing independently-encoded chunks with
-padding
-
-2026-01-26: Fix bugs with progress bars: they were hidden
-behind per-pane title bars and the validation block was
-wrong which prevented SetProfileProperty from working. Issue
-12684
-
-2026-01-26: Extract directory tracking from PTYSession into
-iTermSessionDirectoryTracker and fix directory reuse to only
-occur when SSH hosts match. Issue 12681
-
-2026-01-24: Fix large radius truncation warning
-
-2026-01-24: Add bitwarden support. Issue 10275
-
-2026-01-24: Add session variable isBroadcastSource for
-comment in issue 12396
-
-2026-01-24: Add more debug logging to kitty image protocol
-code
-
-2026-01-24: Fix overly strict base64 decoding in
-KittyImageController. Issue 12671
-
-2026-01-23: Move a bunch of settings into
-VT100ScreenConfiguration
-
-2026-01-23: Make collectInputForPrinting private to
-VT100ScreenMutableState as it was never used in VT100Screen
-
-2026-01-23: Fix Kitty protocol a=T (transmit+display) with
-identifier=0 (#566)
-
-When using the Kitty graphics protocol with action=T
-(transmit and display) without an explicit image ID, the
-identifier defaults to 0. The image was correctly stored
-under lastImageKey in transmissionDidFinish(), but the
-lookup after transmission always used the identifier
-directly, causing "ENOENT:Image not found after
-transmission" errors.
-
-This fix makes the lookup behavior consistent with storage:
-use lastImageKey when identifier is 0, matching how
-executeDisplayCommand already handles this case.
-2026-01-23: Prevent deadlock is VT100ScreenMutableState is
-dealloced during a paused side effect
-
-2026-01-22: Centralize join context coordination in iTermGCD
-(#562)
-
-- Move gPerformingJoinedBlock from VT100ScreenMutableState.m
-to iTermGCD.m - Add comprehensive documentation explaining
-coordination signals:
-  - Join context (joined, performingJoinedBlock) - Queue
-  safety markers (for assertions) - Related state in
-  TokenExecutor (pauseCount, executingSideEffects, etc.)
-- Preserve atomic exchange semantics for
-setPerformingJoinedBlock: - Add forwarding accessors in
-VT100ScreenMutableState for compatibility
-
-Co-authored-by: chall37 <chall37@users.noreply.github.com>
-2026-01-21: Re-enable GCD timer on macOS 26 (#564)
-
-The macOS 26 check that disabled GCD timer was added for
-issue 12415, but the root cause was actually
-NSAutoFillHeuristicController causing performance
-degradation (see Ghostty PR 8625). That issue is already
-addressed by disabling NSAutoFillHeuristicControllerEnabled.
-
-Testing shows GCD timer achieves ~24fps while NSTimer only
-achieves ~16fps at the 30fps cadence setting, due to
-aggressive timer coalescing by macOS when no tolerance is
-set. GCD timer's explicit 0.5ms tolerance prevents this
-coalescing.
-
-Co-authored-by: chall37 <chall37@users.noreply.github.com>
-2026-01-21: Fix adaptive framerate always overriding
-non-adaptive setting (#565)
-
-A refactoring in 29b3a39d9 (April 2019) converted nested
-if-else logic to early returns but missed adding a return
-after the non-adaptive framerate path. This caused the
-adaptive framerate code to always run and override the
-cadence, even when useAdaptiveFrameRate was false.
-
-The result was that disabling adaptive framerate had no
-effect - users would still get the slow adaptive cadence
-(15fps for non-Metal, 30fps for Metal) instead of the
-configured active update cadence.
-
-Co-authored-by: chall37 <chall37@users.noreply.github.com>
-2026-01-21: Show a message in settings when no profile is
-selected
-
-2026-01-21: Add hysteresis and fix various tab dragging
-glitches
-
-2026-01-21: Fix visual glitch when dragging Tahoe tabs -
-separators appeared and tabs resized when adding
-placeholders
-
-2026-01-21: Fix warning
-
-2026-01-21: Improve animation performance while dragging a
-tab and add some disabled timing debugging code.
-
-2026-01-21: Lock tab drags to be in the direction of the
-tabbar until they  move far enough so it's like they're on
-rails
-
-2026-01-21: Add a setting to suppress notifications from the
-active session
-
-2026-01-20: Add support for arithmetic expressions and
-comparison.
-
-2026-01-19: Add progress bar support to capabilities
-
-2026-01-19: Add pane locking to prevent accidental
-drag/drop. PR 558
-
-2026-01-19: Improved contrast for mono app icon style (#556)
-
-
-2026-01-19: Add advanced setting to omit session identifier
-from notifications (#551)
-
-Adds a new "simpleNotifications" advanced setting. When
-enabled, terminal-generated notifications (OSC 9) will only
-show the message content without the "Session <name>
-#<tab>:" prefix.
-
-Co-authored-by: Claude <noreply@anthropic.com> 2026-01-19:
-Cache bidi preference lookup using FAST_BOOL_ACCESSOR. Issue
-12676 (#552)
-
-Co-authored-by: chall37 <chall37@users.noreply.github.com>
-Co-authored-by: George Nachman <gnachman@gmail.com>
-2026-01-18: Cache margin preferences using FAST_INT_ACCESSOR
-(#553)
-
-* Cache margin preferences using FAST_INT_ACCESSOR
-
-Add FAST_INT_ACCESSOR pattern to cache integer preferences
-similar to existing FAST_BOOL_ACCESSOR. Apply to sideMargins
-and topBottomMargins which are called 55 times per render
-frame in the drawing hot path.
-
-- Add iTermPreferencesIntCache struct - Add
-FAST_INT_ACCESSOR macro - Add intWithCache: method - Add
-sideMargins and topBottomMargins fast accessors - Update 29
-call sites in iTermTextDrawingHelper.m - Update 26 call
-sites in PTYTextView.m
-
-* Use cached preference accessors in Metal renderers
-
-Replace direct intForKey:/boolForKey: calls with fast cached
-accessors (sideMargins, topBottomMargins,
-maximizeThroughput) in Metal rendering code.
-
-These preferences are read every frame at 60+ FPS. While the
-per-call savings are modest, eliminating NSUserDefaults lock
-acquisition reduces contention with other threads (main
-thread, mutation queue) that also access preferences.
-
-Files changed: - iTermMetalDriver.m: topBottomMargins,
-maximizeThroughput - iTermMetalCellRenderer.m: sideMargins,
-topBottomMargins - iTermMarkRenderer.m: sideMargins
-
-* Cache session configuration preference lookups
-
-Add FAST_BOOL_ACCESSOR for allowClipboardAccessFromTerminal
-and dimOnlyText preferences, used in
-updateConfigurationFields hot path.
-
-These preferences are accessed every frame during rendering
-and benefit from the same dispatch_once caching pattern used
-for other hot-path preferences.
-
----------
-
-Co-authored-by: chall37 <chall37@users.noreply.github.com>
-2026-01-18: Don't block token processing of visible sessions
-by non-visible sessions (e.g., background tabs and minimized
-windows). Inspired by PR 555
-
-2026-01-12: Make tmux attaching window/tab setting sane.
-Issue 11424
-
-2026-01-12: Try to fix issue 12671 and add a lot more debug
-logging
-
-2026-01-11: Clarify tmux italic rewriting advanced pref
-
-2026-01-11: Fix SI submodule
-
-2026-01-11: Don't rewrite SGR 3 to SGR 7 in tmux integration
-when TERM matches *tmux*. More details in a comment in issue
-12672
-
-2026-01-11: Bump shell integration for issue 12675
-
-2026-01-10: Add broadcast input sources so broadcasting can
-be asymmetrical
-
-2026-01-10: Fix a bug where the wrong session could be used
-for GPU frame capture because it just captures the 'next'
-frame drawn by a device. Issue 12604
-
-2026-01-10: Fix bug where GPU frame captuer got the wrong
-frame
-
-2026-01-09: Add debug logging for Kitty images in issue
-12671
-
-2026-01-09: Offer to restore icon and window name when
-popping a host. Issue 12668
-
-2026-01-08: Fix typo in error message for browser connection
-(#550)
-
-Fix misspelling typo in error message for browser's SSH
-integration: connecton->connection.  2026-01-07: Allow all
-window types that aren't fixed size to have an initial size
-in percent-of-screen
-
-2026-01-07: Refactor out calculation of window's initial
-frame
-
-2026-01-06: Allow all window types to have percent-of-screen
-dimensions. Note there is an outstanding bug that the wrong
-screen may be used for that calculation.
-
-2026-01-06: Allow edge-attached windows to specify
-width/height as cells or screen percentage
-
-Edge-attached windows (top, bottom, left, right) can now
-independently configure their width and height as either a
-fixed number of cells or a percentage of the screen.
-Previously only the spanning dimension could be a
-percentage.
-
-- Change iTermPercentage from double to struct with
-width/height fields - Add separate units popups for rows and
-columns in preferences - Add FrameCanonicalizer to
-consolidate window frame calculations - Handle backward
-compatibility for old arrangements/profiles
-
-2026-01-01: Add send text without braodcasting key binding
-action. Issue 12663
-
-2026-01-01: Add ability to bind expressions to boolean
-settings
