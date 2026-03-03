@@ -1,3 +1,51 @@
+2026-03-02: fix: make Delegate classes proper ABCs with
+abstract methods (#602)
+
+All four Delegate classes (tmux.Delegate, Session.Delegate,
+Tab.Delegate, Window.Delegate) used @abc.abstractmethod on
+methods but did not inherit from abc.ABC, so the decorator
+had no effect.
+
+- Add abc.ABC as base class to all four Delegate classes -
+Add ellipsis (...) as method body for all abstract methods -
+Remove misplaced @abc.abstractmethod class decorator from
+  tmux.Delegate and add it to individual methods instead
+
+The only subclass (App) already implements all required
+methods.  2026-03-02: fix: add type annotations to
+connection.py and keyboard.py (#600)
+
+- connection.py: Annotate gDisconnectCallbacks with
+  typing.List[typing.Callable[[], None]] to satisfy mypy
+  var-annotated.
+
+- keyboard.py: Fix Modifier.from_cocoa return type from bare
+['Modifier']
+  to typing.List['Modifier'] to satisfy mypy valid-type.
+2026-03-02: fix: add explicit return None to fg_color and
+bg_color in screen.py (#601)
+
+The fg_color and bg_color properties dispatch on protobuf
+oneof fields via if/elif chains but lack an explicit return
+None when no branch matches. mypy requires an explicit
+return statement even when the return type is Optional.
+2026-03-02: fix: correct type annotations in triggers.py for
+mypy compliance (#603)
+
+- decode_trigger: return Union[Trigger, EventTrigger] since
+EventTrigger
+  is not a Trigger subclass
+- BellTrigger._param: fix return type None -> str -
+BounceTrigger: fix forward references from
+  'iterm2.Trigger.BounceTrigger.Action' to
+  'BounceTrigger.Action'
+- PasswordTrigger.user_name: return Optional[str] to match
+__init__ - CommandFinishedEventTrigger.deserialize: annotate
+exit_code_filter
+  local as Union[ExitCodeFilter, int]
+- LongRunningCommandEventTrigger.__init__: annotate
+event_params as
+  Dict[str, Any] to allow mixed value types
 2026-03-01: Update python API for event triggers
 
 2026-03-01: Add event-based triggers. These triggers fire
