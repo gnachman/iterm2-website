@@ -1,3 +1,62 @@
+2026-03-05: Fix Nerd Font Bundle not persisting after
+restart. Issue 12744
+
+Fonts were downloaded to a temp directory and registered
+with CTFontManagerRegisterFontDescriptors using persistent
+scope. However, persistent scope only stores a reference to
+the font file location - it doesn't copy the font data. When
+the temp directory was cleaned up, the registration pointed
+to non-existent files.
+
+Now copy fonts to ~/Library/Application
+Support/iTerm2/Fonts/ before registering them, so they
+persist across sessions.
+
+2026-03-05: Fix find next (Cmd+G) skipping matches after
+tail find.  Issue 12716
+
+When tail find searched from a mid-line position (e.g., x=50
+on line 12), it would report having searched the coordinate
+range (50,12) to (2,37).  The code then removed ALL search
+results on lines 12-37, but tail find only re-discovered
+results starting at x>=50 on line 12. Results before x=50 on
+that line were permanently lost, causing the match count to
+drop and Cmd+G to skip those matches.
+
+The bug was in PTYTextView.removeSearchResultsInRange: which
+converted VT100GridAbsCoordRange to NSRange by discarding
+the x-coordinate: NSMakeRange(range.start.y, range.end.y -
+range.start.y)
+
+Fix by adding removeSearchResultsWithAbsCoordRange: to
+iTermFindOnPageHelper that uses
+VT100GridAbsCoordRangeContainsAbsCoord to properly check if
+each result's start position falls within the searched
+coordinate range. External results (which are always
+full-line) are handled by checking if their line falls
+within the y-range.
+
+2026-03-05: Update chatgpt version
+
+2026-03-05: Tweak left inset of stoplight buttons on Tahoe
+in Compact theme. Issue 12721
+
+2026-03-05: Don't draw full bleed for unfilled Powerline
+arrow glyphs. Issue 12745 (and also 12680)
+
+The line arrow glyphs (E0B1, E0B3) should not have a full
+bleed edge since they are not filled shapes. This was
+causing a visible vertical bar artifact on these glyphs.
+
+2026-03-05: Fix vertical alignment of external settings
+'Save Changes' label
+
+2026-03-05: Search for crash logs in a background thread to
+avoid hanging app launch if there are a crazy number of
+logs. Issue 12558
+
+2026-03-05: Bump timeout for test
+
 2026-03-04: Improve tests, fix various minor issues in regex
 word boundary code
 
