@@ -1,5 +1,12 @@
-2026-03-05: Fix Nerd Font Bundle not persisting after
-restart. Issue 12744
+2026-03-06: ci: add mypy type checking to CI pipeline (#608)
+
+- Add mypy and types-protobuf to requirements-dev.txt - Add
+mypy.ini with disable_error_code for import-not-found and
+  import-untyped (AppKit/Foundation/google stubs
+  unavailable)
+- Add "Run mypy" step to test.yml after pytest 2026-03-05:
+Fix Nerd Font Bundle not persisting after restart. Issue
+12744
 
 Fonts were downloaded to a temp directory and registered
 with CTFontManagerRegisterFontDescriptors using persistent
