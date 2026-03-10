@@ -1,3 +1,36 @@
+2026-03-09: Add smooth cursor slide animation for underscore
+and vertical bar cursors
+
+Adds a new "Smooth slide" option for cursor movement that
+animates small horizontal movements. Works with both legacy
+and Metal renderers.
+
+New advanced settings: - cursorSlideAnimationDuration:
+Animation duration in seconds (default 0.05) -
+cursorSlideAnimationMaxCells: Maximum distance in cells to
+animate (default 1)
+
+2026-03-09: Offer to reset key reporting mode when it is
+stuck on. Issue 12163
+
+2026-03-09: Fix shell integration not working with Login
+Shell mode. Issue 12746
+
+When using "Login Shell" mode with bash, shell integration
+injection adds "--posix" to the command line. This argument
+was being passed directly after "--launch_shell", causing
+ShellLauncher to interpret it as the custom shell argument
+(argv[2]) instead of an extra argument to pass to bash.
+
+The fix introduces "-" as a placeholder at argv[2] meaning
+"use $SHELL from the environment". This allows extra
+arguments like "--posix" to be passed at argv[3]+ where
+ShellLauncher expects them.
+
+Changes: - ShellLauncher/main.c: Recognize "-" at argv[2] as
+"use $SHELL" - ShellIntegrationInjection.swift: Insert "-"
+placeholder for .loginShell case before extra args
+
 2026-03-08: Add 'always show alerts with remembered
 selections'
 
