@@ -1,3 +1,65 @@
+2026-03-10: Exit cleanly when a control is nil
+
+2026-03-10: Remove bogus assertion in cleanUpIfNeeded
+
+The assertion assumed window closing is synchronous, but
+Lion fullscreen windows close asynchronously after exiting
+fullscreen mode.
+
+2026-03-10: Move matrix above custom directory in profile
+settings. Issue 12754
+
+2026-03-10: When dropping a divorced session onto a
+non-divorced session to split, don't call
+inheritDivorceFrom: on the moved session. The moved session
+already has the correct divorce state, and "inheriting" from
+a non-divorced session clears its overriddenFields, which
+later causes the GUID to revert to the shared profile's
+GUID, breaking the invariant that divorced sessions have
+their GUID in
+  sessionsInstance
+
+2026-03-10: Fix crash when semantic history action key is
+not a string
+
+Add type-safe accessor for the semantic history action
+preference.  Corrupted profile data could store a number
+instead of a string, causing -[__NSCFNumber
+isEqualToString:] crash.
+
+2026-03-10: Fix crash when session closes during split view
+divider drag
+
+Add sessionShouldAutoClose: checks to code paths that were
+bypassing the existing protection against closing sessions
+while a divider drag is in progress. This prevents
+NSSplitView's subviews from becoming empty during drag
+tracking, which caused a crash in _presentDividerDragResult:
+with "index 0 beyond bounds for empty array".
+
+2026-03-10: Fix thread safety crash in CyclicLog
+
+CyclicLog's messages array was accessed from multiple
+threads without synchronization. iTermGraphDatabase uses the
+same CyclicLog instance from both the main thread and the
+com.iterm2.graph-db.0 background queue, causing data races
+during concurrent log() calls.
+
+Add mutex synchronization using the existing Mutex class to
+protect all access to the messages array.
+
+2026-03-10: Fix crash in tip card button when CATransaction
+triggers early deallocation
+
+Retain self at the start of mouseUp: to prevent the button
+from being deallocated during the method. CATransaction
+commit can synchronously trigger completion handlers from
+pending animations, which may release the card view
+controller and its button array, deallocating the button
+while mouseUp: is still executing.
+
+2026-03-10: Fix a crash during resize with reentrant joins
+
 2026-03-09: Add smooth cursor slide animation for underscore
 and vertical bar cursors
 
