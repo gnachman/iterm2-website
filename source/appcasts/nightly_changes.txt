@@ -1,3 +1,191 @@
+2026-03-14: Only clear the necessary part of the CGContext
+to improve performance when printing lots of nonascii. Issue
+12763
+
+Addresses this part of the sample:
+
+    5617 Thread_<multiple>   DispatchQueue_420:
+    com.iterm2.metalDriver  (serial) + 5617 start_wqthread
+    (in libsystem_pthread.dylib) + 15  [0x7ff80f723843] +
+    5617 _pthread_wqthread  (in libsystem_pthread.dylib) +
+    298  [0x7ff80f724861] +     5617
+    _dispatch_workloop_worker_thread  (in libdispatch.dylib)
+    + 688  [0x7ff80f58c4e3] +       5617
+    _dispatch_root_queue_drain_deferred_wlh  (in
+    libdispatch.dylib) + 275  [0x7ff80f58cb96] +
+    5615 _dispatch_lane_invoke  (in libdispatch.dylib) + 382
+    [0x7ff80f583dad] +         ! 5615
+    _dispatch_lane_serial_drain  (in libdispatch.dylib) +
+    779  [0x7ff80f58335f] +         !   5615
+    _dispatch_client_callout  (in libdispatch.dylib) + 6
+    [0x7ff80f5929fc] +         !     5589
+    _dispatch_call_block_and_release  (in libdispatch.dylib)
+    + 12  [0x7ff80f57c6b9] +         !     : 5461
+    -[iTermMetalDriver
+    performPrivateQueueSetupForFrameData:view:]  (in iTerm2)
+    + 728  [0x103d2f0bc] +         !     : | 5461
+    -[iTermMetalFrameData measureTimeForStat:ofBlock:]  (in
+    iTerm2) + 146  [0x103cdb296] +         !     : |   5461
+    __62-[iTermMetalDriver
+    performPrivateQueueSetupForFrameData:view:]_block_invoke.486
+    (in iTerm2) + 84  [0x103d2f2dd] +         !     : |
+    5457 -[iTermMetalDriver
+    populateTransientStatesWithFrameData:range:]  (in
+    iTerm2) + 100  [0x103d30328] +         !     : |     +
+    5457 -[iTermMetalDriver
+    populateTextAndBackgroundRenderersTransientStateWithFrameData:]
+    (in iTerm2) + 280  [0x103d33cc9] +         !     : |
+    +   5457 -[iTermMetalDriver
+    _populateTextRenderer:withFrameData:drawOffscreenCommandLine:suppressedTopHeight:]
+    (in iTerm2) + 938  [0x103d33182] +         !     : |
+    +     5456 -[__NSArrayM
+    enumerateObjectsWithOptions:usingBlock:]  (in
+    CoreFoundation) + 288  [0x7ff80f805652] +         !
+    : |     +     ! 5456
+    __NSARRAY_IS_CALLING_OUT_TO_A_BLOCK__  (in
+    CoreFoundation) + 7  [0x7ff80f8057b7] +         !     :
+    |     +     !   5456 __101-[iTermMetalDriver
+    _populateTextRenderer:withFrameData:drawOffscreenCommandLine:suppressedTopHeight:]_block_invoke
+    (in iTerm2) + 870  [0x103d3355e] +         !     : |
+    +     !     5454 -[iTermTextRendererTransientState
+    setGlyphKeysData:glyphKeyCount:count:attributesData:row:backgroundColorRLEData:markedRangeOnLine:context:creation:]
+    (in iTerm2) + 1092  [0x103d26020] +         !     : |
+    +     !     : 5414 -[iTermTextRendererTransientState
+    addNonASCII:allowUnderline:]  (in iTerm2) + 265
+    [0x103d26315] +         !     : |     +     !     : |
+    5208 iTerm2::TexturePageCollection::add(int,
+    iTerm2::GlyphKey const&, iTermMetalBufferPoolContext*,
+    NSDictionary<NSNumber*, iTermCharacterBitmap*>* (int,
+    signed char*) block_pointer)  (in iTerm2) + 106
+    [0x103d266a0] +         !     : |     +     !     : | +
+    5204 __101-[iTermMetalDriver
+    _populateTextRenderer:withFrameData:drawOffscreenCommandLine:suppressedTopHeight:]_block_invoke_2
+    (in iTerm2) + 122  [0x103d33655] +         !     : |
+    +     !     : | + ! 5203 -[iTermMetalPerFrameState
+    metalImagesForGlyphKey:asciiOffset:size:scale:emoji:]
+    (in iTerm2) + 29  [0x103adc6d5] +         !     : |
+    +     !     : | + ! : 3810 -[iTermMetalPerFrameState
+    imagesForRegularGlyphKey:asciiOffset:size:scale:emoji:]
+    (in iTerm2) + 767  [0x103adcd57] +         !     : |
+    +     !     : | + ! : | 3658 -[__NSArrayI
+    enumerateObjectsWithOptions:usingBlock:]  (in
+    CoreFoundation) + 218  [0x7ff80f809ddc] +         !
+    : |     +     !     : | + ! : | + 3658
+    __NSARRAY_IS_CALLING_OUT_TO_A_BLOCK__  (in
+    CoreFoundation) + 7  [0x7ff80f8057b7] +         !     :
+    |     +     !     : | + ! : | +   3646
+    __81-[iTermMetalPerFrameState
+    imagesForRegularGlyphKey:asciiOffset:size:scale:emoji:]_block_invoke
+    (in iTerm2) + 124  [0x103adce62] +         !     : |
+    +     !     : | + ! : | +   ! 3160
+    -[iTermCharacterSource bitmapForPart:]  (in iTerm2) + 56
+    [0x103e120fe] +         !     : |     +     !     : | +
+    ! : | +   ! : 3160 -[iTermCharacterSource drawIfNeeded]
+    (in iTerm2) + 149  [0x103e117f8] +         !     : |
+    +     !     : | + ! : | +   ! :   2849
+    -[iTermCharacterSource drawWithOffset:iteration:]  (in
+    iTerm2) + 164  [0x103e118b7] +         !     : |     +
+    !     : | + ! : | +   ! :   | 2615
+    -[iTermRegularCharacterSource
+    drawRuns:atOffset:skew:iteration:]  (in iTerm2) + 662
+    [0x103fb75b1] +         !     : |     +     !     : | +
+    ! : | +   ! :   | + 2555 -[iTermCharacterSource
+    prepareToDrawIteration:offset:runFont:skew:initialized:]
+    (in iTerm2) + 84  [0x103e11e0f] +         !     : |
+    +     !     : | + ! : | +   ! :   | + ! 2457
+    -[iTermCharacterSource
+    fillBackgroundForIteration:context:]  (in iTerm2) + 103
+    [0x103e11b7d] +         !     : |     +     !     : | +
+    ! : | +   ! :   | + ! : 2457 CGContextFillRect  (in
+    CoreGraphics) + 70  [0x7ff815883a8f]
+
+2026-03-14: Rebuild binaries. Fix makefile to pass BUILD_DIR
+to nested makes
+
+2026-03-14: Fix crash from negative interval bounds during
+resize
+
+Clamp negative coordinates to 0 when creating intervals and
+converting coordinate ranges during resize operations. Skip
+empty ranges after clamping to avoid degenerate intervals.
+
+Fixes crash in sanityCheckIntervalsFrom:note: with bogus
+intervals like [-3563821, -1) that occurred because
+Interval's boundsCheck uses assert() which is disabled in
+release builds.
+
+2026-03-14: Fix VoiceOver not announcing deleted characters
+(PR #610)
+
+Based on PR #610 by Deon588 which fixes GitLab issue #8562.
+
+Changes from the original PR: - Replaced unsafe C pointer
+manipulation with NSMutableString and
+  ScreenCharArray APIs
+- Used iTermLocatedString instead of assuming 1:1
+string-index-to-column
+  mapping, which properly handles surrogate pairs and
+  complex characters
+- Moved helper methods to Swift (PTYTextView.swift) to avoid
+accumulating
+  tech debt
+- Added proper MRR memory management (retain/release) for
+the stored
+  located string
+- Fixed absCursorY calculation to be 0-based (was
+incorrectly 1-based) - Added helper methods to
+GridCoordArray for coordinate-based lookups - Added
+comprehensive unit tests
+
+The fix detects text deletion by comparing cursor line
+content across refresh cycles and announces deleted text to
+VoiceOver, handling: - Backspace (cursor moved left) - Word
+delete (Ctrl+W, Option+Backspace) - Kill to beginning
+(Ctrl+U) - Forward delete (fn+Backspace) - Kill to end
+(Ctrl+K)
+
+Co-Authored-By: Deon588
+
+2026-03-14: Allow AI chat to connect to LAN-hosted models
+via HTTP
+
+Fixes #12768. Adds NSAllowsLocalNetworking to Info.plist and
+extends self-hosted detection to recognize private IPv4/IPv6
+addresses.
+
+2026-03-14: Try to make enabling touch ID for sudo more
+reliable. Issue 12753
+
+2026-03-13: Fix crash when interval tree entries with
+negative bounds were restored
+
+2026-03-13: Use graph encoder properly for fold marks to
+avoid writing their contents more than once since they could
+be quite large. This required giving every interval tree
+object a GUID. Upside is just about none of them need to be
+written, so there should be a performance bump.
+
+2026-03-13: Update nerd fonts to latest version. It is just
+one font now, yay. Issue 12758
+
+2026-03-13: Switch libsixel submodule back to upstream
+(saitoha/libsixel)
+
+Upstream now includes the HLS color conversion fix that was
+reported and has been actively maintained. Rebuild fat
+binary from upstream.
+
+2026-03-13: Add support for taking screenshots. They can be
+annotated with redactions and highlights.
+
+2026-03-13: Add build.sh to help claude. Add tmp to avoid
+polluting the main directory with issues claude is
+investigating
+
+2026-03-13: Scold claude
+
+2026-03-13: Fix bugs in add_file_to_xcodeproj
+
 2026-03-12: Enable weak refs in MRR code in PerformanceTests
 target
 
