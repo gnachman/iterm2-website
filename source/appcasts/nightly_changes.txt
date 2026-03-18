@@ -1,3 +1,150 @@
+2026-03-17: Add xonsh as a supported shell for shell
+integration
+
+2026-03-17: Optimize accessing fd and ioAllowed on
+multi-server job manager for issue 12772
+
+2026-03-17: Try to help claude use curly quotes
+
+2026-03-17: Fix warnings
+
+2026-03-16: Allow callstacksymbols in some cases (non-tmux)
+and use a cyclic log to limit memory use. See preceding
+commit
+
+2026-03-16: Remove callStackSymbols from setBookmark debug
+log
+
+This was removed in 042390be for performance and
+reintroduced in 07dbf23c. With tmux integration and
+set-titles on, setBookmark is called on every title change
+from tmux, so the symbolicated backtraces accumulate in
+_combinedLog unbounded and each call spends time in dladdr.
+
+2026-03-16: Fix build break
+
+2026-03-16: Use font table config for PUA characters in
+tab/window titles
+
+- Query font table for each PUA code point instead of using
+a single
+  non-ASCII font. This respects font table config overrides
+  (e.g., from "Install Nerd Font Bundle").
+
+- PseudoTerminal acts as the PSMPUAFontProvider and
+delegates to the
+  current session's font table. This ensures font changes
+  are picked up automatically without updating cached
+  references.
+
+- Scale PUA fonts to match the title font size (e.g., 11pt
+for tabs).
+
+- Apply PUA fonts to fake window titles
+(iTermFakeWindowTitleLabel) in
+  addition to tab titles.
+
+- Add PSMApplyPUAFonts() as a shared utility function in
+PSMCachedTitle
+  to avoid duplicate code.
+
+- Use weak references for puaFontProvider to avoid retain
+cycles.
+
+- Limit PUA font iteration to first 256 characters for
+performance.
+
+2026-03-16: Add a tool to analyze restorable state db
+
+2026-03-16: Add actions to working directory status bar menu
+(PR #536)
+
+The working directory component's context menu now includes
+actions for the current path: copy full path, copy folder
+name, reveal in Finder, and open in new window/tab.
+
+Or if you prefer even more concise:
+
+Add copy/open actions to working directory status bar menu
+
+Adds menu items to copy path, copy folder name, reveal in
+Finder, and open the current directory in a new window or
+tab.
+
+2026-03-16: feat: expose color picker eyedrop for tab on
+right click (#614)
+
+summary: * apparently NSMenu auto-sizes based on the text of
+its menu items
+  (logical) - the `ColorsMenuItemView` needs 236px for the
+  eyedropper icon
+    but `Save Tab as Window Arrangement` is still too short,
+    so its being hidden
+* we just need to guarantee the menu is at least as wide as
+the color
+  view
+2026-03-16: Fix build break
+
+2026-03-16: Use secondaryLabelColor for pane options button
+(PR #613) 2026-03-16: Make broken pipe message customizable
+(PR 541)
+
+Co-Authored-By: Erwann Mest <m@kud.io>
+
+2026-03-16: Fix not clearing enough of character images bug
+
+2026-03-16: Prevent toolbar icons from moving when search
+field in settings gets first responder. Issue 12732
+
+2026-03-16: Fix vertical  misalignment in settings search
+field
+
+2026-03-16: Fix some silly bugs with PATH in Makefile
+
+2026-03-16: Fix make setup to work before xcode-select is
+configured
+
+- Skip BUILD_DIR validation when running 'make setup' since
+xcodebuild
+  may not work yet (xcode-select not configured, project not
+  fully cloned, etc.)
+- Compute BUILD_DIR fresh after submodules are initialized,
+right before
+  calling paranoid-deps, ensuring it has a valid value at
+  that point
+- Use SIGNED=1 for paranoid-deps only when USER is gnachman
+
+2026-03-16:  fix(ui): respect dark/light mode in rename
+dialogs (#617) 2026-03-16: chore(build): add make setup and
+fix Homebrew path detection for Intel and Apple Silicon (PR
+#612)
+
+2026-03-16: Fix posix_spawn failing with "disclaim children"
+enabled (Issue 12770)
+
+When the "Disclaim ownership of children" advanced setting
+is enabled, sessions would fail to launch because
+posix_spawn couldn't find the login executable.
+
+The root cause was that standardLoginCommand returned
+"login" instead of "/usr/bin/login". Unlike execvp (used in
+the legacy code path), posix_spawn does not search $PATH and
+requires an absolute path.
+
+Also fixed error output not appearing in the terminal when
+spawn fails by writing to fd 2 (stderr/slave pty) instead of
+the master pty fd.
+
+Added diagnostic logging via FDLog to help debug spawn
+failures, with the specific location and error code
+reported.
+
+Added legacyStandardLoginCommand for backwards compatibility
+with saved sessions that have the old command format.
+
+2026-03-16: Fix add_file_to_xcodeproj which made a bogus
+sources group
+
 2026-03-15: Clean up xcode project
 
 2026-03-15: Fix Unicode escaping in quoted filenames when
