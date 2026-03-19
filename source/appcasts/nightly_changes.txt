@@ -1,3 +1,64 @@
+2026-03-18: Fix project file
+
+2026-03-18: Browse bonjour on startup to get permission
+request, hopefully. Issue 12412
+
+2026-03-18: Fix context menu appearance to inherit window
+dark/light mode
+
+The tab and text view context menus were always rendering
+with a light appearance, regardless of the terminal window's
+current dark or light mode setting. This happened because
+NSMenu does not inherit NSWindow appearance automatically.
+
+For minimal-style windows, the fix derives the appearance
+from the window decoration background color brightness. For
+standard windows, it inherits self.window.appearance
+directly.
+
+Co-Authored-By: Andy Kipp
+<anki-code@users.noreply.github.com>
+
+2026-03-18: Filter empty args from process name display
+(#611) 2026-03-18: Document how names and titles work
+
+2026-03-18: Add xonsh shell integration
+
+Add support for the xonsh shell to iTerm2's shell
+integration feature.  This includes automatic injection via
+XONSHRC and manual installation through the Shell
+Integration installer.
+
+Co-Authored-By: Andy Kipp
+<anki-code@users.noreply.github.com>
+
+2026-03-18: Fix bounding box calculation in
+iTermCharacterSource. It was off for italics and way off for
+emoji (because Core Text is poo), and didn't catch
+antialiasing fringes always.
+
+2026-03-18: Fix status bar layout by accounting for margins
+in the stable algorithm's removal check
+
+2026-03-18: Refactor AsyncFilter to use explicit state
+machine and avoid blocking the main queue.
+
+Replace implicit state tracking (started, timer,
+isCatchingUp) with an explicit State enum using associated
+values. This makes state transitions clear and encapsulates
+phase-specific data within each state.
+
+Fix regex refinement correctness: disable query refinement
+optimization for regex mode since substring containment
+(e.g., "a" in "a|b") doesn't imply the new pattern matches a
+subset of the old pattern's matches.
+
+2026-03-18: Fixes for commit
+73cf2de09ed9a2434ae339765a1c535930a82f7d
+
+2026-03-18: Refresh search results after window resize.
+Issue 12716
+
 2026-03-17: Add xonsh as a supported shell for shell
 integration
 
