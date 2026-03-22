@@ -1,3 +1,28 @@
+2026-03-21: Wait until we have listened on the Python API
+socket before launching scripts. Issue 12776
+
+2026-03-21: Add test target to Makefile
+
+2026-03-21: Fix failing tests
+
+2026-03-21: Add lazy loading support for large content
+during state restoration
+
+Thread a LargeContentProvider through the restoration path
+to enable on-demand loading of large interval tree object
+content (e.g., fold marks).  Preserve generation values when
+restoring from database so delta encoding can skip
+re-encoding unchanged state. Add validation for Interval
+deserialization to handle corrupted data gracefully.
+
+The changes optimize state restoration by: - Encoding large
+content (currently just fold mark saved lines) separately
+from small metadata - Loading large content lazily only when
+accessed rather than all at once - Preserving generation
+counters from the database so unchanged objects don't
+  need re-encoding on next save (which benefits LineBlock as
+  well as miscellaneous others)
+
 2026-03-20: Add tests for interval tree's forward limit
 enumerator
 
