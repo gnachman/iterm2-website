@@ -1,3 +1,80 @@
+2026-03-22: Allowlist domains to open in Python open URL API
+
+2026-03-22: Add test of Unicode 17 characters. Should be
+coming in the next version of macOS
+
+2026-03-22: Automate updating Unicode character sets. Add a
+Makefile target that does everything
+
+2026-03-22: Add support for unicode 17 character widths
+
+2026-03-22: Optimize character width lookups with pure C
+implementation
+
+StringToScreenChars was spending significant time in
++[NSString
+isDoubleWidthCharacter:ambiguousIsDoubleWidth:unicodeVersion:fullWidthFlags:]
+due to Objective-C overhead: - objc_msgSend dispatch -
+CFRetain/CFRelease cycles - NSCharacterSet internal
+operations
+
+Replace NSCharacterSet-based lookups with a pure C
+implementation: - BMP characters (0-0xFFFF): O(1) bitmap
+lookup (8KB per character set) - Supplementary planes: O(log
+n) binary search over sorted ranges - Thread-safe lazy
+initialization with atomics
+
+Remove the now-unused
+fullWidthCharacterSetForUnicodeVersion:,
+ambiguousWidthCharacterSetForUnicodeVersion:, and
+flagCharactersForUnicodeVersion: methods from
+NSCharacterSet+iTerm.
+
+Update tools/eastasian.py to generate C code and update
+iTermCharacterWidth.c in place. The script now supports
+specifying a Unicode version:
+  python3 tools/eastasian.py          # latest python3
+  tools/eastasian.py 16.0.0   # specific version
+
+2026-03-22: Reduce timeout for drawables back to 1/60 sec
+
+2026-03-22: Improvements to histograms
+
+2026-03-22: Move PIUArray deallocation to another thread (it
+took about 7.5% of time for heavy non-ASCII drawing). Unify
+with LineBlock's off-thread dealloc
+
+2026-03-22: Make synchronized metal drawing an advanced
+setting instead of a preprocessor define. When enabled we'll
+get the drawable on the private queue and use a CA
+transaction to present.
+
+2026-03-22: Improve Metal frame rate with deferred drawable
+acquisition
+
+Enable deferred drawable mode where the drawable is acquired
+after rendering completes, then the frame is copied to it.
+This reduces the time we hold the drawable, improving frame
+rates when multiple frames are in flight.
+
+Key changes: - Enable ENABLE_DEFER_CURRENT_DRAWABLE and
+ENABLE_SYNCHRONOUS_PRESENTATION - Add
+ENABLE_NEXTDRAWABLE_ON_PRIVATE_QUEUE to acquire drawables
+directly
+  on the private queue, avoiding main queue latency
+- Use nextDrawableWithTimeout: instead of cached
+currentDrawable to avoid
+  race condition where multiple in-flight frames share the
+  same drawable
+- Always enable copyToDrawableRenderer for deferred drawable
+support - Present drawable via addScheduledHandler instead
+of after commit - Add thread-safe
+nextDrawableFromAnyThread() to iTermMetalView - Fix
+monochrome deferred path to copy from renderPassDescriptor
+
+WIP: Still has TODO items for timeout tuning and dynamic
+frames in flight.
+
 2026-03-21: Wait until we have listened on the Python API
 socket before launching scripts. Issue 12776
 
