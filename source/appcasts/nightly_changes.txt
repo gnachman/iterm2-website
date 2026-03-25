@@ -1,3 +1,59 @@
+2026-03-24: Fix warnings
+
+2026-03-24: Add confirmation prompts to make setup, add
+dangerous-setup target
+
+2026-03-24: improve(makefile): add help/doctor targets,
+auto-install deps in setup
+
+- Prepend /opt/homebrew/bin to PATH so Apple Silicon Macs
+find Homebrew
+  tools without shell profile workarounds
+- Rewrite setup to auto-install instead of error: Xcode via
+xcodes CLI
+  (handles versioned installs like Xcode-26.0.1.app), rustup
+  via the official curl installer, all brew formulae and
+  cargo packages
+- perl and python3 checked by binary presence rather than
+formula name
+  so existing version manager installs are respected
+- sf-symbols failure due to missing sudo is caught
+gracefully with a
+  clear instruction instead of crashing
+- Separate compilation from setup: paranoid-deps removed
+from setup,
+  setup now ends with a prompt to run make deps
+- Add make help: structured overview of all targets with
+detected arch
+  and Homebrew prefix, works before Xcode is installed
+- Add make doctor: prints version/status of every build
+dependency,
+  validates python3 is version 3.x
+- Extend BUILD_DIR validation bypass to cover help and
+doctor in
+  addition to setup
+
+2026-03-24: Add "Copy or Paste" pointer action (#624)
+
+This action allows the user to copy and paste with the same
+pointer binding, e.g. right-click.
+
+When the bound event occurs: - If the window contains
+selected text, that text is copied to the
+  clipboard and the selection is cleared.
+- If the window does not contain selected text, the action
+will paste
+  from the clipboard
+2026-03-24: Fix how per-window settings are saved
+
+2026-03-24: Fix warnings
+
+2026-03-24: Pre-fill fg and bg attributes in screen_char_t
+in parser thread for ascii strings
+
+2026-03-24: Fix a bug where smart selection actions didn't
+work if 'cmd-click on files/urls' settin gwas off
+
 2026-03-23: Pre-convert non-ASCII strings to screen_char_t
 on the parser thread
 
@@ -334,7 +390,7 @@ right before
   that point
 - Use SIGNED=1 for paranoid-deps only when USER is gnachman
 
-2026-03-16: 🐛 fix(ui): respect dark/light mode in rename
+2026-03-16:  fix(ui): respect dark/light mode in rename
 dialogs (#617) 2026-03-16: chore(build): add make setup and
 fix Homebrew path detection for Intel and Apple Silicon (PR
 #612)
@@ -1127,8 +1183,8 @@ correct.
 2026-02-23: Fix rawLine: and offsetOfRawLine: ignoring
 bufferStartOffset after line drops (#589)
 
-Both methods hardcoded linenum == 0 → start = 0 instead of
-checking linenum == _firstEntry → start = bufferStartOffset.
+Both methods hardcoded linenum == 0  start = 0 instead of
+checking linenum == _firstEntry  start = bufferStartOffset.
 After dropLines advances _firstEntry and sets
 bufferStartOffset to a non-zero value, they returned a
 pointer/offset that started too early in the buffer, reading
@@ -1473,8 +1529,8 @@ like nano to hang.
 Root cause: Commit e0a6352 moved the first chunk write into
 the willExpect callback to ensure the expectation was
 installed before writing. However, this callback is invoked
-via a chain of dispatch_async calls (sync → updateExpectFrom
-→ copy → addExpectation → dispatch_async).  The paste timer
+via a chain of dispatch_async calls (sync  updateExpectFrom
+copy  addExpectation  dispatch_async).  The paste timer
 could fire before this chain completed, writing subsequent
 chunks directly while the first chunk was still pending.
 
@@ -1571,3 +1627,17 @@ Xcode recommended that broke using iTermServer.
 warning
 
 2026-02-02: Update settings per Xcode's recommendation.
+
+2026-02-01: Use fastWordAt: for text replacement to match
+macOS behavior
+
+2026-02-01: Imrove what warning options are remembered
+
+2026-02-01: Add doNotRememberLabels to iTermWarning to
+prevent browser upsell from being silenced with Download
+selected. Issue 12377
+
+2026-02-01: Add custom terminal buttons with configurable SF
+Symbol icons and click-triggered escape codes. Issue 12703
+
+2026-02-01: Improve the appearance of terminal buttons
