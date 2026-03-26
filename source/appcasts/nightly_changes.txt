@@ -1,3 +1,81 @@
+2026-03-25: Add copy to context menu for status bar
+components. Issue 12777
+
+2026-03-25: Don't report overflow when short-circuiting sync
+during shared state
+
+The short-circuit path in synchronizeWithConfig: was
+converting scrollbackOverflow to a boolean (> 0), causing a
+1-row over-adjustment.  Since the shared state period is
+synchronous main-thread work with no opportunity for a
+redraw, returning 0 and deferring to the next normal sync
+produces the correct total adjustment.
+
+2026-03-25: Make paranoid-deps check if submodules are clean
+to avoid building bad prod code
+
+2026-03-25: ignore dirty state in native library submodules
+(#629) 2026-03-25: Fix generation regression assertion in
+delta encoder when DB lock fails
+
+When another iTerm2 instance holds the DB lock during init,
+initializeGenerationFromRecordSynchronously would message
+nil and poison _generationInitialized=YES with
+_generation=0. Once the lock was released and the DB loaded,
+generation counters were never initialized from the stored
+values, causing record.generation to exceed the encoding
+generation on the next save.
+
+Guard against nil _db so the flag stays unset until the DB
+is available. Also handle generation regression in the delta
+encoder by bumping forward to record.generation+1, covering
+any object whose counter wasn't restored.
+
+2026-03-25: Fix tmux -CC attach not showing alternate screen
+(e.g., vim) correctly
+
+When attaching to a tmux session where a pane is on the
+alternate screen, setTmuxState: swaps the primary/alt grid
+pointers but the read-only state used for rendering never
+got the updated content. Mark all cells dirty after the grid
+swap and after setAltScreen: writes via memcpy so that the
+incremental mergeFrom: sync copies the correct content.
+
+2026-03-25: Update jobs popover to use menu vev material on
+macOS<26 and a glass view in macOS>=26
+
+2026-03-25: Add support for the hopefully forthcoming tmux
+bracket_paste_flag format so we can restore the bracketed
+paste flag when attaching. Issue 12783
+
+See also https://github.com/tmux/tmux/pull/4951
+
+2026-03-25: Fix crash in histogram string formatting when
+binWidth is zero
+
+When all sampled values are identical, range is 0 and
+binWidth becomes 0.  log10(0) produces -infinity, making
+(int)ceil(-log10(0)) undefined behavior, which corrupts the
+format string and crashes on appendString: with a nil
+argument. Issue 12786
+
+2026-03-25: Fix enabling Touch ID for sudo on macOS 26+.
+Issue 12753
+
+2026-03-25: Fix bug whwere async_set_profile() Python API
+call fails with REQUEST_MALFORMED.
+KEY_BROWSER_EXTENSION_ACTIVE_IDS was in the wrong validation
+category. Issue 12784
+
+2026-03-25: Preserve command line when switching command
+type in profile settings. Issue 12781
+
+Switching the Command dropdown (e.g., Custom Shell  SSH
+Custom Shell) no longer loses the command line text.
+
+2026-03-25: Add support for disabling menu item images.
+Issue 12780
+
 2026-03-24: Fix warnings
 
 2026-03-24: Add confirmation prompts to make setup, add
