@@ -1,3 +1,12 @@
+2026-03-27: Fix remote preferences using wrong defaults
+domain with -suite argument
+
+persistentDomainForName: was hardcoded to use the bundle
+identifier, so it always read from the default suite even
+when a custom suite was specified via -suite. This caused
+incorrect behavior when loading, saving, or comparing remote
+preferences.
+
 2026-03-25: Add copy to context menu for status bar
 components. Issue 12777
 
