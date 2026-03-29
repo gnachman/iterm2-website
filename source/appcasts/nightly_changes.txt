@@ -1,3 +1,27 @@
+2026-03-28: Fix unit test compilation errors
+
+Fix LargeContentProvider protocol name, silence unused
+variable warnings, fix nullability mismatches in delegate
+stubs, and correct type inference in FIFOQueue and
+FindOnPage tests.
+
+2026-03-28: Add support for searching folded content in
+global search
+
+2026-03-28: Add ResilientCoordinate and clean up ModernTests
+project structure
+
+ResilientCoordinate tracks a screen position that survives
+folding, unfolding, porthole add/remove/resize, scrollback
+overflow, screen clearing, resize with reflow, and session
+teardown. It observes notifications to update its internal
+state and reports status via a Status enum.
+
+Also removes the duplicate old-style PBXGroup for
+ModernTests and its orphaned PBXBuildFile/PBXFileReference
+entries. The synchronized root group now handles all
+ModernTests file membership.
+
 2026-03-27: Fix remote preferences using wrong defaults
 domain with -suite argument
 
