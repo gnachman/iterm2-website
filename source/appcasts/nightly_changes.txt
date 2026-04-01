@@ -1,3 +1,132 @@
+2026-03-31: Try to fix add_file_to_xcodeproj.rb to not make
+unneeded groups for tests
+
+2026-03-31: Triggers now treat nulls as spaces for regex
+matching. Fixes claude code problems because they like to
+move the cursor instead of printing a space
+
+2026-03-31: Harden SSH integration against hypothetical
+in-band signaling abuse
+
+Pre-framer commands sent to the remote conductor are now
+prefixed with a per-session random UUID. The conductor
+strips the prefix before decoding. This ensures the base64
+lines iTerm2 writes cannot predictably match any executable
+name. Framer commands are not prefixed, so interactive
+bandwidth is unaffected.
+
+Credit to Hng Nguyen <hung@calif.io> for the discovery.
+
+2026-03-31: Make xcode shut up about build file suggestions,
+accept asset symbol extensions just in case they're ever
+useful
+
+2026-03-31: Quell no-symbols warning
+
+2026-03-31: Fix warnings
+
+2026-03-31: Attempt to fix tmux resize on attach for issue
+9480
+
+Each time you attach to a tmux -CC session, the window goes
+through multiple sequential resize operations. The tmux
+layout specifies a pixel size for the tab content area, but
+this size is derived by rounding down to whole cells  so
+it's almost always slightly smaller than the current
+window's content area.  Each resize shaves off that
+fractional-cell remainder, and the loss accumulates across
+attach/detach cycles.
+
+The original fix (lazyFitWindowToTabSize) correctly
+suppressed this sub-cell shrinkage, but it only protected
+one of the three resize paths that fire during attach:
+
+1. openTabWithTmuxLayout calls lazyFitWindowToTabSize
+decides not to shrink (protected) 2. appendTab triggers
+tabViewDidChangeNumberOfTabViewItems which calls
+fitWindowToTabs  shrinks the window (unprotected) 3.
+loadTmuxLayout calls fitWindowToTabs  shrinks the window
+again (unprotected)
+
+Path 2 undoes path 1's decision before loadTmuxLayout even
+gets to path 3. So no matter what path 1 decided, the window
+still shrinks.
+
+The fix applies the same lazy fitting logic to all three
+paths, so sub-cell shrinkage is blocked regardless of which
+code path triggers the resize.
+
+2026-03-31: Extend password manager adapter protocol with
+settings, custom commands, and credential persistence
+
+Add protocol extensions for adapter plugins: settings fields
+(with keychain storage for secrets), custom commands
+surfaced as dynamic menu items, get-username support,
+URL-based database paths, and optional credential
+persistence to avoid re-prompting on every launch. Move
+iTermAdapterSettingsRevealHelper to its own Swift file.
+Guard test adapter behind ITERM_DEBUG so it never appears in
+release builds. Fix switchAccount variable shadowing bug and
+LocalizedError conformance.
+
+For PR 625
+
+2026-03-30: Fix VoiceOver not announcing terminal output. PR
+#635
+
+When VoiceOver is active, running commands (ls, pwd, echo)
+caused VoiceOver to say "space" instead of reading the
+output.
+
+Detects cursor-down movement to identify new output, then
+defers reading by 150ms to let the terminal finish writing.
+Reads all new lines between the pre-output cursor position
+and the current cursor, filters out the command line, and
+announces via
+NSAccessibilityAnnouncementRequestedNotification on NSApp.
+Suppresses competing value-changed and selected-text-changed
+notifications while output is pending. Cancels pending
+announcements if cursor moves up.
+
+Also fixes _lastAccessibiltyAbsoluteCursorY type (int ->
+long long).
+
+Co-Authored-By: Deon588 <dn4141@gmail.com>
+
+2026-03-30: Add proxy icon support for Compact and Minimal
+theme windows. Issue 12792
+
+2026-03-30: Preserve font size when falling back due to
+missing font. Issue 5621
+
+2026-03-30: Fix Cancel button in tmux close dialog not
+preventing window close. Issue 12793
+
+2026-03-30: Rebuild binary dependencies with xcode 26.4
+
+2026-03-30: Bypass Cocoa for ctrl/option-modified function
+keys even when allowSendingFunctionKeysToCocoa is on. Issue
+12787.
+
+2026-03-30: Make window autosave frames per-profile to
+prevent cross-contamination. Issue 12500
+
+Previously, autosave frame names used a recycled global
+number ("iTerm Window N") shared across all profiles. When a
+hotkey window closed and its number was reused by a regular
+window, the new window would inherit the hotkey window's
+size and position (and vice versa).
+
+Now each profile has its own number sequence via
+PerKeyNumberAllocator, and autosave names include the
+profile GUID ("iTerm Profile <GUID> N").  A global
+TemporaryNumberAllocator number is still allocated for
+migrating legacy frames on upgrade  legacy values are
+cleaned up on save so crash-safety is preserved. Also fix a
+pre-existing bug where loadAutoSaveFrame didn't canonicalize
+edge-anchored windows (top of screen, etc.) after restoring
+the frame, causing them to open at the wrong position.
+
 2026-03-29: Fix a bug where the GPU renderer didn't respect
 custom underline color for non-ascii text
 
@@ -1113,652 +1242,4 @@ modifiers
    return/parameter types.
 
 Regenerated binding.py from the fixed generator. All
-binding.py mypy errors are now resolved.  2026-02-27: Fix
-traffic light position in Minimal theme with custom tab bar
-height on macOS 26.  Issue 12721
-
-The horizontal inset for stoplight buttons was derived from
-the tab bar height, causing buttons to be too close to the
-window edge when users configured a shorter tab bar. On
-macOS 26, use a fixed inset value instead to ensure
-consistent positioning regardless of tab bar height.
-
-2026-02-27: Fix disclosure button being outside its
-superview bounds. Issue 12729
-
-The centerX constraint on the label was pushing the
-disclosure button outside the view's leading edge, making it
-barely clickable.
-
-2026-02-27: Make annotations less ugly
-
-2026-02-27: Add Fold All. Fix a bug where various bits of
-prompt tracking state were wrong after folding
-
-2026-02-27: Use polled local directory for new local
-sessions. Issue 12616
-
-When SSHed with a shell that sends OSC 7 without a hostname
-(e.g., fish), the remote path was incorrectly used for new
-local tabs.  Now we track the true local directory from the
-pwd poller separately and use it when creating new local
-sessions.
-
-2026-02-26: Fix color space of block cursor in Metal. Issue
-12719
-
-2026-02-26: Treat 3 finger drag like regular drag for mouse
-reporting. Issue 12725
-
-2026-02-26: Revert d651e3a54 to restore BCE behavior. Issue
-12723
-
-This reverts commit d651e3a54 ("Use defaults rather than
-current SGR color when scrolling lines into view").
-
-The reverted commit broke BCE (Background Color Erase)
-compliance, which vim relies on. When vim sets a background
-color and scrolls, it expects scrolled-in lines to use the
-current SGR background color.  After the reverted commit,
-scrolled-in lines used terminal defaults instead, causing
-inconsistent background colors in vim.
-
-BCE behavior: when new lines scroll into view, they are
-filled with the current SGR background color (via grid's
-defaultChar). This is synchronized from the terminal before
-each token executes.
-
-Added unit tests for BCE behavior: -
-testBCE_ScrollingUsesDefaultCharBackgroundColor -
-testBCE_ScrollRectUsesDefaultCharBackgroundColor
-
-Note: This may reintroduce the behavior reported in issue
-12512, where scrolled-in lines retain their background color
-after SGR 49 reset. However, this is correct BCE behavior -
-SGR 49 affects future operations, not cells already written
-during scroll.
-
-2026-02-26: Tweak compact stoplight button insets. 12721
-
-2026-02-26: Bump python module version
-
-2026-02-26: Fix build break
-
-2026-02-26: Add python API to load URL in browser session
-
-2026-02-26: Improve modern ai model autodetection. Issue
-12707
-
-2026-02-26: Implement updateTrackingAreas in tabbar control.
-Issue 12726
-
-2026-02-26: Fix crash during Sparkle update by stopping
-MainMenuMangler observation before iTermController is
-released
-
-2026-02-25: Offer to enable touch ID for sudo
-
-2026-02-25: Refactor window layout calculation into
-iTermLayoutCalculator. Issue 12724
-
-Extract layout logic from iTermRootTerminalView into a pure
-iTermLayoutCalculator class for testability. This fixes a
-bug where the tab bar height was double-deducted when
-calculating the toolbelt frame in fullscreen.
-
-The bug occurred because two mechanisms could both subtract
-tab bar height: 1. shouldLeaveEmptyAreaAtTop added it to
-decorationHeightTop 2.
-tabViewFrameByShrinkingForFullScreenTabBar shrunk the frame
-
-These are now mutually exclusive - if
-shouldLeaveEmptyAreaAtTop is true, the frame shrinking is
-skipped.
-
-Also rename rootTerminalViewWindowHasFullSizeContentView to
-rootTerminalViewFullScreenTabBarAccessoryOverlapsContent for
-clarity.
-
-2026-02-25: Don't harmonize colors by default. Although it's
-a win for most users, I can't handle the amount of feedback
-this is likely to generate.
-
-2026-02-25: Fix status bar hidden behind tab bar in
-fullscreen. Issue 12724
-
-When entering Lion fullscreen with multiple tabs, the status
-bar was positioned behind the tab bar accessory view, making
-it invisible.
-
-The root cause traces back to commit e04f9988e which changed
-rootTerminalViewShouldLeaveEmptyAreaAtTop to return NO when
-the tab bar is a titlebar accessory. This was correct: when
-the tab bar is an accessory, we shouldn't add its height to
-decorationHeights.top because the tab bar is outside the
-content view.
-
-However, on windows with fullSizeContentView (determined by
-savedWindowType), the titlebar accessory overlaps the
-content view.  The tab view frame was already being adjusted
-for this overlap via
-tabViewFrameByShrinkingForFullScreenTabBar:window:, but the
-status bar's containing frame was not.
-
-The fix applies the same frame shrinking to the status bar's
-containing frame, ensuring consistent positioning of all
-subviews when the tab bar is a fullscreen titlebar accessory
-that overlaps the content.
-
-2026-02-24: Fix missing Tahoe dividers when there are 3 tabs
-or in dark mode
-
-2026-02-24: Fix HighlightTrigger.background_color property
-getter signature (#592)
-
-The @property getter had a stray `value` parameter copied
-from the setter, causing TypeError when accessing
-trigger.background_color.  2026-02-24: Fix CellStyle
-property return types to match actual behavior (#591)
-
-CellStyle.fg_color, bg_color, and URL.identifier can return
-None when protobuf oneof fields are unset, but their type
-annotations did not reflect this. Change return types to
-Optional to match reality.
-
-mypy flagged fg_color and bg_color as missing return
-statements (screen.py:175, 191) and identifier as returning
-incompatible type (screen.py:76).  2026-02-24: Add Python
-API tests to CI
-
-Runs pytest for the Python API library in parallel with the
-existing Xcode tests. Uses ubuntu-latest for faster
-execution.
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
-
-2026-02-24: Add test targets to Makefile and ignore pytest
-artifacts
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
-
-2026-02-24: Add unit testing infrastructure for Python API
-
-Set up pytest-based testing environment with initial tests
-for color, util, and binding modules. Add make test target
-for running tests.
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
-
-2026-02-24: Add additional test of the bug fixed by
-b63e4de5a5563f9244e5f3a661cfe236f8df0918 that affected
-production code (barely)
-
-2026-02-24: Fix missing self. prefix in PasteConfiguration
-property getters
-
-All 15 property getters in PasteConfiguration referenced
-bare `__name` instead of `self.__name`, causing NameError at
-runtime when any getter was accessed. The setters were
-correct.
-
-2026-02-23: Fix rawLine: and offsetOfRawLine: ignoring
-bufferStartOffset after line drops (#589)
-
-Both methods hardcoded linenum == 0  start = 0 instead of
-checking linenum == _firstEntry  start = bufferStartOffset.
-After dropLines advances _firstEntry and sets
-bufferStartOffset to a non-zero value, they returned a
-pointer/offset that started too early in the buffer, reading
-dropped data and missing the tail of live data.
-
-The fix mirrors the existing correct logic in
-_lineRawOffset: and lengthOfRawLine:.
-
-Co-authored-by: chall37 <chall37@users.noreply.github.com>
-2026-02-19: Add paranoid-pwmadapters
-
-2026-02-19: Add SerpApi sponsor to about box
-
-2026-02-19: Add "Buffer input by default" profile setting
-with menu item, indicator, and trigger integration
-
-2026-02-18: Implement incremental merge to improve
-performance when a single line block contains one really
-long line. See PR 581
-
-2026-02-17: Add support for harmonious 256-colors
-
-2026-02-15: Fix a bug where background tabs don't get
-rescheduled for token execution causing a hang
-
-2026-02-15: Improve stress test isolation and cleanup
-
-- Rename default suite from com.iterm2.defaults to
-com.iterm2.stress-test for clarity - Track the test iTerm2's
-PID and use it for cleanup instead of AppleScript quit
-(avoids killing the wrong instance) - Remove restorable
-state directory before launching to ensure clean startup
-
-Improve stress_load.py robustness and remove throttling:
-
-- Add defensive checks in flood mode: initialize proc before
-try block,
-  handle FileNotFoundError, check proc exists before
-  terminating
-- Add thread safety to title injection with a lock to
-prevent races
-  between timer callbacks and cancellation
-- Simplify mode iteration tracking with mode_start_iteration
-variable - Remove 1ms sleep every 100 iterations; let PTY
-backpressure provide
-  natural throttling for more realistic stress testing
-
-2026-02-15: Add performance testing infrastructure (PR 569)
-
-Core components: - run_stress_test.sh: Main harness with tab
-count sweeps, synchronized startup, DTrace metrics,
-interaction injection, suite presets - stress_load.py:
-Terminal output generator with multiple modes (normal,
-buffer, clearcodes, flood) for exercising text processing -
-Dashboard-style modes (htop, watch, progress, table, status)
-for cursor positioning stress - analyze_profile.py: Profiler
-output analysis for hotspot detection - tmux_wrapper.sh:
-Auto-cleanup tmux session management
-
-Self-time profiling (--self-time): - iterm_self_time.d:
-DTrace script with explicit section markers, duration/sample
-metadata, tick-based self-termination -
-analyze_self_time.py: Distinguishes raw leaf time from
-attributed callers, normalizes module names, reports
-coverage honestly
-
-DTrace integration: - Frame rate and UX metrics collection
-scripts - FairnessScheduler probes - Proper dtrace
-sequencing: -p before -s, attach detection via polling,
-SIGINT before quit for clean END block output - Use /tmp for
-sync dir with chmod 777 for root dtrace access
-
-Environment validation: - Check iTerm2 not running at script
-start - Detect power source and energy mode via pmset - Warn
-if not on AC power or high power mode - Capture build
-metadata (version, commit, branch, date) from app plist
-
-Suite presets (--suite=): - com.iterm2.defaults: Default
-preferences - com.iterm2.fairness: Fairness scheduler
-testing
-
-2026-02-15: FEAT: Add color picker and recent colors to tab
-color menu (#578)
-
-* Add custom color picker and recent colors to tab color
-menu
-
-Add an eyedropper icon to the tab color menu that opens
-NSColorPanel for picking any custom color. Show the current
-custom color as a swatch with checkmark when it differs from
-presets. Persist up to 12 recent tab colors in
-NSUserDefaults and display them as an accessory view in the
-color panel. Debounce saving while dragging in the picker to
-avoid flooding recents with near-identical colors.
-
-* Use CPKPopover for tab color picker and move delegate to
-Swift
-
-Move ColorsMenuItemViewDelegate conformance from
-PseudoTerminal.m to PseudoTerminal.swift. Use CPKPopover as
-the default color picker with NSColorPanel as a fallback,
-respecting the kCPKUseSystemColorPicker user preference. Fix
-popover anchoring to the actual tab cell.  Increase max
-recent tab colors from 12 to 14.
-
-Also fix a pre-existing bug in ColorsMenuItemView.m where
-MAX(1, ...) was used instead of MIN(1, ...) for saturation
-clamping in the swatch outline color, causing saturation to
-always clamp to 1.0.
-
-* Replace associated objects with ObjC property, fix curly
-quotes 2026-02-15: Make builds more contributor-friendly
-(#582)
-
-* Make builds more contributor-friendly
-
-- Default to unsigned builds; pass SIGNED=1 for code-signed
-builds - Default to native-arch-only deps; pass UNIVERSAL=1
-for fat binaries - Derive BUILD_DIR dynamically from
-xcodebuild with fail-fast validation - Discover rustup via
-PATH instead of hardcoding /opt/homebrew/bin/rustup -
-Normalize paranoid-* target names to
-paranoid-<exact-target-name> - Remove stale targets (Dep,
-canary, debug, paranoidrailroad, paranoidsclv) - Propagate
-SIGNING_FLAGS and ARCH_FLAGS to sub-Makefiles
-
-* Pass SIGNED=1 UNIVERSAL=1 in release scripts
-
-The Makefile now defaults to unsigned native-arch builds for
-contributors. Release scripts need to opt in to signing and
-universal binaries explicitly.
-
-* Remove obsolete release scripts
-
-Delete six scripts that are relics of previous release
-workflows: - full_release.sh, full_release2.sh:
-svn/googlecode era - notarize.sh: deprecated xcrun altool
-helper - release_preview.sh: references Growl, OS 10.8+,
-ruby signing - release_beta_built.sh: deprecated xcrun
-altool notarization - continuous.sh: untouched since 2014,
-replaced by GitHub Actions CI
-
----------
-
-Co-authored-by: chall37 <chall37@users.noreply.github.com>
-2026-02-13: Fix pwmplugin SwiftPM warnings by extracting
-shared protocol into a library target (#583)
-
-The bitwarden adapter had a duplicate copy of
-PasswordManagerProtocol.swift which caused SwiftPM to emit
-"unhandled files" warnings. Extract the shared protocol into
-a proper library target that both adapters depend on, remove
-the duplicate, and add public access modifiers for
-cross-module visibility.
-
-Co-authored-by: chall37 <chall37@users.noreply.github.com>
-2026-02-12: Move performance tests to a new test target
-which builds with optimizations
-
-Also adds some tests of the slow paths in gang token
-handling, saved from PR 576
-
-2026-02-12: Add GitHub Actions CI for running tests
-
-Set up automated testing on push to master and PRs: - Run
-ModernTests scheme on macos-15 with Xcode 26.2 - Smart retry
-logic for flaky ibtoold/asset catalog crashes
-  (known Xcode 26.2 issue on GitHub runners)
-- Only retry for infrastructure issues, fail fast on real
-test failures - Upload test results as artifacts for
-debugging - Fix HTTP server binding in tests for CI
-environment
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
-
-2026-02-12: Add missing `typing.Optional` to Python API type
-annotations (#575)
-
-* Fix missing typing.Optional annotations in Python API
-
-Parameters with default value None were missing
-typing.Optional wrapper in window.py, alert.py,
-customcontrol.py, focus.py, and screen.py.
-
-* Fix missing typing.Optional for profile_customizations in
-Window.async_create 2026-02-11: Rebuild dependencies using
-Xcode 26.2
-
-2026-02-11: Temporarily remove CI workflow
-
-Will re-add after upgrading to Xcode 26.2 locally and
-running make paranoiddeps to build compatible dependencies.
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
-
-2026-02-11: Add make paranoiddeps step for CI builds
-
-The build requires dependencies to be rebuilt when the Xcode
-version differs from what they were last built with.
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
-
-2026-02-11: Select Xcode 26.2 explicitly and disable code
-signing for CI
-
-- Use /Applications/Xcode_26.2.app instead of default
-Xcode.app - Skip the full app build (tests build what they
-need) - Disable code signing since CI doesn't have
-certificates
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
-
-2026-02-11: Use macos-15 runner for Xcode 26 support
-
-macos-14 only has Xcode 15.4, which can't read the project
-file.
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
-
-2026-02-11: Add GitHub Actions workflow for running tests on
-push
-
-Also fix FakeSession to conform to VT100ScreenDelegate by
-adding the missing screenSendTmuxOSC4Report stub method.
-
-2026-02-11: Fix LineBlockTests compile errors from
-nullability annotations (#577)
-
-Commit 3602ebace added NS_ASSUME_NONNULL to LineBlock.h,
-making init, cowCopy, and copyWithAbsoluteBlockNumber return
-non-optional types in Swift. Also made
-screenCharArray(forRawLine:) non-optional and rawLine:
-explicitly nullable.
-
-- Remove ~69 force-unwraps on LineBlock init/copy/cowCopy
-calls - Remove optional chaining on non-optional
-ScreenCharArray returns - Convert if-let bindings to direct
-assignment for ScreenCharArray - Add force-unwraps on
-nullable rawLine: pointer passed to OffsetOfWrappedLine -
-Add explicit type annotation to closure parameter for type
-inference
-
-Co-authored-by: chall37 <chall37@users.noreply.github.com>
-2026-02-11: Respond to OSC 52 queries in tmux integration
-for tmux 3.6+. Issue 12385
-
-2026-02-10: Make toasts prettier and animated
-
-2026-02-10: Improve logging for password manager issue 8796
-
-2026-02-10: Add pointer action to copy link address. Issue
-12693
-
-2026-02-10: Fix support for dictation. Issue 5715
-
-2026-02-10: Fix clearing filter in maximized pane causing
-window to shrink and pane to become 2 columns wide after
-unmaximizing
-
-2026-02-10: Add nullaability annotations
-
-2026-02-10: Fix crash when synthetic session terminates
-while maximized
-
-2026-02-10: Fix crash when clearing filter in a maximized
-pane. Issue 12694
-
-2026-02-10: Fix smart selection falling back to word
-selection when dragging into trailing nulls at EOL. Issue
-12695
-
-2026-02-10: Enable allowSendingFunctionKeysToCocoa for beta
-
-2026-02-10: Fix a bug where mark navigation would only visit
-prompt marks, not trigger-created marks. Issue 12697
-
-2026-02-09: Try to fix bug where deepseek gets confused
-after a tool call. Issue 12707
-
-2026-02-09: Revert "Fix parallel tool call handling for
-DeepSeek"
-
-This reverts commit
-a7afa58d984f056ce4e2ded1fdbe20a6a14562f8.
-
-2026-02-09: Fix parallel tool call handling for DeepSeek
-
-Only process tool call chunks with index == 0, ignoring
-parallel calls.  This keeps conversation history consistent
-(one tool_call, one response) and fixes "missing field id"
-errors when DeepSeek attempts parallel calls.
-
-2026-02-09: Try again when you enter a wrong passphrase
-
-2026-02-09: Improve detection of encrypted private keys
-
-2026-02-09: [CHERRY PICK] Fix a bug where canceling entering
-a passphrase for SCP went on to try an empty password
-
-2026-02-09: Don't terminate automatically when closing the
-alert box asking if you want to restore. Issue 12674
-
-2026-02-09: Make IME color configurable. Issue 12710
-
-2026-02-09: Hack around broken focus ring in search bar in
-macos 26
-
-2026-02-09: Fix missing web menu after installing browser
-plugin
-
-2026-02-09: Fix tests that were failing because we started
-accepting strings as numbers in numeric expressions
-
-2026-02-09: Add tests for the preceding commit
-
-2026-02-09: Once we receive and OSC 7 or a CurrentDirectory
-control sequence, stop using pwd poller's directory for the
-current path for the rest of the session. If you look at all
-the scenarios of shells that send OSC 7, shell integration
-(not) installed, and using local/remote hosts, this is
-always the right answer. Issue 12616
-
-2026-02-08: Simplify window radius algorithm and make it
-work better. The cubic root finding failed because there
-were multiple roots in the valid range.
-
-2026-02-08: Detect window corner radius from screenshot for
-active pane border
-
-2026-02-08: Add active pane border. Issue 12616
-
-2026-02-08: [CHERRY PICK] Update AI models
-
-2026-02-07: [CHERRY PICK TO 3.6.7] Fix paste bracketing race
-condition causing out-of-order chunks. Issue 12704
-
-Bug: When pasting multi-line text with bracketed paste mode
-enabled, the first chunk (containing ESC[200~ start bracket)
-could arrive after subsequent chunks, causing applications
-like nano to hang.
-
-Root cause: Commit e0a6352 moved the first chunk write into
-the willExpect callback to ensure the expectation was
-installed before writing. However, this callback is invoked
-via a chain of dispatch_async calls (sync  updateExpectFrom
-copy  addExpectation  dispatch_async).  The paste timer
-could fire before this chain completed, writing subsequent
-chunks directly while the first chunk was still pending.
-
-Fix: Queue the first chunk synchronously before dispatching
-sync, using a reference counter (bracketedPastePending) to
-also queue subsequent chunks. When willExpect fires,
-bracketedPasteDidExpect decrements the counter and flushes
-the queue if all blocking conditions are cleared
-(_buffering, sendingIsBlocked, bracketedPastePending).
-
-This ensures: - First chunk is in queue before any
-subsequent chunks - All writes respect existing queuing
-conditions - Correct ordering is preserved when the queue is
-flushed
-
-2026-02-06: Bump shell integration
-
-2026-02-05: Resolve warning
-
-2026-02-05: Remove resolved TODO
-
-2026-02-05: Avoid making a snapshot when a command ends. Fix
-a bug where codecierge would truncate messages after tool
-use.
-
-2026-02-04: Fix line reflow, mark property updates during
-resize, and several resize bugs.
-
-Preserve soft line wraps during shell redraws: when shells
-like zsh send CR+EL to redraw a wrapped command line, skip
-the EOL_SOFT to EOL_HARD conversion if the previous line is
-full.
-
-Fix several bugs in resize code: - safeCoordRange: check
-start.x (not end.x twice) for validation.  - promptRange
-modulo: fix end.x %= end.x (always 0) to end.x %= width.  -
-positionRangeForCoordRange: handle lines shorter than the
-screen width.  - updateSavedIntervalTreeWithWidth: update
-VT100ScreenMark's
-  commandRange, promptRange, and outputStart when resizing
-  marks in the saved (alt screen) interval tree, matching
-  what updateIntervalTreeWithWidth already does for the
-  primary tree.
-
-2026-02-04: Isolate all data paths (Application Support,
-config dir, sockets, secure settings) when -suite is
-specified. This lets you run multiple copies of the app with
-different settings. Python API will still have issues
-because its socket is in a well known location, though.
-Usage:
-
-2026-02-04: Pass --suite=<reverse domain> to use a custom
-user defaults suite. This makes reproducible environments
-easier for testing
-
-2026-02-04: Improve handling of Fn key remapping. Sadly
-althoughit works better it can not work well because of how
-macOS handles Fn since Sequoia.
-
-2026-02-02: Cleanup
-
-2026-02-02: [wip] bug fixes
-
-2026-02-02: Implementation complete
-
-2026-02-02: [wip] Use early return
-
-2026-02-02: Refactor multiline search and add failing tests
-for its failure to span blocks
-
-2026-02-02: Convert TODO warning to comment. This is so hard
-to do I won't get to it for some time
-
-2026-02-02: Fix warning
-
-2026-02-02: Fix build break
-
-2026-02-02: Fix build break
-
-2026-02-02: Fix warning
-
-2026-02-02: Fix nullability annotation
-
-2026-02-02: Fix warning
-
-2026-02-02: Handle todo
-
-2026-02-02: Remove a warning
-
-2026-02-02: Revert the mysterious app hardening changes that
-Xcode recommended that broke using iTermServer.
-
-2026-02-02: Make SSHIdentityProvider MainActor to quell a
-warning
-
-2026-02-02: Update settings per Xcode's recommendation.
-
-2026-02-01: Use fastWordAt: for text replacement to match
-macOS behavior
-
-2026-02-01: Imrove what warning options are remembered
-
-2026-02-01: Add doNotRememberLabels to iTermWarning to
-prevent browser upsell from being silenced with Download
-selected. Issue 12377
-
-2026-02-01: Add custom terminal buttons with configurable SF
-Symbol icons and click-triggered escape codes. Issue 12703
-
-2026-02-01: Improve the appearance of terminal buttons
+binding.py mypy errors are now resolved.
