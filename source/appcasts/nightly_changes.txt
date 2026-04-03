@@ -1,3 +1,36 @@
+2026-04-02: Encode savedIntervalTree using graph encoding to
+avoid hang when saving restorable state
+
+The savedIntervalTree was using the legacy
+dictionaryValueWithOffset: path which calls dictionaryValue
+on every object. For FoldMarks with large content
+(savedLines, savedITOs), this is extremely slow because it
+serializes all data inline. The main interval tree already
+used the modern graph encoding path with split small/large
+content and delta encoding, but savedIntervalTree was
+missed. The restore side falls back to the legacy format for
+backward compatibility.
+
+2026-04-02: Avoid calling -[iTermMetalLayerBox
+allowsNextDrawableTimeout] on the main thread because it
+waits on the same mutex as nextDrawable. It should be
+totally safe to do that in the getDrawableQueue.
+
+2026-04-02: Add terminal rendering comparison tool and test
+infrastructure
+
+Add -compare-rendering CLI flag that renders a string with
+both the GPU (Metal) and legacy (CoreText) renderers,
+compares the output by perceived brightness, generates a
+diff image, and reports the percentage of pixels that
+differ. This enables automated regression testing of
+renderer changes.
+
+Also adds TerminalRenderer for unit tests that can render a
+terminal session to a PNG file using either renderer, and
+tools/compare-rendering.sh for convenient command-line use
+with input files.
+
 2026-03-31: Try to fix add_file_to_xcodeproj.rb to not make
 unneeded groups for tests
 
