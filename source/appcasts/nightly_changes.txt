@@ -1,3 +1,34 @@
+2026-04-05: Tweak Open Quickly glass effect tint and sync
+window appearance with theme
+
+ Adjust glass effect tintColor values for better theme
+ contrast in iTermOpenQuicklyView.  Apply current theme
+ appearance to Quick Open window in
+ iTermOpenQuicklyWindowController via
+ it_appearanceForCurrentTheme.
+These improvements produce more consistent and visually
+pleasing Quick Open window theming across light and dark
+modes.  2026-04-05: Fix thread-safety crash in HFS+ Unicode
+normalization
+
+TECConvertText mutates internal TECObjectRef converter state
+and is not reentrant. The static converters in
+_convertBetweenUTF8AndHFSPlusAsPrecomposition: were called
+concurrently from the preconversion queue, parser thread,
+and mutation queue, causing crashes in
+ConvertFromUnicodeToNormalized and downstream heap
+corruption.
+
+Add os_unfair_lock around the TECConvertText call. Also
+synchronize reads of _conversionConfig in VT100Parser to
+prevent torn reads of the struct from the parser thread
+while it is written from the mutation queue.
+
+2026-04-04: Tweak jobs tool column widths
+
+2026-04-04: Fix positioning of signal sending button and
+popup in jobs tree view
+
 2026-04-04: Don't use glass effect in jobs tool when it's in
 the toolbelt
 
