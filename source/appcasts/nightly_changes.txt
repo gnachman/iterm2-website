@@ -1,3 +1,30 @@
+2026-04-06: Add import/export of triggers as .it2triggers
+files
+
+Support exporting selected triggers to JSON files and
+importing them back via the triggers panel or by opening
+.it2triggers files directly.  Import deduplicates against
+existing triggers using canonical form comparison and
+supports both single-dict and array-of-dicts JSON.  Register
+the file type in all plist variants so the app handles it.
+
+2026-04-06:  fix(minifilter): set correct font for search
+menu template (#643)
+
+Ensure the search menu template in MiniFilterViewController
+and iTermMiniSearchFieldViewController always uses the
+standard NSMenu font, improving visual consistency. Adds
+helper methods to apply NSFont.menuFont to all non-separator
+menu items after configuration changes.  2026-04-06: Turn
+off unnecessary diagnostics
+
+2026-04-06: Render underlines in metal using three passes
+instead of drawing underlines at text at the same time.
+
+Render text to an offscreen texture.  Then render underlines
+to another offscreen texture.  Then composite them to the
+drawable, subtracting smeared text from underlines.
+
 2026-04-05: Tweak Open Quickly glass effect tint and sync
 window appearance with theme
 
