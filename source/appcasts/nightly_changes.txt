@@ -1,3 +1,195 @@
+2026-04-07: Use configurable priority settings for tab
+status aggregation and fix help text color format
+
+2026-04-07: Add Claude Code integration onboarding and
+session monitoring
+
+2026-04-06: Add provenance field to trigger dictionaries for
+trigger pack updates
+
+Provenance is preserved through import/export but erased
+whenever a trigger is manually edited, enabling future
+replacement of pack-provided triggers without overwriting
+user modifications.
+
+2026-04-06: Add per-trigger job filter so triggers only fire
+when a specific app is in the foreground
+
+Adds a "Job" field to triggers (e.g., "emacs", "claude").
+When set, the trigger only fires while that process is the
+foreground job. The field is stored in the trigger
+dictionary under the "job" key and supported in
+import/export. The job name is shown as its own row in the
+trigger list when set.
+
+The foreground job name flows from PTYSession through
+VT100Screen to an atomic property on PTYTriggerEvaluator,
+allowing the mutation thread to read it without
+synchronization overhead. EventTriggerEvaluator gets the
+same filtering for event-based triggers on the main thread.
+
+2026-04-06: Tweak wording of trigger ui message
+
+2026-04-06: Add per-pattern notify setting for tab status
+changes
+
+2026-04-06: Clear tab status on terminal reset
+
+2026-04-06: Add configurable status priority sorting with
+popover UI and CRUD drag-to-reorder
+
+Extract hardcoded priority logic from iTermSessionTabStatus
+into StatusPrioritySettings singleton with user-configurable
+patterns stored in UserDefaults. Add drag-to-reorder and
+inline editing support to the CRUD framework. Replace the
+priority settings panel with a popover anchored to a new
+gear button in the Session Status toolbelt tool.
+
+2026-04-06: Add TabStatus menu tip image and help text for
+Session Status tool
+
+2026-04-06: Add Set Tab Status trigger and Session Status
+toolbelt tool
+
+New trigger type lets users set tab status (dot color, text
+color, status text) from matched output. New toolbelt tool
+displays session statuses in a table with keyboard
+shortcuts, sorted by priority. Includes arrangement
+persistence, SessionStatusController singleton,
+NotifyingDictionary enhancements, and supporting
+infrastructure.
+
+2026-04-06: Fix trigger color wells not prefilling with the
+trigger's actual colors
+
+The two-color-well parameter view was reading colors from
+the prototype trigger instance
+(trigger.textColor/backgroundColor) instead of parsing them
+from the row's actual parameter value. Added
+textColorInParam: and backgroundColorInParam: to extract
+colors from an arbitrary param, and refactored
+HighlightTrigger, iTermHighlightLineTrigger, and
+HighlightBrowserTrigger to support this.
+
+2026-04-06: Use byTruncatingTail in
+iTermSwiftyStringTextField labelWithString initializer
+
+2026-04-06: Set suite based on repo directory name and set
+IT2_APP and IT2_SUITE environment vars
+
+2026-04-06: Add it2 utility
+
+2026-04-06: Increase tab icon padding from 0 to 4pt
+
+Co-Authored-By: Claude Opus 4.6 (1M context)
+<noreply@anthropic.com>
+
+2026-04-06: Fix Tahoe tab icon vertical position to match
+counter text
+
+Center the icon in the cell then apply the same textShift
+(1pt) used for all labels to match the OS text rendering
+offset. This aligns the icon's vertical center with the
+counter label's vertical center.
+
+Co-Authored-By: Claude Opus 4.6 (1M context)
+<noreply@anthropic.com>
+
+2026-04-06: Remove arbitrary 999 cap on dock badge bell
+count
+
+Co-Authored-By: Claude Opus 4.6 (1M context)
+<noreply@anthropic.com>
+
+2026-04-06: Add unified dock badge controller for bell and
+tab status counts
+
+New iTermDockBadgeController singleton owns the dock tile
+badge label and tracks bell count and waiting-session GUIDs
+independently. Badge displays their sum; resetBellCount only
+clears the bell portion.  Migrate
+PseudoTerminal.incrementBadge and badge-clearing code to use
+it.  Integrate with tab status: sessions entering/leaving
+waiting state update the badge, and selecting a tab clears
+its sessions' contributions.
+
+Co-Authored-By: Claude Opus 4.6 (1M context)
+<noreply@anthropic.com>
+
+2026-04-06: Auto-clear tab status on shell prompt and
+session termination
+
+Clear tab status in screenPromptDidStartAtLine: (handles
+both FTCS and trigger-detected prompts) since a new prompt
+means the status-setting app is no longer running. Also
+clear in terminate before removeSession: so the tab can
+re-aggregate without the dying session.
+
+Co-Authored-By: Claude Opus 4.6 (1M context)
+<noreply@anthropic.com>
+
+2026-04-06: Add subtitle prefix and custom subtitle color
+for tab status
+
+Prefix the tab subtitle with the aggregated status text
+(e.g., "Working \u2013 project x"). Add
+psmTabStatusSubtitleColor to the PSM protocol so PTYTab can
+provide a custom subtitle color from the status-color field.
+Both Yosemite and Tahoe tab styles check for it.
+
+Co-Authored-By: Claude Opus 4.6 (1M context)
+<noreply@anthropic.com>
+
+2026-04-06: Add tab status dot icon rendering
+
+Generate 16x16 dot image with radial gradient (lighter
+center to full color edge). Prominent waiting dots get a
+12px contrasting ring (white on dark, black on light). Tab
+status dot takes priority over content-changed/dead/bell
+icons in updateIcon.
+
+Co-Authored-By: Claude Opus 4.6 (1M context)
+<noreply@anthropic.com>
+
+2026-04-06: Implement PTYTab split pane aggregation for tab
+status
+
+Add priority detection (idle < working < waiting) via
+case-insensitive prefix matching on status text.
+PTYTab.updateAggregatedTabStatus iterates sessions, picks
+highest-priority, and stores the result. Prominent flag is
+set when aggregated priority becomes waiting, cleared on tab
+selection.  Add tabDidChangeTabStatus: delegate method to
+force tab bar redraw.
+
+Co-Authored-By: Claude Opus 4.6 (1M context)
+<noreply@anthropic.com>
+
+2026-04-06: Wire PTYSession to iTermSessionTabStatus
+
+Add _tabStatus ivar (lazy-created iTermSessionTabStatus) to
+PTYSession.  Implement screenSetTabStatus: to apply updates
+and notify the delegate.  Add clearTabStatus to reset all
+fields. Add sessionTabStatusDidChange: to PTYSessionDelegate
+protocol with a stub in PTYTab.
+
+Co-Authored-By: Claude Opus 4.6 (1M context)
+<noreply@anthropic.com>
+
+2026-04-06: Rewrite VT100TabStatusUpdate as Swift class and
+add iTermSessionTabStatus
+
+Replace the VT100TabStatusUpdate C struct with a Swift @objc
+class to avoid bridging issues with NSString in structs. Add
+iTermSessionTabStatus class to hold accumulated per-session
+tab status state with apply/clear/copy methods. The
+VT100TabStatusUpdateFieldPresence enum remains in ObjC.
+
+Co-Authored-By: Claude Opus 4.6 (1M context)
+<noreply@anthropic.com>
+
+2026-04-06: Add support for OSC 21337
+
 2026-04-06: Add import/export of triggers as .it2triggers
 files
 
