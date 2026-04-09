@@ -1,3 +1,169 @@
+2026-04-08:  feat(tools): add interactive reload wrapper for
+dev loop (#637)
+
+Add tools/run.sh with r=rebuild+relaunch, q=quit keybindings
+and stty raw mode for responsive terminal input. Add make
+watch target to invoke the script with proper build
+directory variable substitution. Includes colour output and
+recovery note for stty sane on kill -9.  2026-04-08: Add
+null comparisons and optional-path syntax to expression
+parser
+
+Use a whitespace-sensitive lexer to disambiguate postfix ?
+(optional marker, no space: name?) from infix ? (ternary
+operator, space: name ? a : b). This lets expressions like
+name? == null work without parentheses. NSNull is now falsy
+in ternary conditions, enabling null-coalescing patterns
+like name? != null ? name : "default".
+
+2026-04-08: Fix crash in fold search snippet extraction with
+DWC/image characters
+
+extractSnippet used grid X coordinates as string indices
+into ScreenCharArray.stringValue, but stringValue skips
+DWC_RIGHT, image, and PUA characters. When such characters
+preceded a match, the grid coordinate exceeded the string
+length, producing a negative range length that overflowed
+the unsigned NSRange guard in ObjC.
+
+Use iTermLocatedString to map grid coordinates to string
+indices.  Also fix the overflow-prone guard in
+snippetFromFoldResult.
+
+2026-04-08: Merge pull request #630 from
+kud/fix/pane-menu-dark-mode
+
+ fix(context-menu): apply window appearance to pane
+ hamburger menu
+2026-04-08: Write tab color to all appearance variants to
+survive light/dark switches
+
+When "use separate colors for light and dark mode" is
+enabled, write tab colors to the base key plus both (Light)
+and (Dark) suffixed keys. This ensures tab colors set via
+escape sequences, the View menu, or Edit Session persist
+across macOS appearance changes. The read-path fallback from
+the original PR handles legacy profiles that only have one
+variant.
+
+2026-04-08: Fix session tab color across appearance changes
+
+2026-04-08: Preserve font zoom level during Automatic
+Profile Switching (#634)
+
+When Automatic Profile Switching changes profiles, the font
+zoom level (set via Cmd+Plus/Cmd-Minus) was lost because
+setPreferencesFromAddressBookEntry: unconditionally resets
+the font to the profile's configured font.
+
+This computes the zoom delta before the switch and
+re-applies it after, with care to avoid double-applying when
+restoring divorced profiles from the stack (which already
+contain the zoomed font in their overrides).  Window
+adjustments are suppressed via _windowAdjustmentDisabled
+during font changes to prevent resizing.
+
+The base (unzoomed) font point size is tracked in a
+dedicated ivar rather than re-derived from _originalProfile,
+so the delta computation does not depend on profile
+dictionary state.
+
+Controlled by a new Advanced Setting: "Preserve font zoom
+level when Automatic Profile Switching changes profiles"
+(defaults to YES).
+
+Co-Authored-By: Danny Ricciotti <dan.ricciotti@gmail.com>
+
+2026-04-08: Unify sponsor logo display in About window
+
+Replace ad-hoc fixed-frame sponsor views with a unified
+horizontal row of rounded-border boxes built with
+frame-based layout. Each sponsor logo is displayed in a
+bordered box with appearance-adaptive background color.
+
+Based on PR #636 by denisfl, with fixes: - Use frame-based
+layout instead of auto layout to avoid conflicts with
+  the rest of the window's autoresizing-mask layout
+- Clean up XIB: remove old sponsor views and their outlet
+connections - Add "Whitebox" text label next to the small
+icon - Use it_dynamicColorForLightMode:darkMode: for box
+background - Fix mouseUp: hit-testing with proper coordinate
+conversion
+
+Closes #636
+
+Co-Authored-By: Denis <denisfl@users.noreply.github.com>
+
+2026-04-08: Render Nerd Font PUA glyphs in pane title bars
+
+Reuse the existing PSMApplyPUAFonts() infrastructure from
+the tab bar to substitute terminal fonts for Private Use
+Area code points in session title views. Font changes on the
+session trigger a title re-render.
+
+- PTYSession conforms to PSMPUAFontProvider, delegating to
+its font table - SessionTitleView builds an attributed
+string and applies PUA fonts - Mark fontForPUACodePoint: as
+nullable since nil is a valid response - Include explicit
+paragraph style to preserve truncation behavior
+
+Closes #631
+
+Co-Authored-By: Erwann Mest <m@kud.io>
+
+2026-04-08: Fix failing tests: underline span style
+comparisons and missing delegate method
+
+2026-04-08: Add advanced setting to gate contextual
+alternates (calt) ligature level
+
+Adds enableContextualAlternates (default YES) so users can
+revert to ligature level 1 if level 2 causes issues with
+their font. Follows up on PR #646 by @markrogersjr.
+
+2026-04-08: Merge pull request #646 from
+markrogersjr/calt-ligatures
+
+Enable contextual alternates (calt) for all ligature-capable
+fonts 2026-04-08:  fix(build): stop xcode version check
+script phase running on every build (#642)
+
+*  chore(build): update last-xcode-version and refine
+version check stamp
+
+- Downgrade Xcode version reference to 26.3 (was 26.4) -
+Update PBXShellScriptBuildPhase in project config: add
+xcodebuild as input, add stamp file as output, ensure
+successful version match touches .stamp - Removes
+alwaysOutOfDate; improves build incrementality
+
+Reasons: updates both the last-xcode-version file and
+project build script for more accurate detection and
+reproducibility.
+
+*  docs(readme): add instructions for handling local
+last-xcode-version changes
+
+Document how to suppress diffs for last-xcode-version when
+local Xcode version differs, via git update-index commands.
+Adds explicit guidance and undo instructions in the setup
+section. Improves onboarding for contributors using
+different Xcode releases.  2026-04-08: Enable contextual
+alternates (calt) for all ligature-capable fonts
+
+Many popular coding fontsMonaspace, Cascadia Code, Hasklig,
+and othersplace their coding ligatures in the calt
+(contextual alternates) OpenType feature rather than liga.
+Core Text ligature level 1 only activates liga/clig, so
+these fonts appear to have no ligature support even when
+"Use ligatures" is enabled.
+
+Bump the default ligature level from 1 to 2, which tells
+Core Text to enable all ligature-related features including
+calt. Iosevka was already special-cased to level 2 for this
+reason; this change applies the same level to every
+non-blacklisted font.
+
 2026-04-07: Use configurable priority settings for tab
 status aggregation and fix help text color format
 
@@ -488,6 +654,14 @@ Guard against nil _db so the flag stays unset until the DB
 is available. Also handle generation regression in the delta
 encoder by bumping forward to record.generation+1, covering
 any object whose counter wasn't restored.
+
+2026-03-25: Fix pane menu appearance to inherit window
+dark/light mode
+
+The titleBarMenu method now applies window appearance
+styling to the pane hamburger menu, matching the behaviour
+of the tab right-click context menu.  This ensures the
+minimal theme's dark appearance is properly respected.
 
 2026-03-25: Fix tmux -CC attach not showing alternate screen
 (e.g., vim) correctly
