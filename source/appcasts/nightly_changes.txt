@@ -1,3 +1,14 @@
+2026-04-09: Add uncaught exception handler for crashes
+outside AppKit event handling
+
+NSApplication's reportException: only catches exceptions
+thrown during run loop event processing. Exceptions on GCD
+queues go unlogged. This adds NSSetUncaughtExceptionHandler
+to capture those, and extracts a shared
+iTermLogExceptionForCrash helper used by both paths. Also
+fixes a pre-existing bug where reportException: caught
+NSError instead of NSException.
+
 2026-04-08:  feat(tools): add interactive reload wrapper for
 dev loop (#637)
 
