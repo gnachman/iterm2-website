@@ -1,3 +1,86 @@
+2026-04-10: Add Keeper Security as a password manager option
+
+Integrate Keeper Commander Service Mode (REST v2 queue API)
+as a new adapter-based password manager, alongside KeePassXC
+and Bitwarden.  Includes CLI adapter, integration tests, and
+host-side wiring.
+
+Co-Authored-By: Hitesh Borase <hborase@keepersecurity.com>
+
+2026-04-10: Implement DECDWL (ESC #6), DECDHL (ESC #3/#4),
+and DECSWL (ESC #5) for double-width and double-height line
+rendering.
+
+Data model ---------- Add iTermLineAttribute enum
+(SingleWidth, DoubleWidth, DoubleHeightTop,
+DoubleHeightBottom) to iTermMetadata and to
+iTermExternalAttribute.h.  In the live grid, lineAttribute
+is a field of iTermMetadata on each line. When flushing to
+LineBuffer, the grid stamps lineAttribute onto every
+character's iTermExternalAttribute so it participates
+correctly in reflow  when lines re-wrap at a new width, the
+attribute stays with each character rather than being tied
+to a line index. On read-back,
+iTermImmutableMetadataDeriveLineAttribute-
+FromExternalAttributes reconstitutes the line-level
+attribute from the uniform per-character values.
+
+Add a DWL_SPACER private character that occupies the extra
+cell after each real character on double-width lines,
+analogous to DWC_RIGHT for CJK. Spacers are stripped when
+entering LineBuffer and re-inserted on read-back.
+
+We do not attempt to reflow double-width characters at the
+end of a line. That's because double-width compounded by
+full-width (e.g., Emoji) means a character can occupy 4
+cells and it would complicate line buffer location <->
+coordinate conversions too much.
+
+VT100 parsing ------------- Parse ESC #3, #4, #5, #6 in
+VT100OtherParser as DECDHL, DECSWL, and DECDWL tokens. Route
+through VT100Terminal to a new terminalSetLineAttribute:
+delegate method.
+
+Grid and screen state ---------------------
+VT100ScreenMutableState sets the lineAttribute on the
+current cursor line. VT100Grid clamps cursor positions to
+even cells on double-width lines, scales cursor movement by
+2x, and fills odd cells with DWL_SPACER during erase
+operations.
+
+Legacy (Core Text) rendering -----------------------------
+iTermTextDrawingHelper applies CGContextScaleCTM(ctx, 2.0,
+1.0) for horizontal doubling, sets the text matrix vertical
+scale to 2x for double-height lines, clips to one row to
+prevent bleed, and adjusts baselines for top vs. bottom
+halves. Emoji on double-height lines use CTM scaling since
+color bitmap fonts ignore the text matrix.
+
+Metal rendering --------------- iTermCharacterSource gains
+drawHScale/drawVScale. The glyph subclass applies 2x
+horizontal CTM and 2x vertical text matrix for
+double-height, clips to one cell height, and adjusts frame
+bounding boxes. A second larger CGContext
+(metalContextDoubleWidth) accommodates scaled glyph
+overflow. iTermMetalPerFrameState threads lineAttribute
+through glyph key emission.
+
+Text extraction and selection -----------------------------
+iTermTextExtractor successor/predecessor navigation loops
+over DWL_SPACER sequences. The attribute provider callback
+now receives line metadata so SGR copy can emit ESC
+#3/#4/#5/#6 per line.  ScreenCharArray adds
+isDECDHLDuplicateOf: to detect bottom-half lines that
+duplicate the top half. SelectionExtractor gains a
+deduplicateDECDHL flag to skip redundant bottom halves
+during copy.
+
+Cursor and interaction ---------------------- PTYTextView
+snaps click coordinates off DWL_SPACER cells. Selection
+trimming and arrow-key movement treat DWL_SPACER like
+DWC_RIGHT. The Metal cursor reports doubleWidth for any
+character on a double-width line.
+
 2026-04-09: Add uncaught exception handler for crashes
 outside AppKit event handling
 
