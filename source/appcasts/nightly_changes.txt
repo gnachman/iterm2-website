@@ -1,3 +1,248 @@
+2026-04-11: Fix legacy hotkey window profiles defaulting to
+100% width/height. Issue 12650
+
+iTermPercentageFromProfile used iTermProfilePreferences to
+read KEY_WIDTH_PERCENTAGE and KEY_HEIGHT_PERCENTAGE, which
+returned the default of 100 for profiles predating the
+percentage feature. This caused both dimensions to be
+treated as 100% of screen size.
+
+Now iTermPercentageFromProfile takes the window type and,
+when the keys are absent from the profile, returns
+window-type-aware defaults: top/bottom span width (100) with
+cell-based height (-1), left/right span height (100) with
+cell-based width (-1).
+
+2026-04-11: Fix tmux window shrink when pre-tmux session is
+buried after attach. Issue 9480
+
+The previous fix protected fitWindowToTabs calls inside the
+beginTmuxOriginatedResize/endTmuxOriginatedResize bracket,
+but the session bury triggered by tmuxDidOpenInitialWindows
+happens after endTmuxOriginatedResize, so its
+tabViewDidChangeNumberOfTabViewItems call bypassed the lazy
+fitting logic.
+
+Always use lazyFitWindowToTabs in
+tabViewDidChangeNumberOfTabViewItems since it already falls
+back to fitWindowToTabs when no tmux tabs exist.
+
+2026-04-11: Fix NSTextInputClient to use consistent absolute
+coordinates and read from the screen buffer. Issue 12802.
+
+Voice Control queries attributedSubstringForProposedRange:
+to read text near the cursor between dictation chunks.
+Previously this only returned IME marked text and nil
+otherwise, so Voice Control couldn't see previously-typed
+text and omitted spaces between phrases.
+
+- attributedSubstringForProposedRange: reads from the
+terminal screen buffer
+  via iTermTextExtractor, extracting line-by-line with
+  padding to match the flat grid coordinate model (no
+  newline insertion)
+- markedRange returns absolute coordinates via
+nsrangeOfCursor instead of
+  cursor-relative cursorX-1, consistent with selectedRange
+- characterIndexForPoint: returns absolute coordinates with
+line clamping - firstRectForCharacterRange: uses the passed
+range instead of always using
+  the cursor position, with width clamped to the first line
+- New absCoordRangeForNSRange: helper (inverse of
+nsRangeForAbsCoordRange:)
+
+Co-Authored-By: Claude Opus 4.6 (1M context)
+<noreply@anthropic.com>
+
+2026-04-11: Migrate legacy dyanmic profiles that are left
+behind in user defaults. Issue 12806
+
+2026-04-11: Fix crash in iTermKeyCursorRenderer when key
+cursor images missing from bundle
+
+2026-04-11: Try to prevent crash in TmuxGatway with early
+dealloc
+
+2026-04-11: Work around macOS _NSSVGImageRep bug that drops
+<use> elements referencing IDs nested inside <g> wrappers in
+<defs>. Issue 12800
+
+2026-04-11: Fix theme not updating when changed via Python
+API (issue 12803)
+
+Observe kPreferenceKeyTabStyle via KVO on NSUserDefaults so
+that updateAppearance and kRefreshTerminalNotification fire
+regardless of how the preference is changed (Python API,
+defaults write, UI).  Remove the redundant onChange handler
+from AppearancePreferencesViewController.
+
+2026-04-11: Add Cancel button to "Open in iTerm2?" dialog.
+Issue 12805
+
+2026-04-11: Track foreground job ancestor chain for triggers
+and GlobalJobMonitor
+
+The foreground job was previously determined by the deepest
+child in the process tree's foreground process group. When
+Claude Code spawns caffeinate as a child, caffeinate became
+the reported foreground job, causing triggers filtered on
+"claude" to stop firing and ClaudeWatcher to lose track of
+the session.
+
+Add iTermProcessInfo.foregroundJobAncestorNames which walks
+parent pointers from the foreground process up to (but not
+including) the login shell, returning an ordered array of
+lowercased argv0 values. Both trigger evaluators and
+GlobalJobMonitor now match against the full ancestor chain
+instead of a single process title.
+
+Also escape newlines in the Inspector's variable display
+since the new foregroundJobAncestors variable is
+newline-separated.
+
+2026-04-11: Fix crash in password manager copy: method name
+collision with NSResponder
+
+copy: is a standard NSResponder action (Edit > Copy / C).
+The password manager's copy: expected an NSString but
+received the NSMenuItem sender when the user pressed C,
+crashing in +[NSPasteboard _convertStringToData:].
+
+Rename the internal method to copyPasswordToClipboard: and
+add a proper copy: responder that delegates to copyPassword:
+so C works correctly.
+
+2026-04-11: Fix crash in
+ComposerTextView.characterRangeOfCommand when suggestion
+text contains continuation backslashes
+
+The characterIndexesToDrop set accumulated absolute indices
+into textStorage.string, but temp was a substring starting
+at rangeExcludingSuggestion.location. When continuation
+indices fell in the suggestion-excluded zone, they exceeded
+temp.length, crashing in replaceCharacters(in:with:).
+
+Also fix the prefix comparison (> should be <) and use
+utf16.count to match layoutManager's UTF-16 coordinate
+space.
+
+2026-04-11: Fix crash in SavedIntervalTreeObject.from when
+folding a range containing an ITO at the sentinel column
+
+When an interval tree object sits at x == width (the
+sentinel column) on the last line of a fold range,
+absCoordRangeForWidth: normalizes it to (0, y+1), pushing
+the array index one past the end of the screenCharArrays.
+Add bounds checking to skip such objects instead of
+crashing.
+
+2026-04-11: Fix crash in font picker when opening the font
+list with certain IMEs
+
+2026-04-11: Fix crash in NSTextStorage
+ensureAttributesAreFixedInRange during input method
+activation when opening font picker
+
+Defer showPicker() to the next run loop iteration so the
+popup menu tracking fully unwinds before the font picker
+panel becomes key. This avoids reentrancy where the input
+method spins a nested run loop during key window activation
+and queries NSTextStorage before it is ready.
+
+2026-04-11: Guard against nil textview when creating a
+syntax highlighter to try to fix a crash. This probably
+won't do anything, though, since it should crash in the init
+when trying to retain it
+
+2026-04-11: Fix crash accessing keyCode on non-key NSEvent
+in ModernKeyMapper
+
+NSApp.currentEvent can be a non-key event (e.g., mouse
+event) when an input method inserts text via XPC. -[NSEvent
+keyCode] throws NSInternalInconsistencyException for non-key
+event types. Check the event type before accessing keyCode.
+
+2026-04-11: Fix crash in ProfilePreferencesViewController
+when nib is corrupted
+
+Antivirus software sometimes deletes parts of the app
+bundle, leaving IBOutlet view controller ivars nil. The
+NSArray literals in tabViewControllers, tabViewTuples, and
+tabViewControllerTuples would crash on nil elements. Replace
+with NSNull sentinels, filter them out, and warn the user
+about the corrupt installation.
+
+2026-04-11: Add it_ prefix to NSTimer category methods to
+avoid collisions with system methods
+
+2026-04-11: Fix crash in NSSplitView
+_presentDividerDragResult: during divider drag
+
+Pause tmux token execution while dragging a split view
+divider. Tmux layout changes arriving during the drag would
+mutate the split view's subviews while NSSplitView's modal
+tracking loop was still running, causing an
+array-index-out-of-bounds crash in
+_presentDividerDragResult:.
+
+2026-04-11: Fix crash in _NSDisplayLinkForwarder on macOS
+26; default CVDisplayLink to paused
+
+Nil out the CAMetalLayer delegate in deinit and
+viewWillMove(toWindow:) to prevent AppKit's
+_NSDisplayLinkForwarder from dereferencing a dangling
+unowned(unsafe) CALayer.delegate after the view is freed.
+Also restore the delegate and display link in
+viewDidMoveToWindow when re-entering a window.
+
+Default CVDisplayLink to paused since draws are driven by
+needsDisplay, not the display link. Guard CVDisplayLinkStart
+in createCVDisplayLink to respect the paused state. Remove
+debug NSLog from the display link callback.
+
+2026-04-11: Fix use-after-free crash in _NSFullScreenSpace
+dealloc on macOS 26
+
+On macOS 26, a race condition during window restoration
+causes a use-after-free in AppKit's
+_NSFullScreenSpace._unregisterUnusedCGSNotifications.
+
+During restoration, bareTerminalWithArrangement: calls
+delayedEnterFullscreen, which schedules enterFullScreenMode
+via performSelector:afterDelay:0. The system's restoration
+completion handler is then called with the window before
+that selector fires.  When the system receives the window
+and begins its own fullscreen restoration, and then iTerm2's
+deferred enterFullScreenMode also calls toggleFullScreen:,
+the conflicting operations corrupt _NSFullScreenSpace's
+internal state. During autorelease pool drain the space's
+dealloc sends a message to a freed object.
+
+Skip delayedEnterFullscreen during restoration so the
+system's own fullscreen restoration handles it without
+interference.
+
+2026-04-11: Tweak tip of the day title color
+
+2026-04-11: Fix use-after-free crash in tip card button
+press; convert tip code to ARC
+
+The window controller was kept alive only by button block
+captures since iTermTipController did not hold a strong
+reference. When animateOut's completion handler nilled the
+blocks, the window controller was freed, but pending button
+presses could still invoke blocks referencing the freed
+object.
+
+- iTermTipController now holds a strong reference to the
+window controller - animateOut nils button target/action in
+its completion handler - Button action blocks use weak self
+to break retain cycles - Converted all iTermTip*.m files
+from MRC to ARC - Moved tip .m files from iTerm2Shared to
+iTerm2SharedARC target
+
+2026-04-11: Add split pane icons to context menu. Issue 4875
+
 2026-04-10: Add Keeper Security as a password manager option
 
 Integrate Keeper Commander Service Mode (REST v2 queue API)
