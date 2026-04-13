@@ -1,5 +1,230 @@
-2026-04-11: Fix legacy hotkey window profiles defaulting to
-100% width/height. Issue 12650
+2026-04-12: Fix mypy type error in async_move_to_new_tab
+args dict
+
+2026-04-12: Update assert guidance in CLAUDE.md
+
+2026-04-12: Set IT2_SUITE and use it in Python API for
+multiple concurrent instances
+
+2026-04-12: Update docs to include async_move_session
+
+2026-04-12: Bump python API version
+
+2026-04-12: Add Python API to move sessions to new tabs or
+windows
+
+Add Session.async_move_to_new_tab(window, tab_index) and
+Session.async_move_to_new_window() to the Python API, backed
+by new built-in functions move_session_to_new_tab and
+move_session_to_new_window.
+
+Refactor MovePaneController: extract shared session-moving
+logic into MovePaneController+API.swift, deduplicating the
+existing ObjC methods which now delegate to the Swift
+implementation.
+
+Bump API protocol version to 1.13.
+
+2026-04-12: Add nil checks in urlForQuickLookWithURLAction
+to prevent fileURLWithPath: crashes
+
+2026-04-12: Add defensive nil checks and bounds guards to
+prevent crashes
+
+Fix nil dereferences in ChatViewController
+(iTermController.sharedInstance() optionality),
+iTermBadgeLabel (nil font/color in dictionary literal), and
+out-of-bounds access in iTermToolActions and zero-length
+capacity in iTermTextExtractor.
+
+2026-04-12: Add bounds checks in ReflowableCoordinate init
+and lineHasSoftEol to prevent out-of-bounds crashes
+
+2026-04-12: Add Option key support to open splits in a new
+window from Profiles panel
+
+When holding the Option key while clicking the Split
+Horizontally or Split Vertically buttons in the Profiles
+window, the selected profiles open as splits in a new window
+instead of the current one. An SF Symbol icon appears on the
+split buttons when Option is held.
+
+Based on PR #118 by JohnSpeno.
+
+Co-Authored-By: JohnSpeno
+<47321+JohnSpeno@users.noreply.github.com>
+
+2026-04-12: Add global/session toggle to Notes toolbelt tool
+
+The Notes tool now has a segmented control to switch between
+global notes (the existing behavior) and per-session notes
+that sync with the session note view.
+
+2026-04-12: Add Session Note feature: a floating, draggable,
+resizable, collapsible multiline text note per session that
+persists across restarts.
+
+The note overlays the terminal content as an
+NSVisualEffectView-backed panel with a title bar,
+collapse/expand toggle, and resize handles on all edges and
+corners. Text and view state (frame, collapsed) are saved
+and restored via the session arrangement using the graph
+encoder.
+
+Menu item "Edit Session Note" (Cmd+Opt+D) in the View menu
+toggles visibility. The note's font tracks the session's
+terminal font.
+
+2026-04-12: Fix all compiler warnings and add nullability
+annotations to VT100Screen.h, SessionView.h, and related
+headers
+
+Wrap VT100Screen.h and SessionView.h in
+NS_ASSUME_NONNULL_BEGIN/END with correct nullable
+annotations for properties, return values, and parameters.
+Propagate matching annotations to VT100ScreenState.h and
+VT100ScreenMutableState.h. Fix several latent bugs: nil
+guard for markID in revealMarkFromURL:, nil-coalescing for
+delegate dictionary insertion, enum-enum bitwise cast in
+SessionView.m. Remove unused variable hScale, add missing
+haveDoubleWidthExtensionAt: declaration, complete protocol
+conformance in test helper mock, fix duplicate build file
+entries in ModernTests, and update Swift callers for the new
+nullability contracts.
+
+2026-04-12: Add progress bars to tabs (based on PR #645)
+
+Show OSC 9;4 progress indicators in the tab bar for
+background tabs.  Inline (in-session) progress bars are
+shown when the tab bar is not visible (single tab,
+fullscreen with hidden tab bar) or when split panes are
+present. Tab bar progress bars are clipped to the Tahoe pill
+shape with a transparent background so the tab color shows
+through. Progress bar state is preserved when sessions move
+between split panes.
+
+Co-Authored-By: Claas Lange
+<claaslange@users.noreply.github.com>
+
+2026-04-12: Fix crash in iTermMultiServerConnection
+pathForNumber: when Application Support directory is
+unavailable
+
+applicationSupportDirectory can return nil during early
+boot. This nil was passed to [NSURL fileURLWithPath:], which
+throws an exception.  Guard against nil appSupportPath so
+the homedir fallback is used instead, and add a nil check in
+pathIsSafe: to avoid strlen(NULL).
+
+2026-04-12: Fix crash in PTYTextView.fold(commandMark:) when
+command output range is empty
+
+rangeOfCommandAndOutputForMark:includeSucessorDivider: could
+return a range where end.y < start.y when the successor
+prompt starts on or near the same line as the command mark.
+This caused a Swift precondition failure when constructing a
+ClosedRange. Clamp end.y to at least start.y.
+
+2026-04-12: Fix crash in MultiCursorTextView.insertText when
+input method sends NSAttributedString
+
+insertText(_:) can receive either String or
+NSAttributedString from input methods (e.g. Japanese,
+Chinese IME). The marked-text branch was force-casting to
+String, which crashes when an NSAttributedString is passed.
+Extract the plain string safely before use.
+
+2026-04-12: Fix crash in ProfileModel load when bookmarks
+array contains corrupt non-dictionary entries
+
+2026-04-12: Fix crash in iTermEmitGlyphsAndSetAttributes
+with double-width powerline glyphs
+
+When ambiguous-width characters are double-width and native
+powerline glyphs are enabled, powerline extended symbols
+(U+E0B8-E0D4) get a DWC_RIGHT in the grid. The
+decomposed-path guard excluded DWL_SPACER but not DWC_RIGHT,
+so the DWC_RIGHT cell entered the decomposed path and hit an
+assertion on the attributed string's boxDrawing attribute.
+
+2026-04-12: Add diagnostics and harden search against
+LineBuffer cache inconsistency
+
+Replace bare assert() calls in
+convertPositions:expandedResultRanges:withWidth: with
+ITBetaAssert that logs diagnostic info and gracefully skips
+invalid positions instead of crashing. Add beta-only
+cross-checks between the simple scalar line count cache and
+the cumulative sum cache after mergeFrom: and in
+coordinateForPosition: to catch disagreements early.
+
+2026-04-12: Fix crash undoing close of a window with an
+active filter or instant replay
+
+Synthetic sessions (filter, instant replay, screenshot mode)
+are non-undoable, so they go through hardStop during
+terminate. But hardStop's call to
+removeSessionFromRestorableSessions: is a no-op because the
+restorable session is still on the push stack, not yet in
+_restorableSessions. The restorable session then gets
+committed with a non-revivable session, causing an assertion
+failure in revive when the user undoes.
+
+Fix by exiting synthetic sessions before creating the
+restorable session in both windowWillClose: and removeTab:.
+Also clear the find driver's filter text so it doesn't
+persist misleadingly through the terminate/revive cycle.
+Convert the assert in
+terminalWithArrangement:named:sessions:forceOpeningHotKeyWindow:
+to graceful handling as a safety net.
+
+2026-04-12: Fix crash setting NSWindowStyleMaskFullScreen
+during fullscreen transition on macOS 26
+
+During a fullscreen transition, an appearance change (e.g.,
+moving between spaces with different appearance settings)
+can trigger viewDidChangeEffectiveAppearance, which
+async-dispatches to refreshTerminal:, which calls
+safelySetStyleMask: with NSWindowStyleMaskFullScreen
+included. By the time the async block runs, AppKit may have
+already removed/added the fullscreen bit on the window, so
+our attempt to set it crashes with
+"NSWindowStyleMaskFullScreen set on a window outside of a
+full screen transition." Strip the fullscreen bit during
+transitions since AppKit manages it.
+
+2026-04-12: Fix wrong terminal size after exiting fullscreen
+with multiple tabs. Issue 12810
+
+On macOS 26, the tab bar is a titlebar accessory in normal
+windows.  After exiting Lion fullscreen, macOS doesn't
+recalculate the content view frame to account for the
+accessory height. Force a remove/re-add of titlebar
+accessories to trigger the layout recalculation.
+
+2026-04-12: Add advanced settings for pane title bar and
+divider customization (#647)
+
+When many panes share a single window, it can be hard to
+instantly see where one pane ends and the next begins,
+particularly for people with visual impairments. The new
+settings introduced here let users configure title bar
+colors and divider width to make pane boundaries more
+visually distinct.
+
+Add three new Advanced Settings in the Windows section:
+title bar background color, title bar text color, and
+divider width. These follow the same pattern as the existing
+splitPaneColor setting (HTML hex strings, empty = default).
+
+Note: The custom title bar background color also applies to
+per-pane status bar backgrounds, as both share the same
+decorative subview color path.
+
+Co-authored-by: Mark Schneider
+<mark.schneider@careporthealth.com> 2026-04-11: Fix legacy
+hotkey window profiles defaulting to 100% width/height.
+Issue 12650
 
 iTermPercentageFromProfile used iTermProfilePreferences to
 read KEY_WIDTH_PERCENTAGE and KEY_HEIGHT_PERCENTAGE, which
