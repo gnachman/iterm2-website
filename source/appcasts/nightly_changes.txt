@@ -1,3 +1,165 @@
+2026-04-21: Clean up project root
+
+2026-04-21: Use current directory as suite for run target of
+Makefile
+
+2026-04-21: Add example for Session.async_load_url
+
+The docstring referenced a browser_function_example label
+that had no corresponding docs page. Add the page (with a
+downloadable .its), link it from the examples index, update
+the docstring ref, and include a standalone test script that
+opens a browser tab and loads a URL.
+
+Co-Authored-By: Claude Opus 4.7 (1M context)
+<noreply@anthropic.com>
+
+2026-04-21: Extend state restoration DB integrity check
+timeout after unclean shutdown. Issue 12813
+
+Track clean shutdown via a NoSyncLastShutdownWasClean user
+default that is latched-and-cleared on first access and set
+to YES only on normal termination.  When the previous
+shutdown was unclean the SQLite integrity check gets a 120s
+budget instead of 10s, so users don't get the "taking a long
+time" prompt on every post-crash launch while still catching
+genuinely stuck checks.
+
+2026-04-21: Ask claude to update release notes
+
+2026-04-21: Add release notes
+
+2026-04-21: Fix session title popup width calculation in
+Edit Session panel. Issue 12807
+
+2026-04-21: Fix Save Current Window to File with Contents
+dropping contents
+
+The single-window branch called -[PseudoTerminal
+arrangement], which is a convenience that hard-codes
+includingContents:NO. The resulting file could not restore
+scrollback or any other content-bearing state. Only the
+all-windows branch passed includingContents correctly.
+Broken since the feature was introduced in 423f48bb1 (Sep
+2024).
+
+2026-04-21: Fix tmux window shrink on first attach when
+pre-tmux session is buried. Issue 9480
+
+tabRemoveTab called fitWindowToTabs unconditionally, which
+shrank the window by a sub-cell amount (6px wide, 1px tall)
+when PTYSession bury removed the pre-tmux tab after
+tmuxDidOpenInitialWindows. The previous fix (d51db93fc)
+protected the tabViewDidChangeNumberOfTabViewItems call that
+fires during removeTabViewItem:, but the direct
+fitWindowToTabs call afterwards in tabRemoveTab bypassed the
+lazy-fit protection.
+
+Use lazyFitWindowToTabs instead; it falls back to
+fitWindowToTabs when no tmux tabs remain.
+
+2026-04-21: Gate arbitrary command execution when opening
+untrusted .iterm2arrangement files
+
+Arrangements can embed full profiles with Custom Command,
+triggers, Initial Text, Program dicts, and smart-selection
+actions  any of which execute code when the arrangement is
+restored. Opening one via LaunchServices (double-click,
+`open`, sandboxed dispatch) therefore collapses "open
+document" into "run attacker-controlled code," which is the
+root of the ACE, Gatekeeper-bypass, and sandbox-escape
+vectors reported in issue 12815.
+
+The new iTermArrangementTrustGate checks for
+com.apple.quarantine on the file before
+importWindowArrangementAtPath: proceeds. When set, it
+summarizes the embedded risk factors (profiles, custom
+commands, SSH targets, triggered actions, etc.) and requires
+explicit confirmation.  On approval the xattr is cleared so
+subsequent opens go straight through, matching the
+Gatekeeper model. User-saved arrangements loaded by name are
+unaffected.
+
+Also exposes arrangement/program key constants in a new
+iTermArrangementKeys.h so callers outside PTYTab.m and
+PTYSession.m can read arrangement plists without
+string-literal duplication.
+
+2026-04-21: Use suite name for
+.config/suite-name/AppSupport->~/Library/Application-Support/suite-name
+link
+
+2026-04-21: Add terminfo override for Se capability (#651)
+
+The Se capability is supposed to "reset the cursor style to
+the terminal power-on default". Currently, iTerm2 uses the
+default "Se=\E[2 q" entry inherited from macOS's
+xterm-256color terminfo for this.
+
+However, iTerm2 also supports "\E[0 q" which resets the
+cursor style to the user-configured profile default. Using
+this command for the Se capability would more accurately fit
+the capability's definition. To achieve this, add a new
+override to the xterm-terminfo-additions file.
+
+There's already precedent for doing this, for example
+Alacritty's terminfo already has "Se=\E[0 q".
+
+The reason this change is relevant now is that Neovim
+recently changed their codebase to run the Se command at
+exit to restore user cursor settings. Because iTerm2
+currently uses "\E[2 q", it restores the block cursor upon
+exit even when my profile's default cursor is the bar shape.
+
+Co-authored-by: Sten Laane <slaane@twilio.com> 2026-04-21:
+Remove orphaned quotes from process names containing
+shell-special characters (#644)
+
+* fix(itermlsof): prevent orphaned quotes in jobs tree when
+column clipping occurs
+
+Add displayCommandForProcess to return unescaped command for
+display purposes, separate from escaped versions used for
+shell copy-paste. This prevents shell escape characters
+(like quotes around package names with @) from appearing as
+orphaned characters when text is clipped in the jobs outline
+view column.
+
+- Extract rawCommandLineArgumentsForProcess private helper -
+Add displayCommandForProcess returning unescaped argv joined
+by spaces - Refactor commandLineArgumentsForProcess to use
+helper + escaping - Update iTermJobProxy.fullName to use
+displayCommandForProcess (no shell quoting) - Update
+copyJobName to call commandForProcess directly for
+shell-safe copy-paste
+
+*  feat(process): add displayCommandLineArguments API
+
+Introduce a displayCommandLineArguments method to
+ProcessDataSource and implementations, separating visible
+command-line queries from raw ones. Updates related method
+signatures and integrates new Objective-C bridging in
+iTermLSOF. Used in iTermProcessInfo for command line
+construction.
+
+*  refactor(process-info): remove dead
+displayCommandLineArguments method
+
+Reverts iTermProcessInfo.swift:221 from
+displayCommandLineArguments back to commandLineArguments,
+since the iTermProcessInfo.commandLine property feeds APS
+rules, session variables, and title display. The
+display-form change is now scoped to
+iTermJobTreeViewController.copyJobName only.
+
+Removes the now-dead displayCommandLineArguments method
+from: - ProcessDataSource protocol - iTermLSOF class method
+and instance method - iTermLSOF header declaration -
+SSHProcessInfoProvider conformance
+
+Also adds a clarifying comment in
+iTermJobTreeViewController.copyJobName explaining why the
+escaped (shell-quotable) form is used for pasteboard.
 2026-04-20: Avoid including state in saved arrangement that
 is not needed
 
