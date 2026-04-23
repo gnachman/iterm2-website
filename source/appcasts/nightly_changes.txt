@@ -1,3 +1,72 @@
+2026-04-22: Add common Unicode range presets to Special
+Exceptions (#653)
+
+Adds an "Add Preset" button to the Special Exceptions
+settings that inserts entries for common Unicode blocks
+(Arabic, Cyrillic, Greek, Han (CJK Unified Ideographs),
+Hangul Syllables, Hiragana/Katakana, Private Use Area).  The
+user still picks the font.
+
+Co-authored-by: Visio Vanitas <visiovanitas@atdove.dev>
+
+2026-04-22: Gate yen-to-backslash substitution on the  key
+being pressed. Issue 12828
+
+The unconditional \ rewrite in -insertText:replacementRange:
+(from commit 106532e3) was also catching Y on
+US/British/German layouts and  inserted from the Character
+Viewer, turning both into backslashes.
+
+Move to a gated substitution that only fires when the
+triggering event is a key-down whose
+charactersIgnoringModifiers is   i.e.  the user's raw key
+was a  key (JIS, or any layout remapped to emit ). IMEs that
+re-interpret the  key (e.g. Katakana (Google) mapping it to
+, per issue 6699) still work because the commit text doesn't
+contain .
+
+Also restore +  ESC+\ / Meta+\ on JIS keyboards (cases 2 and
+4 from issue 4778) in -dataWhenOptionPressed. That path
+bypasses insertText: and was silently regressed in 2018 when
+the event- time eventByChangingYenToBackslash was removed
+without a compensating fix in the key mapper.
+
+A long comment in iTermKeyboardHandler explains the history,
+lists the nine cases we care about, and diagrams the two
+code paths that each substitution site covers.
+
+2026-04-22: Fix positioning of Delete sends ^H in profiles
+keys settings
+
+2026-04-22: Do one git status scan instead of two in the git
+status bar poller
+
+repoIsDirty and getDeletions:untracked: each called
+git_status_list_new, which walks the full workdir. Merge
+them into a single scan. Also drop
+GIT_STATUS_OPT_RENAMES_HEAD_TO_INDEX: it only affects
+INDEX_* bits and the loop inspects only WT_DELETED/WT_NEW,
+so it was pure overhead.
+
+Issue 7843.
+
+2026-04-22: Broadcast ssh-end title restore choice across
+sessions. Issue 12822
+
+When the user picks Always or Never in the "restore
+tab/window title when an ssh session ends" nag, post a
+notification so other sessions showing the same offer
+dismiss it  and if Always was chosen, restore their titles
+too. Also rename the one-shot button from "Yes" to "Only
+This Time".
+
+2026-04-22: Ignore .claude
+
+2026-04-22: Update iTermCharacterSets template - there was
+hand-edited code in the generated file
+
+2026-04-22: Organize source code into directories.
+
 2026-04-21: Clean up project root
 
 2026-04-21: Use current directory as suite for run target of
