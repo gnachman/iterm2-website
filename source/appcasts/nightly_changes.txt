@@ -1,3 +1,100 @@
+2026-04-23: Rename pushArrow/pullArrow to ahead/behind for
+clarity
+
+The iTermGitState properties named pushArrow/pullArrow
+stored the counts of commits you'd need to push/pull  which
+is a roundabout way of saying ahead/behind. git itself uses
+ahead/behind (see `git status -sb`), libgit2 uses
+git_graph_ahead_behind, and the term doesn't bake in an
+assumption about user intent (you might have commits ahead
+without wanting to push them).
+
+Rename the iTermGitState properties and getCountsFromRef:
+method parameters. Update the sole caller. Archive keys
+change too (XPC-only, not persisted). The user-facing scope
+variable name strings "user.gitPushCount" /
+"user.gitPullCount" are preserved  those are public API that
+users reference in badges and the Python API.
+
+2026-04-23: Fix git status bar component timing out and
+silently failing
+
+Three independent issues caused the git status bar to show
+empty in large repos like chromium:
+
+1. Ahead/behind walk was unbounded.
+getCountsFromRef:pull:push: used a
+   hand-rolled git_revwalk that pushed only the tip and
+   broke when it happened to encounter the merge base in
+   topological order. With no git_revwalk_hide call, it
+   could traverse hundreds of thousands of unrelated
+   ancestors first. Replaced with git_graph_ahead_behind,
+   the libgit2 API sized for this exact job. Also freed an
+   upstream_ref leak.
+
+2. pidinfo's wedge watchdog was hardcoded to 10s (release) /
+30s (debug)
+   for every call, including git state requests. Once the
+   status scan started taking longer than that, the wedge
+   path delivered (nil, YES) to the client before the
+   subprocess could finish, and the valid reply that arrived
+   later was dropped. Parameterized the watchdog: git
+   requests now pass gitTimeout + 5s so the subprocess can
+   actually run to completion under its own SIGKILL
+   watchdog.
+
+3. The UI showed nothing when polls genuinely timed out.
+Threaded a
+   timedOut flag through the XPC reply, the gateway, the
+   poll worker, and iTermGitPoller (separate from
+   state-is-nil, which also covers "no git repo here").
+   iTermStatusBarGitComponent now shows " timed out" when
+   we've never successfully fetched for the current
+   directory and the last poll timed out. Clicking offers to
+   double the timeout (via new DEFINE_SETTABLE_FLOAT on
+   gitTimeout) and immediately retries. Per-directory flags
+   reset on cd so a fast-then-slow sequence surfaces the
+   error correctly, and in-flight results for stale paths
+   are discarded.
+
+2026-04-23: Replace fragile window-occlusion check with
+NSApp/key-window check for posting user notifications. Issue
+12830
+
+The old occlusion-based gate in -shouldPostUserNotification
+relied on NSWindowOcclusionStateVisible and an
+iTerm-windows-only occlusion fraction, which missed the case
+of another app fully covering iTerm2 and so dropped
+bell/notification events. Now notify whenever the app is
+inactive, the view has no window, or the window isn't
+key/main.  Removes terminalIsObscured: and
+notificationOcclusionThreshold.
+
+2026-04-23: Tighten restriction on auto layout
+
+2026-04-23: Follow-up tweaks to #652
+
+- Tighten search-field animation timer tolerance from 50% to
+~10%
+  of the interval (1/600s) so frame spacing stays smooth.
+- Add tolerance to the chat search and autocomplete poll
+timers.  - Cancel pending performSelector calls in
+iTermTipController dealloc.
+
+2026-04-23: Add tolerance to short-interval timers (#652)
+
+Let the OS coalesce wakeups on: - Four search-field
+animation timers (1/60s, tolerance 1/120s) - The tail-find
+poll timer (0.01s, tolerance 0.005s) - The hostname refresh
+timer (60s, tolerance 6s)
+
+Co-authored-by: Sylwester <syso@m5pro-2.local>
+
+2026-04-23: Add folder rotation for profile background
+images (#633)
+
+Co-Authored-By: Josh050608 <sbzzx050608@gmail.com>
+
 2026-04-22: Add common Unicode range presets to Special
 Exceptions (#653)
 
