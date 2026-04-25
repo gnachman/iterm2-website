@@ -1,3 +1,218 @@
+2026-04-24: Fix MovePaneController warnings from Python
+move-session API
+
+- Call tabs() as a method, not a property reference - Import
+iTerm2SharedARC-Swift.h so ObjC sees the new
+-moveSession:toNewTabIn:atIndex: - Cast discarded return
+values to (void) for warn_unused_result
+
+2026-04-24: Invalidate toolbelt splitter display after
+manual frame resizing
+
+forceSplitterSubviewsToRespectSizeConstraints mutates
+wrapper frames directly, which leaves NSSplitView's cached
+divider positions stale and can paint a ghost divider inside
+a tool.
+
+2026-04-24: iTermMTKView: schedule redraw timer only when
+attached to a window
+
+Move the initial it_schedule() out of init.
+viewDidMoveToWindow already creates the timer when the view
+attaches to a window and invalidates it when it detaches, so
+scheduling at init meant a view that is never attached would
+keep waking up forever.
+
+2026-04-24: Make iTermPowerManager.isLowPowerModeEnabled
+atomic
+
+NSProcessInfoPowerStateDidChangeNotification is posted on an
+arbitrary thread, and readers (PTYSession,
+iTermUpdateCadenceController, the sparklines component) can
+be off-main. A plain BOOL ivar has no formal atomicity
+guarantee, so promote it to atomic_bool.
+
+Co-authored-by: Sylwester <de.retrospektive@gmail.com>
+
+2026-04-24: Fix resource leaks and improve energy efficiency
+on Apple Silicon (#649)
+
+* Fix memory leaks and resource bugs
+
+- Fix mach port leak: mach_host_self() returns a send right
+that must be
+  deallocated with mach_port_deallocate(). The CPU and
+  memory utilization monitors called it every second without
+  releasing, leaking mach ports continuously for the
+  lifetime of the process.
+
+- Fix KVO observer leak in iTermSlider: observers were added
+in
+  awakeFromNib for "doubleValue" and "enabled" keyPaths but
+  never removed (no dealloc existed). Added dealloc to
+  properly unregister.
+
+- Fix retain cycle in iTermTitlebarAccessoryNanny: the
+reviewProbation()
+  timer captured self strongly in a recursive retry pattern,
+  preventing deallocation. Changed to [weak self].
+
+- Fix misleading DLog in iTermGitPoller: logged "Enabled set
+to true"
+  when the poller was actually being disabled.
+
+* Reduce power consumption and improve energy efficiency
+
+- Increase GCD timer leeway from 0.5ms to 10% of the timer
+period in
+  iTermUpdateCadenceController. The previous 0.5ms leeway
+  prevented macOS from coalescing timer wakes with other
+  work, causing excessive CPU wake-ups on battery.
+
+- Add NSTimer tolerance (0.2s) to CPU, memory, network
+utilization
+  monitors and git poller. These 1-second polling timers had
+  no tolerance set, forcing precise wake-ups that couldn't
+  be coalesced.
+
+- Reduce CommandInfoViewController running time timer from
+60 FPS
+  (0.017s) to 1 FPS. The timer only updates an HH:MM:SS text
+  label.
+
+- Stop iTermMTKView periodic redraw timer when the view has
+no window.
+  Previously the timer kept firing and checking visibility
+  each period even for detached views.
+
+- Add @autoreleasepool to Metal renderer per-frame block and
+per-row
+  data loop. Temporary objects created during frame setup
+  are now drained immediately rather than accumulating until
+  the next runloop drain.
+
+* Tune default frame rates for better energy efficiency
+
+- Increase metalRedrawPeriod from 0.5s to 1.0s. The GPU was
+being woken
+  every 500ms for idle terminals as a latency workaround.
+  1.0s halves idle GPU wakes while still keeping first-draw
+  latency reasonable.  This value remains user-configurable
+  in Advanced Settings.
+
+- Reduce lowPowerModeFrameRate from 30 to 20 FPS. 20 FPS is
+adequate
+  for terminal text in battery-saving mode and reduces GPU
+  work by 33%.
+
+- Reduce invalidateShadowTimesPerSecond from 15 to 10 FPS.
+This only
+  affects transparent windows (Mojave ghosting workaround)
+  and 10 FPS is sufficient to prevent visible artifacts.
+
+All values remain configurable via Advanced Settings.
+
+* Add tests for energy efficiency and resource leak fixes
+
+- iTermMachPortLeakTests: Verifies that the mach_host_self()
++
+  mach_port_deallocate() pattern does not leak mach ports
+  over 500 iterations. Validates the fix in
+  iTermCPUUtilization and iTermMemoryUtilization.
+
+- iTermCPUUtilizationTests: Verifies the CPU utilization
+publisher
+  continues to report values correctly after adding timer
+  tolerance.
+
+- iTermMTKViewEnergyTests: Verifies iTermMTKView can be
+created,
+  used, and deallocated without crashes. Validates the
+  periodic redraw timer lifecycle changes.
+
+* Reduce per-frame overhead in Metal renderer and cache
+power state
+
+- Move iTermPreciseTimerSaveLog calls for dropped frame
+stats from
+  every frame to every 10th frame, matching the existing
+  histogram logging frequency. Each call creates 2 NSString
+  objects via stringWithFormat and takes a @synchronized
+  lock - unnecessary overhead in the rendering hot path.
+
+- Cache isLowPowerModeEnabled on iTermPowerManager and
+update via
+  NSProcessInfoPowerStateDidChangeNotification instead of
+  querying NSProcessInfo on every cadence tick. The cadence
+  controller queries this per-frame to decide frame rate
+  throttling; the previous direct system call added
+  unnecessary overhead to the most frequent code path.
+
+* Fix browser notification observer leak and reduce
+allocations
+
+- Fix notification observer leak in iTermBrowserManager:
+  setupPermissionNotificationObserver() used the block-based
+  addObserver(forName:) API but never stored the returned
+  token.  The observer leaked in NotificationCenter for each
+  browser manager instance. Now stores the token and removes
+  it in deinit.
+
+- Fix static instance accumulation in
+iTermBrowserGeolocationHandler:
+  the static instances dictionary keyed by iTermBrowserUser
+  was never cleaned up. Added removeInstance(for:) and call
+  it from iTermBrowserManager.deinit to prevent unbounded
+  growth.
+
+- Cache static NSArray in iTermSmartCursorColor: the
+coordinate array
+  for neighbor lookups was re-allocated on every cursor
+  draw. Made it a dispatch_once static since the values are
+  constant.
+
+* Address second-round review feedback on #649
+
+- Drop iTermBrowserGeolocationHandler.removeInstance and its
+call
+  in iTermBrowserManager.deinit. The hardcoded .regular UUID
+  makes the cache global, so per-manager cleanup would yank
+  the handler out from under sibling managers.
+- Revert lowPowerModeFrameRate default 20 -> 30: 20 FPS
+makes typed
+  character echo feel laggy and the delta vs 30 wasn't
+  quantified.
+- Revert metalRedrawPeriod default 1.0 -> 0.5: the original
+value
+  is tuned to mask a first-frame-after-idle GPU stutter
+  that's hard to reproduce in testing.
+- Delete the invalidateShadowTimesPerSecond setting and the
+dead
+  maybeInvalidateWindowShadow code path: PTYTextView
+  early-returns on macOS 10.16+ and we ship for macOS 12, so
+  the code never ran.
+- iTermUpdateCadenceController: only apply 10% leeway when
+the
+  period is slower than 1/60s. At 60 FPS and above, keep the
+  original 0.5ms leeway so frames don't slip into the wrong
+  vsync slot.
+- Revert CommandInfoViewController interval 1.0s -> 0.017s:
+the
+  panel is rarely visible and the millisecond portion
+  matters.
+- Remove the per-frame @autoreleasepool in
+iTermMetalDriver.m.
+  The block body is trivial (timestamp + addValue + setup
+  call), so the pool is overhead. Keep the per-row pool
+  since that loop allocates iTermMetalRowData plus several
+  data buffers per iteration, and reformat its braces to
+  match surrounding style.
+
+---------
+
+Co-authored-by: DatanoiseTV <syso@m5pro.local>
+Co-authored-by: DatanoiseTV <syso@m5pro-2.local>
+Co-authored-by: George Nachman <gnachman@gmail.com>
 2026-04-23: Rename pushArrow/pullArrow to ahead/behind for
 clarity
 
