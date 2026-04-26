@@ -1,3 +1,96 @@
+2026-04-25: Add dual-mode SGR colors so scrollback survives
+appearance toggles. Issue 12832
+
+CSI 38:12:Rl:Gl:Bl:Rd:Gd:Bd m and 38:13:Nl:Nd m (and 48:*
+variants) let programs emit two color variants  one for
+light backgrounds and one for dark  so scrollback stays
+readable when the user toggles macOS appearance. Variant
+selection is driven by the resolved background brightness,
+not raw system appearance, so dark profiles on light systems
+still pick the right variant.
+
+Implementation: - Parser accepts the new modes in colon-form
+only (semicolon form is
+  rejected to avoid spilling values into the SGR stream on
+  terminals that don't grok the override).
+- Cells use the previously-unused ColorModeInvalid slot,
+repurposed as
+  ColorModeExternal, to flag "consult iTermExternalAttribute
+  for the light/dark pair." Existing scrollback continuation
+  chars persist the raw mode value so old data round-trips.
+- iTermExternalAttribute carries optional dual-mode fg/bg
+with full
+  TLV and dictionary serialization. Append-at-end with tail
+  elision keeps blobs forward-compatible with older builds
+  and adds zero bytes for cells without dual mode.
+- Renderer (Metal + legacy text drawing) and the SGR
+re-emitter resolve
+  via the EA's stored variant, accounting for SGR 7
+  reverse-video swap so reversed dual-mode cells round-trip
+  correctly.
+
+Tests cover parser modes, EA TLV/dict round-trip, tail
+elision, backward-compat decode of pre-dual-mode blobs, the
+protobuf API path for indexed dual mode and missing-EA
+fallback, and the SGR chained fallback "last wins" contract.
+
+2026-04-25: Ensure colors are in an RGB colorspace before
+getting their component values
+
+2026-04-25: Dispatch user-defaults observers async to main
+to avoid re-entrancy
+
+CFPreferences delivers buffered KVO notifications inline on
+whatever thread reads a default. Synchronous observer blocks
+could (a) run on that arbitrary thread and (b) re-enter
+arbitrary code during a pref read. The latter caused a crash
+where a screen mutation side effect read a pref, the
+observer chain reached -[NSApp setAppearance:], and the
+appearance change tried to join screen threads while the
+side effect was still running.
+
+iTermUserDefaultsObserver and NSUserDefaults+iTerm now
+dispatch registered blocks async to the main queue. Both
+also synchronize their shared block storage since KVO can
+fire off-main while a registration runs on main.
+
+iTermKeyMappings.setGlobalKeyMap: had a post-write assert
+that depended on the observer running synchronously to
+update the gGlobalKeyMapping cache; it now updates the cache
+directly. removeAllGlobalKeyMappings goes through
+setGlobalKeyMap: for consistency.
+
+VT100Screen.setColorsFromDictionary: and setColor:forKey:
+switched to performBlockWithJoinedThreadsReentrantSafe: to
+defend against AppKit spontaneously firing
+viewDidChangeEffectiveAppearance during a side effect (see
+the comment in -[VT100ScreenMutableState mutateColorMap:]).
+
+2026-04-25: Bump SwiftyMarkdown submodule and add markdown
+rendering test fixtures
+
+Submodule pointer picks up upstream's "Add support for
+tables" (5b34e2e) plus two fork-local fixes: - Render --- as
+a thematic break when preceded by a blank line.  - Render
+unordered lists with a tab post-space so list rendering
+  matches the existing tests.
+
+Also adds two markdown fixtures under tests/ for manual
+rendering checks (thematic breaks across multi-section docs,
+YAML front matter coexisting with later thematic breaks).
+
+2026-04-25: Make PSMTabBarControl.delegate weak instead of
+assign
+
+Eliminates a use-after-free where an
+iTermAdvancedSettingsDidChange notification reaching
+iTermTabBarControlView during window teardown could call
+into a freed PSMTabBarControlDelegate via
+PSMMinimalTabStyle's tabBarColor/colorByDimmingColor: path.
+Removes the now-unnecessary explicit delegate=nil
+assignments in PseudoTerminal and iTermRootTerminalView
+dealloc/close paths.
+
 2026-04-24: Fix MovePaneController warnings from Python
 move-session API
 
