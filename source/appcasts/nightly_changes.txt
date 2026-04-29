@@ -1,3 +1,45 @@
+2026-04-28: Tests: port workgroup tests, cover post-merge
+git client paths
+
+Updates ModernTests/{WorkgroupEntryTests,
+WorkgroupTestFixtures} to the post-merge toolbar item API
+(.navigation cluster + .reload standalone replacing the old
+.back/.forward/.settings/.reload quartet,
+WorkgroupNavigationToolbarItem and
+WorkgroupReloadToolbarItem replacing
+CCModeButtonToolbarItem). Adds 13 new iTermGitClientTests
+exercising populateDiffStatsOnState: (8 tests: clean,
+untracked, staged-add, deleted, modified line counts, mixed
+staged+workdir, multi-file aggregation, includeDiffStats=NO
+short-circuit) and getCountsFromRef:ahead:behind: (5 tests:
+in-sync, ahead-only, behind-only via aux clone, diverged,
+no-upstream-empty), covering the master and cc-integration
+sides of the merge.
+
+Co-Authored-By: Claude Opus 4.7 (1M context)
+<noreply@anthropic.com>
+
+2026-04-28: Claude Code integration
+
+Squash of the cc-integration branch since 683632cc1. Lands
+the Workgroups feature (config + runtime + settings UI +
+toolbar with mode-switcher / changed-file selector /
+git-status / navigation / reload / spacer items, peer-group
+activation via SessionView swap, nested non-peer hosts), the
+Claude Code integration that drives a workgroup with a
+code-review-mode peer (deferred-launch prompt overlay,
+swifty-templated command with shell-escaped
+codeReviewPrompt, configurable default prompt under Settings
+> General > AI > Prompts, reload re-presents the overlay),
+the Clippings right-gutter panel, the Session Status /
+set_status plumbing and cc-status binary, browser-mode
+Enter/Exit Workgroup triggers, the Progress Bar Changed
+event trigger, ITERM_WORKGROUP_ID threading, and surrounding
+polish.
+
+Co-Authored-By: Claude Opus 4.7 (1M context)
+<noreply@anthropic.com>
+
 2026-04-27: Add add-clipping to it2cli
 
 2026-04-27: Accept any file called bw as the bitwarden CLI
