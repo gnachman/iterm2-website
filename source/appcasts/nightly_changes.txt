@@ -1,3 +1,101 @@
+2026-04-29: Retune default code review prompt for higher
+signal
+
+Replaces the brief default with a categorized prompt
+(correctness, security, reliability, contract risk) that
+asks for file:line citations, calibrated findings, and a
+clean "nothing to fix" when appropriate. Skips style and
+lint-enforced nits.
+
+2026-04-29: Fix RTL Bidi tests by pumping runloop until
+cache catches up
+
+The bidi preference is read via [iTermPreferences
+bidiEnabled], a fast-path cache invalidated by an
+async-to-main-queue KVO observer.  Setting the pref
+synchronously in a test and then reading the cache on the
+same call stack saw the stale value, because the dispatched
+cache update hadn't run yet.
+
+This is technically a race in production too, but the only
+realistic caller pattern that hits it is exactly what the
+tests do. Settings UI writes are followed by separate
+runloop ticks before any read.
+
+The test fix pumps the main runloop after each setBool until
+the cached value catches up, with a 0.5s timeout for safety.
+
+Also restore the EA serialization tests to use
+iTermTLVEncoder directly via the bridging header import,
+replacing the duplicated manual TLV blob builder I had
+introduced as a workaround.
+
+2026-04-29: Construct legacy TLV blobs as raw bytes in tests
+
+The previous commit added iTermTLVCodec.h to the Swift
+bridging header to expose iTermTLVEncoder for the
+backward-compat tests. That triggered Swift's nullability
+auditing on the transitively-included third-party
+PSMTabBarControl headers, surfacing ~90 pre-existing
+missing-nullability warnings that the bridging header
+recompile pulled into the build.
+
+Drop the bridging header import and build the legacy TLV
+blob directly as Data via withUnsafeBytes. The TLV format is
+a sequence of raw host-endian field bytes, so writing them
+directly is straightforward.  The 12 EA serialization tests
+still pass.
+
+2026-04-29: Skip Job Started/Ended triggers with no jobName
+filter
+
+Without a jobName, the trigger would fire for every ancestry
+change.  That meant an Exit Workgroup trigger configured
+with an empty Job filter tore the workgroup down whenever
+any short-lived child (e.g. cc-status) left the
+foreground-job ancestry, even though the host process was
+still running.
+
+2026-04-29: Install cc-status hook via a stable symlink in
+iTerm2's dot dir
+
+The hook entries in ~/.claude/settings.json now reference a
+cc-status symlink in homeDirectoryDotDir (e.g.
+~/.config/iterm2 or ~/.iterm2), which iTerm2 refreshes at
+launch to point at the running app's bundle. Moving,
+renaming, or replacing iTerm2.app no longer breaks the hook.
+
+The launch-time symlink refresh is gated on the cached
+install flag  most users never install the cc-status hook
+and shouldn't pay for a dot-dir touch and symlink update on
+every launch. The flag's storage key was renamed with a
+NoSync prefix so it stops participating in
+iTermRemotePreferences sync; install state is per-machine.
+
+2026-04-29: Improve peer navigation
+
+2026-04-29: Fix various bugs with the code review mode
+
+2026-04-29: Render clipping detail as Markdown and add a
+Quick Look preview
+
+- Cell detail is now SwiftyMarkdown-rendered with the
+existing
+  postprocessor; height is computed from the rendered
+  attributed string and capped at 100 points.
+- Added an in-row magnifying-glass button (visible on hover
+or
+  selection) and a Space shortcut that toggle a
+  Markdown-rendered preview popover anchored to the button.
+  Escape or another Space dismisses the popover.
+- Cache parsed attributed strings in an NSCache so layout
+and
+  scrolling don't re-parse on every height query.
+
+2026-04-29: Also accept the bw symlink target (e.g. bw.js)
+in the password-manager CLI picker, since NSOpenPanel
+resolves symlinks before calling the delegate
+
 2026-04-28: Tests: port workgroup tests, cover post-merge
 git client paths
 
