@@ -1,3 +1,169 @@
+2026-05-01: Save multiple Code Review prompts with a
+CRUD-managed list
+
+Replaces the single Code Review prompt previously managed in
+Settings > General > AI > Prompts with a named collection.
+The overlay grows a Prompts pulldown for quick load + Save
+Current as New; a dedicated Manage Prompts window built on
+CRUD.swift handles add/rename/edit/reorder/delete. The
+legacy preference seeds a Default entry on first launch.
+
+2026-05-01: Add nullability annotations to PTYSession.h and
+PSMTabBar headers
+
+Wrap PTYSession.h, PSMTabBarControl.h, and PSMTabStyle.h in
+NS_ASSUME_NONNULL_BEGIN/END and mark genuinely-nullable
+members. Notable changes:
+
+- PTYSession.profile is nullable (unset between
+-initSynthetic: and the
+  first -setProfile:); add a -justProfile accessor that
+  returns @{} for Swift call sites doing read-only key
+  lookups.
+-
+PTYSession.{view,textview,delegate,realParentWindow,parentWindow,tty,
+  badgeLabel,backspaceData,hostnameToShell,environment,contentSubscribers,
+  processInfoProvider,effective{,Un}processedBackgroundColor,apsContext,
+  processedBackgroundColor,...} are nullable to match their
+  actual return-nil paths.
+- iTermRightGutterController guards on session.view as well
+as the
+  profile so a nil view no longer triggers a spurious layout
+  cascade via the optional-vs-non-optional CGFloat
+  comparison.
+- Workgroup peer spawn rejects the promise when the parent
+session has
+  no profile or no view, instead of silently sizing the peer
+  to .zero.
+- iTermRenderingComparer keeps the ?? .black fallback for
+  processedBackgroundColor; the renderer skips the fill on
+  nil and that would leave margins transparent in the
+  comparer's pixel diffs.
+- Update Swift call sites in PTYSession.swift,
+PTYSession+Browser.swift,
+  PseudoTerminal.swift, and
+  GetProfilePropertyBuiltInFunction.swift to use justProfile
+  for read-only profile lookups.
+- ModernTests: drop now-redundant force-unwraps of s.screen
+and
+  tempSession.guid (formerly IUOs, now strict non-optional)
+  and add nil-guards in TerminalRenderer for session.view /
+  session.textview.
+
+2026-05-01: Fix shell-arg truncation and POSIX/bash quoting
+bugs
+
+componentsInShellCommand was running every unquoted argv
+element through -stringByExpandingTildeInPath, which
+silently caps at PATH_MAX (1024). Long Code Review launches
+died with zsh "unmatched '" because the trailing
+prompt+flags got lopped off.  Now only the leading ~ or
+~user component is expanded; the rest of the argument is
+left intact.
+
+Also fix
+-escapeShellCharactersWithSingleQuotesIncludingNewlines:
+forBash:. The POSIX '...' path was emitting unparseable
+'a\'b' for embedded apostrophes and injecting stray
+backslashes before literal CR/LF. The bash $'...' path is
+reworked to use ANSI-C escapes (\n, \r, \x27) so control
+chars and apostrophes survive the round-trip.
+
+Normalize CR/CRLF to LF in the Code Review prompt wrapper so
+stray carriage returns from NSTextView or pasted content
+don't turn into line-continuations after backslash escaping.
+
+2026-05-01: Diff nav improvements
+
+2026-05-01: Show changed-file count in workgroup diff
+selectors All Files row
+
+2026-05-01: Add Exit Workgroup menu item to Shell >
+Workgroups
+
+The submenu now carries a static separator + Exit Workgroup
+item from the xib; dynamic workgroup entries are inserted
+above the separator, and the separator hides when no
+workgroups are configured. Exit Workgroup is enabled only
+when the current session belongs to a workgroup.
+
+2026-05-01: Add release note for Code Review overlay layout
+fix
+
+2026-05-01: Move Code Review prompt overlay ownership into
+SessionView
+
+The overlay's frame is derived from scrollview.frame, but
+its observers only fire when the SessionView itself resizes.
+Toolbar and title-strip changes resize the scrollview
+without changing the SessionView, so the overlay stayed at
+the old size and ended up tucked under the toolbar after a
+vertical split or peer swap.
+
+Hook updateCodeReviewPromptOverlayFrame into -[SessionView
+updateLayout] so any layout-affecting change re-syncs the
+overlay. While here, move overlay creation from PTYSession
+into a SessionView Swift extension and keep a weak property
+for it  outside callers no longer reach into
+sessionView.subviews to add or remove the prompt.
+
+2026-05-01: Add release note for announcement-overlap fix
+
+2026-05-01: Position announcement below the reserved title
+slot
+
+The announcement frame formula skipped titleHeight on the
+theory that hiding the title strip frees its space (issue
+6981). That predates the workgroup toolbar, whose layout
+always reserves the title slot  so once a SessionView shows
+both, the announcement landed inside the toolbar instead of
+above the title.
+
+Subtract both the toolbar and the title reserved heights,
+and stop toggling the title's hidden state when
+announcements appear.
+
+2026-05-01: Find non-visible workgroup peers in API/reveal
+callers; preserve maximize across peer swaps
+
+Replace -sessionWithGUID: (tabs only) with
+-anySessionWithGUID: (also reaches buried sessions and
+workgroup peers held by an in-tab session's peer port) at
+every call site that should accept non-visible peers:
+
+-
+iTermAPIHelper.sessionForAPIIdentifier:includeBuriedSessions:
+the
+  gatekeeper for every Python API session lookup. Workgroup
+  peers can fail to register with iTermBuriedSessions
+  (addBuriedSession early-returns when
+  restorableSessionForSession is nil), so without this they
+  hit "No such session" before the registered builtin's body
+  runs.
+- URL handlers ending in [session reveal]: revealMark,
+  revealAnnotation, revealLocation, GlobalSearch result
+  click.
+- Session-state builtins: set_status, add_clipping,
+  get_profile_property, focus.
+- AITerm chat lookups that gate buttons or call reveal() on
+  session existence.
+
+FocusBuiltInFunction now calls reveal() before takeFocus().
+takeFocus alone is a no-op for non-visible peers and buried
+sessions (their first responder target isn't in any window),
+so "focus" via the API was a lie for those cases.
+
+PTYTab swapSession:withBuriedSession: unmaximizes before the
+swap and re-maximizes after. Previously, swapping peers on a
+maximized tab mutated the off-tree stash splitter (idMap_
+holds non-visible peers' SessionViews disconnected from any
+view hierarchy), corrupting the saved layout and failing
+-unmaximize's "1 subview" invariant later  surfacing as an
+assertion crash during quit teardown when removeSession
+fired unmaximize. Re-maximizing after keeps the swap
+transparent: the user's maximized layout persists, with the
+new peer in the maximized slot.
+
 2026-04-30: Refresh toolbar on peer switch while pane is
 maximized
 
