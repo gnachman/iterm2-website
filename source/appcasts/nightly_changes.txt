@@ -1,3 +1,85 @@
+2026-05-02: Order announcements below the per-session
+toolbar in z-order
+
+Announcements were inserted with addSubviewBelowFindView,
+putting them at the top of the SessionView's z-stack. The
+slide-in/slide-out animation starts above the final
+position, so the announcement painted over the toolbar while
+moving.
+
+2026-05-02: Expose iterm2.appBundlePath and use it in the
+Claude Code workgroup template
+
+Replaces the build-time Bundle.main.path lookup and inline
+JSON in ClaudeCodeWorkgroupTemplate with runtime
+swifty-string interpolation of the new global, and moves the
+--settings JSON into a bundled code-review-settings.txt
+resource. Path interpolations are wrapped in single quotes
+so installs at paths with spaces still work.
+
+2026-05-02: Rename claude code peer to chat
+
+2026-05-02: Tell CLAUDE.md about NoSync
+
+2026-05-02: Plumb a workgroup-wide git base ref through the
+diff pipeline
+
+The git-base selector publishes its picks as the workgroup's
+currentGitBase, owned by the instance and mirrored into
+every peer port's leaderScope (as the `gitBase` swifty
+variable) and every sibling selector. A pick triggers: a
+fan-out to all selectors so siblings reflect the new value,
+a poller refresh against the new base, and a restart of
+every diff session (peer + non-peer) with commands
+re-resolved through resolvedCommand/resolvedPerFileCommand.
+The pidinfo XPC layer (PIDInfoGetGitState + iTermGitState +
+iTermSlowOperationGateway + iTermGitPollWorker +
+iTermGitPoller) now carries an optional gitBase string end
+to end; nil/HEAD keeps the legacy git-status pass, anything
+else hits the new populateFileStatusesAgainstBase: path that
+diffs base^{tree} against the working tree (with index
+applied) and routes every delta through workdirStatus so the
+picker shows one flat list when the comparison point isn't
+HEAD.
+
+2026-05-02: Grow git-base selector to fit live edit text
+
+Width tracks the longest dropdown entry plus the live editor
+contents (folded in on every keystroke via
+controlTextDidChange so the toolbar relays out as the user
+types past the widest persisted recent), with chrome budget
+bumped to give the caret room past the dropdown chevron.
+Also moves dropdown rebuilds from inside commit()  which
+crashed via a re-entrant removeAllItems  selection-change
+cascade  into a lazy comboBoxWillPopUp refresh, suppresses
+no-op delegate fires via lastCommittedBase, adds a
+displayBase entry point for sibling-selector mirroring
+without yanking a mid-typing user, and caps recents-entry
+length so a stray paste can't bloat defaults.
+
+2026-05-02: Silence two warnings from the Code Review
+overlay
+
+Move
+presentCodeReviewPromptOverlayWithDefaultPrompt:onStart:
+into a SessionView category so the main @implementation no
+longer triggers -Wincomplete-implementation, and capture the
+prompt view weakly in onStart instead of binding an unused
+weak local.
+
+2026-05-01: Fix some nonsense broken python twine BS
+
+2026-05-01: Add App.async_apply_layout Python API for atomic
+tab/pane layout changes
+
+Reshape one or more tabs in a single transaction: swap
+panes, change splitter orientation, restructure nested
+splits, move sessions across tabs and windows, close
+sessions/tabs/windows. Validation runs up front so malformed
+specs are rejected before any mutation. Includes Swift unit
+tests for parser/validator/resolver/transaction and 47
+Python integration tests against a live iTerm2 process.
+
 2026-05-01: Save multiple Code Review prompts with a
 CRUD-managed list
 
