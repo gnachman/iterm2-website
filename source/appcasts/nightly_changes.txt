@@ -1,3 +1,85 @@
+2026-05-04: Refresh stale session hostname variable on first
+OSC RemoteHost
+
+didFinishInitialization seeds
+iTermVariableKeySessionHostname from gethostname(), which
+can be a transient DHCP name (AT&T's gateway hands out bare
+"Mac" via option 12). The OSC RemoteHost handler only fired
+screenCurrentHostDidChange when the new mark differed from
+the interval tree's last-line host, so when the shell's
+later OSC matched what restoration had already parked in the
+tree, the main-thread hostname variable kept the stale
+init-time value forever.
+
+Track the last hostname pushed to the delegate on the
+mutation side and also fire when the new value differs from
+that. First OSC of a session always pushes once;
+steady-state repeats remain no-ops, so no extra pause
+mid-prompt.
+
+2026-05-04: Move OpenDirectory user-shell lookup off the
+main thread
+
+Diagnosed from a sample where 100% of main-thread time
+(3865/3865 samples) was blocked in +[iTermOpenDirectory
+userShell] opendirectoryd via a Run Command trigger firing
+on every cadence tick. The OD query is now hosted in the
+pidinfo XPC service (wrapped in performRiskyBlock so a
+wedged daemon is detected and recovered from instead of
+burning a thread in the main app), and the main-app entry
+point caches the result behind an iTermPromise.
+
+Layout: - iTermOpenDirectory.{h,m} declares only
++performBlockingLookup,
+  built into both the main app and pidinfo. Pidinfo links
+  OpenDirectory.framework and calls it from inside its
+  watchdog.
+- iTermOpenDirectory+MainApp.{h,m} adds the (MainApp)
+category
+  with +userShell and +prime, built into the main app only.
+  Each call kicks a fresh background lookup via the slow-op
+  gateway and waits up to 20ms for it; if it doesn't return
+  in time the cached value from the previous successful
+  query is returned.  First call (no cache yet) blocks until
+  the lookup settles.
+- iTermSlowOperationGateway gains
+fetchUserShellWithCompletion:,
+  which always invokes its completion exactly once on a
+  non-main queue (avoiding deadlock when a main-thread
+  caller is blocked in promise wait) with a 15s
+  defense-in-depth timeout for the case where an XPC
+  connection drops mid-call.
+- +prime is called from applicationWillFinishLaunching: with
+a
+  self-rescheduling catchError so the cache is populated
+  before any synchronous caller needs to block.
+
+The closure-vs-assignment race in the previous draft is
+gone: gCurrentLookup is never written from the gateway
+completion; inFlightLookupLocked rotates the promise
+synchronously when the old one has settled (hasValue covers
+both fulfill and reject).
+
+2026-05-04: Add parameter to Copy smart selection action
+
+Lets users specify an interpolated string to copy instead of
+the matched text. Empty parameter preserves the original
+behavior of copying the whole match. Also fixes a
+long-standing bug where picking the Copy action from the
+right-click context menu was a no-op because
+contextMenuActionCopy: only handled URLAction senders
+(cmd-click) and ignored NSMenuItem senders.
+
+2026-05-04: Restore SmartSelectionController delegate wiring
+
+The May 2025 smart selection UI revamp dropped the delegate
+outlet, so edits made via the smart selection editor stopped
+flushing the profile or posting kReloadAllProfiles, and
+running sessions kept stale rules until the settings panel
+was reopened. Re-wire the outlet and guard setGuid: against
+redundant reloads so live edits no longer lose the table
+selection.
+
 2026-05-02: Order announcements below the per-session
 toolbar in z-order
 
