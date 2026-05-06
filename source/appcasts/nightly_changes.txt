@@ -1,3 +1,223 @@
+2026-05-05: Add release notes guidelines
+
+2026-05-05: 3.7.0beta2
+
+2026-05-05: Propagate DB errors from DatabaseBackedArray
+mutations
+
+removeAll(where:) used try? on the per-element remove, which
+left elements unchanged on failure but still recorded the
+index as removed and never advanced past it  risking an
+infinite loop and a corrupt IndexSet on persistent DB
+errors. set(at:) had the same try? anti-pattern, leaving
+in-memory state ahead of the DB. Both now propagate errors;
+ChatListModel swallows and logs at the one UI call site.
+
+2026-05-05: Convert TwoTextFieldCell from auto layout to
+manual layout
+
+2026-05-05: Fix UAF risk in Core Text run enumeration
+fallback paths
+
+When CTRunGetGlyphsPtr or CTRunGetStringIndicesPtr return
+NULL, we allocate an NSMutableData and hand its bytes to the
+closure. The NSMutableData was a strong local with no
+further uses after the
+.mutableBytes read, so ARC was free to release it before the closure
+ran, leaving a dangling pointer. Mark the backing buffers
+NS_VALID_UNTIL_END_OF_SCOPE so they survive the closure
+call.
+
+2026-05-05: Fix paste-history score epoch inconsistency
+
+2026-05-05: Mark iTermBijection lookups nullable
+
+The header declared objectForLeft: and objectForRight:
+nonnull (under NS_ASSUME_NONNULL_BEGIN), but both return nil
+for missing keys. Without an Optional context Swift imported
+the methods as non-Optional, leaving the result variable
+holding nil under a type that claims it can't be.
+
+2026-05-05: Remove stray en-space append in git rich-stats
+path
+
+2026-05-05: Fix retain-cycle leaks in DLL-backed caches and
+LRU bump bug
+
+The doubly-linked list used by iTermCache and Swift
+LRUDictionary had both prev and next as strong references,
+leaking every cached entry once the owning cache was dropped
+(the parallel dictionary's release wasn't enough  adjacent
+nodes retained each other). Make the back-pointer weak in
+both implementations; the dict and forward chain still keep
+every node reachable.
+
+Also fix LRUEvictionPolicy.bump, which removed and
+re-appended a node but left nodesByKey pointing at the
+detached old node. A later re-insert or delete then
+corrupted list head/tail and changed which element was
+treated as LRU.
+
+Adds regression tests for both leaks and the bump bug.
+
+2026-05-05: Fix \r handling in TmuxGateway octal escape
+decoder
+
+A \r byte injected mid-octal-sequence was skipped via
+continue, but the loop counter still advanced, so only 2 of
+the 3 octal digits got read and the decoded byte was wrong.
+
+2026-05-05: Fix bitwise & typo in iTermSessionLauncher
+retain-cycle check
+
+Use logical && in maybeBreakRetainCycle. Also drop a dead
+macOS 11 availability check around loadDeferredURLIfNeeded
+(deployment target is macOS 12).
+
+2026-05-05: Fix bug in detecting old iTerm as default
+handler for a sheme
+
+2026-05-05: Fix mislabeled DLog in ChatCellView
+typing-stopped branch
+
+The else branch was logging "set typing=true in \(false)"
+copy-paste of the sibling log line. Correct it to report
+typing=false and interpolate the chatID.
+
+2026-05-05: Fix annotation cursor jumping to end while
+typing
+
+Reassigning NSTextView.string resets the selection to the
+end. The optimistic main-thread write in
+VT100Screen.setStringValueOfAnnotation:to: echoed back
+through annotationStringDidChange: and reassigned the text
+view's string after every keystroke, kicking the caret. Skip
+the reassignment when the value is unchanged.
+
+2026-05-05: Fix dangling-target crash in Undo after closing
+a split pane
+
+NSTextView with allowsUndo=YES registers
+_undoRedoTextOperation: actions on the responder chain's
+undo manager, which for these views was the window's.
+NSUndoManager retains its action targets unowned(unsafe), so
+when a split pane was closed the note, session note, or chat
+input text views inside it were deallocated while their
+action registrations stayed in the window's undo stack as
+dangling pointers. The next EditUndo (or Z) sent
+_undoRedoTextOperation: to freed memory and crashed in
+objc_msgSend.
+
+Same bug also hijacked the menu title: the window's undo
+manager reported canUndo=YES because of the stale
+registration, so iTermApplicationDelegate's
+responderForMenuItem returned the window and the item stayed
+labeled "Undo" / "Undo Typing" instead of falling through to
+"Undo Close Session".
+
+Each of the three text views now provides its own
+NSUndoManager (via undoManagerForTextView: on
+PTYNoteViewController, and an override of undoManager on
+SessionNoteTextView and ChatInputTextView). The undo stack's
+lifetime is now bound to the text view's, so a closed pane
+can't leave registrations behind.
+
+2026-05-05: Fix graph db recovery rowid leak
+
+The recovery path in trySaveEncoder aliased the failed
+save's tree into a fresh recovery encoder and then called
+eraseRowIDs in place, mutating record instances that other
+code (notably the previous-revision tree, via the
+unchanged-generation alias branch in iTermGraphDeltaEncoder)
+still held. Combined with iTermOrderedDictionary
+byMapping:'s "first occurrence wins" deduplication in
+reallySave's enumerate, that left some records with
+rowid=nil permanently in the published self.record. The next
+save then tripped MissingRowID at iTermGraphDatabase.m:376.
+
+Recovery now deep-copies originalEncoder.record into a tree
+it owns exclusively (no shared instances), with rowid=nil
+throughout and siblings deduplicated by (key, identifier) so
+reallySave's INSERT pass assigns a fresh rowid to every
+record.
+
+2026-05-05: Add failing test for graph db recovery bug
+
+2026-05-05: Convert AITerm chat UI from auto-layout to
+manual layout
+
+Replaces the chat tree's NSStackView + constraint cascade
+with a manual-layout helper (iTermChatManualStackView) and
+per-cell layout() overrides. The chat input view,
+controller, toolbar, and every message cell now compute
+their own frames; row heights come from static cellHeight
+helpers instead of fittingSize on a prototype cell. The
+motivation is to break the auto-layout coupling that linked
+the chat input field's internal scroll view back to the rest
+of the tree, which was triggering AppKit's "more passes than
+views" guard during streaming updates and causing layout
+thrash on macOS 26.
+
+Drops the macOS 26 NSGlassEffectView wrappers in favor of
+plain NSVisualEffectView so neither the chat input container
+nor the floating toolbar bar pulls in the glass view's
+auto-layout subtree.
+
+Plumbs the inline-chat link flow on PTYSession so the gutter
+chat receives the same "linked to session" notice and
+permissions buttons the standalone chat window already gets.
+
+ChatService.setPermissions now applies synchronously instead
+of routing through agentWorking; the typing-status pulse was
+making the chat scroll on every permission button click.
+
+Two correctness fixes folded in:
+
+- MultipartMessageCellView.measuredHeight for
+.codeAttachment
+  (and the static cellHeight path) measure at the same
+  effective width that layoutSubpart will actually set on
+  the text container. Without this the bubble was sized for
+  fewer wrap lines than the live render produced, so the
+  bottom of long code blocks was clipped and the bubble sat
+  at the bottom of an over-tall row.
+- scrollToBottom forces the manual layout pass to run before
+  reading scrollView.contentInsets.bottom. The synchronous
+  scrollToBottom inside load(chatID:) ran before the layout
+  joiner had fired, so contentInsets.bottom was 0 and the
+  setBoundsOrigin target was clamped to the wrong place,
+  leaving the last bubbles obscured by the input view.
+
+2026-05-05: Add advanced setting to inject IT2_APP_PATH
+
+When multiple iTerm2 builds with the same bundle identifier
+are running, AppleScript tell application \"iTerm2\" can
+resolve to the wrong instance, so the it2 CLI ends up
+requesting a cookie from one iTerm and connecting to
+anothers socket. The new setting injects IT2_APP_PATH on
+session start so it2 targets this specific build via
+AppleScript. Off by default; primarily useful for iTerm2
+developers.
+
+Co-Authored-By: Claude Opus 4.7 (1M context)
+<noreply@anthropic.com>
+
+2026-05-05: Add chat as right gutter view
+
+2026-05-05: Fix multi-second hang when closing Settings
+window
+
+Each PreferenceInfo registered for
+kPreferencePanelDidLoadNotification in -init and removed
+itself in -dealloc. Closing the panel cleared the keyMap,
+deallocating thousands of PreferenceInfos and producing
+O(N^2) work in CoreFoundation's notification registrar
+removal.
+
+Register only when an observer block is set (and unregister
+when it is cleared), so the registrar list stays small and
+teardown is cheap.
+
 2026-05-04: Refresh stale session hostname variable on first
 OSC RemoteHost
 
