@@ -1,3 +1,284 @@
+2026-05-07: Restore tmux modifyOtherKeys state on attach
+
+Query tmux 3.5+'s pane_key_mode format variable when
+restoring pane state so that the per-pane modifyOtherKeys
+mode (Ext 1 / Ext 2) is re-applied to the iTerm2 session
+after a -CC attach. Without this, reattaching while nvim or
+another modifyOtherKeys app is running left the session in
+Standard key reporting mode.
+
+Also reorder the arrangement-restore code path so the
+resetSendModifiers call runs before setTmuxState, not after
+otherwise the reset wipes the freshly-restored
+sendModifiers[4] value before any keys are typed.
+
+Requires tmux 'extended-keys' option to be 'on' or 'always'
+so tmux actually tracks the inner pane state.
+
+2026-05-07: Honor IT2_APP_PATH in Python API AppleScript
+cookie request. Issue 12850
+
+External scripts targeting a -suite iTerm2 (no ITERM2_COOKIE
+in env) fell through to the AppleScript path, which always
+told application "iTerm2"  so the cookie came from whichever
+build Launch Services routed to, not the one whose socket
+the script connects to, yielding a 401. Mirror the it2 CLI's
+convention and let IT2_APP_PATH override the AppleScript
+target so callers can disambiguate by path. Bump python
+module to 2.18.
+
+2026-05-07: Re-layout content when tab bar accessory
+min-height changes. Issue 12811
+
+In Lion fullscreen with Minimal theme and "Hide tab bar when
+there is only one tab", adding a second tab made the tab bar
+appear over the terminal because the content view was never
+re-laid out. The 1->2 transition skipped repositionWidgets
+tabBarControl.isHidden returns NO when the control is on
+loan to a collapsed titlebar accessory, so the
+willShowTabBar predicate misclassified it as "already
+visible".
+
+Have the nanny's updateMinHeight report whether the
+requested height changed and dispatch_async
+repositionWidgets from
+updateTabBarControlIsTitlebarAccessory when it does.
+Tracking the last requested value in the nanny avoids
+reading vc.fullScreenMinHeight, which can be stashed on
+probation or overridden with defaultHeight on add.
+
+2026-05-07: Show tab bars during tab/session drags so
+single-tab windows accept drops. Issue 12846
+
+2026-05-07: Detect and offer to repair a broken Claude Code
+integration
+
+Claude Code periodically rewrites ~/.claude/settings.json
+and has been observed dropping our cc-status hook. Add a
+one-shot repair prompt that fires the next time claude
+launches in a session if the user previously completed setup
+but the hook is no longer present (or no longer points at an
+executable). A new "Reinstall Claude Code Integration" menu
+item gives users a route back into the onboarding panel from
+any partial-install state  without it, once anything is
+installed the only menu action was Uninstall.
+
+Adds a sticky claudeCodeIntegrationCompleted flag (set by
+doInstallHook, cleared by Uninstall) distinct from the disk-
+reconciled cache: the cache flips to false when
+settings.json loses our entry, but the sticky flag preserves
+the "user once opted in" signal that drives the repair
+detection. Migrates the flag for users coming from pre-flag
+betas (3.7.0beta1/beta2) and pre-flag 3.7 nightlies by
+intersecting the recorded version history with the
+hook-on-disk state.
+
+GlobalJobMonitor.replayCurrentState lets a late-registering
+observer seed itself with current state without depending on
+registration order; the new health monitor calls it after
+addObserver. Existing observers' handlers are idempotent
+against the duplicate notifications.
+
+2026-05-07: Sort Open Quickly sessions by recency. Issue
+12799
+
+Each PTYSession now carries a lastActivityOrdinal stamped
+from a shared iTermMonotonicCounter on iTermController
+whenever the session becomes user-visible: pane changes
+within a tab, tab switches, and window switches all bump it.
+The Open Quickly model adds a recency contribution strictly
+less than 0.01 to each candidate session's score, acting as
+a tiebreaker without overriding real query matches.
+
+Both the per-session ordinal and the global counter survive
+across launches via the existing app-state restoration paths
+(NSCoder and graph encoder).
+
+2026-05-07: Fix tmux send-keys regression: route C0 control
+bytes through -H
+
+When the tmux server has extended-keys enabled (3.2+) and a
+pane app turns on modifyOtherKeys, tmux 3.5's input_key
+narrowed the trivial- case fast path to HT/CR/ESC/printable
+only. Other unmodified C0 bytes fall through to
+input_key_extended, which requires modifier flags and
+returns -1; cmd_send_keys_inject_string then takes the
+literal-text fallthrough and writes the original
+"0x4"/"0x3"/etc. argument string to the pane.
+
+In the gateway, classify code points 0x00-0x1F as a third
+encoding kind that emits "send -H -t %pane NN ..." on tmux
+3.0a or newer. -H injects KEYC_LITERAL keys, which input_key
+writes as raw bytes regardless of mode. Bytes 0x80+ keep the
+existing "0xNN" path so typed Unicode still flows through
+tmux's UTF-8 encoder.
+
+Gated strictly on >= 3.0a (NSDecimalNumber 3.01) since tmux
+3.0 itself predates the -H flag (added in commit fc2016db,
+Jul 2019).
+
+Issue 12845.
+
+2026-05-07: Debounce TTY-based password input detection
+
+Shell scripts that briefly disable terminal echo to suppress
+the visible echo of an OSC report response (e.g. it2getvar,
+it2profile -g) were tripping the open password manager
+automatically feature, since iTerm2's heuristic flips the
+moment ECHO turns off and ICANON stays on.
+
+Require ECHO to remain off for at least
+DetectPasswordInputDebounce seconds (default 0.2) before
+treating it as a password prompt. The conductor's
+at-password-prompt signal stays authoritative and is used
+immediately. State and timing live in a new
+iTermPasswordInputDebouncer Swift class.
+
+2026-05-07: Fix VT100ScreenMark dealloc crash with
+unresolved return-code
+
+If returnCodePromise was created but setCode: was never
+called (e.g.  session terminated mid-command),
+iTermPromiseSeal asserted in dealloc because _promise was
+still set. Reject the seal during the marks dealloc, hopping
+to the main queue so observers (CommandInfoViewController
+uses raw then:) get callbacks on the thread they expect even
+when the mark is released on a background queue.
+
+Co-Authored-By: Taylor Jasko <taylor.jasko@konghq.com>
+
+2026-05-07: Hide top-right indicators that overlap a hovered
+inline button
+
+2026-05-07: Click anywhere on a folded line to unfold
+
+Extend the existing fold-arrow click handler so that a clean
+single click anywhere on a folded lines placeholder unfolds
+the block. The margin arrow, right-click menu, and Edit >
+Unfold in Selection remain the primary affordances; this is
+the wider hit area.
+
+Show the arrow cursor over the whole placeholder line so the
+affordance is discoverable. Rename
+mouseIsOverFoldButtonInEvent: to
+mouseIsOverFoldAffordanceInEvent: since it covers fold
+marks, command marks, and now folded-line placeholders.
+
+Drag-to-select, buttons (copy / custom), cmd-click semantic
+history, mouse reporting, multi-click word/line selection,
+and higher-priority in-line targets (commandMark, pathMark)
+are all preserved by their existing higher-priority gates.
+
+2026-05-07: Adjust LineBuffer cursor_x when a partial drop
+trims its raw line
+
+dropExcessLinesWithWidth: only updated cursor_rawline for
+raw lines it dropped entirely. When the surviving block was
+partially trimmed from the front (the path Fold All uses to
+keep just the trailing wrapped line), cursor_x kept its old
+offset and pointed past the end of the shortened raw line.
+getCursorInLastLineWithWidth: then refused to recognize the
+cursor, restoreScreenFromLineBuffer: never moved the grid
+cursor, and Fold All left it stranded at the bottom of the
+grid while the prompt content landed near the top.
+
+LineBlock.dropLines: now optionally reports the partial-trim
+offset within the first surviving raw line. LineBuffer
+slides cursor_x left by that amount when the cursor lives on
+that raw line.
+
+2026-05-07: Add dual-mode SGR underline color (CSI 58:12 /
+58:13)
+
+Extends the dual-mode (light/dark) SGR mechanism from issue
+12832 to underline color so output produced under one
+appearance stays readable after a toggle. Mirrors the 38/48
+pattern: a chained colon-form override follows the universal
+58:5 / 58:2 fallback so non-supporting terminals still see a
+usable color. Issue 12838.
+
+EA serialization round-trips the dark variant in both the
+dictionary and binary TLV forms; both are
+length/append-elided so EAs without a dark variant are
+byte-identical to what older iTerm2 wrote. Renderers
+(legacy, Metal, copy-as-attributed-string) resolve
+light/dark via a new iTermColorMap helper;
+deterministic-by-design call sites (Kitty placement IDs,
+Python API gRPC) intentionally keep the light variant.
+
+Also plugs a longstanding gap in DECSC/DECRC and
+stateDictionary save/ restore:
+dictionaryForGraphicRendition: /
+graphicRenditionFromDictionary: now persist hasDualModeFg/Bg
+dark variants and the underline dark variant. Promoted to
+class methods to make round-tripping testable.  The new keys
+are append-only  older state files restore as single-color.
+
+Defensive cleanup: legacy 4-int / 4-element decoders now
+zero the dark variant fields explicitly so callers using
+stack scratch values can't end up with phantom dual-mode
+state. Replaces an unsafe memcmp on VT100TerminalColorValue
+(whose padding bytes after BOOL hasDarkVariant could
+spuriously differ) with field-by-field equality.
+
+2026-05-07: Flush remote prefs synchronously on quit when
+Save Mode is Automatic
+
+The debounced setNeedsSave -> background-queue write could
+lose the race against app exit, so a just-suppressed warning
+would not make it to the remote plist. On next launch,
+copyRemotePrefsToLocalUserDefaults wipes local syncable keys
+and copies the stale remote, resurrecting the warning. Issue
+12844.
+
+2026-05-07: Require confirmation before closing a pinned tab
+(#654)
+
+Adds a confirmation dialog whenever a user attempts to close
+a pinned tab, regardless of method (close button,
+middle-click, W, or quitting the app). The dialog identifies
+the tab as pinned. Each pinned tab is listed by number in
+the quit-prompt reason so the user can tell which tabs are
+protected.
+
+Co-Authored-By: Eliezer Gonzlez <eliezerghtech@gmail.com>
+Co-Authored-By: Claude Opus 4.7 (1M context)
+<noreply@anthropic.com>
+
+2026-05-07: Fix enabling Touch ID for sudo on macOS 26+ via
+bundled install script. Issue 12753
+
+NSAppleScript admin elevation can no longer write
+/etc/pam.d/sudo_local on macOS 26: the elevated process is
+TCC-scoped to the calling GUI app, so even cp from a
+sudo-with-administrator-privileges shell fails with EPERM.
+sudo from Terminal still works.
+
+Replace the AppleScript path with a bundled script
+(Resources/install-touchid-sudo.sh) and present two options
+when the user accepts the offer:
+
+- Copy Command: writes `sudo
+"/path/install-touchid-sudo.sh"` to the
+  pasteboard so the user can paste it into any terminal.
+- Run In New Window: opens a single-use iTerm2 window
+running the
+  script. The script prints a banner and a folded block
+  containing its own source (via OSC 1337 Block /
+  UpdateBlock) so the user has context before sudo prompts
+  for a password, then self-execs under sudo.
+
+Track per-invocation dismissal in iTermNaggingController so
+the offer stops re-firing while sudo remains the foreground
+job, and suppress it entirely in single-use sessions and
+whenever lastCommand/commandLine indicates the install
+script is already running.
+
+Co-Authored-By: Claude Opus 4.7 (1M context)
+<noreply@anthropic.com>
+
+2026-05-07: Request badge authorization
+
 2026-05-05: Add release notes guidelines
 
 2026-05-05: 3.7.0beta2
