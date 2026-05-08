@@ -32,3 +32,9 @@ The optional `d` query parameter gives a directory to change into prior to runni
 
 Normally when you open a command URL you are presented with a window that describes what will be done and offers options on how to run it (e.g., in a new tab, a new window, or in the current session). The optional `silent` query parameter suppresses this window. A confirmation dialog is shown instead. If the user consents, the command runs in the background and its output is not shown. This query parameter does not take a value.
 
+### Reveal URLs
+
+iTerm2 also handles URLs of the form `iterm2:///reveal?sessionid=<id>`, which bring a specific session to the front. The `sessionid` parameter takes the value of that session's `ITERM_SESSION_ID` environment variable (for example, `w0t0p0:ABCD-EFGH-...`).
+
+This is useful for jumping back to a session from an external script, note, or other application&mdash;for instance, recording the session ID when starting a long-running job and opening the URL later to return to it.
+
