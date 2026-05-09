@@ -1,3 +1,156 @@
+2026-05-08: Make the heavy window border look better by
+using the corner detection feature we have for active
+session border
+
+2026-05-08: Add Erase All Settings and Data button. Issue
+12852
+
+Adds a discoverable way to fully reset iTerm2 to a clean
+state without resorting to manually deleting SavedState. The
+button in Settings > General > Settings offers to export
+first, then on confirmation walks the same
+ImportExportConfig entity list as the existing export/import
+flows so any future entity automatically participates in
+erase. Wipes preferences (main and private suites), secure
+settings, the dot-dir, the application support folder, the
+custom or default scripts folder, and the macOS Saved
+Application State directory, then calls _exit(0) so no
+teardown path can re-save state on the way out.
+
+A dry-run advanced setting routes every state mutation
+through an EraseAction wrapper that NSLogs what it would do
+instead, leaving the app running so the feature can be
+tested without losing data.
+
+2026-05-08: Fix issues in right-side tab position
+
+- Add missing sessionsAtRight to PTYTab so dragging out a
+right-tab
+  session doesn't crash with unrecognized selector.
+- Include PSMTab_RightTab in imageFromSelectedTabView's
+image-sizing
+  switch so the drag-out image isn't truncated.
+- Fix sign of return value in dragHandleView:didMoveBy: for
+the
+  right-side bar; the protocol expects the handle's actual
+  movement, not the width delta, so resize accelerated off
+  into space.
+- Rename leftTabBarDragHandle to verticalTabBarDragHandle
+since it
+  serves both side bars.
+- Add a zero-width space to the "Right" menu title so macOS
+Tahoe
+  stops auto-decorating it with the system tile-window
+  shortcut.
+- Shift the new-window x offset for right-side drag-out so
+the tab
+  cell stays under the cursor instead of trailing far to the
+  right.
+
+2026-05-08: feat: add right-side tab position (#660)
+2026-05-08: Add per-profile contextual alternates toggle.
+Issue 12847
+
+In 3.7 the default Core Text ligature level was bumped to 2
+to activate calt-based ligatures for fonts like Monaspace,
+Cascadia Code, and Hasklig. The downside is that calt also
+carries surprising substitutions (e.g. Monaspace rendering
+[] as a checkbox), and the only escape hatch was a global
+advanced setting.
+
+Add a "Contextual Alternates" toggle to BetterFontPicker's
+options menu, sitting alongside the existing stylistic-set
+selectors. Unchecking it writes a calt-off feature setting
+onto the font descriptor; the setting round-trips through
+NSFont.stringValue and fontValueWithLigaturesEnabled: so it
+persists per-profile without new plumbing. PTYFontInfo's
+it_ligatureLevel returns 1 when the font carries explicit
+calt-off, so kCTLigatureAttributeName does not re-enable
+calt at draw time.
+
+Always show the calt menu item when ligatures are enabled.
+CTFontCopyFeatures only reflects legacy AAT feature data, so
+most OpenType fonts don't advertise their calt table even
+though they use it; offering the toggle universally avoids
+missing the cases users actually care about.
+
+While here, dedupe the stylistic-alt list. AAT type 35
+selectors come in On/Off pairs; show only the On halves so
+each stylistic set is one toggle rather than two, and apply
+the same predicate when reading existing settings off a font
+so any Off selectors that snuck in via older pickers or
+hand-edited prefs are dropped on the next save.
+
+In addOptionsButton, build the menu before loading state
+from the font, so the family-change reset inside
+set(familyName:) doesn't clobber the values just read. In
+affordance(_:didSelectFontFamily:), reset the options state
+before notifying the delegate so the new family doesn't
+inherit calt/stylistic-alt selections from the previous one.
+
+2026-05-08: Clarify MRU tab cycle key actions
+
+Add help-button text to Cycle Tabs Forward and Cycle Tabs
+Backward explaining the tap-vs-hold-modifier behavior, and
+rename their picker group from "Cycle" to "Recent Tabs" to
+match the verb+object pattern used by other tab-related
+groups.
+
+2026-05-08: Run ssh:// URL and Bonjour profile commands
+through user login shell
+
+Use the user's $PATH (from rc files) to resolve ssh, so
+Homebrew's ssh and other binaries outside /usr/bin are
+found. The SshSchemePath advanced setting still wins when
+changed from its default. Issue 3415.
+
+2026-05-08: Adjust cursor X when DECDHL/DECDWL/DECSWL
+changes line width mid-line
+
+When ESC #3, #4, or #6 was received with content already on
+the line, the existing characters were correctly doubled in
+width but the cursor was left at its old buffer column, so
+subsequent text overwrote the right halves of the existing
+characters. Set the cursor to 2*x (clamped to the right
+margin) when expanding to double-width and to x/2 when
+compacting back to single-width, matching VT510 spec
+behavior.
+
+Co-Authored-By: Claude Opus 4.7 (1M context)
+<noreply@anthropic.com>
+
+2026-05-08: Update DeepSeek models to v4-flash/v4-pro and
+disable thinking mode (#658)
+
+* feat(ai): update DeepSeek models to v4-flash and v4-pro
+
+- Add deepseek-v4-flash and deepseek-v4-pro models - Remove
+deprecated deepseek-chat, deepseek-coder, deepseek-reasoner
+- Update API endpoint from /v1/chat/completions to
+/chat/completions - Update context window to 1M tokens, max
+output to 384K tokens - Set deepseek-v4-flash as recommended
+model
+
+* fix(ai): disable thinking mode for DeepSeek v4 models
+
+DeepSeek v4 models enable thinking mode by default, which
+requires reasoning_content to be passed back in multi-round
+conversations.  Since the codebase does not handle
+reasoning_content yet, explicitly disable thinking mode with
+thinking: {type: disabled} in requests.
+
+* refactor(ai): address review feedback for DeepSeek v4
+
+- Restore legacy deepseek-chat, deepseek-coder, and
+deepseek-reasoner
+  model entries with deprecation note (remove after
+  2026-07-24)
+- Add explanatory comment for thinking: disabled workaround
+- Make Thinking.type a typed enum (Thinking.Mode) - Add
+release notes entry for DeepSeek v4-flash and v4-pro
+2026-05-08: Add windowBorderColor and
+windowBorderColorUnfocused (#662)
+
 2026-05-07: Restore tmux modifyOtherKeys state on attach
 
 Query tmux 3.5+'s pane_key_mode format variable when
