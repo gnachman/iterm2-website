@@ -1,3 +1,28 @@
+2026-05-08: Backfill default toolbar shortcuts on existing
+workgroup configs
+
+iTermWorkgroupModel runs a one-time migration on first
+launch that stamps the default ctrl-cmd-left /
+ctrl-cmd-right / cmd-R shortcuts onto pre-existing
+.navigation and .reload toolbar items whose shortcuts are
+still empty (the only state any item could have been in
+before this feature shipped). The latch is kept in NoSync
+user defaults so a deliberate clear by the user isn't
+re-seeded on the next launch. Items whose navigation cluster
+has at least one shortcut already set are left alone.
+
+2026-05-08: Add keyboard shortcuts to workgroup toolbar
+items
+
+The navigation cluster (back/forward/reload) and the
+standalone reload toolbar item each carry an optional
+shortcut, configurable inline in the workgroup session
+detail view. Defaults are ctrl-cmd-left, ctrl-cmd-right, and
+cmd-R; tooltips on the buttons surface the current binding.
+Dispatch hooks PTYTextView's performKeyEquivalent ahead of
+the main menu so toolbar shortcuts beat profile bindings and
+menu items, while still deferring to global key bindings.
+
 2026-05-08: Make the heavy window border look better by
 using the corner detection feature we have for active
 session border
