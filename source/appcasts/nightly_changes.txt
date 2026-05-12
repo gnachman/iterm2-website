@@ -1,3 +1,265 @@
+2026-05-11: Stop re-encoding -suite name in daemon socket
+filename
+
+The application-support directory and the dotdir fallback
+are already per-suite, so writing daemon sockets as
+{suite}-daemon-N.socket double-encoded the suite and broke
+orphan adoption: the discovery glob and the basename parser
+still looked for the plain iterm2-daemon- prefix. Socket
+files now match those locations. A transitional fallback in
+pathForNumber: and the orphan adopter still accepts the
+{suite}-daemon-N.socket form so beta users don't lose live
+daemons across the upgrade. Issue 12860.
+
+2026-05-11: Match symbolic hotkey modifiers exactly, not by
+subset
+
+The check in iTermSymbolicHotkeys.haveBoundKey used a subset
+test on the modifier bits, so a system shortcut bound to
+Ctrl+Right (or any strict subset of an event's modifiers)
+also intercepted Ctrl+Shift+Right. That caused iTerm2 to
+defer the keystroke to macOS and drop the terminal output.
+Compare equality on the relevant modifier bits (shift,
+control, option, command, function), ignoring CapsLock,
+NumericPad, and device-specific left/right bits. Issue
+12859.
+
+2026-05-11: Guard +[NSData dataWithBase64EncodedString:]
+against nil
+
+A nil input flowed through to apr_base64_decode_len(NULL),
+which dereferences the pointer and crashes. The trigger is a
+saved status bar layout whose RPC-provided text component is
+missing the registration-request v2 string, so castFrom:
+hands nil to the decoder during launch. Also guard the
+unchecked addObject: in iTermStatusBarLayout so a nil
+component from a failed init does not raise
+NSInvalidArgumentException. Issue 12861.
+
+2026-05-11: Back the fake title bar with a titlebar-material
+VEV in Compact
+
+The Compact tab style returns clearColor for the selected
+tab's background and relies on iTermTabBarBacking's
+NSVisualEffectView to provide the material. When the fake
+title bar replaces the tab bar (compact window with one
+tab), no such VEV existed and the title strip went fully
+transparent on top of the now-clear window background. Add a
+sibling NSVisualEffectMaterialTitlebar view just below
+_titleBackgroundView, scoped to TAB_STYLE_COMPACT so Minimal
+and other styles are unaffected. Issue 12601
+
+2026-05-11: Coalesce iTermGenericEvaluator re-evaluations
+via IdempotentOperationJoiner
+
+Each call to setNeedsReevaluation previously enqueued a
+fresh dispatch_async on the main queue, so a tmux -CC pane
+title that updated many times per second piled millions of
+__NSMallocBlock__ allocations onto the main queue and
+exhausted memory. Route the deferred update through
+IdempotentOperationJoiner so at most one reevaluation is
+pending per evaluator, and drop the now-redundant
+needsReevaluation flag. Issue 12857.
+
+2026-05-11: Fix crash parsing API invocations containing
+non-BMP characters
+
+OptionalPathRecognizer indexed by Unicode scalar while
+CoreParse's tokenPosition is in UTF-16 code units, so after
+a quoted string with emoji the offset could run past
+scalars.endIndex and trap. Index in UTF-16 instead. Issue
+12856.
+
+2026-05-11: Remove vertical window-size clamp in
+windowWillResize
+
+The MIN(maxFrame.height, proposed.height) clamp silently
+rejected vertical resizes when the window's origin.y was
+below visibleFrame.minY (window straddling the screen edge),
+because there was room to grow but the clamp didn't account
+for the window's position. The matching width clamp was
+removed in 230c960c3 (2011); height was left behind as an
+oversight.
+
+2026-05-11: Fade session toolbar backing to match window
+transparency
+
+The NSVisualEffectView under the session toolbar uses
+.withinWindow blending, so at low window alpha it sampled
+the transparent session backing and read opaque on top of a
+see-through window. Drop its alphaValue in step with the
+session's transparencyAlpha so the desktop shows through the
+toolbar like the rest of the pane.
+
+2026-05-11: Refactor AI parser/builder layer and add live
+test harness
+
+Bug fixes surfaced by end-to-end vendor testing: - OpenAI
+Responses non-streaming function call now chains via
+  previous_response_id so the reasoning item is not lost.
+- Gemini thoughtSignature is preserved through
+function-call+text
+  body merges.
+- DeepSeek non-streaming tool_calls are no longer dropped by
+the
+  parser.
+- Anthropic [text, tool_use] preambles round-trip with the
+function
+  call instead of being silenced.
+- OpenAI Responses CodeInterpreterToolCall accepts outputs
+(not
+  results) per the current wire shape.
+- Chat-completions request uses tools/tool_choice; legacy
+functions/
+  function_call mixing produced 400s on modern endpoints.
+  Release- notes call-out added for users pointing iTerm2 at
+  older self-hosted OpenAI-compatible servers.
+- DeepSeek multipart body chooses the assistant tool-call
+shape over
+  the tool-output shape when a future parser produces both.
+
+Parser-level combining (replaces the ad-hoc combine logic
+that used to live in
+AITermController.parseNonStreamingResponse):
+
+Each non-streaming parser now returns at most one
+LLM.Message per response. Turns that the vendor splits into
+multiple pieces (Anthropic content blocks, OpenAI Responses
+output items, Gemini parts, modern chat-completions text +
+tool_calls) collapse into a single .assistant Message with a
+multipart body. AITerm sees a uniform shape and no longer
+needs to reconcile sibling messages or sacrifice preamble
+text across role boundaries.
+
+Why: choiceMessages was conflating two semantics. For
+Anthropic / Responses / Gemini-parts it carried consecutive
+pieces of one turn; for OpenAI chat-completions / DeepSeek /
+Gemini-candidates it carried n-sampling alternatives.
+Combining all of them in AITerm was only safe by coincidence
+(iTerm2 never sets n>1). The platform-specific shape now
+lives in the parser layer, where the wire shape is known.
+
+Parsers (clamp to first candidate; multipart for split
+turns):
+  CompletionsAnthropic.swift  content blocks -> multipart
+  .assistant ResponsesAPIResponse.swift  output items   ->
+  multipart .assistant
+			      (function call now embedded in
+			      the assistant turn rather than
+			      carried in a sibling
+			      .function-role Message)
+  Gemini.swift                candidates.first; parts ->
+  multipart LegacyOpenAI.swift          choices.first
+  LLMModernProtocol.swift     choices.first (non-streaming
+  and
+			      streaming);
+			      CompletionsMessage.
+			      llmMessage returns multipart
+			      when both content and
+			      tool_calls are set
+  DeepSeek.swift              choices.first on streaming
+
+Multipart-aware accessor:
+  LLM.Message.function_call walks .multipart parts so AITerm
+  can detect a function call inside a collapsed turn without
+  inspecting the body shape (mirrors what functionCallID
+  already does).
+
+Round-trip:
+  ResponsesAPIRequest.transform(message:) now returns
+  [ItemListEntry] rather than ItemListEntry? and uses a new
+  assistantEntries helper to fan out an .assistant multipart
+  turn into a (message, function_tool_call) pair on the
+  wire. The previousResponseID==set path still strips all
+  but the last item, so chained conversations are unchanged;
+  the previousResponseID==nil full-resend path now
+  reconstructs the wire shape correctly.
+
+AITerm simplification:
+  parseNonStreamingResponse takes choiceMessages.first,
+  checks the multipart-aware function_call, and dispatches.
+
+Backward compatibility (persisted chat-history Messages):
+  LLM.Message / Body Codable surface is unchanged
+  (CodingKeys, encode, init(from:) and the case set all
+  untouched), so chats serialized before this commit decode
+  the same. Old persisted shapes (separate .assistant text +
+  .function-role function call Messages) still round-trip
+  through the existing branches in every request builder.
+  assistantEntries handles each .attachment subtype for
+  assistant turns explicitly: .code inlines as text, .file
+  and .fileID emit a name/mime placeholder plus a DLog
+  (Responses' assistant role can't accept input_file on the
+  wire), .statusUpdate is ephemeral and dropped, and
+  .functionOutput/.uninitialized fall back to maybeContent
+  so persisted Messages with malformed-but- grandfathered
+  shapes survive resend.
+
+Infrastructure: - AILiveHarness: 39 test methods covering
+smoke, multi-turn, tool
+  call, and refusal scenarios across OpenAI / Anthropic /
+  Gemini / DeepSeek plus synthetic chatCompletions and
+  legacyCompletions.
+- AILiveDriver drives the harness via AITermController,
+captures raw
+  wire data through iTermAIClient.liveObserver, and retries
+  on transient HTTP statuses (429, 5xx, RESOURCE_EXHAUSTED,
+  timeouts).
+- iTermAIClient.liveObserver is always compiled in (not
+guarded by
+  ITERM_DEBUG) and is backed by MutableAtomicObject so
+  concurrent observer install/uninstall is safe.
+- tools/run_ai_live.sh wraps run_tests.expect with a TMPDIR
+config
+  file so live tests opt in explicitly and the default
+  ModernTests run still skips them.
+
+Offline regression coverage: - AISafetyRefusalParserTests
+replays 66 captured refusal fixtures
+  (one streaming + one non-streaming per model) through each
+  vendor parser.
+- AIMetadataFixtureCoverageTest fails if a new model lacks
+fixtures
+  (with a deprecated-model skip list).
+- AIRequestBuilderAttachmentTests covers Anthropic
+image/multipart,
+  Gemini inlineData, OpenAI PDF, and DeepSeek text
+  attachments.
+- AIParserCombiningTests covers the new combining logic:
+multipart-
+  aware function_call detection, Anthropic [text, tool_use]
+  and Gemini multi-part combining (with thoughtSignature
+  preservation), modern chat-completions text + tool_calls
+  combining (streaming and non-streaming), DeepSeek
+  streaming tool calls and end-of-call sentinel, OpenAI
+  Responses message + function_tool_call collapsing,
+  ResponsesAPIRequest round-trip for multipart, flat text,
+  the four assistant-side .attachment shapes, and the
+  first-choice clamps on every parser.
+
+Verified all four vendors' live tool-call non-streaming +
+streaming tests pass against real APIs.
+
+2026-05-11: Route first-party prefs through
+iTermUserDefaults so -suite works
+
+Migrate composer height, recent tab colors, and the local
+network permission prompt version from standardUserDefaults
+to iTermUserDefaults.userDefaults() so they honor a custom
+suite. Leave kCPKUseSystemColorPicker alone since
+ColorPicker reads it from standardUserDefaults directly and
+has no awareness of -suite. Also fix
+iTermURLActionFactory.h, which inherited from NSUserDefaults
+instead of NSObject.
+
+2026-05-11: Run ModernTests against a separate UserDefaults
+suite
+
+Pass -suite iterm2-tests to the test host so
+iTermUserDefaults reads and writes go to iterm2-tests.plist
+instead of the live app's domain, preventing a running
+iTerm2 from hanging on prefs notifications during test runs.
+
 2026-05-10: Floor faint-text alpha at 0.1 so SGR 2 text
 never goes invisible
 
