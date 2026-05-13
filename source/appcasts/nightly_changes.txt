@@ -1,3 +1,315 @@
+2026-05-12: Make refusal fixture refresh opt-in
+
+Refusal scenarios used to overwrite the on-disk fixtures
+under ModernTests/Resources/SafetyRefusalFixtures/ on every
+live run, which dirtied the working tree with
+non-deterministic noise (model wording, request IDs,
+latency, token counts) any time the suite ran. The fixtures
+are still produced when intentionally refreshing them: set
+ITERM2_AI_LIVE_REFRESH_REFUSAL_FIXTURES=1 in the env that
+tools/run_ai_live.sh forwards to opt in.
+
+2026-05-12: Fix Anthropic 400 when stray message splits
+tool_use/tool_result
+
+AnthropicRequestBuilder now reorders converted messages so a
+tool_use block in an assistant message is always immediately
+followed by a user message carrying the matching
+tool_result, with any intervening messages preserved after
+it. The Cockpit's racy persistence could emit a user-text
+status update between a tool_use and its tool_result; that
+ordering survived to the wire and Anthropic rejected it.
+
+2026-05-12: Make Claude Code onboarding intro a real sheet
+
+The "Before You Start" intro was a subview overlay on the
+installer panel, not a real modal sheet, so the panel's
+Install/Next button still owned the window's default-button
+slot and Enter routed to it instead of Continue. Present it
+as an actual NSWindow attached via beginSheet so the parent
+is truly inert while the intro is up.
+
+2026-05-12: Remove Explain Status step from Claude Code
+onboarding
+
+The step's NSPopover could throw if the matched Claude
+session lived in a window whose toolbelt subview was still
+hidden (e.g., when the prior Show Toolbelt step had to
+launch a window asynchronously and the user advanced before
+its callback applied toolbelt visibility).  Dropping the
+step also shortens the setup flow.
+
+2026-05-12: Add global Open Quickly hotkey
+
+A new shortcut in Settings > Keys lets you summon the Open
+Quickly window via a system-wide hotkey while another app is
+in front, without activating iTerm2 until you commit a
+selection.
+
+Show path (modeled on iTermProfileHotKey's floating panel,
+which has the same constraint): - styleMask OR'd with
+NSWindowStyleMaskNonactivatingPanel.  - canBecomeKeyWindow =
+YES, hidesOnDeactivate = NO.  - collectionBehavior =
+CanJoinAllSpaces | FullScreenAuxiliary |
+  IgnoresCycle. Transient is omitted because transient
+  windows "do not contribute to the active state of the
+  app", which prevents the window server from re-painting
+  the panel on macOS 26.
+- level = NSMainMenuWindowLevel - 2.  - Show via
+makeKeyAndOrderFront:. Use orderOut: (never close) for
+  dismissal so the window-server doesn't refuse re-show.
+- When iTerm2 is in the background, set alphaValue=0, then
+  makeKeyAndOrderFront:, then animator.alphaValue=1. The
+  alpha transition is what forces the window server to
+  actually paint the non-activating panel; without it the
+  panel becomes key but stays invisible on macOS 26.
+
+Commit path: - iTermOpenQuicklyHotKeyProvider (Swift)
+registers the user's
+  shortcut with iTermCarbonHotKeyController and shows Open
+  Quickly on fire. Re-registers on every -invalidate so
+  changing the shortcut unregisters the old combo first.
+- openSelectedRow uses NSWorkspace.frontmostApplication (not
+  NSApp.isActive, which lies while our panel is key) to
+  decide whether to activate iTerm2 before
+  makeSessionActive:.
+- If the destination session lives on a different Space,
+macOS
+  sometimes picks a different app as frontmost when the
+  Space switch animation completes. Register a one-shot
+  observer for NSWorkspaceActiveSpaceDidChangeNotification
+  and re-activate iTerm2 two runloop spins after the Space
+  change.
+
+Preferences: - Three new sync-able keys
+(OpenQuicklyHotkeyCode/Char/Modifiers).
+  All zero means unbound; no separate enabled-flag.
+- A new advanced setting `openQuicklyAnimationDuration`
+(default 0.12s)
+  controls the existing height-grow animation in the Open
+  Quickly window. Set to 0 to disable.
+
+KeysPreferencesViewController binds the prefs to the new
+iTermShortcutInputView in the Keys tab, and -invalidate
+fires on the provider after every shortcut change.
+
+Issue 12799.
+
+2026-05-12: Support DeepSeek v4 thinking mode end-to-end
+
+DeepSeek v4 requires reasoning_content to be echoed back on
+every subsequent assistant turn when thinking is enabled, or
+it returns 400 on multi-turn tool calls. Plumb the field
+through the parser, request builder, persistence layer, and
+AIConversation accumulator so reasoning round-trips
+correctly for both streaming and non-streaming runs and
+across reloaded chats. Add .configurableThinking to the v4
+models so the toolbar toggle propagates; scope the thinking
+block to only those models so older DeepSeek endpoints don't
+see an unknown key.
+
+Harvest streamed reasoning into Message.agentReasoning at
+both the text chunk and commit boundaries (covers the
+reasoning-only stream that delivers no text chunks). Drop
+the redundant Codable boilerplate in
+DeepSeekRequestBuilder.Body.Message (Swift's synthesis
+already does encodeIfPresent for Optional fields), and make
+reasoning_content structurally impossible to encode from
+CompletionsMessage by moving the key out of the encode-side
+CodingKeys. AITermController now iterates over
+choiceMessages so parsers can surface multiple messages from
+one delta (reasoning + tool_calls in the same chunk).
+
+Companion offline tests in AIParserCombiningTests and the
+new AIChatMessagePersistenceTests; live harness adds
+thinking smoke, tool-call round-trip, plain-text
+AIConversation multi-turn (with auth header verification so
+we don't silently pass against a keychain singleton key),
+and an empirical reasoning-only round-trip test that
+confirms DeepSeek accepts the content=""+reasoning_content
+shape.
+
+2026-05-12: Clear tab status when a session's program
+terminates
+
+Drop the cached iTermSessionTabStatus too, since its
+sessionID is captured at init and would otherwise stay
+pinned to the pre-restart guid after
+replaceTerminatedShellWithNewInstance regenerates it,
+causing later set-status updates to be keyed under a stale
+id.
+
+2026-05-12: Xcode wants to make love to this xib, so let it
+
+2026-05-12: Focus prompt text field on Code Review peer
+activation
+
+PTYTab.setActiveSession's makeFirstResponder call ran after
+swapSession:withBuriedSession: and reclaimed focus from the
+CodeReviewPromptView's text view set in viewDidMoveToWindow.
+mainResponder now returns the overlay's text view while the
+overlay is on screen.
+
+2026-05-12: Add per-peer jump shortcuts to workgroups
+
+Each peer in a workgroup can now carry an optional keystroke
+that activates it from any session in the workgroup. Unset
+peers fall back to the built-in opt-shift-cmd-number
+binding. Shortcuts route through the same dispatch as
+workgroup toolbar shortcuts, so they beat profile bindings
+and the main menu but defer to global key bindings. The mode
+switcher segments render the configured shortcut next to
+each peer's label when set.
+
+2026-05-12: Fix Code Review prompt overlay appearance drift
+
+The overlay snapshotted windowBackgroundColor.cgColor
+against whatever NSAppearance.current happened to be at init
+and viewDidChangeEffectiveAppearance time, which is not
+guaranteed to match the view's effectiveAppearance. The text
+view drew correctly because AppKit sets NSAppearance.current
+for the drawing path, so the panel and its text view could
+disagree on light/dark.
+
+Inherit from iTermLayerBackedSolidColorView so the CGColor
+is refreshed in updateLayer, where AppKit sets the drawing
+appearance correctly.
+
+2026-05-12: Honor option-modified "Quit and Close All
+Windows". Issue 12852
+
+Sample the option modifier at entry to
+applicationShouldTerminate: and, past the confirmation
+prompt, set a new forceDiscardState flag on
+iTermRestorableStateController. The flag vetoes the existing
+NSQuitAlwaysKeepsWindows-OR-shouldRestoreStateOnNextLaunch
+logic so option-quit can finally erase saved state. Only
+triggers when the standing pref would otherwise force save,
+so option-modified "Quit and Keep Windows" (pref off) keeps
+the user override. Committing past the cancel branch ensures
+a canceled quit does not leave the flag set across attempts.
+
+2026-05-12: Pass Cloudflare Turnstile and fix browser
+geolocation handling. Issue 12865
+
+In challenge frames (Cloudflare Turnstile, hCaptcha, Arkose,
+FunCaptcha, Google reCAPTCHA), inject a cloak first in the
+page world that strips window.webkit and signals the
+page-world bridges to skip installation. This hides the
+iTerm-prefixed message handlers and avoids wrapping console,
+Notification, navigator.geolocation, AudioContext, Audio,
+document.createElement, and HTMLMediaElement.prototype.play,
+so the captcha probe sees an unmodified Safari surface.
+
+Also fix three pre-existing geolocation bugs: page hangs
+forever when permission is not granted (now sends
+PERMISSION_DENIED so the errorCallback fires); replies sent
+on the main frame missed iframe callers (LocationRequest and
+WatchRequest now carry the originating WKFrameInfo);
+system-level denials were persisted as per-site decisions,
+locking sites out forever (only an explicit Allow or Block
+in the per-site dialog is now remembered). Same persistence
+fix applies to notification permissions.
+
+2026-05-12: Read haveScrolled from mutable grid in
+VT100Screen sync
+
+The immutable _state.currentGrid is built by
+copyMiscellaneousStateTo:, which never propagates
+_haveScrolled, so the sync result was effectively pinned to
+NO and PTYTextView's scroll-driven full repaint path was
+suppressed. Capture the value from mutableState.currentGrid
+before didSynchronize: clears it.
+
+2026-05-12: Invalidate only changed lines in the legacy
+renderer
+
+The legacy (non-GPU) renderer was marking the whole text
+view dirty on any cell update because setNeedsDisplayOnLine:
+and the other per-line invalidation entry points all
+funneled into requestDelegateRedraw, which passed
+self.bounds. Add a requestDelegateRedrawInRect: that
+translates from PTYTextView coords to legacy-view coords via
+virtualOffset, plumb it through
+PTYSession.textViewNeedsDisplayInRect: and a new
+SessionView.requestRedrawInRect:, and route the per-line
+entry points (setNeedsDisplayOnLine:, setCursorNeedsDisplay,
+invalidateInputMethodEditorRect, the blink scanner, and the
+updateDirtyRects per-line loop) through it.
+
+Apply the existing rectWithHalo: 1-row halo on the
+invalidation side so descenders spilling out of a dirty line
+into N+1 (and leftover descender pixels from the previous
+frame) are cleared and repainted. The drawing helper's
+existing draw-range widening handles the inverse case
+(descenders from N-1 intruding into N) without changes, by
+drawing wider than the dirty rect and letting AppKit clip
+the output.
+
+A scroll shifts virtualOffset out from under any pending
+small dirty rect that was already enqueued in the legacy
+view. When updateDirtyRects: sees haveScrolled it falls back
+to a full requestDelegateRedraw so AppKit unions it with
+anything pending and the visible area is reconciled.
+Per-line search-result and highlight removal stays inside
+the loop so a single-line scroll doesn't wipe matches on
+lines that merely shifted up.
+
+The IME invalidation tracks the previously invalidated rect
+(in PTYTextView coords, pre-halo) and falls back to a full
+redraw whenever the new rect doesn't contain the previous
+one, catching multi-row compositions that shrink, cursor
+moves that shift the IME, and the empty-composition (full
+clear) case.
+
+Add an advanced setting showDirtyRectsInLegacyRenderer that
+flashes the dirty rect red and outlines it in a random color
+for visually verifying which regions are repainted per
+frame.
+
+Add tests/spinner.sh (Claude Code-style baseline workload)
+and tests/redraw-edge-cases.sh (descenders, ligatures,
+bismillah, VS15/VS16, italics, combining marks, wide CJK,
+box drawing) to stress the per-line invalidation path
+against the historical hazards that originally forced
+whole-view redraws.
+
+Issue 12790.
+
+2026-05-12: Wrap Anthropic tool_use ids so persisted tool
+calls round-trip
+
+The Anthropic parser stored the tool_use id only on the
+inner LLM.FunctionCall.id, leaving the outer
+LLM.Message.Body.functionCall wrapper nil. The serializer's
+.functionOutput branch reads the tool_use_id from the
+wrapper, so reloaded function outputs were sent as plain
+text and Anthropic rejected the request for a missing
+tool_result block. Both sides now agree on the wrapper, and
+itemID mirrors the tool_use id so parallel tool calls keep
+distinct identities in tryAppend.
+
+2026-05-12: Honor IT2_SUITE when checking
+disable-automation-auth in iterm2 py lib
+
+External scripts targeting a -suite instance previously read
+the stock ~/Library/Application
+Support/iTerm2/disable-automation-auth, so users who had
+clicked Always Allow All Apps in stock iTerm2 would skip the
+AppleScript cookie flow and then get a silent 401 from the
+suite server (which has no auth-disable file of its own).
+Match the existing IT2_SUITE pattern already used by
+connection.py._unix_domain_socket_path.
+
+Issue 12864.
+
+2026-05-12: Open Quickly improvements.  Issue 12799.
+
+* Change how "go to session" items in open quickly are
+scored to be in MRU order and exclude current session.  *
+Fix empty titles for menu items in Open Quickly with empty
+query * Add session preview side panel to Open Quickly
+
 2026-05-11: Stop re-encoding -suite name in daemon socket
 filename
 
