@@ -1,3 +1,50 @@
+2026-05-13: Add clippings history with archive button and
+back/forward
+
+The clippings panel grows an archive button and a
+back/forward segmented control so a code-review-then-fix
+workflow can keep previous rounds of findings around. The
+matching it2 session archive-clippings command and
+iterm2.archive_clippings built-in function let Claude Code
+archive automatically at the start of each review.
+
+2026-05-13: PSMTabBarCell: keep subtitleString populated
+across style changes
+
+setStringValue: was dropping the subtitle whenever the
+current style's supportsMultiLineLabels was NO, merging
+"title subtitle" into stringValue and leaving subtitleString
+nil. If the style or bar height later changed such that
+multi-line was supported, the cell still had no subtitle to
+draw.
+
+Always split title/subtitle into the two ivars and let
+Yosemite-style recompose them inline at draw time when its
+bar is too short for a separate subtitle line. Tahoe and
+Minimal at their normal heights draw them stacked as before.
+
+Surfaced by the new "Show status in tab subtitle" preference
+when switching from Compact to Minimal mid-session, but the
+same stale-state issue applied to any caller of
+setStringValue: with a multi-line label under a single-line
+style.
+
+2026-05-13: Add a preference to hide session status from the
+tab subtitle
+
+The colored dot on a tab already conveys session state
+(working / waiting / idle). The text under the title
+duplicates that signal and can clash with custom tab colors.
+Add a preference, default ON, that gates whether
+session-status text (from cc-status, OSC 21337, the
+SetTabStatus trigger, or iterm2.set_status) is woven into
+the tab subtitle and allowed to tint its color. The dot, the
+toolbelt entry, and the writers themselves are untouched.
+
+The toggle lives in the gear popover of the Session Status
+toolbelt tool.  Flipping it posts a notification so open
+tabs refresh their labels live.
+
 2026-05-12: Make refusal fixture refresh opt-in
 
 Refusal scenarios used to overwrite the on-disk fixtures
