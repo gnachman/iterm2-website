@@ -1,3 +1,83 @@
+2026-05-14: Add Diff workgroup session mode
+
+Diff sessions defer their command until the workgroup's git
+poller reports staged or unstaged changes. The Claude Code
+workgroup's Diff peer and the Coding Agent + Diff preset opt
+in, so neither runs difftool on a clean tree. A waiting
+overlay explains the state and exposes a Run Anyway button;
+on reload over a clean tree a queued- reload variant shows
+alongside the previous output with a Cancel button. Gitbase
+changes that leave the new base empty also surface the
+overlay, and the deferred closure resolves gitBase at fire
+time so changes during the wait propagate without
+rebuilding.
+
+Existing Claude Code workgroups are migrated to .diff on
+first launch via a NoSync-latched one-time backfill in
+iTermWorkgroupModel.
+
+2026-05-14: Fix main-thread stall on large output bursts for
+VoiceOver
+
+Two changes in the accessibility output-settle path:
+
+* LineBlockMetadataArray's provider struct held a heap block
+that
+  captured self for copy-on-write. The inner loop in
+  -[LineBlock locationOfRawLineForWidth:lineNum:] created
+  and released one such block per entry; on a settle that
+  touched thousands of lines, the Block_release path through
+  objc_destructInstance and the associated-objects DenseMap
+  dominated the sample. Replace the block with an unretained
+  back-pointer to the array and call -willMutate directly
+  from the mutable accessor.
+
+* -[PTYTextView accessibilityAnnounceNewOutputAfterSettle]
+read every
+  line between the saved cursor and the current cursor, then
+  handed VoiceOver one giant string that it dropped or
+  truncated anyway. Cap the announcement to the most recent
+  256 lines and adjust the firstAbsoluteLine passed to
+  +accessibilityAnnouncementLinesForTrimmedLines: so the
+  existing cmd-line strip naturally falls through.
+
+Co-Authored-By: Claude Opus 4.7 (1M context)
+<noreply@anthropic.com>
+
+2026-05-14: Clippings panel: stop bloating zoomed windows
+
+In rightExtraDidChangeImpl, the previous atRightEdgeBefore
+check used a 0.5pt threshold and was a binary gate, so
+windows the user zoomed to fit the display (off by a
+fraction of a pixel from character-grid snapping) fell
+through and grew. Match the toolbelt's pattern: short-
+circuit when the window is within 10pt of the screen's right
+edge with no prior growth to undo, otherwise compute the
+ideal frame and clamp growth to not exceed the screen edge
+and cap shrinkage at what we previously grew. Accumulate the
+realized delta after setFrame: so discrepancies from
+constrainFrameRect: and canonicalFrameForScreen: don't drift
+across toggles.
+
+2026-05-14: Route workgroup shortcuts from clippings panel
+
+The clippings table view claimed ^1/^2/etc. via keyDown
+before PTYTextView's performKeyEquivalent could route the
+event to the workgroup handler. PTYTextView bails from
+performKeyEquivalent when it isn't first responder, so
+nothing else in the hierarchy walk picked up the shortcut.
+Forward the event from ClippingsTableView's
+performKeyEquivalent to the host session's
+textViewWorkgroupShortcutHandlesEvent, resolved through the
+gutter panel's currentSession so peer swaps still hit the
+live host.
+
+2026-05-14: Claude Code install: also walk live sessions for
+divorce match
+
+2026-05-14: Route workgroup shortcuts from Code Review
+prompt overlay
+
 2026-05-13: Add clippings history with archive button and
 back/forward
 
