@@ -1,3 +1,186 @@
+2026-05-15: Remove always-skipping test_openai_imageDescribe
+
+The test had no body beyond a throw XCTSkip; OpenAI image
+attachments go through ChatAgent's upload pipeline, not the
+AILiveDriver path this class wraps.
+AIRequestBuilderAttachmentTests covers the inline PDF path.
+Drop the placeholder and the run_ai_live.sh entry that
+matched it. If the ChatAgent end-to-end coverage gets
+written, it belongs in a new test class anyway.
+
+2026-05-15: Skip unreachable Gemini models in AILiveHarness
+sweeps
+
+gemini-2.0-flash and gemini-2.0-flash-lite are still listed
+in AIMetadata so grandfathered keys keep working, but Google
+rejects them for freshly-minted API keys (404 "no longer
+available to new users" / 429 RESOURCE_EXHAUSTED on the
+first call). The harness was exercising them anyway,
+producing 16 spurious failures per sweep across multiTurn,
+refusal, smoke, and toolCall scenarios.
+
+Move the existing AIMetadataFixtureCoverageTest skip list
+onto AILiveHarness as unreachableForNewKeys, and have the
+harness's default model lookup filter against the same set.
+An explicit ITERM2_AI_LIVE_<VENDOR>_MODELS override still
+targets them deliberately for anyone with a grandfathered
+key.
+
+After this, tools/run_ai_live.sh gemini passes 8 of 8 cases.
+
+2026-05-15: Live-AI test plumbing: marker-based gate,
+recaptured fixtures
+
+Replace the awkward mtime freshness check on AILiveHarness's
+config file with a clean inter-script signal:
+
+* run_tests.expect deletes a stale config file at startup
+unless its
+  parent sets ITERM2_AI_LIVE_KEEP_CONFIG=1. Plain
+  ModernTests runs thus always start clean; AILiveHarness
+  sees no config and skips.
+* run_ai_live.sh exports the marker before invoking
+run_tests.expect
+  so its just-written config survives the cleanup. It also
+  stops using `exec` for run_tests.expect  bash needs to
+  stay alive long enough for its EXIT trap to remove the
+  config after tests finish.  That `exec` was the original
+  source of leaked stale configs.
+* AILiveHarness.swift returns to the simple "file exists?"
+gate.
+
+Refusal-parser tests: stop skipping captures whose response
+was an HTTP error. The fixture is supposed to be a real
+refusal payload, so fail loudly when it isn't, and recapture
+instead. Five 429/404/503 Gemini captures are recaptured
+here:
+
+  - gemini-3-pro-preview {stream, noStream}: fresh
+  successful refusals
+    committed.
+  - gemini-2.0-flash {stream, noStream}: Google now returns
+  429
+    RESOURCE_EXHAUSTED for this model on a fresh API key
+    (same practical state as gemini-2.0-flash-lite, already
+    in the skip list). Move it into deprecatedToNewKeys with
+    a comment about the quota wall. The previous fixtures
+    are still removed so the parser tests don't see
+    error-shaped data.
+  - gemini-2.0-flash-lite {stream, noStream}: previous
+  captures were
+    also 404 errors. Removed; coverage was already exempted.
+  - gemini-2.5-flash stream: previous capture was 503.
+  Removed; the
+    noStream sibling covers the model.
+
+After this: 2207 passed, 53 skipped (AILiveHarness on
+demand), 0 failures.
+
+Co-Authored-By: Claude Opus 4.7 (1M context)
+<noreply@anthropic.com>
+
+2026-05-15: Make full ModernTests run green by default
+
+A `tools/run_tests.expect ModernTests` sweep flagged 13
+failing cases that were polluting the signal  none related
+to product code, but all visible as red. Cleanup so the
+suite is honest:
+
+* AILiveHarness was gating itself on "config file at known
+path
+  exists." A wrapper invocation killed mid-run (SIGKILL,
+  aborted xcodebuild) leaves the file behind; the next
+  regular ModernTests run picks it up, blows real API
+  budget, and shows nine red cases when vendor keys have
+  rotated or the script never ran in this session at all.
+  Add a 60-minute freshness window on the config mtime so
+  stale state can't masquerade as a live invocation. Fresh
+  writes from `tools/run_ai_live.sh` are well within the
+  window; everything else skips cleanly.
+
+* AISafetyRefusalParserTests was failing on three Gemini
+fixtures whose
+  captured response was an HTTP error (429
+  RESOURCE_EXHAUSTED, 404, 503) rather than a refusal body.
+  The fixture is a record of the API call that day, not a
+  refusal payload to validate. Skip captures whose
+  `response.error` field is set in both the non-streaming
+  and streaming variants. Real refusal data still exercises
+  the parser.
+
+* PathTests.testApplicationSupportDirectory_DefaultSuite
+(and the
+  WithoutCreating sibling) asserted the path ended in
+  `/iTerm2`, but the test runner sets `customSuiteName =
+  "iterm2-tests"` so the path ends in `/iterm2-tests`. The
+  test name is misleading  there is no "default suite"
+  during test runs  and the assertion was wrong about what
+  it was checking. Read customSuiteName and compare against
+  the actual suffix.
+
+After this: 2207 passed, 53 skipped (AILiveHarness on
+demand), 0 failures.
+
+Co-Authored-By: Claude Opus 4.7 (1M context)
+<noreply@anthropic.com>
+
+2026-05-15: Unbreak iTerm2XCTests so
+PTYTextViewAccessibilityTest can run
+
+The iTerm2XCTests target had been failing to build for a
+while behind a "Module 'BetterFontPicker' not found" error
+in unrelated test files; fixing that exposed a stack of
+further bit-rot. Two kinds of changes:
+
+* Test sources adapted to current production APIs:
+  - VT100GridTest.m: screen_char_t.underlineStyle was split
+  into bit
+    fields; use ScreenCharGetUnderlineStyle.
+    moveCursorDownOneLine...  grew a sentToLineBuffer: out
+    param.
+  - iTermRuleTest.m: -scoreForHostname:... gained
+  commandLine: and
+    expressionValueProvider: parameters; pass nil at every
+    call site.
+  - iTermPasteHelperTest.m: warning block had a non-void
+  return path
+    missing.
+  - iTermTextExtractorTest.m, SearchTests.m:
+  StringToScreenChars()
+    grew an rtlFound out param. SearchTests.m also
+    referenced a deleted iTermCharacterBufferContext class;
+    drop the setUp call.
+
+* Project plumbing the test scheme needs to build the tree:
+  - iTerm2XCTests config: add BetterFontPicker/ColorPicker/
+    SearchableComboListView to FRAMEWORK_SEARCH_PATHS so the
+    iTerm2SharedARC-Swift.h module scan can find them.
+  - iTerm2ForApplescriptTesting config: add sources/** to
+    HEADER_SEARCH_PATHS and pull iTermSwiftPackages +
+    librailroad_dsl into Frameworks + LIBRARY_SEARCH_PATHS
+    so it can at least link.
+  - iTerm2Tests target: drop its now-redundant dependency on
+  the
+    legacy iTerm2ForApplescriptTesting app (which still hits
+    a code sign issue), and pick up the missing
+    AppleScriptTest.m source plus the iTermSwiftPackages and
+    librailroad_dsl link inputs and search paths directly so
+    the test runner builds standalone.
+
+After this, `xcodebuild test -scheme iTerm2Tests
+-only-testing:iTerm2XCTests/PTYTextViewAccessibilityTest`
+passes all three cases.
+
+Co-Authored-By: Claude Opus 4.7 (1M context)
+<noreply@anthropic.com>
+
+2026-05-15: make run: activate the launched dev iTerm2 and
+forward Ctrl+C
+
+So that a make run launch reliably comes to the foreground
+even when another iTerm2 is already running, while Ctrl+C
+still kills the dev process.
+
 2026-05-14: Add Diff workgroup session mode
 
 Diff sessions defer their command until the workgroup's git
