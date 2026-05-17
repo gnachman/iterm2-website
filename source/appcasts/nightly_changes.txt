@@ -1,3 +1,49 @@
+2026-05-16: Claude Code install: cover sessions whose
+profile was deleted
+
+The trigger installer previously only updated sessions whose
+source profile still exists in sharedInstance. Sessions
+launched from a profile the user later deleted (or whose
+original profile is missing after an arrangement reload)
+were silently skipped because they cannot appear in the
+picker and reloadProfile no-ops when the shared profile is
+gone.
+
+Detect these orphan sessions (live or buried, divorced or
+not) and expose an opt-in checkbox in the picker, defaulted
+on, that reports the count. On install, already-divorced
+orphans get triggers written directly to their
+sessionsInstance bookmark; non-divorced orphans are divorced
+first so a target bookmark exists. Stale orphan bookmarks
+with no live session are skipped so we don't accumulate dead
+writes.
+
+Also fix sharedProfileDidChange in the divorced path to
+merge from the latest sessionsInstance bookmark rather than
+the in-memory _profile, so external writers like the
+installer aren't clobbered for keys in _overriddenFields.
+
+2026-05-16: Share Claude Code workgroup builder with preset
+
+The Claude Code installer and the Coding Agent + Diff + Code
+Review preset were maintaining near-duplicate iTermWorkgroup
+definitions.  Lift the structure into a parameterized
+builder on WorkgroupPresets; the preset uses the defaults
+(fresh UUIDs and a user-friendly name), and
+ClaudeCodeWorkgroupTemplate calls the same builder with its
+stable builtin.claudeCode.* IDs so existing triggers and
+saved references keep resolving.
+
+2026-05-16: Add Coding Agent + Diff + Code Review workgroup
+preset
+
+Mirrors the workgroup the Claude Code installer creates: a
+Chat root with mode switcher + git status, a Diff peer
+running git difftool with the changed-file selector and nav,
+and a Code Review peer running claude in code-review mode.
+Uses fresh UUIDs so the preset is independent of the
+installer's stable-ID copy.
+
 2026-05-15: Remove always-skipping test_openai_imageDescribe
 
 The test had no body beyond a throw XCTSkip; OpenAI image
