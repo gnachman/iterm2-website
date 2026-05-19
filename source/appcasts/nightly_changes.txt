@@ -1,3 +1,52 @@
+2026-05-18: Open Quickly: stamp jump target on cross-window
+MRU. Issue 12799.
+
+Switch-to-session in Open Quickly went through
+-[PseudoTerminal makeSessionActive:], which routed through
+setActiveSessionPreservingMaximization: with
+updateActivityCounter:NO.  The NO was inherited by analogy
+from activateSessionInDirection: (where it's needed to
+preserve cmd-[/] toggle semantics) but Open Quickly is an
+explicit jump, not a toggle. The target session's
+lastActivityOrdinal never got stamped, so Cmd-Shift-O Enter
+could drift onto whichever sibling pane was active in the
+destination tab.
+
+Migrate Open Quickly to -[PTYSession reveal] and delete
+makeSessionActive: (Open Quickly was the only caller). Going
+through reveal also picks up disinter-buried-session
+handling, workgroup peer-port swap, and explicit
+setCurrentTerminal:, matching Open Quickly's named-mark
+path. All other reveal callers are user-initiated jumps (URL
+handlers, notifications, status bar, tmux dashboard, global
+search, AI chat, etc.), so flipping
+setActiveSessionPreservingMaximization: to
+updateActivityCounter:YES is safe.
+
+reveal originally selected the containing tab before calling
+setActiveSessionPreservingMaximization:, which meant
+tabView:didSelectTabViewItem: fired with the destination
+tab's activeSession_ still pointing at the previously-active
+sibling. didSelectTab then stamped that sibling on the MRU
+ordinal in our place. Reorder so the active session is set
+first; the redundant didSelectTab stamp now targets self.
+
+2026-05-18: Don't steal IME Enter in AI Chat input. Issue
+12867
+
+ChatInputTextView.keyDown(with:) was intercepting "\r" and
+routing it directly to the delegate's insertNewline submit
+handler, bypassing AppKit's input-method client path. With
+an IME composing (Chinese, Japanese, Korean, ...), pressing
+Enter to commit a candidate was submitting the unfinalized
+marked text instead of letting the IME finalize it.
+
+Mirror the post-11610 ComposerTextView fix: drop the keyDown
+override, move submit handling into insertNewline(_:), and
+gate the delegate's doCommandBy:insertNewline: on the shift
+modifier so Shift+Enter still falls through to insert a
+literal newline.
+
 2026-05-16: Claude Code install: cover sessions whose
 profile was deleted
 
