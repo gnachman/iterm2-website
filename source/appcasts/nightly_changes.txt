@@ -1,3 +1,142 @@
+2026-05-19: API server: advisory-lock socket dir to prevent
+second iTerm2 from clobbering
+
+Two iTerm2 processes sharing an application-support
+directory (same -suite, or both with no -suite) would race
+in listenOnUnixSocket: the second to start unconditionally
+unlink()s the path and bind()s its own socket, leaving the
+first listening on an orphaned inode that no client can
+reach. Take a non-blocking flock on private/socket.lock
+before unlink+bind so the second instance refuses to start
+the API server instead.
+
+2026-05-19: OSC color overrides survive appearance and
+separate-mode toggles
+
+Fixes gitlab #12870. When a profile uses separate light /
+dark colors, OSC 10 / 11 (and the other delegate-routed
+color setters, OSC 4, 5, 12, 13, 17, 19, plus iTerm2's
+SetColors and XTPOPCOLORS) were writing only the
+appearance-matched suffixed profile key. A macOS appearance
+switch then reloaded the other-mode key and silently
+discarded the override.
+
+screenSetColor:profileKey: now writes the base, Light, and
+Dark variants of the target key, capturing baselines for all
+three with an NSNull sentinel for variants the profile did
+not previously have (a later OSC 110 / 111 reset propagates
+NSNull through setSessionSpecificProfileValues' remove-key
+semantics to un-invent the variants we wrote). The
+mode-setting baseline is seeded the same way
+screenSelectColorPresetNamed: does it so the reset path's
+mode-transition logic stays correct.
+
+screenResetColorWithColorMapKey:profileKey:dark: now
+consumes all three related baselines in its no-transition
+and "originally not separate, now is" branches. The
+"originally separate, now not" branch prefers a real color
+over an NSNull sentinel when picking the value for the
+unsuffixed key so the brief intermediate state between the
+color restore and the mode-setting restore does not flash
+through a removed-key fallback.
+
+screenRestoreColorsFromSlot: gets the same dual-write +
+NSNull-sentinel + mode-baseline treatment, and stops
+clobbering KEY_MATCH_COLOR with the saved background
+(VT100SavedColorsSlot does not carry a match-highlight
+color).
+
+Adds tests/osc-color-persistence.sh, an interactive smoke
+test that walks through OSC 10 / 11 / 12 / 17 / 4 /
+SetColors / PopColors and verifies persistence across both
+macOS appearance switches and the
+separate-light-and-dark-mode profile toggle, plus the OSC
+110 / 111 reset and the match-color fix.
+
+2026-05-19: Color well: preserve source color space on edit.
+Issue 12720.
+
+2026-05-19: Review fixes for PR #666 custom AI headers
+
+Validation and security - Validate header names against RFC
+7230 token chars and reject
+  values containing CR, LF, or NUL (closes a
+  header-injection surface via user-supplied values).
+- Expose AICustomHeaders.isValidName / isValidValue to ObjC
+  (@objc class wrapping the former struct) so the settings
+  UI can apply the same rules at edit time.
+- Add Header alert validates name and value, refocuses the
+  offending field on retry, and trims the name.
+- Inline cell edits trim the name, reject invalid input with
+an
+  explanatory NSAlert, and drop the user back into editing
+  the offending cell so they don't have to retype.
+- Skip empty-name rows on save so blank rows do not
+accumulate in
+  the persisted plist.
+- Disclaimer notes that values are stored unencrypted in
+  preferences.
+
+UI and structure - Move the custom-headers UI out of
+programmatic AppKit code into
+  PreferencePanel.xib: IBOutlets / IBActions, table view,
+  add/remove segmented control (momentary, neither segment
+  latched), Done button, and disclaimer label live in the
+  XIB.
+- Replace the popover host with a reusable titled sheet
+(title
+  bar hidden via NSWindowStyleMaskFullSizeContentView). The
+  sheet NSWindow is created lazily once and reused so the OK
+  button keeps its default-button (Return) registration
+  across re-presentations. Hidden Escape button is added
+  programmatically (XML 1.0 forbids U+001B in attributes).
+- Drop the popover-only NSVisualEffectView wrapper from
+  _manualAISettings.
+
+Table view - Adopt the existing CompetentTableView from
+  sources/Settings/CRUD.swift for Delete / Backspace
+  handling; CompetentTableViewDelegate is now @objc so ObjC
+  controllers can conform.
+- Switch the table to view-based with NSTableCellView
+prototypes
+  and tableView:viewForTableColumn:row:; edits round-trip
+  through controlTextDidEndEditing:, which falls through to
+  super for notifications that aren't from this table so the
+  base class's info.controlTextDidEndEditing dispatch still
+  works (this was silently regressing
+  kPreferenceKeyCustomScriptsFolder).
+
+Enable state - Disable the entire section (table, segmented
+control, cell text
+  fields) when the master toggle is off;
+  tableView:shouldSelectRow: blocks selection while
+  disabled, and the minus segment is disabled whenever there
+  is no selection or the feature is off.
+- updateCoarseAIModelSettingsEnabled now gates the
+"Configure AI
+  Model Manually" button on _pluginOK &&
+  [iTermAITermGatekeeper allowed] so users cannot open a
+  sheet full of disabled controls.
+
+Tests and docs - Add ModernTests/AICustomHeadersTests
+covering toggle, override,
+  validation, CRLF and NUL rejection, and empty value
+  behavior.
+- Release notes entry under AI Improvements.  - Drop
+unrelated last-xcode-version bump.
+
+2026-05-19: Add user-configurable custom HTTP headers for AI
+backend requests
+
+Adds a key/value table in the "Configure AI Model Manually"
+popover where users can define extra headers (e.g. proxy
+auth, routing tags) that are appended to every AI request
+when the master toggle is on.  Custom headers override
+built-in headers on collision (DLog warning is emitted).
+Covers chat/completion, vector store, and file upload paths.
+
+PR #666
+
 2026-05-18: Open Quickly: stamp jump target on cross-window
 MRU. Issue 12799.
 
