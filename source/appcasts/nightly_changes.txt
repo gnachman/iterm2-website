@@ -1,3 +1,65 @@
+2026-05-25: Make right-gutter panels resizable by dragging
+their left edge
+
+The clippings and inline AI chat panels were fixed-width.
+Add drag-to-resize to the right-gutter framework so both can
+be widened or narrowed by dragging their left edge.
+
+iTermRightGutterDividerView now subclasses
+iTermDragHandleView (the same view the toolbelt uses for its
+resize), so it provides its own mouse tracking and resize
+cursor; the visible 1pt hairline is a left-pinned,
+autoresizing sublayer over the wider transparent grab area.
+The controller is the drag handle's delegate and applies the
+width change using the toolbelt's incremental "return how
+far the handle was allowed to move" contract, clamping so
+the terminal grid keeps a usable minimum.
+
+Per-panel widths persist under NoSync-prefixed user-default
+keys (local UI state, not synced configuration) via
+iTermGutterPanelWidths, which both the panels' width getters
+and their registered widthProviders read so the layout
+budget and the hosted view stay in sync. Widths are clamped
+to [225, 1200]; the 225 floor keeps panels from getting
+narrow enough to look broken.
+
+2026-05-25: Dispatch workgroup peer/toolbar shortcuts
+centrally
+
+Custom peer-switch and toolbar (navigation/reload) shortcuts
+were dispatched from PTYTextView.performKeyEquivalent:,
+which bails when the text view isn't first responder. They
+only fired when the terminal text view had focus; views like
+the Diff overlay's Run Anyway button, the Code Review
+prompt's text view, and the clippings table either lost the
+shortcut or had to re-implement performKeyEquivalent: to
+forward it.
+
+Dispatch these shortcuts in
+iTermApplication.handleKeypressInTerminalWindow:, the same
+central key-down path the fixed lt-shift-cmd-digit peer
+shortcut already uses, so they fire regardless of first
+responder. Precedence is preserved: after user key mappings,
+deferring to global key mappings, and beating the main menu
+and profile bindings.
+
+Removes the per-view special cases: PTYTextView's workgroup
+block and textViewWorkgroupShortcutHandlesEvent:, the
+workgroupShortcutHandler overrides in CodeReviewPromptView
+and ClippingsView, and their plumbing through SessionView,
+PTYSession+CodeReviewPrompt, and ClippingsGutterPanel.
+
+2026-05-25: Session Status toolbelt: sort rows on initial
+load
+
+The viewDidMoveToWindow path populated the row array from
+Dictionary.values without sorting, so rows appeared in
+arbitrary order until the next status update (which goes
+through the sorting code path).
+
+2026-05-25: Add makefile target runbg to run the app in the
+background
+
 2026-05-19: API server: advisory-lock socket dir to prevent
 second iTerm2 from clobbering
 
