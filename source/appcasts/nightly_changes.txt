@@ -1,3 +1,178 @@
+2026-05-26: Preserve screen content when a non-alt-screen
+program clears on launch
+
+Some full-screen programs that don't use the alternate
+screen buffer (for example Claude Code) repaint by moving
+the cursor to the top of the screen and drawing over
+whatever was there, destroying content the user can still
+see. When such a program moves the cursor above the start of
+its command's output before writing any output of its own,
+scroll the visible screen into history first so it isn't
+lost, as though it had sent CSI 2J.
+
+The trigger is in terminalMoveCursorToX:y: and is gated on:
+shell integration (a valid startOfRunningCommandOutput), not
+being in the alternate screen, and a new
+appendedTextSinceCommandExecuted flag (reset at FTCS C, set
+on any text append). The flag, rather than a grid scan,
+correctly handles relaunches where the previous session left
+content on screen below the new prompt: that content was
+appended before this command's FTCS C, so it is still
+preserved.
+
+Behind the saveScrollbackWhenCursorMovesAbovePrompt advanced
+setting (default on). Requires shell integration.
+
+2026-05-26: Recompute tab status when sessions join or leave
+a tab
+
+The aggregated tab status is a cached copy of the winning
+session's status, refreshed only when a resident session
+changes its own status (sessionTabStatusDidChange:). A
+session can enter or leave a tab while already carrying a
+status without any such change, leaving the tab showing a
+stale or missing status (e.g. a "waiting" indicator stuck on
+a tab after the pane that set it was closed or moved out by
+a workgroup teardown).
+
+Recompute the aggregate at every membership change: -
+numberOfSessionsDidChange (count changes: close, move
+between tabs,
+  restore, workgroup adopt via the split-tree rebuilder)
+- both swapSession: methods (count-preserving swaps) -
+replaceWithContentsOfTab: (absorbing another tab's sessions)
+
+Instant-replay and filter doppelgangers are intentionally
+excluded: they carry no status, and the live session's
+status remains correct.
+
+2026-05-26: Fix subtoken logging
+
+2026-05-26: Add urlHandlerCommand advanced setting
+
+When set, clicking a URL (OSC 8 hyperlinks and auto-detected
+URLs) runs the configured interpolated command via /bin/sh
+-c instead of handing the URL to the OS. The URL is exposed
+as \(url) and a background-open flag (whether option was
+held) as \(background), which is 1 or 0. The command runs as
+a background task whose output goes to the Script Console,
+with a notification on failure.
+
+Empty by default, so URL opening is unchanged.
+iTerm2-internal schemes (iterm2:), scheme-to-profile
+bindings, and Semantic History file links are unaffected.
+
+Implements the request in issue 12878.
+
+2026-05-26: Freeze localhost detection instead of
+recomputing by hostname
+
+Localhost-ness was decided by comparing a session's recorded
+hostname against the live [NSHost fullyQualifiedDomainName]
+(gethostname). When the machine's hostname changes (for
+example after a network change), recorded local hosts stop
+matching and are treated as remote, which broke the git
+status bar, the workgroup diff list, opening local files,
+and upload/download behavior.
+
+Record locality on VT100RemoteHost when a host is reported
+(the moment the reporting shell's name and gethostname are
+contemporaneous) and freeze it:
+
+- Add VT100RemoteHostLocality (unknown/localhost/remote), a
+3-arg
+  initializer, serialization, and copy/doppelganger carry.
+  isLocalhost returns the frozen value and only falls back
+  to the name compare when unknown (legacy data).
+- Stamp locality in -setHost:user:viaSSHIntegration: at
+report time,
+  carrying it forward for user-only re-reports.
+- Publish a new "isLocalhost" session variable mirroring it.
+- Read the frozen value (model, variable, or the new mapper)
+at the
+  localhost checks that previously compared names:
+  iTermGitStringMaker, the hostname status bar abbreviation,
+  and the composer and path-completion host construction.
+- Preserve serialized locality across the conductor-unhook
+restore
+  rather than re-stamping the restored host remote.
+
+Rename the setHost/screenCurrentHostDidChange ssh: argument
+to viaSSHIntegration:, since it describes the cause of the
+host change (the SSH/conductor layer, which manages terminal
+state itself) rather than whether the host is remote, and
+cross-reference the two terminal-state cleanup paths.
+
+Add a fakeFullyQualifiedDomainName advanced setting to test
+hostname changes without renaming the machine.
+
+2026-05-26: Render floating session note above the toolbar
+
+Both the session note view and the toolbar (which hosts the
+peer mode switcher) are added via addSubviewBelowFindView:,
+which never ordered them relative to each other, so their
+z-order depended on insertion order and the toolbar could
+end up on top. Position the note above the toolbar
+regardless of which is added first.
+
+2026-05-26: tools/adhoc.sh: abort on build failure instead
+of uploading an empty zip
+
+2026-05-26: Avoid false-alarm state restoration timeout
+right after login
+
+The "Continue restoring state?" prompt fires when the SQLite
+integrity check exceeds its timeout. At login the system is
+busy restoring every app's windows and disk I/O is
+saturated, so even a healthy database can exceed the 10s
+clean-shutdown timeout. Extend the timeout to 120s during
+the first ten minutes after boot. Also soften the prompt
+wording and make Keep Waiting the default action instead of
+discarding windows. Issue 11809.
+
+2026-05-26: LineBuffer: rewrite blockContainingPosition, fix
+multi-block lookups
+
+fast_ and slow_firstBlockContainingPosition: now share
+closed-right raw-position-only semantics: a position equal
+to the end of block i is reported as "inside block i, at
+offset rawSpaceUsed", and yOffset is the caller's concern.
+This removes the May 2025 additionalRemainder ruler-
+shopping hack and the April 2022 always-advance branch that
+the hack was papering over; both lookup variants are now
+simple and agree by construction.
+
+Renamed to firstBlockContainingPosition: to be honest about
+ambiguity. A position at a boundary, or any position when
+intermediate blocks have zero rawSpaceUsed, is shared by
+multiple blocks. The function returns the first such block;
+callers that need the visually-correct block (only
+positionForStartOfLastLineBeforePosition:width: today)
+consume yOffset themselves via a forward walk in
+_findPosition:'s new width variant.  AsyncFilter callsites
+pass width through. Search keeps the width-less variant (the
+raw-character starting position is correct regardless of
+yOffset).
+
+Also fixes coordinateForPosition:'s extendsToEndOfLine
+handling: the non-lastPosition branch was clobbering x to 0
+when extendsToEndOfLine was YES and extendsRight was NO,
+inconsistent with the lastPosition branch. The structure now
+mirrors the lastPosition branch so past-EOL coords
+round-trip naturally.
+
+Deleted dead code: setStartCoord:ofFindContext:width:,
+storeLocationOfAbsPos:inContext:, absBlockNumberOfAbsPos:
+(the third had only the second as a caller).
+
+Added comprehensive unit and integration tests in
+LineBufferTests covering fast/slow agreement, the 3-block
+boundary case that triggered the investigation,
+position/coordinate round-trips across widths and block
+configurations, positionForStartOfLastLineBeforePosition: at
+boundaries and when yOffset spans empty rows across a block,
+and the May 2025 testConvertPositionMultiBlock scenario.
+
 2026-05-25: Make right-gutter panels resizable by dragging
 their left edge
 
