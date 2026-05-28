@@ -1,3 +1,101 @@
+2026-05-27: Script Console: preserve scroll/selection and
+fix dark mode logs
+
+The console used to call -reloadData on the whole script
+list whenever an entry was added or a script stopped. That
+reset the table's scroll position and, for a view-based
+table with an unchanged selection index, dropped the visual
+selection highlight even though the detail view kept showing
+the selected entry.
+
+Replace the blanket reloads with incremental row
+insert/remove. Both the "All" and "Running" filtered lists
+are order-preserving subsequences of the same entries array,
+so a snapshot diff (_displayedEntries vs the live
+filteredEntries) identifies exactly which rows to insert or
+remove and leaves existing rows, their selection highlight,
+and scroll position untouched. A consistency guard falls
+back to a full reload if the baseline ever desyncs.
+
+Because incremental removals now shift the selection to
+follow its entry without firing a selection-changed
+notification, the per-entry observer no longer trusts its
+captured row index; it resolves the live row from the
+observed entry and skips the reload if the entry is no
+longer shown.
+
+Also preserve the output pane's scroll position when a
+filter rewrites its contents on each new line, consolidate
+the Terminate/Start enable logic into -updateButtonsEnabled,
+and set the Logs text view's color to the dynamic textColor
+so it is readable in dark mode (the Calls view already did
+this).
+
+2026-05-27: Make T the Undo Close shortcut; move Show Tabs
+to U
+
+T now triggers Shell > Undo Close, and View > Show Tabs in
+Fullscreen moves to U.
+
+To ease the transition, the first time a user invokes the
+new T while in full screen, a one-time alert explains the
+change and offers to add a global key binding that maps T
+back to Show Tabs in Fullscreen (global bindings are
+consulted before menu key equivalents, so this restores the
+old behavior).
+
+Because the Undo Close menu item is disabled when nothing
+can be restored, its key equivalent does not fire in that
+case, so iTermApplication's key-down path detects the
+keystroke directly to still show the notice. The detection
+runs after binding resolution so an existing T binding is
+always respected, and it ignores leader-flagged events since
+a leader sequence is a distinct keystroke.
+
+2026-05-27: Session notes keep their distance from the
+top-right corner on resize
+
+When a session resizes, the floating session note now shifts
+by the bounds size delta so it preserves its distance from
+the top-right corner instead of the bottom-left. The note is
+still clamped to stay within the session bounds.
+
+2026-05-27: Open Quickly MRU: make recency follow focus
+order
+
+Open Quickly ranked switch-to-session rows by a per-session
+lastActivityOrdinal that was stamped from too many places:
+the low-level -[PTYTab setActiveSession:] (which fires on
+structural changes like a pane closing, splitting, or
+restoring, even in background windows) and unconditionally
+in -reallySetCurrentTerminal:. During a cross-window jump
+the destination window's previously-active sibling was
+briefly its current session, so it got stamped just below
+the target and then outranked the genuine previous pane. The
+result was that Cmd-Shift-O Enter could land on a pane the
+user never visited. Issue 12799.
+
+Define MRU strictly as focus order and stamp only when the
+focused session actually changes. The new iTermFocusOrder
+singleton owns the monotonic counter and, via
+IdempotentOperationJoiner, coalesces stamp requests to the
+next runloop turn and reads the settled focused session (the
+front window's current session). Transient mid-jump states
+are never observed, and structural active-session changes in
+background windows no longer reorder the list. The three
+focus-change triggers (window became current, tab selected,
+a tab's active pane changed) now just call -setNeedsUpdate.
+The pane-change trigger is no longer gated on
+updateActivityCounter, so cmd-[/] focus moves also update
+MRU, while the per-tab activity counter that drives cmd-[/]
+toggling is unchanged.
+
+Add debug logging in iTermFocusOrder (what was stamped or
+why it was skipped) and in the Open Quickly model (the
+excluded current session and each candidate's ordinal,
+recency, and score) so the ranking can be diagnosed from a
+captured debug log.
+
 2026-05-26: Preserve screen content when a non-alt-screen
 program clears on launch
 
