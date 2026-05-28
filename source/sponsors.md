@@ -22,6 +22,10 @@ iTerm2 is grateful for the support of our sponsors. Their contributions help mak
 <img src="images/SerpApi.png" width="150" height="37" alt="SerpApi - iTerm2 Sponsor">
 </a>
 
+<a href="https://limsiq.com/iterm2?utm_source=iterm2&utm_medium=sponsorship&utm_campaign=about_box" style="text-decoration: none;">
+<img src="images/LIMSIQ.png" width="150" height="37" alt="LIMSIQ - iTerm2 Sponsor">
+</a>
+
 </div>
 
 Interested in sponsoring iTerm2? Please <a href="mailto:gnachman@gmail.com">get in touch</a>.
