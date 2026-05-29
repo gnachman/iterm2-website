@@ -1,3 +1,137 @@
+2026-05-28: Session Stats: show custom peer-switch shortcuts
+
+peerSwitchShortcutLabel always rendered the built-in
+<position> shortcut and ignored a peer's configured
+peerSwitchShortcut. Add customShortcutLabel(forPeerID:) on
+iTermWorkgroupPeerPort and consult it first, falling back to
+the built-in shortcut only when no custom one is set,
+matching WorkgroupModeSwitcherItem's precedence.
+
+2026-05-28: AI chat: repair orphan tool_result on chat
+reload
+
+An auto-approved ("always") remote command historically
+squelched the remoteCommandRequest from the persisted
+transcript while keeping the remoteCommandResponse. On
+reload, ChatAgent.load(messages:) rebuilt the prompt from
+that transcript and the result was an orphan tool_result
+with no matching tool_use, which Anthropic rejects with 400
+'unexpected tool_use_id found in tool_result blocks'. The
+bug predates v3.6.10, so shipping conversations on disk
+already contain orphans.
+
+AIChatToolCallRepair walks the rebuilt prompt and, when it
+finds an orphaned functionOutput, inserts a synthesized
+assistant functionCall immediately before it. Two pairing
+modes have to be satisfied because they reflect what the
+vendor serializers actually do:
+
+  * Id-based (Anthropic, OpenAI Responses): match on call
+  id. The inner
+    FunctionCall.id MUST equal the wrapper
+    FunctionCallID.callID; CompletionsAnthropic keys
+    tool_use blocks off the inner id and ignores the
+    wrapper, so a nil inner id would serialize the synth
+    call as plain text and reproduce the 400.
+
+  * Position-based (Gemini, legacy OpenAI function_call):
+  the
+    deserializer sets both the inner FunctionCall.id and the
+    wrapper FunctionCallID to nil (Gemini.swift parser).
+    Those nils flow into the persisted
+    .remoteCommandResponse and arrive here as a
+    functionOutput with no id at all. Such a result cannot
+    be paired by id, so synthesize a nil-id functionCall and
+    rely on adjacency. The previous nil-id drop was silently
+    dropping every Gemini tool result on reload, leaving an
+    orphan functionCall instead of an orphan
+    functionResponse.
+
+Also fixes a second-order bug in role(from:) that the new
+live coverage caught: tool results were being given
+LLM.Role.user (because the chat Message author is .user),
+but DeepSeek's serializer keeps the wire role as 'user' (and
+rejects the request as 'insufficient tool messages') while
+OpenAI Responses logs 'Unexpected user message body' and
+silently drops the item. Production live calls already
+construct tool results with role=.function (AITerm.swift
+around line 957); this brings the reload path in line.
+Anthropic and Gemini accept either.
+
+Tests =====
+
+Offline (ModernTests/AIChatToolCallRepairTests):
+  * Id-based: orphan synthesizes preceding tool_use with
+  matching inner
+    id; well-formed pair untouched; multiple orphans
+    repaired independently; reported scenario from the bug
+    report.
+  * Position-based: nil-id pair untouched; nil-id orphan
+  synthesizes
+    adjacent nil-id tool_use; multiple nil-id orphans
+    repaired.
+  * Wire format:
+  testOrphanRepair_serializesAsAnthropicToolUse builds
+    the Anthropic body and asserts the tool_use block lands
+    before the tool_result with matching id (closes the gap
+    that let the inner-id bug ship);
+    testOrphanRepair_serializesAsGeminiFunctionCall does the
+    same for the Gemini functionCall/functionResponse Part
+    adjacency.
+
+Live (AILiveHarness):
+  * ChatAgent.aiMessagesForReloadingTranscript seam exists
+  so the live
+    harness can reach AIChatToolCallRepair through the same
+    pipeline ChatAgent.load(messages:) uses without
+    instantiating ChatBroker (which requires
+    ChatDatabase.instance and would write the user's real
+    chat DB during tests).
+  * runChatReload drives a synthetic [Message] transcript
+  through the
+    seam, appends a new user message, and asserts the
+    round-trip completes. For the Anthropic orphan case it
+    inspects the captured request body and asserts a
+    tool_use block with the matching id precedes the
+    tool_result.
+  * 20 per-vendor wrappers: anthropic, gemini, openai
+  (Responses),
+    openai (chat-completions synthetic), deepseek, each in
+    {paired, orphan} x {streaming, non-streaming}.
+  * AILiveHarness.loadConfig() caches the first successful
+  read so
+    Xcode test-environment NSTemporaryDirectory rotation
+    between -only-testing methods does not spuriously
+    XCTSkip the run.
+  * tools/run_ai_live.sh registers the 20 new method names.
+
+Verification ============
+
+Full live sweep against real vendor APIs: 20/20 pass after
+one retry of an o3-pro network timeout. Per vendor:
+
+  anthropic                  4/4 gemini
+  4/4 (the nil-id fix) openai (Responses)         4/4 openai
+  (chat-completions)  4/4 deepseek                   4/4
+  (the role(from:) fix)
+
+Also exercised the offline suite (10 tests, including the
+two wire- format tests) red->green to confirm both
+wire-format tests catch the respective bugs when
+reintroduced.
+
+Harness housekeeping ====================
+
+Added gemini-3-pro-preview to
+AILiveHarness.unreachableForNewKeys.  Google fully retired
+the model and returns HTTP 404 'no longer available' for all
+keys, so the default Gemini sweep was failing every test on
+that model. AIMetadataFixtureCoverageTest honors the same
+set and now correctly skips its refusal-fixture requirement
+for it.
+
+2026-05-28: Add spreadsheet with shortcuts
+
 2026-05-27: Script Console: preserve scroll/selection and
 fix dark mode logs
 
