@@ -1,3 +1,71 @@
+2026-05-29: Reject notify-on-termination for already-dead
+PIDs
+
+beginMonitoring now checks with kill(pid, 0) whether the
+process still exists. If it is already gone (ESRCH), arming
+a DISPATCH_PROC source would never fire, so show an
+explanatory alert and return false instead of failing
+silently. EPERM (process owned by another user) still
+proceeds because NOTE_EXIT does not require signal
+permission.
+
+2026-05-29: Fix stacked image views on recycled job cells
+
+iTermJobTreeImageTableCellView allocated a fresh NSImageView
+and added it as a subview on every call, including cell
+reuse, leaving the previous image views as orphaned
+subviews. Reuse the existing image view when the cell is
+recycled and only create one the first time.
+
+2026-05-29: Add "Notify on Termination" for jobs
+
+Right-clicking a job in the jobs toolbelt or the status bar
+job popover now offers "Notify on Termination." Monitored
+jobs show a bell next to their name, and when the process
+exits a modal alert names the job and process ID.
+Simultaneous exits coalesce into one alert.
+
+The bell is an SF Symbol attachment tagged with
+iTermDynamicProfileSymbolName and retinted via a shared
+NSTextField helper so it follows selection and light/dark
+appearance, the same dance the profiles list uses.
+
+2026-05-29: Clippings: prefix each with bold title and add a
+configurable separator
+
+Sending or copying multiple clippings previously joined them
+with a bare newline, so they ran together. Each clipping is
+now prefixed with its title in bold Markdown, and multiple
+clippings are joined with a new Clipping Separator advanced
+setting (default is a line of two dashes, using Vim escape
+syntax).
+
+2026-05-28: Jobs view: add table outline and tighten
+toolbelt layout
+
+Give the jobs outline view a line border so it matches the
+other toolbelt tables, which all get one from
+scrollViewWithTableViewForToolbelt.
+
+Fix the bottom toolbar layout. sizeOutlineViewToFit was
+insetting the scroll view by NSMaxY(kill_.frame), but kill_
+lives inside _signalContainer so that value (21) was in the
+wrong coordinate space.  Replace it with a configurable
+toolbarHeight, clamp the scroll view height so degenerate
+startup sizes can't produce a negative-height frame, and
+anchor the controls with a configurable controlsBottomMargin
+instead of centering them against a possibly-stale scroll
+view frame.
+
+Add useVisualEffectView so hosts that already supply a
+background can suppress the VEV. The toolbelt now drops the
+VEV, uses a 28pt strip with the controls flush to the bottom
+(6pt above, 0 below), while the status bar popover keeps the
+VEV/glass and its default 38pt centered strip.
+
+Set useGlassEffectView before -font in the popover so
+awakeFromNib sees it when the view loads.
+
 2026-05-28: Session Stats: show custom peer-switch shortcuts
 
 peerSwitchShortcutLabel always rendered the built-in
