@@ -26,6 +26,10 @@ iTerm2 is grateful for the support of our sponsors. Their contributions help mak
 <img src="images/LIMSIQ.png" width="150" height="37" alt="LIMSIQ - iTerm2 Sponsor">
 </a>
 
+<a href="https://www.bairesdev.com/sponsoring-open-source-projects/" style="text-decoration: none;">
+<img src="images/BairesDev.png" width="244" height="37" alt="BairesDev - iTerm2 Sponsor">
+</a>
+
 </div>
 
 Interested in sponsoring iTerm2? Please <a href="mailto:gnachman@gmail.com">get in touch</a>.
