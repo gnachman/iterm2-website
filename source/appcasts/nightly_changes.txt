@@ -1,3 +1,239 @@
+2026-06-02: Restore OSC 133 k=/aid= shell integration
+submodule pointer
+
+Point iTerm2-shell-integration at dd49a35f (emit OSC 133
+aid= on A/B/C/D, plus k=s around PS2), the commits the
+terminal-side OSC 133 support in 131b9c609 depends on. These
+were dropped when 3.7.0beta3 reverted the pointer to
+origin/main to get CI green.
+
+2026-06-02: 3.7.0beta3
+
+2026-06-02: AI chat: screen fidelity, TUI submit
+reliability, bubble polish
+
+Round of fixes after a wire-log review of a confused
+orchestration session:
+
+* get_screen_contents now returns real Unicode. The old
+  WorkgroupIntrospection path called
+  VT100Grid.compactLineDump / compactLineDumpWithHistory,
+  which is a DEBUG dump that substitutes '.' for empty
+  cells, '?' for any character above 127, 'U' for complex
+  chars, '-' for double-wide right halves, etc. For an Ink
+  TUI like Claude Code (mostly Unicode box-drawing) the
+  agent saw gibberish and had no idea what was on screen.
+  Replaced with iTermTextExtractor.content(in:...), the same
+  path PTYSession's RemoteCommand surface and ToolCodecierge
+  use. Trailing whitespace per line is stripped by the
+  extractor; trailing blank rows are stripped by
+  stripTrailingBlankLines. Image cells (which the extractor
+  would otherwise drop) become a [image] placeholder via the
+  attributeProvider + collapseImageAttachments pass  one
+  marker per distinct NSImage instance, so a 20-cell-wide
+  image emits one [image] not twenty.
+
+* send_text reliably submits on Ink TUIs. typeIntoPTY now
+always
+  wraps the body in BPM markers when bracketed-paste mode is
+  on (single- or multi-line), then waits 75ms via Task.sleep
+  before writing the bare \r. Background: for short payloads
+  two separate writeTaskNoBroadcast calls produce two PTY
+  events on the slave side, which Ink treats as
+  paste-then-submit. For ~500-byte payloads the kernel can
+  chunk the master-side write across multiple slave reads,
+  and an immediately-following \r gets absorbed into the
+  same input burst Ink heuristically treats as paste
+  content. Always-wrapping gives Ink an unambiguous ESC[201~
+  end-of-paste; the 75ms delay covers the case where Ink is
+  still ingesting when our \r lands. doSendText awaits
+  typeIntoPTY so the tool_result holds back until \r has
+  been transmitted, and disable_parallel_tool_use keeps the
+  next tool call from racing. ESC/Ctrl-C and other control
+  bytes still skip the wrap (those need to be interpreted by
+  the TUI, not pasted).
+
+* Chat bubbles no longer render Anthropic's leading "\n\n".
+Anthropic
+  models commonly prefix tool-using replies with two
+  newlines; we persist that verbatim in the data model
+  (round-trip parity with what the model emitted) but the
+  rendition layer now trims leading whitespace before
+  building the attributed string. Affects .plainText,
+  .markdown, and .explanationResponse arms equally.
+
+Wording cleanup, while we're in here:
+
+* Approval bubbles re-phrased.
+  - Spawn approval: "Approve opening 'New session'?"
+  (placeholder
+    name in quotes, reads as if it were a proper noun) is
+    now "Open a new session?". Specifics still in the body.
+  - Workgroup/session claim: "Approve writing to workgroup
+  'X'?" (the
+    word "writing" reads like file I/O) is now "Allow agent
+    to control workgroup 'X'?". Body text also updated:
+    "future write actions on this workgroup" -> "future
+    control of this workgroup".
+
+* Renamed CockpitChat directory and file. The orchestration
+mode and
+  the (unrelated) Cockpit feature used to share
+  infrastructure; they don't anymore. git mv
+  sources/ClaudeCode/CockpitChat -> Orchestration and
+  CockpitChat.swift -> WorkgroupWatcher.swift (matches its
+  only struct). pbxproj group path, file ref path,
+  build-file ref, and parent group's child entry all
+  retargeted.
+
+* System prompt de-Claude-Code-ified. Opening no longer says
+"you
+  drive Claude Code sessions and other terminal sessions"
+  just "terminal sessions". The "Chat role is the user's
+  Claude Code CLI session" warning generalized to "the user
+  is conversing with the program directly". "Newly-spawned
+  programs" example list no longer leads with "Claude Code's
+  first launch"; vim/less/htop/emacs/fzf cover it.
+  "Ink-based TUIs like Claude Code" -> "most modern
+  interactive TUIs". The Claude-Code-specific slash-command
+  warning generalized to "don't invent or guess slash
+  commands for the program running in a role". The
+  orchestrator's tool surface is meaningfully
+  programmer-agnostic; the prompt should be too.
+
+* In-tree comments and DLog tags updated to match
+(orchestrator
+  instead of cockpit; Orchestrator dispatcher: instead of
+  Cockpit dispatcher:).
+
+2026-06-02: OSC 133 k= and aid= support
+
+Implement OSC 133 k= (Semantic Prompt prompt kind: i/s/c/r)
+and aid= (nested shell-integration session id) attribute
+support end-to-end.
+
+Parser (VT100Terminal) handles key=value arguments on
+A/B/C/D/P.  Marks gain kind, excludedSubranges,
+firstLineOfCommand/fullCommand, and
+aid/parentAid/ancestorAids. Non-initial prompts (k=s/c/r)
+add excluded subranges to the active mark without breaking
+the prompt state machine or paste-each-line gate. aid=
+populates a registry so D;aid=X targets the matching mark
+and an outer-D cascade-closes inner marks (e.g. ssh tunnel
+drops where the inner D never arrives).
+
+Mark coord storage (promptRange / commandRange / outputStart
+and the excludedSubranges endpoints) moves to
+ResilientCoordinate so it survives folds, resizes, and
+scrollback overflow. Saved-tree (alt- screen) marks observe
+a separate RC pool whose resize broadcast is built against
+altScreenLineBuffer rather than the primary linebuffer.
+
+Consumers (Select Current Command, share URL, AI explain,
+the Python GetPromptResponse.excluded_subranges field, etc.)
+subtract excluded subranges from the typed-command range.
+
+Shell integration scripts (bash, zsh, fish, tcsh, xonsh)
+emit k=s around PS2 and aid= on A/B/C/D. New /v2/ scripts
+ship alongside legacy /v1/.
+
+Fixes issue 5749 (Advanced Paste hangs on PS2).
+
+2026-06-02: Bundled protobuf runtime: 3.19.4 to 35.0 +
+protoc 3.21 toolchain
+
+Vendor v35.0 of the ObjC protobuf runtime under
+ThirdParty/ProtobufRuntime and split tools/build_proto.sh
+into two protoc invocations: latest protoc for ObjC
+(GOOGLE_PROTOBUF_OBJC_VERSION >= 30005 required by the new
+runtime), and protoc 21 / 3.21.x for Python (protoc >= 22
+emits gencode that drops Python 3.7+ support, which the
+iTerm2 Python SDK still promises). Both passes overridable
+via PROTOC_OBJC / PROTOC_PYTHON.
+
+Regenerated sources/proto/Api.pbobjc.{h,m} and
+api_pb2.{py,pyi} against the new toolchain.
+
+2026-06-02: Browser: cloak JS surface in captcha frames; fix
+geolocation permissions
+
+Cloak: - In known captcha/challenge frames (Cloudflare
+Turnstile, hCaptcha,
+  Arkose/FunCaptcha, reCAPTCHA) strip window.webkit and skip
+  the page-world bridges (console wrap,
+  Notification/geolocation polyfills, audio mute/monitor) so
+  the probe sees a stock Safari surface.
+- Detection lives in one shared snippet
+(challenge-frame-detection.js)
+  that the cloak and each bridge recompute independently via
+  the template loader's INCLUDE directive. No state is
+  passed through a window property: a marker like
+  window.__iTermBrowserCloak would itself be a detectable
+  fingerprint (real Safari has no such property).
+- Match against the anchored pathname and actual query keys,
+not a loose
+  substring of the full href, so a page cannot trip the
+  cloak by putting a marker in its query value or fragment.
+- Do not install a stand-in if delete window.webkit ever
+fails; an own
+  "webkit" property whose value is undefined is a worse
+  fingerprint than the original.
+
+Geolocation/notification permissions: - Stop persisting
+system-level denials (Location Services off, OS prompt
+  declined, notifications disabled at the OS). Only an
+  explicit Allow or Block in the per-site dialog is
+  remembered, so re-enabling the system permission lets the
+  site prompt again instead of staying blocked.
+- Geolocation denials now send a PERMISSION_DENIED error to
+the page
+  instead of being silently dropped, so errorCallback fires
+  and the page does not hang.
+- Route success/error callbacks and the pushed permission
+state to the
+  originating frame instead of always the main frame.
+- clearWatch and cancelOperation bypass the permission gate;
+they only
+  stop in-flight work, so they must run regardless of
+  permission state.
+
+2026-06-02: Fix heavy window border on transparent windows
+and stale border frame
+
+Two related fixes for the heavy window border (issue 12882):
+
+- Window corner-radius detection failed on low-opacity
+windows
+  because it required near-opaque content (a fixed alpha
+  threshold of 180). The window mask is encoded in the alpha
+  channel at any opacity, so threshold each row relative to
+  its peak alpha instead.  Add a per-OS fallback radius
+  (macOS 26 uses rounder corners) for when detection has not
+  completed or fails.
+
+- The iTermWindowBorderView frame was not kept in sync with
+the root
+  view: it could be left at a stale size from an earlier
+  window size, stroking the border as a smaller inner
+  rounded rectangle. Set its frame to the root bounds in
+  layoutSubviews and updateBorderViews, matching how the
+  other subviews are laid out.
+
+Adds unit tests for opacity-independent corner-radius
+detection and the fallback radius.
+
+2026-06-02: Narrow announcements when clippings panel is
+visible
+
+The announcement frame used the full SessionView width,
+ignoring actualPanelReservation (the width reserved for
+visible right-gutter panels like clippings), so
+announcements overlapped the clippings panel. Subtract the
+reservation in updateAnnouncementFrame and
+showNextAnnouncement, matching the existing diff/code-review
+overlay behavior. Toggling clippings recomputes the width
+via updateLayout.
+
 2026-06-01: AI live harness: positively verify Gemini audio
 + video (inlineData)
 
