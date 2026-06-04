@@ -1,3 +1,112 @@
+2026-06-03: AI command safety: quote-aware hard rules and
+provider-agnostic classifier
+
+Rework the agent command safety check so it no longer
+depends on Apple Intelligence or macOS 26.
+
+TerminalHardRules is rewritten around a quote-aware scanner
+that splits a line into operator-separated segments and only
+auto-allows when every segment is provably read-only and
+there is no substitution, expansion, or redirection. This
+closes holes where a read-only first token (ls, cat) chained
+to a mutator (&&, ;, |, redirection) auto-allowed. The git
+allowlist is restricted to subcommands that are read-only
+regardless of arguments (config/branch/tag/remote now need
+approval), and the find mutation check covers
+-fprint/-fprintf/-fls in addition to -delete/-exec/-ok.
+
+CommandSafetyChecker now delegates to AutoModeClassifier:
+the deterministic hard rules run first, falling through to a
+one-shot LLM side-query against the user's configured
+conversation model. Only an unambiguous allow is treated as
+safe; errors are fail-closed. The check is available
+whenever AI is configured rather than gated on a specific
+vendor or OS version.
+
+Add an on-device Apple Intelligence backend
+(.appleIntelligence API, apple vendor) wired through a
+FoundationModels bypass in AITermController for future use
+as a dedicated classifier model. It is hidden from the model
+picker.
+
+2026-06-03: Add AutoMode classifier for AI command safety
+
+Introduces an LLM-backed classifier that decides whether an
+AI-proposed action may run automatically, needs manual
+approval, or is blocked.
+
+- TerminalHardRules: deterministic allow/deny rules applied
+before the LLM.  - AutoModeClassifier: scopes the
+classifier's view of the conversation to
+  user text and proposed tool calls only (assistant text is
+  intentionally unrepresentable, since the main model is
+  untrusted from the classifier's perspective) and runs a
+  one-shot side-query to reach a verdict.
+- AutoModeTranscript: projects LLM.Message history into the
+classifier's
+  restricted TranscriptEntry form.
+
+Covered by AutoModeClassifierTests, AutoModeTranscriptTests,
+and TerminalHardRulesTests (44 tests).
+
+2026-06-03: apply_layout: support inline new_session leaves
+
+Let App.async_apply_layout create brand-new sessions in
+place via new_session leaves, instead of only rearranging
+existing ones. A new session is minted tab-less and spliced
+into the destination tab through the same detach/adopt
+machinery used for cross-tab moves, so it is born in its
+final position and sizes/inherits cwd like an interactive
+split.
+
+- Resolver validates every new_session profile GUID up front
+so a bad
+  profile fails side-effect-free; replaces the blanket
+  newSessionLeafNotSupported rejection with unknownProfile.
+- Mutator createNewSession mirrors the makeWorkgroupPeer
+path and honors
+  the profile's working-directory mode
+  (Home/Custom/Reuse-previous) by forcing the computed
+  directory past the canPrompt:false short-circuit.
+- Sessions minted during a transaction but never adopted
+(e.g. a later
+  attach throws) are terminated in endTransaction so a
+  failed plan does not leak a headless shell. Scoped to
+  created sessions only, never to detached user sessions
+  from an aborted cross-tab move.
+- Bump API protocol version to 1.16 and gate the feature
+behind
+  capabilities.supports_apply_layout_new_session; iterm2
+  module 2.20.
+
+Creating whole new tabs/windows remains unsupported.
+
+2026-06-03: Fix unbalanced brace that broke the ModernTests
+build
+
+testRightPromptBug (added in 131b9c609) was inserted without
+closing the preceding test function, so it nested inside it
+and left the LineBufferTests class one brace short. The
+whole ModernTests target failed to compile. Add the missing
+brace; testRightPromptBug now runs as its own test.
+
+2026-06-03: API: skip __pycache__ in AutoLaunch; sort
+context menu items by name
+
+Two Python API ergonomics fixes:
+
+- AutoLaunch no longer warns that a __pycache__ directory is
+a
+  malformed script. Python drops one next to single-file
+  scripts, so it is now skipped silently like dotfiles.
+
+- Context menu items registered via the Python API were
+displayed in
+  the underlying dictionary's hash order, which is
+  unpredictable and shuffles between launches. They are now
+  sorted by display name, giving a stable order that a
+  script can control by prefixing titles.
+
 2026-06-02: Restore OSC 133 k=/aid= shell integration
 submodule pointer
 
