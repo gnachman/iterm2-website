@@ -1,3 +1,270 @@
+2026-06-04: Cockpit: watch statusless sessions by screen
+observation
+
+register_watch previously relied entirely on tab-status (OSC
+21337 / cc-status) transitions. Sessions that report no
+machine-readable status (plain TUIs, coding agents like
+Codex that don't emit status, bare shells) produced no
+transitions, so the orchestrator had no event channel and
+was reduced to polling get_screen_contents in a loop,
+junking the chat with "still busy, checking again" turns.
+
+When the target session reports no status, doRegisterWatch
+now creates a
+.screenPoll watcher driven by ScreenWatchPoller: a headless
+AIConversation that reads the rendered screen, judges
+doneness from on-screen content (activity indicator vs ready
+prompt, not screen stability, since a silently churning
+agent leaves the screen static), and fires the same
+status_update a tab-status watcher would. The agent's turn
+still ends immediately; no polling noise reaches the chat.
+
+Details: - Screen stability is not doneness: the model is
+handed the first
+  capture plus the two most recent so it can see whether an
+  indicator is still animating across frames.
+- Per-target detection: idle/waiting/working each spell out
+their own
+  positive on-screen evidence (an indicator means reached
+  for working but not-yet for idle), instead of one
+  finished-centric description.
+- Unparseable replies get one rephrase pass, then fall back
+to unknown,
+  which the loop treats like not-yet so it never fires a
+  false positive.
+- Quadratic backoff delay(n)=3+n*n between polls, hard
+5-minute cap,
+  then a watchTimedOut status_update so the agent can
+  re-register.
+- Watchers carry a mode; .screenPoll pollers are cancelled
+on
+  unregister/terminate/teardown and restarted after
+  relaunch. The tab-status handler is scoped to .tabStatus
+  watchers.
+- Poll lifecycle and model verdicts are traced via DLog.
+
+2026-06-04: Improve Claude Code setup wizard navigation and
+highlight
+
+- Show Toolbelt is now skippable: Next is always enabled on
+that
+  step, while Show remains the default button until the
+  toolbelt has been shown, after which Next becomes the
+  default.
+- The Before You Start sheet has an always-visible link to
+  https://iterm2.com/claude-code-integration.html below the
+  "What gets changed" disclosure row, regardless of its
+  state.
+- Fix the Session Status highlight not appearing when the
+toolbelt
+  is shown fresh. OnboardingScrim computed its cutout once
+  in draw() and never re-evaluated, so when the Session
+  Status tool's wrapper got its real frame on a layout pass
+  after the scrim's first draw, the highlight was punched
+  out of a zero-sized rect.  The scrim now observes its
+  cutout view and the toolbelt for frame changes and
+  redraws, mirroring iTermPrefsScrim.
+- LinkButton gains configureLinkAppearance() so it can be
+styled
+  when built programmatically (awakeFromNib isn't called
+  then).
+
+2026-06-04: AI chat orchestration: render tool-call activity
+lines via the @-mention path
+
+The tool-call activity line ("Reading screen of ...")
+rendered session and workgroup targets through
+OrchestrationToolProvider.sessionDescription, a separate
+path from the @-mention link machinery. That meant
+references were plain bold text rather than clickable links,
+and a target that had just closed leaked a raw GUID
+("session BAA338E7-...") instead of the "[defunct session]"
+the mention renderer produces.
+
+Have the activity-line builder emit @<session_guid> /
+@<workgroup_id> tokens and run the rendered external payload
+through OrchestrationMentionRenderer, so these references
+resolve at display time to a clickable current-name link or
+"[defunct session]", sharing the same machinery the
+orchestrator's text bubbles already use.
+
+2026-06-04: Orchestration: auto-approve safe session spawns
+
+In orchestration mode, start_session previously always
+prompted the user for permission. Now a spawn with no
+command is allowed without prompting, and a spawn with a
+command is vetted by the auto-mode safety classifier
+(CommandSafetyChecker): an unambiguous "safe" verdict
+auto-approves, and anything else (block, needs-manual-
+approval, unparseable, or a classifier error, all
+fail-closed) falls back to the existing inline user prompt.
+
+2026-06-04: AI chat: offer orchestration when no session to
+link
+
+A new chat created without a current session previously
+showed no follow-up offer. Now it publishes an
+offerOrchestration client-local bubble (parallel to the
+existing offerLink bubble) with a single Enable
+Orchestration button routed through the same confirmation
+alert as the menu-driven toggle.
+
+2026-06-04: AI timeout: bump default from 30s to 5 minutes
+
+Slow models and long responses frequently exceeded the old
+30-second default. New installs now get a 300-second
+timeout.  Existing users who already have a stored value
+keep it.
+
+2026-06-04: Claude Code integration: flush profile model
+after trigger install/uninstall
+
+Installing the Claude Code integration mutated the shared
+ProfileModel via setObject:forKey:inBookmark:, which updates
+the in-memory model and posts reload notifications but never
+writes back to user defaults. The settings UI reflected the
+new triggers, but they were lost on the next launch.
+Uninstall had the mirror bug.
+
+Call ProfileModel.flush() after the shared-model writes in
+both paths, matching what every settings-UI trigger editor
+already does. flush also correctly skips persistence when
+New Bookmarks was overridden to a file on the command line.
+
+2026-06-04: AI command safety: migrate existing users, keep
+on-device option
+
+Default the safety-check side-query to the configured
+conversation model, but grandfather users who already
+enabled it under free on-device Apple Intelligence. A
+one-time migration keeps them on-device, but only when Apple
+Intelligence is actually working on this Mac (so a checkbox
+that was a no-op on incapable hardware is not preserved as
+on-device), and flags them to be asked, before the next
+checked command, whether to switch to their possibly-paid
+model. Declining keeps Apple Intelligence. The on-device
+path fails closed rather than silently falling back to a
+cloud provider, and Macs not running Apple Intelligence are
+re-prompted instead of grandfathered.
+
+Hoist the NoSync routing flags into shared, compiler-checked
+constants so a typo cannot silently mis-route this privacy
+boundary. Replace stale Apple-Intelligence user-facing copy
+(the approval warning and the settings checkbox) with
+provider-neutral wording. Add a force parameter to
+RemoteCommand.isSafe that makes the check mandatory for
+orchestration chats.
+
+2026-06-04: Orchestrator: address sessions by session_guid,
+not workgroup+role
+
+Session-acting orchestrator tools (get_state,
+get_screen_contents, send_text, interrupt,
+start_code_review, register_watch) took a nested target
+object {workgroup_id, role}. Models stumble on emitting the
+nested shape and sometimes leak Claude's internal <parameter
+name=...> tool-call markup into the JSON string value,
+producing a malformed target that the dispatcher rejects
+with malformed_args.
+
+A session_guid is globally unique, is surfaced on every role
+in the <workgroups> snapshot, and is the same way the
+session_* tool family already addresses sessions. Switch
+these tools to take a single session_guid string and derive
+the owning workgroup and role app-side via the existing
+context(for:) reverse-resolver.
+
+- WorkgroupIntrospection: add resolve(sessionGuid:) and
+  claimScope(forSessionGuid:); remove resolve(target:) and
+  availableRoleNames.
+- OrchestratorCommand: drop OrchestratorTarget; args and the
+  getState/interrupt cases carry session_guid; replace
+  requiredWorkgroupClaim with a ClaimRequirement enum so
+  session writes resolve to their workgroup scope
+  (preserving workgroup-granularity approval) while clipping
+  tools still claim by workgroup_id; startedSession returns
+  session_guid.
+- OrchestratorDispatcher: decode session_guid; gating
+resolves
+  session to scope and throws unknown_session for a dead
+  GUID; resolveSessionOrThrow replaces resolveTargetOrThrow;
+  start_session returns the GUID.
+- OrchestratorError: add unknownSession(guid:);
+targetNoLongerExists
+  carries a GUID; remove the now-dead unknownRole.
+- Tool schemas: one shared session_guid field across the six
+tools.  - Activity-line rendering reads session_guid; drop
+the leaked-XML
+  salvage path that existed only to cope with the old
+  malformation.
+- System prompt: add an "Addressing sessions" section and
+repoint the
+  driving/watching/code-review guidance at session_guid.
+
+2026-06-04: AI chat: render @-prefixed session/workgroup ids
+as name links
+
+In orchestration mode the agent now writes a session_guid or
+workgroup_id prefixed with "@" when it wants to point the
+user at a specific session or workgroup. When rendering an
+agent message, OrchestrationMentionRenderer replaces each
+"@<id>" with a clickable link, marked by a terminal icon,
+that shows the entity's current name and reveals the session
+on click. Ids that no longer resolve render as "[defunct
+session]".
+
+The renderer's transform is split from the live lookup so it
+can be unit tested with an injected resolver.
+
+2026-06-04: Disable automatic text substitutions in AI chat
+input field
+
+2026-06-04: Fix several low-risk crashes seen in 3.6.10
+reports
+
+- iTermHotKeyProfileBindingController: skip profiles with no
+GUID
+  before -[NSMutableSet removeObject:], which raises on nil.
+- SSHProcessInfoProvider: guard the shell-command components
+with
+  .first instead of subscripting [0], which traps on an
+  empty command from a remote ps row.
+- ProfileModel: use [NSString castFrom:] for the
+default-bookmark
+  value so a legacy boolean can't get -isEqualToString:.
+- iTermTextDrawingHelper: fall back to the default color
+when a
+  background run's resolved color is nil while drawing
+  margins.
+- iTermMetalView: skip fetching a drawable when the drawable
+size
+  has a zero dimension, avoiding a divide-by-zero in
+  QuartzCore.
+- iTermPresentationController: detect the invalid
+presentation
+  option combination macOS exposes transiently during a
+  Spaces transition and defer the update (bounded retry)
+  instead of setting it, rather than letting AppKit raise.
+
+2026-06-04: Add latest AI models and omit temperature for
+Opus 4.7+
+
+Add GPT-5.5 and GPT-5.5 Pro, Claude Opus 4.8, Opus 4.7, and
+Sonnet 4.6, and Gemini 3.5 Flash and Gemini 3.1 Pro. Repoint
+the default and recommended models to GPT-5.5, Claude Opus
+4.8, and Gemini 3.5 Flash.
+
+Opus 4.7 and later reject the deprecated `temperature`
+request parameter with HTTP 400, so add a
+supportsTemperature flag to AIMetadata.Model (defaulting to
+true) and have the Anthropic request builder omit
+temperature when it is false. Set it false on Opus 4.8 and
+Opus 4.7.
+
+Captured refusal fixtures for the seven new models and
+verified smoke, refusal, and tool-call round-trips against
+the live vendor APIs.
+
 2026-06-03: AI command safety: quote-aware hard rules and
 provider-agnostic classifier
 
