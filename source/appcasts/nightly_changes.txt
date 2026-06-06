@@ -1,3 +1,212 @@
+2026-06-05: Fix porthole copy and click-to-activate
+
+Copy from a porthole declared an RTF pasteboard type even
+when writing plain text, so RTF-preferring paste targets
+received empty data. Declare the content type that matches
+what each mode writes.
+
+Clicking a porthole in an inactive split pane did not
+activate the pane because the porthole text view refuses
+first responder. Forward its mouseDown to make the
+containing PTYTextView first responder.
+
+2026-06-05: Add session restoration and process reattachment
+doc
+
+Document how iTerm2 restores windows at launch and
+reconnects restored sessions to surviving multiserver daemon
+children via partial attachments, including the two-phase
+attach, the timeout/orphan-adoption fallback, the
+non-restoration partialAttachments:nil path, and how this
+interacts with macOS NSWindowRestoration (GUID handshake,
+completion-block placement, and the fullscreen deferral).
+
+2026-06-05: Persist and restore workgroup peers across app
+restart
+
+Workgroup peer-group members (Diff, Code Review) were
+runtime-only and were never saved, so an app restart (e.g. a
+Sparkle upgrade) lost them: peers are born buried and fail
+to register with iTermBuriedSessions, and the peer port /
+instance live only in memory.
+
+Persist the workgroup as an opaque descriptor on the visible
+(anchor) member's arrangement, embedding the other (buried)
+members' arrangements and recording non-peer split/tab
+children by GUID. On relaunch, a coordinator rebuilds the
+workgroup by adopting the already-restored sessions
+(reattaching to their live servers when present) instead of
+spawning fresh ones.
+
+Details: - PTYSession owns a single opaque
+SESSION_ARRANGEMENT_WORKGROUP key; all
+  schema lives behind iTermWorkgroupRestoration, with a
+  recursion guard so embedded members don't re-embed.
+- WorkgroupRestorationCoordinator gathers anchors during
+restore and
+  reconstructs each once its window is ready; idempotent and
+  re-armed from the restorable-state-controller completion,
+  the post-restoration block, and
+  iTermDidDecodeWindowRestorableState.
+- iTermWorkgroupInstance.adopt is a pure-wiring sibling of
+enter that
+  reuses a shared assemble helper; peers without a restored
+  session (not-yet-started deferred peers) are spawned fresh
+  so they come back with their Code Review / Diff overlay
+  rather than a stray shell. The anchor's overlay is
+  re-presented when it was pending.
+- Reconstruct runs before orphan-server adoption so live
+peers are
+  reattached, not pulled into stray windows.
+- iTermWorkgroupController resolves any member session to
+its leader so
+  Exit Workgroup works when a non-leader peer is focused.
+- The Enter Workgroup trigger no-ops while a session is
+being restored
+  into a workgroup, to avoid spawning a duplicate.
+
+Adds WorkgroupRestorationTests covering adopt wiring,
+idempotency, anchor != leader, non-peer children,
+spawn-fresh for not-started peers, pending-flag encoding,
+trigger suppression, and the recursion guard.
+
+2026-06-05: Add a help button to the Workgroups settings
+pane
+
+- Add a circular "?" help button in the bottom-right of the
+  Workgroups editor that opens the Workgroups documentation
+  via the canonical (version-agnostic) URL.
+- Align the detail pane's bottom with the table so the
+button
+  sits in a clear bottom strip.
+- Show the "?" button only when a workgroup is selected,
+since
+  the empty state already has its own "What is a Workgroup?"
+  button. The two are now mutually exclusive.
+- Shorten the "What is a Workgroup?" popover to a single
+  sentence that links to the full documentation.
+
+2026-06-05: Fix all build warnings
+
+Compiler (Swift + ObjC): - Remove no-op as? downcasts and
+unnecessary ?? on non-optionals - var->let, missing switch
+case, unused var - Break a retain cycle, make implicit-self
+explicit, add @dynamic
+  for inherited/forwarded properties, add missing protocol
+  stubs
+- (void)-cast a warn_unused_result call
+
+Nullability: - Annotate VT100TerminalDelegate,
+VT100RemoteHost, iTermKeyMappings.
+  VT100TerminalDelegate nullability was driven by a full
+  audit of the implementation and every call site, tracing
+  ObjC nil-propagation (token.string/.savedData/.subtokens,
+  dataUsingEncoding:, dict[key], stringForAsciiData, and
+  nullable receivers like self.config).
+
+Resilient-coordinate protocol conformances: - Move
+Swift-@objc-protocol conformances out of
+forward-declaration-only
+  public headers into class extensions / a new
+  VT100ScreenMutableState+RCDataSource category, mirroring
+  the existing VT100ScreenState+RCDataSource pattern. Kills
+  the repeated "cannot find protocol definition" warnings.
+
+Global search RC data source: -
+iTermGlobalSearchEngineCursor passed a non-conforming
+PTYSession* as the
+  ResilientCoordinate data source (would hit an unrecognized
+  selector on rcGuid). Add
+  VT100Screen.resilientCoordinateDataSource (the main-thread
+  RC pool) and use it.
+
+AI-chat Swift concurrency: - nonisolated(unsafe) for
+deinit/main-hop captures, nonisolated static let
+  for sentinel strings, MainActor.assumeIsolated for on-main
+  UI closures, @preconcurrency on the
+  MessagePrepPipelineDelegate conformance.
+
+MainMenu.xib: - Give the Exit Workgroup / Next Peer /
+Previous Peer menu items their own
+  identifiers (they were copy-pasted duplicates) and add
+  matching entries to MainMenuMangler's icon map.
+
+2026-06-05: Git diff menu: exclude untracked files from
+per-file statuses
+
+The workgroup code-review/diff feature requests git state
+with includeDiffStats=YES, which enabled rename detection in
+the service-side status walk. Combined with
+INCLUDE_UNTRACKED, libgit2 hashed the contents of every
+untracked file in the tree for rename similarity. In a
+working copy littered with large untracked files this
+exceeded the git timeout, so the poll never returned: the
+diff toolbar stayed empty and the diff peer hung on "Diff
+session is waiting for changes".
+
+Split the single status_list pass into two: a count pass
+(untracked included, no rename detection) for
+dirty/adds/deletes, and a separate fileStatuses pass
+(untracked excluded, rename detection over tracked files
+only) for the diff menu. The diff menu already filtered
+untracked entries out of its display, so dropping them at
+the source changes no visible behavior there while
+eliminating the expensive hashing.
+
+Because untracked files no longer reach the menu, they no
+longer constrain the shared-directory prefix used to shorten
+displayed paths; labels for tracked changes now shorten
+against only the tracked files, which is more predictable
+than depending on incidental untracked clutter. Updated the
+now-stale comment in CCDiffSelectorItem and extracted the
+prefix/shortening logic into testable helpers.
+
+The status bar component is unaffected: it uses
+includeDiffStats=NO (only the workgroup sets it YES) and
+reads dirty/branch/ahead, not fileStatuses, so its code path
+and counts are unchanged.
+
+Adds integration tests that build real git repos in temp
+dirs and read them back through iTermGitClient, plus unit
+tests pinning the diff menu's path-shortening behavior.
+
+2026-06-05: Code review overlay: default to last-used prompt
+on reload
+
+When a code-review-mode session re-presents the prompt
+overlay (toolbar reload or broken-pipe restart), default to
+the prompt the user last submitted, whether a preset or a
+hand-edited value, instead of reverting to the store's
+last-selected preset.
+
+Adds a per-session codeReviewLastUsedPrompt recorded on
+submit and used as the overlay default when present; the
+first presentation still falls back to
+CodeReviewPromptStore.defaultPromptText.
+
+2026-06-04: Workgroup peer switcher: spin an activity
+indicator while a peer works
+
+NSSegmentedControl draws segments through NSSegmentedCell
+rather than hosting per-segment subviews, so there is no
+view whose frame can host an NSProgressIndicator.
+WorkgroupPeerSegmentedCell overrides
+drawSegment(_:inFrame:with:) to capture the exact rect
+AppKit computes for each segment;
+WorkgroupPeerSegmentedControl uses that rect to lay a
+PSMProgressIndicator over the segment's leading edge. A
+transparent reserved image keeps the label from sitting
+under the spinner.
+
+iTermWorkgroupPeerPort observes iTermSessionTabStatus
+changes, maps the session GUID to its peer identifier, and
+fans the busy state across every peer's switcher (all
+switchers mirror the full peer set). The working
+determination reuses
+WorkgroupIntrospection.state(forTabStatus:) so the
+definition of working stays in one place; seedBusyStates()
+catches peers already working at construction time.
+
 2026-06-04: Cockpit: watch statusless sessions by screen
 observation
 
