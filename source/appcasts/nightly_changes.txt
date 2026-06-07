@@ -1,3 +1,137 @@
+2026-06-06: Add option to merge workgroup statuses in the
+Session Status tool
+
+When enabled, each workgroup collapses to a single row whose
+representative is the highest-priority status, with ties
+broken by the most recent update. Solo sessions remain
+individual rows. When disabled, the prior per-session
+behavior is preserved.
+
+The Session Status model is now split into the full
+per-session list and a table-facing displayedStatuses that
+the merge rebuilds.  Selecting the active session also maps
+through the workgroup so the merged row highlights when any
+peer is focused.
+
+2026-06-06: Populate Jobs toolbelt immediately for restored
+sessions
+
+The Jobs toolbelt was empty after restoring a session and
+only filled in once the next job launched or a shell prompt
+arrived. The tool roots its tree at the session's
+effectiveRootPid variable, which is set by
+setCurrentForegroundJobProcessInfo: and only when a
+foreground-job recompute runs. A reattach during restoration
+never spawned the shell through the normal launch path, so
+nothing recomputed the foreground job: the variable stayed
+unset and sessionProcessInfoProviderDidChange: never fired,
+so the toolbelt was never refreshed with the live pid.
+
+taskDidRegister: (the unified main-thread callback fired by
+every job manager once the pid is live, on both fork and
+attach) now calls updateTitles, which recomputes the
+foreground job, establishes effectiveRootPid, and refreshes
+the toolbelt right away.
+
+2026-06-06: Fix Fold All and Clear Buffer leaving portholes
+behind
+
+Inline views (portholes, e.g. imgcat output) were left on
+screen after Fold All and Clear Buffer.
+
+Fold/unfold: folding a region containing a porthole now
+hides its view via intervalTreeDidHideObject and unfold
+restores it via intervalTreeDidUnhideObject, scoped to the
+fold reason so porthole add and resize (which share
+reallyReplaceRange:) are unaffected.
+
+prunePortholes: now keys porthole-view lifetime off whether
+the mark still occupies a valid location in the interval
+tree (coordRange), not off mark deallocation. The progenitor
+PortholeMark outlives its removal via its doppelganger, so
+the old registry-nil predicate never fired for Clear Buffer.
+Pruning also drops the registry references to break that
+retain cycle and avoid leaking the porthole and its saved
+lines.
+
+Permanent fold removal: a fold destroyed without unfolding
+(Clear Buffer or scrollback overflow) carries away portholes
+stashed in its savedITOs.  A new
+intervalTreeDidPermanentlyRemoveHiddenObject signal reclaims
+them, fired only from the genuinely-permanent removal sites
+(removeObjectsFromIntervalTree: and
+removeInaccessibleIntervalTreeObjects) rather than the
+shared didRemoveObjectFromIntervalTree: hook, which is also
+used for temporary remove and re-add patterns.
+forciblyRemovePorthole drops the registry references
+unconditionally so a never-hydrated porthole (restored
+already folded, then cleared) is not leaked.
+
+Also suppress Core Animation's implicit order-out fade when
+a porthole is removed as part of folding or clearing, so it
+disappears instantly like the surrounding text.
+
+Adds PortholeFoldClearTests covering the fold/unfold/clear
+signalling.
+
+2026-06-06: Fix IntervalTreeGraphEncodingTests compile break
+
+VT100RemoteHost's initWithUsername:hostname: is inside
+NS_ASSUME_NONNULL and returns a non-optional, but these
+tests bound it with `guard let`, so the file never compiled
+and blocked the whole ModernTests target. Convert the
+optional bindings to plain `let`.
+
+2026-06-06: Add a process inspector popover to the Jobs view
+
+In the Jobs view (toolbelt and status bar popover):
+
+- Hovering a row shows the full, untruncated command
+  as a tooltip.
+- Pressing space, or clicking a new inspect button
+  (magnifyingglass) in the bottom-right corner, opens an
+  inspector popover for the selected process.
+
+The popover shows the full command, working directory
+(fetched asynchronously), process ID, start time (which
+ticks while open), the environment (sorted by variable
+name), and a table of open files and network connections.
+Command, working directory, and process ID each have a copy
+button that shows a Copied toast.
+
+Environment and file descriptors are parsed from
+KERN_PROCARGS2 and PROC_PIDLISTFDS/proc_pidfdinfo via new
+iTermLSOF methods (environmentForProcess: and
+fileDescriptorsForProcess:, the latter decoding socket
+protocol, addresses, ports, and TCP state).
+
+2026-06-06: Fix next/previous pane while maximized after
+restarting a session
+
+While a pane is maximized, -orderedSessions builds the
+reading-order list from a snapshot captured at maximize
+time. That snapshot was keyed by session GUID, but Session >
+Restart Session assigns the same session and SessionView a
+fresh GUID (see -[PTYSession
+replaceTerminatedShellWithNewInstance]). After a restart the
+snapshot's old GUID no longer resolved, the active session
+fell out of orderedSessions, -sessionInDirection: returned
+nil, and Next/Previous Pane (cmd-[ / cmd-]) silently did
+nothing.
+
+Key the snapshot by idMap_ keys instead of GUIDs. idMap_ is
+the structure every while-maximized mutation already keeps
+current (peer swaps, and synthetic-session teardown in
+-showLiveSession:inPlaceOf:), so resolving the order through
+it survives a pane getting a new GUID or a new SessionView
+without the snapshot drifting out of date. This also fixes
+the analogous breakage when exiting a synthetic session
+(instant replay, filter, screenshot) that was active when
+the tab was maximized. Reading order is preserved; the MRU
+branch is untouched.
+
+Add a -sessionInDirection: canary log for any future drift.
+
 2026-06-05: Fix porthole copy and click-to-activate
 
 Copy from a porthole declared an RTF pasteboard type even
