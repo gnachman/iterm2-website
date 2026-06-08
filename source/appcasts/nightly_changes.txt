@@ -1,3 +1,106 @@
+2026-06-07: Centralize notify-on-status-change and surface
+it in the Cockpit
+
+Move per-window notify-on-status-change out of the Session
+Status toolbelt tool into a new
+iTermNotifyOnStatusChangeController so it works regardless
+of toolbelt visibility, and add a per-session scope on top
+of it. One-shot semantics are preserved: a watched session
+changing status shows a single alert and disarms. A change
+that satisfies both a session watch and its window watch
+consumes both but alerts once.
+
+- ToolStatus bell now toggles the centralized state for the
+selected
+  session, or the window when nothing is selected, and shows
+  a per-row bell indicator for armed sessions.
+- The Window menu routes through the controller by terminal
+guid.  - The Cockpit gains a bell toolbar item that arms the
+selected window or
+  session, with an accent-colored bell shown at the leading
+  edge of armed rows.
+- The Cockpit panel uses the utility-window style so it no
+longer dims
+  distractingly when it loses key status.
+
+2026-06-07: Show session detail under name in Cockpit
+group-by-status mode
+
+In group-by-status mode, session rows now render their live
+detail string (OSC 21337 detail=...) on a second line under
+the session name, in a smaller, dimmer font. The detail is
+markdown, so it is rendered with the shared
+AttributedStringForGPTMarkdown renderer and scaled down to
+the detail size. Rows without a detail stay single-line and
+unchanged. The diff path reloads and recomputes row height
+when a session publishes or clears its detail.
+
+2026-06-07: cc-status: only re-deploy the symlink when
+launching a newer version
+
+The launch-time refresh re-pointed the cc-status symlink at
+the running app's bundle binary unconditionally, so
+launching an older build would downgrade the deployed
+cc-status. Gate the refresh on the running version being
+newer than the previous launch (compared with the canonical
+SUStandardVersionComparator via -[iTermApplicationDelegate
+version:newerThan:], which honors minor/build components),
+while still repairing a missing or broken symlink on any
+launch.
+
+Adds ccStatusSymlinkIsHealthy() for the repair-anyway branch
+and a private declaration of version:newerThan: so the
+earlier call site sees the correct BOOL return type.
+
+2026-06-07: Update menu item shortcuts spreadsheet
+
+2026-06-07: Add Notify on Status Change to Session Status
+tool
+
+Add a bell toggle to the bottom-left of the Session Status
+toolbelt tool. When armed, the next net change to any
+visible session's status text (waiting/idle/busy, not
+detail) shows an NSAlert and disarms itself. The transition
+is evaluated on the coalesced debounce flush against the
+controller's current status text, so a brief flicker that
+returns to the armed-time value does not alert.
+
+Also expose the same per-window toggle as Window > Notify on
+Status Change (shift-cmd-X), with a menu icon and help tip.
+
+2026-06-07: cc-status: humanize unknown tool names and
+extract better detail
+
+The PermissionRequest detail fell through to the raw tool
+identifier for any tool without an explicit case, leaking
+internal keywords like "AskUserQuestion" into the UI as
+"Allow AskUserQuestion?".
+
+- Humanize unknown tool names (AskUserQuestion -> Ask User
+Question) so a
+  raw keyword never reaches the UI.
+- AskUserQuestion and ExitPlanMode are not permissions to
+grant; show the
+  question text / "Review proposed plan?" instead of "Allow
+  ...?".
+- Extract the identifying field for MultiEdit (file_path),
+NotebookEdit
+  (notebook_path), and Task (alias of Agent, description).
+
+2026-06-07: Move +/- above checkboxes and add tooltip to
+Merge workgroup statuses
+
+In the Session Status settings popover, reorder the layout
+so the +/- segmented control sits above the checkboxes
+(between the table and the two toggles). Add a tooltip to
+the Merge workgroup statuses checkbox explaining that only
+the most recent status from each workgroup is shown.
+
+2026-06-07: Show suite name in Settings window title
+
+When launched with -suite <name>, the Settings window title
+now reads "Settings: <name>" instead of just "Settings".
+
 2026-06-06: Add option to merge workgroup statuses in the
 Session Status tool
 
