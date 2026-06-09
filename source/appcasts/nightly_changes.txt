@@ -1,3 +1,184 @@
+2026-06-08: CI: pin Xcode to 26.4 and unmask xcodebuild exit
+code
+
+The Run tests step captured $? after piping xcodebuild
+through tee, which always exits 0, so a failing build or
+test run reported as a pass. Use ${PIPESTATUS[0]} to read
+xcodebuild's real exit code.
+
+Also bump the selected Xcode from 26.2 to 26.4 so CI matches
+the version the committed prebuilt binary dependencies were
+built with; otherwise the dependency build phase regenerates
+them and fails.
+
+2026-06-08: AI live test cassettes: recordings,
+deterministic fixtures, and CI
+
+Test-side work for the cassette record/playback layer (the
+production seam landed separately). All offline; no
+production code.
+
+- Record the full cassette set
+(ModernTests/Resources/AICassettes) so the AI
+  live suite replays for free; the whole suite passes
+  offline.
+- Recorder skips cancelled requests so a slow-model timeout
+can't poison a
+  cassette.
+- Make the PDF and ZIP attachment fixtures deterministic:
+commit them static
+  (loaded via loadDiskFixture) instead of generating per
+  run, which embedded a timestamp (PDF /CreationDate, ZIP
+  mtime) and defeated caching. Generators stay behind an
+  opt-in regeneration test.
+- Make the chat-queue tests cacheable: a fixed,
+still-unguessable tool-output
+  marker instead of a random one, plus the one stray request
+  replay's instant timing produces.
+- Fix AISafetyRefusalParserTests /
+AIMetadataFixtureCoverageTest: timed-out
+  captures were being written as refusal fixtures and
+  choking the parser. The capture now refuses to write a
+  failed request, the parser test skips any stragglers,
+  gemini-3.5-flash was re-captured, and gpt-5.5-pro (blocked
+  at HTTP 400 by OpenAI's cyber_policy filter) is exempted
+  from coverage.
+- CI: write a replay-mode config before the test run so the
+harness replays
+  the committed cassettes instead of skipping itself.
+
+2026-06-08: Persist auto-approved tool requests instead of
+squelching them
+
+Auto-approved (.always) and auto-denied (.never) tool calls
+dropped the
+.remoteCommandRequest from the chat DB and kept only the response, so the
+next turn rebuilt a history with an orphan tool_result (a
+tool_result with no matching tool_use) that vendors 400.
+This has been the behavior since the original AI Chat
+commit; translate's orphan synthesis (added later) healed it
+only on the next turn and was one-directional.
+
+Fix the root cause: persist the request.
+
+- ChatClient.processRemoteCommandRequest (.always/.never)
+now appends the
+  request to listModel before running/denying the tool, then
+  still returns nil so it is not broker-delivered to the
+  live UI. History is complete going forward; no new
+  orphans.
+- ChatViewControllerModel hides a .remoteCommandRequest
+whose matching
+  .remoteCommandResponse exists (resolvedRequestIDs), so the
+  persisted request never shows a stray Allow/Deny prompt.
+  Live UI is unchanged (auto requests are never
+  broker-delivered); this also drops stale buttons on
+  reloaded .ask requests. No Message.Content change
+  (synthesized Codable would break existing chat DBs), so
+  old data decodes untouched.
+
+Tests: - ChatRestoreToolUsePersistenceTests: restores
+(Codable round-trip) a chat
+  DB from three eras and asserts the rebuilt LLM prompt is
+  valid with no duplicate synthesis: old (orphan-only),
+  mixed (old orphans + new pairs), future (all persisted
+  pairs). Plus the view-model hide rule.
+- AILiveHarness: a live orphan negative control. The
+positive
+  chatReload_orphan test proves a vendor ACCEPTS a repaired
+  orphan; the negative control sends the same orphan WITHOUT
+  repair (ChatAgent.transcriptMessagesBeforeRepair) and
+  asserts the vendor REJECTS it with HTTP 400. Together they
+  prove the repair is necessary and sufficient, so the
+  positive test can't pass by accident. Verified live:
+  Anthropic and OpenAI 400 the un-repaired orphan; both
+  accept the repaired one.
+- Retire
+test_chat_squelchedToolUseHistoryDoesNotBreakNextTurn and
+its
+  SquelchingToolProcessor: it verified orphan repair through
+  a multi-turn chat where the model nondeterministically
+  re-called the tool (flaky), and its coverage is now served
+  deterministically by the restore tests and the live
+  positive/negative pair.
+
+2026-06-08: Add record/playback cassettes for AI live tests;
+fix chat streaming threading
+
+The live AI harness hit real vendor APIs on every run. Add a
+cassette layer that records request/response pairs and
+replays them offline so the suite can run for free once
+recorded.
+
+- iTermAIClient gains requestInterceptor (replay) and
+responseRecorder
+  (record) hooks at the single network chokepoint; nothing
+  in the shipping app sets them.
+- AICassette.swift canonicalizes each request (redacts API
+keys, maps
+  UUIDs and the multipart boundary to stable tokens, sorts
+  JSON keys) so byte-identical logical requests hit the same
+  cassette. Errors delivered as streamed content (e.g. an
+  OpenAI quota error mid-stream) are not recorded, so they
+  cannot poison a cassette.
+- Modes off/auto/replay/record via
+ITERM2_AI_LIVE_CASSETTE_MODE; each
+  request logs HIT/MISS/RECORD so it is clear whether a
+  value came from cache or the wire.
+- The cassette session installs in setUpWithError so
+chat-queue tests that
+  bypass AILiveDriver are covered too.
+
+Also fixes a real streaming bug that replay surfaced:
+AITermController delivered stream .word events on
+iTermAIClient's background queue, but they drive the
+@MainActor chat stack (ChatService to ChatBroker to SQLite).
+Tight replay delivery tripped SQLite's multi-threaded access
+guard every time; live only raced occasionally. Hop .word to
+main like the begin path already does.
+
+And treat an exact HTTP 400 as a valid refusal in the
+refusal scenario (OpenAI's gpt-5.5 family blocks the
+phishing prompt at the API layer instead of refusing
+in-band), keyed strictly on the status code via a shared
+AILiveHarness.httpStatusCode helper.
+
+Recorded cassette data is kept locally and not committed
+yet.
+
+2026-06-08: Add @-mention of terminal sessions in
+orchestration chats
+
+Typing a word beginning with @ in an orchestration-mode AI
+chat opens a picker listing current sessions in a window >
+tab > pane > peer outline (peer level omitted when a pane
+has no peers), with a live preview of the highlighted
+session and a colored overlay on its real view. Choosing one
+inserts an atomic token that displays as the session name
+but serializes to @<session-guid>, matching the form the
+orchestrator emits and OrchestrationMentionRenderer parses.
+
+Details: - Extract the Open Quickly session preview into a
+reusable
+  iTermSessionPreviewPanel, shared by Open Quickly and the
+  picker.
+- Mentions render consistently across the picker, the
+inserted token, and
+  message bubbles via a single ChatMentionDisplay helper:
+  workgroup sessions are prefixed with their component role
+  (e.g. "Diff", "Code Review"), with the colon omitted when
+  the session has no title yet.
+- Peers list in the same order as the peer switcher control.
+- Window/tab rows show their activation shortcut
+(configurable modifiers).  - Mention rewriting is gated to
+orchestration chats so ordinary chats
+  never mutate user text containing an @<uuid>-looking
+  substring.
+- The picker placeholder advertises the feature.  - Per-chat
+drafts: switching chats clears the field but restores
+pending
+  (unsent) input, tokens and attachments included.
+
 2026-06-07: Centralize notify-on-status-change and surface
 it in the Cockpit
 
