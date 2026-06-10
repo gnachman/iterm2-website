@@ -1,3 +1,173 @@
+2026-06-09: Add Reveal button and live window membership to
+status-change alerts
+
+The notify-on-status-change alert now offers a Reveal button
+that jumps to the session whose status changed, shown only
+when the session can still be resolved.
+
+Replace the frozen per-window snapshot with a running
+lastSeenStatusText baseline so a window watch covers every
+session in the window, including ones created after it was
+armed. Session scope keeps a one-shot arm-time baseline that
+folds in any in-flight change so arming within a debounce
+window does not fire spuriously.
+
+2026-06-09: Wait for the page-saver test server to accept
+connections
+
+iTermTestHTTPServer launched python3 -m http.server and then
+slept a fixed 1 second before returning. On a cold or loaded
+CI runner the server can take longer than that to start
+listening, so testBasicPageSaving (the first test to hit it)
+failed with NSURLErrorCannotConnectToHost.  Poll the port
+with short TCP connects until one succeeds (up to 15s) and
+return as soon as it is accepting, instead of a fixed sleep.
+
+2026-06-09: Fix dropped completion handler in
+iTermAsyncStringConversion
+
+The conversion is dispatched to a background queue from
+init, but callers set completionHandler after init returns
+(both VT100Parser and the unit test do). If the background
+work finished before the handler was assigned, the handler
+was never called: VT100Parser's sOutstandingPreconvertBytes
+backpressure counter would never be decremented for that
+conversion, and testAsyncCompletionHandlerCalled would time
+out. The race was timing-dependent and only showed up on the
+slower CI scheduler.
+
+Deliver completion exactly once under the mutex, from
+whichever side loses the race: the background completion
+fires the handler if it is already set, and the setter fires
+it if the work already finished. Also makes
+completionHandler access thread-safe (previously read on the
+background queue while written on the caller thread).
+
+2026-06-09: Commit image attachment fixtures as static files
+
+The imageHEIC matrix cells and the imageDescribe scenario
+rendered their images at runtime. Those encoders are
+host-dependent: HEIC's HEVC encoder varies by OS
+build/architecture, and the imageDescribe PNG used
+NSImage.lockFocus, which encodes at the screen's backing
+scale (Retina dev machine vs headless runner). The bytes
+therefore differed on the macos-26 CI runner from what the
+cassettes were recorded with, so the canonical request hash
+missed and replay (no network) failed with a provider error.
+
+Freeze magic.png/heic/tiff and number.png as committed
+fixtures, like magic.webp/pdf/zip already are, and load them
+from disk. Generated on the recording host so they match the
+existing cassettes (verified by replaying every image cell
+offline: 0 failures, all served from cassettes), so no
+re-recording was needed. Split the regeneration into
+image-only and timestamped paths so refreshing the images
+does not churn the pdf/zip timestamps and invalidate their
+cassettes.
+
+2026-06-09: Re-fit grid and scrollview when entering/leaving
+instant replay
+
+The instant replay session swaps in PTYTab set newView.frame
+= oldView.frame and replace the subview, but when the frame
+size is unchanged this does not fire
+-resizeSubviewsWithOldSize:, so the incoming SessionView
+keeps a stale scrollview frame. The synthetic and live
+SessionViews can also differ in chrome (e.g. a per-pane
+status bar), so the session grid and its scrollview height
+end up inconsistent by a few lines.
+
+That inconsistency produced two bugs:
+
+1. While in instant replay, the scrollview was taller than
+the grid, so
+   -coordForPoint: mapped clicks a couple of lines below the
+   cursor and dragging selected the wrong lines.
+2. After leaving instant replay, the scrollview was shorter
+than the
+   grid, so the userScroll=NO bottommost-rect drawing
+   disagreed with the userScroll=YES scroll-position
+   drawing. The first mouse-down (which sets userScroll=YES)
+   jumped the content by a few lines and revealed a stale
+   history line.
+
+Fix both swap paths to run the same re-fit the peer-swap
+path (-sessionActivateSession:) already does:
+fitSessionToCurrentViewSize: (guarded for tmux) plus
+-layoutContentsForNewlyActiveSession. On enter this happens
+in -setDvrInSession: before -setDvr: so the synthetic grid
+matches its view before the first frame; -setDvrFrame then
+resizes to the recorded frame size. On exit it happens after
+the live view is swapped back in.
+
+Also adds DLogs at the swap points and in -coordForPoint: to
+make the grid-vs-scrollview relationship visible in debug
+logs.
+
+2026-06-09: Fix FakeSession conformance after Exit Workgroup
+leaderOnly rename
+
+142d3d6af renamed the delegate method to
+triggerSideEffectExitWorkgroupLeaderOnly: but updated the
+FakeSession test mock to
+triggerSideEffectExitWorkgroup(leaderOnly:), whose ObjC
+selector differs, so FakeSession no longer satisfied
+iTermTriggerSideEffectExecutor and the ModernTests target
+failed to compile. The app targets build without the test
+target, so it slipped through locally, and CI was masking it
+via the xcodebuild exit-code bug. Rename the mock method to
+match the protocol.
+
+2026-06-09: Rebuild binary deps with Xcode 26.5; run CI on
+macOS 26 with 26.5
+
+The committed prebuilt dependencies were rebuilt from clean
+with Xcode 26.5 (17F42), and last-xcode-version updated to
+match. The build phase gate compares xcodebuild -version
+against last-xcode-version byte for byte, so CI has to use
+the same toolchain.
+
+GitHub's macos-15 image tops out at Xcode 26.3, so switch
+the xcode-tests job to the macos-26 runner and select Xcode
+26.5, which matches the toolchain the deps were built with.
+
+2026-06-09: Make Exit Workgroup teardown leader-only and
+job-ended detection event-driven
+
+Reloading or killing claude in a Claude Code workgroup peer
+(Code Review or Diff) tore down the whole workgroup: peers
+inherit the leader's profile, which carries the claude-code
+"Job Ended: claude" Exit Workgroup trigger, so a peer's
+claude ending fired it.
+
+- Add a leaderOnly option to ExitWorkgroupTrigger (stored in
+eventParams,
+  surfaced via a new Trigger.hasLeaderOnlyOption property).
+  When set, the trigger only tears down the workgroup if it
+  fired on the leader (main) session. The installer sets it;
+  a hand-made trigger defaults to the legacy
+  fire-from-any-session behavior.
+- Surface it as a checkbox in the trigger editor, shown for
+any match
+  type (so a regex-based Exit Workgroup trigger can toggle
+  it too), and collapse the empty parameter row for
+  parameter-less triggers.
+- Drive job started/ended from an iTermProcessCache
+foreground-ancestry
+  notification instead of inferring it from the periodic
+  title poll, so a job's termination is detected reliably
+  even when it dies together with the session (the poll
+  froze in that case). The cache emits a final
+  empty-ancestry change on unregister. The session matches
+  the effective tracked pid (tmux client pid for tmux
+  sessions, else the shell pid).
+- Migrate existing installs: on upgrade from a
+pre-leaderOnly build
+  (<= 3.7.0beta3 or the 2026-06-08 nightly) set leaderOnly
+  in place on existing claude Exit Workgroup triggers, once,
+  on the version transition. Reinstalling also replaces an
+  older flagless trigger.
+
 2026-06-08: CI: pin Xcode to 26.4 and unmask xcodebuild exit
 code
 
