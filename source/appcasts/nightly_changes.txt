@@ -1,3 +1,29 @@
+2026-06-11: Add AI-generated icons to the chat list
+
+After the AI titles a chat, ask the configured model to draw
+an SVG icon for the title, rasterize it (sandboxed-worker
+validity gate plus in-process vector draw with the
+fixedSVGData defs/use repair), and show it circle-clipped
+next to the chat name. Chats without an icon show a default
+chat-bubble icon. Forked chats inherit the source chat's
+icon.
+
+The prompt is editable in Settings > General > AI > Prompts
+(Chat List Icon) and interpolates the title as
+\(ai.subject); the Settings warning and help text cover the
+new prompt. Prompt-template evaluation is unified in
+AIPromptTemplateEvaluator (one-shot
+iTermExpressionEvaluator, shared by Engage AI,
+orchestration, and the icon prompt). One-shot AIConversation
+retention is unified in completeOneShot, replacing the
+per-site stored-property and static dictionary patterns, and
+the rename flow no longer leaks its conversation on
+asynchronous failure.
+
+The icon is stored as a 128px PNG blob in the Chat table
+(with migration), invalidated on title change, cached by the
+cell view, and icon-only updates reload a single list row.
+
 2026-06-10: Add companion icon to sketch file
 
 2026-06-09: Add Reveal button and live window membership to
