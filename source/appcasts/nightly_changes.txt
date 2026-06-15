@@ -1,3 +1,54 @@
+2026-06-14: Fix Session Status loss and harden workgroup
+lifecycle
+
+Session Status tool: - A per-tab status aggregate borrowed
+the winning session's GUID and
+  broadcast its clear() globally, so switching workgroup
+  peers evicted the real session's still-live status from
+  SessionStatusController.  The copyStatus() aggregate no
+  longer broadcasts.
+- Rows whose session can't be resolved render blank instead
+of showing
+  a recycled cell's content; per-reload session resolution
+  is memoized.
+
+Workgroup lifecycle: - Track instances by a stable
+identifier so a workgroup whose leader
+  already closed can still be exited and torn down instead
+  of leaking.
+- Guard mid-spawn teardown reentrancy and close stray spawns
+so a
+  member dying during entry can't leak shells or register a
+  ghost.
+- Refuse entry consistently across menu, triggers, and
+controller
+  through one predicate; restoration uses a counted multiset
+  and a monotonic soft deadline.
+
+Session lookup and reveal: - anySessionWithGUID also
+searches buried peer ports and the workgroup
+  registry so windowless peers resolve; reveal surfaces them
+  by retrying the swap or reviving into a window.
+
+Adds ModernTests coverage for the above.
+
+2026-06-14: Add window.title variable for the rendered
+window title
+
+Holds the undecorated window title bar text (minus the
+window-number prefix, bell, and transient size readout),
+parallel to session.presentationName and tab.title. Updated
+in -setWindowTitle and registered for variable-name
+completion in the window context.
+
+2026-06-14: Add a Variable Changed trigger match type
+
+Fires when a named session-scope variable changes to a value
+matching an optional regex. The evaluator registers an
+iTermVariableReference observer per such trigger; the Add
+Trigger UI gets a variable-name field (with completion) and
+a value-regex field.
+
 2026-06-12: improve code review system message
 
 2026-06-11: Add AI-generated icons to the chat list
