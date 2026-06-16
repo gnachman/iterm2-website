@@ -1,3 +1,33 @@
+2026-06-15: Tell claude not to be a dumbass
+
+2026-06-15: Fix live filter dropping content delivered
+mid-search
+
+When a line was delivered to an AsyncFilter while a search
+pass was already in progress (lastPosition == nil,
+context.status == .Searching),
+FilteringUpdater.didAppendToLineBuffer() left stopAt at the
+value computed before the append. The in-flight
+findSubstring therefore stopped at the stale boundary and
+never examined the new line, so it was missing from the
+filtered view until a later delivery re-triggered begin().
+With the 60Hz cadence and 10ms time slice this window is
+narrow in production, but under ASan (CI) a single search
+pass can exceed the slice, making it reproducible:
+AsyncFilterDeliveryQueueTests
+testDeliveriesQueuedDuringCatchUp failed within ~15-20
+iterations.
+
+Recompute stopAt = computedStopAt on every append so an
+in-progress search extends to cover newly delivered content.
+For a bounded absLineRange (a selected command) this is a
+no-op since computedStopAt stays pinned to the range
+boundary, which is correct: content past the selected region
+should not be filtered.
+
+Adds tests/filter_midsearch_repro.sh for manual end-to-end
+checking.
+
 2026-06-14: Fix Session Status loss and harden workgroup
 lifecycle
 
