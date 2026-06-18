@@ -1,3 +1,102 @@
+2026-06-17: Turn on companionPairingAllowed
+
+2026-06-17: Bump build to 3
+
+2026-06-17: Add tools/tail_server_logs.sh to tail relay
+Worker logs
+
+2026-06-17: Rewrite companion relay design doc for clarity
+
+Revise companion-relay-design.md section by section: drop
+the unshipped Bonjour/LAN transport, lead with what the
+relay is before implementation detail, define terms before
+use, and check every value against the relay submodule and
+client code. Add wire-level message diagrams for the pairing
+and reconnect flows. Remove the low-value Cost model, Future
+work, and Implementation sketch sections.
+
+Fold the useful parts of companion-relay-dataflow.md into
+the design doc (the at-rest storage inventory and the
+per-location compromise summary) and delete it. Move the
+push notification flow to its own companion-push-relay.md,
+and strip the remaining push-relay detail from the relay
+doc.
+
+2026-06-17: Companion: iOS app, relay pairing, chat bridge,
+and onboarding
+
+Squash of the companion branch: the iTerm2 Companion iOS
+app, the Cloudflare relay + App Attest pairing flow, the Mac
+pairing/chat bridge, push notifications, and the What's New
+onboarding links (companion, Claude Code, orchestration,
+screenshot).
+
+Full commit history is preserved on the companion branch.
+
+2026-06-17: Remove support for Claude Opus 4 from AIMetadata
+
+Deletes the claude-opus-4-0 model definition and its entry
+in the model list, along with its now-orphaned refusal-shape
+fixtures.
+
+2026-06-15: Record llama text-cell attachment cassettes
+(llama3.3) and enable on CI
+
+Pin the llama attachment lane to llama3.3:latest: the
+multimodal llama4 (67GB) does not fit in this 64GB machine
+and is unusably slow (a single generation did not finish in
+10 minutes, swapping at 22%/78% CPU/GPU).  llama3.3 fits and
+loads in ~12s. It is text-only, so the lane records the six
+text-shaped cells (plain/markdown/json/xml/svg/yaml); the
+image and other binary cells are skipped rather than
+recorded, since a text-only model can't process them. A
+vision model that fits in RAM can light the image cells up
+later.
+
+Recorded the six cells against local Ollama; every cell
+reported accept+probe with no matrix drift. Committed the
+six cassettes and added LLAMA_API_KEY to the CI replay
+config so the runner exercises the lane from cassettes
+(verified: replays offline with a dummy key, 0 failures, no
+network). This recovers 6 of the 16 previously-dead llama
+skips as real round-trip coverage of the Ollama
+serializer/parser path.
+
+2026-06-15: Wire the llama attachment lane to local Ollama
+(llama4:latest)
+
+The llama lane was permanently stubbed to skip because there
+was no hosted API to record cassettes against. Local Ollama
+removes that reason, and the cassette layer is
+vendor-agnostic (it intercepts at the AIPluginClient
+transport chokepoint), so a recorded llama request/ response
+replays on CI with no Ollama needed.
+
+- resolveModel(.llama) returns llama4:latest (the multimodal
+default,
+  http://localhost:11434/api/chat) instead of throwing.
+- The lane is gated on LLAMA_API_KEY: Ollama needs no real
+key, but a
+  non-empty value enables the lane and satisfies the
+  driver's Registration. Unset (as in the CI replay config
+  today) it still skips, so this does not change CI behavior
+  until cassettes are recorded and the workflow opts in.
+- run_ai_live.sh forwards LLAMA_API_KEY so a local record
+run can enable
+  it: LLAMA_API_KEY=ollama
+  ITERM2_AI_LIVE_CASSETTE_MODE=record tools/run_ai_live.sh
+  attachmentMatrix_llama
+- The llama matrix cells are calibration placeholders (text
+accepts the
+  probe; binary cells guessed accept-but-garbled). Llama
+  posts the chat-completions image_url shape to Ollama's
+  native /api/chat, so whether the attachment is consumed is
+  unknown until the first record run reports actuals;
+  reconcile any drift then.
+
+Verified the lane still skips (16/16) under the keyless CI
+replay config, so the green build is unaffected.
+
 2026-06-15: Tell claude not to be a dumbass
 
 2026-06-15: Fix live filter dropping content delivered
