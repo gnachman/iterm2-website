@@ -1,3 +1,204 @@
+2026-06-18: AI: remove dead claude-sonnet-4-0 model and its
+fixtures
+
+The Anthropic model claude-sonnet-4-0 returns HTTP 404 for
+current API keys; it is no longer a reachable alias. Remove
+it from AIMetadata so the model picker and the per-model
+live harness sweeps stop offering it.
+
+Also delete the now-orphaned captured fixtures that only
+existed for this model: its two SafetyRefusalFixtures and
+the 16 AICassettes whose request body targets
+claude-sonnet-4-0. The live harness derives its model list
+from AIMetadata, so there are no per-model test methods to
+remove; the AIMetadataFixtureCoverageTest still passes
+because no remaining model lacks a refusal fixture.
+
+2026-06-18: AI chat: fix DeepSeek 400 on orphan tool call
+(#12883)
+
+When the chat prompt was rebuilt from history,
+ChatAgent.translate() appended the synthesized "interrupted"
+output for an unanswered tool call at the end of the
+transcript. If any persisted message sat between the orphan
+tool call and the end, the wire order became tool_calls ->
+user/agent text -> tool output, which DeepSeek and the
+legacy OpenAI chat-completions path reject with HTTP 400
+"insufficient tool messages following tool_calls message":
+those vendors require an assistant tool_calls message to be
+immediately followed by the tool output for each
+tool_call_id. The orphan arises when a tool call never gets
+a response, e.g. an .ask the user abandoned or a parked
+request cleared by cancelPendingCommands on the next user
+message.
+
+translate() now inserts the synthesized output immediately
+after its function call instead of at the end.
+AIChatToolCallRepair is made symmetric: alongside the
+existing orphan-tool-result repair it now has
+repairingOrphanedToolCalls (id-based and nil-id/adjacency,
+mirroring the result logic) and a combined
+repairingOrphanedToolPairs, so both reload entry points
+(load and the aiMessagesForReloadingTranscript seam) heal
+orphans in both directions. The filler text is now a shared
+constant.
+
+Tests: a live DeepSeek harness test reproduces the report
+and passes with the fix; new offline guards cover adjacency
+on reload and the symmetric repair.
+
+2026-06-18: fix tab height issue in vertical tabs (#683)
+2026-06-18: Re-park companion relay after a non-cancelled
+accept failure
+
+The accept loop treated TransportError.closed as a
+deliberate local teardown, so when the relay or edge closed
+the mac's parked socket (idle reap past the keepalive, a
+relay redeploy, a network change, or sleep/wake) the loop
+exited without re-parking. The mac went silently dark:
+paired, not parked, and unreachable by the phone until the
+next relaunch. Only a cancelled accept task is actually a
+local teardown (stopAdvertising, reached by unpair, gate
+close, peer unpair, and the pairing window closing), so
+re-park on every other failure. A closed park is routine
+churn and retries quietly; genuine faults still reach the
+user.
+
+Also make the settings screen reflect reality. "Paired but
+not connected" previously covered both a healthy parked mac
+and a broken un-parked one. Add isListening so the window
+shows three states (connected, parked-and-waiting,
+not-listening) and have the open window nudge
+resumePairedListeningIfNeeded when paired and allowed but
+neither connected nor listening, so a stalled listener
+self-heals.
+
+2026-06-18: Add a Lock Layout menu item
+
+Adds a per-window Lock Layout command to the Window menu,
+next to Lock Size and mutually exclusive with it (turning
+one on turns the other off). When a windows layout is locked
+it freezes: splitting panes, adding tabs, closing panes and
+tabs, reordering tabs, dragging panes, and moving panes or
+tabs to other windows are all prevented.  Resizing panes via
+the divider, opening new windows, and closing the whole
+window still work. The state is saved in window
+arrangements.
+
+Enforcement lives at a small number of choke points
+(asyncSplitVertically, closeSessionWithConfirmation,
+moveTabAtIndex, closeOtherTabs/closeTabsToTheRight,
+it_moveTabToNewWindow, createTabWithProfile, the tab-view
+close/drag delegates, MovePaneControllers move/drag, and
+PTYTabs drop handler), each keyed off the owning window, so
+the lock holds regardless of how the operation is triggered:
+menu, keyboard, context menu, drag, or the scripting API.
+validateMenuItem greys out the corresponding menu commands,
+including the New Tab family that targets the current
+window. createTabWithProfile only blocks adding a tab to a
+window that already has one, so opening a new window (and
+its first tab) still works.
+
+2026-06-18: feat(api): add select_tab to CreateTabRequest
+for background tabs (#675)
+
+The Python API's create_tab always selected the new tab and
+ordered its window to the front, stealing keyboard focus on
+every create. This is asymmetric with SplitPaneRequest,
+which never raises or steals focus, and there was no
+per-creation equivalent of ActivateRequest's select_tab /
+order_window_front controls (GitLab #8223).
+
+Add an opt-in optional bool select_tab = 6 on
+CreateTabRequest. Unset or true reproduces the historical
+behavior exactly; false creates the tab in the background
+without selecting it or raising its window. A brand-new
+window (its first tab) is still ordered front regardless.
+
+The window/focus motion came from three spots:
+insertTab:atIndex:'s makeKeyAndOrderFront: and its
+setCurrentTerminal:, plus the launcher's
+makeKeyAndActivateIfNeeded: (canActivate = NO only
+suppressed cross-app activation, not the in-app raise). All
+three are now gated: a new automaticallyOrderFrontNewTabs
+property (default YES) mirrors automaticallySelectNewTabs
+and guards the two insertTab: spots, and apiServerCreateTab:
+sets launcher.makeKey plus both term flags from select_tab,
+restoring them after the create.
+
+Python: Window.async_create_tab /
+iterm2.rpc.async_create_tab gain select: bool = True.
+
+Generated stubs regenerated with tools/build_proto.sh; wire
+format unchanged.
+
+Co-authored-by: G Six <localparty@gmail.com>
+
+2026-06-18: cc-status: resolve it2 relative to itself
+instead of via PATH
+
+The cc-status hook shelled out to it2 with /usr/bin/env it2,
+which depends on it2 being on $PATH. it2 is not in
+utilities-manifest.txt (so Install Shell Integration never
+symlinks it), and the utilities directory iTerm2 injects
+into the session env gets dropped by any shell rc that
+rewrites PATH (mise, asdf, perlbrew). When it2 was not
+found, cc-status wrote to stderr and exit(0), so the failure
+was silent and left the Session Status tool empty.
+
+cc-status is invoked through a stable symlink in iTerm2's
+dot dir that points at the cc-status binary inside the app
+bundle, where it2 ships right beside it. Resolve it2 by
+realpath-following our own argv[0] and running the sibling
+it2 by absolute path when present, falling back to
+/usr/bin/env it2 only when the sibling is missing.
+
+2026-06-18: Register Companion xcodeproj files in
+set_team_id.sh
+
+The pre-commit team-id check requires every project file
+with DEVELOPMENT_TEAM set to be listed in PROJECT_FILES. The
+two Companion projects added recently were missing, blocking
+commits.
+
+2026-06-18: Make "Bypass Terminal" reach Cocoa for
+function/arrow/keypad keys. Issue 12884.
+
+A key bound to "Bypass Terminal" is supposed to skip the
+terminal and let macOS handle the keystroke normally. This
+worked for ordinary keys but not for function, arrow, or
+numeric-keypad keys when allowSendingFunctionKeysToCocoa was
+off (the default in stable releases).
+
+For those keys, keyMapperShouldBypassPreCocoaForEvent:
+returns YES without considering the binding, so
+shouldSendEventToController: routed the event to the
+controller, where the bypass action is a no-op that consumes
+it. The event never reached Cocoa, so the keystroke did
+nothing (and third-party apps like Rectangle never saw it).
+
+Track whether the keystroke is bound to bypass in the
+keyboard handler context and, when it is, keep the event out
+of the controller and out of the pre-Cocoa string path so it
+flows to Cocoa, regardless of
+allowSendingFunctionKeysToCocoa.
+
+2026-06-18: Guarantee activateAppWithCompletion runs its
+completion exactly once
+
+When the app could not become active (for example while the
+screen is locked and loginwindow owns focus),
+activateWithRetry: gave up after ~6s without ever invoking
+the completion block. For a hotkey window that left it
+ordered front but stuck at alpha 0 and _rollingIn stuck at
+YES, so the window was transparent (visible only in Mission
+Control) and the hotkey became a permanent no-op.
+
+Run the completion exactly once, on either activation or
+give-up, guarded by a done flag. On give-up the roll-in now
+finishes anyway, so the window becomes visible and the
+hotkey recovers. Issue 12879.
+
 2026-06-17: Turn on companionPairingAllowed
 
 2026-06-17: Bump build to 3
