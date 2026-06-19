@@ -24,3 +24,5 @@ If you need the companion plugin for your Mac, see the <a href="companion-plugin
 
 #### Security
 Since your terminal's contents are highly sensitive, security is a top priority for communication between iTerm2 and the companion app. End-to-end encryption using Noise protocol ensures that only your Mac and your iPhone can see the content that is shared with the companion app. For details, see the [relay design document](companion-relay-design.html).
+
+NOTE: End-to-end encryption for push notifications has not been implemented yet.
