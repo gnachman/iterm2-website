@@ -1,3 +1,60 @@
+2026-06-19: Update iTerm2-shell-integration: backport OSC
+133 aid= to bash source
+
+Close the source/bash.1 drift so "make bash" no longer drops
+the OSC 133 aid= feature.
+
+2026-06-19: Preserve folds when a non-alt-screen program
+repaints from the top
+
+Programs like Claude Code that do not use the alternate
+screen buffer repaint on launch by homing the cursor and
+drawing over whatever was on screen. The existing
+saveScreenToScrollbackIfCursorMovedAboveCommandOutput
+preserves content in that case, but only with shell
+integration, and it bails when the program drew before
+homing (appendedTextSinceCommandExecuted is set), which is
+exactly what Claude does. When a fold sat in the overwritten
+region its cells were destroyed while its mark survived,
+leaving an orphaned unfold icon in the margin.
+
+Add saveScreenToScrollbackIfCursorMovedAboveFold, anchored
+on folds rather than the running command's output, so it
+works without shell integration and regardless of whether
+the program has already drawn. When the cursor moves at or
+above the bottommost in-grid fold, scroll the fold and the
+content above it into history, preserving the fold mark at
+its absolute position.
+
+The check runs on every cursor-positioning command, so it
+reads a cached bottommost-fold absolute line
+(_bottommostFoldAbsLine) instead of querying the interval
+tree. Absolute coordinates are stable when a line moves
+between the line buffer and the grid, so ordinary scrolling
+needs no invalidation. The cache is invalidated only by
+events that change the fold set or a fold's absolute
+coordinate, caught centrally at two chokepoints
+(shiftIntervalTreeObjectsInRange: for relocations and
+didRemoveObjectFromIntervalTree: for removals) plus the
+rebuild and swap paths that bypass them (reflow,
+clearScrollbackBuffer, removeLastLine, deserialization,
+alt-screen and tmux grid swaps), and recomputed lazily.
+
+2026-06-19: Update iTerm2-shell-integration: bash-preexec
+merged upstream V0.6.0
+
+Bump the shell-integration submodule to pick up bash-preexec
+at the merged upstream commit 04f6383 (rcaloras master, PR
+#187).
+
+2026-06-19: Sort JSON keys in Responses API request for
+prompt-cache stability (#687)
+
+Co-authored-by: sumleo
+<29517764+sumleo@users.noreply.github.com> 2026-06-19:
+gitignore numeric directories which are a byproduct of
+debugging
+
 2026-06-18: AI: remove dead claude-sonnet-4-0 model and its
 fixtures
 
