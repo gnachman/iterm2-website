@@ -1,3 +1,65 @@
+2026-06-20: Mark faint text, cursor, and images in
+get_screen_contents output
+
+The orchestrator's get_screen_contents tool flattened the
+terminal grid to plain text, discarding every cell's
+rendering attributes. Inline shell suggestions and ghost
+completions (zsh-autosuggestions, fish autosuggest, Claude
+Code's suggested reply) are rendered faint, so they came
+through byte-for-byte identical to text the user actually
+typed, which routinely fooled an agent into mistaking a
+suggestion for an entered command.
+
+Capture the per-cell faint bit (via a new ScreenCharIsFaint
+accessor, since Swift can't read C bitfields) and the
+per-character grid coords, then weave markup into the
+extracted text:
+  - faint runs wrapped in dim markers - a cursor marker
+  spliced at the cursor position - images collapsed to an
+  image placeholder
+All three use U+27E8/U+27E9 angle brackets, which
+effectively never occur in real terminal output. The tool
+description documents the tokens.
+
+extractScreenText/cursorMarkupIndex now take a VT100Screen
+instead of a PTYSession so the logic is unit-testable; added
+tests covering each markup end-to-end and composed.
+
+2026-06-20: Add Development-only probe in ChatAgent.complete
+completion handler
+
+Logs the result shape, last message body kind, parked
+tool-call count, and needsRenaming whenever a turn's
+completion fires. Gated on ITERM_DEBUG, which this target
+(iTerm2SharedARC) defines only in the Development build
+config, not Beta/Nightly/Deployment. (Plain DEBUG is never
+defined for this target's Swift, so #if DEBUG would compile
+out everywhere.) Used to pin down a bug where an
+orchestration turn appears to complete (triggering the
+one-shot chat rename) while a tool call is still parked,
+which orphans the parked tool's eventual result. Temporary;
+uses NSFuckingLog so output isn't truncated.
+
+2026-06-20: Add option to draw a separator between the
+status bar and terminal
+
+A new checkbox in the status bar advanced settings controls
+whether a 1pt line is drawn along the edge of the status bar
+that abuts the terminal content (bottom edge when the status
+bar is on top, top edge when on the bottom). It does not
+change the status bar height.
+
+The color matches the workgroup toolbar: the system
+separator color (NSBoxSeparator) in the non-minimal themes,
+and the selected-tab outline color (PSMMinimalTabStyle) in
+the minimal theme, plumbed through iTermTheme and the status
+bar delegate. The separator line is centered on the boundary
+so it sits flush against the adjacent content, and it
+repositions live when the status bar position preference
+changes.
+
+Defaults to off to preserve existing appearance.
+
 2026-06-19: Update iTerm2-shell-integration: backport OSC
 133 aid= to bash source
 
