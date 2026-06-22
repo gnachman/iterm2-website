@@ -1,3 +1,72 @@
+2026-06-21: AI: extend Anthropic prompt caching to
+conversation history
+
+Prompt caching previously marked only the system block and
+the last tool definition, so the conversation history (the
+bulk of an orchestration request, dominated by accumulated
+tool results) was re-sent uncached on every turn and billed
+at full input rate.
+
+Add a rolling ephemeral cache breakpoint on the last content
+block of the last message. Anthropic reads the longest
+matching prefix and excludes cache_control from the cache
+key, so the block marked this turn becomes a cache read on
+the next turn once a newer turn is appended after it. String
+content is promoted to a one-element text block so it has
+somewhere to carry the marker; array-form messages (tool
+results) are marked in place and stay byte-stable across
+turns.
+
+To support this, message content blocks gain an optional
+cache_control field (omitted from the wire when nil, so
+unmarked blocks serialize unchanged), and
+AnthropicCacheControl is lifted to file scope so both the
+system/tools breakpoints and the message breakpoint share
+it.
+
+The live prompt-caching test asserted call 2 re-created zero
+cache; that held only when system+tools were the sole cached
+segment. With the rolling marker, call 2 legitimately writes
+a small entry for its changed last message while reading the
+shared prefix, so the assertion now requires the read to
+dominate the tail write.
+
+Regenerate the Anthropic live-test cassettes: every
+Anthropic request body changed, so the prior recordings no
+longer match and are removed in favor of freshly recorded
+ones (the safety benchmarks included).  Non-Anthropic
+cassettes are untouched.
+
+2026-06-21: Add on-device voice dictation to the Companion
+app
+
+Tap the mic in a chat to dictate messages with WhisperKit
+(on-device Whisper). The first tap offers to download a
+model; after that the model loads when a chat opens so
+dictation starts right away.
+
+- Whole-buffer streaming transcription with voice-activity
+  detection, so pauses are skipped and Whisper does not
+  hallucinate subtitle text on silence.
+- CPU inference with small.en as the default. large-v3 and
+turbo
+  are excluded: on iOS 26 the ANE compile is broken and
+  those models run out of memory on the GPU. The picker only
+  lists memory-safe models, and each variant's download is
+  cached separately.
+- VU meter driven by relative energy, plus start/stop
+haptics.  - Transcription passes are serialized so two never
+run at once,
+  send and stop coalesce onto one finalize, and leaving the
+  chat cancels dictation and discards the partial
+  transcript.
+- Microphone permission and audio-session handling, with
+cleanup
+  if recording fails to start.
+
+Companion app release notes now live in
+Companion/docs/notes.txt.
+
 2026-06-20: Mark faint text, cursor, and images in
 get_screen_contents output
 
