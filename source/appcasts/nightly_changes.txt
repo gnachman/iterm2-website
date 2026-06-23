@@ -1,3 +1,394 @@
+2026-06-22: Clarify cursor Shadow tooltip and fix typo
+
+2026-06-22: Add smooth cursor blink
+
+A blinking cursor can now fade smoothly in and out instead
+of toggling abruptly. It is off by default and configured
+per profile under Settings > Profiles > Text ("Smooth blink"
+plus a Configure popover).
+
+The blink runs a self-contained cycle (visible dwell, fade
+out, hidden dwell, fade in) decoupled from the global blink
+toggle, so the two fade durations, two easing curves
+(linear, ease in, ease out, ease in-out), and two dwell
+times are all independent. Five presets (Breathing, Linear,
+Fast, Slow, Subtle) are offered via a pull-down whose active
+entry is checkmarked by validateMenuItem:.
+
+Implemented for both renderers: - Legacy: the cursor draw is
+wrapped in CGContextSetAlpha and the
+  shadow fades via iTermCursor.fadeAlpha. A self-sustaining
+  redraw loop runs at display rate, sleeping through dwells.
+- Metal: iTermMetalCursorInfo carries fadeAlpha; the box
+glyph
+  crossfades and the cursor renderer applies alpha
+  respecting each cursor's blend mode.
+
+The easing math lives in iTermCursorBlinkFadeAnimator and is
+shared with the curve icons (iTermCursorBlinkFadeCurveIcon)
+so the pictures always match the behavior.
+
+Issue 12887
+
+2026-06-22: Show the tty-attached foreground job as the job
+name
+
+The job name in titles, the session icon, and automatic
+profile switching are derived from the deepest foreground
+job. When a program like claude runs helper subprocesses
+(MCP servers, caffeinate) those run in the foreground
+process group but talk to their parent over pipes, so the
+deepest foreground job is the helper, not the interactive
+program. That made tabs show "(chrome-devtools-mcp)" or
+"(caffeinate)" instead of the real job.
+
+Pick the deepest foreground job whose stdin or stdout is
+actually the session tty. The process cache derives the
+session tty once per session from the root pid's stdio
+(searching past a root-owned login whose fds we cannot
+read), keyed by pid and start time so a recycled pid
+re-derives. Device lookups are restricted to /dev/tty* so a
+redirection to /dev/null is not mistaken for the terminal.
+The raw deepest job remains available as the new deepestJob
+variable, and trigger/orchestration ancestry still uses the
+full chain.
+
+Remote (SSH integration) sessions lack fd data and fall back
+to the old behavior. Issue 12898.
+
+2026-06-22: Add release notes for 3.7.0beta4
+
+2026-06-22: Fix pane restoring in $HOME after restart with
+automatic profile switching
+
+Sessions using automatic profile switching saved their
+overridden fields as an NSMutableSet. The restorable-state
+graph store archives PODs allowing any class but decodes
+them with a restricted basic-classes allowlist that lacked
+NSSet, so the whole POD failed to decode and every key but
+the separately stored Contents was dropped, leaving the
+session to relaunch in $HOME. Issue 12866.
+
+- Serialize overridden fields as a sorted array instead of
+an NSSet so
+  the value is plist and allowlist safe.
+- Accept both array and legacy NSSet forms when reading
+saved state.  - Add NSSet to the basic-classes decode
+allowlist so any already
+  persisted PODs containing sets still decode.
+- Add regression tests for the round trip and serialization.
+
+2026-06-22: Heavy window border: uniform width and
+configurable opacity
+
+Draw the heavy window border entirely inside the window
+instead of straddling the window edge and relying on the
+system mask to clip its outer half. The old approach left
+the curved corners thinner than the straight edges and
+dusted them with semi-transparent pixels because it clipped
+a curved stroke against the OS rounded-rect mask. The stroke
+is now inset by half its width with a concentric corner
+radius, so it has a uniform width everywhere and is robust
+to small errors in the detected corner radius. Also pin the
+shape layer's contentsScale to the window backing scale so a
+1pt stroke stays crisp on Retina.
+
+The window border color advanced settings now accept a
+four-part #rrggbbaa (or p3#rrggbbaa) value to set opacity.
+The alpha byte is split off in iTermRootTerminalView so the
+shared colorFromHexString: parser (used by many other
+callers) is left unchanged. A value without an alpha
+component is still drawn at 75% opacity, and the empty
+default is unchanged.
+
+Issue 12882.
+
+2026-06-22: Add advanced setting for + button to use current
+profile
+
+The tab bar's + button always opened a new tab with the
+default profile. Add an advanced setting
+(addTabButtonUsesCurrentProfile) so it can instead open a
+tab with the current session's profile, mirroring the New
+Tab with Current Profile command. Issue 12886
+
+2026-06-22: SSH integration: fix Ctrl+C on hosts without the
+Python framer
+
+When the remote Python is older than 3.7 (e.g. CentOS 7,
+AlmaLinux 8) iTerm2 falls back to exec_login_shell instead
+of the framer. The conductor's cleanup() restored echo but
+not isig after the it2ssh bootstrap disabled both, so the
+interactive shell inherited a tty with signal generation
+off: Ctrl+C echoed ^C but never interrupted the foreground
+process. Bump the shell-integration submodule to restore
+isig in cleanup. Fixes issue 12891.
+
+2026-06-22: Fix stale Anthropic request-builder tests for
+cache-promoted last message
+
+markLastMessageForCaching (from "extend Anthropic prompt
+caching to conversation history") promotes the LAST
+message's plain-string content into a one-element text block
+carrying cache_control, so the trailing message is
+array-form on the wire. Two tests still asserted the
+trailing user message's `content` was a bare String
+("thanks" / "did it work?"), so `content as? String` was nil
+and they failed - even though the message is present and
+correctly ordered.
+
+Add a wireText() helper that reads a wire message's text
+whether content is a string or a [text-block] array, and use
+it for the trailing-message assertions.  Test-only; the
+builder behavior is unchanged and correct (array-form user
+content with cache_control is valid Anthropic).
+
+2026-06-22: AI live harness: read its config from the repo
+root, not /tmp
+
+The opt-in live harness gated on a config file written by
+run_ai_live.sh. It lived at a hardcoded
+/tmp/iterm2-ai-live.json, which had two problems:
+
+1. Shared across worktrees. A leftover config from one
+checkout (e.g. a
+   SIGKILL'd run in another worktree) silently turned the
+   live harness ON during a plain `tools/run_tests.expect`
+   run in a DIFFERENT checkout - hitting real vendor APIs
+   (spending money) and, with stale replay cassettes,
+   hanging tests.
+2. run_tests.expect's defensive cleanup deleted
+$TMPDIR/iterm2-ai-live.json, but
+   the harness read /tmp/iterm2-ai-live.json - different
+   paths on macOS, so the defense never fired.
+
+Now the config lives at <repo root>/.iterm2-ai-live.json: -
+AILiveHarness.configFilePath() derives the repo root from
+#filePath, so each
+  worktree reads its OWN config and the path is the single
+  source of truth (all the previously-hardcoded /tmp readers
+  now call it).
+- run_ai_live.sh writes it there; run_tests.expect deletes
+that exact file
+  (via `git rev-parse --show-toplevel`) so the cleanup
+  actually works.
+- It's gitignored (live API keys can never be committed) and
+surfaces under
+  `git status --ignored`; setUpWithError now logs "Live AI
+  harness ACTIVE" so a stray config is never silent.
+- The repo dir isn't subject to the $TMPDIR periodic reaping
+that drove the
+  original /tmp choice.
+
+2026-06-22: Companion push notifications via a Notification
+Service Extension
+
+Lock-screen notifications for companion chats that show real
+agent content without that content passing through the relay
+or Apple in readable form. The mac sends a content-free
+"mutable" push; an iOS Notification Service Extension wakes,
+reconnects to the mac over the relay + Noise channel
+(non-displacing, so it yields to a foreground app), fetches
+the new messages, and rewrites the notification locally. The
+relay and Apple see only ciphertext.
+
+Highlights: - Delete-immune per-chat seq column +
+messagesSince fetch; short, attachment-free
+  previews (agent messages only, @-mentions rendered to
+  session names).
+- New /push/mutable APNs endpoint; a turn-completion /
+permission-request trigger
+  that fires a per-chat collapsed push.
+- The NSE: a testable PushFetchCoordinator core, a slim
+dependency-free wire
+  mirror (kept byte-compatible with the production enums by
+  a cross-check), a hard-cancel deadline, and per-message
+  chronological notifications grouped by a per-chat thread.
+- Per-chat watermarks (monotonic, reset on a chat-DB rewind,
+advanced on
+  foreground read) so nothing re-notifies.
+- Security: App Group keychain sharing with a crash-safe
+access-group migration;
+  the pairing code stored in the keychain so it survives
+  reinstall; a one-time push nonce (sealed under the room
+  secret, retained by capacity) that lets the mac recognize
+  its own solicited fetch and suppress the presence warning,
+  while any unexpected connection still alerts.
+- App-version compatibility: a post-connect hello handshake
+that blocks with an
+  "upgrade" panel/alert when the apps are out of sync, plus
+  forward-compatible decoding (unknown message types decode
+  as .unsupported instead of failing).
+- On-disk, email-able NSE logging; a live relay-status timer
+in mac settings.
+
+Also fixes found along the way: a keepalive that now tears
+down a dead socket (and no longer double-resumes its ping
+continuation), a plugin wsClose that settles pending
+receives, and the App Attest assertion verification.
+
+The individual, granular commits for all of the above are
+preserved on the companion-nse branch; this is a squashed
+omnibus of that branch.
+
+2026-06-22: Prompt for download save location on it2dl
+downloads
+
+Terminal-initiated downloads (it2dl) now ask whether to save
+to the Downloads folder or to choose a destination via a
+save panel. The question is silenceable, so the choice can
+be made permanent in either direction. The alert is attached
+to the session window, matching the download-permission
+confirmation.
+
+The prompt is scoped to actual downloads via
+offersDownloadLocationPrompt so uploads, which share
+TerminalFile's initializer, are unaffected.
+
+Also fix a latent cancel bug in -[TerminalFile download]:
+the nil-localPath branch lacked a return, so a canceled save
+panel would leave self.data non-nil, causing further base64
+chunks to buffer the whole canceled transfer in memory and
+later attempt a write to a nil path. Issue 12897.
+
+2026-06-22: tmux: choose where CLI-created windows open
+
+New tmux windows created outside iTerm2 (e.g. via `tmux
+new-window`) previously attached to whichever iTerm2 window
+had keyboard focus, even an unrelated one. Issue 12900.
+
+Replace the boolean "open in current window" advanced
+setting with a three-way choice: a new window, the focused
+window (default, unchanged), or the topmost iTerm2 window
+already hosting a tab from this tmux session. The new option
+follows the session regardless of focus.
+
+To support this, add a DEFINE_INT_ENUM advanced-settings
+type rendered as a popup button. The value is the selected
+option index, so the setting migrates transparently from the
+old boolean (NO=0, YES=1).
+
+2026-06-22: Add "Annotate Selection" menu item so it can be
+key-bound. Issue 12899
+
+Annotating a selection was only available from the
+right-click context menu, so it could not be assigned a
+keyboard shortcut.  Add it to Edit > Marks and Annotations >
+Annotate Selection, wired to a new annotateSelection: action
+that forwards to the existing selection-annotation path. The
+item is enabled only when there is a selection in a
+non-browser session.
+
+2026-06-22: Fix session logging/archive folder pickers using
+parent dir
+
+selectArchiveDir: and selectLogDir: read [panel
+directoryURL], which is the directory the open panel is
+displaying, not the item selected.  When a user highlighted
+a folder without navigating into it, the parent directory
+was stored. Use [panel URL] instead. Issue 12894.
+
+2026-06-22: Orchestrator: screen-check backstop for stuck
+tab-status watchers
+
+A tab-status watcher waits indefinitely on a status
+transition. If the cc-status hook drops the event that would
+report the target state, that transition never arrives and
+the watch hangs (a session reported "working" that has
+actually gone idle), as seen when a watcher waited all night
+without firing.
+
+Add a screen-observation backstop. When a tab-status watcher
+is registered (register_watch / start_code_review), arm a
+timer that, once the session's rendered screen has been
+quiet for 5 minutes, takes one screenshot and asks the model
+whether the target state was reached. If so, fire the watch
+through the shared completion path; if not, wait and
+re-check. The tab-status subscription stays the primary
+trigger throughout, so if the status transition does arrive
+it resolves the watch and tears the backstop down via
+removeWatcherAuxiliaries.
+
+Smarter than a continuous poll: - The quiet clock is reset
+by textViewDidFindDirtyRects, so an
+  actively-rendering session never bills a screenshot.
+  PTYSession now exposes timeSinceScreenContentsLastChanged
+  and screenContentsLastChangedAt for this.
+- After a not-reached verdict, the screen-change stamp is
+remembered and
+  the check is not repeated until the screen actually
+  changes, since an identical screen yields an identical
+  verdict.
+
+armScreenEscalation is a no-op for .screenPoll watchers
+(they run their own poller; arming would orphan it) and for
+.working targets (a quiet screen is evidence of idle, not
+work, so a check could never confirm it).
+
+2026-06-22: AI orchestration: implicit claim on @-mention,
+plus forward-compat placeholder
+
+@-mentioning a session or workgroup in an orchestration chat
+now grants the chat standing permission to control that
+target, so the orchestrator skips the one-time approval
+prompt the first time it writes there.  OrchestratorClient
+watches user messages, resolves each mention to its claim
+scope (mirroring applyGating's session path), and the
+dispatcher pre-inserts the scope and posts an
+orchestrationPermissionGranted bubble with a Revoke button.
+Revoke routes back through the broker as a new UserCommand
+that drops the claim and posts a confirmation.
+
+To keep older Companion builds (and future ones) from
+silently dropping messages they can't decode, add a
+Message.Content.unsupported sentinel and a tolerant
+Message.init(from:) that maps an unrecognized content to it
+instead of throwing. encode stays synthesized so the wire
+format is unchanged. This single boundary covers both new
+Content cases and new nested ClientLocal.Action cases, and
+because [Message] decodes per-element, one unknown message
+in a history batch no longer takes its siblings down with
+it. Both apps render it as a "needs a newer version"
+placeholder.
+
+Tests cover unknown-content decode, sibling preservation in
+an array, and that known content still round-trips.
+
+2026-06-22: Reveal hotkey-window sessions onto the source
+tab. Issue 12902.
+
+Clicking a notification posted by a background tab of a
+dedicated hotkey window brought the window forward but left
+the previously selected tab in front. -[PTYSession reveal]
+gated its sessionSelectContainingTab call on !isHotKey, so
+the source tab was never selected for hotkey windows. This
+skip dates back to the original -reveal (2014), when hotkey
+windows were single-tab dropdown terminals; multi-tab hotkey
+windows (2016) inherited the assumption.
+
+Select the containing tab unconditionally in both reveal
+exit paths.  Add an integration test that drives -reveal
+against a mock hotkey window and asserts
+sessionSelectContainingTab is invoked.
+
+2026-06-21: Restore codeReviewRawCommand when adopting a
+restored code-review peer
+
+When a workgroup is reconstructed from a saved arrangement,
+iTermWorkgroupInstance.adopt() restored a reattached peer's
+workgroupSessionMode but not its raw command template, which
+is not persisted on the session arrangement. Reloading a
+code-review peer keys off codeReviewRawCommand to re-present
+the prompt overlay (workgroupNavigationDidTapReload); with
+it nil, reload fell through to a plain restart that silently
+reran the last prompt with no panel. Restore the template in
+the adopt path, mirroring the anchor path in
+WorkgroupRestorationCoordinator.
+
+Adds a regression test that adopts a reattached code-review
+peer and asserts both the mode tag and the raw command are
+restored.
+
 2026-06-21: AI: extend Anthropic prompt caching to
 conversation history
 
