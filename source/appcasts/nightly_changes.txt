@@ -1,3 +1,339 @@
+2026-06-25: Add advanced setting to open tmux windows and
+tabs in the background
+
+Adds the tmuxWindowsOpenInBackground advanced setting
+(default off). When enabled, new or restored tmux windows
+and tabs are revealed without taking keyboard focus, so
+attaching with tmux -CC or having tmux create a window no
+longer steals focus from the session you are working in.
+
+The "open in background" intent is threaded as an explicit
+openInBackground: parameter from loadTmuxLayout: through
+openTabWithTmuxLayout: down to
+insertTab:atIndex:openInBackground: (with appendTab: and
+addTabAtAutomaticallyDeterminedLocation: variants). Existing
+callers go through thin wrappers that pass NO, so non-tmux
+tab insertion is unchanged.
+
+When opening in background, insertTab: leaves the current
+tab selected, reveals the window with
+orderWindow:NSWindowBelow: instead of makeKeyAndOrderFront:,
+and skips setCurrentTerminal: so clients do not observe a
+focus or window steal.
+
+Based on the approach in PR #684 by Yifan Gao (gaoyifan),
+reworked to carry the flag as an explicit parameter rather
+than transient window state.
+
+2026-06-25: Merge remote-tracking branch 'origin/master'
+
+2026-06-25: PTYTab: skip delegate notification when object
+count is unchanged
+
+setObjectCount: notified the delegate (and thus triggered a
+tab-bar update) even when the value did not change. Return
+early when it is the same.
+
+2026-06-25: PseudoTerminal: hoist repeated [aTab sessions]
+in close-confirm
+
+The tab close-confirmation path called [aTab sessions] four
+times.  Compute it once and reuse it. No behavior change.
+
+2026-06-25: Tasks: fork child processes off the main thread
+
+The legacy and monoserver job managers ran fork+exec via
+dispatch_sync on a per-task serial queue, which blocked the
+main thread (the caller of launchWithPath:) for the duration
+of the fork. Switch to dispatch_async and deliver the result
+through the existing completion contract, matching what the
+multiserver manager already does. Nothing reads job-manager
+state synchronously after the call returns; the caller
+consumes everything via the completion.
+
+Also fix the monoserver path, which passed an unassigned
+savedStatus (always Success) and a nil error code to its
+completion wrapper instead of the real
+status/optionalErrorCode now in scope.
+
+2026-06-25: Close Lock Layout bypasses and disable all
+blocked menu items
+
+The Lock Layout feature enforced the lock only at the
+async/profile construction methods (asyncSplitVertically:,
+createTabWithProfile:), so several lower-level paths slipped
+past it, and a number of menu items that trigger blocked
+operations stayed enabled and silently no-op'd (or, worse,
+executed).
+
+Redirect content opens instead of failing: opening a URL or
+file that would split or add a tab to a locked window now
+opens in a new window so the lock is honored and the action
+still succeeds. Handled at the two choke points every such
+open flows through: -[iTermController openURL:...]
+(cmd-click, OSC 8, semantic history, "Open URL in Split
+Pane") and -[iTermSessionLauncher
+possiblyNewWindowControllerForProfile:...]
+(registered-scheme URLs, Finder/open file opens). Scripted
+launches (_makeSession) are excluded so they continue to
+respect the lock strictly.
+
+Disable every menu item that triggers a blocked operation,
+both main and context menus: the context-menu Split Pane /
+Close / Move / Swap items, the tab-bar Close Tab and
+Duplicate Tab items, Move Session to Window / Tab, and the
+main-menu Move Pane item. Plumb a new
+textViewWindowIsLayoutLocked delegate so the text-view
+context menu can consult the window layout lock (distinct
+from the per-pane lock).
+
+Add lock guards to the three destructive operations that had
+no choke point at all and previously mutated a locked layout
+regardless of menu state: MovePaneController
+moveSessionToTab: / moveSessionToNewWindow: and
+duplicateTab:.
+
+2026-06-25: Rebuild bundled libsixel binary at v1.8.7-r2
+(fixes CVE-2026-44637)
+
+PR #679 advanced the submodules/libsixel pointer to
+v1.8.7-r2, but iTerm2 links the prebuilt
+ThirdParty/libsixel/lib/libsixel.a, which was still the
+vulnerable 1.8.6 build. Rebuild the universal archive and
+refresh the committed public header from v1.8.7-r2 so the
+heap OOB write fix in the SIXEL decoder actually ships.
+
+Also fix the fatlibsixel make target to copy sixel.h
+alongside the .a so the committed header stays in sync with
+the archive on future rebuilds.
+
+2026-06-25: Merge pull request #679 from
+dkgkdfg65/fix-cve-2026-44637-libsixel
+
+Update bundled libsixel to v1.8.7-r2 (fixes heap OOB write
+in SIXEL decode, CVE-2026-44637) 2026-06-25: Harden tmux
+state parsing against nil and bad fields
+
+Adds defense-in-depth on top of the it_ category rename:
+skip KVPs with an empty key, and never insert a nil
+converter result into the result dictionary (which would
+raise NSInvalidArgumentException and abort).  tmux is an
+external process, so its fields cannot be trusted.
+
+This also covers PR #689's reported SIGABRT, but the real
+cause of that crash on macOS 26+ was the -[NSString
+numberValue] collision (every numeric field converted to
+nil); the category rename is the actual fix.
+
+Adds ModernTests/TmuxStateParserTest.m covering
+numeric/paneId/intlist conversion (which would regress to
+nil under the collision), empty-key skipping, unknown-key
+passthrough, no-equals fields, and pane selection.
+
+2026-06-25: Prefix NSString (TmuxStateParser) category
+methods with it_
+
+macOS 27 adds a -[NSString numberValue] that returns nil,
+which shadows this category's method and breaks tmux state
+parsing. Rename numberValue, intlistValue, and
+paneIdNumberValue to it_-prefixed names (updating the
+performSelector dispatch strings) so they can never collide
+with current or future framework methods.
+
+2026-06-25: Remove flaky GPU render test
+
+testGPURender relied on offscreen Metal capture, which is
+unreliable on headless CI runners and intermittently failed
+with metalRenderFailed.
+
+2026-06-25: Remove stale AppleDouble (._) sidecar files from
+RegexKitLite
+
+These nine ._ files were committed with the original 2011
+RegexKitLite vendor drop. Each is a 240-byte AppleDouble
+file whose only payload is a com.apple.quarantine xattr
+recording that the source was downloaded via Google Chrome
+on 2011-02-12. They carry no resource fork or other content.
+A Time Machine restore coalesced them away, surfacing them
+as deletions; remove them for good.
+
+2026-06-25: Update stale cc-status hook path on reinstall
+
+The Claude Code hook installer skipped any event whose group
+already contained a command ending in /cc-status, treating
+it as installed. A hook written by a -suite instance points
+at ~/.config/<suite>/cc-status, so reinstalling from the
+default instance left the stale suite path in place instead
+of correcting it to ~/.config/iterm2/cc-status.
+
+Adopt the matched entry and rewrite its command to the
+current path, updating in place when it differs and only
+appending a new group when no cc-status hook exists.
+
+2026-06-24: Unbreak building libsixel on Golden Gate
+
+2026-06-23: 3.7.0beta5
+
+2026-06-23: Tweak release notes
+
+2026-06-23: Add snooze to Session Status tool; fix workgroup
+merge grouping
+
+Snooze: right-click a row and toggle Snooze. Snoozed rows
+dim their text to 50%, show a moon.zzz glyph, and sink below
+a divider at the bottom of the list (the divider is hidden
+when every row is snoozed).  A snoozed entry auto-un-snoozes
+the next time its status changes.
+
+Workgroup merge fixes: - Group by workgroup instance id, not
+individual peer port, so all of
+  a workgroup's sessions collapse to one row even when they
+  span the main port plus nested split-host ports or are
+  port-less split/tab children. Keying by port left merging
+  doing nothing for realistic workgroups.
+- A snoozed member loses representation, so the merged row
+surfaces the
+  liveliest non-snoozed peer instead of letting a snoozed
+  peer's stale status hide an active sibling. A workgroup
+  reads as snoozed only when every member is snoozed.
+- In merge mode, toggling snooze (un)snoozes every member of
+the
+  workgroup, and the menu checkmark reflects the whole
+  group.
+
+The grouping rule and representative-preference rule are
+split into pure functions with unit tests.
+
+2026-06-23: Restore inline AI chat panel on window restore;
+style chat lists
+
+Persist the inline AI chat binding (inlineChatID +
+visibility) in the session arrangement and restore it
+synchronously in sessionFromArrangement so the panel's width
+is reserved before the window first fits its grid.  Setting
+it late (in the async finishInitializing path) made the
+window either restore at full terminal width or grow by the
+panel width after the fact. restoreInlineChat is not gated
+on the AI gatekeeper (restoring benign history) and
+validates only against an already-open chat DB; the width
+provider re-validates that the bound chat still exists,
+returning 0 and clearing a stale id when it is gone.
+
+Mark orchestrator chats with a wand.and.rays glyph in the
+chat window's list and the inline switch-chat menu, and bold
+the chat linked to the panel's current session. The glyph
+re-renders for selection/dark mode in list cells (memoized
+to avoid redundant renders) and rides in the menu item's
+template image well so the menu tints it. Menu titles leave
+their text color to AppKit so highlighted rows still invert.
+Force single-line tail truncation so titles never wrap.
+
+Refactor InlineChatToolbarView onto ChatManualStackView and
+share the info-circle session button with ChatToolbar; the
+flex title clamps to its leftover width so a long title
+truncates instead of pushing the right-hand buttons
+off-screen. Gate the toolbar new-chat path and re-validate
+chat existence when switching chats. Migrate the duplicated
+terminal/browser session-link check to a single
+Chat.isLinked(toSessionGuid:) helper.
+
+2026-06-23: Inline chat: offer link/orchestrator and add a
+toolbar
+
+New inline chats are now created unlinked with an offer-link
+message, so the user chooses Link vs Enable Orchestration
+the same way the chat window does, instead of auto-linking
+to the host session.
+
+Add a toolbar to the inline panel with controls to create a
+new chat, switch to another chat (all chats, most-recent
+first), open the session/link menu, and hide the panel. The
+toolbar forces the arrow cursor over itself so the buttons
+and title do not show an I-beam.
+
+2026-06-23: Companion: resolve @-mentions in command-request
+bubbles
+
+MessageBubbleView renders mentions in remoteCommandRequest
+bubbles via textWithMentions, but mentionableTexts(of:) had
+no case for that content type and fell into the default
+empty return. As a result those mentions were never sent to
+the Mac for resolution and always showed the raw
+session/workgroup identifier instead of the friendly name.
+
+Add a remoteCommandRequest case that returns
+payload.markdownDescription, matching exactly what the
+bubble renders for both the classic and orchestration
+branches.
+
+2026-06-23: Companion: default New Chat to Orchestration
+
+Make the Orchestration option selected by default on the New
+Chat screen and relabel the picker segment from The
+orchestrator to Orchestration.
+
+2026-06-23: Companion: namespace keychain items by -suite
+
+When -suite is given the app runs against a separate
+NSUserDefaults suite so a second build can run beside the
+released one. The companion keychain items were still keyed
+by the bare account name, so the two builds shared (and
+could clobber) one another's Noise identity, paired phone
+key, room secret, and push secret.
+
+Namespace each keychain account by suite (<account>.<suite>)
+at the keychain boundary. Without -suite the account stays
+the bare name, so released builds keep reading the items
+they already wrote.
+
+2026-06-23: Companion: cache keychain identity, primed at
+launch
+
+The Noise keypair, paired phone key, and room secret were
+read from the login keychain on the connection/listening hot
+path. The login keychain gates each item by the signature of
+the binary that wrote it, so a build signed differently from
+the writer pops a confirmation prompt. That prompt could
+appear mid-connection, with nobody at the keyboard,
+defeating the point of the phone app.
+
+Mirror these items in memory, populated on every write and
+primed once at launch (while the user is present, so any
+prompt is answered then).  The connection and push paths now
+read the cache and never touch the keychain.
+primeCacheAtLaunch is side-effect-free: it does not generate
+a Noise keypair, so an unpaired user gets no new key
+material.
+
+The cache-miss writeback only fills a still-absent entry, so
+a concurrent store/delete cannot be clobbered by a stale
+keychain read.
+
+2026-06-23: Show session hierarchy in the Buddy @-mention
+picker
+
+The companion app's @-mention picker now shows the same
+window/tab/pane/peer hierarchy as the Sessions tab, with a
+preview button on the right of each row to view a session
+before picking it; tapping elsewhere on the row selects it.
+
+- Extract SessionTreeBrowser/SessionTreeList/SessionTreeRow
+so
+  the Sessions tab and the mention picker share one
+  rendering and one loading/error/empty state ladder.
+- Thread the picker's display title (e.g. a peer's
+  "Code Review: zsh") through selection so the inserted
+  token keeps that context instead of dropping to the raw
+  session name or rendering blank.
+- Cap the inserted mention token at 90% of the composer
+width,
+  tail-truncating long names so they cannot spill into the
+  margin.
+- Add an allowsChat flag to SessionView so the preview hides
+  the "chat about this session" button.
+
+2026-06-23: Write release notes for 3.7.0beta5
+
 2026-06-22: Clarify cursor Shadow tooltip and fix typo
 
 2026-06-22: Add smooth cursor blink
@@ -1158,8 +1494,12 @@ pre-leaderOnly build
   on the version transition. Reinstalling also replaces an
   older flagless trigger.
 
-2026-06-08: CI: pin Xcode to 26.4 and unmask xcodebuild exit
-code
+2026-06-09: Update bundled libsixel to v1.8.7-r2 (fixes heap
+OOB write in SIXEL decode, CVE-2026-44637)
+
+The submodules/libsixel pin predates the v1.8.7-r2 security
+release.  2026-06-08: CI: pin Xcode to 26.4 and unmask
+xcodebuild exit code
 
 The Run tests step captured $? after piping xcodebuild
 through tee, which always exits 0, so a failing build or
