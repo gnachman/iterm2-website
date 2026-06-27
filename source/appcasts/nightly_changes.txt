@@ -1,3 +1,80 @@
+2026-06-26: ChatViewController: fix oversized gaps when the
+gutter panel first reveals an existing chat
+
+When the right-gutter chat panel first reveals an existing
+chat, layoutPanels() attaches the panel (synchronously
+triggering load() -> reloadData() via viewDidMoveToWindow)
+before positionPanels() sets the panel frame and before any
+layout pass. Every row height was therefore measured against
+a table width of 0, so maxBubbleWidth collapsed to its
+floor, each bubble wrapped to a sliver and computed absurdly
+tall, and the bubbles rendered with large gaps. The
+width-change self-heal in performLayoutNow only re-measures
+on a width change, and once lastTableViewWidth latches the
+final width it never re-fires, so the bad heights stuck.
+
+Force the re-measure the existing re-scroll comment always
+intended: on the next runloop, performLayoutNow() lays the
+table out at the panel's final width, then an explicit
+reloadData() re-queries heightOfRow against it, then
+scrollToBottom(). Scoped to the inline-panel reveal path;
+window mode is unaffected.
+
+2026-06-26: Orchestrator: handle alternate-screen sessions
+and add a scroll_wheel tool
+
+Claude Code and other full-screen apps now run on the
+alternate screen, where scrollback holds repainted
+intermediate frames rather than real history, so the
+orchestrator could no longer browse activity by reading the
+scrollback transcript.
+
+- get_screen_contents now reports `screen`
+(primary/alternate, keyed off
+  the soft alternate screen flag) and `mouse_reporting`. On
+  the alternate screen it returns only the current grid
+  (is_snapshot=true), including for claude-code sessions,
+  instead of a scrollback transcript full of duplicate
+  frames.
+- Add a scroll_wheel tool that injects mouse scroll-wheel
+reports so the
+  agent can page back through a full-screen app's own
+  history, then re-read with get_screen_contents. It errors
+  when scroll reporting isn't possible. Gated read-only (it
+  only moves the viewport).
+- PTYSession.scrollWheelReportingEnabled is the single
+source of truth
+  for "scroll reporting is possible": it mirrors the live
+  wheel path's full gate (xtermMouseReporting incl.
+  restrict-to-alt-screen, the report-mouse-wheel
+  sub-setting, and a wheel-reporting mouse mode, so
+  highlight-tracking mode is excluded). Both the scroll
+  injection and the surfaced mouse_reporting hint read it,
+  so the advertised capability and the bytes actually sent
+  agree, and we never inject scroll bytes the user opted out
+  of.
+- reportScrollWheelForOrchestrator maps direction to the
+xterm wire codes
+  correctly: revealing older content (up) uses
+  MOUSE_BUTTON_SCROLLDOWN (SGR 64, "scroll back"), matching
+  PTYMouseHandler's live mapping.
+- Update the orchestration system message and the
+get_screen_contents /
+  scroll_wheel tool descriptions to explain primary vs.
+  alternate and the scroll-then-reread loop, and give
+  scroll_wheel a descriptive chat label (so the macOS chat
+  and the iOS Companion show the target and direction rather
+  than a bare "Scroll wheel").
+
+2026-06-26: Add visual effect background behind inline chat
+panel toolbar
+
+The right-gutter chat panel toolbar (new chat, chat
+selector, title, info, close) had no background and floated
+over the chat content. Give it an NSVisualEffectView
+header-material backdrop so it reads as a distinct header
+band.
+
 2026-06-25: Add advanced setting to open tmux windows and
 tabs in the background
 
