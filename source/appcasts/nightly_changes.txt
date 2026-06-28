@@ -1,3 +1,27 @@
+2026-06-27: Fill screenshot transparent areas with the
+session background
+
+Screenshots rendered the terminal content with transparent
+margins and uncovered areas. Composite the session's real
+background behind the content so the result is opaque and
+matches what's on screen: a background image with its
+scaling mode and default-background blend, or the solid
+background color when there's no image. Window transparency
+is deliberately ignored since a saved screenshot has nothing
+behind it.
+
+The background is laid out as though the pane were the size
+of the screenshot (each multi-part piece gets its own), and
+is rendered one slice at a time so memory stays bounded the
+way the streaming encoder already is. Slices are produced on
+the main thread; compositing stays off-main via CGContext.
+Applied at every output path: the standard save/copy render,
+the streaming/multi-part encoder, and the live preview.
+
+The preview also shows a checkerboard in the area outside
+the image so the boundary of what will be saved is clear
+when the content is smaller than the preview.
+
 2026-06-26: ChatViewController: fix oversized gaps when the
 gutter panel first reveals an existing chat
 
