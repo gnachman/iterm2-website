@@ -1,3 +1,367 @@
+2026-06-29: Companion: allow landscape orientation on iPhone
+
+The iPhone Info.plist was locked to portrait only. Add
+landscape left/right (no upside-down) to
+UISupportedInterfaceOrientations. The iPad key already
+supported all orientations and is unchanged.
+
+2026-06-29: Add RLog retrospective logging and migrate
+low-frequency DLog sites
+
+RLog behaves like DLog when debug logging is on, but when it
+is off it retains its message in a bounded 10 MB in-memory
+ring buffer instead of dropping it, so the lead-up to a
+low-frequency event can be recovered even when nobody
+enabled debug logging ahead of time.
+
+Mechanism (sources/Logging/DebugLogging.{h,m},
+SwiftDebugLogging.swift): - RLog macro (ObjC) and RLog
+function (Swift). Unlike DLog, RLog
+  evaluates its message unconditionally, so it is only for
+  low-frequency call sites with cheap arguments. The Swift
+  version takes a plain String rather than an @autoclosure
+  to make that eager evaluation explicit.
+- iTermRetrospectiveLogString / iTermClearRetrospectiveLog
+expose and
+  clear the ring. The ring is never written into debug logs
+  automatically (the user did not opt into capturing it);
+  retrieval is an explicit action via a new iTerm2 > Save
+  Retrospective Debug Logs menu item that writes it to a
+  file the user chooses.
+
+Migration: audited all ~8.6k DLog statements and converted
+the low-frequency, diagnostically valuable ones with cheap
+arguments to RLog (Tier A + Tier B from the audit), ~1500
+sites.
+
+Left as DLog where a blind swap would be wrong: - Code
+running in a separate process, where the main-app ring is
+never
+  surfaced and RetrospectiveLogImpl is not linked
+  (SlowOperationXPC service, pidinfo, the sandboxed image
+  worker).
+- Conductor.swift, where DLog is a verbose-gated instance
+method that
+  adds an address/depth prefix rather than the global
+  function.
+- Hot paths and sites with expensive arguments (stack
+traces, recursive
+  descriptions, dumps), which must not run unconditionally.
+
+2026-06-29: Companion: present a peer-hosting split pane as
+a container in the Sessions tab
+
+A pane that hosts a peer workgroup is a container, not a
+live session, so render it as a non-tappable row with its
+own icon and nest the peers beneath it; only the peers open
+a session. When such a pane is the tab's only pane the
+container is redundant, so the peers attach directly to the
+tab. Also switch the tab row icon to folder.
+
+2026-06-29: Companion: adjust the send-to-phone help label
+layout in IB
+
+Reposition and resize the status label under the
+send-to-phone checkbox (controlSize small). The design-time
+title is a placeholder; the text is set at runtime from
+sendToPhoneStatusMessage.
+
+2026-06-29: Companion: back off a displaced relay park
+instead of re-grabbing the slot
+
+Addresses the displaced-park eviction-storm TODO. When the
+relay evicts the mac's park because another mac-role
+connection took the room's single slot (closeCode 1000
+"displaced" - almost always a second iTerm2 instance paired
+to the same room), re-parking on the routine 5s timer
+immediately evicts that other instance, which re-parks and
+evicts us: an endless storm that hammers the relay and flaps
+the phone's reachability.
+
+Plumb the reason up by throwing a distinct
+RelayDisplacedError from the plugin transport on a
+"displaced" close (TransportError.closed carries no reason),
+and in the park loop back off 60s on it (vs 5s) - long
+enough to settle, finite so the slot is reclaimed if the
+other instance exits. A displaced close is not a user-facing
+fault, so it skips onFailed and the routine-churn retry.
+
+2026-06-29: Companion: prime the push-nonce keychain item at
+launch, not on the push path
+
+Every keychain-backed value the push path needs is read into
+memory at launch (while the user is present) so a background
+send never touches the keychain - except the
+outstanding-nonce list. CompanionPushNonceRegistry persists
+to its own keychain item and constructs .shared lazily, so
+its keychain load happened on FIRST push (dispatchPush ->
+mintNonce/record), i.e. while the user may be away - and
+after a rebuild that first access hit a
+foreign-code-signature item and popped a confirmation prompt
+mid-send.
+
+Add primeAtLaunch() (force the load and rewrite the item so
+it is owned by the current binary) and call it from
+resumePairedListeningIfNeeded alongside the other launch
+primes, so the read - and any signature prompt - happen at
+launch and the record()/consume() saves on the push and
+fetch paths stay prompt-free.
+
+2026-06-29: Companion: self-heal a lost established-room
+marker on reconnect
+
+If the phone attests but the relay demands a signed join
+("signature required" - the room is established and our
+verifier is registered, but the local established-room
+marker was lost, e.g. an older build's reinstall), and we
+still hold the room secret, retry admission by signing and
+persist the keychain marker. This recovers an already-broken
+install with NO re-pair (the keychain-marker change alone
+needed one), and every later reconnect signs first-try. The
+marker stays the cheap default; this is the safety net that
+treats the relay's response as authoritative.
+
+2026-06-29: Companion: note the relay displaced-park
+eviction-storm TODO
+
+2026-06-29: Companion: keep the verifier-registered marker
+across phone reinstalls
+
+A reconnect after reinstalling the phone app failed
+admission with "Relay refused admission: signature
+required": the stored pairing code and room secret live in
+the App Group keychain (survive reinstall), but the
+established-room marker that decides sign-vs-attest lived in
+UserDefaults, which a reinstall wipes. So the phone kept the
+pairing, forgot the room was established, attested instead
+of signing the join, and the relay (which still had the
+verifier) rejected it.
+
+Move the marker to the keychain alongside the pairing code
+and room secret, with lazy migration of the legacy
+UserDefaults value, and wipe it on unpair.  Existing
+inconsistent installs need one re-pair to seed the keychain
+marker; after that, reinstalls reconnect cleanly.
+
+2026-06-29: Companion: log relay close code and reason on
+socket failure
+
+When a relay socket fails or closes, log the WebSocket close
+code and reason on both transports - the URLSession path and
+the mac plugin path - so a short-lived park or session drop
+is diagnosable instead of surfacing as an opaque "closed". A
+clean relay close (1000/1001 with a reason) is then
+distinguishable from an abnormal drop with no close frame
+(1006).
+
+2026-06-29: Companion: opt-in-driven send-to-phone alert
+permission flow
+
+Build the full "send terminal alerts to my paired iPhone"
+flow and stop asking for notification permission unless the
+user opts in.
+
+- The Mac enables the send-to-phone checkbox as soon as a
+revision-2 phone
+  is paired (new canEnableAlertsToPhone gate, dropping the
+  canNotify precondition) and shows a status label under it
+  explaining the current state (pair / open the app / allow
+  notifications / ready).
+- Turning the checkbox ON is treated as the immediate need
+that requests
+  notification permission: now if an interactive connection
+  is live, otherwise persisted as durable intent
+  (alertsEverEnabled) and advertised in every .hello reply
+  (wantsNotificationPermission) so a connecting phone asks
+  iOS for permission on connect when foreground, deferring
+  to the next foreground otherwise. The send path still
+  requires canNotify, so nothing pushes until permission is
+  granted.
+- Log the push-permission request path on both the Mac and
+phone sides for
+  diagnosability.
+
+2026-06-29: Companion: fold alert truncation into the reply
+flag; fix stale alertsSince doc
+
+Review follow-ups: the syncSince reply's truncated flag now
+reflects messageTruncated || alertTruncated (alerts can't
+truncate while the window exceeds the prune cap, but folding
+it in keeps the NSE's +more hint correct if those sizes ever
+change, and stops discarding the computed value). Also
+correct ChatDatabase.alertsSince's doc, which still said
+newest-first after the query became ASC.
+
+Deliberately skipped the third finding (runLegacy commits
+the watermark even on an expiry-lost delivery): it is
+pre-existing, practically unreachable behind the 12s
+internal deadline, far lower blast radius than the
+global-floor runSync path it mirrors (one chat's per-chat
+watermark, content recoverable from app history), and the
+legacy path is slated for deletion.
+
+2026-06-29: Companion: give the forward-compat placeholder a
+stable, coalescing id
+
+The placeholder used a fresh UUID per render, so it opted
+out of the content-id coalescing every other render item
+relies on: a duplicate push re-rendered it as a second
+notification, and a genuinely new item KIND (which this
+build has no floor to advance past, so the host resends it
+every sync) piled up one placeholder per sync forever. Emit
+at most one placeholder per batch with a constant identifier
+so resends and duplicates collapse onto a single standing
+prompt, and keep it silent (the sound and + more hint go to
+the newest real item) so the resent prompt doesn't re-alert
+each sync.
+
+2026-06-29: Companion: item-level forward compatibility for
+syncSince
+
+An item the build can't decode (a future item kind, or a
+malformed known one) now decodes to
+CompanionSyncItem.unsupported instead of failing the whole
+reply, and renders as a generic placeholder notification
+rather than being dropped. Because the item type is shared,
+this one change covers both the NSE and any main-app decode.
+
+2026-06-29: Companion: share syncSince wire structs between
+the host enum and the NSE
+
+Hoist CompanionSyncItem / CompanionSyncMessageItem /
+CompanionSyncAlertItem into the CompanionProtocol package
+(author as a String, so Participant need not move) and have
+both CompanionHostMessage.syncSince and the NSE use them.
+NSESyncSince drops its mirror structs and keeps only the
+envelope shim; the item-level cross-check and the _0-nesting
+custom-Codable footgun go away. ModernTests builds the
+syncSince representative by decoding rather than
+constructing, so it need not link the package. The legacy
+NSEMessagesSince mirror is left alone (the revision-1
+cleanup deletes it).
+
+2026-06-29: Companion: add cleanup and post-review TODOs for
+the push work
+
+Net-new project notes (no original feature commit touches
+CLAUDE.md): remove the revision-1 legacy push path once 3.7
+beta 6/stable ships and simplify the watermark keying then,
+and share the slim NSE wire structs after review.
+
+2026-06-29: Companion: note phone alert push in release
+notes
+
+2026-06-29: Companion: add Send alerts to paired iPhone
+checkbox
+
+A checkbox in the Filter Alerts panel bound to the new
+profile key, enabled only when an eligible (revision 2)
+phone is paired and can be notified.
+
+2026-06-29: Companion: send mark and trigger alerts to the
+paired phone
+
+CompanionAlertBridge persists an alert and fires a debounced
+wakeup; the two high-intent sources (alert on next mark,
+Post Notification trigger) call it when the profile opted in
+and an eligible phone is paired.
+
+2026-06-29: Companion: add KEY_SEND_ALERTS_TO_COMPANION
+profile setting
+
+Per-profile opt-in (default off) governing whether this
+profile's alerts are also delivered to the paired phone.
+
+2026-06-29: Companion: route chat pushes through the shared
+dispatch funnel
+
+Replace the notifier's inline mutable-push send with
+CompanionPushSender.dispatchPush, so chat notifications use
+the same revision-gated wakeup-vs-legacy path (and nonce
+bookkeeping) as alerts.
+
+2026-06-29: Companion: add syncSince protocol and unified
+host handler
+
+New syncSince request/reply and CompanionSyncItem (custom
+Codable so it encodes flat), plus handleSyncSince which
+reads new messages across all chats and new alerts in one
+reply and persists the peer revision on hello. Cross-check
+and forward-compat tests cover the new cases.
+
+2026-06-29: Companion: persist peer revision and add wakeup
+push dispatch
+
+The registry remembers the paired phone's last-advertised
+revision (so a push-time decision works while the phone is
+offline) and exposes the alert-capability gate. The sender
+adds sendWakeup and a dispatchPush funnel that picks wakeup
+vs legacy by that revision.
+
+2026-06-29: Companion: add persisted alert store and global
+message reads
+
+A CompanionAlert table with its own autoincrement seq (so
+the phone tracks an alert floor like Message.seq), plus
+global cross-chat messagesSince reads that carry each row's
+seq, for the unified wakeup.
+
+2026-06-29: Companion: handle contentless wakeup in the NSE
+
+didReceive branches on the sentinel collapse id: a wakeup
+runs the unified syncSince fetch and renders one
+notification per item with a threadIdentifier computed
+on-device; any real token takes the unchanged legacy
+messagesSince path.
+
+2026-06-29: Companion: add SyncFetchCoordinator for the
+unified wakeup fetch
+
+Decides which fetched items to surface and computes the
+deferred floor and per-chat watermark writes. The per-chat
+read-state gate is tested against the conflation case
+(reading one chat must not drop another's).
+
+2026-06-29: Companion: add slim NSESyncSince wire mirror and
+tests
+
+The NSE encodes the syncSince request and decodes its reply
+without the chat model, mirroring the production enums.
+Shared wire vectors and a package test pin the shape so the
+two cannot drift.
+
+2026-06-29: Companion: add package-side CompanionThreadKey
+for the NSE
+
+Byte-identical to the app/Mac CompanionCollapseToken but in
+the package, so the Notification Service Extension (which
+links only CompanionCore) can derive the per-chat watermark
+key and on-device threadIdentifier.
+
+2026-06-29: Companion: add global sync floors to
+WatermarkStore
+
+The unified wakeup needs a message and an alert floor that
+bound the fetch window, kept separate from the per-chat
+read-state watermarks so read state in one chat cannot
+suppress an unread message in another.
+
+2026-06-29: Companion: add contentless-wakeup collapse
+sentinel
+
+A fixed all-zeros collapse id that no real HMAC token can
+equal, so the NSE tells a wakeup from a legacy per-chat
+push, queued wakeups coalesce while offline, and no per-chat
+cardinality leaks to the relay or Apple.
+
+2026-06-29: Companion: bump protocol to revision 2 for
+contentless wakeup
+
+Keep minimumPeer at 1 (not lockstep) so a revision-2 build
+still talks to revision-1 peers in the field, and add
+contentlessWakeupRevision as the threshold below which the
+legacy per-chat push is used.
+
 2026-06-27: Fill screenshot transparent areas with the
 session background
 
