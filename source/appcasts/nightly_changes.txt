@@ -1,3 +1,31 @@
+2026-07-01: Fix crash in Replace Selection when replacement
+grows the buffer
+
+"Replace with Pretty-Printed JSON" and the base64
+encode/decode context-menu items go through the fold path
+(replaceRange:withLines: promptLength:-1) with reason .fold
+but create no FoldMark. When the replacement had more lines
+than the selection, delta > 0 and
+ResilientCoordinate.linesDidShift tripped it_assert(delta <
+0), crashing in release builds.
+
+Remove that assert and handle both signs: use the posted
+replacedRange (deriving the range from delta is wrong when
+the buffer grows), and for a plain replacement with no
+FoldMark invalidate coords inside the replaced region
+instead of drifting them onto unrelated lines. Coords below
+the region shift by delta regardless of sign. Adds tests
+covering growth/shrink for coords inside, at the first
+replaced line, and below.
+
+2026-07-01: Default the Python runtime manifest to
+manifest-new.json on macOS 27+
+
+On macOS 27 and later the Python API runtime now downloads
+from manifest-new.json by default. Older OS versions keep
+manifest.json.  Users who customized
+PythonRuntimeDownloadURL are unaffected.
+
 2026-06-30: Add "Force keyboard" once-per-session option
 
 Refine the "Force keyboard" setting under Settings > Keys:
