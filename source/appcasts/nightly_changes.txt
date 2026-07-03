@@ -1,3 +1,166 @@
+2026-07-02: Change default companion relay origin to
+relay.iterm2.com
+
+2026-07-02: Bump build version of companion
+
+2026-07-02: Bump relay submodule
+
+2026-07-02: Make relay host configurable
+
+2026-07-02: Fix dead-key composition under the Kitty
+keyboard protocol. Issue 12906
+
+When "report all keys as escape codes" and "report
+associated text" are both enabled, a dead-key composition
+(for example US International apostrophe then e) lost its
+accent: transformedText rebuilt the report from the physical
+keyCode and discarded the composed character. Report the
+committed text as the associated codepoints instead, keeping
+the physical key as the unicode-key-code. Guard the same
+path so a pre-Cocoa escape sequence routed back through
+insertText (control combinations, etc.) is not mistaken for
+composed text.
+
+Also skip the main-menu key-equivalent forwarding in
+-[PTYTextView performKeyEquivalent:] during key-event
+replay, so a synthesized control keystroke can't match a
+macOS window-tiling shortcut (replayed Control-C matched
+"Center" and moved the window) instead of reaching the
+terminal.
+
+Test harness: add a Manual column to steps.csv for tests
+that need a keyboard-layout switch or modifier remapping the
+harness can't perform; skip them in a normal run (printing
+the count and how to run them) and run only them with
+--manual. Trim their segments from recorded-keys.json so
+replay stays aligned, and fix a stale expected value.
+
+2026-07-02: Companion: live terminal video streaming to the
+iOS app
+
+Stream rendered Mac terminal frames to the iTerm2 Buddy iOS
+app as an HEVC video with a text side channel for selection,
+copy, and scrollback browsing, rather than re-implementing
+the terminal emulator on the phone.
+
+- Binary media channel and streaming HEVC encoder/decoder,
+change-driven
+  variable frame rate with dedup, insurance keyframes, and
+  flow control (token-bucket byte budget, in-flight limiter,
+  pacer, priority outbox).
+- Absolute-line addressing for scrollback; a
+zoomable/scrollable live canvas
+  with Safari-style gestures (long-press selects, one finger
+  scrolls, pinch zooms), host-rendered selection highlight
+  in history tiles, a magnifier, and draggable selection
+  handles.
+- Host-side selection/copy/paste driven from the phone,
+geometry side channel
+  for touch-to-cell mapping, and column reflow / resize
+  handling mid-stream.
+- Relay resilience: keepalive-driven recovery of half-open
+sockets, parked
+  accept unblocking on a hard drop, and teardown on unpair.
+- Hardening from review: forward-compatible config decode,
+off-main-thread
+  race fixes, exclusive/inclusive selection reconciled by
+  document order, side-margin-aware touch mapping, a bounded
+  and validated history-tile cache, generation-aware config
+  resend that preserves phone state, and assorted
+  overflow/lock/lifecycle fixes.
+
+Squashed from the companion-video branch, which retains the
+full history.
+
+2026-07-02: Fix dead space in tabs when tab numbers are
+hidden (#686) 2026-07-02: Tint minimal-theme pane title bars
+when a tab has differing tab colors
+
+In the minimal theme the per-pane title bar normally blends
+with the session background (issue 10177) because the shared
+tab bar already conveys the tab color. When panes in a tab
+have two or more distinct tab colors the tab bar can only
+show one of them, so tint each pane's title bar with its own
+tab color to tell them apart. Issue 12903.
+
+2026-07-02: Draw the Tahoe tab progress indicator as a ring
+and fix its height
+
+On macOS Tahoe the OSC 9;4 / agent-activity progress bar was
+a flush 2pt bar inside the pill-shaped tab, where it
+overlapped the tab title and the working/idle status
+subtitle in the fixed-height tab bar.
+
+Render it instead as a rounded 2pt outline hugging the pill:
+the tab progress-bar view is grown 2pt past the pill on
+every side and an even-odd clip path (outer rounded rect
+minus the pill-shaped hole) masks it into a ring.
+PSMTabBarControl now applies the progress-bar clip mask with
+kCAFillRuleEvenOdd so the nested subpath punches out the
+center (a no-op for the existing single-subpath clip paths).
+
+Fix the ring rendering short (top edge unfilled), most
+visibly after switching between compact and regular themes
+while progress was running. The indeterminate gradient
+layers are center-anchored and were set up while the bar was
+still 2pt tall, so their position.y stayed at 1.
+layoutSublayers only refreshed their bounds, not their
+position, so growing to the taller ring left them centered
+too low and the top went unpainted. layoutSublayers now also
+tracks position.y to the container height. The gradient
+height follows the view frame (so it fills the ring), and
+heightValue/frame changes now mark the sublayers for
+relayout.
+
+2026-07-02: Fix dashed underline leaking into box-drawing
+lines
+
+ShapeBuilder.stroke set a line dash on the shared CGContext
+but never cleared it, so a dashed underline drawn via the
+solid-underline path (iTermAdvancedSettingsModel
+solidUnderlines, which strokes directly on the window
+context without a save/restore) left the context in dashed
+mode. Later box-drawing glyphs stroke without setting their
+own dash and inherited it, rendering separators and TUI
+input-box borders dashed while a dashed underline was on
+screen. Reset the dash to solid after stroking so it no
+longer leaks. Issue 12907.
+
+2026-07-02: Run SSH integration through the user's login
+shell
+
+The SSH command type launched it2ssh via a bare
+`/usr/bin/login -fpq <user> <shell> -c ...`, which is a
+non-login, non-interactive shell and so sourced no dotfiles.
+Any environment the user configures in their shell startup
+(most notably a custom SSH_AUTH_SOCK pointing at an agent
+that holds their keys) was therefore not applied, and ssh
+fell back to the default agent. For agent-backed keys
+(Secretive, 1Password, a manually run ssh-agent, etc.) this
+produced "Load key ...pub: invalid format" followed by
+"Permission denied (publickey)".
+
+Wrap it2ssh the same way the custom-command "run in login
+shell" path does, using ShellLauncher so the shell is exec'd
+with argv[0] = "-<basename>" (login) and -i (interactive),
+sourcing both profile and rc files uniformly across bash,
+zsh, fish, tcsh, and xonsh. it2ssh and the ssh binary it
+invokes are referenced by absolute path, so a dotfile that
+rewrites $PATH cannot stop them from launching. Dotfile
+output printed before it2ssh runs is handled as ordinary
+terminal output; the conductor parser does not engage until
+the token-gated it2ssh= OSC arrives, so it cannot desync the
+protocol.
+
+Fixes the SSH-command-type case of issue #12909.
+
+2026-07-01: Update companion-relay submodule
+
+Brings in the App Attest assertion off-by-one fix, the
+nonDisplacing join mode (reject rather than displace an
+occupied slot), and socket-lifetime logging (lived=Nms) for
+diagnosing park flapping.
+
 2026-07-01: Fix crash in Replace Selection when replacement
 grows the buffer
 
