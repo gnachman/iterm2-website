@@ -1,3 +1,115 @@
+2026-07-03: Fix infinite registration recursion crash in AI
+chat
+
+registrationProviderRequestRegistration(for:_:) was only in
+a protocol extension, not a protocol requirement. Calls
+through an AIRegistrationProvider existential dispatched
+statically to the default implementation, dropping the
+vendor and substituting LLMMetadata.effectiveVendor. When
+the active model's vendor differed, the resulting
+Registration failed isValid(for:), so
+AITermController.registration stayed nil and handle(.begin)
+requested registration forever, overflowing the stack.
+
+Declare the (for:_:) overload as a protocol requirement so
+dispatch reaches each conformer's implementation and
+preserves the vendor. Also fail gracefully instead of
+retrying when a stored registration still doesn't satisfy
+the getter, so this can never overflow the stack again.
+
+2026-07-03: Return focus to terminal when closing inline AI
+chat panel
+
+Closing the panel only cleared inlineChatVisible, leaving
+first responder dangling on the removed chat view. Call
+takeFocus() so keyboard focus returns to the session's text
+view.
+
+2026-07-03: Improve AI chat provider and model UX
+
+Per-chat model persistence with provider, model,
+reasoning-effort, and service-tier pickers; per-vendor API
+keys; manual model configurations; chat-list multi-select
+with delete and rename; and a reworked message renderer with
+inline code blocks and terminal-command transcripts.
+
+Also folds in review fixes on top of the original PR: -
+Gemini tool schemas: sanitize a property whose name is
+itself a JSON
+  Schema keyword (type/items/additionalProperties) as a
+  schema instead of reinterpreting the name as a keyword, so
+  additionalProperties and type-unions no longer leak to
+  Gemini.
+- Per-vendor API keys: adopt the legacy shared-account key
+only for the
+  effective vendor, so an OpenAI key can no longer be handed
+  to DeepSeek or Llama, and trust a vendor's own stored key
+  verbatim so a proxied/gateway key is not discarded on
+  upgrade.
+- Manage AI API Keys only rewrites the vendors whose field
+the user changed,
+  so a failed keychain prefill (blank field) no longer
+  overwrites a stored key on Save.
+- A chat pinned to a model that has been retired from the
+catalog falls back
+  to a same-vendor model rather than silently switching
+  providers, and a chat pinned to a manual/custom model now
+  resolves that model at request time instead of falling
+  through to the global default.
+- Bound the tool-call failure retry loop, including the
+unknown/hallucinated
+  function-name branch, so a deterministically failing or
+  unregistered tool cannot loop indefinitely, one request
+  per failure.
+- Route the Settings manual-model vendor label through the
+same resolver used
+  at request time, and drop manual-model entries whose
+  name/url are not strings so a hand-edited or synced pref
+  cannot crash Settings.
+
+Adds unit tests for per-vendor key resolution, manual-model
+vendor classification, and the Gemini keyword-named-property
+case; keeps the AIChatToolCallRepair structured-translation
+test seam.
+
+Co-authored-by: Mateusz Adam Katana
+<mateusz.adam.katana@gmail.com>
+
+2026-07-03: Add data-driven, runtime-refreshable AI model
+catalog
+
+Externalize the AI model list from hardcoded constants to a
+bundled, signed JSON (OtherResources/ai-models.json) that
+refreshes at runtime, so new models and the per-vendor
+recommended pointer reach users without an app update.
+
+- AIModelCatalog loads the higher-versioned of {bundled
+snapshot,
+  downloaded cache}; unrepresentable entries are skipped
+  fail-safe.
+- AIModelCatalogUpdater fetches a signed manifest, tries
+compatible
+  candidates highest-version-first, verifies each payload
+  against the bundled rsa_pub.pem, validates catalog
+  invariants, and atomically replaces the cache. Gated in
+  order on AI being fully enabled, a non-empty
+  aiModelCatalogURL, and one-time user consent (tri-state,
+  with an in-flight guard against stacking modals).
+- Manifest compatibility uses a monotonic integer
+  appCatalogCompatibilityVersion instead of the app version
+  string, so nightly/beta/adhoc builds gate correctly.
+- Add an optional per-entry economyModel (a cheaper
+same-vendor model)
+  used by the orchestration screen-watch poller. Economy
+  resolution preserves the configured model's transport
+  (url/api), so a custom base URL is honored and the API key
+  is not sent to the public vendor host.
+- tools/copy_models.sh signs and publishes the catalog to
+the website.  - Docs in docs/ai-model-catalog.md; unit
+coverage in AIModelCatalogTest.
+
+2026-07-03: 3.7.0beta6
+
 2026-07-02: Change default companion relay origin to
 relay.iterm2.com
 
