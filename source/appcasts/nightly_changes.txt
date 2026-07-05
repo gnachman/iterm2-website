@@ -1,3 +1,174 @@
+2026-07-04: PushRelay: loopback /metrics for the self-hosted
+host
+
+Adds Prometheus metrics to the Node host (the Cloudflare
+Worker keeps observability off), mirroring the companion
+relay: a localhost-only /metrics with pushrelay_* counters
+and a devices gauge.
+
+- host/metrics.js: counters + gauge, zero-PII (counts only)
+- host/server.js: serves /metrics (loopback peer, no proxy
+headers) and
+  classifies each request into register write/skip and push
+  delivered/ bad-secret/unknown-token/apns-error counters
+- host/kv.js: countPrefix("device:") feeds the devices gauge
+- bin/push-relay.js: process-exception counter
+
+The on-box relay dashboard scrapes this to show a Push relay
+section.
+
+Co-Authored-By: Claude Opus 4.8 (1M context)
+<noreply@anthropic.com>
+
+2026-07-04: Fix false idle status during Claude Code
+background work, add provenance and screen age to
+orchestration, scrub keys from AI wire log
+
+Debugging a night of confused AI chat watchers surfaced four
+problems, all fixed here:
+
+1. cc-status reported "idle" on every Stop hook even while
+background agents/tasks kept running, so completion watchers
+fired on every lull between subagents. cc-status now stays
+"working" while the Stop, StopFailure, or SubagentStop
+payload reports running background_tasks (Claude Code
+2.1.198+; shapes verified live against 2.1.201). Since
+idle_prompt payloads carry no task info, the last known
+count is stored in iTerm2 RAM (never on disk, excluded from
+arrangements) via set_status's new background_tasks argument
+and read back with the new
+iterm2.get_background_task_count() function and it2
+subcommand. The hook installer now also registers
+SubagentStop so the count updates between turns; the
+existing health check prompts existing installs to
+reinstall.
+
+2. Agents seeing another window's workgroup had no way to
+tell where it came from. Workgroups and sessions in the
+snapshot now carry provenance ("A trigger in session X
+entered this workgroup", "Created by the agent in chat Y")
+recorded at entry/spawn time.
+
+3. Screen text carries no recency cues, which led an agent
+to mistake a stale transcript for fresh work. Session
+snapshots, get_state, get_screen_contents, and watcher
+status updates now report how long ago the screen last
+changed, with a new PTYSession flag so a never-rendered
+session reports unknown instead of a bogus age.
+
+4. The AI chat wire log stored API keys verbatim. Credential
+headers are now fingerprinted and request URLs, bodies,
+responses, and stream chunks are scrubbed for key-shaped
+tokens (sk-*, AIza*), keeping a short prefix/suffix so
+wrong-key bugs stay diagnosable.
+
+Also adds paranoid sandbox build targets for cc-status and
+it2cli.
+
+2026-07-04: Fix Companion build: share
+reasoning/service-tier enums
+
+Message.Configuration referenced
+ResponsesRequestBody.ReasoningOptions.Effort and
+ResponsesRequestBody.ServiceTier, but Message.swift is
+compiled into the iOS Companion target while the heavy,
+Mac-coupled ResponsesAPIRequest.swift is not, so the
+Companion could not resolve those types.
+
+Extract the two small enums into a new Foundation-only
+AIReasoningTypes.swift shared by both targets, and typealias
+the existing nested names to them so no Mac-side call sites
+change.
+
+2026-07-04: Point Companion push relay at push.iterm2.com
+
+Move both the Mac app and the iOS Companion off the
+workers.dev host to the custom domain.
+
+2026-07-04: PushRelay: idempotent /register + self-hosted
+Node deployment
+
+The free Cloudflare KV plan caps writes at 1,000/day.
+register() wrote KV unconditionally on every call and the
+phone re-registers on every connection, so a reconnect storm
+exhausted the daily cap  after which a rotated secret could
+no longer be persisted and every push 403'd "bad secret".
+
+Worker fix: register() reads-before-writing, skipping the
+put unless secretHash/sandbox changed or the record is past
+half its TTL (steady- state writes ~0, rotations still
+always persisted). Adds an env.fetchImpl seam in
+deliverToAPNs  undefined on Cloudflare (global fetch),
+injected by the Node host below. No behavior change on
+Cloudflare.
+
+Self-hosted alternative that eliminates the KV cap entirely,
+running the same src/worker.js off Cloudflare via a thin
+platform shim:
+  - host/kv.js       Workers KV -> better-sqlite3 (TTL
+  expiry + sweep) - host/apns.js     APNs over node:http2
+  (Node's global fetch is HTTP/1.1,
+		     which APNs refuses); per-origin session
+		     reuse
+  - host/server.js   Node http -> worker.fetch + in-memory
+  /register limiter - bin/push-relay.js  systemd entry (env
+  config, .p8 via file/credential) - ops/
+  hardened unit (LoadCredential .p8), idempotent deploy.sh,
+		     push-relay-cf.conf (push.iterm2.com: CF
+		     -> :8443 -> :8790), DEPLOY.md runbook
+		     (Origin Rule port->8443, wrangler
+		     Node>=22/auth caveat, 503 diagnostics)
+
+Tests: 31 worker (workerd) + 17 host (better-sqlite3 KV, the
+HTTP/2 APNs adapter, end-to-end /register->/push through a
+real listener).
+
+Co-Authored-By: Claude Opus 4.8 (1M context)
+<noreply@anthropic.com>
+
+2026-07-04: Surface the real connection error when companion
+relay egress fails
+
+Pointing the relay at a host that refuses the WebSocket
+produced "Pairing failed: The operation couldn't be
+completed.  (iTerm2SharedARC.PluginError error 1.)" because
+the useful detail was lost twice. PluginError was not
+LocalizedError, so bridging an Error existential to NSError
+discarded its reason string entirely. And the reason itself
+was nearly empty for connect failures: the host flattens the
+underlying URLSession error into _onClosed(id, 1006,
+reason), and the signed plugin JS rejects wsOpen with just
+"closed <code>".
+
+Make PluginError conform to LocalizedError so reason
+survives bridging everywhere it is shown, and have
+CompanionPluginClient track which sockets completed the
+WebSocket upgrade so a receive failure on a never-opened
+socket is recorded as the connect failure and attached to
+the wsOpen rejection. The plugin JS is signature-verified
+against an out-of-band key, so both fixes are host-side
+only.
+
+2026-07-04: Cap companion relay retry rate with exponential
+backoff
+
+A fresh-pairing relay park that died was re-advertised
+(under a new pid) with no delay. When the connection failed
+fast, e.g. a bad TLS certificate on the relay, this spun:
+mint a pid, redraw the QR, and reconnect dozens of times per
+second.
+
+Route both retry lanes (paired re-park and fresh-pairing pid
+regeneration) through a shared RelayRetryScheduler whose
+delay doubles from 5s to a 60s cap while parks keep failing
+and resets once a park succeeds. Also close a hole where
+gate-change notifications could re-park the retiring pid
+around the backoff, defer regeneration while a handshake or
+SAS confirmation is in flight, surface connection errors in
+the pairing window instead of failing silently, and emit the
+waiting status only once the relay actually admits the park
+so it cannot paper over an error.
+
 2026-07-03: Fix infinite registration recursion crash in AI
 chat
 
