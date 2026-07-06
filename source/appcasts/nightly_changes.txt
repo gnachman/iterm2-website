@@ -1,3 +1,232 @@
+2026-07-05: Refuse companion peers that predate the relay
+move
+
+Both companion relays moved to new addresses, and every
+build before this one has the old relay hosts hardcoded, so
+a cross-revision pairing cannot deliver pushes or, once the
+old relay is retired, even connect.
+
+Bump the companion protocol revision to 5 and raise
+minimumPeer to 5 (lockstep) so the app-compatibility
+handshake refuses any peer older than revision 5 with an
+upgrade wall instead of letting it pair into a broken state.
+
+2026-07-05: Prompt to re-pair companion device after relays
+moved
+
+Both the push relay and the main pairing relay moved to new
+addresses. A device paired on an earlier build is still
+registered with the old servers, so its phone cannot be
+reached until it pairs again.
+
+Record the push relay and main relay origins when a fresh
+pairing completes, and at launch, if a device is paired and
+the feature is enabled but those origins no longer match
+where this build points (including the never-recorded case
+of a pairing that predates the move), show an alert telling
+the user to re-pair. OK opens Companion Device Settings;
+Later defers to the next launch.
+
+Also update the phone's canonical relay host to
+relay.iterm2.com so the new relay is not disclosed as a
+non-default host on the pairing confirmation screen.
+
+2026-07-05: Companion: add debug-only AirDrop button for the
+latest log file
+
+Adds an AirDrop Latest Log button to the Settings
+Diagnostics section, guarded by #if DEBUG so it only appears
+in debug builds. It flushes the log writer and shares the
+most recent log file (app or NSE) via the system share
+sheet, or shows an alert when there are no logs yet.
+
+2026-07-05: Fix iTermGitClientTests under malloc diagnostics
+
+The fixture's NSTask-spawned git inherited the test host's
+ASan/malloc env vars, which made git print
+MallocStackLogging noise into the output the tests assert on
+and sometimes exit nonzero outright (12 of 28 tests failed
+when the suite ran under the diagnostic variant). The child
+now gets a pristine environment with
+Malloc*/DYLD_*/NSZombie*/ASAN_* stripped.
+
+2026-07-05: AI live harness: make the chat-queue tests
+survive a paired companion
+
+The four chat-queue tests play the broker-side tool runner
+themselves, which they "ensured" by assuming
+ChatClient.instance had never been created - but the guard
+was an unenforceable stub, and the assumption is false on
+any machine with a paired companion device: the companion
+bridge and agent-activity notifier touch the lazily-creating
+ChatClient.instance at app launch, and its broker processor
+then wraps the fixture's remoteCommandRequest (fabricated
+session guid, no live PTYSession) in selectSessionRequest,
+which the tests' recorders never match. The tests now
+suspend broker processors for their duration and restore
+them on teardown.
+
+With the fixture unblocked, two latent test bugs surfaced.
+Expectation fulfillment from recorder callbacks is now
+one-shot: a later turn can legitimately call the tool again,
+and a second fulfill() asserts, crashing the host. And
+FakeToolResponder answers one response per REQUEST instead
+of one total: a rebuilt history's interrupted-call filler
+invites the model to re-issue the tool, and an unanswered
+re-issue parked the turn in pendingRemoteCommands forever.
+Orphan semantics are unchanged - a response whose dispatcher
+was cleared by Stop is an orphan regardless - so the
+production orphan-drop guard in ChatAgent.fetchCompletion is
+still exercised.
+
+No production changes; the orphan-response guard these tests
+pin already behaves correctly.
+
+2026-07-05: AI live harness: replay interleaved reasoning
+turns with real items only
+
+The encrypted reasoning payload binds the turn's ORIGINAL
+structure: replaying [reasoning, text, function_call] is
+accepted when the real turn had a text preamble, but
+fabricating a text item inside a turn that had none is
+rejected (function_call provided without its required
+reasoning item). The interleaved leg of the reasoning-replay
+test now makes its own setup call that asks for a preamble
+and replays the real items verbatim, mirroring what the
+production builder does with a multipart text+call turn, and
+reports a skip when the model declines to emit the preamble.
+The production builder needs no change: it already preserves
+the parser's part order, which mirrors the response.
+
+2026-07-05: AI chat: persist reasoning state, lock provider
+per chat, replay tool history structured
+
+Deletes the tool-transcript reload hack, which taught the
+model to imitate transcripts and fabricate tool results
+after a reload. On reload, tool calls now replay as real
+function_call/functionOutput items (with
+AIChatToolCallRepair healing orphans) instead of prose.
+
+OpenAI reasoning state persists: every Responses request to
+a reasoning-capable model asks for encrypted reasoning
+(include: reasoning.encrypted_content; probe-verified to
+work with store:true, so previous_response_id keeps serving
+live turns). Captured items (streaming and not) ride the
+persisted tool-call message's llmMessage, requiring no
+schema migration, and replay ahead of their calls when
+history is re-sent. Calls persisted without reasoning replay
+with their item id stripped so the API treats them as
+developer-provided context (live-verified: with the id and
+no reasoning item, the API 400s). Gemini's analog, thought
+signatures, replays verbatim when captured;
+signature-requiring generations (3+, conservatively
+including generation-less aliases) get Google's documented
+bypass token for signature-less legacy calls. Gemini's
+same-role coalescing no longer folds a user's follow-up text
+into a functionResponse turn, which made the model return an
+empty answer.
+
+A chat is now bound to one provider at the model layer
+(ChatProviderBinding, persisted via Chat.modelName), not
+just in the UI: the first conversational turn binds,
+same-vendor model switches stay allowed (and the model
+picker stays enabled mid-chat now), cross-vendor turns are
+rejected as a chat reply without reaching the API, and
+configuration-less turns (the phone) run on the chat's bound
+model instead of the global default. Unclassifiable models
+are permissive so no chat can be bricked. Hosted-tool gating
+(web search, code interpreter, file search) now follows the
+turn's effective model rather than the global default.
+
+Reasoning-only turns keep their captured items on the
+non-streaming path, and the functionToolCall construction
+has a single site so the id-gating rule cannot diverge
+between replay paths.
+
+Live coverage: a reasoning-replay contract test
+(full-fidelity, interleaved-text, and legacy id-stripped
+replays with real blobs, plus the negative control), a
+store:true encrypted-content probe, and the chatReload
+family restored to structured assertions.
+
+2026-07-05: Companion: let the user mute a chat's push
+notifications
+
+The phone offers Mute/Unmute (swipe on the chat list, bell
+button in the conversation) when the mac advertises protocol
+revision 5. The mac persists the muted set (it decides
+whether to push, possibly while the phone is unreachable)
+and chat-list entries carry the flag back so the phone UI
+stays authoritative.
+
+A muted chat sends no pushes anywhere they originate: the
+agent-activity notifier skips its turn-complete and
+permission-request wakeups, syncSince omits its messages (a
+wakeup fired by another chat must not surface them on the
+lock screen; the floor still advances so they are consumed
+silently), the orchestrator's notify tool returns an error
+telling the model the user muted the chat, and watcher
+notify_user pushes are suppressed. The muted set is pruned
+on chat delete and cleared on unpair.
+
+Also adds field logging along the whole path: the phone logs
+the toggle round trip, the mac logs the persisted set on
+every chat-list build, muted suppressions, the triggering
+chat of each push, and muted drops in syncSince, and the NSE
+logs the per-item sources it renders.
+
+2026-07-05: Remove retired relay Analytics monitor
+
+Companion/RelayMonitor/ was the Cloudflare GraphQL Analytics
+monitor for the Cloudflare Worker relay, which is being
+phased out. It is superseded by the push-based monitor in
+the iterm2-companion-relay repo, which watches the
+self-hosted VPS relay. Both deployed to the same Worker name
+and KV namespace, so keeping the dead directory around was a
+redeploy footgun. Recoverable from history if the Analytics
+approach is ever wanted again.
+
+Co-Authored-By: Claude Opus 4.8 (1M context)
+<noreply@anthropic.com>
+
+2026-07-05: Trim overly long string
+
+2026-07-05: Companion: scale live-stream bitrate to
+resolution, throttle FPS, and tune flow control
+
+The Companion live video feed encoded the window at full
+native resolution but pinned the HEVC encoder to a fixed 1
+Mbps, so quality collapsed as the window grew (a 2756x2880
+Retina window was ~31 Mpx crushed into 1 Mbps).
+
+- Scale the encoder bitrate to the frame's pixel count
+(constant
+  bits-per-pixel-per-frame), clamped to [1 Mbps, ceiling].
+  The phone's maxBitrate becomes an upper bound; nil means
+  the host picks a resolution-aware rate.
+- Throttle the effective frame rate for large frames toward
+a
+  minimum so total bandwidth stays bounded: a big window
+  emits fewer frames of the same per-frame sharpness rather
+  than a ballooning bitrate. The pacer's interval is retuned
+  once the resolution is known.
+- Implement updateStreamParams as FPS-only live adaptation
+(retune the
+  frame-rate cap; per-frame quality is never lowered so
+  terminal text stays legible). maxBitrate is ignored on a
+  running stream.
+- Add advanced settings: companionStreamBitrateMultiplier
+(quality
+  knob), companionStreamMaxLeadMilliseconds and
+  companionStreamMaxQueueDepth (in-flight limiter back-off
+  thresholds).  Both limiter thresholds are floored at 0 so
+  a negative value cannot wedge the stream into a permanent
+  freeze.
+
+Adds unit/behavioral tests for bitrate scaling, the
+multiplier, FPS throttling, updateFrameRateCap, and pacer
+retuning.
+
 2026-07-04: PushRelay: loopback /metrics for the self-hosted
 host
 
