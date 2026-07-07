@@ -1,3 +1,65 @@
+2026-07-06: Orchestration: Stop cancels the chat's watchers
+
+Pressing Stop already cancels the in-flight turn and clears
+the queued backlog, but the chat's registered watchers
+survived, so the next time a watched session went idle it
+fired a watcherEvent that restarted the orchestration loop
+after the user asked everything to stop.
+
+The dispatcher already subscribes to broker .userCommand
+messages (it handled only permission responses); route .stop
+to a new cancelAllWatchers that tears down every watcher's
+escalation timer and screen poller, clears the list, and
+persists. Silent, matching the "stop is stop" semantics;
+watches the user still wants can be re-registered by asking.
+
+2026-07-06: Companion: retry @-mentions that failed to
+resolve
+
+The phone resolved @-mentions to live session/workgroup
+names via an async round-trip to the Mac, but a failed or
+empty lookup was treated as final: a miss was cached (or
+dropped) and the bubble showed a raw @UUID forever, with a
+retry only if some later message happened to re-mention the
+same id.
+
+Now only a real hit (a live displayName) is cached. Misses
+(nil displayName, no entry, or a whole-batch failure when
+the Mac is unreachable) go to an unresolvedMentions retry
+gate that stops a failed lookup from re-firing on every
+incremental delivery but is cleared on reconnect and on chat
+open, so a transient miss resolves on the next natural
+trigger instead of staying raw.
+
+2026-07-06: Orchestration chat: make Stop and @-mentions
+behave
+
+Three fixes for the AI orchestration chat surfaced by a
+watch-the- code-reviews session that flailed:
+
+- Prompt: forbid abbreviated or bare session/workgroup ids.
+The model
+  was writing @601ECE75 or a bare CB905D2B, which never
+  linkify and render as dead text. Require the full
+  @-prefixed id verbatim, or name the session by
+  role+workgroup instead of truncating.
+
+- Stop now clears the queued backlog (pending user messages
+and
+  watcher-event turns), not just the in-flight reply, so
+  pressing Stop actually halts the pipeline. It clears
+  indices 1... only and leaves the in-flight head for its
+  own finishTurn to pop, avoiding the mis-pop hazard from
+  the cancellation design doc.
+
+- User-typed messages now jump ahead of queued watcher
+events (but
+  never past the in-flight head, and without soft-canceling
+  the current turn) so a user can interject in a long
+  orchestration loop. New pure helper
+  ChatService.queueInsertionIndex, unit-tested in
+  ChatServiceQueueTests.
+
 2026-07-05: Refuse companion peers that predate the relay
 move
 
