@@ -1,3 +1,71 @@
+2026-07-08: Add AI economy model, and fix manual-model
+catalog fidelity
+
+Manage Manual AI Models gains a leaf toggle to designate one
+non-default manual model as the "economy" model, used for
+cheap background judgements (command-safety checks,
+screen-idle detection) in place of the main chat model. The
+designation is stored in kPreferenceKeyAIEconomyModelName
+and resolved by ScreenWatchPoller, which prefers it (used
+verbatim, with its own url/api/key) over the catalog's
+automatic same-vendor economy pointer.  The toggle is
+disabled for the default row since a model cannot be both.
+
+Manual models now win over a built-in of the same name
+everywhere a model name is resolved (request routing,
+capability gating, provider binding, and the pickers), so a
+user can proxy a known model through a custom URL by reusing
+its name.
+
+Because a manual config could not express several per-model
+catalog fields, cloning a preset silently dropped them. Fix
+that class of bug:
+
+- Picking a preset now fills in the model name too, not just
+the other
+  fields.
+- Add "Supports temperature" and "Configurable thinking"
+checkboxes,
+  seeded from the preset. A stored value wins; when absent
+  the value is inherited from the same-named built-in, so
+  existing clones self-heal without being re-created.
+  Same-named clones also inherit the built-in's
+  reasoning-effort and service-tier options, which have no
+  editor UI.
+- Honor supportsTemperature in the OpenAI and DeepSeek
+completion request
+  builders, not just Anthropic. This is a no-op for every
+  shipping model (all are true on those paths) but stops a
+  temperature-rejecting manual or future model from sending
+  a field the API 400s on.
+
+Also swap the economy-row table marker from a colored emoji
+to a monochrome leaf SF Symbol.
+
+2026-07-08: Reconcile streamed tool calls against the full
+response body
+
+A streamed tool call could be dispatched with empty
+arguments when the AI plugin delivered the final WebResponse
+before the argument-bearing stream chunks were consumed.
+AITermController.parseStreamingResponse finalized from the
+incomplete incremental accumulator and discarded the
+complete response body, so the tool received {} and the
+orchestrator rejected it as malformed_args. The agent,
+believing it had supplied the args, looped retrying the
+identical call, and in the worst case (the completion
+beating the tool_use block entirely) the turn finalized as
+an empty text answer that ended the conversation.
+
+The final branch now reparses the complete body and prefers
+whichever message carries the more complete tool call, and
+streams any un-surfaced text tail so a raced completion no
+longer leaves a truncated bubble. The common non-raced path
+is unchanged.
+
+Adds AIStreamingToolArgLossTests covering both the
+truncated-args and no-call-at-all races.
+
 2026-07-06: Orchestration: Stop cancels the chat's watchers
 
 Pressing Stop already cancels the in-flight turn and clears
