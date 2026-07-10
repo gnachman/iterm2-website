@@ -1,3 +1,555 @@
+2026-07-09: Orchestrator AI safety gate for autonomous
+command execution
+
+Route every orchestrator code-execution path through the AI
+safety classifier, closing the gap where
+session_execute_command, submitted send_text, create_file,
+and TUI keystrokes dispatched to the PTY on a one-time
+workgroup claim with no per-action classification.
+
+Classifier and prompt hardening (AutoModeClassifier /
+TUISafetyPrompt): - Untrusted-content trust rules: only a
+direct user turn authorizes a
+  risky action; agent prose is never projected into the
+  transcript.
+- Prompt-injection defenses: fence the untrusted screen with
+a random
+  sentinel, neutralize block/thinking/reason and transcript
+  delimiters, collapse every line-break scalar so a payload
+  cannot forge a row or a role turn, and a fail-closed
+  any-yes parse against injected verdicts.
+- Transcript count/size caps that keep the newest turn and
+the most
+  recent user turn, truncating middles rather than dropping
+  intent.
+- Recent chat history seeded into both the orchestrator and
+the
+  session-bound safety checks so intent is visible.
+
+Screen-aware TUI keystroke classification with an offline
+eval harness, scorer, and fixtures captured from real
+terminal programs.
+
+Whole-line reconstruction plus a lag-free per-session
+accumulator so a command split across back-to-back sends,
+spliced mid-line, or staged across calls is classified as
+one line rather than dodging the gate.
+
+TerminalHardRules is now a tokenized blocklist, not an
+allowlist: it never permits and never hard-denies. It
+tokenizes each command (argv, flags, target) and surfaces
+only a narrow set for one-tap approval (catastrophic
+rm/chmod/chown/dd/mkfs/find at root or a device, carriage
+returns, unbalanced quotes, pipe-to-shell, obscure zsh
+builtins, terminal escapes); everything else defers to the
+LLM, which reads it in full and judges it against what the
+user asked for. This mirrors Claude Code's auto mode and
+removes the read-only allowlist that let an autonomous agent
+cat secrets or trigger a poisoned pager unchecked.
+
+Wire needsManualApproval and deny through the existing
+awaitPermission bubble ("Run this command?") so a flagged
+command is offered for one-tap approval instead of
+dead-ending as a text message to the model.
+
+2026-07-09: Fix nil-font crash when a session note updates
+its font
+
+sessionNoteFont() returns nil when the session's textview or
+font table is torn down. The ObjC direct caller guarded
+this, but the Swift protocol declared a non-optional NSFont
+return, so the nil slipped through
+fontNotificationReceived's guard and reached -[NSTextView
+setFont:], which raised NSInvalidArgumentException and
+aborted. Declare the return optional so the existing guard
+bails.
+
+2026-07-09: Sync snippets, notes, and icon customizations to
+the custom folder
+
+Extend "load settings from a custom folder" to also carry a
+curated allowlist of data files (snippets.plist, notes.rtfd,
+graphic_colors.json, graphic_icons.json) to and from a Data/
+subfolder of the custom folder, riding on the existing prefs
+sync. GitLab issue 12890.
+
+Design: data files are strictly safer than the prefs plist.
+Consent is asked once per folder (notes and snippets can
+hold secrets). Only one side moved reconciles silently
+(union-push local, mirror-pull remote, propagating
+deletions); a genuine both-sides change prompts "keep this
+Mac's or the folder's" rather than overwriting, and backs up
+the losing side first. Anything unreadable (dataless
+placeholder, unlistable package, symlink) defers the pass
+instead of acting on a phantom.
+
+Engine: iTermRemoteDataFileSync (pure, path-in/string-out,
+unit-tested) does the atomic mirror, content/stat
+signatures, namespaced staging-temp sweep, and deferral.
+Orchestrator: iTermRemotePreferences drives the per-folder
+baseline / lastPushedLocal three-way reconcile, debounced
+and deferred pushes that poll rather than busy-spin behind a
+modal, and the import-suppression depth that keeps an import
+from re-arming a push.
+
+Owners keep memory, disk, and folder consistent without
+clobbering unsaved edits: snippets guard against publishing
+an empty set from a corrupt file; ToolNotes distinguishes a
+corrupt note from an undownloaded placeholder, gates
+re-serialization on a dirty flag, and backs up before
+overwriting using a dev/size/ctime/inode token;
+iTermGraphicSource reloads its maps under a lock and posts
+synchronously inside the suppression window.
+
+Save Now runs the full reconcile so an interactive save
+surfaces a conflict prompt (and doubles as a sync) instead
+of silently deferring.
+
+URL-hosted custom locations skip file sync entirely (a URL
+can serve one plist but not a file tree). Dynamic Profiles,
+scripts, secure settings, and history/DB/cache remain out of
+scope.
+
+2026-07-09: Mark the FPS meter row uncacheable
+
+setDebugString: writes the FPS meter text into row 0's
+screen char line every frame but did not change the row's
+content identity, so with the per-row output cache enabled
+the lookup could serve the stale underlying row and hide the
+meter -- reliably so when row 0 was stable enough to already
+be cached (e.g. a settled screen with scrollback history).
+
+Mark the row uncacheable after writing the meter text,
+matching the offscreen-command-line and IME-marked-text
+paths, which modify a row's content in place the same way.
+These three are the only sites that mutate a row's build
+inputs after its content identity is computed.
+
+2026-07-09: Keep source-columns key absent when end column
+is unset
+
+Follow-up to building the run's attributes in one pass: only
+insert iTermSourceColumnsAttribute when _endColumn has been
+assigned, matching the previous behavior where the key was
+absent until setEndColumn: added it. The two callers always
+assign the end column first, so this is purely defensive
+against a future caller that does not.
+
+2026-07-09: Build a run's final attributes dictionary in one
+pass
+
+Per run the attributed-string builder rebuilt its attributes
+dictionary twice: setEndColumn: did a full
+dictionaryBySettingObject to add the source-columns range,
+and then -attributedString mutableCopy'd the whole thing
+again to add the two cell-index blobs. Since
+-attributedString is always called right after
+-setEndColumn:, and the source-columns range is derivable
+from the already-stored _startColumn/_endColumn, add all
+three keys in the single -attributedString construction and
+drop the setEndColumn: rebuild. That removes one full
+per-run copy of the base attributes. The final dictionary
+and the built string are unchanged, so the source-columns
+range read back from the string is identical.
+
+2026-07-09: Intern the per-run attribute arrays in the
+string builder
+
+dictionaryForCharacterAttributes builds a fresh attributes
+dictionary per run (per cell in a per-color animation, issue
+12763). Two of its values were freshly-allocated arrays
+every call: the writing-direction array (only two possible
+values) and the underline-color components array (only read
+when hasUnderlineColor, which is rare). Intern the two
+writing-direction arrays and use a shared placeholder for
+the underline-color array when there is no underline color,
+so the common case allocates neither.
+
+This does not touch the dominant cost (the 15-key dictionary
+build itself), which is inherent: the run's attributes are
+unique per cell in the animation so the dictionary cannot be
+cached, and its keys are read downstream by the glyph
+emitters so they cannot be dropped.
+
+2026-07-09: Skip the per-cell ColorSync conversion for
+native-space 24-bit colors
+
+fastColorForKey:colorSpace: converted every 24-bit truecolor
+key through colorForKey: -> NSColor -> colorUsingColorSpace:
+(a ColorSync round trip) on every cell -- ~9% of the render
+thread in issue 12763's sample, plus the NSColor allocation.
+The existing vector cache is keyed on the exact color value,
+so an animation with per-cell-varying colors misses on
+nearly every cell and converts anyway.
+
+When the target color space is the app's native 8-bit space
+(Display P3 or sRGB per the p3 setting), a 24-bit key's raw
+r/255,g/255,b/255 components are already correct, so return
+them directly with no conversion and no NSColor. This also
+eliminates the colorWith8BitRed: allocation for those
+colors. The native-space check is memoized on color-space
+object identity since it is constant across a frame's cells.
+
+Bit-identical to the conversion path in this case; any other
+key or a non-matching display profile still converts. A test
+asserts the fast path matches the full colorWith8BitRed: ->
+usingColorSpace: conversion.
+
+2026-07-09: Make precise timers lock-free with atomics
+
+The render sample in issue 12763 showed the precise-timer
+instrumentation taking a recursive @synchronized on every
+call (~12 per rendered cell), whose per-call id2data
+class-hash was a meaningful chunk of the row build. The
+enable/disable flag was also dead: nothing ever turned
+timers off.
+
+Remove the SetEnabled on/off API (and its four callers) and
+drop the per-call locking. The stats/timer struct fields are
+now _Atomic and the accumulation functions use relaxed
+atomics: integer counters via atomic add (correct under any
+number of writers), and the double fields via relaxed
+load/store (exact given the single-writer-per-struct
+invariant: one render pass writes a struct, the display/log
+thread only reads).  Every access is atomic, so cross-thread
+reads are well-defined with no tearing and no lock on the
+hot path.
+
+Only sLogs (an NSMutableDictionary) still needs mutual
+exclusion; it uses a cheap os_unfair_lock, off the render
+path. The iTermPreciseTimersLock class is kept because other
+subsystems use it as their own lock token.
+
+2026-07-09: Add fullscreen and single-char animation repro
+scripts for 12763
+
+Two manual test animations under tests/: -
+fullscreen_ascii_animation.py: every cell changes every
+frame (the
+  Bellavene worst case; 0% row-cache hits, exercises the
+  full per-row build and color path).
+- single_char_animation.py: a spinner on an otherwise static
+screen (the
+  case the cache wins: hit rate ~(rows-1)/rows).
+
+2026-07-09: Fetch a row and its content identity in one
+block walk
+
+When the per-row cache is enabled the row build called both
+screenCharArrayForLine: and contentIdentityForLine: for the
+same line, each of which resolved the containing scrollback
+block independently (and recomputed numLinesWithWidth: and
+gridTopIsDWCEligible). Add a combined
+screenCharArrayForLine:contentIdentity: that returns the row
+and its identity from a single block walk, and use it from
+the row build.  The line buffer gains a
+screenCharArrayForLine: variant that reports the block's
+generation/mutationCount/remainder from the same lookup that
+builds the array.
+
+Test: the combined call returns exactly what the two
+separate calls return, for every displayed line across the
+history/grid boundary.
+
+2026-07-09: Gate the grid generation bump on the row cache
+being enabled
+
+The per-line grid generation is consumed only by the per-row
+draw cache (via contentIdentityForLine:), which is off by
+default, yet setDirty: bumped a shared process-wide atomic
+on every dirtied line for every session. Gate the bump on a
+flag the metal glue turns on the first time it renders with
+the cache enabled. Default sessions now pay only a relaxed
+atomic load, not a contended read-modify-write.
+
+The flag is sticky (never turned off): once the cache has
+been active, generations keep advancing for the rest of the
+process, so the cache can never be re-enabled into a state
+where a stale generation aliases changed content. Only the
+grid counter is gated; the LineBlock counter must keep
+advancing because the reloadBidiInfo watermark depends on
+it. Tests turn tracking on in setUp since they exercise the
+generation directly.
+
+Also document that the two generation counters (grid vs
+LineBlock) are intentionally separate, not a duplicate to
+consolidate: they have different gating policies, and the
+cache key's source field discriminates them so they need not
+share a sequence.
+
+2026-07-09: Skip reloadBidiInfo when nothing changed since
+bidi was computed
+
+reloadBidiInfo runs on every commit (commitLastBlock). A
+block that legitimately contains RTL used to recompute bidi,
+COW-clone its whole character buffer, and advance its
+content identity every commit even when nothing changed,
+defeating the per-row draw cache for exactly the RTL
+sessions doing bidi work and churning a full-buffer
+allocation per frame.
+
+Gate reloadBidiInfo on an O(1) mutation-counter watermark.
+Bidi is a pure function of the raw content, and every
+content mutation bumps _mutationCounter (both
+iTermLineBlockDidChange and iTermLineBlockDidMutateInPlace
+do), so if it has not moved since bidi was last brought up
+to date the stored bidi and per-cell rtlStatus are still
+valid and reloadBidiInfo returns immediately with no copy
+and no bidi algorithm. The watermark is recorded after a
+real reload and in the all-LTR skip branch, initialized to
+-1 so fresh/decoded blocks recompute once, and propagated
+across LineBlock copies (a copy shares the buffer and bidi,
+so it is valid for the same counter).
+
+Tests: reload is idempotent for unchanged RTL content,
+re-annotates after RTL erasure, and clears a stale rtlFound
+flag.
+
+2026-07-09: Centralize content-identity generation
+advancement
+
+The per-row draw cache relies on "content changed =>
+generation advanced", which was being re-established by hand
+at each mutation site.  Consolidate the two paths that were
+most prone to divergence.
+
+LineBlock: add iTermLineBlockDidMutateInPlace, a central
+hook for in-place mutations (cell/bidi/rtlStatus rewrites
+that change what a row renders but not the block's
+structure). It advances only the mutation counter, unlike
+iTermLineBlockDidChange which also bumps _generation for
+structural changes. reloadBidiInfo, setBidiForLastRawLine,
+and eraseRTLStatusInAllCharacters now route through it
+instead of each hand-writing _mutationCounter =
+iTermAllocateGeneration().
+
+Grid: generationForLine: now honors allDirty_. setAllDirty:
+(the hot scroll path) only flips the flag without advancing
+per-line generations, so a line whose content changed via
+that path kept reporting a stale identity. On the NO->YES
+transition setAllDirty: now reserves a block of `height`
+never-reused generations in O(1) (one atomic, via the new
+VT100LineInfoAllocateGenerationBlock), and
+generationForLine: returns MAX(perLine, base + y) while
+all-dirty: a distinct fresh identity per line,
+collision-free, with a line individually dirtied mid-epoch
+still winning. allDirty_ resets each frame after the sync,
+so the synthesized identities do not persist; a resize
+recreates every VT100LineInfo with fresh generations that
+dominate the MAX, so a stale base is bypassed.
+
+Tests: all-dirty gives every line a fresh distinct
+generation, and a line dirtied after the all-dirty epoch
+began still wins.
+
+2026-07-09: Wire the per-row output cache into the Metal
+build
+
+Serve cached glyph/attribute/background blobs for rows whose
+content identity and config generation are unchanged,
+skipping the attributed string build. Behind the
+metalRowOutputCacheEnabled advanced setting (default off).
+
+Cacheability: a row is not stored when it has a per-row
+overlay (selection, find match, semantic-history underline,
+annotation), is suppressed, has an uncacheable content
+identity, produced image or kitty runs, or contains a
+blink-phase cell or kitty virtual placeholder (neither the
+blink phase nor _kittyImageDraws is captured by the key, so
+those rows must rebuild every frame). The box-cursor
+text-color tweak is extracted so it runs after both a hit
+and a fresh build. Offscreen command line and IME
+marked-text rows are marked uncacheable where their content
+diverges from the content identity.
+
+Config generation: the tracker now also compares the source
+colorMap by object identity (the stable textView.colorMap,
+not the per-frame copy) to catch a map swap whose per-object
+generation coincides with the old map's, alongside the
+existing scalar colorMapGeneration for in-place palette
+edits.
+
+Content-identity generation holes fixed so the cache cannot
+serve stale rows: terminalSetLineAttribute: same-width-class
+transitions (DWL/DHL), erasePossibleSplitDwcAtLineNumber:
+and the scrollRect: boundary EOL rewrites, and the
+appendCharsAtCursor: DWC-wrap side-write past the
+markCharsDirty rect. Each now marks the changed line dirty
+so both the generation advances and copyDirtyFromGrid
+re-syncs the content.
+
+Cost when disabled (the default) is kept near zero: the
+per-row content identity build and the per-cell volatile
+scan are gated on the setting.  Cache capacity is 256 rows
+per text view (a viewport multiple), and the Entry blobs use
+std::string members. iTermRowOutputCache hand-rolls its LRU
+over a POD key to avoid NSNumber/NSData boxing on the hot
+path.
+
+Tests: content identity + config tracker (incl. colorMap
+object swap), LRU round-trip/eviction, and updated VT100Grid
+dirty-tracking expectations for the split-DWC generation
+fixes.
+
+2026-07-09: Add iTermRowOutputCache: LRU of per-row build
+blobs
+
+An LRU cache of the expensive per-row build output (the
+glyph-keys, per-cell-attributes, and background-color-RLE
+blobs), keyed on a row's (configGeneration,
+contentIdentity). ObjC++ over unordered_dense with malloc'd
+buffers so there are no ObjC objects in the C++ container
+and the hot-path caller (metalGetGlyphKeysData, ObjC++) pays
+no bridging cost. Not wired into the build yet. Tested:
+byte-exact round-trip, config generation as part of the key,
+and LRU eviction.
+
+2026-07-09: Complete the row-cache config key with builder
+shaping settings
+
+Add the eight attributed-string-builder settings that change
+the glyph-keys blob (asciiLigatures,
+asciiLigaturesAvailable, nonAsciiLigatures, zippy,
+preferSpeedToFullLigatureSupport, lowFiCombiningMarks,
+boldAllowed, italicAllowed) to iTermRowRenderInputs so the
+config generation covers them. An audit confirmed these are
+the only remaining inputs that affect the cached blobs;
+antialiasing, cell metrics, scale, baseline, underline
+descriptors, and non-cell renderers are render-only (handled
+by the downstream glyph-texture cache), and minimumContrast
+is already covered by colorMapGeneration.
+
+Also correct the iTermRowContentIdentity header notes: the
+per-row overlays that must be in the cache key are
+selection, find matches, underline range, and annotations;
+external attributes are covered by the content generation,
+and selected-command dimming and the timestamp are draw-time
+effects, not blob inputs.
+
+2026-07-09: Add collision-free per-row content identity for
+the draw cache
+
+Groundwork for a per-row Metal draw cache: give every
+displayed row a content identity that is collision-free
+(built from counters and exact comparisons, never a lossy
+hash), so a later consumer can reuse the built
+glyph/attribute data for unchanged rows.
+
+Identity sources: - Grid: VT100LineInfo gains a
+globally-unique generation advanced on
+  every dirty mark (VT100Grid generationForLine:). Equal
+  generations imply equal content.
+- Scrollback: LineBlock exposes its existing generation plus
+a new
+  mutationCounter for in-place edits (bidi/RTL) that don't
+  bump generation. Both are drawn from the global generation
+  counter so two COW copies that diverge in place get
+  distinct identities, and both are preserved across copies.
+- VT100Screen contentIdentityForLine: forks grid vs
+scrollback into a
+  (source, generation, mutationCount, remainder) tuple,
+  folding in the grid-top DWC state for the boundary
+  scrollback row. Captured onto iTermMetalPerFrameStateRow
+  during the snapshot.
+
+Config identity: - iTermConfigGenerationTracker assigns a
+per-textview config generation
+  by exact comparison (memcmp of the render-inputs struct +
+  isEqual: on color space + pointer compare on font table),
+  not hashing, so distinct configs can never collide.
+  iTermMetalGlue owns one and delegates.
+
+Correctness of the generation across copy/sync/COW: -
+VT100LineInfo copyWithZone: preserves the generation.  -
+copyDirtyFromGrid: mirrors the source generation onto every
+dest line
+  (screenTop_ is not propagated, so
+  scrolled/resized/bidi-only lines need it), keeping the
+  immutable grid the renderer reads consistent.
+- fastPathScrollLinesAtAndAboveCursor: advances the blanked
+recycled
+  lines' generation.
+- Grid setBidiInfo:forLine: advances the line generation on
+a bidi
+  change (compared by content-based isEqual:).
+- LineBlock's in-place rtlStatus writers
+(eraseRTLStatusInAllCharacters,
+  reloadBidiInfo) route through ModifyLineBlock so the
+  possibly COW-shared character buffer is uniquified before
+  writing; reloadBidiInfo is gated on anyLineNeedsBidiReload
+  to avoid per-commit churn.
+
+iTermRowContentIdentity is laid out hole-free for future
+byte comparison; generation 0 is a reserved uncacheable
+sentinel. Also removes three headers mistakenly added to the
+Compile Sources build phase.
+
+Tests: grid line generation
+(advance/stable/distinct/copy/sync/fast-path scroll),
+colorMap generation copy propagation, the config-generation
+tracker, and the LineBlock mutation counter
+(append/in-place/copy/ divergent COW siblings).
+
+2026-07-09: Add a per-line content generation to the grid
+
+VT100LineInfo now carries a globally-unique generation that
+advances whenever the line is marked dirty, exposed via
+VT100Grid generationForLine:. Equal generations imply equal
+content, so a per-row draw cache can use it as a
+collision-free content identity for grid lines. The counter
+is global (not per-line) so a value identifies a line's
+content uniquely across all lines. Not consumed yet.
+
+2026-07-09: Derive a collision-free config generation for
+the row cache
+
+Add colorMapGeneration to the row-build input struct and
+compute a per-textview config generation by exact comparison
+against the previous frame rather than hashing:
+iTermMetalGlue memcmps the input struct, compares the color
+space with isEqual: and the font table by pointer (a stable
+stored property), and advances a counter only on a real
+change. Because config changes rarely this stays stable
+frame to frame, and because it is a comparison rather than a
+hash it cannot collide (a collision would serve a stale
+cached row).
+
+Also fix iTermColorMap copyWithZone: to propagate
+_generation, which colorMapGeneration depends on and which
+was a latent bug on its own.
+
+2026-07-09: Snapshot preferSpeed and lowFiCombiningMarks in
+the string builder
+
+iTermMutableAttributedStringBuilder read
+preferSpeedToFullLigatureSupport and lowFiCombiningMarks
+live from iTermAdvancedSettingsModel during the build.
+Snapshot both once at the drawing helper and thread them
+through the builder settings
+(setColorMap:/copySettingsFrom:) into a designated
+initializer, so the build no longer reads advanced settings
+live. This makes the builder's inputs fully captured, which
+the per-row output cache will need to fingerprint. No
+behavior change.
+
+2026-07-09: Introduce iTermRowRenderInputs to consolidate
+row-build config
+
+Add a POD struct that gathers the frame-constant inputs the
+Metal row build reads (per-cell colors,
+ligature/powerline/thin-stroke/blink settings, transparency,
+etc.). It replaces the individual pass-through ivars on
+iTermMetalPerFrameStateConfiguration and is populated once
+in loadSettings. The build now reads these values only from
+the struct, which is groundwork for fingerprinting exactly
+the inputs that affect a row's output so unchanged rows can
+be cached.
+
+Also folds the previously live-read underlineHyperlinks
+advanced setting into the snapshot. No behavior change.
+
+2026-07-09: Promote some DLog to RLog
+
 2026-07-08: Add AI economy model, and fix manual-model
 catalog fidelity
 
