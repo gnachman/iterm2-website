@@ -1,3 +1,446 @@
+2026-07-11: Auto-request/auto-send: switch peer switcher
+without stealing focus
+
+The workgroup auto-request-review and auto-send-clippings
+paths called PTYSession.reveal(), which orders the window
+front, activates the app, and selects the containing tab in
+addition to swapping the peer view in.  Only the
+peer-switcher swap was wanted: focus should follow the
+active side within the shared pane without yanking the
+user's window, tab, or app focus around.
+
+Add -revealAsPeerWithoutActivatingWindow, the peer-port swap
+portion of -reveal and nothing else (the same
+activate(identifier:) that keyboard peer-switch shortcuts
+use), guarded on activeSession != self so it is a no-op when
+already active. Call it from both auto paths in place of
+reveal().
+
+2026-07-11: Add Auto-Request Review When Idle toggle for the
+main session
+
+Companion to the code-review peer's Auto-Send Clippings
+toggle, in the other direction: a toolbar toggle on the
+workgroup's main session that requests a code review from
+the review session each time the main session transitions
+working -> idle.
+
+- New .autoRequestReviewWhenIdle toolbar item on the main
+session
+  (checkmark.seal when off, checkmark.seal.fill when on),
+  mirroring the auto-send toggle's borderless outline/filled
+  styling so state reads the same across window-active
+  changes. Runtime per-session flag, defaults off, saved and
+  restored with the session.
+- The peer port detects the main session's working -> idle
+edge and, if
+  the workgroup has exactly one code-review session, asks
+  the workgroup instance to run a review on it. The
+  exactly-one guard keeps the target unambiguous; the
+  decision is factored into the pure static
+  shouldAutoRequestReview for testing.
+- Included by default on the Claude Code workgroup's main
+session via
+  the shared preset builder.
+- Reveal behavior: when review results are auto-sent to the
+main
+  session it is brought forward, and when a review is
+  auto-requested the review session is revealed, so focus
+  follows the active side.
+- Loop break: auto-sent clippings are archived (live list
+cleared) on
+  the leader, so a subsequent review-idle finds nothing to
+  resend and the auto-request/auto-send pair cannot
+  ping-pong.
+
+Rebased onto master: the auto-send path already on master
+(the main session working-guard and the serialized paste +
+bracketing-disabled Return submit that fixed the
+large-review race) is kept; this change layers the
+request-review direction, leader-side clipping reads, and
+the reveal/loop-break behavior on top.
+
+2026-07-11: Downgrade several noisy/expensive RLog calls to
+DLog
+
+These RLog sites run on hot or high-frequency paths, or
+capture a stack trace, which RLog is not meant to do (it
+runs even with debug logging off). Move them to DLog so they
+cost nothing in the field:
+
+- iTermApplication: per-event mouse and modifier-remap
+logging.  - PseudoTerminal: window-create, tmux resize, and
+set-title logging,
+  including callStackSymbols captures.
+- iTermProcessCache: per-update controlling-tty derivation.
+- iTermNSKeyBindingEmulator: full key-binding dictionary
+dump on load.
+
+Also echo RLog entries to stderr in ITERM_DEBUG builds so
+they are visible while developing without generating a debug
+log.
+
+2026-07-11: Companion: harden session-view watch, dictation,
+and reply-notification paths
+
+Structural and correctness fixes from several rounds of code
+review of the iTerm2 Buddy companion app, plus supporting
+tests.
+
+Session-view reply watch: - Extract SessionWatchState as the
+single owner of the watch token/tab/
+  chatID/claim-sequence/departed-token invariant (previously
+  scattered inline across AppModel).
+- Make the pop-vs-tab-switch teardown decision token-aware
+(count mounted
+  destinations per guid) so a watch no longer leaks when the
+  same session is mounted twice.
+- removeWatch clears the in-flight intent for its own token
+so a deleted
+  watched chat's Mac subscription is released instead of
+  leaked.
+
+Reply trigger / accumulator: - Merge
+StreamingReplyAccumulator into SessionReplyTrigger as one
+id->text
+  surface (no second map kept keyed by convention).
+- Strip only the separator (not content punctuation) from a
+growing-id suffix,
+  fixing a sign flip ("-5" -> "5").
+- Gate the accumulator prepend branch on non-label so two
+attachment labels
+  no longer concatenate reversed.
+- Feed notification previews untruncated so @-mentions
+render before the single
+  final truncation.
+
+Dictation: - Re-check state after start()'s awaits and add a
+recording epoch so a stale
+  finalize/pass task can't tear down a freshly-started
+  recording on the shared recorder.
+- Latch re-entrant Send so a double-tap while dictating no
+longer shows a false
+  "interrupted" alert.
+
+AppModel: - Scope the failed-send echo rollback by target
+chat (also purge transcriptCache).  - Exclude both synthetic
+notice ids from the transcript snapshot; snapshot the
+  live transcript before the reconnect re-serve so it can't
+  clobber fresher messages.
+- deleteChat prunes agentTypingChats/refreshFailuresByChat
+like the list paths.  - Remove a dead import and an
+always-true resubscribe filter.
+
+2026-07-11: Fix security-review findings in the orchestrator
+safety gate and auto-send
+
+Safety gate (OrchestratorSafetyGate /
+OrchestratorDispatcher): - Treat a CRLF (\r\n) as a real
+submit boundary. It is a single Swift
+  grapheme equal to neither "\r" nor "\n", so the
+  Character-level .contains checks missed it and
+  send_text("rm -rf /\r\n") routed to accumulate-only,
+  unclassified. Route submit detection, residual, and
+  trimming through scalar-aware helpers.
+- Re-check the post-kill text for disturbing bytes in the
+Ctrl-C/Ctrl-U
+  branch. A kill followed by DELs was stored verbatim with
+  contamination cleared, letting the next submit classify a
+  mistokenized subpath that bypassed the rm -rf / tripwire.
+- Factor the post-await concurrency reconciliation into a
+pure
+  resolveConcurrentSend so a raced submitting send fails
+  closed and the decision is unit-testable.
+
+Terminal hard rules (TerminalHardRules): - Make the
+block-device redirect check quote-aware by scanning the raw
+  segment text, so a > inside a quoted string is not
+  mistaken for a real redirect operator (echo "run cat foo
+  >/dev/sda" no longer over-prompts).
+- Exempt $! and ${!ref} parameter expansions from the
+history-expansion
+  scan; a bare {! still flags.
+
+Orchestrator client (OrchestratorClient): - Retain and
+remove the chatWasDeleted block observer in deinit;
+  removeObserver(self) cannot remove block observers, so
+  deinit-able clients leaked one each.
+
+Workgroup auto-send clippings (iTermWorkgroupPeerPort): -
+Submit the Return as an ordered bracketing-disabled paste
+instead of a
+  fixed 0.2s timer, so it lands after the full content
+  drains regardless of size and outside the bracketed
+  region.
+- Defer the auto-send when the main session is working so an
+autonomous
+  paste/submit never clobbers an in-progress turn.
+- Archive the sent clippings so each run delivers only new
+findings.  - Remove the dead setOn(_:) toggle accessor.
+
+Adds regression tests for each fix; full ModernTests suite
+passes.
+
+2026-07-11: Reuse last-known process names so a transient
+read failure doesn't drop a live ancestor
+
+A single failed read of a live process's name (sysctl
+KERN_PROC_PID momentarily returning an empty p_comm while
+the process table churns) made foregroundJobAncestorNames
+skip that ancestor. To GlobalJobMonitor a missing ancestor
+is indistinguishable from an exited one, so it fired a
+spurious "Job Ended" event, which for the claude-code
+workgroup tore down the whole peer group even though the
+leader's claude never exited.
+
+Add ProcessNameCache: record each ancestor's resolved title
+(keyed by pid, validated by ppid to guard against pid reuse)
+and reuse the last-known title when a name reads back empty,
+rather than dropping the process. Pruned to live pids each
+process-cache update so it stays bounded.
+
+When a name reads empty on the ancestry path, log it once
+per episode (per-pid, reset on a normal read) with a precise
+cause from iTermLSOF.nameFailureDiagnosisForPid: (sysctl
+error, pid not matched, matched-but-empty comm, or
+readable-again) so a recurrence is diagnosable without
+spamming the log.
+
+2026-07-11: Defer a workgroup Diff session's launch until it
+is first shown
+
+A .diff workgroup session's git diff previously ran on the
+first git poller tick that reported a change, regardless of
+whether the session was visible. For a buried Diff peer (the
+Claude Code flow) that meant the diff reflected the tree at
+whatever instant the leader first touched a file, so
+switching to the peer later showed a stale diff.
+
+Gate the deferred launch on the session actually being
+visible:
+
+- fireDeferredDiffLaunches (the poller path) now only fires
+sessions
+  that pass isVisibleForDeferredDiff (a live delegate whose
+  tab is the foreground one), so a buried peer's diff does
+  not start while hidden.
+- fireDeferredDiffLaunchIfVisibleNow fires the deferred
+launch the
+  moment a session becomes visible, driven by a new
+  didSwapInPeer hook on the peer swap path and the
+  tab-selection path in PseudoTerminal.  It self-checks
+  visibility so a swap that lands on a background tab
+  (restoration across tabs, a programmatic reveal) does not
+  launch early; the tab-select hook or the next poll tick
+  picks it up once it reaches the foreground.
+
+The launch still fires exactly once, so switching between
+peers never re-runs the diff. Use the Reload button to
+refresh on demand.
+
+2026-07-11: Add release notes for workgroup restore and
+server signal fixes
+
+2026-07-11: Restore code-review/diff workgroup sessions
+without relaunching
+
+When a code-review or diff workgroup session is restored and
+there is no running program to attach to (its server died),
+don't launch a replacement program: that would spawn a stray
+shell over the restored contents. Instead leave the last
+output on screen and, for the code-review peer, only show
+the prompt panel if it was visible at save time.
+
+- Add PTYSessionArrangementOptionsInhibitRelaunch. When set,
+or when the
+  anchor's workgroup config says code-review/diff and it
+  wasn't showing its pre-launch overlay at save time,
+  sessionFromArrangement skips the launch and marks the
+  session exited so its program stays restartable.
+- WorkgroupRestorationCoordinator passes the option for
+non-pending
+  code-review/diff peers, and now always restores the
+  anchor's mode tag and code-review raw command (adopt
+  already does this for peer members but not the leader, and
+  the anchor may be the leader) so the reload/restart and
+  toolbar affordances work.
+- Persist codeReviewLastUsedPrompt in the session
+arrangement so a reload
+  after restore defaults to the prompt the user last
+  submitted rather than the store default.
+
+2026-07-11: setsid the launched iTermServer so a signal to
+iTerm2 can't kill it
+
+iTermServer is not daemonized (see "Don't daemonize
+iTermServer", which keeps it a child of iTerm2 for issue
+9276 so tools can walk the shell's parent chain to the app).
+That commit removed the double-fork's setsid without a
+replacement, and the server-launch path (fork + iTermExec)
+never had its own setsid, so the server inherited iTerm2's
+session and process group.
+
+When iTerm2 is launched from a terminal, it sits in that
+terminal's foreground process group, so every iTermServer it
+forks does too. A signal to iTerm2 (e.g. ^C sending SIGINT)
+then also kills the servers, and on the next launch their
+sockets are stale, so restored sessions can't reattach and
+fork fresh shells instead.
+
+Call setsid in the forked child before exec so the server
+gets its own session and process group. This keeps the
+parent pointer at iTerm2 (preserving the 9276 ancestry
+behavior) while making the server immune to terminal
+job-control signals.
+
+2026-07-11: Add script to tail multiserver logs
+
+2026-07-11: Harden the orchestrator typed-input safety gate
+against split-payload laundering
+
+Follow-up hardening on the autonomous command safety gate.
+The core threat is a payload split across back-to-back sends
+within one LLM turn (or across two chats on one PTY) so that
+no single classification ever sees the whole command line.
+
+Accumulator and contamination: - Share the per-session
+typed-input accumulator across all of a client's
+  per-chat dispatchers (OrchestratorTypedInputStore owned by
+  OrchestratorClient, keyed by session GUID), so a fragment
+  typed by one chat is visible to another chat's gate on the
+  same PTY.
+- Track a per-session contamination flag: a disturbing
+keystroke
+  (arrows, Ctrl-E, Ctrl-L, Tab, ESC, NUL) that is allowed on
+  a primary-screen shell wipes the linear accumulator but
+  leaves the typed prefix on the prompt, so force every
+  subsequent submit to screen-aware classification until a
+  clean residual-free submit resets the prompt. A full-line
+  kill (Ctrl-C / Ctrl-U) clears it instead.
+- Guard the classify-then-write-back window: if a concurrent
+send mutated
+  the accumulator or contamination flag across the classify
+  await, fail closed by contaminating rather than
+  clobbering.
+- Classify the submitted portion at leading/interior submit
+newlines so a
+  laundered `rm -rf /\rhome/safe` is judged as the real
+  submitted line.
+
+Screen-aware routing: - When shell integration is present
+and the live line EXTENDS our
+  accumulator with un-accumulated content, route to
+  screen-aware so the visible about-to-run line is judged,
+  not the stale accumulator.
+
+TerminalHardRules deterministic blocklist: -
+redirectsToBlockDevice scans the whole word for redirections
+so
+  `cat x>/dev/sda`, `echo x&>/dev/sda`, `echo x2>/dev/sda`
+  are caught.
+- effectiveCommand skips a command modifier's boolean option
+flags so
+  `sudo -i rm -rf /`, `env -i rm -rf /`, `sudo -- rm -rf /`
+  surface rm.
+- findIsDestructive treats a shell-interpreter exec target
+as destructive
+  so `find / -exec sh -c ...` is caught.
+
+Also seed the safety classifier with the driving chat's
+recent history so it can tell a risky command the user asked
+for from one it did not, and correct several stale doc
+comments.
+
+2026-07-11: Add Auto-Send Clippings When Idle toggle for
+code review sessions
+
+New code-review toolbar toggle. When on, the review
+session's clippings are pasted into the workgroup's main
+session and submitted with a Return each time the review
+session transitions from working to idle.
+
+- New .autoSendClippingsWhenIdle toolbar item (toggle
+button, borderless,
+  outline/dim when off and filled/accent when on so state is
+  stable across window-active changes). Runtime per-session
+  flag, defaults off.
+- Peer port detects the working to idle edge and delivers
+the shared
+  clippings list to the main session; decision logic
+  factored into a pure static for testing.
+- Shared clipping formatting hoisted into
+PTYSessionClipping+Formatting
+  and reused by the Clippings panel's Send to terminal
+  action.
+- Included by default on the Claude Code review peer via the
+shared
+  preset builder, plus a one-time backfill (NoSync latch)
+  that adds it to existing installs' review peer, covering
+  the in-place upgrade and reinstall-over-existing cases.
+- Settings add-menu offers the item only for
+code-review-mode sessions.  - Tests: formatting, Codable
+round-trip, registry, preset default,
+  backfill scoping/idempotency, and the send decision.
+
+2026-07-11: Session Status merge: represent a workgroup by
+its visible peer
+
+With "Merge workgroup statuses" on, the merged row picked
+its representative by recency (the most recently changed
+peer wins), falling back to priority only on a timestamp
+tie. In a chat plus code-review workgroup that surfaces the
+wrong peer: a busy code-review peer holding a steady
+"working" status stops bumping its lastChanged, so the
+moment the sibling chat peer flips to idle it becomes the
+freshest change and takes the row, showing "idle" while
+review is still working. Which peer won was effectively a
+race, so sibling tabs in the same state disagreed.
+
+Represent a workgroup by the currently visible peer of its
+switcher (the pane the user is looking at) instead.
+mergeRepresentativePrefers now ranks non-snoozed, then
+visible switcher peer, then recency, then priority, then
+sessionID. The visible tier sits below snooze so a snoozed
+visible peer still yields to a non-snoozed buried sibling,
+and above recency so a stable-status busy peer keeps the
+row. When there is no visible switcher peer (every member
+buried, or a non-switcher group) the prior recency/priority
+rules still apply.
+
+For the record: the original merge commit (3c31c6f82)
+message claimed the representative was the highest-priority
+status with ties broken by the most recent update, but the
+shipped code was recency-first from the start. The two never
+matched; this makes the intended behavior explicit.
+
+2026-07-11: Silence some noisy logs
+
+2026-07-11: Prewarm AI API keys when a companion device is
+paired
+
+When a companion device is paired, load and cache the AI API
+keys at launch and on a fresh pairing so an AI query driven
+from the phone while the user is away serves its key from
+memory instead of blocking on, or prompting for, keychain
+access with nobody present to approve it.
+
+- AITermControllerObjC.prewarmAPIKeyCache() reads the
+selectable
+  providers' keys into the existing cache off the main
+  thread. It reuses apiKeyOnQueue so caching and
+  legacy-migration semantics are unchanged, and is
+  idempotent.
+- CompanionPairingController warms the cache from
+  resumePairedListeningIfNeeded (launch and post-disconnect,
+  gated on hasPairedDevice and the AI gate) and on a fresh
+  pairing in acceptLoop while the user is present.
+
+Also stop reading the keychain when the Settings panel
+opens: remove the N of 4 configured status label along with
+the outlet, the XIB text field, and the read paths that
+populated it from awakeFromNib and viewDidAppear. Opening
+Settings no longer touches the keychain.
+
 2026-07-09: Orchestrator AI safety gate for autonomous
 command execution
 
