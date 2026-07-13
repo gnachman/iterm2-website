@@ -1,3 +1,75 @@
+2026-07-12: Throttle Companion history-tile requests to
+avoid flooding the relay
+
+A fast fling through scrollback fired hundreds of tile
+requests at once, tripping the relay's per-connection
+frame-rate limit and dropping the bridge to the Mac while
+the phone still looked connected.
+
+Cap in-flight tile fetches (6) with a bounded pending queue
+and drive re-requests from a slot-available signal paced by
+replies rather than a self-scheduled refresh, so a wide
+viewport re-requests without busy looping. Scope the
+throttle to a per-stream epoch so a session switch,
+reconnect, resume, host stream-end, or reflow neutralizes
+stale in-flight/queued requests (cancelling their fetches)
+instead of leaking slots, wedging the pipeline, or caching
+one session's tiles under another. Give each fetch a bounded
+deadline so a lost reply cannot pin a slot forever, and
+recover flushed tiles via a 4 Hz growthTick pass that runs
+regardless of zoom. Distinguish throttle drops from real
+failures so a transient drop keeps its image instead of
+flashing a failure X, and skip host-reported failures in the
+idle re-drive to avoid strobing.
+
+2026-07-12: Companion: stop nagging a working pairing to
+re-pair
+
+The mac records which relay hosts a pairing was established
+against so a later host move can prompt a re-pair.
+recordCurrentRelays ran only on a fresh pairing, so a device
+paired before this tracking (or before the relays moved) had
+nil recorded origins, and relayConfigurationChanged read nil
+!= current as "moved" and nagged to re-pair on every launch
+even though the pairing worked fine.
+
+Treat a nil (never-recorded) origin as "unknown, not moved",
+and on each successful reconnect refresh the recorded MAIN
+relay, which the reconnect genuinely proves (the connection
+is carried over it) and which backfills an older pairing so
+a real main-relay move is still caught.
+
+Record the push relay only at fresh pairing, never on
+reconnect: a reconnect proves nothing about which push relay
+the phone's APNs token is registered against. The phone
+registers against its own build's push-relay URL, which
+after a mac-only upgrade differs from ours until the phone
+app is itself updated. Stamping our push URL on reconnect
+would falsely satisfy relayConfigurationChanged and suppress
+a legitimate re-pair prompt while the phone still cannot
+receive pushes.
+
+2026-07-12: Companion: back off + show UI when the relay
+hits its daily quota
+
+The relay closes a room with WebSocket 1008 "daily quota
+exceeded" once it hits its per-room daily byte quota. The
+mac and phone treated that like ordinary churn and
+reconnected on their routine fast timers (mac ~5s, phone
+~2s), which just re-tripped the same limit all day and left
+the mac silently unreachable until relaunched.
+
+Surface the close distinctly as TransportError.quotaExceeded
+(matched on the reason text, since 1008 is also used for the
+transient frame-rate limiter) and preserve it through
+RelayTransport and the session/bridge close handlers. Both
+sides now back off 30 minutes instead of fast retrying, and
+show why: the mac's Companion settings shows "Daily relay
+data limit reached", and the phone shows a banner with a
+Reconnect now button that overrides the backoff.
+
+No relay change: it already sends the 1008 close.
+
 2026-07-11: Auto-request/auto-send: switch peer switcher
 without stealing focus
 
