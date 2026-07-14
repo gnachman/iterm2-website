@@ -1,3 +1,189 @@
+2026-07-13: Tab subtitle: let the focused pane's status win
+
+When a tab has multiple split panes,
+updateAggregatedTabStatus picked the highest-priority status
+across all panes, with the focused pane only breaking ties.
+A background pane with a higher-priority status (for example
+an idle pane when idle outranks working in the user's
+priority list) would override the working pane the user was
+looking at.
+
+Now the focused pane (self.activeSession) drives the
+subtitle whenever it has a status, falling back to the
+highest-priority sibling pane only when the focused pane has
+none.
+
+2026-07-13: Companion: reuse the session tree in the
+new-chat picker
+
+The picker for a new session-bound chat rendered a flat
+ForEach(model.sessions) with its own row, so the list looked
+disorganized next to the Sessions tab and the @-mention
+picker, which both render the window > tab > pane > peer
+hierarchy via SessionTreeBrowser. Reuse that shared
+component here so the list reads identically everywhere, and
+add a per-row eye button that previews the session read-only
+before committing, like the mention picker.
+
+Present the preview in its own NavigationStack inside a
+sheet rather than pushing onto the app's shared, path-bound
+NavigationStack. CreateView is itself a pushed entry on that
+stack, so a second navigationDestination(item:) push would
+compete with async navigationPath mutations that can land
+while the preview is up (a reply-notification tap appending
+.conversation, or openConversation(replacingPath:)), risking a
+botched transition or a resurrected preview. The sheet
+sidesteps the shared stack entirely, matching how the
+mention picker isolates its own preview.
+
+2026-07-13: Log the multiserver daemon's exit status when it
+dies
+
+iTerm2 is the server's parent (single fork, deliberately not
+daemonized), so it reaps the zombie in the
+DISPATCH_PROC_EXIT handler. That handler discarded the wait
+status, so when a shared daemon died and took every session
+on its connection down with it, the retrospective log showed
+only the downstream socket EOF with no indication of why the
+server went away.
+
+Decode and RLog the wait status (terminating signal, exit
+code, or a failed reap) so a recurrence is diagnosable from
+the log alone. Capture serverPID and a socketPath copy into
+locals so the block doesn't retain self.
+
+2026-07-13: Fix ModernTests build under AddressSanitizer and
+-Werror
+
+Two pre-existing breakages kept the ModernTests target from
+building:
+
+- iTermImage.m: under AddressSanitizer,
+DECODE_IMAGES_IN_PROCESS is 1 and a
+  #warning fired. Turning on treat-warnings-as-errors for
+  iTerm2SharedARC promoted it to a hard error, but that
+  change was only validated for the non-ASan
+  Development/Deployment builds, so the ASan test build
+  broke.  Replace the #warning with a #pragma message: the
+  note still surfaces in the build log (as an informational
+  -W#pragma-messages diagnostic) but is not promoted by
+  -Werror.
+
+- WorkgroupAutoSendClippingsTests: one clippingsToAutoSend
+call omitted the
+  required mainSessionState: argument that the function
+  gained, so the whole test target failed to compile. Pass
+  .idle, which isolates the working -> unknown edge as the
+  reason the call returns nil (the edge guard short-circuits
+  before the main-session-state gate), matching the test's
+  intent.
+
+2026-07-13: Derive ancestry names and pids from one walk so
+they stay aligned
+
+foregroundJobAncestorChainPids (used only by the ancestry
+diagnostics) mirrored an older version of the
+foregroundJobAncestorNames walk: it was missing the
+last-known-title cache branch and the cached-title
+login/server boundary break. So when an intermediate
+ancestor's fresh name read empty but survived via the cache,
+it appeared in the names array but not in the pids array,
+shifting every entry above it. The diagnostic then
+misattributed the vanished ancestor to the wrong pid (or
+lost it) - precisely the transient name-failure case the
+diagnostics exist to investigate.
+
+Extract the single canonical traversal into
+foregroundJobAncestorChain(), which emits (pid, lowercased
+title) pairs, and derive both foregroundJobAncestorNames and
+foregroundJobAncestorChainPids from it.  Alignment is now
+guaranteed by construction rather than by two loops kept in
+sync by hand.
+
+Adds a regression test that warms the name cache, rebuilds
+with an intermediate name reading empty, and asserts the
+names and chain pids stay index-aligned (the pre-fix code
+dropped the cache-recovered pid).
+
+2026-07-13: Add gated foreground-job ancestry diagnostics
+
+Behind the new logForegroundJobAncestryDiagnostics advanced
+setting (off by default, SECTION_DEBUGGING), the process
+cache logs a detailed trace whenever a tracked session's
+foreground-job ancestor list shrinks: which pid held each
+vanished ancestor, whether it is still in the process table
+and alive (kill(pid,0)), and the full upward walk from the
+deepest foreground job (pid/ppid, parent pointer vs the
+collection's own ppid lookup, names, and the reason the walk
+stopped).
+
+This makes a spurious job-ended event self-explanatory in a
+retrospective log (an intermediate ancestor like the claude
+CLI dropping out for a single process-cache update, which
+can tear down a Claude Code workgroup). The chain pids that
+back it are only captured while the setting is on, so there
+is no per-cycle cost in normal use.
+
+2026-07-13: Retain foreground-job ancestors via strong
+parent links
+
+iTermProcessInfo.parent was weak, but callers hold a
+deepest-job iTermProcessInfo past the lifetime of the
+ProcessCollection that built it: PTYSession keeps one in
+_lastProcessInfo, and the process cache swaps in a fresh
+collection on its work queue. The ancestor infos are owned
+only by that collection, so once it was freed the weak
+parent chain dangled to nil and foregroundJobAncestorNames
+collapsed to just the deepest job. To GlobalJobMonitor a
+missing ancestor is indistinguishable from an exited one, so
+it fired a spurious job-ended and tore down the claudeCode
+workgroup even though the intermediate process (e.g. claude)
+never exited.
+
+Make parent strong so a retained leaf keeps its ancestor
+spine alive. There is no retain cycle: a parent references
+its children only as pids (childProcessIDs), resolved
+through the weak collection, so there is no parent -> child
+strong edge.
+
+Adds ForegroundJobAncestryTests reproducing the collapse
+(deepest job read after its collection is freed) and a
+contrast test showing a dropped node in a live collection
+over-collapses instead, ruling out the naive theory.
+
+2026-07-13: Treat warnings as errors for iTerm2SharedARC and
+iTerm2Shared
+
+Turn on GCC_TREAT_WARNINGS_AS_ERRORS and
+SWIFT_TREAT_WARNINGS_AS_ERRORS for all four configurations
+of both shared targets, then fix the pre-existing warnings
+this surfaced. The fixes were validated with clean -Werror
+builds of Development and Deployment plus a warnings
+inventory of Beta (Nightly matches Beta):
+
+- ResponsesAPIRequest: var -> let for a never-mutated local
+- iTermWorkgroupInstance: discard the unused
+activate(identifier:) result - iTermProcessInfo: explicit
+fallback for optional-string interpolation -
+WorkgroupIntrospection: nonisolated shellJobNames so the
+nonisolated
+  accessor can read it
+- iTermApplicationDelegate/iTermOnboardingWindowController:
+declare
+  makeScreenshot: so the selector is no longer undeclared
+- LineBuffer: mark the genuinely optional out-params
+_Nullable - ProfilesTextPreferencesViewController: adopt
+NSMenuItemValidation to
+  match the non-deprecated protocol method
+- iTermScreenshotOnDemandPreview: drop an unused guard
+binding - iTermScreenshotPanel: remove the deprecated no-op
+copiesOnScroll - iTermMetalView: remove the now-redundant
+CAMetalLayer Sendable
+  conformance (the SDK inherits it from the superclass)
+- iTermApplication / iTermTexturePageCollection: contain
+debug-only
+  locals so they are not set-but-unused in release builds
+
 2026-07-12: Throttle Companion history-tile requests to
 avoid flooding the relay
 
