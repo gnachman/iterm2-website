@@ -1,3 +1,47 @@
+2026-07-14: Tweak some logging levels
+
+2026-07-14: Load shell integration for a remote zsh login
+shell over SSH
+
+For a plain interactive SSH-integration session we named the
+remote shell as modifiedCommandArgs[0], so framerLogin sent
+args=["/usr/bin/zsh"]. The framer wraps non-empty login args
+in `guess_login_shell -c "<shell>"`; when the login shell is
+itself zsh that runs `zsh -c "/usr/bin/zsh"`. The outer
+non-interactive zsh reads the injected .zshenv, which unsets
+ZDOTDIR and skips its interactive-only shell-integration
+load, so the inner interactive zsh starts with ZDOTDIR gone
+and never loads integration. (bash survives the same double
+shell because its $ENV loader is read by any interactive
+POSIX shell and the outer zsh does not touch ENV.)
+
+Only name the shell when the injection actually modified
+argv (bash's --posix). For env-only injection
+(zsh/fish/xonsh) on a plain interactive session, leave
+modifiedCommandArgs empty so the framer execs the login
+shell interactively with the injected environment (e.g.
+ZDOTDIR) in place.
+
+2026-07-14: Inject shell integration into a remote /bin/bash
+over SSH
+
+The Shell.init?(path:) guard refused any /bin/bash so we
+would not try to inject into macOS's un-injectable 3.2.57.
+That path-based check is only correct for the local Darwin
+host: on a remote host /bin/bash is normally a modern
+injectable bash. Conductor.shellSupportsInjection already
+vets the remote bash by version string, but createInjector
+then returned nil for /bin/bash, so
+modifyRemoteShellEnvironment left env/argv unmodified and
+the staged shell-integration files were never sourced.
+
+Thread an allowSystemBash flag through
+createInjector/Shell.init and set it from
+modifyRemoteShellEnvironment (the remote path) so a remote
+/bin/bash gets injected. The local modifyShellEnvironment
+path keeps the default false, so macOS's /bin/bash stays
+excluded.
+
 2026-07-13: Tab subtitle: let the focused pane's status win
 
 When a tab has multiple split panes,
