@@ -1,3 +1,72 @@
+2026-07-15: Companion: repair the project generator to emit
+all three targets
+
+generate_companion_project.rb had drifted far behind the
+hand-maintained iTerm2Companion.xcodeproj. Re-running it
+(the documented "re-run after adding source files" workflow)
+produced a project that failed to build: it referenced a
+nonexistent single iTerm2Companion.entitlements, and it
+recreated only the app target, silently dropping the
+PushService notification-service extension, the
+iTerm2CompanionTests bundle, the WhisperKit package
+dependency, and 9 of the 24 shared Mac sources.
+
+Rewrite the generator to reproduce the current project
+faithfully: the app plus the embedded PushService
+app-extension and the hosted test bundle, the WhisperKit
+remote package, per-config Debug/Release entitlements
+(development vs production APNs), the full shared-source
+list, and a scheme wired for build/run/test. Verified by
+regenerating from scratch: clean device build embeds and
+validates PushService, and all 28 unit tests pass on an iOS
+26 simulator.
+
+Also document in CLAUDE.md that this project is generated
+and that structural changes made in Xcode must be mirrored
+into the generator, so it cannot drift like this again.
+
+2026-07-15: Write release notes for 3.7.0beta7
+
+2026-07-15: Tab titles: ignore leading spinner glyph in
+smart truncation
+
+Smart tab-title truncation decides head-vs-tail for the
+whole tab bar by comparing how many tabs share a common
+5-character prefix vs suffix.  Claude Code session titles
+begin with an animated spinner glyph (a braille or dingbat
+symbol such as the star that ticks about once a second)
+whose animation phase differs per tab. That glyph was the
+first character of the prefix, so when two otherwise-similar
+tabs' spinners fell out of phase the unique-prefix count
+crossed the decision boundary and flipped the entire bar
+between head and tail truncation, roughly once a second.
+
+Skip a leading run of decoration (whitespace, symbols, and
+punctuation, which covers the braille and dingbat spinner
+glyphs) before forming the prefix so the heuristic keys off
+the stable text. Enumerate by composed character sequence so
+a multi-scalar glyph is handled as a unit, and fall back to
+the raw prefix when a title is entirely decoration.
+
+2026-07-15: Diff peer: restore terminal focus after deferred
+launch
+
+On the first visit to a .diff peer, the peer swap parks the
+window's first responder on the diff-waiting overlay's Run
+Anyway button, because -mainResponder routes there while the
+overlay is up. firePendingDiffLaunch then dismisses the
+overlay with removeFromSuperview() and starts the command,
+but nothing reassigned first responder, so the window was
+left with a dead first responder and typing beeped.
+
+Capture whether the overlay owns first responder before
+dismissing it, and if so hand focus back to mainResponder
+(now the freshly-running text view) once the overlay is gone
+and the command has launched. Guarding on ownership leaves
+first responder alone when a poller-driven launch fires on a
+peer the user is not looking at, and also fixes the same
+beep when Run Anyway is clicked manually.
+
 2026-07-14: Tweak some logging levels
 
 2026-07-14: Load shell integration for a remote zsh login
