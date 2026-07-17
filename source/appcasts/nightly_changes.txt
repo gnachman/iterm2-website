@@ -1,3 +1,1781 @@
+2026-07-16: Companion: AirDrop all logs as one zip, not just
+the newest file
+
+Reuse makeLogArchive() to bundle every log (app + NSE) and
+share the zip; remove the temp archive when the share sheet
+closes.
+
+2026-07-16: Companion: a content-bearing wakeup no longer
+shows the generic placeholder
+
+A contentless wakeup push always satisfied its own iOS
+notification with the generic "Your agent has an update."
+fallback, even when the NSE had just fetched real messages
+and delivered them as their own notifications.  So an active
+session (which fires a wakeup per burst of new messages)
+left a redundant standing placeholder beside the real
+content.
+
+Route the newest real message through the wakeup push's own
+notification instead; the generic stands only when there is
+genuinely nothing to show.  Older messages keep their own
+unique-id notifications. The push's own notification carries
+the fixed wakeup collapse-id, so that newest-message slot
+collapses across wakeups (always the latest) while older
+ones persist with their own banners.
+
+Also add an NSE build stamp (logged on every push) so a
+device log confirms which extension build is installed (the
+app and the NSE install as separate binaries), and log
+whether each wakeup was satisfied with a real message or the
+placeholder.
+
+2026-07-16: Orchestration: announce a milestone only once
+
+Strengthen the display policy so the agent does not
+re-announce a milestone (a fix applied, a review kicked off)
+when a later tool result or status_update merely re-confirms
+it. It had been posting several near-duplicate messages per
+outcome, which on the phone also produced several wakeup
+pushes.
+
+2026-07-16: Release notes: orchestration watches survive a
+peer reload
+
+2026-07-16: Orchestration: keep session/workgroup internals
+out of user-facing prose
+
+Item 3: the always-applied display policy told the agent to
+"use a short human-readable name" for a session, while the
+prompt template requires the FULL @-prefixed id (which
+iTerm2 renders as the session's clickable name). The agent
+split the difference and emitted bare, abbreviated ids,
+which render as dead text. Replace that line so both agree:
+point the user at a session with its full @-id or its role
+name, never an abbreviated one, and never surface internal
+fields (session ids, workgroup ids, status_source, role_id)
+in prose.
+
+Item 5: "workgroup" is an internal grouping the user did not
+name, so the agent should not say "workgroup" or show a
+wg-/workgroup_id to the user.  Refer to a session by its
+role, using the workgroup's human name only to disambiguate
+when truly necessary.
+
+2026-07-16: Orchestration: key watches on the stableID so
+they survive a peer reload
+
+A watcher stored session.guid as its key, but
+replaceTerminatedShellWithNewInstance rotates the guid on an
+in-place shell reload (e.g. a Code Review peer restarting).
+The stable-ID work upgraded the resolver (sessionByGUID now
+calls anySession(forReference:)) but left the store side
+unchanged, so a reloaded session's stored key went stale,
+the session no longer resolved, and the watch neither fired
+nor was dropped: it died silently for hours. The
+sessionByGUID comment even claimed watchers persisted the
+stableID, which they did not; the reload-durable keying was
+plumbed but inert.
+
+Key watchers on the reload-durable stableID via a single
+watcherKey(for:) at both registration sites. Route every
+watcher/session match through one chokepoint,
+WorkgroupWatcher.targets(stableID:guid:), which compares
+against both ids so a stableID-keyed watcher follows a
+reload while a legacy guid-keyed one still matches its
+session. The tab-status handler now resolves the
+notification's guid to its session (safe because
+anySession(forReference:) covers peer-port sessions that
+allSessions missed) and keys sessionStateHistory by
+stableID, so transition detection survives a reload too. A
+reload posts PTYSessionTerminated and keeps the stableID,
+while a true teardown posts iTermSessionWillTerminate, so
+the watch follows the former and is dropped on the latter.
+
+Tests drive a real PTYSession and rotate its guid the way a
+reload does, pinning both the store-side key and the match
+logic.
+
+2026-07-16: AI chat: document and pin the known streaming
+tail-splice bug
+
+The finalization tail-recovery in parseStreamingResponse
+assumes the live-streamed text is a character-count prefix
+of the reparsed authoritative body. When the two diverge
+(ordering, whitespace, or across multiple text
+content-blocks) it appends an overlapping fragment instead
+of the true missing suffix, garbling the finalized message.
+
+Add a KNOWN BUG comment at the site and a characterization
+test that pins both the correct aligned-prefix behavior and
+the current garbled divergent behavior, so the real
+reconcile fix (handled separately) has a regression target
+to flip.
+
+2026-07-16: Release notes: quieter AI chat orchestration
+
+2026-07-16: Companion: harden log-zip staging against the
+delete race
+
+Follow-up to the email-logs zip feature:
+
+- Split CompanionLogArchive.write into stage + zip. stage
+hard-links the
+  log files (O(1), no byte copy; falls back to copy across
+  volumes) rather than copying, so a large history is not
+  duplicated on disk.
+- makeLogArchive now flushes and stages inside one
+queue.sync on the log
+  queue, serialized against the delete-all that toggling
+  logging off runs on that same queue. A concurrent delete
+  either happens fully before the snapshot (nothing to
+  archive) or fully after (the hard links keep the data
+  alive), never interleaved with a half-staged set.
+- Verify the built zip is readable and non-empty before
+returning it, so
+  the mail composer is never presented with nothing
+  attached.
+- Add a test that the archive survives deletion of the
+sources after
+  staging.
+
+2026-07-16: Orchestration: stop the agent narrating every
+tool-call step
+
+The orchestrator treated each step of an autonomous loop as
+a chat message, so a single event (a review finishing clean,
+a watch firing) produced several near-duplicate bubbles
+restating the same thing. The prompt encouraged it: it told
+the agent to post a summary and ask what to do next on every
+status_update.
+
+Add a "Talking to the user" section to the always-applied
+orchestration display policy: be concise, do not narrate
+routine mechanics (watch registration, screen checks, the
+steps of a multi-tool action), one message per meaningful
+outcome rather than per tool call, treat a status_update as
+a signal to act on rather than acknowledge, and run a
+user-set-up standing loop silently between milestones.
+Revise the watch-fired guidance in the prompt template and
+the register_watch tool description to match: act on the
+event and message the user only when a step advances, a task
+finishes, or a decision is needed.
+
+2026-07-16: Orchestration: render defunct @-mentions as
+grayed, inert links
+
+A mention whose session or workgroup no longer resolves used
+to render as the plain literal "[defunct session]". Render
+it like a live mention instead (leading terminal glyph, the
+same bracketed wording the phone shows) but tinted a
+de-emphasized gray and carrying no click action, cursor,
+underline, or inherited .link, so it reads as a session
+reference that is gone and clearly cannot be clicked.
+Clearing .link matters: a defunct run inside a markdown link
+would otherwise fall through to ClickableTextView's link
+branch and still open a URL.
+
+2026-07-16: Screen watches: widen poll cadence and wake the
+orchestrator less
+
+A screen-judged watch used to hard-stop at 5 minutes and
+fire a watchTimedOut status_update, waking the orchestrator
+(a full, user-visible model turn) for every watch that
+outran the cap. A code review routinely runs longer, so this
+produced a stream of "watch timed out, re-registering"
+chatter for no user benefit.
+
+The poller now keeps watching on its own with a tiered
+cadence that widens over time to bound token cost: the
+existing quadratic backoff for the first 5 minutes, then no
+tighter than every 2 minutes, then no tighter than every 10
+minutes past an hour. The give-up deadline rises to 6 hours,
+so a routine long watch never wakes the orchestrator and the
+timeout survives only as a rare backstop for a condition
+that may never come true. The dispatcher timeout message and
+the register_watch tool/prompt text are updated to match,
+with deadlineDescription naming the wait so it cannot drift
+from the deadline constant.
+
+2026-07-16: Companion: email diagnostic logs as one zip, not
+N attachments
+
+Emailing several multi-megabyte log files as separate
+attachments exceeded the mail composer's limits, so the logs
+never sent. Bundle them into a single .zip and attach that
+one file.
+
+The zip is built by the system, not by hand:
+NSFileCoordinator's
+.forUploading read intent returns a .zip of a directory (the same code
+path the Files app "Compress" and the share sheet use), so
+there is no third-party dependency and the archive opens
+everywhere. The app and NSE log files are staged into one
+folder first, which also makes the archive extract to a tidy
+top-level folder.
+
+- CompanionLogArchive.write clears any stale archive up
+front,
+  disambiguates basename collisions so no readable file is
+  silently dropped, and throws nothingToArchive when there
+  is nothing to zip.
+- makeLogArchive distinguishes "no logs" from a real failure
+(which it
+  logs) so the caller can report each correctly, and runs
+  the copy/zip off the main thread with a "Preparing Logs"
+  progress state.
+- MailComposeView sends application/zip and logs any
+attachment it
+  cannot read.
+
+2026-07-16: it2 over ssh: regenerate embedded
+shell-integration with the updated it2.py
+
+Re-embed the current it2.py into the assembled
+bash/zsh/fish/tcsh/xonsh scripts (new content-hash filename)
+and bump each shell's integration version so remotes
+re-fetch. Generated by tools/copy_shell_integration.sh; the
+shell-integration submodule is updated separately.
+
+2026-07-16: it2 over ssh: add Shell > SSH > "Remote host can
+control iTerm2" menu item
+
+A checkable menu item that toggles whether the current
+session's ssh connection may use it2, mirroring the
+in-session authorization announcement.  It is enabled only
+for an it2-capable ssh session (framer framing and the proxy
+activated), and shows a checkmark whenever the connection
+has an explicit grant, whether from the announcement or a
+previous toggle. Selecting it grants or revokes for the
+connection and persists the decision; if an announcement is
+pending it resolves that too so a blocked command unblocks
+immediately.
+
+2026-07-16: it2 over ssh: per-connection API authorization,
+restorable proxy state, recovery
+
+Gate it2-over-ssh behind an explicit per-connection grant,
+presented as an in-session announcement (never a silent
+cookie; the local "allow all apps" setting deliberately does
+not apply to a remote reaching back over the conductor). One
+prompt per connection, fanned out to concurrent commands via
+an iTermPromise whose seal the Conductor owns so it resolves
+exactly once (on answer, or fail-closed on teardown).
+
+Consolidate the proxy's nonce, socket path, and
+authorization decision into a single IT2ProxyState value so
+restorable-state coding, the accessors, and the SSH recovery
+hand-off each move it in one step. Restorable decode
+migrates the older two-scalar-key blobs
+(it2Nonce/it2SocketPath) into it2Proxy so a restored session
+keeps working; authorization is carried in process across
+recovery and must never be re-derivable from
+remote-controlled state.
+
+2026-07-16: it2core: route embedded command I/O to the
+remote and harden edge cases
+
+When it2 runs embedded inside iTerm2 for an SSH client, its
+output and confirmation prompts must reach the remote user
+over the ssh channel, not the GUI app's invisible
+stderr/stdin. Thread an injected err sink (and a confirm
+provider that fails with a clear "re-run with --force"
+message, since there is no remote tty to prompt) through
+IT2Context, so config parse warnings and prompts surface
+remotely. Also map the in-process host channel's cancel
+(remote Ctrl+C -> clean exit 0) vs abort (real failure)
+NSError codes to the right exit codes, and reject a negative
+--lines up front instead of trapping in Array.suffix (which
+crashed the whole app in embedded mode).
+
+2026-07-16: it2 over ssh: fix stdout/stderr selector macro
+collision
+
+The @objc(runArguments:stdout:stderr:channel:) selector on
+IT2Runner registered literally, but the Objective-C call
+site in iTermInProcessIt2.m had <stdio.h>'s stdout/stderr
+macros expand stdout:/stderr: into __stdoutp:/__stderrp: in
+both the generated header and the call, so the two matched
+at compile time and only diverged at runtime (Swift's @objc
+string bypasses cpp). The embedded runner then crashed with
+an unrecognized selector on the live SSH path, which the
+Swift-only unit test could not reach.
+
+Rename the selector pieces to stdoutHandler:/stderrHandler:
+on both sides so nothing collides with the stdio macros.
+
+2026-07-16: it2 over ssh: expose it2 on the remote via shell
+integration
+
+Make it2 usable on hosts reached through SSH integration.
+The shell-integration scripts now self-materialize the it2
+client and define it2 when it is not already available, so
+activation no longer ships it2.py from the conductor.
+
+- Each shell integration script (bash/zsh/fish/tcsh/xonsh)
+carries it2.py as an
+  embedded gzip+base64 blob, substituted at build time with
+  envsubst. Unless it2 already exists, the script decodes
+  the blob to ~/.iterm2/it2.<hash>.py on first use (via
+  python3's stdlib, so no gzip/base64 command is needed on
+  the remote) and defines an it2 function or alias. The
+  content hash in the filename gives an upgrade path; a
+  python3-less remote gets a clear "it2: python3 is
+  required" message.
+- it2.py's source of truth moved to the
+iTerm2-shell-integration submodule;
+  copy_shell_integration.sh copies it back to OtherResources
+  and puts gettext's envsubst on PATH. gettext added to the
+  Makefile setup target.
+- Conductor no longer ships it2.py (removed the payload +
+app resource); it still
+  injects IT2_SOCK/IT2_NONCE and sends it2Listen once
+  framing starts.
+
+Bumps the iTerm2-shell-integration submodule to the commit
+that embeds it2.py.
+
+2026-07-16: it2 over ssh: activate the proxy at conductor
+startup
+
+Wire the previously-inert it2 path so the machinery goes
+live. During the shell-integration setup (which implies
+framing), mint a per-session auth nonce and a remote socket
+path, inject IT2_SOCK/IT2_NONCE into the login shell's
+environment so the remote it2.py can find and authenticate
+to the socket, set it2Nonce so the demux authorizes HELLOs,
+and ship it2.py alongside the shell-integration files.  Once
+framer is running (doFraming), send it2Listen so framer
+binds the socket.  it2.py is now bundled as an app resource
+(mirroring framer.py).
+
+Security: the socket lives in a dedicated owner-only
+directory under the remote $HOME (framer makes it 0700
+before binding), not a shared world-writable place. The
+socket file is chmod 0600, but an owner-only parent
+directory is the portable guarantee that no other local user
+can reach it (bind-time socket perms are not portable).
+framer unlinks the socket on shutdown so it does not
+accumulate.
+
+Recovery: it2Nonce/it2SocketPath are persisted in
+RestorableState so it2 survives state restoration, and
+re-read from the surviving framer environment on SSH
+resynchronize (init(recovery:) starts fresh), so it2 does
+not silently break after a reconnect.
+
+The ergonomic `it2` command exposure on the remote is a
+separate follow-up; for now the shipped it2.py at
+~/.iterm2/shell-integration/it2.py is directly runnable and
+reads IT2_SOCK/IT2_NONCE from the environment.
+
+2026-07-16: it2 over ssh: more demux edge-case and
+nested-depth tests
+
+Fill coverage gaps now that the test target compiles: -
+demux: two connections run independently (output routing +
+per-connid cancel),
+  CANCEL before HELLO tolerated, malformed HELLO -> exit 2,
+  multiple wire frames in one data chunk, and the
+  IT2RunCancel cancel-before/after-ready race.
+- parser: a %it2 frame nested inside an outer conductor's
+%output re-parses to one
+  intact SSH_IT2 token tagged at child depth 1, exercising
+  the childInfo path that makes nested-ssh routing work.
+
+2026-07-16: it2 over ssh: SSH_IT2 conductor token and
+in-process demux
+
+Route the remote it2 CLI's requests back to the local iTerm2
+over the conductor channel and dispatch them in-process
+through the API server.
+
+- SSH_IT2 token: framer emits whole "%it2 <connid>
+open|data|close" OSC 134
+  frames; a dedicated token (modeled on SSH_TERMINATE)
+  carries each line intact to Conductor.handleIT2 without
+  the SSH_OUTPUT child re-parse that would fragment a long
+  payload. Plumbed through VT100Parser/Terminal, the screen
+  delegates, and PTYSession, with depth routing for nested
+  ssh, and exempted from the download and copy-mode receipt
+  guards since it interleaves on an async stream.
+- Down-path framer commands framerIT2Listen/Send/Close.  -
+ConductorIT2Demux (Conductor+IT2.swift) reconstructs
+it2.py's length-prefixed
+  wire protocol per connection, validates the session nonce
+  (read lazily), runs the embedded it2 command tree via
+  iTermInProcessIt2, and streams stdout/stderr/exit back
+  down. iTermInProcessIt2 gains a cancellation hook so a
+  remote Ctrl-C or a conductor unhook/deinit can stop a
+  streaming command (monitor --follow).
+- framer bounds each %it2 data frame so a hostile client
+cannot feed one giant OSC
+  frame to the conductor parser; the demux caps declared
+  frame length and cancels all connections on unhook/deinit.
+
+The startup wiring that mints the nonce and sends it2listen
+is not included yet, so this path stays inert (every HELLO
+is rejected) until that lands.
+
+Tests: SSH_IT2 parser (whole-line delivery, split
+reassembly), framer command wire format, demux (streaming,
+nonce-after-creation, cancel, teardown, oversize), and
+framer chunking.
+
+2026-07-16: Share a big-endian Data framing extension
+
+Promote the big-endian fixed-width integer read/write
+helpers (previously duplicated as private Data extensions in
+CompanionHEVCFraming and CompanionMediaFrame) into a single
+shared extension in Data+iTerm.swift, covering
+UInt16/UInt32/UInt64 append and read. The Companion framing
+code now uses the shared helpers, and length-prefixed wire
+formats elsewhere can too. No behavior change; the
+implementations are identical.
+
+2026-07-16: it2 over ssh: framer.py unix-socket proxy for
+it2
+
+Add three dormant framer handlers so the conductor can proxy
+a remote unix socket to iTerm2's embedded it2: - it2listen
+<path>: asyncio.start_unix_server at <path>, chmod
+owner-only.  - Each accepted connection is a byte pipe
+surfaced to iTerm2 as
+  "%it2 <connid> open" / "%it2 <connid> data <base64>" /
+  "%it2 <connid> close" frames. framer stays a dumb pipe;
+  the embedded it2 in iTerm2 reconstructs the it2.py frame
+  stream, runs the command, and streams responses back.
+- it2send <connid> <base64> / it2close <connid>: iTerm2 -> a
+connection's socket.
+
+Additive and inert until iTerm2 sends "it2listen", so
+existing SSH integration is unaffected. Adds
+tests/framer_it2_test.py driving the handlers in isolation
+(listen -> client connects -> data up -> it2send down ->
+close).
+
+2026-07-16: it2 over ssh: remote it2.py client + wire
+protocol
+
+Add OtherResources/it2.py, the stdlib-only (Python 3.7+)
+remote client for it2 over SSH integration. It connects to
+the framer-provided unix socket ($IT2_SOCK), forwards argv +
+terminal context in a HELLO frame, and streams
+STDOUT/STDERR/EXIT back. Length-prefixed frames: [1B
+type][u32 length][payload]. The client builds no API
+request; the embedded it2 in iTerm2 runs the command, so it
+stays trivially in sync with the Swift it2.
+
+Robustness: - Missing/unreachable socket exits 2.  - EXIT is
+contractually the last frame; a disconnect without it
+(server crash,
+  killed job, reset) exits 2 with a note rather than falsely
+  reporting success.
+- Two-stage SIGINT: first Ctrl-C sends CANCEL, then restores
+the default handler
+  so a second Ctrl-C always kills the client even if the
+  server never answers.  Ctrl-C during connect/HELLO exits
+  cleanly (130) instead of a traceback.
+
+Adds tests/it2py_test.py: round-trips it2.py against a fake
+framer socket (argv/ nonce up; stdout/stderr/exit down) and
+a premature-close case (nonzero exit). The server thread is
+a daemon with an accept() timeout so the test can never
+hang.
+
+2026-07-16: API: remote-origin auth (option E) + Script
+Console visibility for it2
+
+- authorizeInProcessOrigin:displayName: prompts once per ssh
+session (cached by
+  origin identifier) before the embedded it2 may use the
+  API, naming the remote origin; a denial fails the command
+  without dispatching. iTermInProcessIt2 now takes
+  originIdentifier/originDisplayName, checks
+  iTermAPIHelper.isEnabled, authorizes on the main thread,
+  and keys the synthetic connection via
+  iTermAPIConnectionIdentifierController so a session maps
+  to one console entry.
+- register/unregisterInProcessConnection now post
+iTermAPIServerConnectionAccepted
+  (display name as "job") and
+  iTermAPIServerConnectionClosed, so the Script Console
+  shows the channel open/close;
+  DidReceiveMessage/WillSendMessage already flow through the
+  reused dispatch/sendResponse.
+
+Verified: full app build (tools/build.sh Development)
+succeeds.
+
+2026-07-16: API: ObjC IT2Channel bridge to run embedded it2
+in-process
+
+Add iTermInProcessIt2 (iTerm2SharedARC): the entry the
+conductor will call to run the embedded it2 command tree
+over SSH integration. It imports the generated
+it2core-Swift.h and: - iTermIt2APIChannel conforms to
+IT2Channel: send dispatches an
+  ITMClientOriginatedMessage via iTermAPIHelper's in-process
+  path; the synthetic connection's responseHandler parses
+  each ITMServerOriginatedMessage onto an
+  NSCondition-guarded queue that receiveMessage drains;
+  disconnect unregisters and wakes any blocked receiver.
+- runWithArguments:stdout:stderr:completion: runs IT2Runner
+on a background queue
+  (never main, or the blocking round-trips would deadlock
+  the dispatch), disconnects unconditionally (so no-API
+  commands like --version don't leak the registration), and
+  returns the exit code.
+
+Adds the it2core generated-header search path to
+iTerm2SharedARC so its ObjC can import it2core-Swift.h. The
+it2core side (incl. the IT2Runner @objc facade) is covered
+by the 29 offline tests; an end-to-end runtime test lands
+with the conductor wiring.
+
+2026-07-16: API: in-process dispatch entry + synthetic
+connection
+
+Add a public in-process dispatch path so the embedded it2
+command tree can reuse iTermAPIServer's handlers and
+subscriptions without a socket: - iTermAPIServer
+register/dispatch/unregisterInProcessConnection: register a
+  synthetic connection in _connections (so subscriptions
+  route to it), push requests through the existing
+  enqueueOrDispatchRequest, and tear down on end (mirrors
+  webSocketConnectionDidTerminate).
+- iTermAPIHelper forwards
+register/dispatch/unregisterInProcessAPIConnection to
+  its _apiServer (the singleton the app-side bridge
+  reaches).
+- iTermInProcessAPIConnection: a synthetic
+iTermAPIServerConnection whose
+  sendBinary: hands each ITMServerOriginatedMessage's bytes
+  to a responseHandler (responses + notifications).
+
+These deliberately skip the API permission gate; the caller
+authorizes the origin (option E, added later). Verified:
+full app build succeeds.
+
+2026-07-16: API: extract iTermAPIServerConnection protocol
+for in-process dispatch
+
+Introduce @protocol iTermAPIServerConnection
+(key/guid/sendBinary:/abort) in iTermWebSocketConnection.h
+and retype iTermAPIServer's dispatch path to it: all
+handleXxx:connection:, dispatchRequest,
+sendResponse/finishHandling, enqueueOrDispatchRequest, the
+iTermAPIRequest/iTermAPITransaction connection properties,
+and the _connections map. iTermWebSocketConnection adopts
+the protocol, so this is a pure refactor with no behavior
+change; the accept-path local and the two delegate methods
+keep the concrete type.
+
+This lets a synthetic in-process connection flow through the
+existing handlers/subscriptions so the embedded it2 command
+tree can run over SSH integration. Verified: full app build
+(tools/build.sh Development) succeeds.
+
+2026-07-16: Link it2core into the app via an @objc facade
+
+Consume it2core from Objective-C instead of `import it2core`
+(Swift). A Swift import forces the importing target to
+resolve it2core's whole transitive module graph
+(ProtobufRuntime + Yams/CYaml + ArgumentParser) under
+Xcode's explicit modules, which iTerm2SharedARC can't do.
+
+- it2core gains an @objc facade:
+IT2Runner.run(arguments:stdout:stderr:channel:)
+  and an @objc IT2Channel protocol the app implements.
+  it2core now emits its generated ObjC header
+  (SWIFT_INSTALL_OBJC_HEADER=YES) as it2core-Swift.h.
+- The app depends on it2core and force-loads libit2core.a
+(which Xcode builds
+  self-contained, embedding ArgumentParser/Yams/CYaml).
+  Protobuf resolves from libiTerm2Shared.a. No Swift import
+  of it2core anywhere; iTerm2SharedARC and the bridging
+  header are untouched.
+- Dropped the app's separate ArgumentParser/Yams product
+deps: they are already
+  archived into libit2core.a, so linking them again
+  duplicated symbols.
+
+Verified: full app build (tools/build.sh Development)
+succeeds and links; it2core target builds for x86_64+arm64
+and emits the facade header; 29 standalone tests pass (adds
+IT2Runner facade tests).
+
+2026-07-16: it2cli: public in-process entry point
+(IT2Embedded.run)
+
+Add the public embedding surface the app will call: - IT2IO:
+the host's stdout/stderr/confirm sinks.  - APIChannel is now
+public so the app can supply an in-process channel.  -
+IT2Embedded.run(arguments:io:channel:) -> Int32 builds a
+context and runs
+  the command tree, returning an exit code and never
+  touching real stdio or terminating the process.
+
+Factor the driver logic into runToExitCode(), shared by the
+standalone it2CLIMain() and IT2Embedded.run, so exit
+codes/messages are identical. It maps normal return -> 0,
+IT2Error -> exitCode, IT2Exit -> code, and ArgumentParser
+outcomes (--help/--version/validation/unknown) via
+fullMessage(for:)/exitCode(for:) instead of ArgumentParser's
+own exit().
+
+Register IT2Embedded.swift in the it2core Xcode target.
+Standalone parity verified (version 0, unknown 64, help 0);
+in-app it2core target still compiles. Adds IT2Embedded tests
+for the 64/0/IT2Exit paths.
+
+2026-07-16: Add it2core static-library target to the Xcode
+project
+
+Create an it2core static-lib target that compiles the shared
+it2cli/Sources/it2core/*.swift as its own Swift module
+(names isolated from iTerm2SharedARC), depending on
+swift-argument-parser and Yams.
+
+The protobuf ITM*/GPB* types are supplied by a header-only
+ProtobufRuntime clang module
+(it2cli/InApp/ProtobufRuntime.modulemap) referenced via
+-fmodule-map-file; only headers are exposed, so the
+implementations bind to the single copy already in
+libiTerm2Shared.a at app-link time (no duplicate ObjC
+classes). The standalone SwiftPM build is unchanged.
+
+The target is not yet linked into the app (orphan), so the
+app build is unaffected. Verified it compiles for
+x86_64+arm64 with `xcodebuild -target it2core`
+(SYMROOT/OBJROOT redirected so package intermediates avoid
+the Yams BUILD-file case-insensitive collision, which does
+not occur under the app's normal derived-data build).
+
+2026-07-16: it2cli: make ProtobufRuntime import conditional
+for in-app embedding
+
+Wrap `import ProtobufRuntime` in `#if
+canImport(ProtobufRuntime)` across the it2core sources.
+Under SwiftPM the module is present so the import happens as
+before; when these same files are compiled inside iTerm2 the
+ITM*/GPB* types will come from the app's single protobuf
+copy via the bridging header instead, avoiding a duplicate
+set of ObjC classes.
+
+No behavior change; standalone build and 24 tests
+unaffected.
+
+2026-07-16: it2cli: use let for shortcut delegation commands
+(fix warnings)
+
+The shortcut conversions changed `let cmd` to `var cmd`
+before calling `try cmd.run(ctx)`, but the concrete run(_:)
+implementations are non-mutating, so `var` is never needed
+and swift emits 9 "variable was never mutated; consider
+changing to 'let'" warnings on a clean build. Flip all 9
+back to `let`. (var is only required for the IT2Runnable
+existential in runParsedCommand, not for direct concrete
+calls.)
+
+2026-07-16: it2cli: add IT2Context.exit(code) and the
+IT2Exit signal
+
+Add a proper analog of exit(2): ctx.exit(_ code: Int32)
+throws an IT2Exit signal that the boundary realizes
+(standalone: Foundation.exit(code); embedded: the host will
+send the code back to the remote it2 over the ssh channel).
+This lets a command terminate with an arbitrary code, exit 0
+early, or exit without a message, and keeps commands from
+calling Foundation.exit directly, which would take down
+iTerm2 when embedded.  defer blocks still run on the way
+out.
+
+Use it for the alias-not-found path, restoring the original
+message-less exit(3) (the config commit had temporarily made
+it a targetNotFound error).
+
+Adds a test asserting the missing-alias path exits with code
+3.
+
+2026-07-16: it2cli: convert monitor commands to IT2Context;
+drop dead helpers
+
+Convert all `monitor` subcommands to run(_ ctx:): print ->
+ctx.out, stderr banners -> ctx.err, APIClient.connect() ->
+ctx.makeClient(). The streaming loops keep their standalone
+SIGINT/exit and polling Thread.sleep for now; a comment
+marks where a cancellation token on IT2Context will replace
+them when monitor runs embedded over SSH.
+
+With every command converted, the free confirmAction() and
+printJSON() helpers are now unused (superseded by
+ctx.confirm / ctx.printJSON), so remove them.
+
+Adds a one-shot monitor-output integration test.
+
+2026-07-16: it2cli: convert config commands to IT2Context
+
+Convert load/alias/config-path/config-reload to run(_ ctx:):
+print -> ctx.out, stderr -> ctx.err, APIClient.connect() ->
+ctx.makeClient().
+
+The alias not-found path now throws IT2Error.targetNotFound
+(still exit 3, now with a message naming the alias) instead
+of exit(3). Both the top-level driver and `alias` delegation
+share a new runParsedCommand() helper that prefers
+IT2Runnable and falls back to ParsableCommand.run(). The two
+stderr warnings inside the static IT2Config.load() stay on
+FileHandle (no context).
+
+Adds a hermetic config-reload test via a temp
+IT2_CONFIG_PATH file.
+
+2026-07-16: it2cli: convert auth command to IT2Context
+
+Convert `auth cookie` to run(_ ctx:): print -> ctx.out. It
+requests a cookie via CookieAuth (osascript) and has no
+API-client seam, so coverage is the command-tree parse
+assertions.
+
+2026-07-16: it2cli: convert app commands to IT2Context
+
+Convert all `app` subcommands to run(_ ctx:): print ->
+ctx.out, APIClient.connect() -> ctx.makeClient(). `app quit`
+without --force uses ctx.confirm and throws
+IT2Error.cancelled on decline. The `broadcast` container
+keeps the default path (it only groups on/off/add).
+
+Adds app-quit tests for the decline and --force paths.
+
+2026-07-16: it2cli: convert profile commands to IT2Context
+
+Convert all `profile` subcommands to run(_ ctx:): print ->
+ctx.out, printJSON -> ctx.printJSON, APIClient.connect() ->
+ctx.makeClient().
+
+Adds a profile-list integration test through a fake client.
+
+2026-07-16: it2cli: convert tab commands + newtab shortcut
+to IT2Context
+
+Convert all `tab` subcommands and the `newtab` shortcut to
+run(_ ctx:): print -> ctx.out, APIClient.connect() ->
+ctx.makeClient(). `tab close` without --force uses
+ctx.confirm and throws IT2Error.cancelled on decline.  All
+top-level shortcuts are now context-based.
+
+Adds a tab-list integration test through a fake client.
+
+2026-07-16: it2cli: convert window commands + new shortcut
+to IT2Context
+
+Convert all `window` subcommands (and the `new` shortcut,
+now that window new is context-based) to run(_ ctx:): print
+-> ctx.out, APIClient.connect() -> ctx.makeClient(). `window
+close` without --force uses ctx.confirm and throws
+IT2Error.cancelled on decline. The `arrange` container keeps
+the default path (it only groups subcommands).
+
+Adds a window-list integration test through a fake client.
+
+2026-07-16: it2cli: convert session and its shortcuts to
+IT2Context
+
+Convert the remaining `session` subcommands and their
+top-level shortcuts (send/run/split/vsplit/clear/set-status)
+to the explicit-context model: print -> ctx.out,
+APIClient.connect() -> ctx.makeClient(). `new`/`newtab` stay
+on the default path until window/tab are converted.
+
+Interactive confirmation (`session close` without --force)
+now uses ctx.confirm; declining throws the new
+IT2Error.cancelled (exit 1, "Aborted!") instead of exit(1)
+inside confirmAction. The driver renders errors via
+IT2Error.displayMessage so cancelled prints verbatim while
+other errors keep the "Error: " prefix.
+
+Adds tests for the decline and --force close paths.
+
+2026-07-16: it2cli: add IT2Context/IT2Runnable and convert
+session list
+
+Introduce IT2Context (out/err/confirm/makeClient) and an
+IT2Runnable protocol that the driver prefers over
+ParsableCommand.run(). This lets a command receive its I/O
+and API client explicitly, so the tree can be embedded
+in-process in iTerm2, while unconverted commands keep
+working via the default run() path (converted one at a
+time).
+
+Convert `session list` and its `ls` shortcut as the first
+exemplar: print -> ctx.out, APIClient.connect() ->
+ctx.makeClient(). The standalone binary builds
+IT2Context.standalone (real stdio + socket client) and
+dispatches through IT2Runnable when available.
+
+Adds a shared test FakeChannel/OutputCapture and an
+integration-style test that drives the real session-list
+logic through a fake client, asserting both the requests
+built and the text formatted.
+
+2026-07-16: it2cli: compose APIClient over an injectable
+APIChannel
+
+Extract an APIChannel protocol (send request / receive
+message / disconnect) and move the
+WebSocket-over-unix-socket transport into a SocketChannel
+conformer. APIClient now composes a channel instead of
+owning a WebSocketClient directly, keeping the
+transport-agnostic logic (id assignment, response matching,
+resolveSessionId) in one place. The standalone binary is
+unchanged: APIClient.connect() builds a SocketChannel.
+
+The abstraction is message-level, so the streaming path
+collapses client.receiveRaw() +
+ITMServerOriginatedMessage.parse(...) into a single
+client.receiveMessage(); the parse now lives in
+SocketChannel.
+
+This prepares for a future in-process APIChannel that hands
+messages straight to iTermAPIServer when the command tree is
+embedded in the app.
+
+Adds APIClientTests exercising send/receive/error/disconnect
+via a FakeChannel, offline.
+
+2026-07-16: it2cli: split into it2core library + thin
+executable
+
+Move the command tree, transport, auth, and helpers out of
+the `it2` executable target into a new `it2core` library
+target, leaving only a thin main.swift driver that calls
+it2core.it2CLIMain(). Pure structural refactor with no
+behavior change: the standalone `it2` binary builds and runs
+identically (verified --version, --help, and usage exit
+codes).
+
+This is a prerequisite for embedding the same command logic
+in-process inside iTerm2 so `it2` can work over SSH
+integration.
+
+Adds an it2coreTests target with offline command-tree
+parsing tests.
+
+2026-07-16: AI chat: restore neutralizeContextDelimiters
+doc-comment adjacency
+
+Inserting the P1 auto-provide predicates
+(shouldSuppressAutoProvide, shouldAskAutoProvideConsent)
+between neutralizeContextDelimiters and its doc comment left
+the delimiter-defanging comment stranded above
+shouldSuppressAutoProvide (which reads as two stacked docs)
+and the function itself undocumented. Move the comment back
+down to its function. Doc-only; no behavior change. Squash
+into the P19 or P1 commit if preferred.
+
+2026-07-16: Release notes: AI chat auto-provide consent
+prompt
+
+2026-07-16: AI chat: prompt once for auto-provide consent
+when a legacy Always is present
+
+When a turn wants to auto-send (a category is Always) but
+the user has never decided (consent Unknown), show a
+one-time, non-blocking prompt - 'Share Terminal Contents
+Automatically?' with Turn On / Not Now. Turn On records
+Granted (auto-send begins next turn); Not Now records Denied
+(never nag again; the user can still opt in per chat, which
+also grants). Shown at most once per launch and skipped once
+Granted/Denied persists, so it never stacks even though
+autoProvidedContext re-evaluates every turn. The suppressed
+turn still sends, just without the screen.
+
+2026-07-16: AI chat: gate auto-provide on explicit consent,
+not just Always
+
+Auto-sending a session's terminal state + visible screen
+with every message was driven purely by the View Contents /
+Check Terminal State permission being Always. A legacy 'View
+History = Always' grant is carried across the rename to
+'View Contents = Always', so it reaches the Always state
+without ever passing the per-chat 'Send Automatically'
+confirmation - silently escalating to auto-sending the
+screen on upgrade.
+
+Add a NoSync tri-state consent (iTermAutoProvideConsent) and
+gate auto-send on it: a turn auto-sends only when a category
+is Always AND consent is granted.  The existing per-chat
+'Send Automatically' confirmation and the phone's 'Share
+This Session?' grant both record the consent, so an explicit
+opt-in is never asked twice. Until consent is granted
+auto-send is simply suppressed (the turn still sends,
+without the screen). The one-time prompt that asks for
+consent when a legacy Always grant is present follows in a
+later commit.
+
+2026-07-16: Companion: don't watch a session view that
+departed before its send claimed
+
+A send from the live session view runs an async consent
+check before it claims the reply-watch slot, so the claim
+can execute AFTER the view genuinely popped (the send Task
+outlives the pop). claim() then set activeToken to the gone
+view's token and cleared the departed set, so
+beginWatchingSessionChat's isActiveOwner guard passed and
+installed a watch + Mac subscription (and a reply
+notification) for a view that no longer exists.
+
+Have claim() honor an already-recorded departure of its own
+token: leave activeToken unset so recordIntent bails and no
+watch installs. The message still publishes; only the
+reply-watch is skipped. A view that departed and then
+reappeared (a tab switch un-marks it) still claims normally.
+
+2026-07-16: Companion: distinguish an absent keychain item
+from an unreadable one
+
+pairingCompleteness() reported the pairing incomplete
+whenever a required keychain item read back nil, but
+keychainLoad() returned nil for ANY non-success OSStatus and
+load() cached that nil for the whole process. So a single
+transient read failure (a denied keychain confirmation
+prompt at launch, a locked keychain, a code-signature
+mismatch after a rebuild) poisoned the cache and made the
+pairing look permanently incomplete: resume skipped parking
+forever and the re-pair modal spammed every launch.
+
+Make the read tri-state (found / absent / unreadable), cache
+only the two stable states so a transient failure is re-read
+rather than remembered, and count only a genuine
+errSecItemNotFound as missing. Also drop the relay room
+secret from the completeness decision: the phone re-couriers
+it on every connect, so a missing one self-heals and must
+not block resume.
+
+2026-07-16: AI chat: escape control-tag delimiters in
+auto-provided terminal context
+
+autoProvidedContext() interpolated the raw visible screen
+and terminal state into <visible-screen> / <terminal-state>
+wrappers with no escaping.  Terminal output containing a
+literal closing tag (a file the user cats, a hostile log
+line) closed the block early, so everything after it read as
+trusted top-level model context: prompt injection.
+
+Neutralize our control-tag delimiters in the untrusted
+content with the guillemet lookalikes AutoModeClassifier
+already uses, while preserving newlines so the visible
+screen's row layout survives for the model.
+
+2026-07-16: Resolve session bindings by reference in
+ChatAgent and resize
+
+Post-rebase reconciliation: three session-reference
+resolutions still used anySession(withGUID:), which cannot
+match a stableID:
+
+- CompanionHostBridge.handleResizeSession (upstream-added):
+the phone now
+  sends a stableID reference, so a resize from the phone
+  could not find the session.
+- ChatAgent.autoProvidedContext and the session-claim
+precheck: both read
+  the chat's terminalSessionGuid/browserSessionGuid binding,
+  which is now a stableID for new links, so auto-provided
+  context and the claim check silently stopped working.
+
+Route all three through anySession(forReference:), the safe
+superset.
+
+2026-07-16: Translate old session guids to stableIDs for the
+AI
+
+Instead of migrating existing chat bindings in the database,
+translate session guids to their stableIDs when replaying a
+chat's history to the provider. When a chat that predates
+stableIDs is continued, the model's past references to a
+session (a guid) are rewritten to that session's current
+stableID, so they stay consistent with the stableIDs the
+<workgroups> snapshot now emits and the model copies
+stableIDs forward.  No stored data changes, so nothing has
+to re-key the permission grants a DB migration would have
+touched.
+
+The rewrite also turns a bare session id (one the model
+wrote without the @ sigil) into a proper @-mention by
+prepending @, so those render as clickable links in a
+pre-stableID chat; an id already written as a mention (@,
+@session:, @wg-) keeps its form.
+
+Only free text (assistant/user prose) is rewritten, and only
+for a guid that still resolves to a live session; a
+workgroup id, a dead session, or a bare uuid in output is
+left verbatim. Structured tool-call arguments are left
+untouched because they carry vendor signatures / encrypted
+reasoning-item ids that must replay verbatim, and tool
+output stays a faithful copy of the terminal.
+
+Session-bound (non-orchestration) chats intentionally do not
+survive a shell reload: their binding is not sent to the AI,
+and re-linking after a restart is acceptable.
+
+2026-07-16: Release notes: reload-durable AI chat session
+links
+
+Note the stable-session-identity feature: an AI chat linked
+to a terminal session (and its command permissions and
+orchestrator @-mentions) now survives the shell restarts the
+Claude Code integration triggers. Added to the 3.7 AI
+Improvements section and the Companion bug-fix notes.
+
+2026-07-16: Companion: group terminal alerts by stableID
+
+The two terminal-alert posters (mark-set and trigger alerts)
+passed self.guid as the threadKey, which the phone hashes
+into a notification thread id. Since the guid rotates on a
+shell reload, a session's alerts split into a new thread on
+every reload. Pass self.stableID instead so a session's
+alerts stay grouped across reloads. The phone treats
+threadKey as opaque HMAC input, so this is a one-time
+grouping boundary for already-delivered alerts, not a break.
+
+2026-07-16: Companion: project sessions to the phone by
+stableID
+
+CompanionSessionLister.summary(of:) and the workgroup-member
+listing emitted session.guid into the wire's
+session-reference fields, which the phone sends back for
+link/content/stream/copy/paste. With the bridge now
+resolving those via anySession(forReference:), emit the
+reload-durable stableID instead, so a session picked or
+linked on the phone survives a shell reload that rotates the
+guid. Screen-info/content responses already echo the
+phone-supplied reference, and mention resolution already
+carries the stableID revealGuid.
+
+The wire field is still named `guid` and the phone treats it
+opaquely (no shape check), so this is additive: no
+protocol-version bump. Bonus: a session no longer appears to
+change identity in the phone's picker when its shell
+reloads.
+
+2026-07-16: Orchestration prompt/schema: describe session
+ids, not UUIDs
+
+The <workgroups> snapshot now emits ptys_ stableIDs in the
+session_guid field, so the system prompt's UUID example and
+"never write just the first block" guidance were stale.
+Update the example to @ptys_9QK3ZM7WX4VBT, reword the
+copy-verbatim guidance to talk about an opaque id rather
+than a UUID, and adjust the do-not-abbreviate examples to
+the ptys_ form (copying character-for-character matters even
+more now: a truncated or reformatted stableID also fails its
+checksum). The tool- schema comment and the renderer header
+comment drop their GUID/UUID wording too. The orchestration
+prompt is not mirrored in preferences.py, so nothing to
+update there.
+
+2026-07-16: Orchestration: key session claims on the
+canonical stableID
+
+The session_* write-gating path resolved the session
+tolerantly via anySession(forReference:) but then called
+ensureSessionClaim with the raw model-supplied id, which
+builds the scope by verbatim concatenation
+("session:<raw>"). Grants are recorded canonically
+("session:<stableID>" uppercase), so a
+resolvable-but-non-canonical reference (a lowercased/
+confusable stableID or a legacy guid from an older
+transcript) would key the claim under a scope that never
+matches the granted one, missing a standing grant and
+re-prompting. Pass the resolved session's stableID so the
+claim key is always canonical.
+
+2026-07-16: Companion: link chats by stableID like the Mac
+path
+
+performLinkSession stored the raw phone-provided guid as the
+chat binding, while ChatViewController.link stores the
+resolved session's stableID. So a chat linked from the phone
+was not reload-durable: after the shell reload rotated the
+guid, the stored guid no longer resolved and the link went
+dead. Resolve the session once and store its stableID
+(falling back to the guid when unresolvable), mirroring the
+Mac path.
+
+2026-07-16: Complete chat binding migration: command-exit
+observer + firstChatID scope
+
+Two stragglers from the reference migration:
+
+- The PTYCommandDidExit observer that drives auto-streaming
+of command
+  output compared the notification's live guid against the
+  stored binding with raw ==. Since a new binding is now a
+  stableID, that was always false and auto-streaming
+  silently stopped for any chat linked after the change.
+  Match the binding against the live guid's reference-key
+  set, like sessionWillTerminate.
+
+- firstChatID(forSessionGuid:) was migrated via
+isLinked(toReferenceIn:),
+  which also matches browser bindings; the sole caller (the
+  reveal-AI-chat deep link) passes a terminal guid, so this
+  silently broadened terminal-only matching to
+  terminal-or-browser. Restrict it back to the terminal
+  binding.
+
+2026-07-16: Keep AI-chat draw predicates off the
+session-tree walk
+
+textViewSessionIsLinkedToAIChat and
+textViewSessionIsStreamingToAIChat run on the legacy draw
+path (configureIndicatorsHelperWithRightMargin, reached from
+drawRect:). After the reference migration they routed
+through iTermSessionReferenceKeys(forGuid:), which resolves
+guid -> session -> stableID via anySession(withGUID:), a
+full session- tree walk (all windows, buried sessions, peer
+ports). With many panes drawing, that turned per-frame O(1)
+work into O(N) per pane.
+
+Both callers already hold the PTYSession and thus its {guid,
+stableID} pair, so pass both in and match directly: -
+chatIDsForSessionGuid:stableID: unions the reverse index
+over the two
+  keys without re-resolving.
+- isStreamingToGuid:stableID: matches the binding against
+the pair via a
+  new direct terminalBinding(_:matchesReferenceKeys:) core
+  (the resolving convenience stays for the non-hot
+  stopStreaming / setSelectedText URL handlers).
+
+2026-07-16: Companion bridge: resolve session references,
+not just guids
+
+Recent commits changed the session references the phone
+receives and sends back to be stableIDs:
+OrchestrationMentionRenderer now returns session.stableID as
+a mention's revealGuid, and a Mac-linked chat stores its
+binding as a stableID. But every CompanionHostBridge handler
+still resolved with anySession(withGUID:), which cannot
+match a stableID, so:
+
+- Tapping a @session mention on the phone failed with "That
+session no
+  longer exists" and never started the live stream
+  (contentSession, driveStream, fetchHistoryTile, selection,
+  copy, paste).
+- Approving a remote-command request from the phone for a
+Mac-linked
+  chat was refused ("The user did not link a terminal
+  session") because handleRemoteCommandDecision read the
+  stableID binding.
+
+Switch all ten resolvers to anySession(forReference:), a
+safe superset that resolves a guid identically and a
+stableID too.
+
+2026-07-16: Fix three missed guid==binding comparisons in
+ChatWindowController
+
+"Resolve chat session bindings by reference" migrated every
+session-to- chat lookup to match a binding stored as either
+a stableID or a legacy guid, but missed three
+direct-comparison sites in ChatWindowController that
+compared the stored binding to a live session guid with raw
+==.  A new binding is now a stableID (ptys_...) and stableID
+!= guid, so they were always false:
+
+- isStreamingToGuid: (PTYSession
+textViewSessionIsStreamingToAIChat)
+  never reported streaming, so the streaming indicator never
+  showed.
+- setSelectionText:forSession: never offered selected text
+to the chat.  - stopStreamingSession: (the URL handler)
+never stopped streaming.
+
+Route all three through a
+terminalBinding(_:matchesSessionGuid:) helper that matches
+via iTermSessionReferenceKeys(forGuid:), consistent with
+isLinked(toSessionGuid:).
+
+2026-07-16: MentionParser: recognize and resolve ptys_
+stableID mentions
+
+Commit 5 made the orchestrator emit stableIDs in the
+<workgroups> snapshot, but the mention parser/renderer still
+only understood UUIDs, so a model @mention of a standalone
+session (@ptys_... or @session:ptys_...) rendered as raw
+text or "[defunct session]" and clicks did nothing. This
+closes that gap so the two are safe to ship together.
+
+- MentionParser widens its pattern to also match
+iTermStableSessionID's
+  token, matched case-insensitively and folded to canonical
+  form so a lowercased/confusable stableID still resolves
+  and its identifier stays stable for claim-scope
+  comparison. Mention.uuid becomes Mention.token; UUIDs
+  still match verbatim.
+- OrchestrationMentionRenderer resolves and reveals via
+  anySession(forReference:), and reveals by the session's
+  stableID, so a link keeps working after a reload.
+  resolve(identifier:), used by the Companion bridge,
+  inherits this.
+- The compose-field mention picker inserts the session's
+stableID, so a
+  user-typed @mention is reload-durable too.
+
+The Companion bridge's own session-open path (which consumes
+revealGuid) is made reference-aware in the Companion commit;
+land these together.
+
+2026-07-16: Orchestration: emit and resolve the stableID,
+not the guid
+
+The <workgroups> snapshot's session_guid field and the
+synthetic "session:<...>" claim scope now carry the
+reload-durable stableID instead of the rotating guid. The
+model copies session_guid verbatim into its tool calls, so a
+copied reference (and a claim granted against a
+"session:<stableID>" scope) now survives a shell reload that
+would previously have invalidated the copied guid.
+
+- WorkgroupIntrospection.sessionSummary emits
+session.stableID;
+  syntheticWorkgroupID builds "session:<stableID>".
+- The shared resolvers
+(WorkgroupIntrospection.session(forReference:),
+  OrchestratorDispatcher.sessionByGUID, and the session_*
+  tool dispatch) go through anySessionForReference:, so a
+  model-provided reference resolves whether it is a stableID
+  (new) or a legacy guid the model echoed from an older
+  transcript. This also lets a watcher, which persists the
+  model-provided reference, survive a reload.
+- Claim consistency is preserved: applyGating derives the
+required scope
+  via context (now "session:<stableID>"), and
+  ensureSessionClaim and session: mentions build the same
+  scope from the stableID the model copied, so grant and
+  requirement still match.
+
+Live-session liveness checks (by a session's own guid) and
+the @mention parser/renderer are intentionally untouched;
+the latter is the next commit.
+
+2026-07-16: Resolve chat session bindings by reference,
+store stableID on link
+
+A chat's terminal/browser binding was the session guid,
+which rotates on every shell reload
+(replaceTerminatedShellWithNewInstance), so a linked Claude
+Code chat lost its session on every reload. Now the binding
+is a "session reference" that is either the reload-durable
+stableID or a legacy guid, and the whole resolve/match path
+handles both.
+
+- Linking stores the session's stableID (falling back to the
+guid if
+  unresolvable). Because RemoteCommandExecutor keys
+  permission grants by the same reference, the grants now
+  survive a reload too; previously they were keyed by the
+  rotating guid and lost on every reload.
+- Session resolution goes through anySessionForReference: (a
+safe
+  superset of anySessionWithGUID:: a guid resolves
+  identically, a ptys_ stableID resolves across reloads).
+  Mechanical at the chat resolve sites.
+- Session-to-chat matching (isLinked, the reverse index, and
+the
+  firstIndex/lastChat/mostRecentChat/firstChatID lookups) is
+  now reference-aware: iTermSessionReferenceKeys(forGuid:)
+  resolves a live session's guid to {guid, stableID} and
+  matching checks both, so a chat stored under either form
+  is found.
+- sessionWillTerminate matches on the terminating session's
+stableID or
+  guid, so a real terminate still unlinks.
+
+Scope: new links get full reload durability. Backfilling an
+existing guid binding to its stableID is deferred; it would
+re-key the chat's existing permission grant, which deserves
+its own change. Old bindings resolve as before (fine until a
+reload, no regression).
+
+2026-07-16: Serialize PTYSession.stableID into the
+arrangement
+
+Without this, an arrangement restore (app relaunch, system
+window restoration) built a fresh PTYSession that minted a
+brand-new stableID while restoring the old guid, so a
+chat/companion binding stored against the stableID would
+silently fail to resolve after a restart - strictly worse
+than the guid it is meant to supersede.
+
+Encode _stableID under SESSION_ARRANGEMENT_STABLE_ID next to
+the guid, and in sessionFromArrangement: adopt the saved
+value only where the saved guid is adopted (registered
+contents, startup, or system-restoration contents present).
+Mirroring the guid guards is what keeps a duplicate unique:
+Duplicate Tab/Session restores a still-live session's
+arrangement, none of these guards hold, and the new session
+keeps its freshly-minted, unique stableID instead of
+colliding with the source.  Older arrangements without the
+key, or a corrupted value, fall back to the freshly-minted
+id. Extraction goes through a new +stableIDInArrangement:
+(mirrors +guidInArrangement:) that type-checks with
+castFrom: before the ObjC->Swift bridge and canonicalizes.
+
+stableID is now durable across both shell reload and app
+restart, so the "survives state restoration" contract in the
+header comments now holds.
+
+2026-07-16: Mint PTYSession.stableID and add reference-based
+lookup
+
+Every PTYSession now mints a StableSessionID at init,
+alongside its guid.  Unlike guid,
+replaceTerminatedShellWithNewInstance (the reload path)
+leaves it untouched, so it is a durable handle on a session
+across shell restarts. It is released in dealloc and, being
+immutable, needs none of setGuid:'s re-keying.
+
+Adds two controller lookups: anySessionWithStableID:
+(mirrors anySessionWithGUID: but matches the canonicalized
+stableID across the same tab/buried/peer-port locations) and
+anySessionForReference:, which dispatches on the form so a
+stored binding that is either a "ptys_" stableID or a legacy
+guid resolves through one call. Both guard nil (canonical:
+bridges to a nonnull NSString and would trap otherwise), so
+they stay as nil-tolerant as anySessionWithGUID:.
+
+Scope note: this delivers reload durability only.
+Serializing stableID into the arrangement (state-restoration
+durability) is the next commit; comments here are limited to
+what this commit actually provides.
+
+2026-07-16: Add StableSessionID: a reload-stable session
+identifier
+
+PTYSession.guid rotates on every in-place shell restart
+(replaceTerminatedShellWithNewInstance), which the Claude
+Code integration triggers constantly, breaking anything that
+binds to a session by guid. This adds the identifier that
+will replace guid as the binding key: "ptys_" + 12 Crockford
+base32 chars + 1 checksum char, e.g.  ptys_9QK3ZM7WX4VBT.
+
+The prefix makes it greppable and unmistakable for a UUID,
+hex hash, or base64 blob. The checksum rejects a truncated
+or mangled id (which an AI agent is prone to produce when
+echoing one) instead of resolving it to the wrong session.
+canonical() folds case (prefix and body) and Crockford
+confusables so a lightly mangled id still resolves;
+detection (tokenPattern) stays strict canonical to keep
+free-text false positives low. charClass/tokenPattern derive
+from the prefix/alphabet constants so they cannot drift.
+
+Shared into the Companion iOS app so MentionParser can
+reference it there: added to SHARED_MAC_SOURCES and to the
+committed companion project. Inert for now: nothing mints or
+consumes it yet.
+
+2026-07-16: AI chat: decouple turn lifecycle from typing
+status
+
+Introduce an explicit turnLifecycle wire event (turnStarted
+/ turnEnded) so the phone drives its reply notification off
+real turn boundaries instead of inferring them from
+typing-status edges. Typing becomes a pure spinner hint, so
+a mid-turn park (which toggles typing) can no longer be
+misread as a turn boundary and corrupt or drop the reply
+notification. On subscribe, a phone that joins a turn
+mid-flight is seeded turnStarted from TurnStatusModel (which
+stays true across a park) so it still notifies.
+CompanionProtocolVersion is at rev 8
+(turnLifecycleRevision): a rev-8 peer consumes
+turnLifecycle, while a pre-8 peer keeps inferring boundaries
+from the typing edges the mac still emits. Both send gates
+route through one peerConsumesTurnLifecycle predicate (both
+ends at rev 8) and the phone's source gate is its exact
+complement, so the trigger is fed by exactly one source in
+every version pairing.
+
+Centralize the park/resume typing bracket. Every park site
+cleared the spinner and republished it on resume with its
+own bookkeeping; extract one emitter pair, typingParkOnUser
+/ typingResumeFromPark, backed by a ParkedTypingCounter, so
+a new park site gets correct behavior for free.  The
+ref-count also fixes concurrent approval parks (spinner off
+once on the first park, back on once when the last resolves)
+and is reset in cancelPendingCommands, the one choke point
+that abnormally resolves every parked completion, so it
+can't leak at stop(), transitionToOrchestration(), or
+fetchCompletionForRegularMessage().
+
+Adapt the live harness: the queue-discipline tests inferred
+a turn's end from a typing=false edge, which now fires
+mid-turn on a park. Key the BrokerEventRecorder and all four
+test_chat_* queue tests off the authoritative
+turnLifecycle(.started/.ended) boundary instead.
+
+Also fixes issues reachable in the shipping build, found
+along the way: - share the approval-park predicate
+(Permission.parksOnApproval) between
+  the real gate (ChatClient.processRemoteCommandRequest) and
+  the prediction (ChatAgent) so an always+unsafe or
+  browser-category command can't mispredict and strand the
+  phone spinner
+- widen the phone's approval mapping so any parked classic
+command (not
+  just a content-unsafe one), and the orchestration-enable
+  request, surface as an action request rather than a
+  premature or missing reply
+- suppress the Mac chat-view scroll-to-bottom on a
+turn-lifecycle boundary - close the turn via completion(nil)
+for a user-authored renameChat/append
+  so it cannot wedge the queue or strand the turn status
+
+Release notes: the "View History" -> "View Contents"
+permission rename and its automatic screen-contents
+provision (docs/notes-3.7.txt), and the "Share This Session
+with the AI?" consent prompt plus the more reliable
+reply/approval notifications (Companion/docs/notes.txt).
+
+2026-07-16: Companion: prompt to include terminal contents
+before sending from a session
+
+Step 3b. When sending from a session view, if the mac
+supports it and consent isn't already in effect for the
+target chat, block the send on a modal asking to include
+this session's terminal state and visible screen with AI
+messages. On Allow, the phone grants "provided
+automatically" for the resolved chat before publishing, so
+that first message already carries the state + screen (via
+the server-side injection); on Not Now it sends plain and
+remembers the decline for this session this run. Gated on
+the mac advertising autoProvideConsentRevision.
+
+2026-07-16: Companion: add the auto-provide consent protocol
+and mac handlers
+
+Step 3a of the phone consent flow. Add companion messages so
+the phone can ask, before sending, to include a session's
+terminal state and visible screen with AI messages:
+fetchAutoProvideConsent(sessionGuid) ->
+autoProvideConsent(satisfied), and
+grantAutoProvideConsent(chatID). The mac reports whether the
+chat it would send to (the session's most recent chat, else
+the global default) already has both Check Terminal State
+and View Contents at "provided automatically", and the grant
+sets both to .always on the resolved session-bound chat.
+
+Behind protocol revision 7 (additive; an older mac ignores
+the unknown messages, so the phone offers the prompt only
+when the mac advertises autoProvideConsentRevision).  The
+phone modal is step 3b.
+
+2026-07-16: AI chat: steer execute_command away from TUIs
+toward insert_text_at_cursor
+
+execute_command blocks until the command exits, so running
+an interactive or full-screen program (vim, less, top,
+claude, an ssh session, a REPL) with it never returns. The
+description didn't say so, and the agent used it to try to
+drive a running TUI. Spell out that execute_command is for
+commands that finish, and that insert_text_at_cursor is the
+way to launch or drive a TUI (type the command plus a
+newline, choose a menu option, send keystrokes) since it
+does not wait for the program to finish.
+
+2026-07-16: AI chat: clear typing status when a turn parks
+on user approval
+
+A turn that parks waiting for the user never emitted
+typing(false) while blocked, which left two bugs: the
+phone's typing indicator stuck on at the prompt, and,
+because SessionReplyTrigger fires the accumulated reply text
+on typing(false), the reply notification suppressed entirely
+so the agent looked unresponsive. This happened on both
+kinds of mid-turn park:
+
+- request_orchestration_enable: the agent replies then asks
+the user to
+  Enable/Not Now, and the turn parks until they answer.
+- a session-bound remote-command request that parks in
+pendingRemoteCommands
+  waiting for Allow/Deny.
+
+Publish typing(false) when the turn parks on user input and
+typing(true) when the response resumes it (which also lets
+the post-response continuation notify as its own turn). For
+remote commands, do this only when the command actually
+blocks on approval (its category permission is "ask"),
+recorded on the parked command as clearedTyping;
+auto-approved (.always) and auto-denied (.never) commands
+resolve without the user mid-turn, so they leave typing
+alone.  Re-emitting typing(true) for an auto-executed tool
+call would make the phone read the resume as a new-turn
+boundary (it resets on every typing(true)) and drop the
+turn's accumulated reply text before it notifies.
+
+2026-07-16: Companion: don't stack two re-pair modals at
+launch
+
+promptToRepairAfterRelayMoveIfNeeded and
+promptToRepairIfPairingIncompleteIfNeeded have independent,
+non-exclusive triggers (a recorded relay-origin change vs a
+missing/denied keychain credential), so a machine that hit
+both a relay move and a keychain denial (a reinstall/rebuild
+around a relay migration) showed two modal alerts in a row,
+both asking to re-pair. Have the relay-move prompt yield
+when the pairing is already incomplete, since that prompt
+already asks to re-pair and re-pairing subsumes the
+relay-move fix.
+
+2026-07-16: AI chat: log the auto-provide gate decision
+
+The auto-provide only fires when the chat's Check Terminal
+State / View Contents permission is at "provided
+automatically" (.always). Log the resolved permission values
+(and a missing linked session) so it is clear why a
+session-bound turn did or did not carry terminal state / the
+visible screen.
+
+2026-07-16: AI chat: auto-provide terminal state and visible
+screen server-side
+
+Step 2. Move the "provided automatically" injection into
+ChatAgent, so a session-bound chat's turn carries the linked
+session's terminal state (when Check Terminal State is set
+to always) and its current visible screen (when View
+Contents is set to always) regardless of whether the message
+came from the desktop or the phone. Read at request time so
+the state/screen are fresh; an unchanged visible screen
+collapses to a <visible-screen unchanged="true"/> marker
+instead of resending the grid. Only session-bound chats are
+affected; orchestrator chats keep their own workgroups
+snapshot path.
+
+The desktop compose-time terminal-state injection is removed
+so it is not doubled. Nothing fires until a chat actually
+has the matching permission at "always" (the per-chat
+consent flow is step 3).
+
+2026-07-16: AI chat: keep View Contents on-request tools
+when provided automatically
+
+Step 1b. "Provided automatically" was hiding the on-request
+tools for every autopopulated category, but that only makes
+sense for Check Terminal State, whose autopopulated state
+fully replaces its state queries. For View Contents the
+autopopulated visible screen covers only the current grid,
+while the history tools (command history, an earlier
+command's full output, the partially-typed command) reach
+off-screen content, so hiding them would lose access to
+scrollback and history on a primary-screen shell.
+
+Split the concept: autopopulatedWhenAlways still governs
+whether content is sent unbidden, and a new
+suppressesOnRequestToolsWhenAlways (true only for Check
+Terminal State) governs whether the tools are hidden. So
+View Contents at "always" now sends the screen automatically
+AND keeps its tools available.
+
+2026-07-16: AI chat: rename the View History permission to
+View Contents
+
+Step 1 of giving session-bound chats terminal state + screen
+contents. Rename the "View History" AI permission category
+to "View Contents" and give it a "provide automatically"
+mode (autopopulatedWhenAlways), so its top level means the
+visible screen is sent unbidden on every message (like Check
+Terminal State does for terminal state) rather than exposing
+the history tools on request. Add its autopopulation title
+and consent warning.
+
+The rawValue doubles as the persisted per-chat permission
+key and the whole [Key: Permission] blob fails to decode if
+any category is unknown, so a custom decoder maps the legacy
+"View History" string to .viewContents to preserve existing
+grants. The underlying userDefaults key is left unchanged so
+global settings are untouched.
+
+No injection yet (that is step 2), and no per-chat
+re-consent yet (step 3).
+
+2026-07-16: Companion: detect a half-paired mac and prompt
+to re-pair
+
+A mac can be marked paired (pairedPID in UserDefaults) while
+the relay room secret (login keychain, gated by the binary's
+code signature) is unreadable after a rebuild/reinstall or a
+-suite mismatch. The mac then parks unsigned and the relay
+refuses every attempt with "signature required", looping
+forever.
+
+Add pairingCompleteness(): with a pairedPID set, verify the
+identity key, the pinned phone key, and (on the relay) the
+room secret are all present. A launch prompt tells the user
+to re-pair and opens settings when the set is incomplete,
+and the park loop no longer spins on a pairing that can
+never authenticate.  Log the keychain read status (absent vs
+access-denied) and whether the park is signed or open-mode,
+so this is diagnosable rather than an opaque "signature
+required".
+
+2026-07-16: Companion: fix live session view nav bar title
+sizing and visibility
+
+On the live path the view fills behind the translucent nav
+bar with black, so the default label-colored title rendered
+dark-on-dark and was invisible in light mode (only a colored
+emoji in the title showed through, reading as "truncated to
+the emoji"). Force the bar content light there. Render the
+title as a principal item with maxWidth:.infinity so it uses
+the width between the bar-button groups instead of the
+system title's symmetric reservation, and re-key it on the
+view width so it re-measures on rotation instead of keeping
+the prior orientation's width.
+
+2026-07-16: Companion: instrument relay sockets and stream
+decode for drop diagnosis
+
+Chasing reliable ~30s relay-park drops and a live view that
+never appeared.  Add lifecycle timing to both relay socket
+paths (phone URLSession and the Mac plugin) via a shared
+RelaySocketLifecycle, so a close reports how long it was
+parked, how long since the last real data frame, and how
+long since the last keepalive ping - distinguishing an edge
+idle-reap that ignores WS pings from a genuine network drop.
+Log the decode path in CompanionVideoView (format build,
+VTDecompressionSession create/decode failures, first
+displayed frame) and the phone's stream entry points, so a
+stream that stalls or fails to decode is visible instead of
+silent. Surface the real connectionLost reason and the
+foreground connection-check ping result.
+
+Logging only; no behavior change.
+
+2026-07-16: Companion: add phone-driven session resize for
+legibility
+
+Add a resize button to the Companion app's live session view
+that fits the Mac terminal grid to the phone: 40 columns in
+portrait, 80 in landscape, and however many rows fill the
+viewport at that font. The phone computes the grid from the
+stream's cell geometry and its viewport and sends a new
+resizeSession message; the Mac drives -[PTYSession
+reallySetCellSize:], re-validating server-side that the
+window is actually resizable (not full screen, maximized,
+edge-attached, or width-locked) via
+-companionSessionCanResizeWindow.
+
+Whether the window can be resized rides the stream config
+(canResize), detected in the streamer's pre-dedup path so an
+idle-screen change still propagates, and disables the
+button. The control is gated on a new protocol revision
+(sessionResizeRevision) so an older Mac, which would ignore
+the message, never shows it.
+
+2026-07-16: Release notes: coalesced companion push
+notifications
+
+2026-07-16: Route companion wakeup pushes through the
+coordinator
+
+Wire the coordinator into the agent-activity notifier, the
+alert bridge, and the host bridge's syncSince responder
+(revision >= 2 phones; legacy per-chat pushes are
+unchanged).
+
+The notifier classifies a delivery as content (a completed
+turn, or a
+.classic permission / session request - all renderable) or nothing.
+.external orchestration tool calls (scroll_wheel, get_screen_contents;
+auto-executed, never blocking) are ignored: firing for them
+flooded pushes and, since they do not render, drained to
+empty placeholders. The per-chat debounce is gone -
+coalescing is the coordinator's job, and the debounce was
+stamped by that .external stream, starving real replies.
+Deliveries log their content kind so "why did (or didn't)
+this notify" is a one-liner. Alerts (which render) go
+through the content path; handleSyncSince reports the
+fetched floors and the rewind reset so the render check
+reasons about the phone's real floor.
+
+2026-07-16: Add CompanionWakeupCoordinator: the global
+wakeup-push gate
+
+One place decides WHEN to send a contentless-wakeup push. A
+wakeup tells the phone's NSE to fetch everything new in one
+syncSince round trip, so more than one in flight is waste
+and a wakeup for non-renderable content produces the empty
+"Your agent has an update." placeholder.
+
+Stateless about DB content: "is there anything to show" is
+answered on demand by hasRenderableContentSince (the
+responder's own predicate over the current store), so a
+deleted / rewound / cleared store needs no reconciliation -
+the next check reads the truth. The only long-lived state is
+the phone's acked FLOOR (message + alert), which the phone
+reports via syncSince (advanced on a fetch; assigned down on
+the responder's rewind signal), plus rate-limit state.
+Everything worth notifying - replies, alerts, pending
+permission prompts - is renderable content, so there is ONE
+outstanding condition and no special-casing.
+
+A wakeup fires when there is renderable content above the
+floor AND the coalesce interval allows - a hard invariant:
+the first fires immediately, later ones collapse into one
+trailing wakeup. No "fetched since last push" override (it
+defeated the interval; the NSE fetches within ~1s of every
+push). Every decision RLogs renderable/floors/action/reason
+so a field log explains each push without a DB query. Pure
+and unit-tested; legacy revision-1 per-chat pushes do not
+route through here.
+
+2026-07-16: Companion: one render predicate (incl. pending
+permission prompts) + a probe
+
+Extract Message.isCompanionRenderable - the single
+definition of "the NSE would show this as a notification
+item" - and route MessagesSinceResponder.summarize through
+it. Renderable = agent-authored, not hidden, with
+displayable substance; that now includes a .classic remote
+command and a session pick (both BLOCK the agent on the
+user, so they are critical to show), while a .external
+orchestration tool call stays non-renderable (auto-executed,
+informational only). A .classic request renders from its
+permissionDescription ("The AI Agent would like to execute
+`git push`") so the phone says what decision is blocked.
+
+But only while it is a LIVE prompt. ChatClient's broker
+processor squelches auto-run (.always) and auto-denied
+(.never) requests from live delivery, yet still persists
+them for history; the DB-reading companion paths bypass that
+processor, so a request whose uniqueID already appears as
+the answeredID of a remoteCommandResponse in the window is
+resolved bookkeeping and is dropped. Only unanswered .ask
+prompts surface; once you Approve/Deny, the response
+resolves it.
+
+Add ChatDatabase.hasRenderableContentSince, which answers
+"would the next syncSince return anything renderable above
+these floors" by reusing that same predicate and
+answered-request gate over the same oldest-first window the
+responder drains, plus the muted-chat set - the one source
+of truth the coordinator uses, so it can never push for
+content that drains to an empty placeholder.
+
+2026-07-16: Add the companion wakeup coalesce-interval
+advanced setting
+
+The contentless-wakeup push coordinator rate-limits how
+often the Mac nudges a paired phone. Expose the minimum
+interval between wakeups as an Experimental advanced setting
+(companionWakeupCoalesceInterval, default 5s) so it can be
+tuned in the field.
+
 2026-07-15: Companion: repair the project generator to emit
 all three targets
 
