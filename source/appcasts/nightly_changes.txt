@@ -1,3 +1,76 @@
+2026-07-17: Orchestration: start_code_review reloads instead
+of typing
+
+When the Code Review role is already idle after a prior
+review, start_code_review now re-presents the prompt overlay
+in restart mode and relaunches the session for a fresh
+review, rather than typing the prompt into the running
+Claude Code TUI. Guards that the session is restartable and
+has a cached review command.
+
+2026-07-17: Companion: hide scrollback and translate scroll
+to wheel on the alt screen
+
+The live session view now reflects the session's
+alternate-screen buffer and mouse-reporting state.
+streamConfig carries two new optional booleans (altScreen,
+scrollWheelReporting) that ride the same idle-safe resend
+path as canResize: a change forces a config resend +
+keyframe without bumping the generation, so history tiles
+survive.
+
+When a full-screen app is up the phone hides the primary
+buffer's scrollback and shows only the mutable section. When
+such an app also has mouse reporting on, a scroll gesture is
+sent to the terminal as a mouse-wheel report (new
+reportScrollWheel message, backed by the existing PTYSession
+reportScrollWheelForOrchestrator primitive) instead of
+browsing scrollback. Pinch zoom is preserved; while zoomed a
+drag pans the band and only converts to wheel input once it
+pushes past the top/bottom edge.
+
+Protocol revision bumped to 9 (additive; the two config
+booleans self-gate the feature, so minimumPeer stays 5).
+
+2026-07-17: Companion: session chat button returns to the
+session, not home
+
+The "Chat about this session" button opened the conversation
+via openConversation(replacingPath: true), which forced the
+Chats tab and replaced the whole stack. Back then landed on
+the Chats home screen no matter how the session was reached,
+and flipped tabs if you'd started on the Sessions tab.
+
+Reuse the reply-notification path's behavior instead:
+extract a shared
+pushConversationPreservingStack(chatID:onTab:) that pushes
+the conversation above the existing stack (de-duping via
+SessionNavOpen) on the tab the session view lives on. The
+chat button now captures that tab and routes both the reuse
+and create-new branches through it, so Back returns to the
+session view and the tab no longer changes. The New Chat /
+Create flow keeps its stack-replacing open (Back to Home).
+
+2026-07-17: Global search: instrument empty-snippet
+extraction
+
+Add diagnostic logging to track down blank snippets in
+global search results. attributedStringForSnippetForRange:
+now logs when the match text (or the whole
+prefix+match+suffix result) comes back empty for a range
+that should contain a cell, dumping the abs range, the
+converted relative range, scrollback overflow, and the
+actual buffer line at the match coordinate so a scrolled-off
+line can be told apart from a repainted-blank one.
+
+The cursor logs a per-result heartbeat with the pass,
+alternate-screen state, raw match coordinates, resulting
+snippet length, and how far the buffer scrolled since the
+search began, to measure the suspected drift between find
+time and snippet-extraction time.
+
+Logging only; no behavior change.
+
 2026-07-16: Companion: AirDrop all logs as one zip, not just
 the newest file
 
