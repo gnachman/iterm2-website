@@ -1,3 +1,233 @@
+2026-07-18: Companion: on-screen keyboard for live sessions
+
+Add phone-driven keyboard input to the companion app's live
+session view.  Tapping the terminal raises the software
+keyboard; an accessory bar adds Esc, Control-C, Tab, and
+arrows, and expands to sticky Control and left/right Option
+dead-keys, function keys, and Home/End/PgUp/PgDn/Del.
+
+Protocol: new sendKey message (revision 10,
+keyInputRevision). The phone shows the keyboard only when
+the mac advertises support, so an older mac never leaves
+dead keys.
+
+Mac: injectSynthesizedKeyEvent runs the synthesized event
+through the session's own key path (accept-gate, profile key
+bindings, key mapper), so control/option encodings honor the
+profile (per-side Option behavior), special keys honor
+cursor/keypad/CSI-u key-reporting modes, and a tap delivers
+a matching key-up under Kitty report-all-event-types. Key
+codes come from the active keyboard layout so input
+round-trips on non-US layouts; characters with no
+single-keystroke mapping are written literally. Broadcast to
+split panes is suppressed while injecting. The streamed
+frame now draws a focused (filled) cursor.
+
+Sends are serialized on the phone so bursts keep order.
+
+Release notes in Companion/docs/notes.txt.
+
+2026-07-18: Hotkey window: wait for resign-active before
+ordering out on macOS 26
+
+On macOS 26 (Tahoe) the previously active app, activated via
+activateWithOptions:, becomes frontmost a few runloop turns
+later than it did on earlier systems. Ordering out the
+hotkey window while iTerm2 is still active let AppKit
+briefly promote a background iTerm2 window to the front,
+which the user saw as a flash (issue 5313).
+
+Defer the order-out until iTerm2 actually resigns active,
+with a 0.3s fallback for the case where we never yield
+(keeping iTerm2 frontmost is correct then). This preserves
+the issue 11372 fix (no fixed delay; we order out exactly
+when the app switch lands) while avoiding the flash.
+
+Cherry-picked from confirmed adhoc build
+0.20260629_111322-adhoc.
+
+2026-07-18: Workgroup auto-send: delay the submit Return
+after pasting review
+
+When a code-review peer went idle, the auto-send pasted the
+results into the main session and immediately sent a Return
+to submit them.  The Return was correctly ordered after the
+content (it serialized through the paste helper's queue),
+but it was written the instant the content drained, so it
+rode in the same stdin read as the bracketed- paste-end
+marker. Claude Code applies every key parsed from one read
+in a single batched render, so the paste and the Return ran
+together and the Return's submit saw the pre-paste (empty)
+input and no-oped, leaving the review unsent. This showed up
+as "sometimes the Return does not take effect."
+
+Add an initialDelay to PasteEvent, honored in the paste
+helper by scheduling the first write via a timer (keeping
+isPasting true during the wait so nothing jumps the queue).
+The delay is measured from when the prior paste drains, so
+it can't reintroduce the old fixed-timer-
+races-the-chunked-paste bug. Expose it as
+pasteLiteralString:afterDelay: on iTermPasteHelper and
+PTYSession, and use it for the auto-send Return. The delay
+lands the Return in a later read, after the paste has
+committed, so it submits.
+
+The delay is tunable via the new
+workgroupAutoSendSubmitDelay advanced setting, defaulting to
+0.5s to match Claude Code's 500 ms paste- settling window
+(PASTE_TIMEOUT). Set to 0 to send immediately.
+
+2026-07-18: AI chat: add restart_session; rename Type for
+You permission to Control Terminal
+
+Adds a restart_session remote command that relaunches the
+linked terminal session (equivalent to Session > Restart
+Session), gated on isRestartable(). Renames the "Type for
+You" AI permission to "Control Terminal", which now also
+gates restart_session. The persisted UserDefaults key and
+the PermissionCategory rawValue accept the legacy "Type for
+You" string so existing grants survive the rename.
+
+2026-07-18: Companion: add "go to session" button and fix
+defunct-session view
+
+Add a toolbar button in a session-bound chat that jumps to
+its session view. It appears only while the bound session is
+still open; unbound and orchestrator chats (whose
+terminalSessionGuid is nil) never show it.
+
+The flat sessions list cannot answer "does this session
+still exist": it is built from allSessions() and omits
+buried and peer/workgroup-member sessions, which are valid
+session-bound targets. So liveness is probed via the
+screen-info request, which resolves the guid through the
+Mac's full session lookup and reports a typed
+.unknownSession error when the session is truly gone.
+probeBoundSessionLiveness runs on conversation appear and
+records the verdict per chat; a transient failure leaves the
+prior verdict untouched so the button does not flicker on a
+blip.
+
+Also fix the live session view showing a perpetual black
+screen when you open a session that has already closed:
+startLiveStreamIfPossible swallowed every start error as
+transient, so a gone session never surfaced. Catch the typed
+.unknownSession there and end the view with
+.sessionClosed so it shows "Stream Ended" instead. Force that overlay to
+the dark color scheme so its text and icon stay legible on
+the canvas's always-black background in light mode
+(mirroring the nav bar).
+
+2026-07-18: Companion: live session view fills the screen
+edge to edge
+
+Host the live canvas full-bleed (a background stack that
+ignores the safe area, rather than .ignoresSafeArea on the
+representable, which does not reliably expand a
+UIViewRepresentable), so the video reaches the real screen
+edges behind the translucent nav bar, tab bar, and the
+dynamic island in landscape.
+
+The scroll view keeps .never inset adjustment and derives
+its content insets from its own safeAreaInsets on all four
+sides, so adjustedContentInset equals them exactly. At rest
+the terminal sits within the safe area; the initial layout
+pins the bottom and places the left edge just clear of the
+left inset. Because the scroll limits, the initial pin, and
+the alt-screen wheel-mode edge detection all read
+adjustedContentInset, the content only reaches behind the
+bars/island (and only then wheels) once scrolled past the
+inset. The horizontal insets are what let you scroll edge
+columns out from under the dynamic island; live-output
+re-pins keep the user's horizontal scroll.
+
+2026-07-18: Global search: extract snippets from the
+searched snapshot
+
+Blank global-search snippets appeared for main-screen
+matches while an alternate-screen app was running. The
+cursor found results against the search engine's immutable
+snapshot but then extracted snippets from a freshly taken
+snapshotWithPrimaryGrid, which could drift out from under
+the result coordinates (e.g. an emptied primary grid),
+yielding out-of-bounds coordinates and empty snippets.
+
+Expose the engine's searchedSnapshot and extract from it
+instead of re-snapshotting, so the result coordinates and
+the extractor's data source are consistent by construction.
+
+2026-07-18: Companion: zoom to 60/120 columns instead of
+40/80
+
+2026-07-18: Browser: prompt for credentials on HTTP auth
+challenges
+
+The WKNavigationDelegate auth challenge handler was a stub
+that always performed default handling with no credential,
+so HTTP Basic/Digest/NTLM challenges failed to load instead
+of asking the user. Now prompt for a user name and password
+and respond with a session-scoped URLCredential, while
+leaving server trust and other methods on default handling.
+
+2026-07-18: Workgroups: reload a diff session with the
+picker's current selection
+
+Reloading a .diff workgroup session replayed the session's
+last-launched _program verbatim. That program can silently
+diverge from what the file picker shows: when the file the
+popup was on stops being a diffable change, a git poll
+resets the popup back to "All Files" in
+CCDiffSelectorItem.set(fileStatuses:) without restarting the
+session, leaving _program pointed at a now-clean per-file
+diff.  Reloading then ran `git difftool` on a file with no
+changes, which prints nothing and exits 0, ending the
+session instead of re-diffing.
+
+Reload now runs the command matching the picker's current
+selection (per-file when a file is picked, All Files
+otherwise) instead of _program.
+reloadDiffWithDeferralIfNeeded takes a resolveCommand
+closure that is evaluated as late as possible: immediately
+on the ready path, or inside the deferred pendingDiffLaunch
+closure at fire time, so a pick or gitBase change between
+the reload click and the relaunch is reflected. A nil
+resolver falls back to a plain restart() for callers
+(arrangement restoration) with no selection to resolve.
+
+2026-07-18: Companion: skip launch-time keychain priming
+under unit tests
+
+The Companion launch hooks in applicationDidFinishLaunching
+(resumePairedListeningIfNeeded and the promptToRepair
+pairing completeness checks) read keychain-backed pairing
+material at launch. On a locked login keychain that read
+becomes a modal unlock prompt, which blocks the app before
+the test runner connects and fails an unattended run with
+"test runner hung before establishing connection." A test
+host has no paired device, so none of this work is needed
+there. Gate the whole block on [NSApp isRunningUnitTests].
+
+2026-07-17: AI chat: add get_screen_contents to
+session-bound chats
+
+Expose the orchestrator's get_screen_contents tool to
+session-bound chats as a new RemoteCommand.Content case
+under the View Contents permission. It reuses
+WorkgroupIntrospection.screenContents and returns the same
+structured result the orchestrator does; on the alternate
+screen it returns only the current grid with no scrollback.
+It is skipped in the orchestration session_* mirror because
+the workgroup level get_screen_contents already covers it.
+
+Also fix session-bound system prompt selection. A chat can
+be linked to a terminal, a browser, both, or neither, but a
+browser only chat was getting a prompt that described a
+terminal it was not attached to. Route browser only chats to
+the browser prompt, keep the terminal+browser prompts for
+chats linked to both, and round out the browser prompt tool
+list. Fill in the read-only and read-write terminal prompts
+to mention get_screen_contents.
+
 2026-07-17: Orchestration: start_code_review reloads instead
 of typing
 
