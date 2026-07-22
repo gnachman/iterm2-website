@@ -1,3 +1,110 @@
+2026-07-21: Keychain: pin the login-keychain queries to the
+file keychain (fixes data loss)
+
+The migration lost items on relaunch: a paired companion
+device asked to re-pair, and the identity key / push nonce
+read as absent from both stores.
+
+Root cause: for an app carrying the keychain-access-groups
+entitlement, a SecItem query that OMITS
+kSecUseDataProtectionKeychain does not reliably target the
+file keychain. legacyQuery omitted it, so operations
+split-brained: SecItemCopyMatching read the file item, but
+the reap's SecItemDelete resolved to the DATA-PROTECTION
+keychain and deleted the copy we had just written and
+readback-confirmed. Every write thus reaped its own
+data-protection copy; items with a lingering login copy
+re-migrated forever, and items with none (the companion
+identity key and the push nonce) vanished on the next
+launch.
+
+Fix: legacyQuery now pins kSecUseDataProtectionKeychain:
+false, forcing every legacy op (read, delete, upsert) to the
+file keychain so it can never touch the data-protection
+copy. Validated end to end on a signed build: pair,
+relaunch, device reconnects with no re-pair prompt.
+
+Also: report the actual reap OSStatus instead of an
+unconditional "reaped" (reapLegacyReportingStatus), and
+settle the write/miss/absent logs at DLog with RLog reserved
+for migrations and genuine errors.
+
+2026-07-21: AI keys: suite-namespace the keychain account
+(Phase 2)
+
+Under a custom -suite (side-by-side dev builds, e.g. make
+run / run-keychain), the AI keychain account is now
+namespaced with the suite name, mirroring
+CompanionMacIdentity.suitedAccount, so a dev build gets
+isolated API keys and never reads, migrates, reaps, or
+clobbers the user's real (bare-account) keys.  Applied at
+the keychain I/O boundary (readKeychainPassword /
+persistAPIKey) so per-vendor and the legacy shared account
+are namespaced uniformly. No -suite (every shipping build)
+keeps the bare account name, so production is unchanged.
+This is what would have prevented the real-key loss during
+earlier testing.
+
+2026-07-21: Keychain: point shipping configs at the iTerm2
+Dev ID Keychain profile
+
+The keychain-access-groups entitlement requires a
+provisioning profile under Manual signing. Set
+PROVISIONING_PROFILE_SPECIFIER on Beta/Nightly/Deployment to
+the iTerm2 Dev ID Keychain profile (authorizes
+keychain-access-groups: H7V7XYVQ7D.* and holds the current
+Developer ID cert). Identity stays name-based now that the
+redundant Developer ID certs were removed, so no cert SHA is
+pinned.
+
+2026-07-21: Keychain: migrate AI and companion secrets to
+the data-protection keychain
+
+Approach A of two being compared. Stops the "iTerm2 wants to
+use your confidential information" prompt that recurs after
+every upgrade by moving app-owned secrets out of the login
+keychain (ACL-gated by the exact writer code signature) into
+the data-protection keychain (authorized by the
+keychain-access-groups entitlement, stable across any build
+the team signs).
+
+sources/Keychain/iTermUpgradeSafeKeychain.swift is the core:
+a drop-in for the generic-password SecItem primitives that
+reads the data-protection keychain first and, on a miss,
+transparently migrates a login-keychain value forward
+(write, verify readback, then reap the login copy). It pins
+kSecAttrAccessGroup explicitly (read from our own
+entitlement, matched by suffix) so reads and writes target
+the same group across launches, falls back to the login
+keychain when the data-protection keychain is unavailable or
+a hard write error occurs with no stale item present, and
+deletes the login copy before the data-protection copy so a
+cleared secret can never resurrect via migration.
+
+Wired through it: AITermControllerObjC (AI keys,
+WhenUnlocked), CompanionMacIdentity and
+CompanionPushNonceRegistry (this-device-only). Password
+Manager and adapter credentials deliberately stay in the
+login keychain.
+
+Entitlements are split so local dev stays friction-free:
+Development uses iTerm2-Development.entitlements (no
+keychain group), Beta/Nightly/Deployment use
+iTerm2.entitlements (with the group). make run-keychain /
+make purge-keychain-test plus
+tools/codesign_keychain_test.sh exercise the signed path
+locally by re-signing a Development build with an installed
+Dev ID profile; the purge support is compiled out of release
+via ITERM_DEBUG.
+
+Known open items on this approach: signed release builds
+need a provisioning profile carrying the entitlement and the
+current cert (empty specifier currently fails to build
+signed); AI accounts are not suite-namespaced so dev builds
+touch real keys; the migration surfaced several cross-store
+consistency hazards. These motivated evaluating the
+partition-list alternative.
+
 2026-07-20: Makefile: allow overriding the defaults suite
 via SUITE
 
