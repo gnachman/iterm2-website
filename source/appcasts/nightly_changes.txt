@@ -1,3 +1,1123 @@
+2026-07-22: Keep private data out of the always-on
+retrospective log ring
+
+The retrospective log ring (RLog) is always on, has no user
+opt-in, and can be exported by anyone at the machine via
+Save Retrospective Debug Logs. Recent promotions of
+per-event handlers from DLog to RLog caused it to accumulate
+typed characters (passwords included), command lines,
+credentials, URLs with embedded secrets, keychain
+identifiers, and AI chat content with debug logging off.
+
+Redact these on the ring path only. RLog feeds the live
+debug log when debug logging is on (an explicit opt-in whose
+log should stay complete) and the ring otherwise, so
+redaction is conditional on gDebugLogging:
+
+- Swift: RLog now takes an RLogMessage with a custom string
+interpolation,
+  \(redacted: full, or: placeholder), that emits the full
+  value when debug logging is on and the placeholder when
+  off (os_log's \(x, privacy:) pattern).  This removes the
+  need to pair an RLog breadcrumb with a separate DLog
+  carrying the full value. RLog no longer accepts a bare
+  String; a few string-concatenated log calls became single
+  interpolations to match.
+- ObjC: RLogRedact(full, redacted) does the same for the
+macro-based RLog.  - Add -[NSEvent it_redactedDescription]
+(keycode and modifier flags, no typed
+  characters) and it_redactedDescription on NSURL and URL
+  (scheme, host, and path only, dropping userinfo, query,
+  and fragment where secrets hide).
+
+Command lines are the highest-volume category, so they are
+redacted wherever they reach the ring. An object's
+-description can leak too: -[VT100ScreenMark description]
+and -[iTermBackgroundCommandRunner description] embed the
+command line, so logging one with %@ leaks it. Give those a
+-redactedDescription (command omitted) and wrap every site
+that logs them with RLogRedact(obj,
+obj.redactedDescription). Covered: shell-integration command
+marks and command start/end, auto command history, session
+start (command, env, substitutions),
+coprocess/launch/single-use/AppleScript/API-script commands
+and arguments, the context-menu mark command, the git
+status-bar component, the background command runner, the AI
+command-safety checker, command-started/ finished/running
+and script triggers, login-shell wrapped commands, the
+constructed ssh command line and SSH conductor hook params,
+iTermCommandRunner arguments, drag-drop/upload file paths,
+the SSH framer VT100 token, the AI prompt template and an
+unsupported-subpart AI body, and the JSFetch error response
+body and headers.
+
+Three sites that log an actual plaintext user secret
+(snippet body, echoed password during autofill,
+password-adapter login token) stay redacted on both paths,
+since even opt-in debug logs travel with bug reports.
+
+As defense in depth, scrub chars=/unmodchars= on the
+ring-write path so a future RLog of a raw NSEvent cannot
+silently reintroduce the keystroke leak.
+
+2026-07-22: Status bar: reject RPC components with no
+registration request
+
+A saved layout whose RPC-provided text component was missing
+both registration-request keys produced a nameless blank
+ghost cell: -[GPBMessage initWithData:nil error:] returns a
+non-nil empty message, so the existing nil-check never
+fired. Reject nil data after the V2 base64 fallback so the
+corrupt component is dropped by the layout deserializer
+instead of being rendered.
+
+Semantic follow-up to #12861, which fixed only the crash
+half of this input path.
+
+2026-07-22: Companion: suite-qualify the push-nonce keychain
+account
+
+KeychainNonceStore used a bare account name, so two
+instances launched with different -suite values (each a
+distinct pairing) shared the single push-nonce-registry
+keychain item. save() blindly overwrites the whole list, so
+concurrent instances clobbered each other's outstanding
+nonces; after the displaced instance reloads, its own
+solicited NSE fetch is misclassified as an unsolicited
+connection and warns the user, with no keychain error to
+hint at why.
+
+Namespace the account by the -suite name the same way
+CompanionMacIdentity.suitedAccount does the identity items.
+Shipping builds have no -suite, so the account stays the
+bare name and existing items are found unchanged; only
+side-by-side dev builds get their own isolated list. Nonces
+are ephemeral, so no migration is needed.
+
+2026-07-22: Companion: skip the launch-time keychain prime
+when never paired
+
+resumePairedListeningIfNeeded primed the companion keychain
+on every launch before its own gate check, including a
+push-nonce-registry WRITE that planted a keychain item even
+for users who never paired. For anyone alternating
+differently-signed builds (a notarized nightly and an ad-hoc
+self-build) that planted item pops a code-signature
+confirmation prompt that Always Allow can't fix.
+
+Gate the whole prime block on evidence companion is or was
+paired: a live pairing (pairedPID) or a new
+NoSyncCompanionKeychainHasMaterial hint that
+CompanionMacIdentity reconciles from ground truth (set true
+on any write and on a found read, false only when every
+account reads back a genuine absent; a transient unreadable
+never clears it). The hint only gates the launch
+optimization, never an on-demand connect/push read, so a
+stale value can't prevent a genuinely-needed read, and
+deleteKeyPair clears it at unpair. everPaired keeps its
+sticky onboarding semantics untouched.
+
+2026-07-22: Debug logging: cap memory at 200MB and stop
+freezing on save
+
+DebugLogImpl accumulated every entry into one
+NSMutableString bounded at 10^9 code units (~1-2GB) under a
+single lock, and FlushDebugLog assembled header+body+footer
+into a second full-size string plus an NSData before one
+synchronous write. On a busy instance that meant
+gigabyte-scale memory (paging, near-zero-CPU freezes during
+capture) and a multi-second UI freeze on toggle-off.
+
+- Lower the in-memory cap to 200MB (matching the menu tip,
+which was
+  wrongly claiming a 200MB circular buffer). Overflow still
+  discards the oldest half, which is what you want: a debug
+  log is captured right after the bug reproduces.
+- FlushDebugLog encodes header, body, and footer as three
+separate
+  chunks and streams them through one file handle instead of
+  concatenating, removing the peak-memory spike at stop. The
+  overwrite and append paths are unified, and the append
+  path now reports write errors it previously swallowed. A
+  nil NSError (failed create/open) falls back to a concrete
+  message instead of "(null)".
+- DebugLogImpl formats the whole entry before taking the
+lock, so the
+  only work in the critical section is the append plus the
+  overflow check.
+- Correct the Toggle Debug Logging menu tip to describe the
+real
+  behavior.
+
+2026-07-22: Metal renderer: shape flag emoji by pairing
+regional indicators
+
+A flag is stored as two regional-indicator cells (one
+codepoint per cell for wcwidth compatibility). The Metal
+glyph-key builder rasterized each cell independently, so
+each indicator shaped alone into AppleColorEmoji's invisible
+lone-indicator fallback and the flag drew as blank cells
+(and flickered on frequently-redrawn lines). The legacy
+renderer is unaffected because it shapes the row as one
+CoreText run, which pairs the indicators.
+
+Pair adjacent regional indicators greedily left to right in
+the glyph-key builder, matching CoreText: the opening cell
+absorbs the closing indicator via combiningSuccessor and
+shapes the flag, and the closing cell is suppressed. Under
+the default fullWidthFlags=YES each indicator is
+double-width, so the two indicators are separated by a
+DWC_RIGHT spacer; the pairing treats spacers as transparent
+and points the successor at the real partner, exactly as the
+legacy renderer does when it skips spacers building its run.
+A lone or trailing odd indicator stays drawable and renders
+its fallback. Pairing state is per-row, so a flag split
+across a soft wrap yields a lone indicator on each row,
+identical to legacy.
+
+The new pairing lives in a pure
+iTermRegionalIndicatorPairingForCell helper in ScreenChar so
+it is unit-testable. Both cache layers key into the fix
+correctly: combiningSuccessor is part of the glyph-key hash
+and equality, and the per-row output cache keys on content
+identity, which fully determines the (pure) pairing.
+
+Fixes iTerm2 issue 12927.
+
+2026-07-22: Companion: renumber the relay migration to
+protocol revision 11
+
+Rebasing onto upstream landed revision 10 for phone-driven
+keyboard input (keyInputRevision), so the relay-resolver
+migration and its hard minimumPeer bump move to revision 11.
+CompanionProtocolVersion already carries current = 11 /
+minimumPeer = 11 (a revision-10 peer has no resolver
+support, so it must still be refused); this updates the
+remaining doc comments in the migration code to match.
+
+No behavior change: the migration flags are keyed by name,
+not by the revision number.
+
+2026-07-22: Companion: refine the rev-10 migration update
+notice
+
+Make the "update your other device" notice show only when it
+is actually needed, and never on an unpaired device.
+
+- Deferred: the migration arms the notice instead of showing
+it. A
+  reconnect that lands within a grace window (phone 20s, mac
+  30s) cancels it, so a peer that already updated triggers
+  no notice.
+- Decoupled from the endpoint rewrite: armed for ANY paired
+device on its
+  first paired rev-10 launch, not only ones that moved off
+  the legacy direct relay. Whichever side is upgraded first,
+  the un-upgraded peer cannot connect (it stays on the old
+  relay and the raised minimumPeer refuses it) and so never
+  reaches the version handshake's upgrade wall; without this
+  a device already on the resolver would sit silently
+  broken.
+- Armed on the first PAIRED launch, not the first launch: a
+device that
+  is unpaired when it first runs rev-10 re-checks once it is
+  paired, instead of marking itself done while unpaired.
+- Unpair-safe: every unpair path (mac unpair/peerDidUnpair,
+phone
+  forgetStoredPairing) clears the pending flag and cancels
+  the mac timer, and the arm/timeout paths guard on the
+  device still being paired, so a leaked flag can never nag
+  an unpaired device.
+
+Adds RLog/companionLog instrumentation across the mac
+decision path (quiet in steady state) to make this flow
+diagnosable from a debug log.
+
+2026-07-22: Companion: migrate off the direct relay onto the
+resolver (revision 11)
+
+Bumps the companion handshake to revision 11 and raises
+minimumPeer to 11: a peer that has not upgraded stays on the
+direct main relay (https://relay.iterm2.com) and cannot
+rendezvous with an upgraded peer that has moved to the
+sharded resolver, so it is refused with the existing upgrade
+wall rather than allowed to pair into a broken state.
+(Revision 10 is phone-driven keyboard input; a revision-10
+peer has no resolver support, so it must still be refused.)
+
+On upgrade, a device still pointing at the direct legacy
+relay converts itself to the default resolver, once, and
+shows a one-time modal telling the user the OTHER device
+must also update to keep connecting:
+
+- Phone: at launch, before the reconnect, a stored
+direct-relay pairing
+  is rewritten to the default resolver
+  (CompanionRelayMigration). The rewrite preserves the
+  pairing identity (room name and bucket derive from rs+pid,
+  unchanged), so only the transport endpoint moves.
+- Mac: at launch, a mac parking on the direct legacy relay
+(resolver
+  setting empty, relay origin the legacy host) has its
+  CompanionResolverURL advanced setting set to the default
+  and reloaded, so the park that follows resolves through
+  the shard map.
+
+Only an actual conversion shows the notice; a device already
+on a resolver (or a custom relay) is left untouched, since
+the handshake wall already covers a too-old peer at connect
+time. Both sides guard the migration with a NoSync done flag
+so it runs once. Shared constants live in
+CompanionRelayMigration; the resolver URL is kept in
+lockstep with the mac's CompanionResolverURL default.
+
+2026-07-22: Companion: fetch the shard map from the
+configured URL verbatim
+
+The resolver= value now points directly at the shard-map
+JSON and is GET'd exactly as configured, with nothing
+appended. Removes the directory-base + shardmap.json append
+logic (and the shardMapFilename constant) from
+ShardMapLoader, so what a caller configures is what is
+fetched. The CompanionResolverURL advanced setting default
+becomes https://resolver.iterm2.com/shardmap.json and is
+relabeled accordingly.  canonicalResolverURL validation is
+unchanged (https, path allowed, no query/fragment/userinfo).
+Makes the resolver trivially pointable at any test fixture
+or self-hosted map.
+
+2026-07-22: Companion: show the paired relay room name in
+hex
+
+Both the phone's Settings screen and the mac's Companion
+Device Settings window now display the pairing's relay room
+name (the 64-char lowercase hex pseudonym both devices and
+the relay log a room under) when paired, so a user can match
+this device's room against the other device and the relay
+logs when reporting a problem.
+
+The value is derived, not stored: the mac from its static
+key + paired pid, the phone from its stored pairing code,
+both via RelayRoom.name, so it shows whenever paired
+regardless of connection state. On the phone it is a
+selectable monospaced Settings row; on the mac a selectable
+monospaced label (wraps to two lines) shown only in the
+paired state.
+
+2026-07-22: Companion: address sharding client-side review
+findings
+
+Persist the shard-map version floor across launches (6.4).
+Adds ShardMapVersionFloorStore (protocol + a
+UserDefaults-backed impl); ShardMapLoader seeds
+highestVersion from it at init and writes every adopted
+version back, threaded through ShardHostResolver and
+ShardResolverCache. The phone stores under .standard, the
+mac under its iTermUserDefaults suite with a NoSync prefix.
+A freshly launched client now rejects a below-floor map from
+a lagging CDN edge instead of adopting it, closing the
+relaunch regression the floor exists to prevent.
+
+Apply the displaced 60s long-backoff on the phone (6.9).
+Adds TransportError.displaced; RelaySignal.transportError()
+maps longBackoff(.displaced) to it so the phone's URLSession
+transport backs off long instead of the short jittered
+cadence, matching the mac park loop. The mac short-circuits
+to RelayDisplacedError before this bridge, so its 60s
+backoff is unchanged.
+
+Force a fresh map re-fetch on a bare connect failure for a
+resolved pairing (6.4 connect-failure class). Both phone
+loops now re-resolve (force-fresh, no-op for v1, swallows a
+fetch blip) before the next attempt, so a fully-down
+decommissioned host is dropped onto its replacement
+deterministically rather than leaning on the resolver's
+opportunistic background refresh.
+
+Validate that a shard-map host is a bare authority
+(6.3/6.10): reject a scheme, path, userinfo, query,
+fragment, whitespace, uppercase, or a trailing dot, since
+that same string is the connect target, the cert SAN, and
+the proof origin. A malformed entry would otherwise silently
+break every proof for that host's buckets with no failed
+connect.
+
+Document the parked-mac-no-phone reshard latency (7.4): a
+lone park is not evicted until the drain defer elapses, so a
+phone connecting in that window gets a retry-here "mac
+offline" and the reconnect gap is about the drain defer, not
+a few seconds. Left as-is deliberately.
+
+371 package tests pass; both apps build.
+
+2026-07-22: Companion phone: re-resolve mid-pairing on a
+stale-map reject
+
+pairingTicketIfNeeded now loops on TransportError.reResolve
+(HTTP 421, 6.9) instead of falling through to the reconnect
+path. The ticket's App Attest clientData binds the origin,
+so it is only valid at the host it was attested for; on a
+reshard we re-resolve the new owner force-fresh (which also
+refreshes the cache the following connect reads) and
+re-attest there, so the ticket matches the host the connect
+reaches.  Bounded by reResolveMaxAttempts so a lagging CDN
+edge cannot spin; exhausting the bound joins with an empty
+proof and lets the reconnect re-attest. The
+verifierRegistered check moves first so an established room
+skips the ticket dance entirely.
+
+registerRelayVerifier now classifies a 421 explicitly: the
+registration token is minted at admission on the old host
+and cannot be replayed at the new owner, so retrying is
+futile. It logs the reason and returns false; the eviction
+tears the connection and the reconnect re-registers with a
+fresh token on the new owner.
+
+2026-07-22: Companion: mac park loop re-resolves on a
+reshard evict (421/4421)
+
+The symmetric half of the phone reconnect change. When
+acceptLoop's park accept() throws TransportError.reResolve -
+the transport mapping of a WS 4421 evict or HTTP 421 reject,
+meaning a reshard moved this pairing's bucket - the mac now
+forces the shared shard resolver to fetch a fresh map (via
+the same plugin-keyed cached resolver parkAndAccept reads)
+so the re-park resolves the new owner instead of the cached,
+rejecting host, then re-parks on a full-jitter delay
+(RelayReconnectBackoff) that flattens a whole-fleet reshard
+storm. Slotted in beside the existing displaced (60s) and
+quota (30m) cases; not a user-facing fault, so no onFailed.
+
+This also covers the live-bridge eviction case: a reshard
+tears the splice, the bridge closes, the mac re-parks on its
+cached (old) host, that host reject-on-doubts the park, and
+this accept()-path reResolve then force- resolves onto the
+new owner - converging without a special bridge path.
+
+2026-07-22: Companion: phone reconnect loop re-resolves on
+421/4421 and jitters backoff
+
+Wire the 6.9 re-resolve signal and the 7.3/Appendix C
+backoff into the phone's two reconnect loops (the
+connectionLost reconnect and the pair/isReconnect retry).
+
+On a TransportError.reResolve (the transport layer's mapping
+of an HTTP 421 / WS 4421 stale-map reject or evict), the
+loop now calls forceReResolve - forcing the shared shard
+resolver to fetch a fresh map - so the next attempt targets
+the new owner instead of the cached, rejecting host, rather
+than bouncing off it until a background refresh happens to
+land.  Because it uses the same cached resolver the
+connector reads, the refresh it performs is exactly what the
+next connect picks up.
+
+Both loops also replace the fixed 2s retry with
+RelayReconnectBackoff (full jitter: [0,3s] then exponential
+to 30s), keyed on the per-episode consecutive-failure count,
+so a reshard drain or host-death reconnect storm flattens
+instead of arriving in lockstep. The old
+reconnectRetryDelayNanos constant is removed.
+
+2026-07-22: Companion: surface HTTP 421 on the room-scoped
+REST calls as reResolve
+
+The data-plane HTTP endpoints reject-on-doubt with 421 when
+a host does not own the bucket (6.9). The REST clients now
+surface that as TransportError.reResolve rather than a
+generic RelayAttestationError.http, so the caller can
+re-resolve the current owner and retry there instead of
+treating it as an ordinary failure. A shared
+throwIfStaleMapRejection helper gates it (owner hint
+omitted: RelayHTTPClient does not surface response headers,
+and the hint is diagnostic-only). Wired into every
+room-scoped call: /attest/challenge and /attest
+(RelayAttestationClient) and /attest/challenge and /delete
+(RelayRoomDeleter). Tests cover both.
+
+Completes the package-level transport surfacing. The
+/register POST lives in AppModel and is handled with the
+app-layer re-resolve+retry dispatch, which consumes
+.reResolve on all these paths, next.
+
+2026-07-22: Companion: surface re-resolve (421/4421) as a
+typed transport error
+
+Wire the 6.9 re-resolution signals into the transport layer
+so the reconnect/park loops can dispatch on them. Add
+TransportError.reResolve (ownerHint) and
+RelaySignal.transportError(), the shared bridge from the
+wire-code classifier to the protocol-layer error: reResolve
+-> .reResolve, daily-quota -> .quotaExceeded, everything
+else keeps the original error (displaced is still surfaced
+separately by the mac as RelayDisplacedError).
+
+Both WebSocket implementations now route their close mapping
+through it: - URLSessionRelayWebSocket replaces the
+quota-only mapQuotaClose with
+  mapCloseSignal, which classifies the close code + reason
+  (the 4421 code collapses to .invalid under URLSession, so
+  the "reshard" reason sentinel is the fallback) and also
+  the HTTP status of a reject-on-doubt upgrade
+  (task.response, no close code opened).
+- The mac plugin socket keeps its displaced long-backoff,
+then routes the
+  rest through the same classifier (it surfaces the true
+  4421 directly).
+
+Tests cover the RelaySignal -> TransportError bridge end to
+end. The app loops consuming .reResolve (forceFresh
+re-resolve) come next; the HTTP data-plane 421 on
+attest/register/delete is the remaining transport piece.
+
+2026-07-22: Companion: align reshard owner-hint extraction
+with the classifier guard
+
+ownerAfterReshardSentinel matched a looser
+hasPrefix("reshard") than the classifier's exact `reshard` /
+`reshard ` guard, so a 4421 close whose reason merely begins
+with those letters (e.g. "resharding now") sliced mid-word
+into a garbage owner hint. Harmless today (the hint is
+diagnostic-only, never dialed, and a correct server only
+sends the sentinel forms), but it was two rules for one
+sentinel. Use the same guard in both, so a non-sentinel
+reason yields no hint. Test added.
+
+2026-07-22: Companion: tested units for the sharding client
+work (signals, backoff, force-fresh)
+
+Test-first foundation for the resolved-mode client work, the
+pure pieces that both the phone reconnect loop and the mac
+park loop will dispatch on, so the taxonomy and schedule are
+pinned by tests rather than re-derived in each loop.
+
+- RelaySignal: classifies a WS close (code + reason) or an
+HTTP status
+  into re-resolve / retry-here / long-backoff / fatal per
+  the 6.9 wire codes, reason-disambiguating the overloaded
+  1008/1000 and parsing the diagnostic reshard owner hint.
+  Tests cover 4421/reshard, 421, the quota/displaced
+  long-backoff, the transient 1008 reasons, and the "only a
+  re-resolve code leaves the host" invariant.
+- RelayReconnectBackoff: the full-jitter schedule of 7.3 /
+Appendix C
+  (initial 3s, exponential base 1s to cap 30s). Tests cover
+  the window values, monotonicity, the cap, and that every
+  draw is within its window.
+- ShardHostResolver gains a forceFresh resolve (skip the
+cached host,
+  block on a fresh fetch) for the 6.9 re-resolve path; the
+  protocol keeps the no-arg form via a default. Tests cover
+  force-fresh picking up a new owner vs the cached path
+  returning the stale host.
+
+The transport-layer wiring (surfacing 421/4421 as typed
+errors) and the app-layer dispatch build on these next.
+
+2026-07-22: Companion relay: fix 6.9 close-code taxonomy
+against the code
+
+Review fixes: - Wrong citation: the client-side
+match-on-code+reason precedent is
+  RelayWebSocket.swift, not host/server.js (that path is the
+  push relay and has no quota close). Also the matched
+  substring is "daily quota", not "quota".
+- Missing WS 1000 + "displaced": the relay hands the room's
+single
+  mac/phone slot to a newer connection (room.js) and the
+  client (RelayDisplacedError) backs off 60 s so duplicate
+  instances do not ping-pong. Add it to the long-backoff
+  table; it is same-host, not a re-resolve. Implementing
+  "every non-421/4421 -> short retry" literally would
+  reintroduce the eviction storm.
+- 1008 is overloaded (frame rate, bad hello, too many
+pending,
+  admission timeout, generic), and 1000 is normally a plain
+  close; note both are reason-disambiguated so only the
+  named reasons take the long backoff.
+- 1001 decommission story split: up-but-drained earns a 421;
+  a fully-down box is a connect failure handled by 6.4.
+- Also fix a stale "uses the owner hint" line left from the
+  diagnostic-only change.
+
+2026-07-22: Companion relay: map is the sole authority for
+redirect targets
+
+A relay's re-resolve signal (421/4421) now means only "not
+me"; the client always derives the new target from the shard
+map, never from the relay's x-relay-owner hint. Demote the
+hint to diagnostic-only (logging/debugging), force a map
+refresh on a re-resolve, and record the property in 9 (a
+relay can reject but never redirect).
+
+This bounds a bad or malicious config: clients only ever
+reach map-sanctioned hosts and cannot be bounced in an
+endless X->Y->X loop; any residual retry is spaced by the
+shared backoff (6.4). The cost is the lost round-trip the
+hint once saved, which is cheap (a sub-KB, usually-cached
+file).
+
+2026-07-22: Companion relay: define connect-failure vs
+re-resolve retry policy
+
+6.4 step 5 lumped "host rejects" and "connect fails" into
+one "re-fetch and retry". Split the connect outcome into
+three classes and give each a where-to-go rule, with a
+shared backoff for how-long-to-wait:
+
+- Re-resolve signal (421 / 4421): host disowned the bucket;
+go to
+  the new owner.
+- Retry-here code (429/503/500, 1011/1006/1001/1008): same
+host,
+  do not re-resolve.
+- Connect failure (DNS/TLS/refused/timeout/unreachable):
+ambiguous;
+  re-fetch the map, switch if it names a different host,
+  else presume transient and retry the same host (cached
+  host if the map can't be fetched, per 8).
+
+Add the loop bound: one shared consecutive-failure counter
+drives the Appendix C backoff (reset on success), which
+spaces out a skew-window 421-bounce; a must-stay-available
+role retries indefinitely and surfaces status, while a fresh
+foreground connect may give up with an actionable error.
+
+2026-07-22: Companion relay: state relay-switch =
+re-establish as a principle
+
+6.7 described the re-attest/re-register flow as a reaction
+to a verifier-absent state; frame it up front as the event
+it actually is: switching relays (reshard, restart, death)
+means the room is re-established on the new box. Make
+explicit that it is silent, that the phone re-runs
+attest/register while the Mac only re-parks, and that the
+phone tries a signed join first and re-attests only when
+told "unestablished" (no speculative re-attestation).
+
+2026-07-22: Companion relay: specify reject-on-doubt for the
+HTTP endpoints
+
+6.5 described reject-on-doubt only for the WS join. Make it
+explicit that /attest/challenge, /attest, /register, and
+/delete share the same ownership gate (HTTP 421), and pin
+the second-order behavior:
+
+- Check ownership early, before body read / attest verify /
+the
+  /attest rate-limit charge, so a stale-map bounce is not an
+  attest failure and does not burn the limiter.
+- No drain defer for these one-shot calls: a host that has
+lost a
+  bucket rejects its HTTP calls immediately (the 7.4 defer
+  keeps only the live splice alive).
+- On a 421 the client restarts the sub-flow against the new
+owner
+  rather than resending: challenges/tickets/tokens are
+  host-local and origin-bound (6.7, 6.10), so old-host state
+  fails at the new host. The origin binding is the fail-safe
+  backstop.
+- One resolved host per attempt (WS join + all HTTP calls),
+so a
+  client never registers on one host while joining another.
+- /delete stays best-effort; drain + socket close reclaim
+the room.
+
+2026-07-22: Companion relay: set concrete parameter defaults
+(Appendix C)
+
+Fill in the starting values the doc left as placeholders: -
+SHARDMAP_POLL_INTERVAL = 10 s - SHARDMAP_TTL (CDN max-age) =
+5 s - RESHARD_DRAIN_DELAY = 20 s (2 x poll) -
+RESHARD_EVICTION_RATE = 10 rooms/s - Reconnect jitter (7.3):
+full jitter, uniform [0, 3 s] initial,
+  full-jitter exponential backoff base 1 s / cap 30 s.
+
+Add Appendix C as the single source of truth (table + the
+ordering relationships the 6-7 arguments depend on), and
+wire the concrete numbers into 6.3, 6.8, 7.3, and 7.4
+(worked example retimed to the 10 s poll).
+
+2026-07-22: Companion relay: pin version-counter semantics
+and the publish pipeline
+
+7.1 now specifies that `version` is a monotonically
+increasing integer counter (never a timestamp): a total
+order that cannot regress on clock skew or collide on
+near-simultaneous edits, and the unambiguous "next" that
+roll-forward recovery (6.4) needs. Records that a
+to-be-built web admin tool is the sole writer, holding the
+authoritative counter and replacing shardmap.json
+atomically, and that hand-editing out of band is unsafe. 6.3
+cross-references it.
+
+2026-07-22: Companion relay: mark shard-map signing as not
+required
+
+Reframe 6.8 and 9 so map signing is explicitly optional
+rather than a recommended belt-and-suspenders step: HTTPS
+from our domain plus the QR-anchored resolver already
+authenticate the map, and E2EE/Noise bounds a tampered map
+to DoS/metadata, never content.  Record it as a 11 future
+item, worth revisiting only if the map is ever fronted by a
+third-party edge that terminates our TLS.
+
+2026-07-22: Companion relay: specify the shard-map host
+authority grammar
+
+State the format of the map's host field in 6.3 and 6.10: -
+It is an authority, not a URL (no
+scheme/path/userinfo/query/
+  fragment); the client prepends https:// so transport is
+  always HTTPS/WSS and the field never carries a scheme.
+- May be a DNS name or a bare IP literal (IPv6 bracketed).
+- May carry an explicit :port; omit for the default 443.  -
+Whatever form is used, that byte string is the box's
+provisioned
+  identity, its TLS cert name, and its origin base.
+
+2026-07-22: Companion relay: specify the proof origin and
+host identity (6.10)
+
+The design never mentioned that the admission/delete
+transcripts and the App Attest clientData bind an origin,
+nor that client and relay must derive byte-identical
+strings. Add 6.10:
+
+- The join, delete, and App Attest proofs bind origin =
+"https://"
+  + host; a one-byte mismatch silently fails every signed
+  join.
+- A managed box's one provisioned hostname is the source of
+truth
+  for three things that must agree: its TLS cert SAN, its
+  shard-map host entries (ownership), and its proof origin.
+- The origin is server-side, anchored to the TLS cert, never
+taken
+  from the Host header.
+- The client builds "https://" + host from the map verbatim
+  (resolved) or the QR relay= value (direct), so the host
+  stays in one canonical form.
+
+Wires 6.7, 6.8, 9, and Appendix A invariant 7 to it.
+
+2026-07-22: Companion relay: pin the re-resolution wire
+codes (6.9)
+
+The doc named the new re-resolve outputs but left them
+unspecified, blocking client and relay work. Fix concrete
+codes:
+
+- HTTP 421 for reject-to-re-resolve (wrong host / no owner),
+on the
+  WS upgrade and the HTTP data-plane paths.
+- WS close 4421 for evict-to-re-resolve on a live spliced
+socket,
+  with a "reshard" reason sentinel so stacks that cannot
+  read a 4xxx code (URLSessionWebSocketTask) still detect
+  it.
+- Optional MOVED-style owner hint: x-relay-owner header
+(HTTP) or
+  "reshard <host>" reason (WS).
+- Documents the retry-here set (429/503/500, 1011/1006/1001,
+1008,
+  403/413) as client convention, with the invariant that
+  only 421/4421 move a client to a different host.
+
+Wires 6.4, 6.5, 7.2, 7.4, and the 8 failure table to 6.9.
+
+2026-07-22: Companion relay: add relay sharding design doc
+
+Draft of the horizontal-sharding design for the iPhone
+companion relay: roomName to bucket to host mapping, static
+CDN shard map, reject-on-doubt admission, gradual drain, and
+the two rendezvous modes (direct v1, resolved v2).
+
+2026-07-22: Companion: phone self-heals a signed join a
+fresh host can't verify (6.7)
+
+The phone only self-healed one direction: an attested join
+the relay wanted signed. It missed the reverse - the core
+resharding case in 6.7.  When a bucket moves to a fresh box
+(reshard, restart, death) the soft verifier state is gone,
+so the box is back in pairing mode; a phone that believes
+the room established SIGNS its join, and under the
+attestation posture the relay rejects it "ticket required"
+(room.js: no verifier -> phone must present a ticket). With
+no handler, establish threw and the reconnect loop re-signed
+forever, so a reshard broke reconnect.
+
+Add admissionNeedsTicket and a catch for an established join
+rejected "ticket required": forget the verifier-registered
+marker, re-attest to earn a ticket, and reconnect fresh. The
+post-connect lockRelayRoom then re-registers the identical
+HKDF(roomSecret) verifier, restoring the room on the new
+host with no QR/SAS re-pair. The mac needs no change (it is
+admitted pre-auth on a verifier-less host, room.js line
+400).
+
+2026-07-22: Companion: resolve the attestation/registration
+origin in v2
+
+The phone's App Attest ticket, verifier registration, and
+/register POST all keyed on code.relayOrigin, which is nil
+in resolved (v2) mode. So a v2 fresh pairing against an
+attestation-required relay earned no ticket and, had it
+proceeded, would have attested/registered over the wrong
+origin: the relay verifies the clientDataHash and join
+signature against its configured RELAY_ORIGIN, and the phone
+signs its join over the resolved shard host, so the two must
+agree.
+
+Add resolvedOrigin(for:) - the resolved shard host in v2,
+the relay origin in v1 - and use it for
+pairingTicketIfNeeded and lockRelayRoom (which feeds
+registerRelayVerifier). It goes through the same session
+resolver as the connect, so the attest origin and the join
+origin resolve to the same host from the same cached map. A
+v2 resolve failure yields nil (a consistent failed/open-mode
+attempt), never a mismatched origin.
+
+2026-07-22: Companion: surface fresh-pairing resolve
+failures; bound the resolve timeout
+
+Three review fixes.
+
+1. Fresh-pairing park-setup failures are no longer
+swallowed. In resolved
+   mode startPairing() returns after showing the QR and the
+   resolve happens later on the accept task; if the resolver
+   is down or names no host, the resolve/listener-build
+   catches previously did a silent retry, so the QR sat dead
+   with no error and the pid re-minted forever with no
+   feedback.  parkSetupDidFail now routes fresh-pairing
+   failures through onFailed +
+   scheduleFreshPairingRegeneration, the same path a
+   direct-mode park death reaches via acceptLoop, so the
+   window shows "could not reach the relay".
+
+2. The shard-map resolve is now bounded by the caller's
+connect timeout.
+   ResolvingTransportConnector.connect wraps the resolve in
+   the caller's budget and passes only the remaining time to
+   the inner connect, so a cold fetch in a fresh process
+   (the NSE, 10s budget) can no longer blow the timeout the
+   caller set. PluginShardMapFetcher's GET is bounded too:
+   plugin HTTP now sets a 30s per-request timeout (it cannot
+   set one through the signed JS bridge, so it is applied
+   natively in performHTTP), down from the ~60s session
+   default; the parked WebSocket is unaffected.
+
+3. Stale doc comments that described a version-pointer +
+shardmap-vN.json
+   scheme the loader never implemented now say
+   shardmap.json, and ParseError.unsupportedVersion no
+   longer says "v != 1" (v2 parses).
+
+2026-07-22: Companion: unify the shard-resolver cache and
+unpair delete across mac/phone
+
+The per-session resolver cache and the unpair delete-origin
+logic were implemented twice (mac park path and phone
+connect path), so the load-bearing invariants
+(floor-survives-reconnect keying, v1/v2 delete fallback)
+were encoded in two places that could drift, exactly the
+split the design's "both endpoints run the same resolution"
+(6.4) warns against.
+
+Add two shared pieces in CompanionTransport: -
+ShardResolverCache: one ShardHostResolver keyed by (resolver
+URL, egress
+  token). The mac passes the plugin client identity so a
+  reload rebuilds against the new egress; the phone (no
+  plugin) passes nil.
+- ShardHostResolver.resolveDeleteOrigin: resolve the owning
+shard host in
+  v2, else the direct origin, else nil (best effort; TTL
+  reclaims).
+
+Both mac and phone now use these, so the invariants live
+once. Tests cover the cache keying (reuse on same key,
+rebuild on different token).
+
+2026-07-22: Companion: don't block/fail connect on the shard
+map; no-redirect fetch
+
+Resolution correctness and the mandated egress posture.
+
+ShardHostResolver.relayOrigin no longer blocks every connect
+on a full shardmap.json GET and no longer fails a connect on
+a transient CDN blip.  When a map is already adopted (the
+resolver is reused across a session's reconnects) it returns
+the cached host immediately and refreshes in the background
+(ShardMapLoader.refreshInBackground, deduped); only the
+first resolve of a session, with no map yet, blocks on a
+fetch. This restores the design's "reconnects still work off
+the cached host" (8) and "no steady-state dependence on the
+control plane" (6.6). A reshard still converges: the relay
+evicts the room, and the next reconnect uses the
+just-refreshed map.
+
+The phone shard-map GET now uses the no-redirect
+CompanionURLSession (as every other companion egress does),
+injected at the three phone construction sites, so a
+compromised CDN edge cannot 3xx-redirect it to a rogue host
+(9). URLSessionShardMapFetcher also bounds the GET with a
+timeout so a stalled fetch cannot blow the NSE's connect
+budget.
+
+Also: RelayRoom.name uses the module's
+Data.hexEncodedString() (the roomName is a cross-language
+wire value, so one canonical encoder), and the makeCode
+comment is corrected to say both endpoints resolve the shard
+host in resolved mode (not "the mac parks at its own relay
+origin").
+
+2026-07-22: Companion: v2 polish (move-prompt, host
+disclosure, unpair delete, phone resolver)
+
+Four resolved-mode polish items, none blocking v2 function.
+
+1. Mac relay-move prompt: skip the main-relay-origin
+comparison for a
+   resolved (v2) pairing. That check is a v1 concept (the QR
+   bakes in a relay host); in v2 the pairing is anchored to
+   the resolver URL and the host moves freely via the shard
+   map, so comparing CompanionRelayOrigin would raise a
+   spurious "server moved, re-pair" prompt. A resolver-URL
+   move is a DNS concern, so there is nothing to detect.
+
+2. Host disclosure: the phone's non-official-server warning
+now discloses
+   the resolver host (v2) or relay host (v1), compared
+   against the right default (resolver.iterm2.com vs
+   relay.iterm2.com). Generalized RelayHost.hostToDisclose's
+   parameter to originURL.
+
+3. Unpair delete-room: resolve the owning shard host in v2
+(through the
+   plugin egress on the mac, URLSession on the phone) so the
+   delete hits the room's actual host; best effort, idle TTL
+   reclaims on any miss.
+
+4. Phone shard resolver: hoist one session-lived resolver
+into AppModel
+   (via productionConnector) so a v2 pairing's map cache and
+   monotonic floor survive across reconnect attempts,
+   reducing host flapping while a reshard propagates. Not
+   durable; a relaunch starts fresh.
+
+2026-07-22: Companion: honor cancellation in parkAndAccept
+errors; key resolver cache to plugin
+
+Two fixes in the mac resolved-park path.
+
+parkAndAccept's resolve-failure and listener-build catch
+blocks were asymmetric with the success path: they
+unconditionally nil'd acceptTask and scheduled a retry even
+when stopAdvertising had cancelled the task mid-flight. That
+could clobber a replacement accept task's handle (leading to
+two listeners parking in the same room and displacing each
+other) and re-arm a retry stopAdvertising had just
+cancelled, re-parking after an intended teardown. Both
+catches now mirror the success path: if Task.isCancelled,
+return without touching acceptTask or rescheduling
+(stopAdvertising owns that teardown).
+
+The shard-resolver cache was keyed on resolverURL alone, so
+on a cache hit the passed-in fetcher was dropped. The
+controller is a long-lived singleton, so after
+CompanionPlugin.reload() the relay socket used the new
+plugin client while the shard fetch stayed pinned to the
+resolver built with the old PluginShardMapFetcher. Key the
+cache on the plugin client identity too, so a reload
+rebuilds the resolver against the current egress.
+
+2026-07-22: Companion: assert the phone-only URLSession
+shard fetch isn't used off-iOS
+
+The resolved connector's URLSession shard-map fetch is the
+phone path (the phone has no consent plugin). The Mac never
+reaches this factory, so guard that claim: assertionFailure
+under #if !os(iOS) when the URLSession fallback is taken, so
+a Mac call site that would fetch off the plugin's sanctioned
+egress trips in debug/tests instead of silently bypassing
+it.
+
+Scoped to the fallback branch (not the whole factory) so
+passing a resolver skips it, and expanded the ?? so it only
+fires when the fallback is actually used. Updated the macOS
+selection test to pass a stub resolver (as both apps do) so
+it does not exercise, and trip on, that assertion.
+
+2026-07-22: Companion: log the shard resolution path and
+remove a URLSession footgun
+
+The resolve/park path is where rendezvous bugs (wrong
+bucket, stale map, mac/phone landing on different hosts)
+will hide, and it was near-silent.  Add CompanionLog lines
+(which surface in both apps' field logs) at each decision
+point: the shard-map GET URL and its fetch/decode failures;
+map adopt vs ignore-not-newer vs validation-failure; the pid
+-> bucket -> host resolution and no-host case; the resolved
+origin joined; and, on the mac, whether a park used resolved
+or direct mode.
+
+Also remove the URLSessionShardMapFetcher() default from
+ShardHostResolver.init. The mac must fetch only through the
+consent plugin (its one sanctioned egress), and a URLSession
+default would let a future mac call site fetch a URL
+directly without noticing. Egress is now an explicit choice
+everywhere: the mac passes the plugin fetcher, the phone (no
+plugin) passes URLSession.
+
+2026-07-22: Companion: fail closed when the consent plugin
+is unavailable at park
+
+startListening fell back to a raw URLSession for both the
+relay socket and the shard-map fetch when
+CompanionPlugin.instance() was not success. That undermines
+the plugin's whole purpose: it is the only sanctioned
+outbound path for the feature, so a raw-URLSession fallback
+carries relay traffic (and the CDN shard-map GET) around the
+consent gate. Since startListening is only reached when the
+gate is allowed, which already requires the plugin, the
+branch is defensive anyway. Make it fail closed: if the
+plugin is unavailable, do not park (throw, so the caller
+schedules a retry) rather than egress off the sanctioned
+path.
+
+2026-07-22: Companion: resolve v2 codes to a host on the mac
+park path
+
+Wire resolved (v2) mode into the mac's park. startListening
+splits into a sync shell and an async parkAndAccept on the
+accept task: when a resolver URL is configured it looks the
+owning host up in the shard map (via a plugin-routed
+ShardHostResolver, so the CDN GET takes the same consent
+egress as relay traffic) exactly as the phone does, so both
+land on the same box; otherwise it uses the statically
+configured relay origin (direct mode). The resolved origin
+is passed to the unchanged origin-based listener, so
+admission/splice are shared.
+
+Re-resolution on reshard needs nothing extra: within one
+park the origin is stable across phone connect/disconnect,
+and a reshard drops the park with an error that exits
+acceptLoop and retries, re-entering parkAndAccept to
+re-resolve onto the new owner. A resolve failure is a
+transient park failure (retry), not a hard error. One
+resolver is cached per resolver URL so the map's monotonic
+floor and cache survive reconnects in a session.
+
+Add CompanionPlugin.shardMapFetcher() /
+PluginShardMapFetcher to route the shard-map fetch through
+the plugin.
+
+2026-07-22: Companion: resolve v2 codes to a host on the
+phone connect path
+
+Wire resolved (v2) mode into the phone connector.
+ShardHostResolver maps a pairing's resolver URL + room
+bucket (RelayRoom.bucket looked up in the shard map from
+ShardMapLoader) to an owning relay origin; the
+ResolvingTransportConnector resolves that origin at connect
+time and then joins it with the exact same admission proof
+and splice as direct mode, so a reconnect after a reshard
+lands on the new owner.
+
+CompanionTransports.connector now returns the resolving
+connector for a v2 code (creating a transient resolver from
+the code's resolver URL when no shared one is passed) and
+keeps direct (v1) mode unchanged. The mac park side still
+resolves nothing yet, so end-to-end v2 needs the mac wiring
+that follows.
+
+2026-07-22: Companion: fix shard-map restart bootstrap and
+room-name hex check
+
+ShardMapLoader.refresh() persisted only the highest-seen
+version, not the map, so after a relaunch current is nil
+while highestVersion is the seeded floor. The old guard
+ignored any version <= floor, so a restart against an
+unchanged publisher (version == floor) never adopted the map
+and resolved mode could not pick a host until the next
+version bump. Make the guard bootstrap-aware: with no map
+loaded yet, adopt a version equal to the floor, but still
+reject one strictly below it (the stale-edge regression the
+persisted floor exists to prevent); with a map loaded, keep
+requiring a strictly newer version.
+
+RelayRoom.bucket(forRoomName:) used Character.isHexDigit,
+which follows Unicode Hex_Digit and admits uppercase and
+fullwidth forms (U+FF10...), so a non-canonical 64-char
+string could pass the guard and return a bucket. Restrict to
+literal lowercase ASCII [0-9a-f], matching the form name()
+emits.
+
+2026-07-22: Companion: derive the shard bucket from the room
+name (+ vector)
+
+Add RelayRoom.bucket: the shard bucket is the last two bytes
+of the room-name SHA256 digest taken big-endian (digest[30]
+<< 8 | digest[31]), i.e. the numeric value of the room
+name's last four hex characters, in [0, 65535]. Two entry
+points: from rs/pid (shares the one digest with name(), so
+they can never disagree on the preimage) and from an
+already-computed room-name header.
+
+Pin it with RoomBucketVectors, a canonical JSON vector the
+Node relay must reproduce byte-for-byte (Appendix A
+invariant 1): the values are fixed forever since N_BUCKETS
+is immutable. RoomBucketTests checks both entry points
+against it, plus endianness, sign, bounds, and reject cases.
+
+2026-07-22: Companion: add the shard-map loader (phone, not
+yet wired)
+
+Standalone loader for resolved mode: ShardMap is the parsed,
+validated map (version + [{low, high, host}] ranges) with a
+bucket -> host lookup; ShardMapLoader fetches it and applies
+monotonic versioning.
+
+The map is a single shardmap.json under the resolver base
+URL, served short-TTL and replaced atomically, so one fetch
+always yields the latest (no version pointer, no second
+round-trip): the map carries its own version, so a stale
+read from a lagging CDN edge is just an older version and is
+ignored. It does not carry n_buckets; the client owns the
+fixed constant and the ranges are validated to tile [0,
+65535].
+
+Networking is behind an injectable ShardMapFetching so the
+loader is tested entirely offline; the URL is built with
+URLComponents; version persistence is the caller's concern.
+Not called from the app yet.
+
+2026-07-22: Companion: carry a resolver URL in the pairing
+QR (v2 resolved mode)
+
+Add resolved mode to the pairing code. The QR now carries
+either a relay= origin (direct, v1) or a resolver= URL
+(resolved, v2), selected by which is present and tagged by
+the version; the two are mutually exclusive. The resolver is
+the base URL of the static, versioned shard map on a CDN, so
+a path is allowed and preserved verbatim while
+userinfo/query/fragment and non-https are refused.
+
+The mac emits a v2 resolver QR when the new
+CompanionResolverURL advanced setting is non-empty (default
+https://resolver.iterm2.com/), and falls back to a v1 relay
+QR when it is emptied. The mac still parks at its own relay
+origin either way; the resolver only tells the phone how to
+find the owning shard (resolution itself is not wired up
+yet).
+
+The handshake prologue version is decoupled from the QR
+version: the two number independent concerns (handshake
+binding vs rendezvous format), so a v2 pairing still
+handshakes identically to a v1 one and does not break
+already-paired devices.
+
 2026-07-21: Keychain: pin the login-keychain queries to the
 file keychain (fixes data loss)
 
