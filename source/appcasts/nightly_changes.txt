@@ -1,3 +1,172 @@
+2026-07-23: Improve tab dragging performance and drop-target
+stability
+
+Keep Metal enabled during normal tab drags; only tmux
+split-pane drags fall back to legacy drawing. This avoids
+forcing every session onto Core Text for the whole drag,
+which starved the main thread and made the floating tab
+preview lag behind the cursor.
+
+Use the live pointer for split-pane drop highlights during
+tab drags, since AppKit's draggingLocation can be stale
+while PSMTabDragAssistant is updating the floating drag
+window.
+
+Add hysteresis around tab midpoints for reorder slots and
+around split-half boundaries, reducing flicker.
+
+2026-07-23: Working directory lookup: demote expected
+root-login miss from RLog to DLog
+
+When the session task pid is /usr/bin/login (running euid
+0), the async working directory lookup can't read its vnode
+info and recovers via the eldest-child fallback. That
+first-attempt miss is expected, so log it at DLog. Reserve
+RLog for a genuine give-up: no child to fall back to, or a
+non-fallback read that fails.
+
+2026-07-23: add_file_to_xcodeproj: write a minimal diff
+instead of churning the project
+
+The xcodeproj gem re-serializes the whole project on save,
+normalizing formatting in ways Xcode does not (dropping
+redundant name= keys, re-expanding
+PBXFileSystemSynchronizedRootGroups, rewriting comments), so
+every file add produced a large unreviewable pbxproj diff.
+
+Let the gem compute the new objects, then splice only the
+newly-created lines (definitions plus child/build-phase
+references, including multi-line blocks) into the original
+file text and discard the gem's cosmetic churn. Each
+inserted run is anchored to the stable line that precedes it
+in the gem output, and that anchor must be unique in the
+original or we bail. If a minimal splice is not possible (a
+new group had to be created, or an ambiguous anchor), fall
+back to the gem's full output with a warning so the file is
+still added.
+
+2026-07-23: tmux -CC: deliver modified keys by name so tmux
+re-encodes them
+
+In a tmux control-mode (-CC) pane, iTerm2 encoded
+modifyOtherKeys "other keys" itself as the CSI-27 form
+(ESC[27;m;k~) and injected the bytes with send-keys,
+bypassing tmux's own per-pane key encoding. When the pane
+app negotiated a different extended-keys-format (csi-u, as
+crossterm/Codex use), the keys arrived in a form the app
+could not decode, so Ctrl-J, Shift-Enter and similar chords
+produced no event. It worked outside tmux, and in normal
+tmux tmux itself did the encoding, so only -CC was affected.
+
+Hand these keystrokes to tmux by name (send -t %pane 'C-j',
+'S-Enter', ...) so tmux's input_key re-encodes them per the
+pane's own mode and extended-keys-format, byte-identical to
+a native (non -CC) tmux client.
+
+- iTermTmuxControlModeOtherKeyName() is the single source of
+truth for
+  whether a keystroke is delegated and as what tmux key
+  name. It mirrors the modifyOtherKeys byte path:
+  Control+anything, option acting as meta, the command keys
+  Return/Tab/Escape/Backspace, and Shift+Space when Shift is
+  the sole modifier. Plain shifted printables,
+  application-keypad keys, function/navigation keys, and
+  unmodified keys stay on the byte path.
+- Delegation runs at the pre-Cocoa hook (Ctrl/Shift keys)
+and the post-Cocoa
+  site (option-as-meta, marked-text and Bypass-Terminal
+  cases).
+- Gated on tmux 3.2+ (extended-keys); older servers keep the
+byte path, as do
+  broadcasting and companion-injected keystrokes and dead
+  panes.
+- The gateway single-quotes the name for tmux's command
+parser so ';' and
+  '$'/'#' are inert, double-quoting only the apostrophe key.
+- Only the modifyOtherKeys mappers delegate; the kitty and
+CSI-u mappers
+  already emit the format the pane negotiated, so they
+  inject verbatim.
+
+Fixes iTerm2 GitLab issue 12928.
+
+2026-07-23: Cache hot preference reads and refresh fast
+caches synchronously
+
+Idle terminal windows read a handful of preference keys
+(TerminalMargin, TerminalVMargin, PerPaneBackgroundImage,
+SplitPaneDimmingAmount) thousands of times per second
+through uncached accessors in drawing, layout, and
+mouse-tracking paths. Each read hits CFPreferences and, with
+debug logging, emits a log line, which is both noisy and a
+little wasteful of CPU.
+
+Route those hot paths through the dispatch_once-cached fast
+accessors. The margin caches already existed but many
+callers bypassed them; add new fast accessors for
+PerPaneBackgroundImage, SplitPaneDimmingAmount, and
+DimBackgroundWindows and convert the
+int/bool/float/double/Swift spellings of these keys
+uniformly.
+
+The fast-accessor caches previously updated only via the
+async KVO observer, so an in-process write (for example
+dragging the split-pane dimming slider) lagged one runloop
+turn behind a synchronous redraw. Refresh the cache
+synchronously from setWithoutSideEffectsObject:forKey: so
+every write path keeps it coherent. The refresh re-reads the
+current resolved value (never the value we wrote) so it
+stays a read-through mirror of CFPreferences' cross-process
+resolution, and read plus assign happen under a lock so
+concurrent refreshers converge to the current value.
+Installation registers the sync and KVO refreshers before
+the initial read to avoid missing a write during
+construction, and asserts that fast accessors are never
+attached to computed keys, which could deadlock the refresh
+lock against dispatch_once.
+
+Adds unit tests covering the synchronous-refresh path for
+the bool, int, and double caches.
+
+2026-07-23: Fix cross-thread scrollback corruption via stale
+metadata provider pointers
+
+iTermLineBlockMetadataProvider captured a raw pointer into
+LineBlockMetadataArray's guts at creation time. GetMutable
+then invoked willMutate, which can replace the guts with a
+private copy-on-write split, but returned the pre-split
+pointer. Every write through it (the DWC cache populate and
+the wrapped-line-count cache, both reached from read paths
+like drawing and search) landed in the guts owned
+exclusively by the other sharer, typically the mutation
+thread's live LineBlock.  Racing objc_storeStrong calls on
+the same slot could then double-release a cache object, and
+a displaced release onto a reused chunk silently under-owns
+whatever object was allocated there next. This is the
+leading explanation for issue 12941, an intermittent
+use-after-free crash in -[VT100ScreenState mergeFrom:] when
+closing a tmux window resizes surviving sessions
+(invalidating every width-keyed cache) while output is still
+streaming.
+
+The provider now stores (array, index) and both accessors
+resolve the entry through the array's current guts at call
+time, after willMutate in the mutable case, so writes land
+in the caller's own post-split copy.  The one caller that
+cached the immutable pointer across a GetMutable re-resolves
+it.
+
+Providers also capture a structural generation, bumped by
+every operation that creates, destroys, or replaces entries
+and preserved by the CoW split. The accessors assert it is
+unchanged, so an index cannot silently alias a different
+logical entry if a future caller holds a provider across
+removeLast/append churn. The assert is live in release
+builds to convert any such misuse into a labeled crash
+instead of heap corruption.
+
+Issue 12941.
+
 2026-07-22: Keep private data out of the always-on
 retrospective log ring
 
