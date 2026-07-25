@@ -1,3 +1,57 @@
+2026-07-24: Screenshot window: confirm Copy to Clipboard
+visually
+
+The Copy to Clipboard button was silent (unlike Save, which
+closes the panel), so it read as dead even though the image
+reached the clipboard. Briefly show a green checkmark and
+"Copied!" for about 1.2 seconds, wired into both copy paths,
+with a generation counter so a rapid second copy cannot
+leave the label stuck or revert early.
+
+2026-07-24: Fix synthetic-session layout when the live
+session has extra chrome
+
+A synthetic session (filter, instant replay, screenshot,
+zoomed lines) is swapped into the live session's SessionView
+with newView.frame set to oldView.frame. When the frames
+match, resizeSubviewsWithOldSize: does not fire, so the
+synthetic session's grid, copied from the live session, is
+never re-fit to its own view. If the synthetic view lacks
+chrome the live view has (notably the workgroup peer-mode
+toolbar), the scrollview is taller than the grid and the
+uncovered strip renders as a black bar, and click
+hit-testing is off by the row difference.
+
+Fix the black bar centrally in
+replaceActiveSessionWithSyntheticSession: by fitting the
+session to its view after the swap (session conforms to
+view, window untouched). This covers filter, screenshot, and
+zoomed lines; the redundant hand-rolled fit in
+setDvrInSession: is removed.
+
+Filtering wants the window to stay put and the session to
+conform to it, which the above already handles on enter and
+which PTYTab's showLiveSession does on exit. Instant replay
+wants the opposite: the window conforms to the recorded
+session. Its exit previously fit the window while the
+chrome-less synthetic was still active, shrinking the window
+by the chrome height and never restoring it. Snapshot the
+pre-replay window frame in replaySession: and restore it in
+showLiveSession: after the chrome is back, so the window
+returns exactly to its original size and the session re-fits
+to it.
+
+2026-07-24: Fix cmd-click crash when command-mark data is
+unavailable
+
+Guard -[VT100ScreenState
+commandMarkAt:mustHaveCommand:range:] against out-of-bounds
+coordinates, a missing mark, and a missing interval-tree
+entry so command-click URL/prompt resolution falls through
+cleanly instead of crashing when command-mark data is
+unavailable. Adds regression tests for the out-of-bounds,
+no-mark, and mark-without-command cases.
+
 2026-07-23: Improve tab dragging performance and drop-target
 stability
 
