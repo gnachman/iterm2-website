@@ -1,3 +1,122 @@
+2026-07-25: Generalize the orphaned-modal-sheet guard and
+harden it for nesting
+
+Factor the parent-window-close guard from -[NSAlert(iTerm)
+runSheetModalForWindow:] into a shared
+iTermRunModalForWindowAbortingIfParentCloses() and route the
+five hand-rolled beginSheet: + runModalForWindow: sheets
+through it (paste-special, coprocess, session parameter,
+split, and add-account panels), so a parent window destroyed
+while a sheet is up aborts the modal instead of deadlocking
+the app in runModalForWindow: forever.
+
+Hardening beyond the alert version: - Nesting: -abortModal
+ends only the topmost modal session, so a nested
+  modal (alert, open/save panel, another sheet) over the
+  sheet would be torn down instead of ours, leaving us
+  blocked. Re-abort on each run-loop pass until our own
+  session ends.
+- nil parent: skip the observer when the parent is nil,
+since object:nil
+  would abort on any window closing.
+- Deferred completion: beginSheet:'s completion runs a
+run-loop turn
+  later, after we may have aborted, so gate each stopModal
+  on NSApp.modalWindow == the sheet.
+- Parameter panel: its empty string default is a valid
+value, so treat
+  an abort as a cancel (return nil) instead of launching
+  with an empty substitution.
+
+2026-07-25: Show system focus ring in settings search on
+macOS 26.5.1+
+
+On macOS 26.2 the system focus ring for the settings search
+field was broken (it hugged the internal editor instead of
+the capsule; FB21919006), so 1292e52 disabled it and drew a
+custom ring. As of macOS 26.5.1 the system ring works again,
+and the custom ring now leaves thin angled fragments below
+the capsule corners.
+
+Gate the workaround on the OS version: below 26.5.1 keep
+drawing the custom ring and suppressing the system one; on
+26.5.1 and later skip the custom ring and let the system
+draw it. The vertical-centering cell swap is unchanged and
+still applies to all of macOS 26. Also drop two
+NSSearchFieldCell rect overrides that only returned super.
+
+Issue 12708.
+
+2026-07-25: Restore key reporting after screen buffer
+switches (#704)
+
+Switching between the main and alternate screen buffers
+changes which Kitty key-reporting mode stack is active.
+iTerm2 previously updated the active grid without notifying
+the session, so a pop in the alternate screen could leave
+the key encoder using stale flags after returning to
+primary.
+
+Notify through the existing key-reporting path after each
+actual buffer transition. Add a regression test that
+verifies both directions refresh the session key-reporting
+state.
+
+Test: tools/run_tests.expect ModernTests/VT100ScreenTests
+2026-07-25: Revert "Generalize the orphaned-modal-sheet
+guard to non-alert sheets"
+
+This reverts commit
+56bd564a8c041fbd462f21191a6fb7d4d85c218a.
+
+2026-07-25: Generalize the orphaned-modal-sheet guard to
+non-alert sheets
+
+The fix in -[NSAlert(iTerm) runSheetModalForWindow:] guards
+alert sheets against the parent window being destroyed
+mid-modal, which orphans the sheet so its completion handler
+never fires, nothing calls stopModal, and the main thread
+stays blocked in runModalForWindow: forever (an
+unrecoverable, Force-Quit-only hang). The same hazard exists
+in the hand-rolled beginSheet: + runModalForWindow: call
+sites, and those are worse because a custom panel has no
+always-clickable default button to recover with.
+
+Add iTermRunModalForWindowAbortingIfParentCloses(), which
+wraps runModalForWindow: with an
+NSWindowWillCloseNotification observer on the parent that
+aborts the modal, and route the paste-special, session
+parameter, split, coprocess, and add-account panels through
+it.
+
+2026-07-25: Fix orphaned modal sheet deadlock when parent
+window is destroyed
+
+-[NSAlert(iTerm) runSheetModalForWindow:] paired
+beginSheetModalForWindow: with a synchronous
+runModalForWindow:. If the parent window was destroyed
+before the sheet was dismissed, the completion handler never
+fired, so stopModalWithCode: was never called and the main
+thread stayed blocked in the modal run loop forever. Observe
+NSWindowWillCloseNotification on the parent and abort the
+modal when it closes.
+
+Adjustments while reviewing: remove the observer on every
+exit path (so a modal unwound by a third party, e.g.
+abortModal during termination, can't leave a stale observer
+that later aborts an unrelated modal), and fix the
+regression test to close the window on the main queue with
+no sleep-based timing.
+
+2026-07-25: Honor OSC 22 pointer shapes while mouse
+reporting is enabled (#700)
+
+updateCursor: previously forced the IBeamWithCircle cursor
+whenever the app had mouse reporting on, so OSC 22 shapes
+never displayed exactly when mouse-aware apps need them.
+Prefer the app-requested shape and keep IBeamWithCircle as
+the fallback. Also add missing shape names (fleur, watch,
+plus, minus) and map X_cursor to operationNotAllowedCursor.
 2026-07-24: Screenshot window: confirm Copy to Clipboard
 visually
 
