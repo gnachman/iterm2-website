@@ -1,3 +1,25 @@
+2026-07-26: Pin workgroup member sessions to the default end
+action
+
+A Claude Code workgroup peer (Diff, Code Review) or
+split/tab could end up with "Close Sessions On End" as its
+end action even though spawn code overrides it to the
+default: the override only lived in the in-memory profile,
+and a later profile sync reconciles non-overridden keys back
+to the shared profile's value. When that happened, the
+member auto-closed the moment its command exited (e.g. a
+Diff pane whose difftool finished), and closing a member
+session tears the whole workgroup down.
+
+Add PTYSession.forceDefaultEndAction, honored by
+-[PTYSession endAction] so it always reports the default
+regardless of the profile or a later setEndAction. Set it on
+every spawned or adopted workgroup member (main and nested
+peers via makeWorkgroupPeer, splits/tabs via the spawner,
+restored members via registerNonPeer and adopt). The leader
+is left alone so it still follows its profile and its
+termination still exits the workgroup.
+
 2026-07-25: Generalize the orphaned-modal-sheet guard and
 harden it for nesting
 
