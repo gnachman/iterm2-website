@@ -1,3 +1,249 @@
+2026-07-27: Apply profile custom tab title to new tmux
+windows
+
+When a tmux window is created manually with Command-T and
+its profile has "Use custom title for new tabs using this
+profile" enabled, apply that title. Previously the custom
+title was applied only to non-tmux tabs, so new tmux tabs
+fell back to the tmux window/session name.
+
+The title is an interpolated-string template, so it is
+evaluated against the tab's scope up front and the concrete
+result is used. For a tmux tab, setting a title override
+renames the tmux window (shared with every attached client),
+so this ensures the server-side name matches what iTerm
+displays rather than the raw template text. Only manually
+opened windows are affected, so attaching to an existing
+session no longer clobbers window names, and a blank result
+is ignored so the tmux window is never renamed to an empty
+string.
+
+Fixes iTerm2 GitLab issue 12945.
+
+2026-07-27: Fix VoiceOver QuickNav, stale content, and
+review-cursor jumps in the terminal (#697)
+
+Fixes three VoiceOver problems when interacting with
+terminal content, none of which occur in Terminal.app
+(GitLab issue 12920):
+
+- QuickNav navigation did not engage after interacting with
+the terminal
+  until QuickNav was toggled off and on. The terminal
+  advertised an AXDocument attribute and a settable AXValue
+  (settable only because of the no-op setter kept for Full
+  Keyboard Access, Issue 10023), which made VoiceOver treat
+  it as more than a plain text area. Both are now hidden
+  from the accessibility surface while VoiceOver is running
+  via isAccessibilitySelectorAllowed:.
+
+- Content went stale and the review cursor jumped to the top
+when output
+  arrived during an interaction. The settle path posted a
+  layout-changed notification with
+  NSAccessibilityUIElementsKey, which relocated the cursor
+  and left VoiceOver's cached text stale. Replaced it with a
+  value-changed plus selected-text-changed pair posted after
+  the announcement, matching what Terminal.app posts for
+  output.
+
+Squash-merged from Deon588's fork branch
+fix/voiceover-quicknav-focus; release notes conflict
+resolved as the union of both entries.
+
+2026-07-27: Add a Clear Terminated button to the Script
+Console
+
+Stopped script/connection entries accumulated in the Script
+Console with no way to remove them, which slows the app when
+a script is repeatedly restarted (issue 12942).
+
+iTermScriptHistory gains removeTerminatedEntries and
+removeHistoryEntry, both posting the count-changed
+notification so the table syncs incrementally. Persistent
+pseudo-entries (the app, APS, dynamic profiles, browser
+loggers) are always running and are left untouched.
+
+The console's bottom-left buttons (Inspector, Terminate,
+Restart) become SF Symbol icons to make room, and a trash
+icon runs Clear Terminated. It enables only when a stopped
+entry exists. Each icon keeps its original text as a
+tooltip.
+
+2026-07-27: Add Copy URL context menu item for detected URLs
+
+Right-clicking on an auto-detected URL (the kind Cmd-click
+opens) now offers Copy URL, which stitches hard newlines out
+of wrapped URLs so a clean link can be pasted into a browser
+other than the default. The detection runs synchronously so
+the item only appears when there is genuinely an openable
+URL under the cursor.
+
+Issue 12944.
+
+2026-07-27: Fade the compact proxy icon in step with the
+stoplights
+
+The compact-window proxy icon is laid out next to the
+stoplight buttons but its alpha was never tied to them. In a
+compact window with bottom tabs (where enableStoplightHotbox
+is YES), the stoplights hide to alpha 0 until the hotbox is
+hovered, yet the proxy icon stayed at alpha 1, so it was
+always visible even with the buttons hidden.
+
+Mirror _standardWindowButtonsView.alphaValue onto
+_compactProxyIconView at the three sites that drive
+stoplight visibility: the steady-state layout in
+layoutWindowPaneDecorations (which also covers the moment
+the icon is first created) and the hotbox mouse enter/exit
+animations.  Messaging a nil proxy icon is a no-op, so this
+is safe when the icon does not exist, and it composes with
+the view's own isHidden-when-no-URL behavior.
+
+2026-07-27: Forward three-finger drags to mouse-reporting
+apps
+
+A three-finger drag over an app that has mouse reporting
+enabled (tmux with mouse on, vim with mouse=a, etc.) could
+produce both the app's own selection and a native iTerm2
+selection at once.
+
+Once macOS's Accessibility "three-finger drag" feature
+engages it lifts the physical touches and synthesizes a
+pointer drag, so the touch count iTerm2 sees during the
+gesture is unreliable (0, 1, 2, or 3 for the same physical
+drag). The old code decided per drag event whether to report
+or select locally, keyed partly on that count and partly on
+whether the pointer had crossed into a new cell, so a single
+drag ended up split between the app's selection and a local
+one, and identical gestures could land on different owners.
+
+Now, when mouse reporting is active, every drag is forwarded
+to the app and no native selection is made, exactly as a
+one-finger drag already did. A reportable event that emits
+nothing only because the pointer stayed in the same cell no
+longer falls through to a local selection.  Hold Option
+during the drag to force a local selection. When mouse
+reporting is off, a three-finger drag still makes a local
+selection.
+
+The threeFingerDragSendsMouseReports advanced setting is now
+obsolete and has been removed.
+
+Fixes issues 12953 and 12950.
+
+2026-07-27: Trim high-volume retrospective (RLog) sites
+
+On busy multi-session hosts the 10 MB retrospective ring was
+filling in minutes because several recently promoted RLog
+sites logged large payloads at layout/appearance frequency.
+Trim the offenders while keeping the useful breadcrumbs:
+
+- Drop the full window-controller description from
+  -shouldShowPermanentFullScreenTabBar and
+  -safeSetAppearance:.
+- Demote the recursive view-hierarchy dump in
+  -updateTabBarControlIsTitlebarAccessory and the fullscreen
+  path of -tabBarProvidesProgressVisibility to DLog.
+- Demote the PTYFontInfo bold/italic computation logs to
+DLog
+  (cached font lookups, recomputable offline).
+- Remove NSThread callStackSymbols from the app-activation
+and
+  miniaturize/deminiaturize breadcrumbs.
+
+The key/event breadcrumbs (-handleKeyDownEvent:,
+-sendEvent:) are left as RLog since unreproducible keystroke
+reports are the intended use case. Addresses issue 12949.
+
+2026-07-27: Bound WebSocket resource use to stop API
+ping-flood memory exhaustion
+
+An authenticated Python API client could flood the server
+with WebSocket ping frames without reading the pongs. The
+server buffered pongs without limit and its memory grew
+quickly. Bound both directions:
+
+- Server (iTermWebSocketConnection): cap the number of
+in-flight inbound
+  read chunks, and disconnect a peer that floods pings but
+  stops draining pongs once outstanding pongs exceed a cap,
+  rather than buffering pongs without limit or blocking the
+  work queue (which teardown also runs on, so blocking it
+  would make the connection un-abortable).
+- iTermHTTPConnection.writeAsynchronously now always
+delivers its
+  completion, reporting an error when the stream is gone, so
+  backpressure accounting cannot leak and wedge the
+  connection.
+- it2 client (WebSocketClient): handle a flood of control
+frames
+  iteratively instead of recursively so it cannot overflow
+  the stack.
+
+Adds unit regression tests for the completion contract and
+the pong-flood teardown, plus a live repro harness under
+tests/.
+
+2026-07-27: Document required -suite argument when running
+the app
+
+2026-07-27: Restore keyboard focus after apply_layout
+reshapes a tab
+
+App.async_apply_layout rebuilds a tab's view hierarchy via
+iTermSplitTreeRebuilder.replaceViewHierarchy, which calls
+PTYTab.setRoot:.  setRoot: reparents every SessionView
+(empties flexibleView_ and re-adds the new root), detaching
+whatever view held first-responder status and leaving the
+window with a nil/stale responder.
+
+The active-session promotion block treated "active session
+survived" as "nothing to do", and setActiveSession:'s
+makeFirstResponder: is gated on the active pointer changing,
+so when the active pane survived the reshape (the common
+case: a fresh one-session tab gaining new_session panes)
+nothing ever restored focus. Result: no pane had keyboard
+focus and typing went nowhere until the user clicked a pane.
+
+Fix: after the rebuild, unconditionally restore the window's
+first responder to the active session, matching what the two
+tmux rebuild paths already do.  Guarded to the current tab
+to avoid making a non-visible textview first responder (same
+NSTextInput guard setActiveSession: uses).
+
+Adds tests/apply_layout_focus_repro.py and a venv runner
+that exercises the in-tree iterm2 Python module.
+
+Reported on iterm2-discuss (3.7.0beta5).
+
+2026-07-27: Avoid redundant key reporting refreshes on
+screen switches (#705)
+
+* Test unchanged key reporting across screen switches
+
+Exercise real injected keyboard-protocol escape sequences
+through VT100Screen, record the flags visible inside the
+delegate callback, and assert that buffer switches only
+refresh when the effective flags change.
+
+Cover both zero-to-zero switches and screens with the same
+nonzero reporting flags.
+
+* Avoid redundant key reporting refreshes on screen switches
+
+Switching between screen buffers can select a different
+key-reporting mode stack without mutating either stack.
+Compare the effective flags before and after the switch, and
+refresh the session only when that value changes.
+
+This preserves manual key-reporting choices when both
+screens report the same flags while retaining the existing
+refresh path for real main-to-alternate transitions.
+2026-07-27: Bump companion build number to 6
+
+2026-07-27: 3.7.0beta8
+
 2026-07-26: Pin workgroup member sessions to the default end
 action
 
