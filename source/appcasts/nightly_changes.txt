@@ -1,3 +1,14 @@
+2026-07-28: Open web URLs handed to iTerm2 in the built-in
+browser. Issue 12431
+
+When the OS (as the default browser), "open -a iTerm2
+<url>", Velja, or vim's gx hands iTerm2 an http/https/file
+URL via the GetURL Apple event, open it in the built-in web
+browser instead of launching a terminal, unless the user has
+bound the scheme to a specific profile. If the browser
+plugin isn't installed, offer it once (silenceable) and fall
+back to the legacy behavior.
+
 2026-07-27: Apply profile custom tab title to new tmux
 windows
 
