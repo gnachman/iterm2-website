@@ -1,3 +1,1295 @@
+2026-07-29: AI chat: live-cover Responses delta mode
+surviving pre-reduce (Phase 7)
+
+The blob-replay live matrix had no multi-turn Responses
+DELTA test: the existing Responses test forces
+previous_response_id omission (full stateless replay), so
+the delta path a pre-reduced chat depends on was unvalidated
+against a real vendor. That path is where the send-side
+pre-reduce is most fragile -- pre-reducing drops the prior
+assistant turns, so the delta anchor must be carried forward
+(carriedPreviousResponseID) or the turn silently falls back
+to a full replay.
+
+Adds test_chat_responses_deltaModeSurvivesPreReduce: a
+three-turn Responses chat whose turns 2+ are pre-reduced.
+Asserts the first request omits previous_response_id, a
+LATER request carries it (delta mode engaged from the
+carry-forward, not a full replay), and the server-held
+context is intact (the model recalls a secret from turn 1).
+Passes live against OpenAI.
+
+Also records the reachability audit outcome for the pipeline
+retirement: translate()/repair/stabilize are now reached
+ONLY as the round encoder at capture, the reconstruction
+fallback, and the legacy migration codec -- never on the
+per-request steady-state send path. Nothing is dead
+(migration is not universal), so the pipeline is retired
+from the hot path but retained as the codec, per plan.
+
+2026-07-29: AI chat: fix blob pre-reduce edge cases from
+review
+
+Four fixes to the send/capture pre-reduce fast paths:
+
+1. Bail dropped the current round (serious). On a
+pre-reduced turn, when
+   blob replay declines (cross-protocol switch, oversized
+   round, corrupt blob), outgoingRequest rebuilt the history
+   from fullHistoryProvider, which is translate(history) =
+   the PRIOR rounds only (history excludes the current
+   turn). It returned just that, discarding
+   conversation.messages (the current round), so the request
+   resent the prior conversation with no new question. Now
+   it sends full + messages (prior + current round). Pinned
+   by a new outgoingRequest test via a test seam.
+
+2. Explain chats diverged from the full path.
+MessageToPromptStateMachine.mode
+   is the one translate() state that crosses a round
+   boundary (an .explanationRequest sets a mode consumed by
+   the NEXT round's first user turn). The reduced send path
+   skips translate and the tail-only capture path uses a
+   fresh state machine, so a leaked mode would re-frame the
+   boundary turn's bytes (and perturb Anthropic's
+   byte-prefix cache). Both fast paths now fall back to the
+   full translate when the history uses Explain
+   (historyUsesExplainFeature).
+
+3. carriedPreviousResponseID could send a stale
+previous_response_id. Its
+   parallel role(from:) scan diverged from translate for a
+   squelched function_call==nil request (which replay skips)
+   and a repair-synthesized terminal tool_use. Rewritten as
+   a CONSERVATIVE walk that applies the same content filter
+   and returns nil unless the last included message is an
+   assistant turn, so it never returns a non-nil id
+   translate would not (the only unsafe outcome); a nil just
+   forces a safe full resend. Covered by the reviewer's
+   skipped-request and orphan-tool_result cases.
+
+4. deleteMessages(after:) latent no-op on the pre-reduced
+path. A non-tail
+   inResponseTo anchor can't truncate the dropped prior
+   rounds. Unreachable today (an edit clears blobs ->
+   non-reduced turn), but added an RLog tripwire so a future
+   violation surfaces rather than replaying stale history.
+
+Validated live: 13/14 chat_ AILiveHarness tests pass (1
+transient Gemini 429 skip), including Responses delta and
+the multi-turn pre-reduce/capture.
+
+2026-07-29: AI chat: translate only the new rounds when
+capturing blobs
+
+captureBlobsForCompletedTurn re-translated the WHOLE display
+history each turn only to have captureNewRounds slice off
+and freeze the tail (the rounds beyond the stored prefix)
+and discard the rest. That is the capture-side twin of the
+send-side waste just removed: O(history) per turn for a
+result that is thrown away.
+
+For an established same-protocol chat, capture now
+translates only the new rounds' display messages
+(displayTailForNewRounds) and appends them via
+ChatBlobCapture.appendNewRounds. It re-derives from the full
+history for migration (no blobs yet), a protocol switch
+(re-frozen wholesale), or if the translated tail does not
+begin at a clean user turn. The display->round boundary
+filter now lives in one place (roundStartIndices), shared by
+reconstructedRoundCount and displayTailForNewRounds so the
+two can't drift.
+
+appendNewRounds and captureNewRounds share the encode+append
+loop (appendRoundBlobs) and the same protocol guard and
+single-round token crediting, so both persist identical
+blobs; only the amount of history translated differs. Pinned
+by test: the translated tail equals the tail of the full
+translate for every prefix length, appendNewRounds is
+semantically equal to captureNewRounds (chatCompletions) and
+byte-identical on Anthropic (sorted keys, where the cache is
+a byte-prefix match), and the protocol guard is honored.
+
+Validated live: all 14 chat_ AILiveHarness tests pass,
+including the multi-turn Anthropic/DeepSeek/Gemini chats
+whose turns 2+ now freeze via the fast path, plus migration
+(full then fast) and the tool round.
+
+2026-07-29: AI chat: skip re-translating frozen history on
+the send path
+
+Blob-native chats stored their whole history as verbatim
+wire-fragment blobs, but load() still ran the full
+translate() pipeline over every prior round each turn only
+to have the send path (messagesPastFrozenRounds) throw the
+frozen prefix away and splice it back from blobs. That is
+O(history) CPU per turn (per tool-loop sub-request) for a
+result that is discarded.
+
+load() now computes a cheap exact round count
+(reconstructedRoundCount, which builds no message body) and,
+when a chat's blobs already cover its whole history, sets
+conversation.messages to just the current round and lets the
+frozen prefix come from the blob bytes. The frozen-prefix
+translate is skipped entirely in the steady state. A partial
+capture or a brand-new chat falls to the full translate as
+before; a live bail (protocol switch, oversized round,
+undecodable blob) rebuilds the full history via
+fullHistoryProvider so the codec fallback never sends a
+history-less request.
+
+Pre-reducing drops the prior assistant turns from
+conversation.messages, so two selections that read them are
+carried forward explicitly: -
+reducedHistoryPreviousResponseID keeps Responses delta mode
+alive on a
+  turn's first request. It mirrors AIConversation's
+  lastAssistantMessage selection nil-inclusively
+  (carriedPreviousResponseID), so a terminal assistant turn
+  with no id falls back to a full resend rather than
+  reviving an earlier turn's stale id.
+- needsRenaming is guarded (a blob-native chat has prior
+history).
+
+reconstructedRoundCount and carriedPreviousResponseID are
+pinned by test against translate()+rounds so a drift that
+would drop un-frozen history or send a stale delta fails
+loudly. blobReplayPlan gains a messagesAreReduced flag whose
+wire is proven byte-identical to the full path.
+
+Validated live across every protocol (all 14 chat_
+AILiveHarness tests): Anthropic cache stays warm
+turn-over-turn, Responses/DeepSeek/Gemini and migration
+accepted.
+
+2026-07-29: AI chat: cover interrupted-tool orphan healing
+at capture; harden truncation teardown
+
+Finding 3 (interrupted/cancelled tool round): replace an
+intractable live test (an odd client-side max_tokens<2 on
+the seeded orphan transcript, unrelated to blobs) with a
+deterministic offline test proving the actual invariant - an
+orphaned tool_use, healed by the same
+repairingOrphanedToolPairs pass ChatAgent's translate() runs
+at capture, is frozen into a WELL-FORMED blob (tool_use
+paired with tool_result), never a broken pairing a vendor
+would 400 on replay. The live orphan scenarios remain
+covered by AILiveChatQueueTests.
+
+Also: clamp the truncation test's pref-restore to a sane
+floor (max(saved, 128000)) so a crashed run can't persist
+the small test budget and break normal chats.
+
+2026-07-29: AI chat: live-validate whole-round truncation
+against Anthropic (Phase 7 matrix)
+
+Finding 4: force blob-native truncation by lowering the
+AiMaxTokens pref, then run 6 padded rounds. Asserts (a) the
+oldest round's blob is dropped from the truncated request
+(whole-round head-drop), (b) all 6 turns are accepted - a
+dropped whole round can't split a tool_use/tool_result pair,
+so the vendor never 400s the truncated splice, and (c) the
+tools+system cache prefix stays read under truncation
+(cache_read stayed 3549-4244 across the run). Restores the
+prefs on teardown.
+
+Proves live what the offline stitch tests prove by
+construction. Not asserted: a specific recent frozen round
+survives - anthropicHalve's deep 50% cut legitimately drops
+all frozen rounds when a round is large relative to the
+target.
+
+2026-07-29: AI chat: live-validate reasoning-state survives
+blob replay; fix DeepSeek comment
+
+Finding 1 (reasoning models untested live): add a DeepSeek
+reasoning turn (shouldThink: true) whose
+reasoning_content-bearing round is frozen into a blob and
+replayed verbatim on turn 2 - accepted live, proving the
+opaque reasoning bytes survive capture/replay (a
+corrupted/dropped reasoning field 400s DeepSeek). This is
+the central justification of the redesign, previously only
+offline byte-tested. No Anthropic/Gemini model advertises
+configurableThinking in the catalog, so their reasoning
+paths aren't exercisable here; the Responses reasoning-item
+path rides delta mode (Phase-4 full-replay covers
+acceptance).
+
+Finding 2: correct the false comment on the DeepSeek test -
+it exercises the
+.deepSeek protocol (its own encoder/builder), NOT .chatCompletions; note that
+.chatCompletions (Azure/OpenRouter/vLLM) has offline tests but no live blob-replay.
+
+2026-07-29: AI chat: live-validate user-sent attachment
+round-trips through blobs (Phase 7 matrix)
+
+A user attachment (image via .multipart) is captured as a
+blob and replayed verbatim: turn 1 sends an image +
+question, turn 2 splices the image round's blob bytes
+verbatim and Anthropic re-accepts the image content block.
+Fixes the earlier gap that user attachments couldn't be
+tested - the it_fatalError I hit is the STREAMING
+.appendAttachment case; a user attachment rides .multipart
+and flows through the normal path. The offline attachment
+matrix only covers serialization; this covers the attachment
+through capture + blob-native replay end to end.
+
+2026-07-29: AI chat: live-validate model switch within a
+protocol keeps blobs (Phase 7 matrix)
+
+Two Anthropic models: turn 1 freezes a round on model A,
+turn 2 runs on model B.  Blobs are protocol-keyed (not
+model-keyed), so the switch does NOT re-freeze; turn 2
+splices model A's blob verbatim, is accepted by model B, and
+recalls the fact. Proves the plan invariant that a
+within-protocol model switch replays existing blobs
+unchanged (unlike a cross-protocol switch, which
+re-freezes).
+
+2026-07-29: AI chat: live-validate legacy-chat migration to
+blobs on first turn (Phase 5)
+
+End-to-end proof that a chat predating blobs (seeded
+history, blobProtocol nil, 0 blobs) migrates on its FIRST
+turn through the real ChatAgent stack: capture reconstructs
+the whole history via translate() and freezes every round,
+then the chat is blob-native. Asserts the seeded round is
+frozen and encodes its content, turn 2 splices the migrated
+first round's bytes verbatim (now blob-native), and the
+model recalls the seeded secret across the migration. The
+core migration logic was already offline-tested
+(captureNewRounds one-path); this closes the end-to-end gap.
+
+2026-07-29: AI chat: recover the just-appended blobID via a
+1-row query, not a full decode
+
+captureBlobsForCompletedTurn linked firstBlobRef using
+blobs(inChat:).last?.blobID, which SELECTs and fully decodes
+every ChatBlob payload (whole-round wire fragments - images,
+large contexts) just to read one UUID, an O(rounds) cost on
+every completed turn. Add ChatDatabase.lastBlobID (select
+blobID order by seq desc limit 1; decodes only the id
+column, mirroring storedBlobProtocol) and use it. No
+behavior change (.last by seq asc == newest by seq desc).
+Offline test for the accessor.
+
+2026-07-29: AI chat: inherit blobs on fork so the fork keeps
+the prompt cache (Phase 6)
+
+The fork copies the source chat's blobs for the retained
+message prefix (fresh blobIDs), copies Chat.blobProtocol,
+and remaps the cloned messages' firstBlobRef to the new
+blobIDs, so a forked chat is blob-native immediately instead
+of re-migrating on its first turn. Message.clone now clears
+firstBlobRef (a source-chat reference) so a fork that copies
+nothing leaves no dangling ref.
+
+Safety: ChatBlobAssembler.forkBlobPrefix copies ONLY a
+fully-linked clean prefix (the retained messages'
+firstBlobRefs must equal the source blob prefix exactly, in
+order); any gap or migration-era unlinked round copies
+nothing and falls back to re-migration, so the fork never
+ships blobs that don't match its display history.  Pure and
+offline-tested (clean / no-refs / mismatch / over-count).
+
+2026-07-29: AI chat: populate Message.firstBlobRef at
+capture (fork slicing foundation)
+
+Link each round's first user message to its blob so fork can
+slice blobs at a message boundary. Set only in the
+incremental case (exactly one new round frozen), where this
+turn's user message maps 1:1 to the just-frozen blob; a
+multi-round migration capture leaves it nil (fork falls back
+to re-migration for the unlinked prefix). Adds
+ChatListModel.setFirstBlobRef (persists via the message
+updateQuery) and threads the turn's userMessageID into
+capture. Offline test for the setter.
+
+2026-07-29: AI chat: live-validate real per-round token
+capture on Anthropic (#9)
+
+Assert the multi-turn Anthropic blob-replay test now stores
+real, positive vendor-usage-derived tokenCounts on the
+rounds after the first (the first has no prior turn to
+diff). Confirms the full #9 chain live: streaming Anthropic
+message_start usage (with cache tokens) -> lastPromptTokens
+-> turn-over-turn subtraction -> blob tokenCount. Cache
+stays warm; no regression.
+
+2026-07-29: AI chat: capture real per-round token weight by
+turn-over-turn subtraction (#9)
+
+Thread the vendor's reported input tokens from the parse
+site to blob capture and store each round's real weight:
+
+- AITermController.lastPromptTokens holds the turn's
+reported total input (set at
+  both parse sites, last non-nil across a stream so
+  Anthropic's message_start usage is kept);
+  AIConversation.complete resets it per turn (no stale
+  carryover) and exposes it via a passthrough.
+- ChatAgent reads it before swapping in the amended copy
+(fresh controller), and
+  keeps previousTurnPromptTokens in memory to derive the new
+  round's weight = max(0, thisTurn - lastTurn)
+  (roundTokenWeight): the envelope cancels between adjacent
+  turns, leaving the round's own contribution; nil -> byte
+  estimate when either turn had no usage.
+- ChatBlobCapture credits that count to the blob ONLY when
+exactly one new round is
+  frozen (incremental); a multi-round migration capture
+  can't attribute one turn's usage across rounds, so those
+  byte-estimate.
+
+Offline tests for roundTokenWeight (delta / first-turn /
+no-usage / shrunk-clamp) and the single-round-only
+crediting. planTruncation already prefers a stored
+tokenCount over the byte estimate, so this transparently
+sharpens truncation.
+
+2026-07-29: AI chat: populate promptTokens from vendor usage
+in each parser (#9)
+
+Surface the vendor's reported total input tokens on the
+response types: - chatCompletions (ModernResponse, also
+covers DeepSeek non-streaming which reuses
+  it) and legacy: usage.prompt_tokens.
+- Responses: body.usage.input_tokens (already the total;
+cached is a subdetail).  - Anthropic (streaming + non):
+input_tokens + cache_read + cache_creation, since
+  Anthropic reports input_tokens as the NON-cached portion
+  only - summing avoids a massive undercount on a cached
+  request (the common blob-native case). Added the cache
+  fields to both AnthropicUsage structs.
+- Gemini: added usageMetadata.promptTokenCount (streaming +
+non).
+
+Streaming paths without a usage field
+(chatCompletions/DeepSeek/legacy streaming) stay nil and
+fall back to the byte estimate. Additive; still nothing
+reads it.
+
+2026-07-29: AI chat: add LLM.AnyResponse.promptTokens
+(input-token usage plumbing, #9)
+
+First increment of real per-round token capture: a
+promptTokens: Int? on the response protocols carrying the
+vendor's reported total input (prompt) tokens, which blob
+capture will use to derive each round's real token weight by
+subtraction (falling back to the byte estimate when nil).
+Defaults to nil on both AnyResponse and
+AnyStreamingResponse; LlamaResponse (which conforms to both,
+and carries no usage) declares it explicitly to resolve the
+two defaults. Additive and inert - no parser populates it
+and nothing reads it yet.
+
+2026-07-29: AI chat: live-validate Responses full stateless
+replay (Phase 4 recovery target)
+
+Proves OpenAI accepts a full Responses replay with
+previous_response_id omitted and uses the replayed history
+(recalls a seeded name) - exactly the request the Phase-4
+retry re-issues on an unusable id, and the last unproven
+live splice path (Responses input array). A fresh agent's
+first turn nulls previous_response_id (systemMessageDirty),
+so the turn IS that full replay.
+
+The auto-retry TRIGGER stays covered by
+ChatAgentExpiryTests: the stack never puts a BAD id on the
+wire without a real server-side expiry (turns 2+ use the
+valid in-memory id, store is always on), so forcing one live
+would need a production seam not worth adding.
+
+2026-07-29: AI chat: retry a turn as full stateless replay
+on unusable previous_response_id
+
+Extract the turn-completion handler into handleTurnResult
+and add a one-shot Phase-4 retry: when a Responses turn
+fails with an unusable previous_response_id (classified
+narrowly), re-issue the SAME turn as a full replay from
+blobs with the id omitted. systemMessageDirty forces
+complete() to null previousResponseID (otherwise it
+re-derives the stale id from the last assistant message).
+Only retried when an id was actually sent (delta mode); a
+full replay that fails is a real failure, and didRetryExpiry
+bounds it to one retry.
+
+streamID is passed as a live () -> UUID? accessor (not a
+snapshot) so the retry's re-streamed message commits under
+the post-retry id. Extraction is behavior- preserving
+otherwise; builds clean.
+
+2026-07-29: AI chat: classify unusable previous_response_id
+errors (Phase 4)
+
+isUnusablePreviousResponseIDError detects a Responses-API
+previous_response_id that expired / was not stored / was
+deleted, the trigger for retrying a turn as a full stateless
+replay from blobs. Deliberately narrow (must mention the
+previous response AND a not-usable reason) so a generic 4xx
+is never misread as an expiry and silently retried. Pure +
+offline-tested; not yet wired.
+
+2026-07-29: AI chat: don't let the truncation-budget peek
+consume the auto-provided screen
+
+The envelopeTokens thunk sized the volatile context by
+calling the volatile provider, which runs
+autoProvidedContext() and (for View Contents = Always)
+advances the lastAutoProvidedScreen dedup watermark as a
+side effect. Since the budget runs in outgoingRequest BEFORE
+the per-vendor builder appends the real volatile text, the
+budget grab consumed the screen: the actual send then saw it
+as unchanged and emitted <visible-screen unchanged="true"/>,
+so the model never received the screen on session-bound
+blob-native chats with auto-provide on. It fired on the
+first turn and every tool-loop continuation.
+
+Fix: thread a  flag through
+currentVolatileText/autoProvidedContext. The budget path
+peeks with commit:false - it computes the full block for
+sizing but does NOT advance the watermark or show the
+consent prompt; the real send (default commit:true) is
+unchanged and still emits the screen. commit defaults to
+true, so every existing caller is unaffected.
+
+Not offline-testable: the path needs a live PTYSession +
+View Contents = Always + granted consent, which the unit
+suite and the fabricated-guid live tests can't reach.
+Correct by construction (default-true preserves all current
+callers).
+
+2026-07-29: AI chat: live-validate blob replay on Gemini;
+add transient-error skip guard
+
+Gemini test covers the third splice path (contents array,
+system separate, afterCount 0). These ChatAgent-turn tests
+have no 503 retry (unlike AILiveDriver), so a vendor
+capacity blip would flaky-fail; add
+skipIfTransientVendorError that skips (not fails) only on
+the transient set (503/502/500/429/overloaded/
+RESOURCE_EXHAUSTED/UNAVAILABLE), run before the hard
+assertions. A real splice rejection (HTTP 400, e.g. broken
+tool adjacency) still fails rather than being masked.
+Applied to all four blob-replay live tests.
+
+2026-07-29: AI chat: live-validate blob replay on DeepSeek
+(chatCompletions splice)
+
+Second protocol/vendor coverage: DeepSeek uses the
+chatCompletions wire shape (different splice path than
+Anthropic, and the strict tool-adjacency vendor from issue
+#12883). Three turns; proves a real non-Anthropic vendor
+accepts the frozen history spliced into its messages array
+and the model recalls blob-replayed history. No cache
+assertion (DeepSeek has no prompt-cache pricing). Passed
+live.
+
+2026-07-29: AI chat: live-validate tool-round blob replay
+(tool_use/tool_result pairing)
+
+Adds a ChatAgent-turn live test where turn 1 runs a tool
+(one round = user + assistant [text, tool_use] + tool_result
++ final assistant, captured as ONE blob) and turn 2 replays
+that round purely from the blob. Anthropic accepts the
+spliced tool_use/tool_result pairing (a broken pairing 400s)
+and the model recalls the tool output from the replayed
+tool_result. This is the mutator-B / tool-adjacency proof
+the offline byte-tests cannot give (only a real vendor
+enforces the pairing). Passed live.
+
+2026-07-29: AI chat: budget blob-replay against
+tools+volatile and the AiMaxTokens pref
+
+Two review fixes to the truncation budget in blobReplayPlan
+/ ChatAgent:
+
+1. fixedCost omitted the tool schemas and the volatile
+per-turn context (terminal
+   screen / workgroups snapshot), which the per-vendor
+   builder adds at send time and are not in the reduced
+   message list. Because the frozen prefix is bounded ONLY
+   here (the legacy truncate never touches the spliced
+   frozen bytes), the undercount could let an over-window
+   request through with no fallback. Now folds an
+   envelopeTokens thunk (tool-definition tokens + volatile
+   text) into fixedCost; a thunk so the
+   potentially-expensive volatile estimate (a screen grab)
+   runs only on the blob path, after the safety gate and
+   reduction.
+
+2. The blob path budgeted against the model's full context
+window, silently
+   bypassing the user's AiMaxTokens preference that the
+   legacy truncate() honors, so a large-window model could
+   retain far more (costlier) history than configured.  Now
+   clamps to min(contextWindowTokens, maxTotalTokens) and
+   reserves output the same way the legacy path does.
+
+Offline: new envelopeTokens-counted-in-budget test + all
+blobReplayPlan calls updated. Live: re-ran the Anthropic
+harness; cache still warm (creation 8164 once, reads
+8164-8188 thereafter).
+
+2026-07-29: docs: release note for blob-native AI chat
+history replay
+
+2026-07-29: AI chat: bind the blob-replay live test chat to
+Anthropic; guard empty blobs
+
+The provider binding locks a chat to the first turn's model
+(else the global default, whatever vendor the machine is
+configured for), so a per-turn configuration.model naming
+Anthropic on a machine defaulting to another vendor was
+rejected as a cross-provider switch and no Anthropic call
+happened. Bind the chat to the Anthropic model at creation
+via setModel so every turn runs on it.
+
+Also skip (not index-crash the host, since asserts are
+enabled) if no blobs were captured.
+
+Live run confirms the flip: turn 1 writes an ~8164-token
+cache; turns 2-3 read ~8164-8188 back with ~0-27 created,
+i.e. blob replay keeps the prefix byte-stable and the prompt
+cache warm (the original bug was cache_read stuck at 0).
+
+2026-07-29: AI chat: add ChatAgent-turn live harness for
+blob-native replay
+
+The existing AILiveDriver drives a bare AITermController and
+never sets blobReplayProvider, so it cannot exercise the
+flip. This test drives the real ChatBroker -> ChatService ->
+ChatAgent -> AIConversation -> LLM stack (modeled on
+AILiveChatQueueTests), so blob-native replay actually
+engages.
+
+Three Anthropic turns: turn 1 seeds a secret in a large
+(reliably cacheable) message; turns 2-3 replay that history
+purely from stored blobs. Asserts every turn was accepted
+(one blob per round, since a rejected turn writes none), the
+model recalls the secret (frozen history reached it), the
+stored blob bytes are spliced verbatim into later requests
+(byte-stable prefix), and the Anthropic prompt cache is READ
+on a later turn (replay did not churn the prefix).
+
+Captures wire traffic via iTermAIClient.liveObserver. ~3
+Anthropic round-trips, cents per run. Added to the
+ModernTests target (where the AILiveHarness class lives).
+
+2026-07-29: AI chat: flip on blob-native replay in ChatAgent
+
+Set conversation.blobReplayProvider each turn (like
+trailingVolatileTextProvider) so a chat with wire-fragment
+blobs frozen under the turn's protocol sends [system] + the
+current round with the frozen history spliced verbatim,
+instead of reconstructing the whole conversation every turn
+(which churned Anthropic's cached prefix). Anthropic
+truncates deep (50% of context) for a long caching runway;
+other vendors drop just enough to fit. Falls back to full
+reconstruction for legacy/blobless chats, protocol
+mismatches, misaligned round counts, or a turn too large to
+fit after dropping every blob.
+
+Byte-faithfulness is proven offline across all 7 protocols
+(ChatBlobAssembler tests); this is the read-side switch
+those proofs were building toward.
+
+2026-07-29: AI chat: add blobReplayPlan composing the full
+send decision
+
+blobReplayPlan ties the pieces together for one turn: the
+safety gate (safeBlobsForReplay, factored out of
+stitchedHistoryIfSafe so both share it), the message
+reduction, whole-round truncation (byte-estimate weights via
+an injected closure, or stored tokenCount when present), and
+the verbatim byte splice. Returns the reduced outgoing
+messages + frozen bytes, or nil to fall back (not
+blob-native, misaligned, or needsElision).
+
+Tests compose all pieces and byte-match the live builder fed
+the truncated history, plus under-budget, tail-over-budget,
+and protocol-mismatch fallbacks.  Still not wired to a live
+send (ChatAgent sets it next).
+
+2026-07-29: AI chat: plumb blobReplayProvider through the
+controller and complete()
+
+Add AITermController.blobReplayProvider (set per turn by the
+chat layer, like trailingVolatileTextProvider) and an
+AIConversation passthrough. In complete(), hoist the
+providerOverride/previousResponseID block above the send
+decision and compute the outgoing messages + frozen bytes
+ONCE via outgoingRequest(), used at both send sites. This
+also fixes a latent bug where the registration-deferred path
+captured truncatedMessages with a stale previousResponseID.
+
+Blob-native replay engages only outside Responses delta mode
+and only when the provider accepts the conversation;
+otherwise it falls back to truncatedMessages with no frozen
+bytes. Inert until ChatAgent sets the provider, so behavior
+is unchanged (all AI + blob offline suites green).
+
+2026-07-29: AI chat: hold frozen history on the controller;
+prove truncated-replay parity
+
+AITermController gains a frozenHistoryElements property
+spliced into the request builder (mirrors
+trailingVolatileTextProvider). The chat layer sets it once
+per turn alongside the reduced message list; the same bytes
+re-splice on every tool-loop sub-request since the frozen
+prefix does not change mid-turn.  Inert by default (nil), so
+no behavior change yet.
+
+Adds the deferred finding-4 test: truncation (drop oldest
+dropCount head blobs from the frozen bytes) composes with
+reduction (peel all N frozen rounds, keep the current round)
+to reproduce the live builder fed the truncated history.
+Guards the dropCount <-> frozenRoundCount alignment at the
+splice boundary.
+
+2026-07-29: AI chat: cover truncation/reduction/migration
+test blind spots
+
+- planTruncation: add realistic large-output regime (200k
+context, 128k
+  reserve, so halve target 100k > fit budget 72k) proving
+  the clamp both fits and elides correctly at real
+  magnitudes.
+- messagesPastFrozenRounds: peel MULTIPLE leading system
+messages (all tests
+  used exactly one), and an all-system list with a positive
+  frozen count must refuse (nil).
+- ChatBlob.tokenCount: end-to-end ADD COLUMN migration on a
+real pre-column
+  table (drop+recreate without the column, run the
+  createTables migration pass, assert old rows read nil and
+  new inserts set it). The isolated migrations() test could
+  not exercise the ALTER wiring or the accessor.
+
+The combined truncation + frozenRoundCount parity test is
+deferred to the live flip, where the two helpers are first
+wired together.
+
+2026-07-29: AI chat: clamp anthropicHalve truncation target
+to the fit budget
+
+The deep-cut target (contextWindow/2) could sit ABOVE the
+fit budget on a large-max-output model, where outputReserve
+> contextWindow/2 so fitBudget = contextWindow -
+outputReserve < contextWindow/2. In that regime a request
+with running in (fitBudget, contextWindow/2] passed the
+trigger guard (running > fitBudget) but skipped the drop
+loop (running > target already false), returning dropCount 0
+and needsElision false for a request that does not fit, so
+an over-budget request would be sent with no elision
+fallback.
+
+Clamp target to min(contextWindow/2, fitBudget) so
+anthropicHalve can never truncate less than fitOnly; the
+pathological regime degrades to fitOnly and needsElision is
+computed correctly. Normal Anthropic models (200k context,
+small reserve) are unaffected. Adds two regression tests in
+the outputReserve > contextWindow/2 regime.
+
+2026-07-29: AI chat: add blob-native whole-round truncation
+planner
+
+planTruncation decides how many whole head blobs (oldest
+rounds) to drop so a blob-native request fits. Dropping
+whole rounds can never split a tool_use/tool_result pair,
+since a pair always lives inside one blob.
+
+Two policies: anthropicHalve cuts deep (to 50% of the
+context window) when we near the limit, so the shorter
+prefix stays byte-stable for many subsequent turns and the
+prompt cache keeps hitting (one big cut, long runway,
+instead of shaving every turn); fitOnly drops just enough to
+fit and keeps as much history as possible for vendors
+without cache-based pricing. Truncation triggers only when
+the request would exceed the fit budget (context - output
+reserve), so a conversation under the limit is never cut. If
+dropping every blob still leaves the envelope + current
+round over the fit budget, needsElision signals the caller
+to fall back to in-message text elision for that one
+request.
+
+Pure and offline-tested; not yet wired to a live send.
+
+2026-07-29: AI chat: add ChatBlob.tokenCount column for
+round-granular truncation
+
+Each blob will store its round's real token weight (derived
+by subtraction from the vendor's reported usage), which
+assembly-time truncation sums to decide how many whole head
+blobs to drop to fit the budget. Stored as TEXT so nil (no
+usage reported / legacy blob -> fall back to the byte
+estimate) stays distinct from a real 0, which the integer
+result-set accessor cannot express.
+
+Adds the ADD COLUMN migration path ChatBlob lacked (it is
+created with create-table-if-not-exists, so existing beta
+databases need the alter), wired into createTables the same
+way Chat/Message migrations run.
+
+2026-07-29: AI chat: add send-time reduction helper for
+blob-native replay
+
+messagesPastFrozenRounds peels the leading system message(s)
+and drops the first N rounds (the frozen prefix) from a full
+outgoing message list, keeping system + the current round
+(including in-progress tool-loop items). Spliced back with
+the frozen-history bytes, its output reproduces the whole
+conversation byte-for-byte (proven by the existing send-path
+parity tests).
+
+Returns nil on misalignment (fewer rounds present than
+frozen, or exactly as many) so the caller falls back to the
+full un-spliced request rather than send a history-less one.
+Pure and inert: nothing calls it on the live path yet.
+
+2026-07-29: AI chat: invalidate blobs on message delete; fix
+stranded capture doc
+
+Blob capture assumes append-only history, but edit/retry
+truncates the display log via ChatListModel.delete. Clear
+the chat's blobs there so the next completed turn re-freezes
+the edited history from scratch instead of recording a
+stale, misaligned sequence.
+
+Also reorder the ChatBlobCapture doc comments so the
+captureNewRounds append-only note sits above
+captureNewRounds (the refactor had stranded it above
+captureTurn, where it contradicted the protocol-switch
+behavior).
+
+2026-07-29: AI chat: extract captureTurn for protocol-switch
+handling + test it
+
+Factors the capture hook's protocol-switch orchestration out
+of ChatAgent into ChatBlobCapture.captureTurn: when the chat
+already has blobs under a different protocol than this
+turn's (the user switched provider/model mid-conversation),
+clear them and re-freeze the whole history under the new
+protocol; otherwise a normal incremental capture. This makes
+the logic unit-testable offline -- same protocol stays
+incremental; a switch clears the old blobs and re-freezes
+every round under the new protocol -- rather than living
+inline in the untestable live-turn hook. The ChatAgent hook
+is now a thin caller (translate + captureTurn + stamp
+Chat.blobProtocol).
+
+2026-07-29: AI chat: capture wire-fragment blobs at the end
+of each completed turn
+
+Wires blob capture into the live turn path (Phase 2's
+remaining piece). At true turn end -- the .success branch of
+AIConversation.complete, after the reply has committed
+synchronously via ChatService.finishTurn, and only when no
+tool call is still parked -- ChatAgent reconstructs the
+whole chat as [LLM.Message] via the same translate() the
+reload path uses and lets ChatBlobCapture freeze any round
+not yet stored (incremental per turn; the whole legacy
+history on first capture, through one path). On a protocol
+switch it clears and re-freezes under the new protocol.
+Stamps Chat.blobProtocol on first capture.
+
+Routes through broker.listModel (== ChatListModel.instance
+in production, a temp DB under test) instead of the
+ChatDatabase.instance singleton, so capture writes to the
+same store the turn used and can be exercised by a temp-DB
+turn test.  Adds ChatListModel.setBlobProtocol and a
+chatDatabase accessor.
+
+Nothing READS blobs yet (the reconstruction switch is next),
+so this only starts recording alongside the existing path.
+Build passes; turn-lifecycle tests still pass with capture
+active.
+
+2026-07-29: AI chat: pin the surprising iTermAIAPI NS_ENUM
+decode behavior
+
+A reviewer flagged the ChatBlob.init? comment as backwards,
+arguing standard Swift enum semantics make init?(rawValue:)
+validate and return nil for unknown values. An empirical
+test settles it the other way: iTermAIAPI is an imported
+ObjC NS_ENUM, and iTermAIAPI(rawValue: 99) is Optional(99),
+NOT nil -- so an unknown-protocol row DECODES and is not
+dropped, exactly as the comment says.  Imported NS_ENUMs do
+not validate init?(rawValue:) against declared cases.
+
+Adds two tests pinning this (iTermAIAPI(rawValue:
+99)?.rawValue == 99; an unknown-protocol row keeps
+blobs(inChat:).count == blobCount). Sharpens the
+stitchedHistoryIfSafe doc: the count-mismatch guard catches
+STRUCTURAL decode failures (corrupt blobID/role/payload),
+while the protocol check catches unknown/mismatched
+protocols -- both guards are load-bearing for distinct
+cases, neither is redundant.
+
+2026-07-29: AI chat: wire frozen-history splice into
+anthropic, gemini, responses
+
+Completes the blob send path for all 7 protocols (Option A:
+reuse the builders).  Each builder splices the chat's
+verbatim frozen history into its message array: anthropic
+and gemini at the start (system is a separate top-level
+field), responses after the system item(s) and only in
+full-replay mode (previousResponseID == nil; in delta mode
+the server already holds the history).  Gemini excludes the
+new field from its Codable body via CodingKeys.
+
+Also fixes a cache-correctness bug: the anthropic and
+responses builders serialize with .sortedKeys (their prompt
+caches are byte-prefix matches and tool/schema dict order is
+otherwise random), so their blobs must be encoded with
+.sortedKeys too, or a turn's frozen bytes would differ from
+the sorted bytes it was first sent with and miss the cache.
+Verified byte-identical: the blob-native anthropic messages
+array equals the live full-history one byte-for-byte
+(max_tokens, a top-level sibling outside the cached prefix,
+may differ). Semantic send-path parity tested for all 7
+protocols.
+
+2026-07-29: AI chat: wire frozen-history splice into llama,
+earlyO1, deepSeek builders
+
+Extends the blob send path (Option A) to the remaining
+messages-key protocols via a shared
+ChatBlobAssembler.spliceFrozenHistory helper (also refactors
+the chat-completions builder onto it). llama and deepSeek
+splice after the leading system message(s); earlyO1 uses the
+same count (it converts system->user but keeps position).
+Byte-faithful: the blob-native spliced messages array equals
+the live full-history messages array for all four
+messages-key protocols.
+
+2026-07-29: AI chat: wire frozen-history splice into the
+chat-completions builder
+
+First protocol of the blob send path (Option A: reuse the
+builder). Adds an optional frozenHistoryElements to
+LLMRequestBuilder and ModernBodyRequestBuilder: when set,
+the builder serializes the envelope + this turn's new
+messages as usual, then splices the chat's verbatim
+frozen-history wire bytes into the messages array after the
+system message(s) via JSONArraySplice. Adds
+ChatBlobAssembler.stitchInner (the verbatim inner element
+bytes, no brackets) that feeds it.
+
+Proven byte-faithful: a blob-native request (envelope + new
+turn + spliced history) produces the same messages array as
+a live request built from the full [LLM.Message] history,
+with and without a system message. Existing builder callers
+are unaffected (frozenHistoryElements defaults nil, last
+field).
+
+2026-07-29: AI chat: add verbatim JSON array byte-splice
+utility
+
+JSONArraySplice.insert drops pre-serialized elements into a
+JSON array inside an already-serialized JSON object at the
+byte level, preserving everything else verbatim. The blob
+send path uses this so each per-vendor request builder keeps
+owning its body shape (reuse, no duplication) while the
+chat's frozen history bytes are spliced into its message
+array without a JSONSerialization round-trip, which could
+reorder keys and break Anthropic's byte-prefix cache.
+String- and depth-aware so commas and brackets inside string
+values or nested structures are never miscounted as element
+boundaries.
+
+2026-07-29: AI chat: add verbatim byte-level blob stitch for
+cache stability
+
+ChatBlobAssembler.stitchBytes concatenates the verbatim
+inner bytes of each blob's payload array into one JSON
+array, without parsing and re-serializing the message
+objects. This is what the send path needs: Anthropic's
+prompt cache is a byte-prefix match, so the frozen history
+bytes must be identical turn over turn, which a
+JSONSerialization round-trip (which can reorder keys) would
+not guarantee. Validates each payload is a JSON array first
+(corrupt -> throw -> caller falls back to the codec).
+
+Tests: single blob reproduced verbatim, each blob's inner
+bytes appear unchanged in the concatenation,
+parse-equivalence with the object-level stitch, empty ->
+"[]", corrupt -> throws.
+
+2026-07-29: AI chat: add blob-replay safety gate
+(stitchedHistoryIfSafe)
+
+ChatBlobAssembler.stitchedHistoryIfSafe returns a chat's
+stitched wire history only when blob-native replay is
+provably safe, else nil so the caller falls back to codec
+reconstruction. Not-safe cases: no blobs (legacy chat); a
+decoded-blob-count vs stored-row-count mismatch (a
+structurally corrupt row would hole the spliced history);
+any blob not under the turn's protocol (an un-refrozen
+switch, or a future-iTerm2 unknown protocol); a corrupt
+payload.
+
+Also corrects a ChatBlob.init? comment: iTermAIAPI is an
+ObjC NS_ENUM, so iTermAIAPI(rawValue:) accepts any
+nonnegative raw (an unknown protocol is NOT dropped on
+decode). The unknown-protocol defense is the assembler's
+expectedProtocol check, not init?. Tests cover
+count-mismatch (corrupt blobID), unknown protocol, protocol
+mismatch, corrupt payload, and no-blobs.
+
+2026-07-29: AI chat: add blob assembler with end-to-end
+round-trip proof
+
+ChatBlobAssembler.stitch merges a chat's stored per-round
+blob payloads into one wire message array at the JSON level
+(never decoding into the encode-only wire structs), the read
+side of the redesign. A corrupt or non-array payload maps to
+corruptPayload so the caller falls back to codec
+reconstruction rather than splice a holed history.
+
+Adds the crux proof: capture a multi-round conversation into
+stored blobs and assert stitch(blobs) equals the live
+per-vendor builder's whole-conversation message array,
+across all 7 protocols (Anthropic compared against
+convertMessages, the unmarked array it freezes; the live
+cache marker is assembly-time envelope). This ties capture +
+storage + the JSON merge together and confirms replay is
+byte-faithful across the DB, not just at the encoder level.
+The envelope (system/tools/volatile) and Anthropic cache
+markers are still applied by the per-vendor builder at send
+time.
+
+2026-07-29: AI chat: guard blob capture against protocol
+mismatch; count rows cheaply
+
+Two fixes from review:
+
+- captureNewRounds refuses to append when the chat already
+has blobs under a
+  DIFFERENT protocol than the current api. A blob is only
+  replayable under the protocol it was frozen for, so
+  appending a new-protocol round onto old-protocol blobs
+  would produce a mixed, unreplayable sequence; a protocol
+  switch must re-freeze the whole history via replaceBlobs
+  first. Guarded by a new O(1) storedBlobProtocol peek
+  (reads one integer column, no payload decode).
+
+- The already-captured-round count now uses
+ChatDatabase.blobCount (select
+  count(*)) instead of blobs(inChat:).count, which ran
+  select * and fully decoded every payload just to take
+  .count (O(history) per turn, unbounded).  count(*) counts
+  rows without decoding, so it is O(1)-ish and, unlike a
+  decoded-blob count, is not undercounted by a row whose
+  protocol this build cannot read (which would otherwise
+  re-freeze and duplicate stored rounds).
+
+2026-07-29: AI chat: add per-round blob capture
+orchestration
+
+ChatBlobCapture.rounds splits a reconstructed [LLM.Message]
+history into rounds (one per user message, so truncation by
+whole rounds can never split a tool_use/tool_result pair).
+captureNewRounds freezes any round not yet stored, appending
+one blob per round via ChatDatabase. Incremental and
+idempotent: a blob-native chat freezes only the new round; a
+legacy chat with no blobs freezes its whole history through
+the SAME path (capture and migration unified). Stops on
+encode/write failure rather than leaving a gap in the stored
+sequence, and records the round's tail responseID for the
+Responses fast path. Not yet wired into the turn lifecycle.
+
+2026-07-29: AI chat: add attachment byte-faithfulness matrix
+
+Cross-checks the round encoder against the live builder for
+10 MIME classes (raster images, svg-as-text, pdf,
+plain/markdown/json/xml text, audio, octet-stream) across
+the 6 vendors whose message array carries no assembly-time
+envelope: chatCompletions, llama, earlyO1, deepSeek, gemini,
+responses. Each cell records independently so one run
+surfaces every divergence. Anthropic is excluded on purpose:
+its encoder freezes convertMessages verbatim, so a live-body
+comparison would differ only by the rolling cache marker
+(envelope) while a convertMessages comparison is
+tautological. This matrix would catch the llama joinText
+class of bug on the textual-attachment cells.
+
+2026-07-29: AI chat: thread hostedTools into the responses
+round encoder
+
+The responses encoder passed a fresh HostedTools()
+(codeInterpreter=false) to transform, but a .fileID user
+attachment is encoded differently by code interpreter state:
+dropped from content when on (the file rides the tools
+envelope), emitted as an input_file when off. Freezing with
+an empty set would resurrect an input_file that a
+code-interpreter chat's live request never sent as content,
+which can 400 on replay (input_file with a code-interpreter
+file id is only valid for PDFs).
+
+Add a hostedTools parameter to encodeRound (defaulting
+empty; the capture site passes the live set) and use it in
+the responses case so the frozen content matches the live
+request. Add byte-faithful fileID tests for both
+code-interpreter states; verified the codeInterpreter=on
+case fails without the fix.
+
+2026-07-29: AI chat: add responses round encoder
+
+Reuses ResponsesBodyRequestBuilder's exact per-message
+transform: one message maps to multiple input items
+(reasoning items precede the function call they produced;
+keepItemIDs is gated on reasoning presence; a user turn
+becomes a message item). Makes transform and its helpers
+(reasoningEntries, assistantEntries, hasReasoningItems,
+mimeTypeIsTextual) static since they depend only on their
+arguments, not builder state, so the encoder shares them;
+the encoder emits the full-replay input independent of
+previous_response_id (which body() strips later on the whole
+list).
+
+Byte-faithful tests against the live builder for multi-part
+and reasoning-bearing tool rounds, plus an assertion that a
+reasoning item is frozen ahead of its function_call and the
+call keeps its item id and call_id.
+
+2026-07-29: AI chat: add gemini round encoder
+
+Reuses GeminiRequestBuilder's exact conversion (role
+mapping, coalescingConsecutiveRoles, and the model-dependent
+thoughtSignature fallback) by constructing the builder for
+the round and freezing its contents. Adds an optional
+modelName to encodeRound because Gemini's wire form depends
+on whether the model requires thought signatures.
+Byte-faithful tests against the live builder for multi-part
+and signed tool rounds, plus gen-3-injects / gen-2-omits
+fallback tests. Updates the unsupported-protocol test to
+.completions since gemini is now supported.
+
+2026-07-29: AI chat: add deepSeek round encoder
+
+Pure per-message map to DeepSeekRequestBuilder.Message (its
+own wire type: string content, tool_calls, and
+reasoning_content echoed on assistant turns). Adds
+byte-faithfulness tests including a
+reasoning_content-bearing round, plus wire-level
+compositionality.
+
+2026-07-29: AI chat: fix llama round encoder to apply
+joinText (byte-faithfulness)
+
+The .llama encoder case was folded in with .chatCompletions,
+dropping the joinText pass the live llama builder applies
+(it collapses adjacent text parts within an array-content
+message because llama rejects multiple text parts). A round
+with multi-text-part content (e.g. a text preamble plus a
+.code attachment, which map to two adjacent text parts) would freeze bytes
+that diverge from the live request and replay as multiple
+text parts llama rejects, breaking the encoder's core
+"freeze the bytes the vendor accepted" invariant.
+
+Factor joinText out of LlamaBodyRequestBuilder as a static
+method so the encoder reuses the EXACT same conversion, and
+give .llama its own case that applies it. Add
+byte-faithfulness tests (frozen bytes == the live builder's
+message array) with a multi-text-part fixture. The prior
+compositionality tests could not catch this: joinText is
+per-message, so compositionality holds regardless, and the
+fixtures only produced .string content.
+
+2026-07-29: AI chat: add llama + earlyO1 round encoders
+
+Both reuse the chat-completions per-message map: llama is
+identical, and earlyO1 adds the system->user swap (a no-op
+for rounds, which carry no system message, but applied for
+faithfulness to the live request). Generic wire-level
+compositionality tests prove the stitch invariant for each.
+
+2026-07-29: AI chat: add chat-completions round encoder +
+JSON-level compositionality test
+
+Adds the chatCompletions case to ChatBlobWireEncoder (a pure
+per-message map via CompletionsMessage) and a
+protocol-agnostic wire-level compositionality test that
+compares the stored JSON payloads directly. Documents that
+the assembler must stitch payloads by merging JSON arrays,
+not by decoding into the typed wire structs:
+CompletionsMessage is encode-only (it emits role "tool" but
+its Role cannot decode "tool"), so a typed round-trip
+throws.
+
+2026-07-29: AI chat: add per-round wire encoder (Anthropic)
+for blob capture
+
+Phase 2 of the blob redesign.
+ChatBlobWireEncoder.encodeRound freezes one completed
+conversational round into its protocol's request-shape wire
+form (the bytes stored in a ChatBlob), reusing the vendor
+builder's exact conversion so the cross-message passes run
+once at capture and never again at reconstruction. Anthropic
+implemented; other protocols throw until added.
+
+Makes AnthropicRequestBuilder.convertMessages static (it
+never used builder state) so the encoder can share it.
+Proves the load-bearing invariant in a test: convert(r1+r2)
+== convert(r1)+convert(r2), which is what makes stitching
+stored rounds byte-equivalent to serializing the whole
+conversation at once. Also pins the mutator-B fix (a text
+preamble plus a tool call coalesce into one wire message)
+and the JSON round-trip.
+
+2026-07-29: AI model catalog: drop retired DeepSeek and
+OpenAI models
+
+Remove deepseek-chat, deepseek-coder, and deepseek-reasoner
+(DeepSeek now serves only deepseek-v4-flash and
+deepseek-v4-pro, both already present) and gpt-5.1-codex
+(deprecated by OpenAI, returns HTTP 404). These dead entries
+made every DeepSeek live-harness method and several OpenAI
+ones fail with 400/404 in the baseline sweep. None was
+flagged default or recommended, and none is referenced in
+code. Bump the catalog version to 2 so a shipped snapshot
+supersedes a cached one.
+
+2026-07-29: AI chat: add ChatBlob storage for wire-fragment
+reconstruction
+
+Phase 1 of the blob-based chat reconstruction. Adds a
+ChatBlob table holding each chat's verbatim wire-message
+fragments (one per role turn), keyed on the protocol they
+were captured for and ordered by a delete-immune
+autoincrement seq, with a stable blobID that survives a
+fork-copy. Adds a nullable Chat.blobProtocol column that
+stamps the frozen protocol (TEXT, so a NULL "not yet
+migrated" is distinct from protocol 0, completions) and a
+Message.firstBlobRef column linking a display message to its
+first blob for forking.
+
+Storage and columns only. Capture and reconstruction come in
+later phases; nothing writes or reads blobs yet.
+
+2026-07-29: AI chat: keep volatile per-turn context out of
+the prompt-cache prefix
+
+The orchestration <workgroups> snapshot and the
+session-bound auto-provided terminal/screen block were baked
+into the outgoing user body. They change every turn and are
+not persisted, so each turn's rebuilt history diverged from
+the previous turn's cached prefix, forcing Anthropic to
+re-create the whole conversation cache instead of reading it
+(cache_read repeatedly collapsed to the system+tools floor).
+
+Route both through a trailingVolatileText channel. For
+Anthropic the builder appends it as an unmarked user message
+after the rolling cache breakpoint, so the frozen history
+stays byte-stable and only the snapshot is uncached each
+turn. Every other vendor has no cache-prefix placement
+concern, so LLMRequestBuilder folds it in as a trailing user
+message for them; consuming it only in the Anthropic path
+would silently drop it for
+OpenAI/Gemini/DeepSeek/Llama/legacy completions, a
+functional regression since the terminal/screen block is
+permission-gated.
+
+The snapshot is regenerated fresh for every request
+(evaluated via a provider closure at request-build time),
+not frozen once per turn, so mid-turn session changes reach
+the model. A stale turn-start snapshot otherwise kept
+pointing the agent at a reloaded session's dead guid and it
+retried the same failing tool call forever.
+
+Tests: AIChatTrailingVolatileTests (builder contract +
+byte-stability), AIChatHistoryCacheStabilityTests (fixed
+behavior + latent guid mutator),
+LLMRequestBuilderVolatileContextTests (one assertion per
+vendor), and live AILiveHarness cases for wire acceptance,
+per-request regeneration, and non-Anthropic acceptance.
+
+2026-07-29: Bound the relay keepalive ping so a half-open
+socket cannot wedge it
+
+A black-holed half-open relay connection (an idle socket
+reaped by the edge or a middlebox without a close frame)
+could leave sendPing() awaiting a pong that never arrives:
+URLSession never fires its ping completion and the plugin's
+JS ping promise never settles, so the await blocked with no
+error and no cancellation signal. That wedged the keepalive
+loop on a single ping forever, so it never reported the
+socket dead, never cancelled it, and never reconnected. The
+Mac kept believing it was connected (observed: "connected"
+for 45h over a socket the relay had already dropped, its
+ping loop silent the whole time).
+
+Run each ping through withPingTimeout, an unstructured race
+that returns nil if the ping does not come back within
+relayKeepalivePingTimeoutNanos (10s, above a healthy RTT and
+below the 15s ping interval). A timed-out ping is treated
+like a failed one: cancel the socket so the parked
+receive()/accept() throws and the existing reconnect path
+engages. The race is intentionally not a task group, which
+would join the hung child and reintroduce the hang; the
+abandoned ping task unblocks on its own when cancel() fires
+URLSession's pending completion.
+
+2026-07-29: Bump shell integration: shrink it2check drain
+timeout to 10ms
+
+Reduces the it2check pending-input drain timeout from 0.1s
+to 0.01s, cutting the per-run latency added on bash 4+ (the
+common no-input case) by 10x while keeping the hang fix.
+
+2026-07-29: Bump shell integration: it2check bash 4+ read
+timeout fix
+
+Merges shell-integration PR #21, which guards the
+pending-input drain in it2check with a bash-4+ read timeout
+so it no longer hangs (e.g. as root under bash 5.2.21). Also
+upstreams the it2git line-count/file-count user vars that
+previously lived only in the app resources, so regenerating
+from the submodule preserves them.
+
+2026-07-29: Add logging across the workgroup
+reload/navigation paths
+
+The reload button and its neighbors had no instrumentation,
+so when a reload silently did nothing there was nothing in a
+debug log to explain why. Add RLog at every dispatch point
+and, more importantly, at every previously-silent early
+return: nil delegate, session-not-found, not-restartable,
+nil codeReviewRawCommand, and overlay-presented-with-no-
+view. Also log which branch the reload took (diff deferral,
+code-review overlay, or plain restart) and the diff-reload
+state machine's A/B/C states.
+
+Uses RLog for the infrequent user actions and lifecycle
+events (only UUIDs and booleans, no command text) and DLog
+for the spots adjacent to command text or that fire on every
+git poll.
+
+2026-07-29: Intern attribute dictionaries in the text
+builder; clarify dirty-rects setting
+
+The attributed-string builder rebuilt a 15-key NSDictionary
+for every color span, which dominates the per-frame CPU cost
+on color-heavy content (issue 12763). Cache and reuse one
+dictionary per distinct attribute combination, keyed by the
+fields that determine it: foreground color by value, font by
+identity, everything else packed into one word. A reused
+lookup key makes a cache hit allocation-free; the cache is
+bounded and disables itself on pathological all-unique-color
+content so that case never regresses.
+
+Measured about 1.5x faster on the attributed-string build
+for realistic low-cardinality (palette) content; flat on
+random truecolor and monochrome.
+
+Also adds an app-free benchmark for this hot path
+(iTermAttributedStringBuilderBenchmark plus a ModernTests
+test, scoped to the Benchmark test plan and skipped by the
+default plan), and clarifies the
+showDirtyRectsInLegacyRenderer advanced-setting text to say
+it has no effect in the GPU renderer.
+
 2026-07-28: Open web URLs handed to iTerm2 in the built-in
 browser. Issue 12431
 
