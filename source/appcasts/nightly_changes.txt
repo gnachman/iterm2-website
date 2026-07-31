@@ -1,3 +1,95 @@
+2026-07-30: InlineImages: add RLog tracing for missing-image
+(brown) diagnosis
+
+Add always-on RLog at the four ImageRegistry lifecycle
+points (restore, remove/ReleaseImage, collectGarbage,
+clearProvisionalFlag) so a brown placeholder (registry
+lookup returns nil) can be diagnosed from a debug log
+captured at normal speed. DLog perturbs the async restore/GC
+timing enough to hide the race, so RLog is required here.
+
+Each line is tagged "ImageRegistry:" and carries the image
+code. The two smoking guns: "GC reap still-provisional code
+N" (mark never cleared the provisional flag during
+interval-tree fixup) and "clear provisional for code N
+(MISSING: no registry entry)" (a mark tried to un-provision
+a code already removed by dealloc).
+
+2026-07-30: AI chat: send Return for newlines in
+insert_text_at_cursor
+
+The insert_text_at_cursor tool wrote the AI-supplied text
+raw to the pty, so a newline went out as LF (0x0A). Raw-mode
+programs (shell line editors, REPLs, TUIs like Claude Code)
+treat a bare LF as "insert a literal newline" rather than
+"submit the line", so the intended Return did nothing.
+Translate LF to CR (0x0D), the byte a real Return key sends,
+and collapse CRLF to a single CR so we never emit a double
+Return.
+
+Also replace the bare "Inserted" tool result with a
+character count.  The terse response read as ambiguous to
+the model (did anything get typed?) and invited a duplicate
+insertion to be sure.
+
+2026-07-31: docs(PushRelay): require a Sandbox & Production
+APNs key + troubleshooting
+
+A Sandbox-only APNs auth key delivers to development builds
+but 403s `BadEnvironmentKeyInToken` on every push to a
+release/App Store device (the relay routes those to
+api.push.apple.com). A .p8 doesn't encode its environment,
+so neither the env file nor deploy.sh can catch the mismatch
+ it only surfaces in the service log at push time. Document
+ the
+requirement where the key is configured, add a
+Troubleshooting section with the key-swap procedure, and
+note in the metrics section that APNs failures are now
+logged with Apple's status + reason.
+
+Docs only; no behavior change.
+
+Co-Authored-By: Claude Opus 4.8 (1M context)
+<noreply@anthropic.com>
+
+2026-07-30: PushRelay: log APNs delivery failures on the
+self-hosted host
+
+Node was silent on every APNs failure: the reason (Apple's
+status + reason string) lived only in the 502 response body,
+and Cloudflare replaces an origin 502 with its own "Bad
+gateway" page before the client ever sees it  so a
+push-failure incident was undiagnosable after the fact (we
+only had the aggregate pushrelay_push_apns_error_total
+counter).
+
+host/server.js now console.errors two cases:
+  - a push that APNs rejects (non-2xx -> 502), logging
+  Apple's status and
+    reason verbatim, e.g. `APNs 410:
+    {"reason":"Unregistered"}`  covers 400/403/410/429/5xx
+    alike. The body carries only Apple's error, never a
+    device token or secret, so it is safe to log.
+  - the pre-response catch (APNs transport timeout / dead h2
+  session ->
+    500), which was previously silent.
+
+Kept in the host rather than worker.js so the worker stays
+platform- agnostic for Cloudflare. Adds a host test covering
+the 502 log line.
+
+Co-Authored-By: Claude Opus 4.8 (1M context)
+<noreply@anthropic.com>
+
+2026-07-30: Update AIModelCatalogTest expected count to 38
+
+ai-models.json now ships 38 models (was 42); the
+catalog-size canary was not updated when the catalog shrank,
+so testCatalogDecodesAndIsNonEmpty failed on master.
+Reconcile the expected count. The other assertions (gpt-5.5
+default, recommended-per-vendor names) still match the
+catalog.
+
 2026-07-29: AI chat: live-cover Responses delta mode
 surviving pre-reduce (Phase 7)
 
