@@ -1,3 +1,94 @@
+2026-08-01: Enable right-to-left script support by default
+(issue 4361)
+
+Bidi reordering and CoreText-based Arabic/Persian cursive
+joining have been available behind the experimental Bidi
+preference since 3.5.11. Flip the default on so RTL scripts
+render correctly out of the box; users can still disable it
+in Settings > General > Experimental.
+
+2026-08-01: Report Caps Lock with its Kitty keycode instead
+of "A". Issue 12922
+
+Toggling Caps Lock under the Kitty keyboard protocol with
+"report all keys as escape codes" enabled sent \e[65u
+(codepoint 65 = "A") instead of the Caps Lock functional key
+code 57358.
+
+The flagsChanged branch of KeyEventInfo computed
+unicodeKeyCode from a switch that listed the
+shift/control/option/command keys but omitted kVK_CapsLock,
+so csiUNumber was 0. With no key-number, the CSI u encoder
+dropped the number parameter entirely and the caps-lock
+modifier value (65) slid into the first parameter slot,
+which any application reads as the codepoint for "A".
+
+Add kVK_CapsLock -> 57358 to the switch. A toggle now
+reports \e[57358;65u. Adds a mode-8 Caps Lock step to the
+record-replay harness.
+
+2026-08-01: AI chat: let session-bound chats register
+watchers on their linked session
+
+Watchers (register_watch / unregister_watch / list_watches)
+were only available in orchestration chats. A chat linked to
+a terminal session can now watch that session for a
+target_state or a screen-judged condition, reusing the
+orchestration dispatcher machinery via the broker rather
+than duplicating it. The target is implicitly the linked
+session; a foreign session_guid is rejected.
+
+Session-bound watches stay governed by the per-category
+permission model: a condition (screen) watch needs View
+Contents; a target_state watch needs Check Terminal State
+(plus View Contents on a statusless session). These are read
+from the raw permission setting (not the tool-exposure set,
+which drops Check Terminal State at Always), enforced at
+registration and at every point of use (fire gates,
+poller/escalation mayRead, reconcile, regate) so a live or
+global-default revoke can never leak a read. When View
+Contents is Ask, a one-time consent prompt is shown;
+watchers record that consent so a later Always->Ask
+downgrade stops unconsented reads.  Tab-status watches
+without a screen backstop are flagged to the model.
+
+The read-category policy lives in one place
+(WorkgroupWatcher), the watch target/permission resolution
+is unit-tested, and the register_watch prose is built from a
+shared spine so the orchestration and session-bound
+descriptions can't drift.
+
+2026-08-01: tmux: stop injecting focus reports into panes
+that never enabled mode 1004
+
+iTerm2 queried the server-global focus-events option once at
+attach and, if it was on, force-enabled focus reporting on
+every tmux pane by seeding terminal.reportFocus = YES. That
+injected stray focus-report escape sequences (\e[O / \e[I)
+into every pane on each focus change, even panes whose
+foreground app never sent \e[?1004h. With cat -v the
+sequences appear as visible input; with a shell they pollute
+the prompt (and flip bash's vi mode, the symptom in issue
+12352).
+
+The seed was both unnecessary and wrong: tmux forwards the
+app's DECSET 1004 in %output, which iTerm2 un-escapes and
+feeds to the pane's VT100Terminal, so the per-pane emulator
+already tracks focus reporting correctly on its own. Remove
+the whole seed chain (the focus-events query and handler,
+the _focusEvents ivar, the windowOpener.focusReporting
+property, the kLayoutDictFocusReportingKey layout stamping,
+and the SESSION_ARRANGEMENT_TMUX_FOCUS_REPORTING arrangement
+seed) so tmux panes behave like non-tmux sessions: focus
+reporting turns on only when the pane's app requests it.
+
+The one case this cannot reconstruct is an app that enabled
+1004h before iTerm2 attached, because tmux exposes no way to
+query per-pane focus state; in practice the attach-time
+resize causes full-screen apps to re-assert their modes.
+
+Fixes issue 12933.
+
 2026-07-31: Fix Make Screenshot dropping ASCII ligatures;
 dedupe offscreen render
 
