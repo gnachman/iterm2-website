@@ -34,7 +34,9 @@ Normally when you open a command URL you are presented with a window that descri
 
 ### Reveal URLs
 
-iTerm2 also handles URLs of the form `iterm2:///reveal?sessionid=<id>`, which bring a specific session to the front. The `sessionid` parameter takes the value of that session's `ITERM_SESSION_ID` environment variable (for example, `w0t0p0:ABCD-EFGH-...`).
+iTerm2 also handles URLs of the form `iterm2:reveal?sessionid=<id>`, which bring a specific session to the front. The `sessionid` parameter takes the value of that session's `ITERM_SESSION_ID` environment variable (for example, `w0t0p0:ABCD-EFGH-...`).
 
 This is useful for jumping back to a session from an external script, note, or other application&mdash;for instance, recording the session ID when starting a long-running job and opening the URL later to return to it.
+
+Command URLs and reveal URLs are two of several handlers offered by iTerm2's `iterm2:` URL scheme. See the [URL Scheme](documentation-url-scheme.html) page for the full list.
 

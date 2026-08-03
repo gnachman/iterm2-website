@@ -153,3 +153,6 @@ active-state: documentation
 
 {% include 3.7/subdoc.md title="Proprietary Escape Codes" anchor="documentation-escape-codes.html" %}
 {% include 3.7/documentation-escape-codes.md %}
+
+{% include 3.7/subdoc.md title="URL Scheme" anchor="documentation-url-scheme.html" %}
+{% include 3.7/documentation-url-scheme.md %}
