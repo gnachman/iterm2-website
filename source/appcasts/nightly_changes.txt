@@ -1,3 +1,279 @@
+2026-08-02: Fully linkify long URLs: fix hard newlines, IDN,
+and images
+
+Follow-up refinements to the long-URL forward-walk:
+
+- Build the walk on the shared enumerateCharsInRange:
+machinery
+  instead of a hand-rolled successorOfCoord loop, so it
+  respects hard line breaks and no longer joins a URL to
+  unrelated text across a hard newline in the default
+  configuration.
+- Decode each cell to its actual character(s) and judge
+membership
+  with the passed-in character set, so IDN hosts that use
+  composed graphemes are no longer truncated.
+- Exclude image cells before interpreting theChar.code,
+whose value
+  for an image is an image number that could collide with a
+  DWC sentinel.
+- Add URLForwardWalkTests coverage: soft-wrap crossing,
+coordinate
+  mapping, maxChars cap, hard-newline stop, image stop,
+  composed grapheme inclusion, and non-member complex-char
+  stop, plus a manual test fixture in tests/.
+
+2026-08-02: Linkify long URLs past the -click capture window
+(#706)
+
+When -clicking a plain URL, iTermURLActionFactory only sees
+a bounded window of text around the click
+(maxSemanticHistoryPrefixOrSuffix, 2000 chars each side,
+further clamped to 10 lines). A very long URL (e.g.  7-8k
+chars) therefore linkified only its first ~1-2k characters:
+the URL-legal run reached the edge of the captured suffix
+and stopped.
+
+Rather than re-run the matcher on ever-larger windows,
+detect when the run reaches the end of the captured suffix
+and walk the grid forward one cell at a time, consuming
+URL-legal characters until a separator (or null, complex
+char, or buffer end), capped at 100 KB. The walked
+characters and their grid coords are appended to the located
+suffix, so the existing punctuation trimming, validation,
+and coord mapping all operate on the widened window
+unchanged, including the underline drawn on hover.
+
+Add -[iTermTextExtractor
+locatedStringByWalkingForwardFrom:characterSet: maxChars:]
+and unit tests in ExtendURLSearchResultsTests.
+
+Test: tools/run_tests.expect ModernTests/URLForwardWalkTests
+2026-08-02: Add provider presets and a Test Connection
+button to the AI model editor
+
+The manual AI model editor now offers one-click presets for
+OpenAI-compatible gateways (Ollama, OpenRouter, z.ai, Qwen,
+MiniMax) that fill in the endpoint URL and API dialect so
+the user only supplies the model name. A new Test Connection
+button sends a minimal request through the real plugin path
+using the stored key for the resolved vendor (prompting for
+one if absent) and reports success or the exact error, with
+a spinner while it runs.
+
+Issue 12904
+
+2026-08-02: Keep edge-aligned window width when adding a tab
+(issue 12917)
+
+PseudoTerminal.setup(session:) unconditionally called
+updateDesiredSize, so adding a tab to a left/right-of-screen
+window re-seeded the window size helper's
+desiredColumns/desiredRows from the new tab's profile. A
+later canonicalizeWindowFrame (e.g. from a
+display-configuration change via windowDidChangeScreen:)
+reads those values on the cell-based width path and resized
+the window to the tab's profile width: a 50%-width second
+profile grew the window to half the screen, and a narrower
+profile shrank it. Nothing cleared the leaked value, so the
+window never returned to its own width.
+
+Only seed the desired size when this is the first session of
+a brand-new window (existingViewSize == nil). Adding a tab
+no longer disturbs the window's width, so canonicalize keeps
+it anchored to the window's own profile/live frame.
+
+2026-08-02: Probe local network on every launch to keep TCC
+permission (issue 12956)
+
+The local network permission prompter was gated on the app
+version, so it only ran once per version. After a tccutil
+reset or an OS upgrade that clears the TCC record, macOS
+drops iTerm2 from the Local Network privacy list and ping
+fails with "no route to host", but the version gate
+prevented re-prompting until the app version changed.
+
+The NWBrowser probe is idempotent: macOS only shows its
+prompt when there is no recorded decision, so re-probing an
+already-allowed or already-denied app is silent. Drop the
+version gate and probe on every launch so the permission
+recovers on the next relaunch.
+
+2026-08-02: Make enclosure-less profile controls searchable
+
+profileTypesForView: returned nil.visibleForProfileTypes (0,
+ProfileTypeNone) for any control not wrapped in a modal
+enclosure. Such controls are never conditionally hidden, so
+they apply to every profile type, but the query-time filter
+(doc.profileTypes & allowedProfileTypes) excluded them
+whenever a concrete profile was being edited. That hid
+several Colors-tab settings from preferences search,
+including Border around active pane, Use custom tab color,
+Use separate colors for light and dark mode, the Light/Dark
+mode popup, and Color Presets. Treat a missing enclosure as
+ProfileTypeAll.
+
+2026-08-02: Fix typo in daemons.rst (#707) 2026-08-02:
+Render sixels with a doubled-up ST terminator (issue 12259)
+
+Some tools emit a sixel whose String Terminator is ESC ESC \
+instead of the well-formed ESC \. The sixel hook treated the
+second ESC as a broken sequence, discarded the entire
+accumulated image (VT100_NOTSUPPORT), and left the trailing
+backslash to print as a stray glyph.
+
+The hook now renders the pixels accumulated so far and lets
+the trailing bytes reparse as a fresh sequence, matching how
+real hardware and xterm behave (sixels draw incrementally,
+so an unexpected ESC just ends the string). Specifically:
+
+- ESC ESC \ (doubled terminator): put back only the second
+ESC so the
+  remaining ESC \ reparses as a harmless ST.
+- ESC <cseq> (an aborting escape such as ESC [ 2 J): put
+back the whole
+  sequence so it reparses and executes, instead of losing
+  its ESC.
+- An empty-body introducer aborted by an escape emits
+nothing rather than
+  stamping a broken-image glyph and paying a synchronous
+  decode per fragment (avoids spew when binary output merely
+  contains ESC P ... q).
+
+Also stop VT100Parser's CopyToClipboard capture from
+clobbering savedData that a DCS hook already assembled,
+which otherwise dropped the image (the split
+doubled-terminator case emits a zero-consumed DCS_SIXEL
+token).
+
+Follow-up TODOs left for the same pathology in the C1 ST
+scan and in OSC string parsing.
+
+2026-08-02: Keep OSC 9;4 progress bar above the active-pane
+border
+
+The active-pane border's top stroke drew at the same top
+edge as the progress bar with the same 2pt thickness and was
+added topmost, so it painted over the bar and hid it
+whenever the border was enabled on the active pane. Keep the
+border directly behind the progress bar via a single helper
+called from both creation sites; the other three border
+edges remain visible since the bar spans only the top.
+
+Issue 12960
+
+2026-08-02: Fix Cmd-Click failing to open files in JetBrains
+IDEs (issue 12958)
+
+Semantic History dispatched JetBrains IDEs (IntelliJ IDEA,
+WebStorm, Rider) through `open -nb <bundleid> --args ...`.
+That has two problems:
+
+- `open -n` forces a brand new IDE instance instead of
+forwarding the
+  open-file request to the instance that is already running,
+  so the file silently never appears in the user's project
+  window (open returns 0 the moment it hands off to
+  LaunchServices, hiding the failure).
+- The current JetBrains native launcher rejects option-first
+argument
+  order, reporting "unrecognized option: --line" when --line
+  precedes the path.
+
+Invoke the IDE's launcher binary directly
+(Contents/MacOS/idea, webstorm, rider via
+CFBundleExecutable), which detects the running instance and
+forwards to it, and pass the path before --line, which both
+the old and new launchers accept. This restores the pre-2022
+direct-launch behavior that was replaced when WebStorm and
+Rider were added, generalized across all three IDEs.
+
+Remove the now-dead openAppWithBundleIdentifier: and the
+long-unused intelliJIDEALauncherInApplicationBundle:
+helpers.
+
+2026-08-02: Tmux: correct pane geometry for
+pane-border-status (issue 12925)
+
+In tmux control mode the layout string tmux sends the client
+reports the full window height for every pane, ignoring the
+row tmux reserves for pane-border-status. iTerm2 sizes its
+sessions from that layout, so with pane-border-status
+top/bottom the session ended up one row taller than the real
+pane grid the shell was given: the bottom line went unused
+and the cursor landed a row high after reattaching.
+
+Correct the geometry, verified against tmux 3.7b for single,
+side-by-side, stacked, three-stacked, L-shaped, and 2x2
+layouts:
+  top    - a leaf at yoff 0 gives up its first row (yoff +=
+  1, height -= 1) bottom - a leaf whose bottom edge is the
+  window bottom gives up its last row
+
+Inbound: - TmuxController caches each window's
+pane-border-status, learned from a
+  new #{pane-border-status} field in the detailed and
+  runtime list-windows formats (tmux >= 2.3).
+- TmuxWindowOpener parses every layout through
+parsedAdjustedLayoutFromString:,
+  which applies TmuxLayoutParser
+  -parseTree:adjustedForPaneBorderStatus:.
+- The zoom/maximize path builds a single-leaf tree from the
+uncorrected
+  root height, so it applies the same correction there too.
+
+Outbound (keeps the size we report to tmux one row taller so
+tmux has room for the border row it carves out, instead of
+us shrinking to match the reduced pane and spiraling the
+window down a row at a time): - iTermTmuxLayoutBuilder grows
+the leaves on the affected window edge,
+  which nets exactly one extra row for the window
+  (side-by-side panes combine with MAX, stacked with SUM),
+  matching tmux's own accounting.
+- PTYTab -tmuxSize adds the row back for the refresh-client
+-C path.
+
+tmux sends no notification when pane-border-status is
+toggled mid-session, so a runtime change is not reflected
+until the next relist; the common case of setting it in
+.tmux.conf before attaching is handled. The
+non-variable-window MIN client size across windows with a
+per-window option remains approximate; both limitations are
+noted in code.
+
+Adds parser and builder unit tests, including
+outbound/inbound round-trip symmetry.
+
+2026-08-02: Fix Kitty keyboard protocol SET behavior (#711)
+
+The SET form should modify the flags on the current stack
+frame, not destroy the entire stack.  2026-08-02: Make
+Centered windows behave like normal windows (issue 12918)
+
+The Centered window style was modeled on the edge-attached
+window types, so its windows had no title bar or
+traffic-light controls, snapped back to the profile grid
+size on minimize/restore, and did not adopt the merged
+chrome of the Minimal and Compact themes.
+
+A Centered window is now a normal window in every respect
+except that it stays centered:
+
+- It has a title bar and close/minimize/zoom buttons,
+reclassified
+  to match WINDOW_TYPE_MAXIMIZED across the appearance
+  switches.
+- Routine canonicalization preserves the user's size and
+only
+  re-centers, so minimize/restore no longer resizes it.
+- A new WINDOW_TYPE_COMPACT_CENTERED theme variant,
+mirroring
+  WINDOW_TYPE_COMPACT_MAXIMIZED, gives it the compact merged
+  chrome in the Minimal and Compact tab styles, and
+  updateWindowType now accepts the centered pair so
+  switching themes rebuilds the chrome in place instead of
+  tripping an assert.
+
 2026-08-01: Enable right-to-left script support by default
 (issue 4361)
 
