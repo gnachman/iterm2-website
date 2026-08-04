@@ -1,3 +1,1503 @@
+2026-08-03: Default the uv Python runtime to on for macOS
+13+
+
+The pythonRuntimeUsesUV advanced setting now defaults to on
+for macOS 13 and later and off for macOS 12 (the last
+version this app supports, whose bundled runtime stays in
+use; the uv interpreters require macOS 13). The default is
+computed at settings-load time from the running OS via a
+static helper, so users can still override it in Advanced
+Settings. Already-provisioned scripts are unaffected; the
+gate only governs creating, importing, and migrating
+scripts.
+
+2026-08-03: 3.6.0beta9
+
+2026-08-03: Add release notes for 3.7.0beta9
+
+2026-08-03: Tweak wording
+
+2026-08-03: Remove duplicate IT2_SUITE block after rebase
+
+The rebase landed both my menu-launched-script IT2_SUITE fix
+and an equivalent fix that had gone into upstream
+independently, leaving two copies of the suiteName block in
+environmentFromEnvironment: (a redefinition error). Keep the
+more complete version, which also clears a stale inherited
+IT2_SUITE via the else branch.
+
+2026-08-03: Don't call a missing-runtime AutoLaunch script
+"malformed"
+
+The re-provision offer was gated on explicitUserAction, so
+an AutoLaunch (non- explicit) launch of a uv script whose
+interpreter went missing skipped the offer, failed the
+.py/.scpt checks (it is a container dir), and fell through
+to the generic "The script X is malformed / Cannot Run
+Script" modal, a wrong diagnosis with no route to the fix,
+for exactly the scripts (long-running AutoLaunch daemons)
+most likely to hit it. Handle the reprovisionable state for
+both cases: an explicit launch still offers to rebuild; a
+non-explicit one logs the real cause and the recovery
+gesture ("Launch it from the Scripts menu to rebuild it") to
+the Script Console rather than popping a consent dialog and
+progress window at startup.
+
+2026-08-03: Keep couldLaunchScriptWithAbsolutePath in sync
+with the re-provision offer
+
+cfaaedce3 taught launchScriptWithAbsolutePath to offer
+rebuilding a uv script whose interpreter went missing, but
+its "// keep in sync" companion
+couldLaunchScriptWithAbsolutePath was not updated: for that
+state it returns NO (nil venv, not .py/.scpt), so the status
+bar RPC component's onClick dialog omits its "Launch Script"
+recovery button. Long-running AutoLaunch status-bar daemons
+are the likeliest victims of a deleted uv dir, and clicking
+the broken component is the natural recovery gesture, which
+dead-ended at "OK". Return YES when
+uvScriptContainerNeedsReprovision is true so the button
+appears and routes to the rebuild-and-run offer.
+
+2026-08-03: Release note: no more Intel-only-binary warning
+during script migration
+
+2026-08-03: Stop uv python list from probing (and running)
+search-path interpreters
+
+`uv python list --all-versions` still discovers and EXECUTES
+every interpreter on the search path to read its metadata,
+even under UV_PYTHON_PREFERENCE=only-managed (that only
+filters selection, not discovery). availableMinors runs it
+during every provision/migration resolve, so on a machine
+with an Intel Homebrew python on PATH it execs an Intel
+binary under Rosetta each time: macOS 26 raises the
+intel-only-binary warning (observed in the field), it is
+wasted work on a cold cache, and it fails outright on a
+Rosetta-less macOS.
+
+Add --only-downloads. Verified against uv 0.12.0: the old
+form probes 16 search-path pythons (incl. Intel
+/usr/local/bin/python3.8) while --only-downloads probes zero
+and returns the identical 143-entry list with the same
+minors in the same JSON schema, so
+availableMinors(fromListJSON:) is unchanged. The download
+metadata is embedded in the uv binary, so this stays
+offline-safe. Also verified `uv venv --python X` under
+only-managed searches only managed installations (no
+search-path probing), so venv creation is unaffected.
+
+2026-08-03: Offer to rebuild a uv script whose interpreter
+went missing
+
+A uv full-environment script's .venv/bin/python is a symlink
+into the shared uv python dir. If the user deletes that dir
+to reclaim disk, renames their home, or restores the Scripts
+folder onto another machine, the interpreter dangles,
+environmentForScript returns nil, and the script was
+declared "malformed" with no recovery, a regression from the
+legacy self-contained iterm2env clone. Detect the
+marker+setup.cfg-present/interpreter-dangling state on an
+explicit launch and offer to re-provision the venv from
+setup.cfg (createSetupCfg:NO preserves it), then relaunch.
+
+2026-08-03: Add regression tests for the twice-regressed
+data-loss paths
+
+Add hermetic coverage for the exact code paths that already
+regressed, with small injectable-root refactors to make them
+testable:
+
+- recoverStaleReplaceBackups: injectable directory +
+ScriptImporterRecoveryTests
+  covering symlink-target => restore (the data-loss case),
+  real-target => delete backup, coincidental .replacing-*
+  name => untouched, orphaned .installing-* => removed.
+  Writing the test exposed a real bug: the restore used the
+  live scripts path rather than the target path, which is
+  now passed explicitly.
+
+- invalidateSharedVenvRemaps: venvsRoot-parameterized
+overload + tests that the
+  per-file merge preserves records left by a prior upgrade
+  and that a newer resolution wins for a same-named minor
+  (the two bugs it regressed on before).
+
+2026-08-03: REPL falls back to any provisioned shared venv
+when offline
+
+openREPL always requested the default Python (3.12); if only
+another minor's shared venv exists (e.g. provisioned via a
+remapped 3.7-shebang script) and the machine is offline, the
+REPL failed with "Python Environment Unavailable" despite a
+working iterm2-equipped venv on disk. Add
+newestProvisionedSharedVenvInterpreter and fall back to it
+before failing, matching how legacy apython used whatever
+was installed.
+
+2026-08-03: Reclaim orphaned uv artifacts (install temps,
+stray iterm2env, verify temp)
+
+Several crash windows leaked large artifacts no sweep ever
+reclaimed:
+
+- verifyDownloadedTarball registered its cleanup defer after
+the write, so a
+  failure mid-write leaked a partial ~37 MB temp. Register
+  it before the write.
+
+- Each uv-binary install copies to a fresh
+.uv-install-<uuid> temp (~90 MB) in
+  uv/bin/ and never cleaned old ones on crash. Add
+  sweepOrphanedInstallTemps, run at launch.
+
+- A uv-backed container (.venv + marker authoritative) could
+carry a stray iterm2env
+  (multi-GB) restored by an old-build downgrade round-trip,
+  or a .venv.building temp from a crash mid-swap, that only
+  saved-iterm2env reclamation removed. Reclaim all three via
+  reclaimOrphanedArtifacts at launch for confirmed-uv
+  containers.
+
+2026-08-03: Dependency Editor: lock edits during rebuild;
+preserve setup.cfg metadata
+
+- A uv Python-version change rebuilds the .venv from a
+click-time dependency
+  snapshot and swaps it in atomically, but the editor stayed
+  interactive, so a package added during the (minutes-long)
+  rebuild was installed into the discarded venv and then
+  erased when setup.cfg was rewritten from the snapshot. Set
+  a rebuild-in-progress flag that early-returns the
+  add/remove/upgrade/version actions and disable the editing
+  controls until the rebuild finishes.
+
+- The uv setup.cfg rewrite hardcoded name = folder name and
+environmentVersion =
+  the minimum, silently renaming a script whose [metadata]
+  name differed and dropping its pinned environment version.
+  Preserve the existing setup.cfg's name and environment
+  version when one is present (the create path still
+  defaults).
+
+2026-08-03: Harden the predictive scan; make the signature
+test non-vacuous
+
+- collectLegacyFullEnvironmentScriptsUnder treated any
+directory with a setup.cfg
+  as a container and stopped recursing, so a stray setup.cfg
+  in the Scripts root aborted the whole version-bump scan
+  and silently suppressed every warning. Require an
+  environment (iterm2env / .venv / saved-iterm2env)
+  alongside setup.cfg to count as a container, and include
+  saved-only containers (an interrupted migration that the
+  next launch restores and migrates) in the warning, which
+  were omitted.
+
+- testRejectsInvalidSignature passed a non-tar payload that
+fails at tar regardless
+  of signature, so deleting signature verification would not
+  fail it. Use a real, extractable tarball with a bogus
+  signature so bypassing verification would install it and
+  break the test, actually pinning the trust invariant.
+
+- Document the cross-build limitation of exporting a
+full-environment script from a
+  uv-only machine (python_requires hint newer than the
+  legacy manifest offers).
+
+2026-08-03: Improve uv error reporting and cut remap-warning
+fatigue
+
+- The offline stale-remap fallback engaged for ANY build
+failure (disk full, a
+  yanked wheel, a broken uv) and returned success with no
+  trace, so a broken environment presented as a script
+  silently on an older Python. Log it and write a Script
+  Console line naming the underlying error.
+
+- selectedEntry reported an empty/all-filtered manifest as
+"uv is not available for
+  this version of macOS" (a wrong diagnosis that invites
+  on-OS-version bug reports for a hosting problem), and
+  upgradeUvBinaryIfNewerAvailable reported every
+  fetch/parse/floor/size failure as "offline". Distinguish
+  not-valid-JSON, no-usable-entries,
+  none-compatible-with-this-macOS, and propagate the
+  specific reason into the update-check message.
+
+- reportForcedRemap showed a per-script modal at each
+migration in addition to the
+  consolidated startup modal, so N affected scripts meant
+  N+1 modals, and a uv upgrade (which invalidates remap
+  records) made the modal recur every cycle. Make the
+  per-script report Console-only per the design; the one
+  modal stays the startup predictive warning. This also
+  removes the duplicated suppression-identifier literal,
+  since only the menu now shows that modal.
+
+- Log inherited UV_* environment variables (UV_OFFLINE,
+UV_INDEX_URL, ...) that
+  silently alter provisioning, so field debugging can see
+  them.
+
+2026-08-03: Bound uv subprocesses with a timeout so a hang
+can't wedge the queue
+
+uv invocations ran via blockingRun, which waits on the
+process forever with no kill path. A stalled uv (e.g. a
+dropped connection with no TCP reset) would float the
+provisioning panel indefinitely and queue every later
+provision/launch/Dependency Editor pip call behind the stuck
+item on the serial provisionQueue until app restart. Add
+blockingRunWithTimeout: (SIGKILLs the task past the deadline
+and returns its nonzero exit) and apply a generous 1-hour
+safety net to build operations (venv/pip) and a 60s timeout
+to quick metadata queries (uv --version, uv python list).
+This is a hang backstop, not a slow-link cap; legitimate
+slow provisioning finishes well under it.
+
+2026-08-03: Fall back to a non-atomic venv swap on non-APFS
+volumes
+
+provisionFullEnvironment swapped the rebuilt .venv into
+place with renamex_np(RENAME_SWAP), which is APFS/HFS+ only.
+A custom scripts folder on SMB/NFS/exFAT returned
+ENOTSUP/EINVAL, failing every rebuild forever with an
+unactionable errno-only message. On those errnos, fall back
+to move-old-aside, rename-new-into-place, delete-old
+(restoring the old venv if the new one does not land), and
+include the path in the remaining error message.
+
+2026-08-03: Enforce the minimum-environment-version gate
+after a failed migration
+
+The gate-on branch launched the restored legacy environment
+directly when a uv migration failed or was declined,
+skipping the environmentVersionAt /
+iTermMinimumPythonEnvironmentVersion check the gate-off path
+enforces. A user who declined the download could thus run an
+environment the legacy path refuses to launch for security
+reasons. Apply the same minimum-version check to the
+restored env and route to the runtime upgrade prompt when it
+is below the floor.
+
+2026-08-03: Make script install atomic at the destination
+volume
+
+Two related replace-import data-loss fixes:
+
+- The final install moved the provisioned container from the
+temp dir into the
+  scripts folder with moveItemAtPath. A custom scripts
+  folder (customScriptsFolder) can be on a different volume,
+  where that is a non-atomic copy+delete; a crash mid-copy
+  left a partial REAL directory at the target, which the
+  crash-recovery sweep mistakes for a completed install and
+  then deletes the user's only backup.  Stage on the
+  destination volume under a dotted name and rename into
+  place (same-volume, atomic), so the target exists only
+  once fully populated regardless of volume topology. The
+  recovery sweep now also cleans orphaned .installing-*
+  staging dirs.
+
+- When moving the existing script aside fails during a
+replace, the code fell back
+  to deleting it and proceeding; a later canceled download
+  then reported a quiet success with the original gone (the
+  bug the move-aside flow fixed). Abort the replace with an
+  error instead and leave the script untouched.
+
+2026-08-03: Don't delete a remap record that failed to move
+during merge
+
+invalidateSharedVenvRemaps merged each record from .remaps
+into .remaps-stale, then unconditionally removed .remaps. A
+record whose moveItem failed was still inside
+.remaps at that point, so removing the directory deleted it from both the live and
+the stale cache, losing the script's offline fallback.
+Remove .remaps only when it is empty after the loop; a
+failed-to-move record stays live (harmless) and the next
+upgrade retries the merge.
+
+2026-08-03: Add release notes for the Rosetta prompt, crash
+recovery, and dotfile hiding
+
+2026-08-03: Don't stack two modals on a failed Apple Silicon
+runtime refetch
+
+On a genuine download failure the runtime downloader shows
+its own "Python Runtime Unavailable" alert; the launcher
+then showed a second, describing the same failure.  Alert
+from the caller only when the download reported success yet
+the binary is still not arm64 (a case the downloader does
+not itself report); on a download failure or user cancel the
+downloader already presented a modal, so stay silent.
+
+2026-08-03: uv provisioner: pip-fail fallback, merge stale
+remaps, one provisioned predicate
+
+Three follow-ups to the round-2 provisioner fixes:
+
+- The offline stale-remap fallback fired only when `uv venv`
+failed. When the
+  resolved minor's CPython is already on disk, `uv venv`
+  succeeds offline and it is the subsequent `uv pip install`
+  that needs the network; that branch returned an error with
+  no fallback. Apply the same fallback to both build
+  failures.
+
+- invalidateSharedVenvRemaps replaced .remaps-stale
+wholesale, so a second uv
+  upgrade dropped records left by the first for scripts
+  never relaunched between upgrades, losing their offline
+  fallback. Merge per file instead.
+
+- The "venv is provisioned" predicate (executable
+interpreter + .provisioned
+  marker) existed in three copies that could silently
+  diverge. Hoist one venvsRoot-parameterized
+  sharedVenvIsProvisioned/sharedVenvInterpreterPath used by
+  the fast path, the stale-remap fallback, and the
+  module-refresh scan.
+
+2026-08-03: Fix crash-recovery sweep deleting the user's
+only replace backup
+
+recoverStaleReplaceBackups decided the replacement had
+completed with fileExistsAtPath:, which follows symlinks.
+During a full-environment replace the target Scripts/<name>
+is a symlink into a temp extraction dir that survives an app
+crash and relaunch, so in the most likely crash window
+(mid-provision) the sweep resolved the symlink to the
+surviving temp dir, concluded success, and took the delete
+branch, permanently destroying the user's original script.
+
+Use attributesOfItemAtPath: (lstat, does not follow
+symlinks) and treat a symlink (or a missing target) as "did
+not complete", taking the restore branch. Also validate the
+fixed-length tail really is "-<UUID>" via NSUUID before
+acting, so a user file coincidentally named ".replacing-" is
+never renamed to a truncated name.
+
+2026-08-03: Derive legacy Python version by numeric max and
+from saved env
+
+legacyEnvironmentPythonVersion, used to warn about forced
+version bumps for pin-less scripts, picked the
+lexicographically-first version directory (ordering "3.10.4"
+before "3.8.6") and read only iterm2env/versions. A
+container killed mid-migration has only saved-iterm2env at
+derivation time, yielding nil and a silent migration to the
+default. Pick the numeric maximum (matching interpreter
+selection) and fall back to saved-iterm2env/versions.
+
+2026-08-03: Restore the Building Script window for gate-off
+full-env imports
+
+Deferring the please-wait window to provisioningDidBegin
+dropped it entirely for the legacy (gate-off)
+full-environment install path, which never invokes that
+callback, so a multi-minute env copy plus pip install ran
+with no progress UI.  Invoke provisioningDidBegin before
+installPythonEnvironmentTo on that path, after the
+download-consent prompt.
+
+2026-08-03: Hide and crash-recover replace-import backups
+
+The move-aside backup created while replacing a script had
+two gaps: the Scripts menu walk skipped only .DS_Store, so
+during a long provision the transient
+".replacing-<name>-<UUID>" backup showed as a broken menu
+item; and nothing recovered it if the app died between
+move-aside and restore/cleanup, leaking the user's script as
+a hidden orphan.
+
+Skip all hidden entries in the menu enumeration (and don't
+descend into hidden directories), and add a launch-time
+sweep (recoverStaleReplaceBackups) that restores the
+original when the target is missing or deletes a leaked
+backup when the replacement completed, mirroring the
+saved-iterm2env reclamation.
+
+2026-08-03: Fix Apple Silicon runtime refetch: consent
+first, silent on cancel, deduped
+
+The new full-environment rebuild path
+(ensureArm64StandardRuntimeForPythonVersion) collapsed a
+user cancel into a plain failure, so
+reallyUpgradeFullEnvironmentScriptAt showed "could not be
+downloaded, check your network" after a deliberate cancel,
+the same bogus-blame bug just fixed in the basic path, and
+it duplicated ~10 lines of the refetch logic that then
+diverged. It also deleted the Intel-only runtime before
+asking consent.
+
+Hoist one shared
+refetchArm64StandardRuntimeForPythonVersion:completion: that
+confirms BEFORE the destructive delete and reports the
+downloader status. Both the rebuild and basic-launch paths
+now stay silent on user cancel and only show the network
+error on a genuine download failure.
+
+2026-08-03: uv provisioner: actually interleave refresh,
+defer remap report, offline fallback
+
+Three follow-ups to the previous provisioner review fixes:
+
+- enqueuePeriodicSharedVenvModuleUpgrades bulk-enqueued one
+provisionQueue item
+  per venv, but provisionQueue is serial FIFO, so a user
+  request arriving during the refresh still queued behind
+  all N network-bound pip upgrades, exactly the pre-fix
+  behavior. Self-schedule instead: each venv enqueues its
+  successor only after it finishes, so user work submitted
+  in between lands between venvs.
+
+- The forced-remap record+report was hoisted before the venv
+build, so a failed
+  build (transient PyPI outage) told the user the version
+  changed and left a record pointing at a nonexistent venv,
+  repeating the modal every launch. Report before the early
+  return only in the already-provisioned case; on the build
+  path defer until the build succeeds.
+
+- invalidateSharedVenvRemaps deleted records outright, so an
+offline launch right
+  after a uv upgrade could fail: re-resolution picks the
+  now-available minor whose CPython download needs the
+  network, even though a previously-resolved venv exists.
+  Move records to .remaps-stale instead and, on a build
+  failure, fall back to a still-provisioned stale-resolved
+  venv.
+
+2026-08-03: Fix legacy launch edge cases: nil pin, macOS 27
+arch, dangling restore
+
+Five launcher fixes from the review, all on the legacy
+full-environment path:
+
+- A script whose setup.cfg has no exact python pin (absent,
+or a range like
+  ">=3.7") migrated to the current default with every
+  version-bump warning bypassed. Derive the real prior
+  version from the on-disk iterm2env/versions tree (new
+  iTermScriptRuntime.legacyEnvironmentPythonVersion) so the
+  forced remap is detected and warned, both at migration and
+  in the startup scan.
+
+- A rebuild hard-links the shared standard runtime, which on
+a Rosetta-less
+  macOS (27+) may be Intel-only yet version-current. Ensure
+  that runtime is arm64 (refetching it if needed) before
+  linking, so the rebuilt env can run.
+
+- After a failed uv migration the interpreter was relaunched
+from the
+  pre-rollback path, which dangles when the container
+  started saved-iterm2env only (killed mid-migration).
+  Re-resolve the interpreter after the restore.
+
+- With the gate on and an unparseable setup.cfg, the early
+exit skipped the
+  macOS 27 Intel-only check, so an unrunnable env
+  exec-failed cryptically instead of showing the clear
+  error. Route it through the same arch check.
+
+- Canceling the Apple Silicon runtime download reported a
+bogus network error;
+  it now stays silent on user cancellation.
+
+2026-08-03: Don't destroy a replaced script when its import
+is canceled
+
+Two import-flow fixes:
+
+- The Replace Script flow ran removeScriptNamed (which kills
+and deletes the
+  user's installed script) before
+  installFullEnvironmentTrusted showed the uv
+  download-consent prompt. Declining translated to a quiet
+  success, so the user's working script was gone with
+  nothing installed and no dialog. Move the existing script
+  aside instead of deleting it, restore it on failure or
+  cancellation, and surface the outcome; delete the backup
+  only on success.
+
+- The "Building Script" please-wait window was ordered front
+the moment it was
+  created, floating over the intervening replace and
+  download-consent prompts despite the provisioningDidBegin
+  deferral. Add a factory variant that creates the window
+  without ordering it front, and show it for the first time
+  in provisioningDidBegin.
+
+2026-08-03: Stop re-walking the Scripts tree on every menu
+rebuild
+
+maybeWarnAboutUvVersionBumps latched its "shown" flag only
+after producing a non-nil warning, so in the common case
+(gate on, no pending bumps) it re-ran
+collectLegacyFullEnvironmentScriptsUnder on every -build: a
+synchronous main-thread recursive walk with a per-entry stat
+and setup.cfg parse, fired by every launch, every SCEvents
+file event under the Scripts tree, every install, and
+scriptsFolderDidChange. Latch after the (single) scan
+regardless of outcome, while leaving the gate-off case
+unlatched so enabling uv later still scans once.
+
+2026-08-03: Harden uv provisioner: slow-link upgrades, remap
+cache, interleaved refresh
+
+Four review fixes in the uv provisioner:
+
+- boundedDownload capped the ENTIRE transfer at 120s. That
+is right for the
+  tiny manifest on provisionQueue but broke the ~37 MB
+  tarball upgrade on any link below ~2.5 Mbps, so a broken
+  installed uv could never self-heal. The tarball now uses a
+  generous total cap plus a 60s idle timeout.
+
+- A forced Python version remap (e.g. 3.7->3.9) was recorded
+and reported only
+  on the venv build path, so when the resolved venv already
+  existed the offline fast path never matched for that
+  script (every launch spawned uv) and the user was never
+  told. Record/report before the already-provisioned early
+  return.
+
+- .remaps records were never invalidated, pinning a remapped
+script to the
+  bumped minor forever even after a newer uv could provide
+  the requested one.  Clear them after a uv binary upgrade
+  so the next launch re-resolves.
+
+- The daily shared-venv module refresh ran as one block on
+provisionQueue,
+  making a launch or Dependency Editor action that arrived
+  mid-refresh wait for N sequential PyPI round trips.
+  Enqueue each venv as its own queue item so user work is
+  serviced between them.
+
+2026-08-03: Version-qualify the hosted uv tarball filename
+
+The build named the archive uv-<triple>.tar.gz with no
+version, sign_and_copy derived the hosted filename from that
+basename, and mv -f clobbered the previously published file.
+Because the manifest deliberately keeps older entries (the
+macOS-bracket design), the second annual publish left the
+older entry's RSA signature no longer matching the bytes now
+served at its shared URL, so every user whose macOS selected
+the older bracket could never install or upgrade uv, exactly
+the population the bracket protects.
+
+Embed the uv version in the hosted filename
+(uv-<version>-<triple>.tar.gz) so each manifest entry
+references immutable bytes, and keep old files hosted.
+
+2026-08-03: Tolerate unknown uv manifest entries; treat max
+macOS as a family cap
+
+Two forward-compatibility fixes to the annually-updated uv
+manifest:
+
+- iTermUvManifest.parse decoded the array all-or-nothing
+with every field
+  required, so a single future entry with an unfamiliar
+  shape (missing or renamed field, retyped value) made the
+  whole decode throw and stranded every shipped build with
+  "the uv manifest could not be parsed", even when a
+  compatible entry was still listed. Decode per entry
+  tolerantly and skip only the entries this build cannot
+  understand.
+
+- maximum_macos_version was compared inclusively against the
+always-three-part
+  running version, so a cap written as "13.4" excluded every
+  later point release of the family it meant to cap (13.4.1
+  > 13.4.0). Treat the maximum as a family cap at the
+  precision given: "13.4" bounds all of 13.4.x, "13" bounds
+  all of 13.x.
+
+2026-08-03: Swap the rebuilt uv venv into place atomically
+
+The transactional re-provision built the new .venv aside and
+swapped it in with FileManager.replaceItemAt, which is a
+multi-step move/backup/move dance with brief windows where
+.venv is partial or absent. A concurrent reader (the
+Dependency Editor runs `uv pip show` against .venv to
+display installed versions) could catch one of those windows
+and fail to open a dist-info file (observed as "Invalid
+argument (os error 22)" on direct_url.json), surfacing a
+spurious [Error] even though the rebuild succeeded.
+
+Swap the freshly built venv with the old one using
+renamex_np(RENAME_SWAP), a single atomic syscall that
+exchanges the two directory inodes with no intermediate
+state, then discard the old venv. A fresh container with no
+existing .venv still uses a plain rename into place.
+
+2026-08-03: Make uv full-environment provisioning
+transactional
+
+Changing a uv script's Python version re-provisions its
+.venv. The previous code removed the existing .venv before
+rebuilding, so if the rebuild's pip install failed (e.g.
+downgrading to a Python minor where a pinned dependency such
+as aiohttp>=3.14.3 has no wheel), the script was left with
+an empty, broken venv and its working environment was gone.
+The Dependency Editor then showed [Error] for every
+dependency.
+
+Build the new venv aside (.venv.building) and swap it into
+place only after uv venv and the package install both
+succeed. On any failure the temp build is discarded and the
+existing .venv is untouched. The venv is created
+--relocatable, so the rename keeps its shebangs valid. Fresh
+containers (create/import/migrate) have no existing .venv,
+so the swap is just a rename.
+
+2026-08-03: Populate uv version pickers from the installed
+uv, not a hardcoded list
+
+The new-script and Dependency Editor Python-version pickers
+offered a hardcoded knownAvailableMinors (3.8-3.14), which
+is wrong in both directions: an older installed uv might not
+support the newest entries, and a newer uv would not surface
+versions past the list. uv's installable set is embedded per
+uv release, so the picker must reflect the installed binary.
+
+Add iTermUvProvisioner.availableMinorsWithCompletion: (runs
+`uv python list` off the main thread, delivers on main,
+empty if uv is absent) and use it to fill both pickers
+asynchronously: - Dependency Editor: shows the current
+version immediately, then fills the full
+  list the installed uv supports (current always included),
+  guarding against the user switching scripts mid-query.
+- New script: shows the default as a placeholder, then
+replaces it with the
+  installed uv's list (default selected if provided, else
+  the newest); if uv is not installed yet, keeps the default
+  and lets the first provision resolve.
+
+knownAvailableMinors now backs only the one-time startup
+version-bump prediction (which runs before uv may be
+installed and re-resolves against live uv at migration
+time).
+
+2026-08-03: Offer and apply uv Python-version changes in the
+Dependency Editor
+
+The Dependency Editor's Python version popup only listed the
+currently installed version for a uv script, and selecting a
+version only ran `uv pip install` into the existing
+(old-version) .venv, so the interpreter never changed.
+
+- Populate the popup with the minors uv can provide
+(iTermUvMigration
+  knownAvailableMinors) plus the current version, sorted
+  numerically.
+- On change, re-provision the full environment at the new
+version via
+  downloadAndProvisionFullEnvironment (with a progress
+  window), which rebuilds the .venv, reinstalls
+  dependencies, and rewrites setup.cfg.
+- provisionFullEnvironment removes any existing .venv before
+`uv venv` so a
+  version change rebuilds cleanly instead of relying on uv's
+  replace behavior (a no-op for fresh
+  create/import/migrate).
+
+2026-08-03: Use the bare package name for pip show in the
+Dependency Editor
+
+A dependency may be a full requirement (e.g.
+"aiohttp>=3.14.3", as written back when a package is pinned
+to its installed version). Passing that to `pip show` fails,
+and uv's pip is strict ("Not a valid package or extra
+name"), so the Dependency Editor showed [Error] for the
+installed version.
+
+fetchVersionOfPackage now passes the bare name (via
+-[NSString pythonPackage], now exposed in the header) to
+`pip show` on both the uv and legacy paths. The re-pin after
+an upgrade also uses the bare name so an already-versioned
+dependency does not become "aiohttp>=3.14.3>=3.14.3". Adds
+tests for the name extraction.
+
+2026-08-03: Launch full-env scripts by their main.py path as
+full environments
+
+A full-environment script launched by its inner main.py path
+(Foo/Foo/Foo.py) rather than its container (Foo) was treated
+as a basic script and run on the shared standard runtime, so
+it could not import its own dependencies
+(ModuleNotFoundError). This happens when launching from a
+stale index, e.g. Open Quickly built before the script's
+environment finished installing, or by the .py path
+directly.
+
+launchScriptWithAbsolutePath now redirects such a path to
+its container via the new
+iTermAPIScriptLauncher.fullEnvironmentContainerForMainPyPath:
+(which only redirects when the container actually has a
+runnable environment), so it launches with its own
+environment. This covers Open Quickly, the menu,
+AppleScript, and the status bar since they all funnel
+through here. Hermetic tests cover the redirect and the
+negative cases (plain .py, non-main .py, main-shaped path
+with no environment).
+
+2026-08-03: Document macOS 27 Rosetta handling (manual plan
++ release notes)
+
+Add a macOS 27 section to the uv manual test plan (no
+Rosetta prompt; gate-off fresh install fetches arm64; x86
+fixture full-env rebuilds; x86 shared runtime is replaced;
+gate-on migrates; forced migration failure yields the
+explanatory error, not an exec failure) and a release-notes
+entry.
+
+2026-08-03: Handle x86-only legacy environments on
+Rosetta-less macOS
+
+On macOS 27 an Intel-only iterm2env cannot run and Rosetta
+is unavailable, so exec would fail cryptically. At the three
+legacy launch sites, when Rosetta cannot be installed and
+the interpreter has no arm64 slice
+(iTermRosettaSupport.legacyLaunchDisposition):
+
+- Gate off, full-environment: rebuild the env from setup.cfg
+against the current
+  arm64 runtime via reallyUpgradeFullEnvironmentScriptAt
+  (the same path version-based upgrades use), instead of
+  exec-failing. A failed rebuild shows its existing error.
+- Gate on, migration-failure fallback: the rollback restored
+the (Intel-only)
+  legacy env; show a clear alert + Script Console error and
+  do not exec it. The env stays intact for turning the gate
+  off (which then rebuilds).
+- Basic scripts, shared runtime: the version-based
+downloader will not refetch a
+  current-but-Intel-only runtime, so remove it and download
+  the arm64 build the manifest now serves, then launch
+  (clear error if it still is not native).
+
+The arch check only runs when Rosetta is actually
+unavailable, so macOS <= 26 launches (and the pre-migration
+Rosetta ordering there) are unchanged.
+
+2026-08-03: Add macOS 27 Rosetta decision layer and skip the
+un-installable prompt
+
+macOS 27 removes Rosetta 2. Add iTermRosettaSupport with
+pure, injectable decisions
+(canInstallRosetta(osMajorVersion:), shouldPromptForRosetta,
+legacyLaunchDisposition) and a Mach-O arm64-slice reader
+(thin + fat headers).  installRosettaIfNeededThen: no longer
+shows the "Install Rosetta?" prompt or runs `softwareupdate
+--install-rosetta` when Rosetta cannot be installed (macOS
+27+); behavior on macOS <= 26 is unchanged. Unit-tests cover
+the OS/gate/arch matrix and the Mach-O reader against
+crafted header fixtures.
+
+2026-08-03: Add uv e2e harness wrapper and reconcile the
+testing doc
+
+Item 5: the design doc promised
+tools/run_python_runtime_e2e.sh but only the
+ITERM2_UV_LIVE-gated live tests and a manual plan existed.
+
+- Add tools/run_python_runtime_e2e.sh (modeled on
+run_ai_live.sh): a thin wrapper
+  that runs UvProvisionerLiveTests with
+  TEST_RUNNER_ITERM2_UV_LIVE, scoped by filter (download /
+  provision / exact method).
+- Strengthen testProvisionFullEnvironmentEndToEnd to also
+import objc + AppKit
+  and resolve certifi.where(), so the harness covers the
+  Tier B module set (pyobjc is now always installed).
+- Amend the doc's Tier B/C sections with an accurate Status
+of what the harness
+  automates today versus what the manual plan still covers,
+  and mark the Follow-up CLAUDE.md note done.
+- Add the CLAUDE.md workflow note: uv
+provisioner/launcher/migration changes must
+  run the harness.
+
+2026-08-03: Surface migration failures; add progress UI for
+launch-time migration and imports
+
+Item 3: when a gate-on launch-time migration fails for a
+real reason (not the user canceling the download), write a
+Script Console line saying the script ran on its existing
+runtime, so an opted-in user can discover why nothing
+changed.  Cancel stays silent.
+
+Item 4: wire the indeterminate progress window into the
+migrate-at-launch path (migrateLegacyScriptToUv gains a
+provisioningDidBegin passthrough), so launching a legacy
+script under the gate is no longer a silent multi-second
+stall. And sequence the .its import please-wait window:
+thread provisioningDidBegin through installTrusted so the
+"Building Script" window shows only after the uv download
+consent (and any replace-existing prompt), instead of
+floating over them.
+
+2026-08-03: Add user-invokable uv install / check-for-update
+under the gate
+
+Scripts > Manage now offers the uv equivalent of the legacy
+runtime flow:
+
+- Gate on, uv not installed: "Install Python Runtime"
+downloads uv (existing
+  consent + progress UI) and eagerly provisions the
+  default-minor shared venv so basic scripts later launch
+  offline.
+- Gate on, uv installed: "Check for Updated Runtime" calls a
+new
+  userRequestedUpgradeCheck that bypasses the daily
+  throttle, runs the same upgrade pair, and reports
+  up-to-date / upgraded / failure via alert and the Script
+  Console. Since installedUvVersion is "unknown" for a
+  corrupt binary, this also repairs it.
+- The title/target is decided in one place
+(iTermScriptRuntime
+  pythonRuntimeMenuAction), so a leftover legacy runtime no
+  longer retargets the item at the legacy updater under the
+  gate. Removed the now-redundant validateMenuItem: disable
+  for installPythonRuntime:; the option-key "Install
+  Already-Downloaded Python Runtime" stays legacy-only,
+  disabled.
+
+The background upgrade path was refactored to return an
+outcome so both the daily check and the user-invoked check
+share the logic. Unit-tests cover the menu decision for gate
+on/off x uv installed/not. Doc Phase 1 item 6 and
+notes-3.7.txt updated.
+
+2026-08-03: Launch remapped-shebang basic scripts offline
+
+A python3.7 shebang provisions the shared 3.9 venv (3.7 is
+unavailable). On a later offline launch the fast path missed
+(venvs/3.7 does not exist), uv python list failed, resolve()
+kept "3.7", and the launch failed even though the
+provisioned 3.9 venv would work.
+
+Persist the requested->resolved mapping under
+venvs/.remaps/<requested> when a shared venv is provisioned
+for a remapped version, and consult it in the fast path
+(provisionedSharedVenvInterpreter) so a repeat launch finds
+the working venv with no uv and no network. The resolver
+takes an injected venvs root and is hermetically tested
+(direct match, remap follow, unprovisioned-remap and
+marker-required cases).
+
+2026-08-03: Fix async-delete test race, download timeout,
+and download-window close
+
+Third-pass review follow-ups:
+
+- discardLegacyBackup gains an optional completion (run on
+the utility queue
+  after the removal); testDiscardBackupRemovesSaved waits on
+  an expectation instead of asserting synchronously against
+  the fire-and-forget delete, which raced and failed.
+- boundedDownload sets timeoutIntervalForResource (120s).
+The byte cap does not
+  bound time, so a host trickling bytes slower than the idle
+  timeout could wedge provisionQueue (fetchSelectedEntry
+  runs there for user-visible launches).
+- The optional-component download window is now
+non-closable. Its title-bar
+  close box bypassed the Cancel button, leaving the transfer
+  running with no completion delivered and wedging the
+  caller (e.g. a stuck .its import); the always-present
+  Cancel/OK button remains the dismiss path.
+
+2026-08-03: Suppress menu-rebuild storm during uv
+provisioning; sequence progress window
+
+- Add iTermUvProvisioner.isProvisioningFullEnvironment, set
+while a full-env
+  .venv is being built under the Scripts folder, and check
+  it in pathWatcher: so the thousands of file events from uv
+  venv + uv pip install no longer trigger a menu rebuild per
+  event (the menu rebuilds once at completion).  Shared
+  basic-script venvs live outside Scripts and need no flag.
+- downloadAndProvisionFullEnvironment gains a
+provisioningDidBegin callback that
+  fires when the download phase is done and the venv build
+  starts. The create and Dependency Editor flows now show
+  the progress window from that callback instead of before
+  the call, so it no longer floats over the download
+  confirmation and download-progress window.
+
+2026-08-03: Build-tooling and assorted verification
+follow-ups
+
+- build_uv.sh: pass UV_EXPECTED_SHA256 into the automated
+sign_and_copy handoff
+  (the cross-check was inert there), reject a non-dotted
+  --rev before publishing a manifest entry, and
+  percent-encode spaces in the file:// path.
+- markSharedVenvProvisioned logs instead of silently
+swallowing a write failure
+  (which would re-provision every launch).
+- discardLegacyBackup removes the (potentially
+hundreds-of-MB) saved-iterm2env
+  off the main thread.
+- Migration-refusal log no longer prints "(null)" when
+setup.cfg is absent.  - New-script version popup selects the
+newest offered minor if the default is
+  ever missing from the list, instead of the oldest.
+- Autorelease the openREPL error NSAlert (this file is MRC).
+- Drop the stale design-doc sentence about
+performPeriodicUpgradeCheck in the
+  manifest bullet (accurately described in the
+  background-upgrade item).
+
+2026-08-03: Harden the version-bump scan and the background
+upgrade concurrency
+
+- collectLegacyFullEnvironmentScriptsUnder: skips symlinked
+entries (lstat via
+  attributesOfItemAtPath, so a symlink cycle can't recurse
+  forever) and bounds the depth. advancedSettingsDidChange
+  only rescans when the pythonRuntimeUsesUV gate itself
+  flips to on, instead of re-walking the tree on every
+  settings change.
+- Background upgrade now runs the network fetch on a utility
+queue rather than
+  provisionQueue, so it never blocks a user-visible
+  provision/launch; only the install swap and pip upgrades
+  hop onto provisionQueue. The isInstalled guard moved
+  inside the rate-limited block (it can be deferred up to a
+  day, and uv may have been removed meanwhile), with a
+  re-check before the swap. Documented that the venv module
+  upgrade is non-transactional and runs even with the gate
+  off by design.
+
+2026-08-03: Make remap modal suppressible; silence more
+cancels; fix Rosetta hole
+
+- Forced-remap modal now uses PermanentlySilenceable
+(Persistent shows no
+  suppression checkbox) and shares the
+  NoSyncUvVersionBumpWarning identifier with the predictive
+  startup warning, so silencing version-bump warnings once
+  silences both. Basic-script shebang remaps are now
+  reported too (generic message, since the shared venv is
+  not tied to one script).
+- Canceling the in-progress download window (com.iterm2
+-999) maps to the
+  cancel sentinel, and the .its importer finishes quietly on
+  cancel, so declining a download no longer shows an
+  "Installation Failed" / "-999" dialog.
+- Skip Rosetta only when the launch is certain to use uv
+(uv-backed script or
+  basic under the gate). A legacy full-env script under the
+  gate keeps the check, because a failed/canceled migration
+  falls back to the x86_64 legacy env, which still needs
+  Rosetta.
+
+2026-08-03: Fix uv install/download regressions from the
+review hardening
+
+Second-pass review follow-ups:
+
+- update_uv_manifest.sh chmods the temp file 0644 before
+os.replace. mkstemp
+  creates it 0600 and replace preserves that, so the first
+  regeneration after the atomic-write change would have
+  served manifest.json as 403, killing first installs and
+  background upgrades in the field.
+- Force 0755 on the uv binary after the atomic replace.
+replaceItemAt preserves
+  the ORIGINAL file's permissions, so a non-executable
+  partial left by an interrupted attempt would stay
+  non-executable and isInstalled would never turn true
+  (endless re-download). Test now covers the 0644->0755
+  self-heal.
+- Validate the manifest-declared size (0 < size <= 200 MB)
+at selection, since
+  the manifest is unsigned. This removes an Int-overflow
+  crash on a huge size and the size<=0 that disabled the
+  download cap. The interactive fetcher clamps defensively
+  too, and the silent background download is now bounded via
+  a streaming URLSession that cancels past the cap (was an
+  unbounded Data(contentsOf:)). The manifest fetch itself is
+  bounded at 1 MB.
+
+Adds hermetic tests: zero/huge size rejection, inclusive
+floor, and shouldUpgradeUv("unknown") self-heal.
+
+2026-08-03: Make the uv upgrade decision and manifest
+selection unit-testable
+
+Split the pure parse -> select -> floor step out of
+fetchSelectedEntry as
+selectedEntry(fromManifestData:runningMacOSVersion:), and
+extract the upgrade decision as
+shouldUpgradeUv(installedVersion:manifestVersion:). Both are
+now hermetically tested with crafted manifest bytes (no
+network, no real uv): newest-compatible selection, rejection
+below the minimum-version floor, macOS-bracket rejection,
+garbage manifest, and upgrade-only-when-strictly-newer.
+
+This covers the bug-prone half of the background upgrade
+path ([7]); the actual download + RSA-verify + atomic swap
+is the same installDownloadedTarball path already covered by
+the RSA-reject unit test and the live install test.
+
+2026-08-03: Add periodic background upgrades for uv and the
+iterm2 module
+
+Once a day at most (persistent rate limit, checked at
+launch), if the manifest offers a newer uv than installed,
+silently download and atomically replace it (RSA-verified;
+the minimum-version floor still blocks downgrades), then
+upgrade iterm2/certifi/pyobjc to the latest in every
+provisioned shared basic-script venv. Full-environment
+scripts manage their own dependencies and are left alone.
+Without this a first-installed uv was never re-checked, so a
+broken uv could never be replaced and basic scripts' iterm2
+module never updated.
+
+Also note in the download consent prompt that additional
+Python versions are fetched automatically later, and record
+the deferred uv disk GC in Phase 5.
+
+2026-08-03: Show progress during uv full-environment
+provisioning
+
+Add a small indeterminate progress window shown while uv
+builds a script's
+.venv and installs packages (create-new script and Dependency Editor
+upgrade-to-full-environment). The uv binary download already
+shows its own progress window; this covers the
+otherwise-silent venv/pip phase that follows.  Also silence
+the "Installation Failed / file a bug" alert in both flows
+when the user simply cancels the download.
+
+2026-08-03: Wire the new-script Python version picker to uv
+
+When the uv gate is on, the New Python Script version popup
+now lists the minors uv can provide (the legacy
+iterm2env/versions folder is empty on a uv-only machine,
+which left the popup empty and produced a bare python3
+shebang), defaulting to the shared default version. Replace
+the last hardcoded "3.12" fallbacks with
+iTermScriptRuntime.defaultPythonVersion.
+
+2026-08-03: Rescan on gate change; harden uv manifest
+handling
+
+- Show the one-time Python-version-bump heads-up when the uv
+gate is enabled
+  mid-session, by observing iTermAdvancedSettingsDidChange,
+  not only at launch.  Rewrite the scan to recurse the whole
+  scripts tree (finding nested full-env scripts) and key
+  each container by its path relative to the scripts folder
+  so Scripts/foo and AutoLaunch/foo no longer collide.
+- Cap the in-memory uv download at the manifest-declared
+size plus slack, so a
+  manipulated size or runaway response cannot exhaust
+  memory.
+- Refuse to install a uv older than a minimum version: the
+manifest is not
+  signed (only the tarball is), so this blocks a rollback to
+  an older, still-validly-signed build. Reuse
+  iTermDottedVersion.compare.
+- Include the macOS patch component in the running-version
+string so manifest
+  brackets can express patch bounds.
+
+2026-08-03: Surface forced Python remaps; fix pip wording
+and unparseable setup.cfg
+
+- When uv cannot provide a script's pinned Python version
+and bumps it, report
+  the old to new change: a Script Console line and a
+  suppressible modal. Every provisioning path (create,
+  import, migrate) funnels through
+  downloadAndProvisionFullEnvironment, so reporting it there
+  covers all of them.  Previously marker.remappedFrom was
+  computed and discarded everywhere.
+- Dependency Editor failure alerts no longer say "pip3"
+specifically (uv runs
+  `uv pip`); reworded to "the pip output".
+- Do not migrate a legacy script to uv when its setup.cfg is
+missing or
+  unparseable: migrating with an empty dependency list would
+  silently produce a broken environment. Log loudly and keep
+  the script on its working legacy env.
+- Use the shared default-version constant instead of another
+hardcoded "3.12".
+
+2026-08-03: Remove dead SHA-256 uv download code
+
+Since the switch to RSA verification,
+iTermUvDownload.matchesSHA256 had no production callers and
+its doc comment still described SHA-256 as the trust
+mechanism. Delete the file (and its project references) and
+the SHA-256 test cases, keep the still-valid
+manifest-parsing tests, and correct the
+iTermUvManifestEntry.signature comment to say it is an RSA
+signature.
+
+2026-08-03: Support exporting uv scripts; gate legacy
+runtime menu items; REPL errors
+
+- Export recognizes uv/migrated full-environment scripts
+(the python-runtime.json
+  marker, not just iterm2env); the environment is rebuilt on
+  import so it stays out of the archive. Exporting a basic
+  script no longer crashes on a uv-only machine
+  (latestPythonVersion is nil there, and writeSetupCfg
+  asserts on a nil version): fall back to a shared default
+  version constant. Add the missing return that let the
+  not-a-script path call completion twice.
+- Disable the Install/Update legacy Python Runtime menu
+items when the uv gate
+  is on, where they are not meaningful. (A uv upgrade path
+  is a Phase 4 item.)
+- Surface uv REPL provisioning failures with the same alert
+the basic-script
+  path shows, staying silent only on user cancellation.
+- Hoist the duplicated "3.12" default into
+iTermScriptRuntime.defaultPythonVersion.
+
+2026-08-03: Reconcile the uv migration design doc with the
+implementation
+
+Update docs/uv-python-runtime-migration.md to match the
+code: migration is lazy and per-script at launch (with a
+predictive one-time startup warning), not eager on
+gate-enable; relocation uses `uv venv --relocatable` (noting
+the residual renamed-home/different-machine gap) rather than
+detect-and-reprovision; uv interpreters and caches live
+under the spaceless Application Support link; and the marker
+records the minor Python version (e.g. "3.9") and is written
+non-atomically.
+
+2026-08-03: Fix uv build/sign tooling handoff and harden the
+scripts
+
+- build_uv.sh now calls sign_and_copy_uv.sh with all
+required arguments
+  (source URL, RSA key, uv version, and the macOS floor it
+  built against); previously it passed only two and the sign
+  step exited immediately.
+- Correct the stale build summary that claimed the manifest
+signature equals
+  the tarball sha256; it is a separate RSA-SHA256 signature.
+- Make a vtool minos-floor mismatch a hard error instead of
+a warning.  - Fix the usage() sed range that overran the
+header comment block.  - Optional supply-chain pins:
+UV_EXPECTED_COMMIT (build_uv.sh) aborts if a
+  mutable --rev tag resolves to an unexpected commit, and
+  UV_EXPECTED_SHA256 (sign_and_copy_uv.sh) verifies the
+  downloaded bytes before signing.
+- update_uv_manifest.sh writes the manifest to a temp file
+and renames it into
+  place so an interrupted run cannot corrupt manifest.json.
+
+2026-08-03: Remove the committed uv tarball; gitignore build
+output
+
+uv-universal2-apple-darwin.tar.gz (37 MB) and its .sha256
+were committed by accident in 7c920abb7 (build_uv.sh writes
+to the repo root by default). The signed tarball is hosted
+on iterm2.com and referenced by the manifest; nothing in the
+repo consumes these files. Remove them from the tree and
+gitignore the build-output pattern so they cannot be
+re-added. The blobs remain in history; purging that is a
+separate, coordinated force-push if desired.
+
+2026-08-03: Fix uv migration backup semantics, stderr
+merging, and leaked backups
+
+- backUpLegacyEnvironment no longer destroys the good
+environment. When both
+  iterm2env and saved-iterm2env exist (an interrupted legacy
+  upgrade), saved is always the good copy: restore it and
+  discard the broken partial, instead of the reverse, which
+  lost the user's working environment when the uv migration
+  then failed. Update the test that locked in the old
+  behavior.
+- Reclaim an orphaned saved-iterm2env (a completed migration
+whose backup was
+  never dropped because the app died) when a uv-backed
+  script launches; no other code path would ever remove it.
+- Parse uv output from stdout only. iTermCommandRunner
+merged stderr into the
+  captured output, so any uv warning broke the JSON parse of
+  `uv python list` (silently disabling version remapping)
+  and the `uv --version` parse. Add an opt-in
+  discardStandardError and use it for both parsed
+  invocations.
+- Give installedUvVersion the same UV_* environment (incl.
+UV_NO_CONFIG) as the
+  other uv invocations.
+- Basic-script launch checks for an already-provisioned
+shared venv before
+  spawning uv, so repeat launches stay offline.
+- Log loudly instead of silently falling back to a temp
+directory when the
+  spaceless Application Support link cannot be created.
+
+2026-08-03: Fix uv script launch and provisioning
+correctness
+
+Address several review findings in the uv Python-runtime
+path:
+
+- .its import no longer reports success when uv provisioning
+fails or is
+  canceled. didInstallPythonRuntimeWithError: switched on an
+  install-status enum (0/1/2) with no default, so a uv error
+  (code -1) fell through to the move-into-place success path
+  and installed a half-provisioned directory.  Any non-nil
+  error is now a failure; user cancellation is forwarded so
+  the caller can stay silent.
+- Add a distinguishable cancel error code
+(isCancelationError) so a declined
+  download is a silent no-op instead of "Installation Failed
+  / file a bug".
+- Install pyobjc into every uv environment (full and shared
+basic venvs), so
+  scripts that import objc/AppKit keep working as they did
+  on the legacy bundled runtime. Hoisted the
+  always-installed set to one constant.
+- Do not trust a half-built shared basic-script venv: gate
+the fast path on a
+  .provisioned marker written only after packages install,
+  delete the venv on any failure, and check for an existing
+  provisioned venv before spawning uv (offline repeat
+  launches).
+- Install the uv binary atomically (temp file + rename) so
+an interrupted copy
+  can never leave a partial executable that is trusted
+  forever.
+- Name uv basic scripts correctly in the Script Console and
+notifications by
+  passing an explicit is-full-environment flag instead of
+  inferring it from a non-nil virtualenv (basic uv scripts
+  now have a shared venv too).
+- Skip the Rosetta prompt for uv-backed launches: uv
+interpreters are native,
+  and Rosetta is gone in macOS 27.
+- Drop a stale inherited IT2_SUITE from the script
+environment when no custom
+  suite is set.
+
+2026-08-03: Set IT2_SUITE for menu-launched API scripts
+
+Menu-launched scripts received only ITERM2_COOKIE and
+ITERM2_KEY, so the iterm2 Python module defaulted IT2_SUITE
+to "iTerm2" and connected to the main instance's unix socket
+instead of the socket of the build launched with -suite.
+Inject IT2_SUITE from customSuiteName, mirroring what
+PTYSession already does for terminal sessions. This covers
+both uv and legacy scripts, which share this launcher.
+
+2026-08-03: Fetch the uv manifest from iterm2.com and verify
+downloads with RSA
+
+Replace the hardcoded dev manifest and SHA-256 pin with a
+fetch of the hosted manifest.json (behind a new
+uvManifestDownloadURL advanced setting) and RSA signature
+verification against the app's bundled public key, so
+provisioning uses the real universal2 build. Read the uv
+version from the installed binary rather than the manifest.
+Fix parseUvVersion to strip the trailing newline so the
+marker records a clean version. In sign_and_copy_uv.sh,
+chmod the signed tarball to 644: mktemp created it 0600 and
+mv preserved that, so the web server could not serve it.
+
+Update UvProvisionerTests to the new API: hermetic tests
+cover extract, install, version parsing, and RSA rejection;
+the live tests now exercise the real hosted manifest + RSA
+verify + full-environment provisioning end to end.
+
+2026-08-03: Confirm before downloading uv, like the legacy
+runtime prompt
+
+Provisioning downloaded uv without asking; the legacy path
+showed a modal warning about the download size first. The uv
+fetcher now shows an OK/Cancel confirmation (with the uv
+download size, and noting a Python interpreter is also
+fetched) before starting, and a cancel aborts provisioning
+cleanly. Shown once, since it only fires when uv is not yet
+installed. The fetch protocol gained a byteCount parameter.
+
+2026-08-03: Skip legacy runtime download in
+create/import-all flows when uv is on
+
+Opting into uv still triggered a 117 MB legacy runtime
+download when creating a script: the New Python Script flow
+pre-downloads the bundled runtime in two ungated spots
+(newPythonScript preflight and after the save panel) before
+reaching the gated per-script provisioning. Both now
+short-circuit to the create step when pythonRuntimeUsesUV is
+on (full-env scripts provision via uv per-script; basic
+scripts need nothing at creation). The Settings Import-All
+flow's per-requirement runtime install is likewise skipped
+under uv (restored scripts provision/migrate on first
+launch).
+
+2026-08-03: Wire Dependency Editor to uv; make venvs
+relocatable (uv migration follow-ups)
+
+- Dependency Editor: for a uv-backed script,
+show/install/uninstall/upgrade run
+  through 'uv pip ... --python <.venv>/bin/python' (install
+  forced wheels-only) and the version popup shows the single
+  .venv version from python-runtime.json; the legacy
+  iterm2env pip3 path is unchanged for legacy scripts. New
+  building blocks: iTermUvCommand.pipPassthroughArgs,
+  iTermUvProvisioner.runUvPip/uvPipArguments/
+  provisionEnvironment,
+  iTermScriptRuntime.pythonVersion(forScriptContainer:).
+- uv venv is now created --relocatable, so a script folder
+can be moved/renamed (and
+  the import path can provision-then-move) without breaking
+  the venv.
+- REPL: documented that the stdlib asyncio header is left
+as-is (repl_banner already
+  explains top-level await; no clean cross-version way to
+  suppress it).
+
+Unit-tested: pip passthrough args, marker python-version
+reader, relocatable venv arg.  Verified live: uv pip
+show/uninstall against a venv; provisioning e2e with
+--relocatable.
+
+2026-08-03: Migrate existing legacy scripts to uv (uv
+migration Phase 3)
+
+When the pythonRuntimeUsesUV gate is on, a legacy
+full-environment script is migrated to uv the first time it
+launches, and a one-time warning tells the user about any
+forced Python-version bumps.
+
+- iTermUvMigration: forcedRemaps (only versions pbs cannot
+provide, 3.7 -> 3.9;
+  preserved minors are silent), consolidatedWarningText,
+  pendingVersionBumpWarning, and
+  backUp/restore/discardLegacyBackup (rebuild-with-rollback:
+  iterm2env is moved to saved-iterm2env, never deleted until
+  the .venv is in place, and fully restored on failure). 12
+  unit tests.
+- iTermUvProvisioner.migrateLegacyScriptToUv orchestrates
+backup -> provision ->
+  discard/restore.
+- iTermAPIScriptLauncher: a legacy full-env script under
+gate-on migrates (once) then
+  launches under its new .venv; on failure it launches on
+  the restored legacy env.
+- iTermScriptsMenuController shows the one-time,
+permanently-silenceable version-bump
+  warning at build.
+
+Validated live in a -suite iterm2-alt5 instance: a legacy
+script (with iterm2env) launched under gate-on migrated to a
+.venv (iterm2env removed, backup discarded,
+python-runtime.json written, 3.10 preserved) and ran under
+.venv/bin/python.
+
+2026-08-03: Route Python scripts through uv behind the gate
+(uv migration Phase 2)
+
+All gated on the pythonRuntimeUsesUV advanced setting
+(default NO); the legacy path is unchanged when the gate is
+off or a script is already legacy-provisioned.
+
+Foundations (unit-tested): iTermScriptRuntime (on-disk
+backend detection + python-runtime.json marker),
+iTermUvPythonVersion (preserve pinned minor, bump only
+3.7->3.9, parse uv python list), iTermReplLauncher (REPL
+args).
+
+Provisioning: iTermUvProvisioner.provisionFullEnvironment /
+the shared basic-script venv builder run uv venv + uv pip
+install (always iterm2 + certifi) and write the marker.
+Downloads are single-flighted and venv/pip work is
+serialized. Wired into the create
+(iTermScriptsMenuController) and import (iTermScriptArchive)
+paths, and the basic-script + REPL launch paths.
+
+Launch: environmentForScript: returns the .venv interpreter
+for a uv container; environmentFromEnvironment: points
+SSL_CERT_FILE at the venv certifi (detected via pyvenv.cfg,
+covering per-script and shared venvs) and omits
+SSL_CERT_DIR; the legacy runtime-upgrade check is skipped
+for uv scripts; basic scripts use a shared per-minor venv;
+the REPL uses python -m asyncio (apython dropped for uv).
+
+Validated live in a -suite iterm2-alt5 instance: full-env
+and basic scripts launch under their uv venv (with real uv
+download in-app), HTTPS works, and python -m asyncio
+supports top-level await. Reviewed; legacy-path safety
+confirmed.
+
+2026-08-03: Add uv provisioner (uv migration Phase 1)
+
+Download, verify (pinned SHA-256), extract, and install the
+uv binary, reusing the optional-component download window
+controller. The pure manifest model with macOS-bracket
+selection, the uv command/env builders, and SHA-256
+verification are unit-tested; the network fetch sits behind
+an injectable protocol so later phases can provision without
+hitting the network. A skip-guarded live test exercises the
+full download, verify, extract, and install pipeline against
+the real tarball (TEST_RUNNER_ITERM2_UV_LIVE=1). Not yet
+wired into any UI; the gate that turns uv on ships in Phase
+4.
+
+2026-08-03: Add one-time macOS 12 farewell notice (uv
+migration Phase 0)
+
+Warn users still on macOS 12 that a future beta will require
+macOS 13, before the deployment target is bumped, so they
+are not stranded on an update their updater offers but
+cannot launch. Pure decision seam
+(iTermMacOS13RequirementNotice.shouldShow) with unit tests;
+a thin iTermWarning caller shows it once, guarded by a
+NoSync flag.
+
+2026-08-03: Add design doc for replacing the bundled Python
+runtime with uv
+
+2026-08-03: Add Suppressed Alerts panel to recover silenced
+warnings (issue 12963)
+
+Choosing "No" plus "remember my choice" on the
+terminal-initiated image-display confirmation silently
+disabled all inline images with no obvious way to undo it.
+Add iTerm2 > Suppressed Alerts, a panel listing warnings
+currently being auto-answered (message, chosen response, and
+when) so you can select one and un-suppress it. The old View
+> Always Show Alerts with Remembered Selections command
+moves into this panel as a checkbox.
+
+iTermWarning now records each preempted warning to a new
+main-actor iTermSuppressedAlerts registry.
+
+2026-08-03: Support OpenAI Zero Data Retention orgs (issue
+12521)
+
+ZDR orgs cannot retain responses server-side, so the
+Responses API rejects previous_response_id with a 400 on the
+second message. Add a global "zero data retention" setting
+under Settings > General > AI.  When enabled,
+supportsPreviousResponseID returns false so every turn is a
+full stateless replay from blobs, previous_response_id is
+never sent, and store=false is set on the request. When
+disabled, behavior is unchanged.
+
 2026-08-02: Fully linkify long URLs: fix hard newlines, IDN,
 and images
 
