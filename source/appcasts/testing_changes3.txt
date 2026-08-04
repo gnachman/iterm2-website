@@ -1,206 +1,156 @@
-Version 3.7.0beta9 was built on August 3, 2026.
+Version 3.7.0beta8 was built on July 26, 2026.
 
-Changes since 3.7.0beta8:
-
-Heads up: future betas will require macOS 13
-(Ventura) or later. This is the last version to
-support macOS 12. Sorry for the inconvenience!
+Note: if you are beta testing the iPhone companion
+app iTerm2 Buddy, you'll need to update it after
+upgrading iTerm2 to this version.
 
 New Features:
-- iTerm2 > Suppressed Alerts is a new panel that
-  lists warnings you silenced with "remember my
-  choice" so you can turn them back on. For
-  example, answering No and checking the box on
-  the prompt that asks before displaying a
-  terminal-initiated image silently disabled all
-  inline images with no obvious way to undo it;
-  now you can find that choice and clear it. The
-  old "Always Show Alerts with Remembered
-  Selections" command moves into this panel.
-  Issue 12963.
-- The manual AI model editor now offers one-tap
-  presets for OpenAI-compatible providers
-  (Ollama, OpenRouter, z.ai, Qwen, MiniMax) that
-  fill in the endpoint for you, plus a Test
-  Connection button that verifies your settings
-  and API key before you save.
+- The it2 command-line tool now works on hosts
+  you reach through SSH integration.
 
 Improvements:
-- Web URLs handed to iTerm2 (by the OS as your
-  default browser, by "open -a iTerm2 <url>", by
-  Velja, or by vim's gx) now open in the built-in
-  web browser instead of launching a terminal,
-  unless you have bound the scheme to a specific
-  profile. If the browser plugin is not
-  installed, iTerm2 offers it once. Issue 12431.
-- Right-clicking an auto-detected URL (the kind
-  ⌘-click opens) now offers Copy URL, which
-  removes the hard line breaks from a wrapped URL
-  so a clean link lands on the clipboard.
-  Issue 12944.
-- Right-to-left script support (bidi reordering
-  plus Arabic and Persian cursive joining) is now
-  enabled by default. You can turn it off in
-  Settings > General > Experimental. Issue 4361.
-- AI chat history is now replayed to the model
-  from the exact bytes previously sent rather
-  than rebuilt each turn, so the prompt cache
-  stays valid across turns (including turns that
-  ran a tool) and long conversations keep getting
-  cheaper and faster.
-- Added a Zero Data Retention setting under
-  Settings > General > AI. Turn it on if your
-  OpenAI organization has Zero Data Retention
-  enabled. iTerm2 then stops sending
-  previous_response_id and sets store=false, so
-  chats no longer fail on the second message.
-  Issue 12521.
-- An AI chat linked to a terminal session can now
-  watch that session and tell you when it reaches
-  a described state or condition, without
-  polling. Previously only orchestration chats
-  could set watches.
-- ⌘-click now linkifies very long URLs in full.
-  Previously only the first couple thousand
-  characters were clickable; the linkifier now
-  scans onward to the next separator, handles
-  internationalized (IDN) hostnames, and no
-  longer joins a URL to unrelated text across a
-  hard line break.
-- When AI chat types into a terminal with the
-  insert-at-cursor tool, a newline is now sent as
-  Return so it submits the line in programs like
-  Claude Code instead of inserting a literal
-  newline.
-- Preferences search now finds several Colors-tab
-  settings that were previously unsearchable,
-  such as Border around active pane, Use custom
-  tab color, and the light/dark color controls.
-- The Script Console has a Clear Terminated
-  button that removes stopped script and
-  connection entries, so it no longer grows
-  without bound (and slows the app) when you
-  repeatedly restart a script. Issue 12942.
-- A new tmux window opened with ⌘T now picks up
-  the profile's custom tab title, if one is set.
-- iTerm2 now probes the local network on every
-  launch so macOS keeps it in the Local Network
-  privacy list. This recovers the permission
-  after a tccutil reset or an OS upgrade, fixing
-  commands like "ping 10.0.0.1" failing with "no
-  route to host". Issue 12956.
-- Faster rendering of text with many colors (such
-  as syntax-highlighted code) by reusing
-  attribute dictionaries across color spans
-  instead of rebuilding one per span. Issue
-  12763.
+- Session-bound AI chats can now include your
+  terminal’s visible screen and state with each
+  message automatically, and read the screen on
+  request with the same get_screen_contents tool
+  the orchestrator uses (in a full-screen app it
+  returns just the current screen, with no
+  scrollback). The “View History” permission is
+  now “View Contents” and gates both. iTerm2 asks
+  once before it starts sharing your screen
+  automatically, so a permission left at “Always”
+  from an earlier version shares nothing until
+  you confirm.
+- AI chat can now restart a session for you. The
+  “Type for You” permission was renamed “Control
+  Terminal” and now also gates this.
+- An AI chat linked to a terminal session now
+  stays linked when the session’s shell restarts
+  (which happens often with the Claude Code
+  integration). Previously the link, its command
+  permissions, and orchestrator @-mentions of the
+  session were lost on every restart.
+- AI chat orchestration is now much less chatty.
+  While it runs a loop (for example, waiting for
+  a Code Review to finish and then telling a
+  session to continue), it reports one line per
+  real outcome instead of narrating every step
+  and asking what to do next each time.
+- Companion push notifications are now coalesced
+  so you get fewer notifications.
+- The keychain permission prompt that appeared
+  after upgrading, for AI API keys and for a
+  paired companion device, no longer recurs on
+  every update. Those secrets now live in an
+  entitlement-scoped keychain group that stays
+  readable across signed builds. Upgrading to
+  this version prompts once more to move them.
+- Tab dragging is smoother: Metal stays enabled
+  for normal drags, reorder slots switch near tab
+  midpoints, and split-pane drop targets are more
+  stable.
+- Performance improvements.
+- The retrospective debug log no longer
+  retains typed characters, command lines,
+  passwords, tokens, or AI chat content. These
+  could previously accumulate in memory even with
+  debug logging off.
+- The screenshot window’s Copy to Clipboard
+  button now flashes a “Copied!” confirmation so
+  you get feedback that the image was copied.
+- The settings search field again uses the system
+  focus ring on macOS 26.5.1 and later, where a
+  workaround for an earlier OS bug otherwise left
+  stray fragments below the capsule.
 
 Bug Fixes:
-- Fixed a local privilege issue where the
-  orphaned-session server adopter connected to a
-  socket in a world-writable directory without
-  checking who owned it. A local attacker could
-  pre-create the socket and man-in-the-middle a
-  restored session, capturing keystrokes and
-  output. The peer's identity is now
-  authenticated before anything it sends is
-  trusted.
-- Fixed a way for an authenticated Python API
-  client to exhaust iTerm2's memory by flooding
-  it with WebSocket ping frames while never
-  reading the replies. Inbound buffering is now
-  bounded and such a client is disconnected.
-  Credit to NSEcho.
-- A sixel image whose String Terminator was
-  written as ESC ESC \ instead of ESC \ is no
-  longer discarded, leaving a stray backslash on
-  screen. The image now renders. Issue 12259.
-- ⌘-click again opens files in JetBrains IDEs
-  (IntelliJ IDEA, WebStorm, Rider). iTerm2 now
-  invokes the IDE's launcher directly so the file
-  opens in the already-running instance instead
-  of silently starting a new one. Issue 12958.
-- Toggling Caps Lock under the Kitty keyboard
-  protocol with "report all keys as escape codes"
-  no longer sends an "A". It now reports the Caps
-  Lock key's own code. Issue 12922.
-- Fixed the Kitty keyboard protocol SET request
-  destroying the whole flag stack instead of
-  modifying only the current frame.
-- The OSC 9;4 progress bar drawn in the tab is no
-  longer hidden by the active-pane border when
-  both are enabled. Issue 12960.
-- In tmux -CC sessions with pane-border-status
-  set to top or bottom, panes are no longer one
-  row too tall (the bottom line went unused and
-  the cursor landed a row high after
-  reattaching). Issue 12925.
-- tmux panes no longer receive stray focus-report
-  escape sequences when the server's focus-events
-  option is on. Focus reporting now turns on only
-  when the pane's own program requests it, so it
-  no longer pollutes the shell prompt or flips
-  bash's vi mode. Issue 12933.
-- Make Screenshot no longer drops ASCII
-  programming ligatures (-> => != and so on) when
-  the profile and font support them.
-- The Centered window style now looks and behaves
-  like a normal window (title bar, the close,
-  minimize, and zoom buttons, and the merged
-  chrome of the
-  Minimal and Compact themes), except that it
-  stays centered. It also no longer changes size
-  when you minimize and restore it. Issue 12918.
-- A left- or right-of-screen window no longer
-  changes width when you add a tab whose profile
-  has a different width. Issue 12917.
-- Split-pane dividers in different rows or columns
-  can now be dragged into alignment: a divider
-  snaps to a matching divider elsewhere in the
-  tab when it comes within half a cell, fixing a
-  sub-cell misalignment that whole-cell drag
-  steps could not correct. Issue 12932.
-- Modified function keys (such as Shift-F5) no
-  longer lose their modifier in a tmux
-  integration (tmux -CC) session, which sent the
-  unmodified sequence instead of the xterm form.
-  Issue 10717.
-- The suggested filename for Save contents no
-  longer contains colons or slashes, which macOS
-  rendered as "/" in the save panel and Finder.
-  Issue 12931.
-- The command info popover's "Started at" time
-  now honors the system 24-Hour Time setting
-  instead of always using a 12-hour clock.
-  Issue 12929.
-- Fixed several VoiceOver problems in the
-  terminal: QuickNav now engages without toggling
-  it off and on, content no longer goes stale
-  when output arrives during an interaction, and
-  the review cursor no longer jumps to the top.
-  Issue 12920.
-- Reshaping a tab through the Python API's
-  apply-layout call no longer leaves the window
-  with no focused pane, so typing works without
-  first clicking a pane.
-- Switching between the main and alternate screen
-  buffers no longer resets a manual key-reporting
-  choice when both screens report the same flags.
-- Pressing Undo Close when the last closed
-  session cannot be revived no longer leaves an
-  invisible empty window behind, which also
-  crashed Python API scripts with a runaway
-  refresh loop.
-- Fixed a black-holed companion relay connection
-  that could leave the Mac believing it was
-  connected for hours over a socket the relay had
-  already dropped. A keepalive ping that gets no
-  response within ten seconds now tears the
-  socket down and reconnects.
-- A three-finger drag over an app with mouse
-  reporting on (tmux with mouse on, or vim with
-  mouse=a) no longer produces both the app's own
-  selection and a native iTerm2 selection at
-  once.
+- An AI chat linked only to a web browser now
+  uses a browser-appropriate system prompt
+  instead of one that described a terminal it was
+  not attached to.
+- Fixed a memory corruption bug that could crash
+  iTerm2 intermittently, most often when closing
+  a tmux window caused surviving sessions to
+  resize while output was still streaming. Lazily
+  cached line-wrapping info could be written into
+  scrollback storage shared with another thread.
+  Issue 12941.
+- Fixed a hang where a modal sheet (such as an
+  alert) whose parent window was destroyed before
+  it was dismissed left the main thread frozen in
+  the modal run loop forever.
+- Fixed key reporting using stale flags after
+  switching between the main and alternate screen
+  buffers, which could leave modified-key input
+  wrong for some full-screen apps. Issue 704.
+- OSC 22 pointer shapes are now honored while
+  mouse reporting is on, instead of always
+  forcing the I-beam-with-circle cursor. Added
+  the fleur, watch, plus, and minus shapes and
+  mapped X_cursor to the not-allowed cursor.
+  Issue 700.
+- Fixed flag emoji (such as a country flag)
+  rendering as blank cells or flickering under
+  the GPU renderer. The two regional indicators
+  that make up a flag are now shaped together,
+  matching the non-GPU renderer.
+- Command-clicking links in terminal output no
+  longer crashes when command-mark data is
+  unavailable.
+- Hiding a hotkey window on macOS 26 no longer
+  briefly flashes background iTerm2 windows to
+  the front. The window now waits for the
+  previously active app to come forward before
+  ordering out.
+- Global search no longer shows blank snippets
+  for results found on the main screen while an
+  alternate-screen app (such as a full-screen
+  TUI) is running. Snippets are extracted from
+  the same snapshot the search ran against.
+- Fixed a case where a Claude Code workgroup pane
+  (such as Diff or Code Review) could close
+  itself when its command exited and take the
+  whole workgroup down with it. Spawned workgroup
+  panes now pin their end action so the profile’s
+  “Close Sessions On End” setting can no longer
+  flip them to close on their own.
+- Reloading a diff session in a workgroup now
+  re-runs the command matching the file picker’s
+  current selection. Previously, if the file you
+  were viewing stopped having changes and the
+  picker snapped back to “All Files”, reload
+  reran the old per-file diff, found nothing, and
+  exited, closing the session.
+- Fixed a black bar and off-by-a-row click
+  hit-testing when filtering, taking a
+  screenshot, or zooming lines in a session that
+  carries extra chrome such as the workgroup
+  peer-mode toolbar. Instant replay also restores
+  the window to its original size on exit.
+- The built-in web browser now prompts for a user
+  name and password when a site returns an HTTP
+  authentication challenge (Basic, Digest, or
+  NTLM) instead of failing to load.
+- A saved status bar layout whose RPC-provided
+  text component is missing its registration
+  request is now dropped instead of showing up as
+  a blank “ghost” cell.
+- Fixed modified keys such as Ctrl-J and
+  Shift-Enter not reaching some apps (for example
+  Codex) running under tmux integration
+  (tmux -CC). iTerm2 now hands these keys to tmux
+  by name so tmux encodes them just as it does
+  outside control mode.
+- Fixed auto-sending code review results to the
+  main session sometimes failing to submit
+  because the Return arrived too soon after the
+  paste. The Return now waits a moment (see the
+  workgroupAutoSendSubmitDelay advanced setting).
+- If you never paired a companion device, iTerm2
+  no longer touches the companion keychain items
+  at launch, avoiding a spurious keychain
+  permission prompt for people who alternate
+  differently-signed builds (such as a released
+  build and one built from source).
 - Fixed various crashes.
 
