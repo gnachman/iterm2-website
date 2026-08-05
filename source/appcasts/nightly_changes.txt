@@ -1,3 +1,57 @@
+2026-08-04: Offer physical-key bindings when a shortcut
+fails after a layout change
+
+When a keyDown carries Cmd/Ctrl/Opt, matches no key binding
+by character, but a binding exists for the same physical key
+and modifiers (e.g. after switching keyboard layout, or a
+Chinese/Pinyin input method changes the character a key
+reports), iTerm2 now offers to turn on "Interpret key
+bindings based on physical key".
+
+Detection happens once per keyDown at the single point in
+iTermApplication where no binding claimed the event. When a
+terminal responder is focused the offer is an in-session
+announcement; otherwise it is a modal. The offer is made at
+most once per launch (auto-repeat is ignored), so it neither
+nags nor storms. "Don't Ask Again" suppresses it permanently
+(NoSync); enabling the preference also stops it. Learn More
+opens a modal with the full explanation. The Keys
+preferences checkbox now stays in sync when the preference
+is toggled from the offer.
+
+This supersedes the unconditional keycode-only fallback
+approach, which would have silently changed matching for
+users who deliberately want character-based bindings across
+layouts.
+
+2026-08-04: Fix typo in session.py (#714)
+
+Fix typo in session.py: `uknown` to `unknown` 2026-08-04:
+Add option to draw mark indicators using the theme's ANSI
+colors
+
+New per-profile setting "Use ANSI colors for marks"
+(Profiles > Colors, off by default). When enabled,
+command-prompt mark indicators are drawn using the color
+preset's ANSI blue (success), red (error), and yellow
+(other) instead of the built-in constants, so they harmonize
+with the current theme. Success stays blue to match the
+previous built-in color.
+
+The setting is mode-independent (excluded from the
+light/dark color amendment and from the per-mode bulk-copy
+machinery) since the resolved ANSI colors already adapt to
+appearance on their own. Applies to both the CoreGraphics
+and Metal render paths; the non-Metal image cache is keyed
+by (type, useThemeColors) and evicted on colormap generation
+change, and the Metal atlas is rebuilt in the driver's
+per-frame update phase when the resolved colors change.
+Repaints on profile reload so the toggle and ANSI edits take
+effect immediately, and keeps the auto-composer separator
+color in sync.
+
+Implements issue 9983.
+
 2026-08-03: Default the uv Python runtime to on for macOS
 13+
 
