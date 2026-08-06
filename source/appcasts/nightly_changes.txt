@@ -1,3 +1,107 @@
+2026-08-05: Restore sessions whose working directory is gone
+(issue 12955)
+
+When a session's saved working directory no longer exists
+(for example, it was on an external or network drive that is
+not mounted at launch), restoring it could fail to relaunch
+the shell and silently close the tab.
+
+Two things went wrong. On the posix_spawn launch path (used
+when "Disclaim ownership of children" is enabled), the
+working directory was applied with
+posix_spawn_file_actions_addchdir_np, whose failure aborts
+the entire spawn. The shell never execs, the session gets an
+immediate broken pipe, and because it ended right after
+starting, the tab is closed. This differs from the fork+exec
+path, whose chdir() failure is silently ignored so the shell
+still launches in a fallback directory.
+
+Fixes: - iTermSessionFactory now checks whether the resolved
+working directory
+  exists before launch and, if not, falls back to the home
+  directory and records the original path. After the shell
+  starts, the session shows a banner explaining that it
+  started in the home directory instead. This is skipped for
+  ssh (remote paths) and for attach (no shell launch).
+- iTermSpawnInitializeActions only adds the chdir file
+action when the
+  directory exists, so a missing directory can no longer
+  abort the spawn.  This makes the posix_spawn path
+  best-effort like the fork path and is defense in depth
+  against the same directory vanishing after the check.
+
+2026-08-05: Fix two format string bugs in logging calls
+(#712)
+
+* Include parser error description in log message
+
+I think it's been missing ever since this log call was
+originally introduced in cee4e22.
+
+Also adds NS_FORMAT_FUNCTION to the declaration so that it's
+checked by the compiler.
+
+* Use an explicit format string for calls to
+SetPinnedDebugLogMessage
+
+If the value string param happened to have had a percent
+character in it, it would've led to undefined behavior.
+
+Also adds NS_FORMAT_FUNCTION to protect against this issue
+at other callsites and in the future.  2026-08-05: Compose
+decomposed Hangul instead of splitting jamo. Issue 3063
+
+Conjoining Hangul jamo (Hangul_Syllable_Type L, V, T) are
+Grapheme_Base, so they were included in the
+codePointsWithOwnCell exception set used by aggressive base
+character detection. That set tells the composed-character
+enumerator where it is safe to start a new cell, overriding
+CoreFoundation's UAX #29 clustering. For jamo that override
+is wrong: UAX #29 rules GB6-GB8 forbid breaking within an
+L(+)V(+T) sequence, and
+CFStringGetRangeOfComposedCharactersAtIndex already groups
+such a sequence into one grapheme cluster. Re-splitting it
+rendered decomposed Hangul (e.g. Korean filenames stored by
+HFS+, or printf '') as separate jamo letters with the wrong
+width, corrupting cursor movement.
+
+Exclude conjoining jamo (L, V, T, including Jamo
+Extended-A/B) from codePointsWithOwnCell by subtracting
+Hangul_Syllable_Type L/V/T from own_cell_codes in
+generate_nscharacterset.py and regenerating.  Precomposed
+syllables (LV/LVT, U+AC00..U+D7A3) are single code points
+and keep their own cell. The Tamil (issue 7788) and
+halfwidth katakana (issue 6048) cases that motivated
+aggressive detection are unaffected.
+
+2026-08-05: Don't pin toolbelt list columns to a zero width
+(issue 12964)
+
+When a new window is created with the toolbelt showing, the
+toolbelt is briefly laid out at zero width. The list tools
+(Command History, Recent Directories, Captured Output)
+pinned their table column's min/maxWidth to
+contentSize.width minus a fudge factor, which went negative;
+maxWidth clamped to 0 and later relayouts could not recover
+because minWidth got clamped back down to the poisoned
+maxWidth. Rows were present but drew at zero width until a
+window resize forced a clean relayout.
+
+Only pin the column when the target width is positive, and
+set maxWidth before minWidth so a previously poisoned
+ceiling cannot clamp the floor.
+
+2026-08-05: Autorelease the frame canonicalizer to fix a
+window leak
+
+The iTermFrameCanonicalizer was alloc/init'd in MRC code
+without a balancing release. Its strong window reference
+kept the NSWindow and its entire view tree alive after the
+window was closed, leaking a full terminal window per
+open/close cycle.
+
+Fixes gitlab issue 12966.
+
 2026-08-04: Offer physical-key bindings when a shortcut
 fails after a layout change
 
