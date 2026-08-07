@@ -1,3 +1,1816 @@
+2026-08-06: Improve the scrollable side tab bar and make it
+a real setting
+
+Follow-up to #721:
+
+- Move the toggle out of Advanced Settings into a real
+preference
+  (Settings > Appearance,
+  kPreferenceKeyScrollableSideTabBar) with a checkbox in
+  PreferencePanel.xib.
+- Drag-to-reorder honors the scroll offset (new
+verticalScrollOffset
+  accessor) so dragging while scrolled no longer snaps cells
+  or drops on the wrong index.
+- Newly created tabs, and any tab that becomes active,
+scroll fully
+  into view below the window decorations rather than under
+  them.
+- Keep tab content and accessory subviews (spinner, progress
+bar) from
+  drawing under the window decorations, using a drawing clip
+  rather than clipsToBounds so window transparency is
+  preserved.
+- Re-sync hover/highlight after scrolling so cells don't
+stay stuck
+  highlighted when they move out from under the cursor.
+
+2026-08-06: Add an option to make the side tab bar
+scrollable (#721)
+
+Adds an advanced setting that makes the left/right
+(vertical) tab bar scrollable. When on, tabs that don't fit
+stay in the bar and are reached by scrolling instead of the
+"More tabs" overflow menu.  2026-08-06: Warn that closing a
+workgroup session takes the workgroup with it
+
+Closing any member of a workgroup drives the whole instance
+through teardown (sessionWillTerminate -> exit -> teardown),
+ending its peers and other tabs. The close confirmation only
+described the one tab's own jobs, so the user got no warning
+that the rest of the workgroup would close too.
+
+Add
+iTermWorkgroupInstance.closeCascadeWarning(forSessions:),
+which names the workgroup and counts the live members that
+aren't already in the closing set, and append it to the
+confirmation via a new additionalMessage: parameter on
+confirmCloseForSessions:. Wired into the tab-close and
+pane-close paths; the whole-window close path is left alone
+since it already closes everything.
+
+Also fix makeWorkgroupPeer's comment, which claimed peers
+should never prompt on close while the code (correctly)
+forces PROMPT_ALWAYS; it now matches the
+WorkgroupSessionSpawner rationale.
+
+2026-08-06: Spawn nested workgroup peers from the entry
+session
+
+Peers of a tab/split-hosted peer group were spawned with the
+host's immediate config-parent as their basis. That equals
+the main session only when the peer host is a direct child
+of root; for a peer group nested two or more levels deep it
+was an intermediate spawned pane, so those peers inherited
+the wrong profile, working directory, and size.
+
+Spawn nested peers from mainSession (falling back to the
+config-parent only if the main session went away mid-spawn),
+so every peer inherits the session the workgroup was opened
+on regardless of nesting depth -- e.g. a workgroup opened on
+a remote host keeps its peers on that host.  At depth 1 the
+two are the same session, so behavior there is unchanged.
+
+Adds a depth-2 test asserting nested peers spawn from the
+entry session.
+
+2026-08-06: Refresh a workgroup peer-host's toolbar after
+wiring its nested port
+
+A workgroup .tab or .split child that hosts its own peer
+group came up with no toolbar and no peer switcher. The
+host's toolbar is applied when its tab/split is inserted
+into the window, which happens inside the spawner call
+before the nested peer port and the host's workgroupInstance
+back-pointer exist, so desiredToolbarItems returns nil then.
+Nothing re-applied it once the port was built, so the empty
+toolbar stuck.
+
+registerNonPeerOrPeerGroupHost now refreshes the host's
+desired toolbar items after attachBackPointers (which sets
+workgroupInstance synchronously for the pre-fulfilled host
+promise), mirroring the refresh registerNonPeer already does
+for the leaf non-peer case. The host then resolves through
+its nested port to the real toolbar, and the peer switcher
+appears.
+
+Adds a tab-hosted nested-peer-group fixture and data-model
+test covering the two-tabs-each-with-peers shape from the
+report.
+
+2026-08-06: Fix blank pane when a workgroup tears down while
+a non-main peer is shown
+
+A workgroup's main peer group shares a single tab pane; only
+the active member's view is installed and the others are
+buried. teardown() terminates every non-leader peer via
+peerPort.invalidate(). If the pane was showing a non-leader
+peer at that point, its now-dead view was left in the tab,
+rendering blank (issue 12967). This was reachable by closing
+a sibling tab (any member's termination drives the whole
+workgroup through teardown) or by Exit Workgroup while a
+peer was shown.
+
+teardown now swaps the surviving leader back into the shared
+pane via revealAsPeerWithoutActivatingWindow before
+invalidating the peers, unless the visible member is itself
+the terminating session (that pane's own tab is the one
+closing, so there is no surviving tab to restore into). The
+terminating session is threaded through exit(instance:) and
+teardown().
+
+2026-08-06: Grow left/right Minimal tabs to match top tab
+height
+
+Left and right tabs in the Minimal theme used
+defaultTabBarHeight (24) while top Minimal tabs use
+compactMinimalTabBarHeight (38), so each side tab was too
+short to render a subtitle without looking cramped. Give
+side Minimal tabs the same height as top Minimal tabs.
+
+This is scoped to the Minimal theme and routes around
+shouldHaveTallTabBar (which also drives stoplight
+positioning that is specific to the top bar).
+
+2026-08-06: Kitty DnD: add DragAndDrop sources to the Xcode
+project
+
+Adds the sources/DragAndDrop/ KittyDnD files to the
+iTerm2SharedARC target.  Consolidated here after rebasing
+onto an advanced origin/master, whose project.pbxproj had
+diverged; the file references were re-added in one step via
+tools/add_file_to_xcodeproj.rb. Build and the full KittyDnD
+test suites pass on the rebased base.
+
+2026-08-06: Kitty DnD drag-out: fix external/cross-session
+drops, scope EPERM correctly
+
+Three fixes found while testing real drag-out end to end:
+
+- Finder (and other strict destinations) rejected the drop
+because the drag
+  mixed a file-URL item with a separate non-file text item;
+  such destinations accept only all-file drags, while in-app
+  destinations tolerated the mixed pasteboard (so a drop
+  into another terminal worked but Finder did not).  When
+  the offer includes files the drag is now file-only.
+
+- The self-drag EPERM guard was scoped to the OS window,
+refusing legitimate
+  drops between two different programs in split panes of one
+  window. The spec scopes it to the same kitty window, i.e.
+  a program dropping its OWN drag onto its OWN session to
+  read local files. That is exactly the per-session
+  selfDragInProgress flag, so the OS-window-number check
+  (originWindowNumber / sameWindowSelfDrag) is removed. A
+  drop from any other session, split pane or separate
+  window, is now served; a same-session self-drop is still
+  EPERM.
+
+- dragOperationForSender left numberOfValidItemsForDrop at
+the caller's -1
+  initializer in its "no valid drop" branch, so AppKit drew
+  a bogus -1 count badge on the drag while it hovered over
+  an area that could not accept it (e.g. a drag-out file
+  passing back over our own window). It now reports 0.
+
+Also adds DLog diagnostics along the drag-out path (the
+gesture gate, the offer/start-drag handling, and the drag
+host's beginDrag), which had no logging for field debugging.
+
+2026-08-06: Kitty DnD: test the resource-guard and
+stream-interruption paths
+
+Add coverage for guards that existed but were unverified, so
+a regression that dropped or mis-scoped one would fail CI:
+
+- The 64-request EMFILE concurrent-entry cap and its "end
+the drop" side
+  effect.
+- Interrupting an in-flight streamed file with a new drag:
+the m=0
+  terminator is emitted (exactly once) and no further chunks
+  follow.
+- The optimistic-operation security default: copy+move and
+empty/unknown
+  masks report copy, only move-only reports move.
+- KittyDnDRemoteDragFetch in isolation with small injected
+limits and a
+  short timeout: the maxEntries breaches (start fan-out,
+  per-push, and directory inflation), the maxBytes breach,
+  the idle-timeout abort, and the drain-before-delete
+  invariant (a finish while a write is in flight defers the
+  outcome until the write completes).
+- The reassembler over-cap abandon/drain/recover path, via a
+new injectable
+  cap on KittyDnDChunkReassembler (defaulting to the 512 MB
+  static) so it can be driven without allocating half a
+  gigabyte.
+- The PNG decompression-bomb guard: a valid solid-color
+image just over the
+  decoded-pixel cap is rejected with EFBIG (the byte cap
+  would otherwise be tripped first and never reach it).
+- Tightened weak error-code assertions to check the specific
+code (ENOENT /
+  EINVAL) rather than just the presence of a t=R.
+
+2026-08-06: Kitty DnD: clear stuck drop targets when Option
+released mid-hover
+
+Follow-up to the Option escape hatch: if the user held
+Option during a kitty-routed hover (drawing the legacy
+drop-target affordance) and then released it without
+dropping, draggingUpdated: fell through to the program
+branch without clearing showDropTargets, so the affordance
+stayed on screen until drag-exit or drop. Clear it (with a
+redraw) in that branch.
+
+2026-08-06: Kitty DnD: token codeName + test-harness
+conformance
+
+- Add XTERMCC_KITTY_DND to VT100Token codeName so OSC 72
+tokens print by
+  name in debug logging instead of as a raw type number.
+- drag_source.py now reports per-entry errors with the
+spec's client form
+  t=E (t=R is a terminal-to-client type); iTerm2 accepts
+  both.
+- drop_target.py treats a metadata-light continuation chunk
+(only m, per the
+  spec) as part of the open response sequence instead of
+  dropping it.
+
+2026-08-06: Kitty DnD: make Option escape hatch reachable,
+fix image-drop UI
+
+- During a kitty-routed hover, while Option is held
+draggingUpdated: now
+  advertises the legacy operation (the routing latch stays,
+  so the program still gets hover updates). Without this, a
+  program that rejected the drop made the drag spring back
+  so performDragOperation: never fired, and the "hold Option
+  while dropping" escape hatch could never engage.
+- legacyDraggingOperationForSender: now shows drop targets
+only when there is
+  actually a valid drop. The view registers PNG/TIFF
+  pasteboard types for kitty DnD, so an image-only drag with
+  no accepting program would otherwise light up drop-target
+  affordances for a drop that cannot land.
+- Corrected the draggingEntered: comment that still
+described the pre-
+  optimistic "none until the program replies" behavior.
+
+2026-08-06: Kitty DnD: harden accept/offer state machine
+from review
+
+Accept-drop correctness and safety:
+
+- osDragOperation now reports 0 whenever the program is not
+accepting drops.
+  Otherwise, after the program sent t=A or t=a:x=2 (or reset
+  ran), the optimistic branch still advertised copy/move
+  while performDrop discarded the drop, so the OS and source
+  saw a successful drop the program never received; a
+  move-only source could delete its only copy.
+- A drop-context change (new drag, drop, completion, or
+reset) now closes an
+  in-flight streamed file response with its m=0 terminator
+  before it sends the interrupting escape, so a client is
+  not left hanging on a half-open chunk sequence and the new
+  escape cannot concatenate onto it.
+- A present-but-unparseable directory handle (Y) or
+sub-index (y) is now
+  EINVAL echoing the raw key, instead of silently falling
+  through to a plain MIME read the client cannot match.
+- An out-of-bounds MIME index that also carries a sub-index
+now echoes that
+  sub-index in the ENOENT response so a pipelining client
+  can match it.
+
+DoS bounds:
+
+- A t=a / t=o MIME-type list is now capped (64 KB, 4096
+tokens) before it is
+  split, and refused with EFBIG, so a hostile payload up to
+  the reassembler cap cannot amplify into gigabytes of token
+  Strings.
+- A remote drag-out uri-list is parsed only up to the fetch
+entry limit
+  (line by line, not fully materialized first), and the
+  fetch refuses more top-level entries than its limit before
+  the fan-out rather than after it.
+- An image/* MIME payload used only as a drag thumbnail now
+passes the same
+  decoded-pixel-count cap as pre-sent t=p thumbnails, so a
+  small compressed bomb cannot force a multi-GB bitmap
+  allocation in AppKit.
+
+Protocol conformance:
+
+- A bare t=E (no y) from the client before the drag starts
+now replies
+  EINVAL and aborts the offer, per the spec, instead of
+  being ignored.
+- A per-entry client error in the spec's t=E form (addressed
+by x or Y:y)
+  during a remote drag-out now skips just that entry,
+  matching the existing tolerance of the t=R extension form.
+
+Robustness:
+
+- The chunker indexes from the payload's own startIndex, so
+a future caller
+  passing a non-zero-based Data slice cannot crash on the
+  range.
+
+2026-08-06: Kitty DnD: report move optimistically only for a
+move-only offer
+
+The optimistic pre-reply operation returned move whenever
+the offered mask lacked the copy bit, which for an empty or
+unexpected mask (op == 0 or anything without bit 1) meant a
+destructive move. Invert the test so copy is the default:
+report move only when the source offers move without copy,
+and copy for every other mask. This keeps the reachable
+copy/move/copy+move cases identical while guaranteeing an
+unknown value can never optimistically authorize a move the
+OS could act on before the program confirms.
+
+2026-08-06: Kitty DnD: serialize entry responses; optimistic
+op prefers copy
+
+Follow-ups from the review of the async-streaming change:
+
+- Making the file send async (yield periodically) let two
+concurrent
+  filesystem-entry responses interleave their t=r chunks on
+  the pty, which the reassembler concatenates into one
+  corrupt stream. Serialize entry responses through a single
+  chain so each is emitted contiguously. (The small
+  synchronous uri-list / plain-MIME sends stay synchronous;
+  the narrow remaining pipelined-mixed-drop case is
+  documented.)
+- The optimistic pre-reply drop operation now prefers copy
+(non-
+  destructive), falling back to move only for a move-only
+  source, so a move the OS acts on before the program
+  confirms cannot delete the source's only copy.
+
+2026-08-06: Kitty DnD: honor Option at drop time; clear
+stale gesture on mouseDown
+
+- performDragOperation re-checks Option at drop time and, if
+held, sends
+  the program a leave and diverts to the legacy paste/upload
+  path, matching the release note's "hold Option while
+  dropping" (macOS resolves drag modifiers continuously
+  until release).
+- performDragOperation reads the source's captured origin
+window number for
+  the self-drag check.
+- mouseDownImpl notifies the bridge to forget a stale
+pending gesture (if a
+  prior gesture's mouseUp was swallowed by a modal panel or
+  menu tracking), so a program's t=P cannot start a phantom
+  drag from it.
+
+2026-08-06: Kitty DnD: more DoS/correctness fixes to
+controller and remote fetch
+
+- t=p pre-send is gated on an active declared offer (both
+the data and the
+  image branches), and each image is size-capped at store
+  time, so output the user merely cats cannot park ~256MB in
+  offerImages.
+- The same-window self-drag EPERM guard compares a window
+number captured
+  at drag start (survives the source view losing its
+  window), not a weak live window reference that could nil
+  out and fail open.
+- The remote-fetch duplicate-push dedup key is built from
+the parsed
+  integers, so x=1 and x=01 map to one slot and cannot
+  double-count and truncate the fetched tree.
+- A t=r carrying y but no x/Y is a malformed request
+(EINVAL), not the
+  completion signal; a free-handle t=r requires x ABSENT (a
+  present but unparseable x is EINVAL, not a silent free).
+- The remote fetch reports a failure reason so a
+resource-limit breach is
+  answered with EMFILE (spec), not EIO.
+- Stationary hover updates are deduped so an idle drag does
+not stream
+  identical t=m over the pty.
+- Serving a dropped file streams asynchronously with
+periodic Task.yield
+  (so the abort check fires and the UI stays live) and is
+  size-capped (EFBIG) instead of a uninterruptible
+  main-actor loop buffering the whole file.
+- Before the program replies, the OS drop operation is
+optimistically the
+  offered one, so a fast drop released before the t=m:o
+  round trip is accepted instead of springing back; only an
+  explicit o=0 refuses.
+- The stale-gesture guard checks the SAME button that
+started the gesture
+  is still down (not any button), so an unrelated later
+  click cannot revive a dead gesture into a phantom drag.
+
+2026-08-06: Kitty DnD: reset the bridge on terminal reset
+and shell restart
+
+The bridge was only reset on an OSC 133 prompt mark, so in a
+session without shell integration a program that sent
+t=a/t=o and then exited left the protocol enabled forever
+(drops silently refused, drag-out dead). Also reset on a
+terminal reset (RIS / Reset menu, via screenDidReset) and on
+a shell restart (replaceTerminatedShellWithNewInstance).
+
+2026-08-06: Kitty DnD test harness: conformance and teardown
+fixes
+
+- drop_target.py: register the MIME list and the machine id
+as two separate
+  t=a / t=a:x=1 messages (merged, the terminal discards the
+  list); send the mandatory t=r:o drop-completion once all
+  reads finish; use the FIRST chunk's metadata for the type
+  flag; treat X=0 as a regular file; decode percent-encoded
+  cross-machine names; send t=A on exit.
+- drag_source.py: send the machine id by default (with
+--no-machine-id) so a
+  drag-out over plain ssh is detected as cross-machine,
+  matching the README; send t=o:x=2 on exit.
+- probe.py: send t=A on exit so it does not leave the
+protocol registered.  - README: both directions are
+implemented; drop the stale "once the AppKit
+  adapter lands" language.
+
+2026-08-06: Kitty DnD: refused-drop leave, mouseUp gesture
+clear, lazy hover, log bad OSC
+
+- performDragOperation's refusal branch now sends the
+program a leave
+  before returning NO, so a drag it never accepted does not
+  leave it stuck in a hover state.
+- On mouseUp without a native drag having started,
+PTYMouseHandler tells
+  the bridge to forget the pending gesture, so a later t=P
+  cannot start a phantom drag from the released gesture.
+- draggingEntered derives the hover MIME list from
+pasteboard type presence
+  only (no data reads), instead of eagerly reading all file
+  URLs, the whole string, and a synchronous TIFF-to-PNG
+  re-encode on the main thread; the full pasteboard is read
+  only at drop time.
+- An OSC 72 sequence whose bytes are undecodable in the
+session encoding is
+  now logged instead of silently dropped.
+
+2026-08-06: Kitty DnD: wire/DoS/conformance fixes to the
+controller
+
+Review-round fixes (Swift):
+
+- dataPayload re-pads unpadded base64 before decoding; the
+spec permits
+  omitting padding but Data(base64Encoded:) requires it, so
+  conforming peers' pre-sent/lazy data was silently
+  discarded.
+- The 256MB offer budget now also covers the t=e:x=5
+deferred-pull path
+  (a program could bypass the t=p cap by deferring
+  everything); and handlePreSend guard failures now reply
+  t=E;EFBIG and cancel the drag instead of silently dropping
+  data.
+- Concurrent t=r entry reads are capped (EMFILE + end the
+drop, per the
+  spec) so a burst of requests for a large directory cannot
+  spawn unbounded concurrent memory-mapped reads.
+- A PNG drag image's decoded dimensions are validated from
+its header
+  (EFBIG) so a small compressed file declaring huge
+  dimensions cannot force a multi-GB bitmap decode.
+- t=A / t=a:x=2 clear acceptedDropOperation, so a drop after
+the program
+  stopped accepting is not reported to the OS as accepted
+  then discarded.
+- Filesystem read errors map to ENOENT / EPERM / EIO per the
+spec instead
+  of always EIO.
+- Directory listings exclude special files (sockets, FIFOs),
+which would
+  otherwise make a conforming client abort the whole drop.
+- A bare t=r (no x/Y) is the canceled drop-completion
+signal, not a
+  malformed request drawing EINVAL.
+- A sub-index (y) read before the client requested the
+uri-list is EINVAL.  - The in-flight dedup key is
+generation-scoped so an old drop's completing
+  read cannot remove a new drop's key.
+- The remote fetch defers completion until in-flight writes
+drain, so an
+  aborted fetch's temp-dir removal cannot race a write that
+  recreates it.
+- The offer declaration and t=P are gated on
+isOfferingDrags, an offer for
+  an already-released gesture replies EPERM, and an
+  unsolicited pre-drag t=e/t=E replies EINVAL and aborts; a
+  generic t=E also aborts a local deferred-data pull
+  (previously only a remote fetch).
+
+2026-08-06: Kitty DnD: restrict machine-id version to ASCII
+digits
+
+Character.isNumber also matches non-ASCII digit scalars; a
+machine-id version is a plain integer, so require ASCII
+decimal digits.
+
+2026-08-06: Kitty DnD: clamp drop cell using exact grid
+dimensions
+
+Deriving the grid bounds from liveRect.size/_charWidth can
+round a last-column/row drop one cell short for a
+non-integer cell width. Use the authoritative integer
+[_dataSource width]/height] instead.
+
+2026-08-06: Kitty DnD: report pointer pixel position;
+leave-and-unlatch on drag end
+
+- t=m/t=M/t=o now carry the pointer's pixel position
+relative to the grid
+  origin (spec: "Pixel ... origin is 0, 0 at top left of
+  screen", matching kitty), not a within-cell offset. The
+  cell is also clamped to the visible grid so a drop in the
+  right/bottom margin cannot report x==width.
+- Implement draggingEnded: to send the program a leave (via
+the latched
+  bridge) and clear the routing latch when a drag routed to
+  a Kitty DnD program ends without a delivered drop (the
+  program never accepted, so
+  performDragOperation:/draggingExited: did not fire),
+  instead of leaving it stuck believing a drag still hovers.
+
+2026-08-06: Kitty DnD: conformance and robustness fixes to
+controller and drag host
+
+Review-round fixes (Swift side):
+
+- Remote drag-out now pulls a deferred uri-list (or any
+other deferred
+  MIME) via t=e:x=5 before the t=k fetch, instead of
+  replying EINVAL:no files. Pre-sending is optional in the
+  spec.
+- A plain t=E (no y) from the program aborts an in-progress
+remote fetch,
+  so a client read error no longer leaves the user holding a
+  dead drag until the idle timeout.
+- Any numeric-version machine-id token ("2:...") is
+recognized as a
+  machine id: an unknown version differs from our "1:..." id
+  and so is treated as a different machine (remote), and is
+  kept out of the MIME list, per the spec's
+  forward-compatibility rule.
+- The accept-drop directory traversal caps live handles
+(ENOMEM beyond
+  512), so a program re-listing a directory in a loop cannot
+  grow memory without bound.
+- t=k directory handles may be any integer other than 0/1,
+including
+  negatives (case 0 file, 1 symlink, default directory), not
+  just >= 2.
+- Drag-out start failures now distinguish EPERM (the gesture
+is gone /
+  the user let go) from EIO (environmental failure) via a
+  result enum.
+- Drag-out puts every offered MIME type with data on the
+pasteboard
+  (typed by UTType, custom type for unknown MIMEs), so
+  image/png and arbitrary flavors can be dragged out, not
+  just uri-list and text.
+- Serving a dropped file to a program streams the
+memory-mapped file one
+  chunk at a time (bounding base64 to a single window) and
+  dedupes an identical in-flight t=r request, instead of
+  buffering the whole file plus all its chunks.
+
+2026-08-06: Kitty DnD: count chunk arrival as remote-fetch
+idle-timeout activity
+
+The idle timeout only rearmed in receive()/receiveError(),
+which run for COMPLETE messages. A single large file is one
+chunked t=k push whose chunks stream for the whole transfer
+without ever completing a message, so the timer armed at
+start() would fire mid-transfer and abort a healthy large
+transfer over a slow link (the exact case the idle timeout
+was for).
+
+handleInboundSequence now calls
+remoteDragFetch.noteActivity() for every inbound sequence
+(each chunk included) while a fetch is in progress, which
+rearms the idle timeout. The redundant rearms in
+receive()/receiveError() are removed. Also drop a stale
+comment claiming draggingUpdated: calls draggingEntered:
+(the routing-latch fix made that deliberately false).
+
+2026-08-06: Kitty DnD: correct draggingExited leave comment
+
+The leave is suppressed (the controller no-ops) if the
+program sent t=A; the comment implied it always fires.
+Clarify it holds for the Option case.
+
+2026-08-06: Kitty DnD: synthesize the mouse-release report
+when a drag-out starts
+
+Drag-out is gated on mouse reporting, so a program has
+already received SGR press and motion reports for the
+gesture. When the program answers t=P and
+beginDraggingSession takes over event tracking, the view's
+mouseUp never runs: no button-release report is ever sent
+and the mouse handler's per-gesture state stays stale, so a
+TUI keeps believing the button is held.
+
+When the native drag session begins (NSDraggingSource
+willBeginAt), the drag host now notifies the session, which
+tells the mouse handler to synthesize the SGR button-release
+report at the gesture location and clear its per-gesture
+state (_mouseDown, _committedToDrag, _mouseDownEvent,
+dragOk_, _kittyDragOfferStarted).
+
+2026-08-06: Kitty DnD: latch drag routing so mid-drag
+changes don't strand the program
+
+kittyDnDBridgeForDrag re-read the Option modifier and the
+program's accept state on every dragging callback, so
+pressing Option (or a program toggling accept) mid-drag
+silently flipped a drag that had been routed to the program
+over to the legacy paste/upload path: the terminal pasted
+the filenames and the program never got a leave or drop,
+leaving its drag state dangling.
+
+The routing decision is now latched at draggingEntered and
+reused by draggingUpdated / prepareForDragOperation /
+performDragOperation via a new latchedKittyDragBridge (the
+legacy feedback body is factored out so an update no longer
+re-enters and re-latches). A drag routed to the program
+stays with it: on drop, if the program stopped accepting we
+refuse rather than falling back to a legacy paste, and
+draggingExited reports the leave using the latched decision.
+
+2026-08-06: Kitty DnD: refuse same-window cross-pane
+self-drag with EPERM
+
+The self-drag EPERM guard was per-session state, so a drag
+out of one split pane dropped onto a program in another pane
+of the SAME window was handled by the second pane's
+controller (whose flag is false) and its t=r reads were
+served, defeating the spec's read-back protection.
+
+The drag host now exposes its source window;
+performDragOperation detects when the NSDraggingSource is a
+KittyDnDViewDragHost in the same window and passes that into
+the drop, which the controller ORs into the self-drag latch.
+The existing per-session flag still covers same-session
+drags.
+
+2026-08-06: Kitty DnD: use a cancelable idle-timeout work
+item in the remote fetch
+
+The idle timeout rearmed by scheduling a fresh closure on
+every received entry and relied on a token check to
+neutralize stale ones, so a large transfer could leave
+thousands of pending timer closures outstanding. Use a
+single DispatchWorkItem that is canceled and replaced on
+each rearm and canceled on finish.
+
+2026-08-06: Kitty DnD: reject stale drag gestures; clear
+pending gesture on reset
+
+A drag-out begins from the mouse event stored when the
+gesture was reported, and that event was only cleared when a
+drag started or was canceled. So an unanswered gesture left
+the event retained, and a program could later send t=o + t=p
++ t=P to start a phantom drag from the dead event with no
+mouse button down.
+
+beginDrag now refuses when no mouse button is pressed (a
+real drag-out holds the button through the round trip), and
+the controller forgets the pending gesture on reset() and on
+offer-disable (t=o:x=2). It is deliberately NOT cleared in
+resetOfferInProgress, which runs when the offer declaration
+arrives after the gesture.
+
+2026-08-06: Kitty DnD: robustness fixes for reset, memory,
+timeout, and idempotency
+
+Fixes from review of the drag-out paths:
+
+- reset() no longer deletes the remote drag-out temp dir
+while a native
+  drag is still live (a prompt can appear mid-drag when the
+  offering program exits). Those files back the live drag's
+  uri-list; dragFinished's delayed cleanup disposes of them.
+- The remote t=P branch now sets startingDrag synchronously,
+so two t=P in
+  one pty read batch cannot spawn two concurrent fetches
+  (the second would otherwise orphan the first, whose
+  timeout later drained offer state out from under the live
+  drag).
+- The remote-fetch timeout is now an idle timeout, rearmed
+on each received
+  entry, instead of an absolute 30s deadline that killed
+  healthy large transfers.
+- The chunk reassembler no longer misreads an interleaved
+standalone
+  message (a spec-legal mid-transfer query) as part of the
+  pending sequence: it keys on the differing t. It also caps
+  accumulation so a never-terminated m=1 stream cannot grow
+  memory without bound.
+- handlePreSend rejects indices outside the announced offer
+and enforces a
+  cumulative byte budget, so a program cannot store
+  unbounded data.
+
+2026-08-06: Kitty DnD: release _kittyDnDBridge in PTYSession
+dealloc (MRC leak)
+
+PTYSession.m is compiled MRC. _kittyDnDBridge is created
+lazily on the first OSC 72 sequence but was never released,
+so any session that ever received one (even a bare t=q)
+leaked the whole bridge graph on close, including the
+controller and any currentDrop pasteboard snapshot (which
+can hold megabytes of dropped-file bytes). Release it in
+dealloc.
+
+2026-08-06: Kitty DnD: render RGBA drag thumbnails as
+non-premultiplied alpha
+
+Kitty's format-32 image data is non-premultiplied RGBA, but
+the default NSBitmapImageRep assumes premultiplied, so
+semi-transparent thumbnail pixels rendered with wrong
+colors. Declare alphaNonpremultiplied.
+
+2026-08-06: Kitty DnD: guard drag-image size math against
+integer overflow
+
+width*height*bytesPerPixel with attacker-controlled
+dimensions could overflow Int and trap (a crash). The
+validator now uses overflow-checked multiplication and
+reports EFBIG for absurd dimensions; the raw-image renderer
+bounds dimensions before its size math. Adds a regression
+test with Int.max dimensions.
+
+2026-08-06: Kitty DnD: validate and render drag images per
+spec
+
+Image conformance for the drag-out thumbnail:
+
+- Raw RGB (format 24) and RGBA (format 32) images are now
+rendered, not
+  just PNG (100). Format 0 (text) and unknown formats fall
+  back to no thumbnail.
+- Raw image data whose length does not match
+width*height*bytesPerPixel
+  is rejected with t=E ; EINVAL, and an image over the size
+  cap with t=E ; EFBIG, per the spec, before the drag
+  starts.
+- Multiple pre-sent images (indices -1, -2, ...) are kept;
+the first (-1)
+  is used as the drag thumbnail.
+
+Also: directoryAwareURIString no longer appends a trailing
+slash to a symlink that points at a directory, since a
+symlink is served to the program as a symlink (X=1), not a
+directory (from an earlier review).
+
+2026-08-06: Kitty DnD: harden remote drag-out fetch and
+drag-start idempotency
+
+Follow-ups from the Phase 6 and Phase 7 reviews:
+
+- The resource limits now cover directory listings too:
+every payload
+  (not just regular files) is charged against the byte
+  budget, and a directory's declared child count is bounded
+  against maxEntries, so a program cannot inflate memory
+  with a giant listing or a huge declared child set.
+- Duplicate or contradictory pushes for the same entry (a
+repeated data
+  push, or a data push plus a t=R error) are ignored via a
+  per-slot seen set, so they cannot over-decrement the
+  outstanding count and finish the drag with a truncated
+  tree.
+- A single entry's I/O failure now skips just that entry
+(dropping it from
+  the drag) instead of aborting the whole transfer, matching
+  how an entry-level t=R error is handled.
+- t=P is now idempotent: a duplicate while a drag is live or
+being
+  assembled (local deferred-data pull or remote fetch) is
+  ignored, so it cannot start a second native drag or drain
+  an in-flight pull.
+
+2026-08-06: Kitty DnD: pull deferred drag-out data via
+t=e:x=5 before starting
+
+The spec lets a program offer drag-out data lazily: pre-send
+the well-known types and defer the rest, expecting the
+terminal to request them. We only ever used pre-sent (t=p)
+data, so a program that deferred a MIME type could not start
+a drag.
+
+At t=P the terminal now pulls any offered MIME the program
+did not pre-send via the t=e:x=5 request path (the
+requestDragData round trip already existed but was unwired),
+then starts the drag once the data is in hand. The common
+case (everything pre-sent) stays synchronous; only a
+deferred type triggers the async pull.
+
+2026-08-06: Kitty DnD: fetch remote drag-out directories via
+the push model
+
+The spec is explicit that in the drag-out (t=k) direction
+"clients must send all children of directories, recursively,
+terminals must not make requests for children of
+directories, only for the entries from the text/uri-list."
+Our old code violated this: it requested each directory
+child with t=k:Y=handle:y=num. It only appeared to work
+because the test client served files but never directories,
+so the divergence never fired.
+
+The terminal now requests only the top-level uri-list
+entries; a new KittyDnDRemoteDragFetch collects the
+unsolicited pushes (a directory declares X=handle with a
+null-separated child list, then every descendant arrives via
+Y=parent-handle:y=num) and assembles the tree, tracking the
+outstanding-entry count to know when the transfer is
+complete. It bounds a malicious/buggy program with
+entry-count, byte, and time limits, skips symlinks,
+sanitizes names, and gives directory URIs a trailing slash.
+
+drag_source.py now offers a directory tree (with a nested
+dir and a symlink) and pushes it per the protocol, so the
+path is testable end to end.
+
+2026-08-06: Kitty DnD: clear stale accept-operation; keep
+mux id across live-drag reset
+
+Review follow-ups:
+
+- acceptedDropOperation was cleared only on drag
+enter/leave/reset, so a
+  value from a completed drag could leak into a later drag
+  that entered while the program was momentarily not
+  accepting and then re-registered, causing a drop to be
+  delivered against a stale acceptance. It is now also
+  cleared on drop completion and on t=a (re)registration.
+
+- multiplexerID was dropped by reset() even while a native
+drag was still
+  live (reset can fire from a program-emitted OSC 133 prompt
+  mid-drag), so the drag's remaining lifecycle events would
+  lose their routing id.  It is now preserved across reset()
+  while a drag is in flight, mirroring selfDragInProgress,
+  and dropped at the next prompt once idle.
+
+2026-08-06: Kitty DnD: propagate the multiplexer i key on
+all sends
+
+The spec: "When the terminal receives a t=a or t=o escape
+code that has the i key set, all escape codes it sends to
+the terminal program must include the i key with the same
+value." We only echoed i on the query response, so under a
+multiplexer (tmux) our t=m/t=M/t=r/t=e/t=o/t=k replies could
+not be routed back to the right pane.
+
+A t=a/t=o registration carrying i now sets a per-session
+multiplexer id that is stamped on every outbound message at
+the single send() chokepoint (so every chunk carries it
+too). An explicit per-message i (a query echoing its own i)
+still wins. Cleared on reset().
+
+2026-08-06: Kitty DnD: close self-drag EPERM bypass via
+mid-drag prompt reset
+
+The previous fix stopped offer/cancel messages from clearing
+the self-drag guard, but reset() still cleared it, and
+reset() runs from screenPromptDidStartAtLine: (an OSC 133
+prompt-start the program can emit at will) without ending
+the live OS drag. A program could therefore emit a prompt
+mark mid-drag, re-send t=a, drop its own drag onto itself,
+and read local files.
+
+selfDragInProgress is now cleared only in dragFinished (the
+authoritative end-of-drag callback, which always fires when
+the NSDraggingSession ends). Adds a regression test for the
+prompt-reset route.
+
+2026-08-06: Kitty DnD: honor the program's drop-acceptance
+reply (t=m:o)
+
+The spec: after the terminal sends t=m (drag over the
+window) the program replies t=m:o=O with the operation it
+will perform (0 not accepted, 1 copy, 2 move), and "until
+the client does so the terminal will indicate to the OS that
+the drop is not accepted." We were ignoring the reply: the
+drag cursor showed the source's operation and the drop was
+delivered even when the program rejected it.
+
+The controller now records acceptedDropOperation from the
+reply (reset on drag enter/leave). The bridge maps it to an
+NSDragOperation, which PTYTextView returns from
+draggingEntered/draggingUpdated (none until the program
+replies) and checks in performDragOperation to refuse a drop
+the program has not accepted.
+
+2026-08-06: Kitty DnD: close self-drag EPERM bypass via
+mid-drag offer messages
+
+The self-drag guard latched currentDropIsSelfDrag from
+selfDragInProgress at drop time, but selfDragInProgress was
+cleared in resetOfferInProgress, which runs from
+program-controlled inbound messages (t=o:x=2 to disable
+offers, a new t=o offer declaration, or t=E:y=-1 cancel).
+None of those end the live OS drag (cancelDrag is
+best-effort and cannot stop a running NSDraggingSession). A
+malicious program could therefore start a drag, clear the
+flag mid-drag, drop its own drag onto itself, and read local
+files, defeating the EPERM protection.
+
+The flag is now cleared only when the native drag truly ends
+(dragFinished) or on reset(), never from inbound
+offer/cancel messages.  Adds regression tests for all three
+mid-drag clear attempts.
+
+2026-08-06: Kitty DnD: make the accept-side "discard queued
+requests" guarantee real
+
+Follow-ups from the drop-completion review:
+
+- lastCompletedDropOperation was only cleared on reset, so
+it went stale
+  across drops. Clear it at each new drag cycle and each new
+  drop so a reader (e.g. move-vs-copy logic) cannot see a
+  prior drop's value.
+
+- finishDrop / reset / dragEntered / performDrop cleared
+directoryHandles,
+  but a filesystem read already dispatched to a background
+  task could finish afterward and stream stale bytes or
+  re-insert a freed handle (nextDirectoryHandle was reset to
+  2). They now bump an acceptGeneration that each read
+  captures before awaiting and rechecks after, discarding
+  its result if the drop context changed. This gives the
+  spec's "any queued data requests must be discarded" real
+  teeth.
+
+2026-08-06: Kitty DnD: refuse same-window self-drag data
+reads with EPERM
+
+The spec: "For security reasons, terminals must reply with
+EPERM if the drag originated in the same window as the drop,
+this prevents malicious programs from reading files on the
+computer by starting their own drag."
+
+A program that both offers a drag-out and accepts drops
+could otherwise read arbitrary local files by dropping its
+own drag back onto itself. We now track whether a native
+drag we started is running, latch that onto the drop when it
+lands here, and refuse every data read for that drop with
+EPERM (latched so the deferred over-the-pty reads are still
+refused after the native drag ends).
+
+2026-08-06: Kitty DnD: handle the drop-completion signal
+(t=r:o=operation)
+
+The spec: "Once the client program finishes reading all the
+dropped data it needs, it must send t=r:o=operation. The
+terminal emulator must then inform the OS that the drop is
+completed. Any queued data requests must be discarded." We
+were misreading this addressing-free t=r as a malformed data
+request and replying EINVAL.
+
+Now a t=r carrying o with no x/Y is recognized as
+completion: it records the final operation (0 means
+canceled), clears the current drop, and frees any open
+directory handles so a later stray request cannot read stale
+data.
+
+2026-08-06: Kitty DnD: fix accept-drop error codes,
+machine-id registration, and directory URIs
+
+Spec-conformance fixes to the accept-drop path:
+
+- Out-of-bounds MIME/sub/directory indices now return ENOENT
+(was
+  EINVAL). The spec reserves ENOENT for "index is out of
+  bounds".
+- A special file (socket, FIFO, device) now returns EINVAL
+and is never
+  opened for reading (opening a FIFO would block). The spec
+  reserves EINVAL for "not a regular file or symlink or
+  directory".
+- "t=a:x=1 ; machine id" is the dedicated machine-id
+registration and no
+  longer clears the MIME types the program announced via
+  "t=a ; mimes".
+- file:// URIs pointing to directories now end with a slash,
+as the spec
+  requires, based on the on-disk type rather than the
+  incoming URL shape.
+
+2026-08-06: Kitty DnD: keep drag-out temp files alive for a
+cross-session drop read
+
+When a remote program's files are dragged out, the terminal
+fetches them via t=k into a temp dir and drags those copies.
+If the drop lands in ANOTHER terminal session (e.g. two ssh
+windows), that session reads the copies lazily over the pty
+AFTER the drag ends - but dragFinished was deleting the temp
+dir immediately, so the read raced against the delete and
+failed with EIO. Defer the temp-dir removal to a delayed
+cleanup (still guaranteed) so the cross-session read can
+complete.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: address remote drag-out (t=k) review
+
+- X=0 is a regular file, not directory handle 0. Type is
+now: absent/0 = file,
+  1 = symlink, >=2 = directory handle (a spec-strict program
+  sending X=0 for a file no longer gets a bogus directory +
+  recursion).
+- Same-basename entries no longer overwrite each other: each
+offered entry is
+  materialized in its own numbered subdirectory, so two
+  files both named x.txt produce two distinct local copies.
+- Symlinks are skipped rather than recreated. The target is
+controlled by the
+  untrusted remote and is meaningless locally, and a symlink
+  into the dragged tree could exfiltrate a local file if the
+  drop destination follows it.
+- A superseded in-flight build can no longer stomp a newer
+drag: an offer
+  generation is captured at the start of the async build and
+  rechecked after each await; on mismatch the build discards
+  its own temp dir and bails. The no-files early return and
+  every failure path now clean up the temp dir.
+
+Tests: explicit X=0 regular file, duplicate basenames stay
+distinct, and a symlink entry is dropped from the drag.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: implement remote drag-out (t=k)
+
+Dragging a remote program's files OUT of the terminal now
+works. When the offering program is on a different machine
+(its t=o machine id differs, or the session has a
+conductor), its file:// URIs are not readable here, so on
+t=P the terminal fetches each offered entry from the program
+via t=k -- regular file bytes, symlink target (X=1), or
+directory (X=handle) traversed recursively with
+Y=handle:y=num -- materializes copies in a temp directory on
+this machine, and starts the native drag from those local
+copies. The temp directory is removed when the drag finishes
+(and on reset/prompt); untrusted entry names are sanitized
+to a single path component; all file writes happen off the
+main thread.
+
+This fixes the EIO a user hit dragging between two plain-ssh
+windows: the offered file lived on the remote host, and the
+terminal was trying to read it locally.
+
+Tests: remote single-file fetch and recursive-directory
+fetch drive the controller with a fake remote program
+answering t=k. drag_source.py now answers t=k (chunked via a
+new kittydnd.chunked helper) so it is testable end to end.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD test harness: compute machine id on
+Linux, send it by default
+
+The machine id only worked on macOS (ioreg), so
+drop_target.py running on a remote Linux host over plain ssh
+could not produce one - it silently sent no id and the drop
+was treated as local (a useless local Mac path). Read
+/etc/machine-id (or /var/lib/dbus/machine-id) on Linux so
+the client's id is derived from whatever host it runs on.
+
+Also send the machine id by default (it matches on the same
+host and differs across machines, so it is harmless locally
+and enables the cross-machine path over plain ssh without a
+flag). --machine-id is kept as a no-op; --no-machine-id
+suppresses it.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: reset protocol state at a new shell
+prompt
+
+A program that enabled the drag-and-drop protocol (accept
+and/or offer) should not leave it on for the shell after it
+exits, the same way the terminal resets other modes at a
+prompt. On screenPromptDidStartAtLine the session now clears
+the DnD state via the bridge:
+
+- KittyDnDController.reset() clears the accept/offer flags,
+accepted/offered MIME
+  types, peer machine id, the current drop, open directory
+  handles, pending lazy-data completions, and any
+  partially-reassembled message.
+- KittyDnDBridge exposes reset(); PTYSession calls it from
+  screenPromptDidStartAtLine:.
+
+Tests: reset clears accept+offer state and errors a
+subsequent request, invalidates an open directory handle,
+and drains a pending offer data request with nil.
+
+Also update the release note: drag-out requires an app with
+mouse reporting (a full-screen TUI), and remote drops
+transfer the file over the connection.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: drop conductor materialization;
+always transfer remote drops in-band
+
+Remove the non-standard "materialize the dropped file on the
+remote host and hand back a path" optimization. It was not
+part of the protocol, created unsolicited temp files under
+~/.iterm2-dnd with no cleanup, took file placement out of
+the program's hands, and only helped programs that
+half-implemented the spec (a fully conformant program is
+better served by the standard path, and an unaware program
+never enters the protocol at all).
+
+Now every remote drop uses the protocol-standard in-band
+path: the uri-list is flagged X=1 and the program pulls each
+file's bytes by sub-index, deciding where to write them.
+Remoteness is still ground-truthed from the conductor (so an
+it2ssh drop is in-band even with no machine id) OR the
+machine-id comparison, so it2ssh and plain ssh now behave
+identically.
+
+KittyDnDEndpoint collapses to a single isRemoteHost signal;
+materializeFile and the unused local-file reader are gone.
+Copying a file to the remote host when dropping onto a plain
+shell (no program opted in) remains a separate, non-protocol
+concern.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: address cross-machine review
+
+- Fix a stale-handle bug: open directory handles pointed
+into the previous
+  drop's files and were not cleared on a new drag cycle, so
+  a late t=r:Y=<handle> could read a file the current cycle
+  no longer represents. Clear directoryHandles (and reset
+  the counter) in dragEntered alongside currentDrop,
+  restoring the no-stale-reads guarantee and bounding handle
+  growth per cycle.
+- Tests: a directory handle is invalidated by a new drag;
+nested-directory
+  traversal (a directory child yielding a fresh handle)
+  works server-side.
+- drop_target.py: release a directory's parent handle even
+when a child request
+  errors (was leaking the handle), and refuse to write
+  outside --outdir if the terminal ever returns an unsafe
+  path component.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: implement in-band cross-machine file
+transfer
+
+Implement the deferred remote-drop mechanism so a program on
+a different machine (e.g. over plain ssh, no it2ssh
+conductor) can pull the actual bytes of dropped files, per
+the protocol:
+
+- When the uri-list is flagged X=1 (cross-machine), the
+program requests each
+  entry by sub-index (t=r:x=<mime>:y=<idx>). The terminal
+  reads the local file and streams its bytes, reports a
+  symlink target with X=1, or a directory as a new handle
+  (X=handle) whose null-separated entry names it returns.
+- Directories are traversed with t=r:Y=<handle>:x=<num>,
+recursively; the program
+  frees a handle with t=r:Y=<handle> (no index). Handles
+  start at 2 (0/1 are the file/symlink type indicators).
+- All filesystem access happens off the main thread; errors
+are reported as t=R
+  echoing the request's addressing keys.
+
+drop_target.py now follows this: on an X=1 uri-list it pulls
+each item in-band and recreates files, symlinks, and
+directories (recursively) under --outdir.
+
+Tests cover regular-file bytes, symlink target, recursive
+directory traversal with handle freeing, and a bad sub-index
+error. This complements the conductor (Tier 2)
+materialization: cross-machine now works over any transport.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: materialize dropped files whenever a
+conductor is present
+
+Fix a bug where dropping a local file onto a remote program
+over an it2ssh session pasted a useless local path instead
+of copying the file to the remote host. Tier 2
+materialization was gated on both the peer's machine id AND
+the conductor, but a program need not send a machine id; a
+conductor being present is itself the ground-truth signal
+that the program is remote. Key Tier 2 off the conductor
+(endpoint.canMaterializeFiles) alone.
+
+The Tier 2 test now sends no machine id, reproducing the
+reported scenario.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: drag_source.py enables mouse
+reporting itself
+
+The drag-out gesture only fires in mouse-reporting mode, so
+the test client now turns on button-event mouse reporting
+(1002/1006) on startup and off on exit, instead of requiring
+the user to arrange it. The program ignores the mouse
+reports themselves.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: address 4c review
+
+- Fix a real drag-out bug: the uri-list parser split on the
+characters \r or
+  \n, but Swift treats "\r\n" as a single grapheme, so a
+  standard CRLF-separated uri-list never split and produced
+  one bogus URL. Split on $0.isNewline (matches CR, LF, and
+  the CRLF grapheme) and add unit tests for CRLF, LF,
+  comment/blank lines, and non-file URLs.
+- Reset the in-progress offer when the drag host cannot
+start, so stale offer
+  data does not linger.
+- Clamp the drop pixel offset to non-negative for drops in
+the left/top margin.  - Keep the mouse drag hot path cheap:
+gate the reportability test behind a new
+  cheap mouseHandlerHasKittyDragOffer: check, so no extra
+  work happens per drag event unless a program is actually
+  offering drags.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: add release note
+
+Issue 12961.
+
+2026-08-06: Kitty DnD phase 4c: drag data out of the
+terminal
+
+Wire the offer direction so a program can start a native OS
+drag of its own data.
+
+- KittyDnDViewDragHost starts an NSDraggingSession on the
+terminal view from the
+  program's offer, mapping text/uri-list to file URLs (so a
+  drop onto Finder works) and text/plain to a string item,
+  using the offered image as the drag thumbnail. It relays
+  the drag outcome back as t=e (dropped/finished).
+- Because the offer needs a round trip (gesture -> t=o ->
+the program's t=P)
+  before the OS drag can begin, the drag starts from the
+  stored gesture event, which AppKit permits.
+- PTYMouseHandler hands a drag gesture to the program only
+when the program has
+  enabled offers, mouse reporting is on (otherwise the
+  gesture is a text selection), Option is not held, it is
+  not a three-finger drag, and only once per mouse-down.
+  This runs just before the drag is reported to the app.
+- The bridge exposes isOfferingDrags and noteDragGesture;
+PTYSession vends the
+  terminal view; the host is wired to the controller both
+  ways.
+
+Testable with tests/kitty-dnd/drag_source.py in a
+full-screen (mouse-reporting) program: start a drag over the
+window and drop onto Finder or TextEdit.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: address 4b review (drop coordinates
+and image drags)
+
+- Report screen-relative cell coordinates for drops,
+matching iTerm2's mouse
+  reporting (liveRect-relative), instead of coordForPoint:'s
+  whole-buffer coordinate which was off by the scrollback
+  line count once there was history.  This also drops the
+  selection next-neighbor fudge, so the pixel offset stays
+  within the cell and non-negative.
+- Register the image pasteboard types (PNG, TIFF) so a
+pure-image drag (no file
+  URL or string) actually reaches a program that accepts
+  image drops. Non-Kitty sessions still reject image-only
+  drags (dragOperationForSender returns None), so existing
+  behavior is unchanged.
+- Report the drag leave only when we would have forwarded
+the drag (same gate as
+  enter/update), so an Option-held upload drag no longer
+  sends a stray t=m leave.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD phase 4b: route drops onto the window
+to the program
+
+When a program has announced it accepts drops (OSC 72 t=a)
+and Option is not held, PTYTextView now forwards drags to it
+instead of pasting/uploading:
+
+- draggingEntered/Updated report hover as t=m with the drop
+cell, pixel offset
+  within the cell, allowed operations, and (on entry) the
+  available MIME types.
+- draggingExited reports the leave; prepareForDragOperation
+accepts so the drop
+  is delivered; performDragOperation snapshots the
+  pasteboard and sends t=M, then answers the program's t=r
+  data requests.
+- Holding Option forces today's paste/SCP-upload behavior
+(the escape hatch).
+
+KittyDnDPasteboardDropData snapshots the drag pasteboard
+eagerly (it is only valid during the drop) into the MIME
+list the controller vends: files -> text/uri-list, string ->
+text/plain, image -> image/png. The bridge exposes the
+accept-drop entry points to ObjC and resolves the live SSH
+endpoint for Tier 2.
+
+Now testable with tests/kitty-dnd/drop_target.py: drag
+files/text/images onto a window running it. Drag-out (offer)
+is the remaining piece.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: add manual test harness (drop target
++ drag source)
+
+Client-side OSC 72 programs to test the terminal
+implementation by hand:
+
+- drop_target.py announces acceptance and logs/saves dropped
+data.  - drag_source.py offers text and a file to be dragged
+out and logs the drag
+  lifecycle.
+- kittydnd.py: shared build/parse/reader helpers (and a
+client-side reference).  - README explains usage and what is
+exercisable before vs after the AppKit
+  adapter lands.
+
+The inbound handshake is testable now; the drag UI becomes
+testable once the AppKit drag adapter is wired.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: add manual probe for the inbound
+handshake
+
+A small script to run inside a debug-build iTerm2 session
+that sends the OSC 72 query and accept sequences and prints
+what the terminal reports, so the wired inbound handshake
+can be verified by hand. The drag UI itself is not
+scriptable and is exercised with a real drag once the AppKit
+adapter lands.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: wire real endpoint and drain on
+offer-disable
+
+- Resolve the session's live SSH endpoint: the bridge now
+takes a data source
+  (PTYSession) that vends the current conductor, so the Tier
+  2 file materialization path uses the real remote host
+  instead of a localhost placeholder. Falls back to
+  localhost when there is no conductor.
+- Drain pending data-request completions when the program
+disables offering
+  (t=o:x=2), closing the last leak the phase 3 review
+  flagged (latent until the native drag host lands, when a
+  completion becomes a promise the drag awaits).
+
+Tests: disabling offering drains a pending request with nil;
+bridge tests supply a data source.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD phase 4a: wire the controller into the
+session
+
+Connect the OSC 72 controller to PTYSession so the inbound
+handshake actually works end to end (query, accept/offer
+registration, and reports back to the program).
+
+- KittyDnDBridge (@objc iTermKittyDnDBridge): the
+ObjC-facing owner of the
+  per-session KittyDnDController. Constructed with a report
+  block that writes bytes back to the pty; forwards inbound
+  OSC 72 content to the controller.
+- KittyDnDSSHEndpointAdapter maps the session's SSHEndpoint
+(conductor or
+  localhost) to KittyDnDEndpoint, resolving the endpoint
+  lazily and materializing dropped files under ~/.iterm2-dnd
+  on the remote host for the Tier 2 path.
+- KittyDnDMachineID.localHashed() derives our machine id
+from the hardware
+  platform UUID via IOKit.
+- PTYSession creates the bridge lazily on the first OSC 72
+sequence and routes
+  screenDidReceiveKittyDragAndDrop into it; reports go out
+  via screenSendReportData.
+
+The AppKit drag adapter (drops onto the window and drags out
+of it) is the next step. Tested: the bridge answers a query,
+stays silent on announce, and never emits a newline in a
+report.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: address phase 3 review
+
+Completion-lifecycle and robustness fixes in the
+offer/drag-out controller:
+
+- requestDragData no longer leaks a completion: if a request
+for the same MIME
+  index is already outstanding, its completion is failed
+  with nil before being replaced, so it is never dropped
+  silently.
+- A new offer declaration mid-drag now drains outstanding
+data requests (it
+  calls resetOfferInProgress before recording the new offer)
+  instead of leaking their completions.
+- A bare t=o (neither x nor o) is ignored instead of
+destructively clearing an
+  in-progress offer, matching the "unknown variants are
+  no-ops" invariant.
+
+Tests: double data request fails the first completion, drag
+finish drains a pending request with nil, a bare t=o is
+ignored, and a second full offer cycle reuses one
+controller.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: address phase 2 review
+
+Correctness fixes from the phase 2 accept-drop review:
+
+- End-of-data framing (high): the protocol signals
+end-of-data with a final
+  empty payload and m=0, and every data-bearing chunk
+  carries m=1. The chunker put the last data in the m=0
+  message and emitted no terminator, so a compliant client
+  waiting for the empty-payload sentinel would hang.
+  KittyDnDChunker now emits m=1 data chunks followed by an
+  empty m=0 terminator. The reassembler already completes on
+  m=0, so it round-trips unchanged; tests updated.
+- Tier 2 read no longer blocks the main thread: the dropped
+file is read via a
+  detached task before the (async) endpoint materialization.
+- Peer machine id is normalized to lower case so a peer
+echoing upper-case hex
+  is not misjudged as remote against our lower-case id. Its
+  intentional stickiness (a machine id cannot change
+  mid-connection) is documented.
+- currentDrop is cleared when a new drag enters so a stray
+t=r cannot read the
+  previous cycle's data; duplicate intValue("x") hoisted.
+
+New tests: empty-payload transfer, x=2 unregister, t=r
+before any drop and with a missing index (EINVAL), Tier 2
+materialize failure (EIO), multi-file uri-list CRLF join,
+and the cross-machine flag on every chunk.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD phase 3: offer / start-drag controller
+
+Add the offer direction to KittyDnDController and the
+KittyDnDDragHost abstraction, so a program can drag its own
+data out of the terminal.
+
+- t=o:x=1/2 enable/disable offering (with optional peer
+machine id).  - On an AppKit drag gesture the controller
+sends t=o with cell and pixel coords.  -
+t=o:o=<flags>;<mimes> records the offer; t=p pre-sends
+per-MIME data (chunked)
+  and, at a negative index, the drag thumbnail image
+  (format/size in y/X/Y).
+- t=P:x=-1 assembles a KittyDnDDragOffer and asks the drag
+host to start the
+  native drag, acking with t=E;OK (or t=E;error if it cannot
+  start).
+- Drag lifecycle from the host is relayed as t=e events:
+accepted (x=1),
+  action changed (x=2), dropped (x=3), finished (x=4). The
+  lazy data path is supported: requestDragData emits t=e:x=5
+  and the program's t=e:y=idx;data (or t=E:y=idx error)
+  reply is delivered to the pending completion.
+- Inbound t=E:y=-1 cancels the native drag.
+
+Tested with a fake drag host covering
+enable/gesture/offer/pre-send/start, chunked pre-send, the
+image thumbnail, all lifecycle events, the lazy
+request/reply round trip, and cancel.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD phase 2: accept-drop controller
+
+Add KittyDnDController, the @MainActor per-session state
+machine, and the KittyDnDEndpoint abstraction. This phase
+implements the accept-drop direction: a program running in
+the terminal accepts a drop onto the window.
+
+- Handles inbound t=q (query), t=a/t=A (register/unregister
+with MIME list and
+  optional peer machine id), and t=r (data request),
+  reassembling chunks.
+- On AppKit drag events emits t=m (move, with the MIME list
+on entry only),
+  t=m:x=-1:y=-1 on exit, and t=M on drop, all carrying cell
+  and pixel coords.
+- Answers t=r with base64 file/content bytes, chunked, and
+t=R on error.  - Three-tier text/uri-list routing keyed off
+the machine-id comparison and the
+  endpoint's materialization capability: Tier 1 local
+  returns local file URIs; Tier 2 (remote + conductor)
+  materializes the files on the program's host and returns
+  those paths with no cross-machine flag; Tier 3 (remote, no
+  conductor) returns the local URIs flagged X=1.
+
+The controller depends only on the report closure,
+KittyDnDEndpoint, and KittyDnDDropData, so the whole accept
+path is tested with fakes. AppKit and PTYSession wiring come
+in a later phase.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD: distinguish plain-text and base64
+payloads
+
+The OSC 72 payload encoding depends on the message type:
+MIME lists (t=a/m/M/o), machine ids, and error strings are
+plain UTF-8 text, while file/image data (t=r/p/k) is base64.
+Phase 0 wrongly assumed every payload was base64.
+
+Rework the wire layer to store the payload undecoded
+(rawPayload) and expose it as either textPayload or
+dataPayload, so the caller decodes per message type:
+
+- KittyDnDMessage gains textPayload/dataPayload accessors
+and matching
+  constructors; parsing keeps the payload raw and never
+  fails (an invalid base64 data payload surfaces as a nil
+  dataPayload at the point of use).
+- KittyDnDChunker.messages takes binary data; the
+reassembler concatenates raw
+  payloads and defers decoding, so the earlier
+  silent-empty-Data path is gone.
+- Payload text is CR/LF-sanitized on serialize too, so the
+no-newline invariant
+  holds for plain-text payloads as well.
+
+Also stop the phase-1 PTYSession stub from logging full
+sequence content, since a data payload can carry
+dropped-file bytes; log only the length.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD phase 1: parse OSC 72 and deliver to
+the session
+
+Wire the OSC 72 escape code through the parser and terminal
+so each Kitty drag-and-drop sequence reaches the main-thread
+session:
+
+- New XTERMCC_KITTY_DND token; VT100XtermParser maps OSC 72
+to it.  - VT100Terminal forwards the raw content after "72;"
+(metadata plus optional
+  base64 payload) via a new VT100TerminalDelegate method.
+- VT100ScreenMutableState hops it out of the mutation thread
+with a side effect
+  to a new VT100ScreenDelegate method; PTYSession logs it
+  for now (the per-session controller is wired in a later
+  phase).
+
+Stateful chunk reassembly and interpretation are
+deliberately left to the controller, so this layer delivers
+each sequence's raw content verbatim. Tested end to end
+through the real parser via screen.inject, including a
+payload with an internal semicolon, multiple sequences, a
+full-size (4096 base64) payload, and the BEL terminator.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD phase 0: address review of the wire
+layer
+
+Fixes from the phase 0 correctness review:
+
+- Reassembler no longer silently swallows an undecodable
+payload. The final
+  chunk is now rebuilt into complete OSC content and parsed
+  through KittyDnDMessage(oscContent:), so base64 validation
+  and the nil-vs-empty-payload distinction match the
+  single-message path exactly; a corrupt payload yields nil
+  (logged) instead of an empty Data.
+- Correct the reassembler comment: concatenate-then-decode
+is what supports a
+  peer splitting the base64 stream at arbitrary positions
+  (the protocol's post-encoding limit model), not per-chunk
+  decode.
+- Make the no-newline invariant hold for all inputs:
+KittyDnDMetadata.serialize
+  now strips CR/LF from metadata values, not just the base64
+  payload.
+- Close test gaps: chunk-count boundary, reassembler reuse
+across messages,
+  reassembler nil vs empty payload, and arbitrary
+  base64-stream split.
+
+Issue 12961.
+
+2026-08-06: Kitty DnD (OSC 72) phase 0: pure wire layer
+
+Add the pure Swift wire layer for the Kitty drag-and-drop
+protocol under sources/DragAndDrop, with no terminal,
+AppKit, or I/O dependencies:
+
+- KittyDnDMessage: parse/serialize one complete OSC 72
+message
+  (colon-separated k=v metadata plus optional base64
+  payload), with a deterministic key order and typed
+  accessors.
+- KittyDnDChunker: split a payload into <=4096-byte base64
+chunks tagged
+  m=1/m=0, and KittyDnDChunkReassembler to put them back
+  together.
+- KittyDnDMachineID: HMAC-SHA256 machine-id hashing and the
+cross-machine
+  comparison used to decide the X=1 byte-transfer path.
+
+Enforces the no-newline output invariant with a dedicated
+test. See docs/kitty-dnd-design.md for the full design and
+phase plan.
+
+Issue 12961.
+
+2026-08-06: Fix Advanced Paste hang and per-line behavior
+(issue 5749)
+
+Keystroke passthrough during a paused paste: when "Wait for
+shell prompt before pasting each line" is on and the shell
+sits at a prompt that emits no OSC 133 marker (a password
+prompt, zsh spelling correction, etc.), the paste would wait
+forever while queueing every keystroke, so the user could
+not answer the prompt. The paste indicator now has a
+keyboard toggle (in both the drop-down panel and the status
+bar) that sends typing straight to the terminal instead of
+queueing it; Esc and Ctrl-C then reach the shell too, and
+Cancel still aborts. A lightweight callout points at the
+toggle the first time a keystroke gets queued, and the
+keyboard's tint reflects its state.
+
+Single-envelope bracketed paste when not waiting for a
+prompt: shouldPasteNewlinesOutsideBrackets existed only to
+make wait-for-prompt work with bracketing on
+newline-swallowing shells (zsh, bash, fish), so it is now
+gated on wait-for-prompt being on. With it off, a multi-line
+block is pasted inside one bracketed envelope and lands on
+the command line as one editable buffer to run with a single
+Return, matching a normal paste.
+
+2026-08-06: Update CLAUDE.md
+
+2026-08-06: Keep subparameters of a blank 16th SGR parameter
+
+Follow-up to #722. When the 16th CSI parameter was an
+implied blank created by a doubled semicolon,
+parameterOverflowed was set the moment count reached
+VT100CSIPARAM_MAX, so a subparameter attached to that
+still-valid 16th parameter was discarded. Only treat the
+list as overflowed when the semicolon did not open a
+storable blank parameter.
+
+Adds a VT100CSIParserTest case and a cat-able manual test in
+tests/sgr-16th-param.txt.
+
+2026-08-06: Add checklist for adding a new shell to shell
+integration
+
+2026-08-06: Fix off-by-one that dropped the 16th SGR trigger
+parameter (#722)
+
+* Fix off-by-one that dropped the 16th SGR trigger parameter
+
+iTermParserAddCSIParameter refused to store a value once
+count reached 15, so it accepted only 15 of the 16 slots in
+CSIParam.p.  The terminal's own CSI parser accepts 16
+(VT100CSIParser.m), so an SGR trigger and the terminal
+disagreed about the same parameter string.
+
+Besides losing the last parameter, SGRTrigger attaches
+subparameters with iTermParserAddCSISubparameter(&csi,
+csi.count - 1, sub), so when the 16th parameter was dropped
+its subparameters landed on the 15th parameter instead  e.g.
+the components of a 24-bit color were applied to the wrong
+parameter.
+
+* Fix iTermParserGetCSISubparameter ignoring its index
+argument
+
+The function always returned the first subparameter of the
+requested parameter: i started at 0, the loop returned on
+the first match because i == 0, and the i-- afterwards was
+unreachable. It has no callers today, so nothing is broken
+by it, but it silently returns the wrong value for any
+subparameter_index other than 0.
+
+* Discard subparameters of parameters that don't fit
+
+When a CSI sequence has more parameters than CSIParam can
+hold, the extra parameters are discarded, but their
+subparameters were still attached to the last parameter that
+did fit. That changes its meaning: in an SGR sequence with
+17 parameters ending in 4;3:5, the :5 landed on the 4,
+turning plain underline into dashed underline.
+
+Both paths that build a CSIParam had this problem: the
+terminal's own parser, where the subparameter branch used
+count - 1 without checking whether the parameter had been
+stored, and SGRTrigger, which calls
+iTermParserAddCSIParameter and could not tell that the value
+had been dropped. iTermParserAddCSIParameter now reports
+whether it stored the value.
+
+Adds regression tests for the parameter-list boundary.
+2026-08-06: Fix typos for word punctuation (#720)
+2026-08-06: Honor OSC 9;4;4 when the percentage is omitted
+(#723)
+
+The ConEmu progress protocol makes pr optional for st=4
+(paused), and the comment on that branch said so, but the
+code only acted when pr was in 0...100, so ESC ]9;4;4 ST did
+nothing. st=2 (error) handles the same case by falling back
+to a sentinel. The case 4 comment was a copy of case 2's and
+wrongly said "set error state".
+
+An absent pr now keeps the percentage already showing and
+only switches it to the warning encoding, which is what
+Ghostty does and what Windows Terminal's
+Terminal::SetTaskbarProgress does. When there is nothing to
+keep, it falls back to 10%: the bar's width comes from the
+percentage, so 0 would draw an invisible indicator, and
+Windows Terminal substitutes the same value under the name
+TaskbarMinProgress.
+
+A pr that is present but out of range is still ignored, as
+in case 1, so ESC ]9;4;4;101 ST remains a no-op instead of
+changing state.
+
+VT100ScreenProgressPercentage() extracts the percentage from
+whichever base is in use; VT100ScreenProgressIsVisible now
+uses it instead of repeating the three range checks. No enum
+values were added, so PSMProgress needs no corresponding
+change.  2026-08-06: Fix Tahoe dark tab chrome ignoring
+custom tab height (#715)
+
+On macOS Tahoe dark themes, selected left/right tab chrome
+was drawn at the cap images' intrinsic size instead of the
+pill rect, so tabs with a custom Default tab bar height
+showed a fixed-height foreground over a taller cell. Cap and
+mid images now scale to the pill height (width clamped so
+tall narrow tabs cannot overlap caps), and
+fill/stroke/progress ring use a true stadium radius
+(height/2). Also clarifies the Default tab bar height help
+text.
+
+Closes #715.  2026-08-06: Add working notes on bidi RTL
+selection direction
+
+Records the PR #709 discussion: the visual (TextEdit) vs
+logical (browsers) mouse selection tradeoff, what we tested,
+the open questions posted to the author, parked
+implementation issues (notably the Metal selected fg/bg
+coordinate mismatch), and next steps.
+
 2026-08-05: Restore sessions whose working directory is gone
 (issue 12955)
 
