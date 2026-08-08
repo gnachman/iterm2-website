@@ -1,3 +1,55 @@
+2026-08-07: Extend scrollable tab bar to horizontal
+orientations
+
+The scrollable tab bar previously worked only for left/right
+(vertical) tab bars. Generalize the scroll machinery to be
+axis-neutral so top/bottom (horizontal) bars scroll too.
+
+- Axis-neutral scroll offset, leading margin, viewport
+length,
+  content extent, and clamping; scrollWheel handles a
+  trackpad horizontal swipe and shift+vertical wheel for
+  horizontal bars.
+- New horizontal natural-width layout branch that scrolls
+instead
+  of overflowing. Honors the "uneven tab widths allowed"
+  setting: equal-width tabs use a uniform width, uneven tabs
+  use natural widths with a floor. A new advanced setting,
+  "Tab width when the tab bar is scrollable" (default 120),
+  controls that width, distinct from the non-scrollable
+  optimum width.
+- drawRect clips cells to the scrollable region and repaints
+the
+  leading decoration band and trailing add-button gap so
+  scrolled cells neither show under the window decorations
+  nor draw over the button. Minimal keeps its selected-tab
+  notch and bar-edge line correct at the button edge,
+  including a cap border when the active tab straddles it.
+- Fix a Yosemite margin-fill that painted nothing for an
+empty
+  clip rect, and extend Minimal's start/end insets across
+  the scroll margins so the decoration color fills them (no
+  bare or double-drawn strips on a transparent window).
+- Drag assistant lays cells out at their scrolled positions.
+
+2026-08-07: Fix fullscreen appearance-change refresh loop;
+add loop instrumentation
+
+safeSetAppearance: now skips assigning the window's
+appearance when it already equals the requested value. A
+redundant assignment still makes AppKit recompute effective
+appearance and fire -viewDidChangeEffectiveAppearance, which
+calls back into refreshTerminal: and could spin for many
+seconds (worst in traditional fullscreen, where each pass
+does a full-window setFrame:display:YES).
+
+Also add RLog statements along the effective-appearance ->
+refreshTerminal: path (refreshTerminal: entry,
+viewDidChangeEffectiveAppearance, and
+rootTerminalViewDidChangeEffectiveAppearance) so the loop
+can be confirmed or ruled out from a retrospective debug
+log.
+
 2026-08-06: Improve the scrollable side tab bar and make it
 a real setting
 
