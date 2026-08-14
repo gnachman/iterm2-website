@@ -1,3 +1,1082 @@
+2026-08-13: Tab groups: review fixes, drag drop feedback,
+cleanup
+
+Correctness fixes from the origin/master...HEAD review: -
+Capture the color picker's target (tab vs group) when the
+  picker opens, fixing an MRC use-after-free of
+  _tabGroupIDForColorPicker and a stale panel silently
+  retargeting a group.
+- Keep a group's last member in its group on a no-move drop
+  (its own gid-carrying slot now reports the group), and
+  fire didDrop only when position or membership actually
+  changes.
+- Skip chip cells in the overflow menu (a chip became a
+blank
+  item selecting a nil tab), lastVisibleTab,
+  numberOfVisibleTabs, and the accessibility tab lists.
+- Honor fit-to-content widths when a group exists instead of
+  snapping every tab to uniform widths.
+- Gate the scrollable-bar trailing clip outset on chips
+being
+  present so groupless bars keep the exact viewport clip.
+- Enforce pinned-prefix and group-contiguity invariants
+  through one canonical order (iTermTabGroupOrdering) used
+  by applyTabOrder: and the reorder repair: pinning a tab is
+  no longer undone, group drops clamp to the pinned zone,
+  and a wrapped Move Tab Left/Right clamps instead of
+  no-opping.
+- Stop cloning group identity across windows: a single
+member
+  moved or dropped elsewhere ungroups (only whole-group chip
+  drags and tear-offs carry the group).
+- Report an honest create-tab API status when tab_index is
+  refused or clamped.
+- Fix the duplicate join slot at a group's trailing edge and
+  the NSNotFound drop anchor snapping a dropped group to the
+  front of the bar.
+- Push group membership to cells by tab view item, not by
+  position; mid-drag the dragged tab's cell is absent, which
+  shifted every later tab's group id (a one-tab group
+  vanished into its neighbor while dragging).
+- Use the live mouse location in the tab bar's drag
+handlers;
+  AppKit's throttled draggingLocation interleaves stale
+  points and flapped the drop target.
+
+Drop feedback while dragging into another window's bar: -
+Run the drag animation timer in the tracking run-loop mode;
+  it starved during a live drag and slots never opened.
+- Distribute drop slots on entry keyed on drag participation
+  so a stale placeholder cannot suppress setup.
+- Shrink a full (stretch-to-fit) bar's tabs from snapshotted
+  base widths so the slot carves a visible gap.
+- Auto-scroll a scrollable bar, both directions, to reveal
+  the targeted slot.
+- Size the slot to the dragged unit's on-drop extent in the
+  destination, not its size in the source bar.
+- Keep the group outline around the dragged member's own
+slot
+  so it shrinks with the slot instead of snapping down.
+
+Policy: dragging a one-tab group's last tab out dissolves
+the group; in-place drops and chip drags keep it.
+
+Architecture and cleanup: drop context now flows through
+tabView:didDropTabViewItem:inTabBar:joiningGroupWithID:
+(droppedInsideGroupID side channel removed); one shared run
+enumerator feeds both styles' group decorations; deleted the
+dead PSMTabGroupChipView instance side, unused drag helpers,
+and an uncalled getter; consolidated the duplicated luma
+math in NSColor+PSM; cached chip text measurements; batched
+the membership push to one normalize per update; resolved
+terminalForTabBar: via the delegate; gated expensive RLog
+dumps; added always-on drag telemetry (animTick, calc,
+dragScroll) for field debugging; release notes.
+
+New tests: PSMTabGroupEnumeratorTests,
+PSMTabGroupDropResolutionTests, iTermTabGroupOrderingTests,
+plus live drag coverage in PSMTabGroupDragTests (timer mode,
+slot sizing, squeeze, auto-scroll, stale-slot entry).
+
+2026-08-13: Tab groups: stop clipping the last group's
+outline in a scrollable bar
+
+When tabs overflow and the scrollable tab bar is on, the
+viewport clip ends exactly at the last tab, but a group's
+enclosing pill extends a couple points past its tabs, so the
+last group's outline was cut off flat on the right.  Expose
+the run outset from the tab style and widen the trailing
+viewport clip by it (into the add-button margin, which has
+room).
+
+2026-08-13: Adjust the tab group color palette
+
+Swap systemTeal for a custom teal (#50afbc) and drop
+systemYellow.
+
+2026-08-13: Tab groups: refuse dropping a group onto a
+session pane
+
+Dropping a whole group onto a SessionView split off just its
+first member into a split pane, which is never what you
+want. Stamp a marker on the drag pasteboard for whole-group
+drags and have SessionView read it off the NSDraggingInfo
+(entered/updated/prepare/perform) to reject them, rather
+than reaching into the shared drag assistant. Single-tab
+drops are unaffected.
+
+2026-08-13: Tab groups: fix crash drawing dividers when all
+cells are placeholders
+
+drawTabBar entered the divider loop whenever any cell
+intersecting the clip rect was drawable, but mid-drag the
+clip rect can cover only zero-width placeholders that the
+divider filter drops, leaving an empty list.  0..<(count -
+1) then formed 0..<(-1) and trapped with 'Range requires
+lowerBound <= upperBound'. Guard on count > 1.
+
+2026-08-13: Tab groups: stop clipping the group outline in
+the drag image
+
+The floating drag image captured only runFrame + 1pt, but
+the enclosing group outline is outset ~2pt past the member
+pills on the right, so the right edge of the outline was cut
+off. Widen the capture to include it.
+
+2026-08-13: Tab groups: don't offer in-group drop slots
+while dragging a group
+
+A whole-group drag is never allowed to land inside another
+group, but the front-of-group and end-of-group join slots
+(single-tab affordances) were still inserted, so approaching
+another group's last tab opened a slot. Skip both when a
+group is being dragged.
+
+2026-08-13: Tab groups: ungroup a single tab torn off into a
+new window
+
+Dragging one grouped tab out of the tab bar creates a new
+window, but the tab kept its group id, leaving a lone
+one-tab group in the new window. Only a whole-group tear-off
+should stay grouped, so clear the tab's group membership
+when it becomes a new window on its own.
+
+2026-08-13: Tab groups: drop slots for dragging a tab into
+and around a group
+
+Build up the drop-slot behavior for dragging a single tab
+near a group: an "end of group" slot that joins the group as
+its last member, a matching "after group" slot just outside
+it, and "before group" slots, each reachable by approaching
+from either direction. Keep the group outline drawn over an
+open in-group slot, keep the chip anchored when the group's
+first member is dragged, keep before/after-group slots
+available when dragging a group's first or last member, and
+re-resolve membership when a member is dragged out of its
+group.
+
+2026-08-13: Tab groups: Group Color menu item reusing the
+tab color picker
+
+Add a "Group Color" item to the chip context menu using the
+same ColorsMenuItemView swatch control as Tab Color.
+Preset/reset swatches set the color on every member of the
+group (the color rides the tabs). The "more colors" cell
+opens the same custom/system picker: a new
+tabGroupIDForColorPicker steers the picker's central
+-applyTabColor: to the group instead of a single tab, with
+the popover anchored to the group's first member. Building
+the tab color menu clears that id so a later tab pick isn't
+misrouted.
+
+2026-08-13: Tahoe: 2pt inter-tab spacing so outlines don't
+touch
+
+At 1pt of cell spacing, adjacent selected tabs' outline
+strokes met (each reaches ~0.5pt past its pill) and the
+group run's enclosing outline overlapped the neighboring
+tab. Use 2pt so there's ~1pt of clear gap between adjacent
+outlines, matching the system tab bar, and the group outline
+sits flush with the gap instead of crossing into the next
+tab.
+
+2026-08-13: Tab groups: don't offer another group's interior
+as a group drop target
+
+Dragging a whole group could target a slot inside another
+group, which would nest/mix groups. After the drag target is
+chosen, if it falls strictly inside another group's run
+(between its chip and last member), snap it to that group's
+near edge (before the chip or after the last member, per the
+mouse). Edge slots and non-group slots are unchanged.
+
+2026-08-13: Tab groups: draw dividers between tabs within a
+group (Tahoe)
+
+The Tahoe style suppressed the inter-tab divider whenever
+either neighbor was grouped, so a group's members ran
+together with no visible boundaries. Draw a divider between
+two members of the same group (it sits inside the run, clear
+of the enclosing outline) and only skip it at a group edge,
+where the identifiers differ and a divider would collide
+with the outline.
+
+2026-08-13: Tab groups: sensible chip tooltip and singular
+close confirmation
+
+- Hovering a group chip showed the per-tab tooltip built
+from a nil session
+  ("Name:/Profile:/Command:"), because a chip has no tab
+  view item. Show the group's name instead (or no tooltip
+  when it is unnamed).
+- The batch close confirmation said "(1 tabs)"; use "1 tab"
+for the singular.
+
+2026-08-13: Tab groups: Close Group closes pinned members
+too
+
+Close Group skipped pinned tabs, so a group made entirely of
+pinned tabs had nothing left to close and the menu item did
+nothing. Skipping pinned is right for Close Other Tabs /
+Close Tabs to the Right (don't nuke pinned tabs outside the
+group) but wrong for Close Group, whose members are the
+group. Parameterize the batch close with skippingPinned: NO
+for Close Group, YES for the others.
+
+2026-08-13: Tab groups: fix crash from duplicating/dragging
+a pinned group
+
+Two problems around pinned tabs and groups:
+
+1. Duplicating a group inherited the pinned flag
+(arrangementForDuplication
+   encodes it), so a copy landed as a pinned tab at the END
+   of the bar -- a mix of pinned and unpinned members
+   stranded outside the pinned zone, which is an invalid
+   state. -duplicateTabGroup: now unpins the copies so a
+   duplicated group is a normal, contiguous, unpinned group.
+
+2. Starting a group drag on a non-contiguous group crashed:
+   -distributePlaceholdersInTabBar:withDraggedGroupMembers:chip:
+   assumed the members were a contiguous strided run (cB -
+   cA == 2*(count-1)) and ran the removal loop off the end
+   of the cell array (removeObjectsInRange beyond bounds). A
+   mix of pinned and unpinned members isn't contiguous (the
+   layout segregates pinned tabs to the front), so guard the
+   run and bail instead of corrupting the cell list.
+
+2026-08-13: Tab groups: resize the chip immediately after a
+rename
+
+The chip's width is derived from the group name, but
+-renameTabGroupWithID: only updated colors, so the chip kept
+its old width until some later relayout (e.g. switching away
+from and back to the app). Re-derive and lay out the chips
+synchronously after renaming so it resizes to the new name
+right away.
+
+2026-08-13: Tab groups: right-click chip context menu
+
+Right-clicking a group chip now shows a group menu. The tab
+bar's -menuForEvent: falls back to -chipForPoint: (chips are
+invisible to -cellForPoint:) and asks the delegate via a new
+optional -tabView:menuForTabGroup:. PseudoTerminal builds it
+with:
+
+- Rename Group            (prompt; fans the name out to
+every member) - Duplicate Group          (duplicates each
+member's sessions into a new
+			    "<name> copy" group of the same
+			    color)
+- Move Group to New Window (reuses the drag tear-off) - Save
+Group as Window Arrangement  (named arrangement of the
+group's tabs) - Remove All Tabs from Group
+(ungroups, keeping the tabs) - Close Group / Close Other
+Tabs / Close Tabs to the Right
+			    (one batch confirmation, then
+			    close; skips pinned)
+
+Also trim whitespace/newlines in the group-name prompt: tab
+labels carry a trailing newline that was seeding the field
+(and the saved name) with it.
+
+2026-08-13: Tab groups: adopt the group's name/color when a
+tab joins by drag
+
+With the definition carried per member tab, a tab that
+changed group membership by drag kept its old name/color:
+resolveDroppedTabGroupMembership set the new tabGroupID but
+not the denormalized name/color. Dragging a tab from group
+G1 into G2 left it with id=G2 but name/color=G1, and if it
+became G2's first tab the whole chip derived G1's
+definition.
+
+Add -reconcileTabGroupDefinitionForTab:, which copies
+name/color from an existing member of the tab's group (or
+clears them when it belongs to none), and call it wherever a
+tab's tabGroupID changes: drag resolution, add-to-
+existing-group, and remove-from-group.
+
+2026-08-13: Tab groups: single source of truth on the tabs;
+persist name/color; naming UI
+
+Group state lived in two places: membership on
+PTYTab.tabGroupID (persisted in the tab arrangement) and the
+name/color in a per-window iTermTabGroupRegistry that was
+never persisted. So restored groups kept their membership
+but came back with empty names and default colors, and the
+two stores could desync.
+
+Move the whole definition onto the member tabs and delete
+the registry:
+
+- PTYTab gains tabGroupName and tabGroupColor, encoded in
+the tab arrangement
+  (color via the KEY_TAB_COLOR dictionary encoding). The
+  definition now travels and persists with the tabs, so
+  restoration works with no window-arrangement wiring and
+  cross-window drag no longer needs to copy a definition.
+- PseudoTerminal is the PSMTabGroupDataSource itself:
+-tabGroupWithIdentifier:
+  derives name/color from the first live tab carrying that
+  id. updateTabGroups just pushes membership; there is
+  nothing to prune (a group with no member tab simply has no
+  source and vanishes).
+- Deleted iTermTabGroupRegistry; iTermTabGroup is now a
+plain value type.
+  moveTabGroup:/tearOffTabGroup: dropped their group
+  argument and the ensureGroup: copy.
+- Group identity remains the tabGroupID (a UUID); names are
+not assumed unique.
+  Adding a tab to an existing group copies the definition
+  from a member; rename fans the new name out to every
+  member.
+
+Naming UI: "New Group" now prompts for a name at creation
+(NSAlert + text field), and a "Rename Group" context-menu
+item renames the group. Removed the obsolete
+registry/arrangement unit tests.
+
+2026-08-13: Rework tab-group drag onto the single-tab drag
+machinery
+
+Group drag was a bespoke mouse-tracking loop plus a
+hand-rolled reservation-gap preview, separate from how tabs
+drag. It re-ran the stretch layout for the source hole
+(instead of the fixed-width placeholder slide a tab drag
+does) and kept glitching. Make a group a first-class block
+inside PSMTabDragAssistant so it rides the exact same
+placeholder + calculateDragAnimation + NSDraggingSession
+path as a single tab; the hole, fixed-width slide,
+drag-away-removes, cross-window, and tear-off all come from
+that one proven path.
+
+- Factored the drag-session tail of startDraggingCell: into
+  -beginDragSessionForControl:... (shared by both starts).
+- -startDraggingGroupWithChip:members:... seeds the sine
+curve from the
+  group's width and uses a run snapshot as the drag image;
+  -distributePlaceholdersInTabBar:withDraggedGroupMembers:chip:
+  replaces the whole contiguous run with ONE wide
+  placeholder (the block analogue of the single-cell flank
+  removal). mouseDragged: routes a chip drag here.
+- At drop the assistant restores the source cells and
+delegates the actual
+  move:
+  -tabView:dropGroupWithID:members:inTabBar:beforeTabViewItem:
+  and -tabView:tearOffGroupWithID:members:atScreenPoint:,
+  implemented in PseudoTerminal by the existing
+  moveTabGroup:.../tearOffTabGroup:... (which already
+  transfer the group definition and close an emptied source
+  window). Same-window drops reorder in place.
+  cancelDrag/finishDrag/dealloc clear the block state.
+- Deleted the bespoke loop and gap preview
+(trackGroupDragForChip:,
+  moveTabGroupMembers:, groupDropBoundaryForPoint:, the
+  whole updateGroupDropGapAtPoint:/step/apply/teardown/close
+  gap machinery, the _groupDropGap* ivars, the
+  availableCellWidthWithOverflow: reservation, and the
+  tabBarControlForScreenPoint:/moveTabGroupWithIdentifier:/
+  didReorderTabsInTabBar: delegate trio). Net -160 lines.
+
+Kept the single-tab-into-a-group path
+(groupContainingDropOfCell:, droppedInsideGroupID, the
+front-of-group slot), which already rides the single-tab
+machinery. Builds clean; PSMTabGroupCellTests and
+iTermTabGroupTests green. Visual drag behavior still needs a
+manual check.
+
+2026-08-13: Factor shared drag-session start out of
+startDraggingCell
+
+Extract the drag-window creation, _dragTabOffset
+computation, beginDraggingSessionWithItems, and
+CVDisplayLink setup into
+-beginDragSessionForControl:cell:image:mouseDownEvent:cellFrame:chipLeadingInset:.
+Pure refactor (startDraggingCell: calls it with the same
+values); prep for a group-drag start that reuses the same
+tail.
+
+2026-08-13: Tab groups: animated drop gap when dragging a
+group into another window
+
+While dragging a group's chip over another window's tab bar,
+that bar now opens an animated gap where the group will
+land, instead of appending silently: - The gap width is
+reserved from -availableCellWidthWithOverflow: so the
+  bar's real layout shrinks/redistributes the existing tabs
+  (correct on stretched bars); the gap is a true space, not
+  an overhang, sized to how wide the incoming tabs will be
+  here (available*count/(existing+count) when stretching,
+  else natural width * count).
+- A timer animates it open/closed; it relayouts only when
+the width or
+  drop index actually changes.
+- The chip-drag loop asks the delegate
+(tabView:tabBarControlForScreenPoint:)
+  for the bar under the cursor each frame and drives the gap
+  there.
+- On drop the group is inserted at the gap's index (not
+appended); the gap
+  is torn down without a restoring relayout so the insertion
+  animates from the already-open state, and the destination
+  snaps to its final layout to avoid intermediate
+  per-tab-count animation glitches.
+- The torn-off window is positioned from the drag snapshot's
+top-left; the
+  emptied source window is closed.
+
+Also fix the drag snapshot being clipped 1pt short on the
+bottom/right.
+
+2026-08-13: Tab groups: drag a group out to a new or another
+window
+
+Dragging a group's chip out of the tab bar now moves the
+whole group (chip + all member tabs, in order), following
+the single-tab pattern via a new delegate hook the vendored
+control calls with the group's tabs and the drop point: -
+Dropped on another window's tab bar: the group moves there,
+its
+  definition (name/color) copied into that window's registry
+  and each tab keeping its tabGroupID.
+- Dropped outside any tab bar: the group tears off into a
+new window,
+  positioned from the drag snapshot's top-left like the
+  single-tab tear-off.
+- Moving the whole group out empties the source window,
+which is closed.
+
+Cross-window logic lives in PseudoTerminal
+(terminalWithTabBarUnder..., moveTabGroup:tabs:toTerminal:,
+tearOffTabGroup:tabs:atScreenPoint:) so the vendored control
+stays window-agnostic.
+
+2026-08-13: Tab groups: enforce contiguity, fix drag
+decoration, drop-into-group
+
+Contiguity invariant (all tabs of a group stay adjacent) is
+now enforced regardless of how tabs reorder: -
+-tabsDidReorder repairs any split via
+-enforceTabGroupContiguityInvariant
+  (stable per-group compaction; no-op when already
+  contiguous), so drops, the Python API move, and keyboard
+  moves are all safe.
+- Keyboard cmd-shift-arrow reorders whole units (a group is
+indivisible):
+  moving toward a group jumps the whole group; a selected
+  member moves the group. Ungrouped tabs behave exactly as
+  before.
+- The API tab-move routes through PseudoTerminal so it
+triggers the repair.  - "Add Tab to Group" (existing group)
+now repairs contiguity too.
+
+Single-tab drag decoration: - The plain-tab drag image no
+longer captures the run decoration (chip +
+  outline): it is suppressed only during the offscreen image
+  capture via a new suppressTabGroupRunDecoration flag.
+- The run-decoration walk skips placeholder cells, so a
+group's outline
+  stays correct during a drag and expands to show the drop
+  target when a tab is dragged into the group.
+
+Drop a tab into a group (including a one-tab group): -
+During a drag, a persistent drop slot is added between each
+chip and its
+  first member (the "join at front" target), alongside the
+  existing before-group slot; a chip hover picks the side by
+  the chip's midpoint so both are reachable from either
+  direction.
+- On drop, the assistant reports (chip-aware) whether the
+tab landed inside
+  a group's bracket; resolveDroppedTabGroupMembership joins
+  it, else falls back to the order-only rule (leave /
+  reorder / keep-lone).
+- didDropTabViewItem now also fires on a membership change
+even when the
+  tab index is unchanged.
+
+Diagnostic tabGroup: logging is retained for now.
+
+2026-08-13: Add intra-window chip drag to move a whole tab
+group
+
+Dragging a group chip now moves the chip plus its contiguous
+member tabs as a block to a new position within the same tab
+bar.
+
+- New -chipForPoint: hit-tests chips (which -cellForPoint:
+skips).  - -mouseDragged: detects a drag starting on a chip
+and runs a
+  self-contained tracking loop
+  (-trackGroupDragForChip:startPoint:), dispatched before
+  the single-tab path and before window-drag conversion (a
+  chip sits in the top edge strip). The loop shows a
+  semi-transparent snapshot of the run following the cursor
+  and a group-color insertion marker at the nearest valid
+  drop boundary.
+- Valid boundaries are between top-level units (an ungrouped
+tab or a
+  whole group run), so a group never lands inside another
+  group; boundaries inside the dragged run are excluded.
+  Releasing well outside the bar cancels.
+- On drop the member tabs move as a block; _cells is
+re-sorted to the
+  new tab order and chips re-derived. Membership is
+  unchanged, so this uses a new optional delegate hook
+  tabView:didReorderTabsInTabBar: (PseudoTerminal ->
+  tabsDidReorder) rather than the single-tab drop path,
+  which would run per-tab membership resolution.
+
+Intra-window, land-on-drop only; cross-window and live
+per-frame reflow are deferred.
+
+2026-08-13: Fix Compact/vertical tab-group run decoration
+
+Share the squared tab-group decoration across Yosemite,
+Dark, Compact, and Minimal (Minimal drops its no-op override
+and inherits the base), and make it read correctly when tabs
+fill the whole bar as they do in Compact and Yosemite:
+
+- Tabs in a chip run now fill the full bar width. The chip
+width path
+  capped per-tab width at cellMaxWidth while the no-chips
+  path has no such cap, so a grouped run shrank its tabs;
+  drop the cap to match.
+- The enclosing box is clamped to the bar bounds, its
+trailing edge
+  pulled in 1pt so the tab-bar/content divider a neighbor
+  paints after us does not overpaint the stroke, and framed
+  on whole pixels so the 1pt lines stay crisp and
+  single-color.
+- The trailing outset is gone so the box's far line sits
+flush with the
+  tabs' edge, and the chip's solid block bottom aligns with
+  the box so the divider reads the same under the chip and
+  under the tabs.
+- On a vertical bar the chip is a one-row header, so it now
+takes the
+  normal tab-row height instead of the name-capsule height
+  that made it dwarf the tabs. Drag/placeholder frames route
+  through the same heightOfTabGroupChipCell: so the chip
+  stays consistent while dragging.
+
+2026-08-13: Draw the tab-group outline on vertical bars
+(Tahoe)
+
+Extend the Tahoe group-run decoration to vertical tab bars:
+the same design rotated 90 degrees. The name capsule spans
+the bar width at the top of the run (name left-aligned), the
+group's tab pills stack below, a 1pt group-color outline
+encloses the whole run with a 1pt gap around the tabs, and a
+group-color connector below the name capsule hugs the first
+(top) tab.
+
+The vertical chip cell now reserves a style-aware height
+(new -tabGroupChipCellHeightForName:, mirroring
+-tabGroupChipCellWidthForName: for horizontal);
+PSMTabBarControl uses -heightOfTabGroupChipCell: in the
+vertical layout and cell setup so the reserved space matches
+what the style draws.
+
+2026-08-13: Draw a group outline around tab-group runs
+(Regular/Tahoe, horizontal)
+
+Replace the per-cell group chip with a run-level decoration
+for the non-Minimal styles: a colored (group-color) pill
+enclosing the whole run of a group's tabs, with the group
+name in a capsule at the left. The enclosing pill spans
+multiple cells, so styles draw it in -drawTabBar: via a new
+hook; the chip cell itself then draws nothing.
+
+New optional PSMTabStyle methods:
+-usesExternalTabGroupDecoration (the chip cell defers to the
+style when YES),
+-drawTabGroupRunDecorationsForTabBar:clipRect:, and
+-tabGroupChipCellWidthForName: (reserve extra width for the
+name capsule plus the colored area between it and the first
+tab).
+
+Tahoe (the macOS 26 default): the 1pt group-color outline
+clears the tab pills by 1pt; the name capsule is filled with
+the tab-bar background with a 1pt group-color margin; the
+colored area between the name capsule and the first tab has
+a concave right edge that hugs the first tab's curve with a
+1pt gap (4pt name-to-tab spacing); dividers touching a chip
+or a grouped tab are suppressed so they don't cross the
+outline. Yosemite gets a simpler reasonable version. Minimal
+opts out and keeps its basic chip (its design is pending).
+Horizontal only; vertical is still to come.
+
+2026-08-13: Fix Minimal vertical tab background bleeding
+into the overflow area
+
+In a vertical Minimal tab bar with an overflow button, the
+strip below the last visible tab was painted lighter than
+the tabs, so the last tab appeared to bleed into the
+overflow-button area. Two causes in the end inset (the area
+after the last tab):
+
+- Its frame, when the overflow button was visible, covered
+only the
+  button's slab, leaving the gap between the last tab and
+  the button (from tabs not dividing the bar height evenly)
+  unpainted, so it fell through to the lighter
+  selected-background base. Extend it to cover everything
+  below the last tab, to the bottom.
+
+- Its color used the horizontal "selected tab scrolled into
+overflow"
+  branch, which is the lighter selected color. For a
+  vertical bar the empty area should read as the sidebar's
+  tab background, so use the non-selected tab color.
+
+2026-08-13: Resolve tab-group membership on drop and keep
+chips consecutive
+
+A drag reorders tabs without changing membership, so a tab
+dropped inside a group's run split it (a second chip
+appeared) and a member dragged to the edge stayed grouped.
+Resolve the dropped tab's membership from where it landed:
+strictly inside a run joins that group, a member isolated
+from a multi-tab group leaves it, and a lone one-tab group
+is kept. Only the dropped tab changes, so a bystander is
+never absorbed. The logic is a pure, unit-tested helper
+(iTermTabGroupContiguity); PseudoTerminal calls it from the
+drop path and pushes the result to the bar.
+
+Fix the chip rendering the drop then exposed:
+
+- On drop the chip was re-derived with a zero frame and
+drawn collapsed
+  (blink) or mid-animation (jump). Seed a freshly created
+  chip with a valid frame in normalizeTabGroupChipCells, and
+  lay the bar out synchronously on drop
+  (updateWithoutAnimation cancels the in-flight animation so
+  frames are final before the first draw).
+
+- Dragging the sole member of a group left nothing to anchor
+the chip, so
+  it vanished for the drag. Carry the chip in the AppKit
+  drag image, captured together with the tab from the bar so
+  its alignment matches, and shift the drag window so the
+  tab stays under the cursor.
+
+2026-08-13: Keep tab-group chips visible during a drag
+
+Chips are first-class cells but the drag machinery assumes
+_cells is a pure alternating placeholder/tab list, so chips
+were stripped for the whole drag and blinked out. Instead,
+keep the index math in the pure tab-cell world (strip chips
+before drop/cancel, re-derive in finishDrag) but re-insert
+chips for display right after the placeholder math runs, so
+they stay on screen while dragging.
+
+Along the way, fix four issues this surfaced:
+
+- Dead-zone jitter: cellForPoint skips chips and returns nil
+over a chip
+  or the intercell gap around one, which the target
+  selection read as "past the end" and flung the drop target
+  to the last placeholder, oscillating. Resolve an unhit
+  point positionally instead.
+- Group-creation overflow: the chip width-distribution
+dropped the last
+  tab (leaving a full-width gap) when floating-point
+  rounding pushed the exact-fit sum a hair over available.
+  Allow a sub-point tolerance.
+- Drag-start blip: the chip was drawn at a stale origin
+until the
+  animation timer's first tick; lay the source bar out
+  synchronously at drag start so the first frame is already
+  correct.
+- Drag-start shift: a placeholder standing in for the
+dragged tab added
+  no trailing spacing, shifting following tabs one
+  intercell-spacing left. Scale a placeholder's trailing
+  spacing by its expansion so a full-width slot matches the
+  tab it replaces and a collapsed one adds none (no growth
+  jump).
+
+New pure helper cellsByInsertingDragChipsInto:controlView:
+(placeholders transparent to run detection) with unit tests.
+
+2026-08-13: Let tabs stretch to fill on a grouped horizontal
+bar
+
+P3 routed any horizontal bar with chip cells through the
+natural-width scrollable layout to avoid the
+fit-distribution math, which disabled stretch-to-fill
+whenever a group was present. Instead, handle chip cells in
+the fit path:
+cellWidthsForHorizontalArrangementWithChipsWithOverflow:
+keeps chip and pinned cells at their fixed width and shares
+the remaining space among the tab cells, which stretch when
+stretchCellsToFit is on (clamped to optimal/min/max
+otherwise), returning a contiguous prefix so the overflow
+menu still works. The no-chips path is unchanged.
+
+2026-08-13: Center the chip label vertically using font
+metrics
+
+The label still rode high because line-box centering ignores
+the font's leading/descent. Center on the cap height instead
+(textTop = midY - ascender + capHeight/2, in the flipped
+control). Also drop the bottom-gap-push (which shoved the
+capsule to the top of the cell) in favor of a symmetric
+vertical margin: the chip cell is 28px and the capsule is
+inset 5px vertically, so it's centered in the row with a
+clear gap above and below the neighboring tabs.
+
+2026-08-13: Fix vertical chip: contain the label, left-align
+it, add a bottom gap
+
+Three issues on the vertical bar's chip cell: - The 18px
+chip made the capsule interior (~12px) shorter than the
+label's
+  line height (~14px), so the text overflowed and rode the
+  top ("not contained"). Raise the chip cell to 26px and
+  inset the capsule less vertically so the label fits and
+  centers.
+- The label was centered while the tab labels below are
+left-aligned;
+  left-align it so they line up.
+- The chip sat flush against the tab below it. Leave a
+bottom gap: the
+  cell draw shrinks the chip's draw frame by
+  verticalChipBottomGap on a vertical bar (the control is
+  flipped, so that empties the bottom).
+
+2026-08-13: Tidy the basic chip draw: centered text, no
+clipped capsule
+
+The basic chip look carried over insets from the old overlay
+(1px horizontal inset + a 4px trailing gap) that, on a
+full-width vertical chip cell, pushed the rounded ends
+against the edges and left the label left-aligned. Inset the
+capsule 4px horizontally, drop the trailing gap, and center
+the label (truncating tail if it doesn't fit).
+
+2026-08-13: Make tab-group chips first-class cells; delete
+the overlay/gap approach (P2+P3)
+
+Chips are now real cells in _cells instead of overlay
+PSMTabGroupChipView subviews positioned into reserved
+phantom gaps. This removes the whole class of gap-vs-drag
+bugs at the source.
+
+P2 (tolerate + insert): - normalizeTabGroupChipCells
+rebuilds _cells so one chip cell precedes
+  each contiguous run of same-group tabs; called on
+  membership change (setTabGroupIdentifier:) and after the
+  tab<->cell reconciler, which now strips chips first and
+  re-derives them so its tabView-index math stays correct.
+  removeAllTabGroupChipCells is the strip helper.
+- sanityCheck: and the update: count guard now compare only
+tab cells;
+  cellForPoint: skips chips (not
+  clickable/draggable/droppable).
+
+P3 (size + draw + delete old): - Chip cells are sized in
+naturalHorizontalCellWidths and the vertical
+  origins/_setupCells (short height); a horizontal bar with
+  chips uses the natural-width (scrollable) layout so chips
+  avoid the shrink-to-fit math.
+- PSMTabBarCell draws chip cells via +[PSMTabGroupChipView
+drawChipInFrame:
+  name:color:] (reused basic look; per-style hook later).
+- Deleted tabGroupLeadingGapForCellAtIndex:,
+totalTabGroupGap, the
+  availableCellWidth/scrollExtent/_setupCells/vertical gap
+  insertions, the drag-time gap suppression, and the
+  updateTabGroupChips/positionChipForGroup/
+  removeTabGroupChipsNotInSet/_tabGroupChips overlay
+  machinery.
+
+Not yet done (P4): drag/drop and moveTabAtIndex: still use
+_cells indices as tabView indices, and placeholder
+distribution assumes no chip cells -- so DRAGGING grouped
+tabs misbehaves until P4. Creating groups and chip rendering
+(the layout) are what to test now.
+
+2026-08-13: Tab-group chip cells: cell type + pure helpers +
+tests (P1)
+
+First step of making group chips first-class cells instead
+of overlay views with reserved gaps. Adds
+PSMTabBarCell.isTabGroupChip (inert like a placeholder -- no
+representedObject -- but persistent) and three pure,
+window-free helpers on PSMTabBarControl:
+
+- +cellsByInsertingTabGroupChipsInto:controlView: inserts
+one chip cell
+  before each contiguous run of same-group tabs.
+- +cellIndexForTabIndex:inCells: /
++tabIndexForCellIndex:inCells: convert
+  between NSTabView index space and cell-list index space,
+  skipping chips (the seam the drag/drop and move code will
+  use).
+
+9 XCTest cases cover normalization (runs, adjacency,
+non-contiguous, stray-chip input) and the index conversions
+incl. round-trip. Not wired into the live _cells yet, so
+nothing changes at runtime; that's P2+.
+
+2026-08-13: Suppress group gaps and chips during a tab drag
+
+The reserved chip gap is invisible to the drag machinery
+(placeholder distribution, drop hit-testing, the reorder
+animation), so during a drag it threw the drop target off
+and jerked the chip to wild spots (a log showed the chip at
+y=-18, off-screen; drop slots opened far from the cursor,
+and a tab slid under the chip).
+
+While [PSMTabDragAssistant isDragging], make
+tabGroupLeadingGapForCellAtIndex: return 0 (the whole layout
+is gapless, so the drag behaves exactly as it does with no
+groups) and hide the chips instead of repositioning them
+onto shifting cells. The post-drop layout restores gaps and
+re-shows the chips. The visible cost is a one-time reflow at
+drag start/end (gaps collapse, chips hide; then snap back),
+which is predictable rather than the previous jitter.
+
+2026-08-13: Revert gap/chip changes to the drag reorder
+animation
+
+Making calculateDragAnimationForTabBar: reserve the group
+gap and call -updateTabGroupChips created three drag
+artifacts (seen in a debug log where the chip flip-flopped
+between y=78 and y=122 every frame):
+
+1. The chip jumped a row during a drag: the drag-assistant
+chip re-place
+   fought reallyUpdate's, positioning the chip from two
+   different cell layouts 44pt apart.
+2. A dark "hole" flickered in: the empty reserved gap
+showing through as
+   the chip oscillated.
+3. The drop target was reluctant to open: the gap inserted
+into the drag
+   walk shifted the cell frames the drop hit-test relies on.
+
+Revert both drag-walk changes. During a drag the chip now
+stays at its steady position and the drop logic is
+untouched; the group gap simply collapses for the duration
+of the drag and is restored by reallyUpdate on drop. The
+steady-state gap and the separate _animateCells fix are
+kept.  Doing the during-drag gap "right" needs a single chip
+positioner while dragging; deferred.
+
+2026-08-13: Stop tab-group defs vanishing on drag; resync
+membership on reorder
+
+A debug log showed a window whose tabs referenced three
+group ids but whose registry held only one: dragging a
+grouped tab so it briefly left [self tabs] made its group
+momentarily unreferenced, and updateTabGroups (which runs
+constantly via updateTabColors) then pruned the definition.
+When the tab returned it was orphaned -- id present,
+name/color gone, no chip -- which read as "groups vanished /
+weird gaps."
+
+Remove that prune from updateTabGroups. Group defs are tiny;
+keep them for the window's life (a def that outlives its
+tabs is inert: no run, no chip). Also call updateTabGroups
+from tabsDidReorder so the tab bar's per-cell group ids
+track the new order instead of going stale after a drag.
+Cross-window group transfer and a real cleanup/persistence
+pass remain separate follow-ups.
+
+2026-08-13: Keep group gaps and chips aligned during
+animations
+
+The two animated cell-position walks ignored the group-chip
+gap and never moved the chips, so gaps/chips lagged during
+add/remove and drag.
+
+- _animateCells: (add/remove width animation) now re-places
+the chips
+  each frame and after its final layout; the gap is already
+  preserved by the incremental walk, so the chips just need
+  to track the cells.
+- calculateDragAnimationForTabBar: (the drag reorder
+animation) now
+  reserves the same per-run gap the steady-state layout uses
+  and calls -updateTabGroupChips after repositioning cells,
+  so tabs keep their group spacing and the chips move with
+  them while dragging.
+
+Exposes -tabGroupLeadingGapForCellAtIndex: and
+-updateTabGroupChips on PSMTabBarControl for the drag
+assistant. Does not address the parked drop-into-a-group
+contiguity bug.
+
+2026-08-13: Instrument tab groups with RLog for debugging
+
+Add RLog across the tab-group paths so the drag/contiguity
+behavior is visible in a debug log without enabling debug
+logging: membership changes pushed to a cell, the per-cell
+group order + which runs got chips + total reserved gap
+(gated on any grouped cell so the no-groups case stays
+quiet), chip create/skip/frame and removal, the window-level
+membership push + registry contents, the New Group /
+add-to-existing / remove menu actions, the tab->group order
+after a reorder, and the drop event (dragged/target group
+ids + destination index). Per-cell gap math stays on
+DLog/uninstrumented to avoid RLogging the layout hot path.
+
+2026-08-13: Show tab-group chips on the vertical tab bar
+
+The chip now renders on vertical bars too, above each run
+instead of to its left. The gap logic is generalized to the
+layout axis: the per-run gap is a chip width on a horizontal
+bar and a fixed chip height (+[PSMTabGroupChipView
+verticalChipHeight]) on a vertical one. On the vertical bar
+the gap is baked into the cell y-origins (scroll and fit
+branches) and added to the vertical scroll content extent;
+the chip is positioned spanning the bar width just above the
+run's first cell (the control is flipped, so "above" is a
+smaller y). availableCellWidth only subtracts the gap for
+horizontal bars, where it's a width.
+
+2026-08-13: Reserve a leading gap for the tab-group chip
+
+The chip now sits in reserved space instead of overlapping
+the run's first tab. The gap width (per run, from the group
+name via +[PSMTabGroupChipView preferredWidthForName:]) is
+threaded through the horizontal layout: subtracted from
+-availableCellWidthWithOverflow: so fit mode shrinks tabs to
+make room and the scroll overflow test accounts for it,
+added to _scrollContentExtent so a scrolled bar reaches the
+end, and inserted into the -_setupCells: x-walk before each
+run's first cell.  The chip is then positioned in that gap,
+immediately left of the first cell. Horizontal only;
+vertical still skips chips.
+
+Known follow-ups: the width-animation path (_animateCells:)
+doesn't add gaps yet (transient only), and chips aren't
+culled outside the scroll viewport.
+
+2026-08-13: Draw a basic tab-group chip, styled per theme
+
+Add PSMTabGroupChipView: a name+color chip the control
+positions at the leading edge of each contiguous run of tabs
+sharing a group id (-updateTabGroupChips, run from
+-reallyUpdate: so chips track scrolling).  Appearance is
+delegated to the current tab style via a new optional
+PSMTabStyle hook
+(drawTabGroupChipWithName:color:selected:frame:inControl:),
+with a basic rounded-pill default when a style doesn't
+override, so Tahoe/Yosemite/Minimal can each render it
+differently. The hook receives the control, whose
+orientation lets a style diverge horizontal vs vertical.
+
+v0 scope: horizontal bars only (the vertical bar wants its
+own design, so chips are skipped there for now), and the
+chip sits at the run's leading edge without reserving a gap
+yet.
+
+2026-08-13: Add Firefox-style "Add Tab to Group" tab context
+menu
+
+Right-clicking a tab now offers "Add Tab to Group" with "New
+Group" (creates a group named from the tab's title, colored
+from a cycling palette, and assigns the tab), the existing
+groups (checkmarked when the tab is already a member), and
+"Remove Tab from Group" when grouped.  Actions set
+PTYTab.tabGroupID and refresh via updateTabColors, which
+pushes membership to the tab bar and prunes emptied groups.
+Rendering of the group chip comes next; until then this is
+verifiable via the menu (a new group appears checkmarked and
+the Remove item shows up).
+
+2026-08-13: Own the tab-group registry on the window and
+push membership
+
+PseudoTerminal now lazily owns an iTermTabGroupRegistry and
+sets it as the tab bar's tabGroupDataSource. A new
+-updateTabGroups (piggybacked on -updateTabColors, which
+already runs whenever tab membership or order can change)
+pushes each tab's tabGroupID to the control and prunes group
+definitions no tab references. No rendering or group
+creation yet.
+
+2026-08-13: Add per-tab tab-group membership
+(PTYTab.tabGroupID)
+
+A tab now records which group it belongs to, the source of
+truth for membership. Persisted in the tab arrangement under
+a new "Tab Group ID" key and round-tripped on restore. The
+window controller will push this to the tab bar
+(setTabGroupIdentifier:forTabViewItem:) and own the registry
+that maps the id to a name/color.
+
+2026-08-13: Define the tab-bar/tab-group ownership boundary
+via protocols
+
+The tab bar needs a group's name/color to draw its chip, but
+must not own or even reference the concrete group model
+(which lives on the window controller). Draw that line with
+two protocols defined by the control:
+
+- PSMTabGroup: a group's display attributes (name, color).
+- PSMTabGroupDataSource: look up a group by identifier.
+
+PSMTabBarControl gains a weak tabGroupDataSource and,
+mirroring the tabColor precedent, per-tab membership
+push/read (setTabGroupIdentifier:forTabViewItem: + getter)
+backed by a new PSMTabBarCell.tabGroupIdentifier. The
+control forms chip runs from contiguous cells sharing an
+identifier and pulls attributes through the data source; it
+never sees iTermTabGroup/iTermTabGroupRegistry.
+
+iTermTabGroup conforms to PSMTabGroup and
+iTermTabGroupRegistry to PSMTabGroupDataSource. No rendering
+yet.
+
+2026-08-13: Add tab group model and per-window registry
+
+Groundwork for Chrome/Firefox-style tab groups.
+iTermTabGroup holds a group's identity (UUID id, name,
+NSColor) and round-trips through a window arrangement using
+the same color encoding as KEY_TAB_COLOR.
+iTermTabGroupRegistry is the per-window store of group
+definitions keyed by id, with add/lookup/remove, orphan
+pruning, and arrangement round-trip. Membership (which tabs
+are in a group) is not stored here; it will live per-tab. No
+UI yet.
+
+2026-08-13: Cache announcement text measurements to fix a
+tab-style beachball
+
+Changing the tab style preference posts
+kRefreshTerminalNotification, which synchronously refreshes
+every window and re-fits every session's announcement view.
+Each fit re-ran an O(font-range) size search plus a
+truncation binary search, and every sizeThatFits allocated a
+fresh NSLayoutManager/NSTextContainer/NSTextStorage. With
+many sessions open this blocked the main thread for seconds.
+
+AutoResizingTextView now reuses a single measuring layout
+stack and memoizes (content, width) to size, and
+setFrameSize skips the refit when the size is unchanged.
+Adds unit tests for the cache behavior and the no-op-resize
+guard.
+
+2026-08-13: Fix top-right indicator smear when swiping
+between tabs
+
+The top-right session indicators were anchored to the text
+view's visibleRect right edge. While swiping between tabs
+the text view is horizontally clipped by the tab view, so
+visibleRect shifts every frame. Because the live session
+keeps redrawing during the swipe and the indicators are
+composited translucently, anchoring to the shifting visible
+edge painted them at a different content x each frame and
+left a horizontal smear. Anchor them to the content (bounds)
+right edge instead, which is identical in the unclipped case
+but keeps them glued to their tab's content during a swipe.
+
 2026-08-07: Extend scrollable tab bar to horizontal
 orientations
 
