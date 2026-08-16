@@ -1,3 +1,52 @@
+2026-08-15: Tab groups: collapsible groups with animated
+collapse/expand
+
+Named, colored, contiguous runs of tabs headed by a group
+"chip" that collapses to hide its members and expands to
+reveal them, across all tab styles (Tahoe, Yosemite,
+Minimal, Dark) and both orientations.
+
+- Collapse/expand is animated: horizontal bars interpolate
+cell widths,
+  vertical bars interpolate row slots, laying out every
+  frame so scroll, chip size, cross-axis, and contiguity
+  stay correct. A chip cell being inserted or removed runs
+  through the same animator, so a new chip is positioned
+  correctly throughout and its width tweens in lockstep with
+  the neighbors instead of snapping into place at the end.
+  Expanding a chip tweens it gradually from its wide
+  collapsed width to its narrow settled width as the members
+  grow out of it (pure growth, no snap).
+- Group membership and the collapsed/name/color state ride
+each member
+  tab (no separate registry), so they survive reorder, drag
+  between windows, tear-off, duplicate, and
+  window-arrangement restore.
+- Invariants: a group's members stay contiguous (the pinned
+prefix wins
+  when a group would straddle the pinned boundary, leaving
+  it as up to two runs) and the active tab is never inside a
+  collapsed group.  Auto-expand enforcement is deferred
+  during batch operations (duplicate / move / tear-off /
+  reorder / restore / drag) via a single nestable,
+  exception-safe suppression, and settled once,
+  model-driven, when the operation completes.
+- Pinning or unpinning a grouped tab acts on the whole group
+as a block
+  so it never straddles the pinned boundary, and contiguity
+  is enforced once after the block settles.
+- Progress bars are hidden during the slide (they are not
+repositioned
+  per frame, so they would otherwise jump). Group chips and
+  outlines are not drawn under the window buttons on a
+  scrolled Minimal bar, and a tab with active progress
+  inside a collapsed group falls back to its inline progress
+  bar.
+
+Includes the pure ordering/contiguity logic
+(iTermTabGroupOrdering, unit-tested) and release notes in
+docs/notes-3.7.txt.
+
 2026-08-13: Tab groups: review fixes, drag drop feedback,
 cleanup
 
