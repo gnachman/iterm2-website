@@ -16,9 +16,10 @@ The app is currently in beta, so it is distributed through Apple’s TestFlight 
 
 #### How to Pair
 1. On your Mac, open iTerm2 and choose **iTerm2 &gt; Companion Device Settings…**.
-2. Make sure the iTerm2 Companion plugin is installed and that “Allow companion device pairing” is turned on. iTerm2 will show a QR code.
-3. On your iPhone, open **iTerm2 Buddy**, tap **Scan**, and point the camera at the QR code.
-4. Confirm the 6-digit code shown on your phone in iTerm2 to finish pairing.
+2. Make sure the iTerm2 Companion plugin is installed and that “Allow companion device pairing” is turned on.
+3. Click **Show QR Code** and authenticate with Touch ID or your password. iTerm2 will then show a QR code.
+4. On your iPhone, open **iTerm2 Buddy**, tap **Scan**, and point the camera at the QR code.
+5. Confirm the 6-digit code shown on your phone in iTerm2 to finish pairing.
 
 If you need the companion plugin for your Mac, see the <a href="companion-plugin.html">iTerm2 Companion Plugin</a> page.
 
