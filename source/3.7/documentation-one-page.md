@@ -151,6 +151,15 @@ active-state: documentation
 {% include 3.7/subdoc.md title="Utilities" anchor="documentation-utilities.html" %}
 {% include 3.7/documentation-utilities.md %}
 
+{% include 3.7/subdoc.md title="Claude Code Integration" anchor="claude-code-integration.html" %}
+{% include 3.7/documentation-claude-code.md %}
+
+{% include 3.7/subdoc.md title="Workgroups" anchor="documentation-workgroups.html" %}
+{% include 3.7/documentation-workgroups.md %}
+
+{% include 3.7/subdoc.md title="Clippings" anchor="documentation-clippings.html" %}
+{% include 3.7/documentation-clippings.md %}
+
 {% include 3.7/subdoc.md title="Proprietary Escape Codes" anchor="documentation-escape-codes.html" %}
 {% include 3.7/documentation-escape-codes.md %}
 

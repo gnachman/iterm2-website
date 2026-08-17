@@ -47,7 +47,7 @@ Query parameters:
    first.
 
 If a hostname is present, iTerm2 offers to ssh to that host to run the command.
-For example, `iterm2:gnachman@example.com/command?c=date` runs `date` on
+For example, `iterm2://gnachman@example.com/command?c=date` runs `date` on
 `example.com` as user `gnachman`.
 
 When you open a command URL, iTerm2 presents a window describing what will be

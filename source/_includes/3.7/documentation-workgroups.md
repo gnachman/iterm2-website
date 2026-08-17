@@ -30,7 +30,7 @@ You can also enter and exit automatically using triggers (see [Automatic Entry w
 When a Workgroup has Peers, its toolbar shows a Peer switcher: a row of buttons, one per Peer. Click a Peer's button to switch to it, or use the keyboard:
 
 - `⌥⇧⌘1` through `⌥⇧⌘8` activate the first eight Peers (`⌥⇧⌘9` activates the last Peer when there are nine or more).
-- **Shell > Workgroups > Previous Peer** (`⌥⌘[`) and **Next Peer** (`⌥⌘]`) step through the Peers in order.
+- **Window > Select Split Pane > Previous Peer** (`⌥⌘[`) and **Next Peer** (`⌥⌘]`) step through the Peers in order.
 
 Each Peer can also define its own custom shortcut in place of the default.
 
@@ -38,7 +38,7 @@ Each Peer can also define its own custom shortcut in place of the default.
 
 A defining feature of Workgroups is that every session in one, the main session and its Peers, splits, and tabs alike, has its own toolbar, and that toolbar can hold tools specific to that session's purpose. In a Diff session, for example, the toolbar lets you set the git base and pick a file to diff. You build each session's toolbar from these items:
 
-#### Peer switcher
+#### Peer Mode Switcher
 The row of buttons, one per Peer, for switching between them. It only appears on Peer toolbars.
 
 #### Git status
@@ -50,8 +50,17 @@ A popup of the files that have changed. Picking one runs that session's per-file
 #### Git-base selector
 Chooses the git revision to diff against. It defaults to `HEAD`, and commands can read the chosen value as the `gitBase` variable.
 
-#### Navigation and reload
-Back, forward, and reload buttons for stepping through the changed-file list, plus a standalone reload button. Each has an optional keyboard shortcut.
+#### Navigation Buttons
+Back and forward buttons for stepping through the changed-file list. Each has an optional keyboard shortcut.
+
+#### Reload
+A standalone reload button, with an optional keyboard shortcut.
+
+#### Auto-Send Clippings When Idle
+A toggle offered on Code Review sessions (off by default). When on, the review session's Clippings are sent to the Workgroup's main session each time the review session goes idle.
+
+#### Auto-Request Review When Idle
+A toggle offered on the main session (off by default). When on, a review is automatically requested from the Workgroup's code-review session each time the main session goes idle. It requires the Workgroup to have exactly one code-review session.
 
 #### Spacer
 Flexible whitespace for arranging the other items.
@@ -109,7 +118,7 @@ iTerm2 shell-escapes file and git-base values before substitution, so names with
 
 Two triggers let a Workgroup come and go on its own:
 
-- **Enter Workgroup** enters a Workgroup you choose when its condition matches.
+- **Enter Workgroup…** enters a Workgroup you choose when its condition matches.
 - **Exit Workgroup** leaves the current Workgroup.
 
 In terminal profiles these can fire on matching output or on session events such as a job starting or ending. That is how the Claude Code integration auto-enters its Workgroup: an Enter Workgroup trigger fires when the `claude` job starts, and an Exit Workgroup trigger fires when it ends. Both triggers also work on browser profiles, where they fire on a URL that matches a regular expression. Re-entering a Workgroup you are already in does nothing, so the triggers are safe to fire repeatedly.

@@ -6,13 +6,13 @@ Toggle the Clippings panel with **View > Show Clippings** (`⇧⌘=`). It appear
 
 ## Adding, Sending, and Copying
 
-Click the **+** button to open the New Clipping dialog, give the Clipping a title and a body, and click **Add**. To remove one, select it and click **−** (or press Delete).
+Click the **+** button to open the New Clipping dialog, give the Clipping a **Title** and **Detail** (the body), and click **Add**. To remove one, select it and click **−** (or press Delete).
 
-Select one or more Clippings and use the panel's buttons to send them to the terminal or copy them to the clipboard. When a Clipping has a title, iTerm2 formats the title as a bold Markdown heading above the body. When you send or copy several at once, iTerm2 joins them with the **Clipping Separator**, an advanced setting that defaults to a line of two dashes. (You can change it in **Settings > Advanced**; search for "Clipping Separator.")
+Select one or more Clippings and use the panel's buttons to send them to the terminal or copy them to the clipboard. When a Clipping has a title, iTerm2 puts the title in bold Markdown above the body. When you send or copy several at once, iTerm2 joins them with a separator, an advanced setting that defaults to a line of two dashes. (You can change it in **Settings > Advanced**; search for "Separator inserted between multiple clippings.")
 
 ## History
 
-The archive button snapshots the current list and clears it, which gives you a fresh list while keeping the old one. The back and forward buttons walk through your archived snapshots, and a counter shows where you are in the history. From a script you can archive with the `it2 archive-clippings` command or the `iterm2.archive_clippings` API call, and add Clippings with `iterm2.add_clipping`.
+The archive button snapshots the current list and clears it, which gives you a fresh list while keeping the old one. The back and forward buttons walk through your archived snapshots, and a counter shows where you are in the history. From a script you can archive with the `it2 session archive-clippings` command or the `iterm2.archive_clippings` API call, and add Clippings with `iterm2.add_clipping`.
 
 ## Clippings in Workgroups
 

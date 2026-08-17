@@ -45,7 +45,7 @@ A row may also show a short detail line, such as the tool a permission request i
 
 A Workgroup defines how to build a set of related sessions from a single one. Entering the Claude Code Workgroup creates two Peers alongside your main Claude session:
 
-- **Coding Agent** is your main Claude conversation.
+- **Chat** is your main Claude conversation.
 - **Diff** shows a side-by-side view of your working-tree changes.
 - **Code Review** is a dedicated session for reviewing changes.
 
@@ -69,4 +69,4 @@ Claude Code occasionally rewrites `~/.claude/settings.json` and can drop the cc-
 
 Select **iTerm2 > Uninstall Claude Code Integration**. This removes the cc-status hook from `~/.claude/settings.json`, the Claude Code Workgroup from your settings, and the Enter/Exit Workgroup triggers from every profile.
 
-If the installer turned the Python API on for you, iTerm2 asks whether to leave it enabled, since other scripts or integrations may now depend on it. You can reinstall the integration any time from **iTerm2 > Install Claude Code Integration**.
+If the Python API is enabled, iTerm2 asks whether to leave it on, since other scripts or integrations may now depend on it. You can reinstall the integration any time from **iTerm2 > Install Claude Code Integration**.

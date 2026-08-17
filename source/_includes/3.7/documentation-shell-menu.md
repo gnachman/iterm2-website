@@ -53,6 +53,12 @@ Closes an SSH integration SSH connection.
 #### Shell > ssh > Download files
 Available when SSH Integration is in use. Opens a file picker showing files on currently connected remote hosts. Selecting one or more files downloads them.
 
+#### Shell > Workgroups > ...
+A <a href="documentation-workgroups.html">Workgroup</a> builds a set of related sessions from the current one. This submenu lists your configured Workgroups along with a command to leave the current one:
+
+  * **[Workgroup name]**: Enters that Workgroup, spawning its Peers, splits, and tabs from the current session.
+  * **Exit Workgroup**: Leaves the current Workgroup, closing the sessions it created and leaving the main session running.
+
 #### Shell > Print
 
 [I'm thinking printers!](https://theonion.com/new-apple-ceo-tim-cook-im-thinking-printers-1819572893/)

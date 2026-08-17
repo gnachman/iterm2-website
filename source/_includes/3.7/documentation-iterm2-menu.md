@@ -25,3 +25,12 @@ You must hold down Option for this entry to be visible. Makes Terminal.app the d
 #### iTerm2 > Install Shell Integration
 This opens a window that guides you through the installation of the <a href="/shell_integration.html">Shell Integration</a> features.
 
+#### iTerm2 > Install Claude Code Integration
+This opens a window that guides you through setting up the <a href="claude-code-integration.html">Claude Code Integration</a>. Once the integration is installed, this item is replaced by Reinstall and Uninstall entries.
+
+#### iTerm2 > Reinstall Claude Code Integration
+Reopens the Claude Code Integration setup window, for example if Claude Code has rewritten its settings and dropped the status hook. This item is visible only when the integration is installed.
+
+#### iTerm2 > Uninstall Claude Code Integration
+Removes the Claude Code Integration: the status hook it added to Claude Code's settings, the Claude Code Workgroup, and the Enter/Exit Workgroup triggers. This item is visible only when the integration is installed.
+
