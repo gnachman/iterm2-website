@@ -1,3 +1,414 @@
+2026-08-18: Fix blob-replay truncation live test's token
+budget
+
+The test lowered AITokenLimit to 8000 to force truncation,
+but a terminal-linked chat registers ~25 tool schemas
+costing ~5,500 tokens, which maxTokens subtracts from the
+budget alongside the conversation.  The system prompt plus
+one padded round then pushed even turn 1 over 8000, so every
+turn was rejected pre-send with requestTooLarge and no blob
+was ever stored (blobCount 0 != 6).
+
+Raise AITokenLimit to 16000 so the tool-schema floor plus a
+round fits, and raise AIResponseTokenLimit to 7000 so it
+clears that floor too: truncate() budgets maxTotalTokens -
+maxResponseTokens and counts only the conversation, not the
+tool schemas, so unless maxResponseTokens exceeds the tool
+floor the request is rejected before truncation can
+activate. With both raised, turn 1 fits, later rounds cross
+the truncate threshold, and the oldest round's blob is
+dropped from the final request as the test asserts.
+
+2026-08-18: Skip retired claude-opus-4-1 in the live AI
+harness
+
+Anthropic retired Opus 4.1 now that Opus 4.8 ships; every
+request for claude-opus-4-1 returns HTTP 404 for all keys,
+so each live test that iterates the Anthropic model list
+failed on that one entry. Add it to unreachableForNewKeys,
+the existing skip set that already carries retired Google
+models, so vendor sweeps pass.
+
+2026-08-18: Fix AI chat request bugs on the Responses API
+and harden tests
+
+Three related defects surfaced from real OpenAI chat
+sessions:
+
+1. Tool schema strict-mode: scroll_wheel and both
+register_watch
+   variants listed a property in `properties` but not in
+   `required`, which OpenAI's strict function schemas reject
+   with HTTP 400. The reflection generator (JSONSchema.for:)
+   had the same latent flaw for optional fields. Optionals
+   are now expressed as nullable-and-required by
+   construction on both the hand-authored and generated
+   paths.
+
+2. Response parsing crash:
+UnkeyedDecodingContainer.decode([Any]) had no
+   branch for JSON null, so a null inside an array never
+   advanced the container and recursed until the stack
+   overflowed. Now consumes null, descends nested arrays via
+   nestedUnkeyedContainer, and throws on an unrecognized
+   element instead of spinning.
+
+3. Dropped user turns: the volatile per-turn context (the
+orchestration
+   <workgroups> snapshot, the terminal/screen block) was
+   folded into the message list as a trailing user message,
+   then the Responses builder's previousResponseID suffix(1)
+   truncation kept that context and dropped the user's
+   actual newest message. Every turn after the first reached
+   the model as bare context and it replied as if nothing
+   was asked. The volatile context is now passed separately
+   and appended after truncation.
+
+Tests: - New hermetic guards: tool schemas validated at the
+serialized wire
+  layer (both device-paired states); the [Any] null-array
+  decoder; and the Responses previousResponseID +
+  volatile-context interaction.
+- Live harness: a per-vendor tool-schema acceptance sweep
+and a
+  per-vendor volatile-context multi-turn guard (OpenAI
+  exercises the previousResponseID delta path). AILiveDriver
+  now threads previousResponseID and extra tool
+  declarations.
+
+2026-08-18: Enable Open in Tabs for a single tmux window
+(issue 12994)
+
+The tmux Dashboard disabled the Open in Tabs button unless
+more than one hidden window was selected, while Open in
+Window required only one. The action path handles a
+single-element selection fine, so gate Open in Tabs on >0
+selected rows to match.
+
+2026-08-18: Companion: drop ITSAppUsesNonExemptEncryption to
+fix App Store upload
+
+With the flag set to true, App Store Connect's uploader
+expected a matching ITSEncryptionExportComplianceCode. None
+exists (the ASC export-compliance flow resolved to "no
+action needed" once France was excluded), so the upload
+failed with an export-compliance mismatch. Removing the key
+lets ASC's per-version compliance answers govern, which
+unblocks the upload.
+
+2026-08-18: Companion: use "app-store" export method for
+fastlane gym
+
+Xcode 15+ writes "app-store-connect" in ExportOptions.plist,
+but fastlane's gym only accepts the legacy "app-store"
+spelling (xcodebuild still honors it). This lets the
+fastlane release lane package the archive.
+
+2026-08-18: Companion: make target to build and upload via
+fastlane (no Xcode)
+
+Adds a fastlane "release" lane (gym archive using
+ExportOptions.plist, then upload_to_testflight, signing
+headlessly via the App Store Connect API key with
+-allowProvisioningUpdates) and a companion-bump-build-upload
+make target that bumps the build number, regenerates the
+project, then archives and uploads. Set ASC_KEY_ID,
+ASC_ISSUER_ID, and ASC_KEY_PATH in the environment first.
+
+2026-08-18: Companion: fastlane setup for App Store
+screenshots and metadata
+
+Bundler-pinned fastlane with screenshots and metadata lanes
+(App Store Connect API-key auth). Includes the en-US
+metadata (description, keywords, promotional text,
+support/marketing/privacy URLs, copyright) and the 12 App
+Store screenshots (iPhone 6.9-inch and iPad 13-inch), in
+hero-first order.
+
+2026-08-18: Companion: privacy manifests, encryption flag,
+build-number tooling for App Store
+
+- Add PrivacyInfo.xcprivacy to the app and PushService
+(UserDefaults CA92.1,
+  file timestamp C617.1; the app declares Device ID
+  collection for the APNs push token), wired into the
+  project generator.
+- Set ITSAppUsesNonExemptEncryption to true: the app uses
+standard, non-exempt
+  cryptography and a U.S. self-classification report was
+  filed.
+- Add bump_build_number.rb and a companion-bump-build make
+target that bump
+  CURRENT_PROJECT_VERSION for both the app and PushService
+  in the generator (the single source of truth), so a bump
+  survives project regeneration.  Build number set to 9.
+- Regenerated the project.
+
+2026-08-18: Companion: drop the resolution from the
+live-view LIVE badge
+
+The badge showed "LIVE 860x1326"; the pixel dimensions are
+developer clutter for users. Show a plain red-dot "LIVE" and
+remove the now-dead resolution state and its assignment.
+
+2026-08-18: Add a placeholder AI key that returns a canned
+response
+
+Setting the AI API key to "placeholder" makes
+AITermController short-circuit completions and return a
+fixed demonstration reply instead of contacting any provider
+(mirroring the Apple Intelligence no-wire path), and makes
+the AI connection test report success. This lets App Review
+exercise the AI chat, including through the iOS companion
+app, with no real key and no cost. Benign in production: it
+only triggers on the literal key "placeholder".
+
+2026-08-18: Fix Companion keyboard ^C sending a literal "c"
+
+The synthesized key event carried the unmodified letter in
+NSEvent.characters, so the injected ^C reached the mapper's
+post-Cocoa data path (which emits event.characters verbatim)
+and sent "c" instead of 0x03. This showed up under apps
+using the modern CSI-u mapper and in the standard mapper's
+regular path.  Put the real control byte in .characters,
+matching a hardware Ctrl+<key>, and add a post-Cocoa
+regression test that the old pre-Cocoa test helper masked.
+
+2026-08-18: Companion: let the phone opt into push
+notifications
+
+Previously the phone requested notification permission only
+when the Mac's alerts toggle was on
+(wantsNotificationPermission in the handshake), so a paired
+user had no phone-side way to enable notifications and
+canNotify stayed false with no signal.
+
+After a fresh pairing, iTerm2 Buddy now shows a soft prompt
+asking whether to receive notifications; Enable runs the
+existing permission flow (iOS prompt, register for remote
+notifications, report status to the Mac). Settings also
+gains a Notifications control, shown only while paired, that
+reflects the current authorization and can turn
+notifications on or route to iOS Settings when denied.
+
+2026-08-17: Don't auto-prompt for auth in Companion Device
+Settings
+
+The allowed-but-unpaired state used to start the pairing
+flow automatically, firing the Touch ID/password sheet on
+window open and right after unpairing. Show an explicit
+"Show QR Code" button instead and only authenticate after a
+deliberate click.
+
+2026-08-17: Make Cmd-W close the Companion Device Settings
+window
+
+The Close menu item is wired to iTerm2's custom
+closeCurrentSession: action rather than performClose:. The
+Companion Device Settings panel had nothing in its responder
+chain handling that selector, so the menu item was disabled
+and Cmd-W just beeped. Implement closeCurrentSession: and
+validateMenuItem: as the other non-terminal windows do.
+
+2026-08-17: Add an "Upgrade Now" button to the uv Python
+version-bump warning
+
+The startup warning that a legacy script's pinned Python
+version will be bumped for the uv runtime only cleared once
+the script was actually run, so a script you never launch
+re-nagged every launch. Add an Upgrade Now button that
+migrates the force-bumped scripts immediately.
+
+- iTermUvMigration: new iTermUvLegacyScript descriptor
+(relative name,
+  absolute path, requested version, dependencies) and
+  scriptsNeedingBump, which selects just the scripts whose
+  pinned version is unavailable.
+- iTermScriptsMenuController: the scan now yields full
+descriptors; the
+  warning offers Upgrade Now / Not Now and migrates the
+  bumped scripts one at a time behind a single progress
+  window, rolling back and reporting any that fail while
+  continuing the batch. Scripts with an unparseable
+  setup.cfg are skipped and reported rather than migrated
+  into a broken env.
+- Use a fresh warning identifier so a prior OK-only silence
+is not remapped
+  onto the new selection 0, and unsilence selection 0 before
+  showing so Upgrade Now can never persist as a standing
+  per-launch auto-migration; only a Not Now silence sticks.
+- iTermProvisioningProgressWindowController: update the
+message label in
+  place when already visible so a multi-script batch shows
+  each script's name instead of freezing on the first.
+
+New tests cover scriptsNeedingBump selection and sorting.
+
+2026-08-17: Fix sparkle pointer
+
+2026-08-17: Recognize localhost by any of the machine's
+names
+
+Dropping a file on a local terminal offered to upload it
+over scp when the machine answered to more than one name
+(for example .local versus a DHCP-assigned name), because
+localhost detection compared the reported host against a
+single gethostname() for exact equality.
+
+Enumerate the machine's actual names (Unix name, Bonjour
+LocalHostName and its .local form, and the DHCP FQDN) and
+match a reported host against them exactly. Freeze the
+verdict at report time, since a machine's names drift over
+time (mDNS can renumber the .local host), and remember names
+confirmed local so an earlier name stays recognized after
+the live names change. Matching is exact only, with no
+short-label or bare-"localhost" leniency, so a genuine
+remote reached over plain ssh that reports "localhost",
+"localhost.localdomain", or a name sharing only this
+machine's first DNS label is not misclassified as local.
+
+Apply the same detection to the file:// URL scp decision,
+the git-poller and status-bar isLocalhost fallbacks, and the
+legacy Unknown-locality fallback on VT100RemoteHost.
+
+2026-08-17: Add a runbook for bumping the macOS deployment
+target
+
+2026-08-17: Default the uv Python runtime to on
+unconditionally
+
+2026-08-16: Rebuild it2, cc-status, and password-manager
+adapters at macOS 13
+
+2026-08-16: Fix macOS 13 deprecations; raise local package
+targets to macOS 13
+
+2026-08-16: Bump deployment target to macOS 13, rebuild deps
+
+2026-08-16: Add 3.7.0beta10 release notes
+
+2026-08-16: Bump version
+
+2026-08-16: Bump version
+
+2026-08-16: Companion: make Settings reachable before
+pairing
+
+Settings was a screen pushed onto the Chats tab, so it only
+existed once connected - the worst time to need it, since
+you cannot email diagnostic logs before pairing. Make it a
+sheet presented at the app root (model.showSettings),
+reachable in every phase:
+
+- A gear button on the launch screen opens it (that screen
+has no nav
+  bar), so logs can be emailed before pairing.
+- The Chats gear now opens the same sheet.  - The Disconnect
+section is hidden when there is no pairing to drop; the
+  Diagnostics (Email Logs) and Voice sections always show.
+
+Drops the now-unused .settings navigation destination.
+
+2026-08-16: Companion: Liquid Glass redesign of the session
+composer and key bars
+
+Restyle the live-session input surfaces to iOS 26 Liquid
+Glass:
+
+- The terminal key bar and the composer's Close/mic/Send bar
+become
+  floating glass shapes (capsule / rounded rect) via SwiftUI
+  .glassEffect, replacing the full-width material panel; the
+  bottom-fill extension is rolled back accordingly. Send is
+  a prominent accent circle; the other controls are
+  monochrome on glass.
+- The composer pane is a translucent glass surface (SwiftUI
+glassEffect
+  behind the text view) with a "Type here" placeholder,
+  matching the system floating-panel look.
+- The composer opens and closes with a slide + fade: it
+emerges from
+  behind the keyboard and tucks back behind it, and a swipe
+  down on the pane dismisses it interactively
+  (finger-tracked, velocity to complete).
+
+The glass slides through SwiftUI's own .offset/.opacity (a
+UIKit layer transform blanks the glass effect), driven in
+lockstep with the UIKit text view's transform/alpha via
+matched ease-out curves.
+
+2026-08-16: Companion: keyboard refinements in the live
+session view
+
+Two fixes for interacting with a live session while the
+keyboard is up:
+
+- Grow the canvas bottom content inset by the keyboard's
+overlap so the
+  last lines (the shell prompt you're typing at) can scroll
+  up above the keyboard instead of staying trapped behind
+  it. Re-flows on every keyboard frame change.
+- Continue each accessory bar's chrome-material background
+from its
+  bottom edge down to the bottom of the window
+  (clipsToBounds = false), so the gap left by the keyboard's
+  rounded top corners is filled and the bar reads as a solid
+  panel during the app-switch transition (when the bar shows
+  but the keyboard does not).
+
+2026-08-16: Companion: on-device (Whisper) dictation mic in
+the session composer
+
+Add a Whisper mic button to the composer bar, alongside Send
+and Close, for dictating without the system keyboard
+(on-device, private, no cloud).
+
+The live-transcript-span logic (each pass replaces the last,
+leaving typed text intact) lives on the composer text view.
+The dictation lifecycle lives in the canvas coordinator,
+which owns a token in the shared DictationController, drives
+start/finish/cancel, streams the running transcript into the
+composer via an Observation re-arm loop, and presents the
+enable/download and error alerts. The accessory bar only
+renders the mic state (idle / recording with a level pulse /
+spinner while the model loads) and reports taps.
+
+Send finalizes any in-flight dictation so its tail is
+included; Close, keyboard dismissal, session end, and
+teardown all cancel it. Presenting the enable-dictation
+alert no longer closes the composer: it stays open behind
+the alert and the keyboard returns when the alert is
+dismissed.
+
+2026-08-16: Companion: local composer for session input,
+opened by button or dictation
+
+Add a Composer to the live session view: a local
+UITextView-backed editor above the keyboard for writing or
+editing input, then sending it to the session all at once
+(no per-keystroke round trip, and dictation gets reviewed
+before it runs).
+
+The session keyboard first responder becomes a hidden
+UITextView (not a bare UIKeyInput) so the system dictation
+key engages at all. That one view serves two modes:
+pass-through (invisible, forwards each keystroke to the
+session) and composer (visible, accumulates a local draft).
+
+Entry points: - The compose button in the keyboard accessory
+opens it instantly.  - Tapping the system mic opens it on
+the tap, via the
+  UIKeyboardDidBeginDictation notification, before the first
+  word is recognized; a textViewDidChange fallback opens it
+  once dictation delivers text if that notification ever
+  stops firing.
+
+Multi-character inserts in pass-through are treated as
+dictation's opening chunk (typed input is always a single
+grapheme), so nothing dictated leaks to the shell. Send
+types the draft with no trailing newline; Close keeps the
+draft.
+
 2026-08-15: Tab groups: collapsible groups with animated
 collapse/expand
 
