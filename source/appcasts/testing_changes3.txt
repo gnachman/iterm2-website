@@ -1,95 +1,60 @@
-Version 3.7.0beta10 was built on August 16, 2026.
+Version 3.7.0beta11 was built on August 19, 2026.
 
-This version requires macOS 13 (Ventura) or later.
-macOS 12 is no longer supported. Sorry for the
-inconvenience!
-
-New Features:
-- Tab groups. Select tabs and gather them into a
-  named, colored group marked by a chip on the
-  tab bar. Groups stay contiguous, can be
-  collapsed and expanded with an animation, and
-  can be dragged as a unit within a window or out
-  to a new or existing window. A right-click chip
-  menu and a Firefox-style "Add Tab to Group" tab
-  menu let you rename, recolor, close, or ungroup.
-  Works on horizontal and vertical tab bars.
-- Kitty terminal drag-and-drop (OSC 72). Programs
-  that speak the protocol can accept files dropped
-  onto the terminal window and can start a drag of
-  their own content out to other apps, including
-  across an SSH connection when using it2ssh.
-- The left/right (vertical) tab bar can now be
-  made scrollable: turn on the new setting and
-  tabs that don't fit stay in the bar and are
-  reached by scrolling instead of the "More tabs"
-  overflow menu. This also works on horizontal
-  tab bars.
-- The uv-based Python runtime is now on by
-  default. Newly created, imported, and migrated
-  API scripts get a faster, self-managing
-  interpreter instead of the bundled Python
-  runtime. You can still override this in Advanced
-  Settings, and already-provisioned scripts are
-  unaffected.
+Changes since 3.7.0beta10:
 
 Improvements:
-- A new per-profile "Use ANSI colors for marks"
-  setting (Profiles > Colors, off by default)
-  draws command-prompt mark indicators using the
-  color preset's ANSI blue, red, and yellow so
-  they harmonize with your theme.
-- The Advanced Paste indicator now has a keyboard
-  toggle so you can switch a running paste between
-  waiting for the shell prompt and sending
-  keystrokes straight through, which lets you
-  answer a password or other non-standard prompt
-  mid-paste. Issue 5749.
-- When a keystroke with a modifier matches no key
-  binding by character but does match one for the
-  same physical key (for example after switching
-  keyboard layout or when an input method changes
-  the character a key reports), iTerm2 now offers
-  to turn on "Interpret key bindings based on
-  physical key".
-- The confirmation for closing a workgroup session
-  now warns that the rest of the workgroup, its
-  peers and their tabs, will close too.
-- The ConEmu progress protocol's paused state
-  (OSC 9;4;4) is now honored even when the
-  percentage is omitted. Issue 723.
+- Scrollable tab bars are now on by default. Tabs
+  that don't fit stay in the bar and are reached
+  by scrolling instead of the "More tabs" overflow
+  menu. You can turn this off in Settings.
+- The built-in AI model list now includes Claude
+  Sonnet 5, GPT-5.6, and the Gemini 3.x flash
+  models, and the recommended defaults move to
+  GPT-5.6 for OpenAI and Gemini 3.7 Flash for
+  Gemini. Retired models (Opus 4.1, Gemini 2.0
+  flash) are removed.
+- Settings > General > AI has a new "Automatically
+  update available AI models" checkbox and an
+  Update Now button. The model catalog can refresh
+  itself from iterm2.com so new models appear
+  without updating iTerm2; these controls let you
+  turn the automatic check on or off and run a
+  check on demand.
+- The startup warning that a legacy script's
+  pinned Python version will be bumped for the uv
+  runtime now has an Upgrade Now button that
+  migrates the affected scripts immediately, so a
+  script you never launch no longer re-nags every
+  launch.
+- The tmux Dashboard's Open in Tabs button now
+  works with a single selected window, matching
+  Open in Window. Issue 12994.
+- Dropping a local file on the terminal no longer
+  offers to upload it over scp when your machine
+  answers to more than one name (for example a
+  .local name versus a DHCP-assigned name).
 
 Bug Fixes:
-- Restoring a session whose saved working
-  directory no longer exists (for example a
-  network drive that is not mounted at launch) no
-  longer fails to relaunch the shell and silently
-  closes the tab. Issue 12955.
-- Decomposed Hangul jamo are now recomposed into a
-  single cell instead of being split into separate
-  cells. Issue 3063.
-- The 16th parameter of an SGR trigger is no
-  longer dropped by an off-by-one in the parameter
-  store. Issue 722.
-- Toolbelt list tools (Command History, Recent
-  Directories, Captured Output) no longer draw
-  their rows at zero width when a window opens
-  with the toolbelt showing. Issue 12964.
-- On macOS Tahoe dark themes, selected left/right
-  tab chrome is drawn at the tab's real height
-  again instead of a fixed cap-image height, so a
-  custom tab bar height looks right. Issue 715.
-- The top-right session indicators no longer smear
-  while swiping between tabs.
-- Fixed a window leak from the frame
-  canonicalizer.
-- A workgroup no longer shows a blank pane when it
-  tears down while a non-main peer is on screen,
-  and a peer host's toolbar now refreshes after
-  its nested port is wired.
-- Fixed word-boundary punctuation typos in the
-  default settings. Issue 720.
-- Fixed two format-string bugs in logging calls.
-  Issue 712.
+- Fixed several AI chat request bugs on the
+  OpenAI Responses API: every turn after the
+  first could reach the model as bare context
+  with the user's newest message dropped; some
+  tool schemas were rejected with an HTTP 400
+  under strict mode; and a JSON null inside an
+  array could crash the response parser.
+- A selected tab in a scrollable tab bar no
+  longer paints over the tab bar's rounded
+  border.
+- On macOS Tahoe, the tab bar overflow menu no
+  longer drops the first hidden tab: with one
+  hidden tab the chevron opened an empty menu,
+  and with more the first was missing.
+- Cmd-W now closes the Companion Device Settings
+  window instead of beeping.
+- The Companion Device Settings window no longer
+  fires the Touch ID / password prompt on its
+  own when opened or after unpairing. It shows a
+  "Show QR Code" button and authenticates only
+  after you click it.
 - Fixed various crashes.
 
