@@ -1,3 +1,103 @@
+2026-08-19: Add a Settings toggle and Update Now button for
+AI model updates
+
+The AI model catalog can already refresh itself from
+iterm2.com, but the only controls were a one-time consent
+modal and a hidden advanced-setting URL. Add explicit UI in
+Settings > General > AI:
+
+- New synced preference kPreferenceKeyAIModelUpdatesEnabled
+(BOOL, default
+  off): the "Automatically update available AI models"
+  checkbox. Ticking it records network consent so it doesn't
+  also pop the consent modal; the automatic (periodic) check
+  is gated on this preference.
+- "Update Now" button: an on-demand check via
+AIModelCatalogUpdater.checkNow,
+  which bypasses the daily rate limit and the
+  enabled-preference (an explicit click is its own opt-in)
+  but still honors the one-time consent modal, and reports
+  the result (updated / up to date / failed / disabled / not
+  enabled / busy) in an alert. Works whether or not
+  automatic updates are enabled.
+- AIModelCatalogUpdater grew an AIModelCatalogUpdateOutcome
+enum; the download
+  pipeline now threads the outcome through to every terminal
+  path so the manual path can report it.
+
+Both controls grey out with the other AI settings when AI is
+off.
+
+2026-08-19: Update AI model catalog: add Sonnet 5, GPT-5.6,
+Gemini 3.x
+
+Catalog (OtherResources/ai-models.json, version 2 to 3): -
+Add claude-sonnet-5; gpt-5.6-sol/terra/luna;
+gemini-3.7-flash,
+  gemini-3.6-flash, gemini-3.5-flash-lite,
+  gemini-3.1-flash-lite.
+- Remove retired models: claude-opus-4-1, gemini-2.0-flash,
+  gemini-2.0-flash-lite, gemini-3-pro-preview.
+- Move the recommended (default) model to gpt-5.6-sol for
+OpenAI and
+  gemini-3.7-flash for Gemini.
+- Mark gpt-5.6-sol/terra and gemini-3.7-flash fixtureExempt:
+they block
+  the safety-refusal prompt at the API layer (OpenAI cyber
+  400, Gemini PROHIBITED_CONTENT), so no refusal fixture can
+  be captured.
+
+Live harness (AILiveHarness.swift): - Add the three blockers
+to refusalBlockedAtHTTP and accept an empty-body
+  or error-shaped API block as a valid refusal for that set.
+- Empty unreachableForNewKeys now that its members were
+removed from the
+  catalog.
+
+Tests: - Add test_chat_responses_lastResponseIDPerModel: a
+per-model live check
+  that OpenAI previous_response_id (delta mode) round-trips
+  and the server-held context recalls a prior secret.
+- Capture refusal fixtures for the new reachable models;
+remove orphaned
+  fixtures for the removed models.
+- Update AIModelCatalogTest expectations (count 42, first
+and OpenAI
+  recommended gpt-5.6-sol, Gemini recommended
+  gemini-3.7-flash).
+
+Publishing to iterm2.com via tools/copy_models.sh is a
+separate manual step that needs the RSA signing key.
+
+2026-08-19: Keep a selected scrolled tab from painting over
+the tab bar's rounded border
+
+2026-08-19: Fix Tahoe tab bar overflow menu dropping the
+first hidden tab
+
+The overflow chevron is a pull-down NSPopUpButton, which
+uses the menu item at index 0 as its (hidden) label instead
+of showing it in the popped menu. The code inserted a
+throwaway placeholder at index 0 to compensate, but commit
+30d27df18 wrapped that insert in an "if (@available(macOS
+26))" branch that skipped it on the false assumption that
+the Tahoe overflow button was not a pull-down. It still is,
+so on macOS 26 the first overflowed tab was swallowed as the
+button's label: with one hidden tab the chevron opened an
+empty menu, and with more only the first was missing.
+
+Gate the placeholder on the button's actual pullsDown state
+rather than the OS version, so it is restored on macOS 26
+and self-corrects if a non-pull-down button is ever used.
+
+2026-08-19: Turn on scrollable tab bars by default
+
+2026-08-19: Add Tab Groups page to the What's New in 3.7
+screen
+
+2026-08-19: Fix some extra and miscategorized release notes
+items
+
 2026-08-18: Fix blob-replay truncation live test's token
 budget
 
