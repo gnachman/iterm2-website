@@ -1,3 +1,84 @@
+2026-08-21: Fix AI chat permission button label not updating
+
+The .permissions client-local action carried the raw session
+guid, but the toggle write-path and button-label read-path
+both key permissions off the session reference (stableID).
+This keyspace split meant the label never reflected a
+changed permission and re-clicking appeared to do nothing.
+Publish the action with the reference so all three paths
+share one key.
+
+2026-08-20: Cache lastRemoteHost to avoid a full
+interval-tree walk per prompt
+
+-lastRemoteHost was an uncached reverse-enumerator scan of
+the whole interval tree, run on every OSC 133 prompt via
+addMarksForPathsInRange:.  On a local session (no
+VT100RemoteHost marks) it scanned every mark and found
+nothing on every prompt. Cache the result, including the nil
+("no host") case.
+
+Only adding or re-homing a VT100RemoteHost mark can change
+the answer, so the cache survives the prompt/screen-mark
+churn of a redrawing TUI. It is invalidated at every path
+that adds or moves a host mark: setRemoteHost: (add),
+moveNotesOnScreenFrom:/removeNotesOnScreenFrom: (alt-screen
+swap), addSavedIntervalTreeObjects:baseLine: (unfold and
+porthole restore), and arrangement restore. A removed cached
+mark is detected on the read path by its niled entry. The
+read-only snapshot recomputes each sync, so it stays correct
+without copying the cache across the doppelganger boundary.
+
+Adds RemoteHostCacheTests covering the add, alt-screen-swap,
+and fold/unfold invalidation paths; each fails if its
+invalidation hook is removed.
+
+Related to issue 12992.
+
+2026-08-20: Skip the lastCommandMark cache invalidation for
+unrelated mark removals
+
+willRemoveScreenMarksFromIntervalTree nilled the
+lastCommandMark cache for every removed mark. Since
+-lastCommandMark is consulted on every OSC 133 prompt (via
+assignCurrentCommandEndDate) and a redrawing TUI removes
+marks constantly, that turned each prompt into a full
+reverseLimitEnumerator walk of the interval tree.
+
+Only invalidate when the removed mark is actually the cached
+last-command mark; removing any other mark cannot change
+which command mark is last. Test against the raw cache (new
+-cachedLastCommandMark accessor) instead of -lastCommandMark
+so the check itself does not trigger the walk.
+
+This is one of several per-prompt tree walks; the runaway
+memory it fed is bounded separately by the per-token
+autoreleasepool (6b5a68f41). Related to issue 12992.
+
+2026-08-20: Bound token-execution memory with a per-token
+autoreleasepool
+
+Executing a token can create many autoreleased temporaries.
+OSC 133 handling, for example, looks up marks
+(lastRemoteHost, lastPromptMark, lastCommandMark) by walking
+the interval tree with reverseLimitEnumerator, which
+allocates an NSMutableArray per step. execute() drains a
+whole batch of queued token arrays in a single GCD block, so
+under a firehose (a TUI that clears and repaints every
+frame) one call processes tens of thousands of tokens before
+its autorelease pool is drained. Those temporaries pile up
+into multiple GB of live NSMutableArray and CFString.
+
+Scope an autoreleasepool to each token so the temporaries
+drain immediately instead of accumulating across the batch.
+
+Verified on a release-style build driving a full-screen
+repaint stream: the process grew to 7.2 GB in about 80
+seconds without this change and stayed flat near 400 MB with
+it, under the same workload.
+
+Fixes the runaway memory growth in issue 12992.
+
 2026-08-19: Add a Settings toggle and Update Now button for
 AI model updates
 
