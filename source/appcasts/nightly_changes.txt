@@ -1,3 +1,308 @@
+2026-08-24: Remember HTTP basic-auth credentials in the
+built-in browser
+
+Add HTTP basic-auth credential handling for the built-in
+browser: auto-fill from the browser password manager, an
+optional "Remember this password" prompt, and a
+password-manager picker to answer a challenge. Credentials
+are stored as ordinary browser password-manager entries
+(keychain/1Password/etc.), viewable and removable from the
+new Saved Passwords section in browser settings.
+
+Acceptance is read only from the user's own main-frame
+response, so a remembered credential is persisted only after
+a 2xx and a known-bad one is never silently re-supplied. The
+correlation logic lives in a pure, WebKit-free state machine
+(BrowserBasicAuthCoordinator) that is unit tested without
+WebKit; iTermBrowserBasicAuthManager is the WebKit/AppKit
+adapter that owns the store, prompts, and picker and feeds
+the machine navigation-lifecycle events.
+
+Also make
+PasswordManagerDataSourceProvider.requestAuthenticationIfNeeded
+report failure (instead of dropping the completion) when
+local authentication cannot be evaluated, so callers no
+longer hang.
+
+2026-08-24: Revert the entry tab's group membership when a
+workgroup exits
+
+Entering a workgroup groups the entry tab with the spawned
+tabs. On exit the spawned tabs close but nothing reverted
+the surviving entry tab's group, leaving either a stray
+one-member workgroup chip or, if the entry tab already
+belonged to a group, permanent loss of that membership.
+
+Snapshot the entry tab's group (id/name/color/collapsed)
+before grouping and restore it on teardown: rejoin the prior
+group, or clear the workgroup group so no one-member chip is
+left. Details:
+
+- Keyed on the tab, not the session, so the revert still
+happens when the
+  leader session terminates but its tab lives on via another
+  split; a tab that fully closed is skipped (weak reference
+  goes nil).
+- Deferred so it runs after the spawned tabs' deferred
+close, reverting on
+  a clean tab set.
+- Only kept when entry grouping actually changed the
+leader's group, so a
+  splits-only/peers-only workgroup (grouping no-ops) never
+  reverts and can't clobber user edits to a pre-existing
+  group.
+- Enter-only, like the title revert; adopt (relaunch
+restore) has no
+  genuine pre-workgroup state to capture.
+
+Also factor the shared group-join finalization (reconcile,
+updateTabColors, tabsDidReorder, expand-if-collapsed) into
+-finalizeTabGroupMembershipChangeForTab: used by
+addTabToExistingGroup:, the new-tab-in-group path, and the
+revert, and keep the snapshot's shape private behind
+-tabGroupSnapshot:describesCurrentGroupOfTab:.
+
+2026-08-24: New tabs created next to a grouped tab join that
+group
+
+A tab created immediately after a tab that belongs to a tab
+group now joins that group, so it stays with the set the
+user is working in.  Covers New Tab Next to Current Tab
+(Shell menu and the per-tab New Tab to the Right), and plain
+New Tab when it is configured to open next to the current
+tab. Adds a New Tab in Group command to the tab group menu.
+
+The target group is resolved up front and applied in the
+tab-creation completion, on the exact new session the
+launcher hands back, so there is no shared state to leak.
+Other insertion paths (restore, split-to-tab, scripting) do
+not pass a completion and are unaffected. The tmux path has
+no per-session completion here, so tmux tabs do not
+auto-group.
+
+2026-08-24: Duplicate Session: use one-shot cwd, not a
+sticky override
+
+Duplicate Session stamped a persistent Custom Directory /
+Working Directory override onto the new session. That
+divorced the session and the override was inherited by any
+split panes created from it. If the directory later became
+unavailable (for example, on an unmounted volume), splits
+would launch into it and the shell would fall back to /.
+
+Instead, start the duplicate in the source session's current
+directory as a one-shot using the existing forceUseOldCWD
+mechanism (the same one window-arrangement restore uses).
+The working directory is already saved in the arrangement; a
+transient launch option tells restoration to honor it
+exactly once, without writing a profile override that splits
+would inherit. SSH duplicates are unchanged.
+
+Issue 12981.
+
+2026-08-24: Log whether the previous shutdown was clean at
+launch
+
+Emit an RLog at applicationDidFinishLaunching reporting
++[iTermUserDefaults lastShutdownWasClean]. When the process
+is killed (e.g. SIGKILL from the logout/reboot watchdog)
+before markShutdownAsClean runs at the end of
+applicationShouldTerminate:, the terminate-time
+restorable-state save never completes and window restoration
+falls back to an older snapshot. Logging the clean/unclean
+verdict lets a post-reboot debug log distinguish a hard kill
+from a clean quit without depending on the prior session's
+in-memory log surviving. Helps diagnose issue 12957 (only
+one window restored after reboot).
+
+2026-08-24: Document tab group shortcuts in
+Shortcuts.numbers
+
+Adds the new Select Next/Previous Tab Group shortcuts
+(ctrl-shift-cmd-] and ctrl-shift-cmd-[) to the shortcuts
+reference.
+
+2026-08-24: Add Add-Tab-to-New-Group and
+Remove-Tab-from-Group menu items
+
+Adds Window > Tab > Add Tab to New Group and Remove Tab from
+Group. These act on the current tab and reuse the same logic
+as the tab bar's right-click menu: the core of
+addTabToNewGroup: and removeTabFromGroup: is factored into
+tab-taking helpers that both the context-menu actions and
+the new Window-menu actions call. Add Tab to New Group is
+enabled when there is a current tab; Remove Tab from Group
+is enabled only when the current tab belongs to a group,
+matching the context menu.
+
+2026-08-24: Add Select Next/Previous Tab Group menu items
+
+Adds Window > Tab > Select Tab > Select Next Tab Group
+(ctrl-shift-cmd-]) and Select Previous Tab Group
+(ctrl-shift-cmd-[). When the current tab belongs to a group
+these skip over the rest of that group; for an ungrouped tab
+they behave like Select Next/Previous Tab. Both wrap around
+and are always enabled, matching Select Next/Previous Tab.
+
+buildSessionSubmenu: previously wiped everything after the
+first separator in the Select Tab submenu when rebuilding
+the session list, which would delete the new static items
+now that a separator precedes them. It now keys off a
+separator identified as SelectTabSessionListSeparator
+(falling back to the last separator) so static items ahead
+of the session list survive rebuilds.
+
+2026-08-24: Fix clipped top/bottom lines of Tahoe tab group
+borders
+
+Commit 14c023a applied a scrollable-bar clip inset to the
+entire drawTabBar pass to keep a scrolled selected tab's
+pill off the bar's rounded ends. That clip also covered the
+group-run decorations, whose outline is intentionally outset
+2pt past the cells, so its top and bottom lines got clipped
+away.
+
+Scope the inset clip to the cell-drawing pass only and
+restore the full clip before drawing group-run decorations,
+matching pre-commit behavior for group borders while keeping
+the scrolled-pill protection.
+
+2026-08-24: Workgroups: group and name spawned tabs, revert
+entry tab on exit
+
+Improve how a multi-tab workgroup reads in the tab bar
+(issue 12967):
+
+- Group the entry tab plus every tab the workgroup spawns
+into one tab
+  group. If the entry tab already belonged to a group, it is
+  moved into the new one. No-op when the workgroup adds only
+  splits or peers.
+
+- Name each spawned split and tab, and the entry (root) tab,
+from the
+  displayName assigned in the workgroup config, so tabs are
+  recognizable instead of all showing the default shell
+  title. Peer children stay unnamed since their names
+  already appear in the peer switcher.
+
+- Force the session-name title component on for named
+members, so the
+  name is visible even when the profile's title is
+  configured to show only the job (otherwise KEY_NAME is set
+  but never rendered).
+
+- Apply naming through registerNonPeer, the shared
+registration point
+  for both fresh entry and restore, so restored workgroups
+  (and ones saved before naming existed) are named too.
+
+- Revert the entry tab's title when the workgroup exits: the
+entry
+  session is the user's pre-existing session and survives
+  teardown, so its pre-workgroup name and title components
+  are snapshotted at entry and restored on exit. Only fresh
+  entry captures the snapshot; restore after relaunch does
+  not, since the leader comes back with the workgroup name
+  already baked into its saved profile.
+
+Adds unit coverage for the grouping wiring and exposes
+enableSessionNameTitleComponentIfPossible for the workgroup
+caller.
+
+2026-08-24: AI: Test Connection now honors the manual
+model's Supports temperature toggle
+
+The manual AI model editor's Test Connection button built a
+probe model without copying the Supports temperature
+setting, so the temporary model defaulted to true and the
+test request always sent temperature. Endpoints that reject
+the parameter returned HTTP 400 even though the saved model
+worked in normal chat. Plumb the toggle through
+AIConnectionTester and set it on the probe model. Fixes
+#12974.
+
+2026-08-24: Fix cmd-click URL detection crossing into the
+next line
+
+When cmd-clicking a plain URL at the end of a line in a
+full-screen app (irssi, mutt), the link could extend onto
+the next line and open a URL with the following line's text
+appended (e.g. https://irssi.org became
+https://irssi.org13:06). Interactive apps detect URLs with
+hard newlines ignored, and the long-URL forward-walk added
+in #706 crossed the line boundary even when the line's
+content had already ended in cleared (null) cells,
+swallowing the next line's text.
+
+Make the forward-walk stop at a line whose content stopped
+short: trailing null cells now terminate the run unless the
+caller's character set explicitly includes U+0000, matching
+how the run already stops at trailing whitespace via the
+char membership test. This is independent of the
+EOL_HARD/EOL_SOFT flag, which a full-screen app does not set
+reliably, and preserves the long-URL walk (a URL that truly
+wraps fills its line completely, leaving no trailing nulls).
+
+Adds URLDetectionAcrossLinesTests exercising the real
+detection path (null-terminated hard line, null-terminated
+soft line, space-padded line) via a synchronous test seam on
+iTermURLActionFactory.
+
+Fixes issue 12970.
+
+2026-08-24: Remove obsolete macOS 10.x compatibility code
+(#734) 2026-08-24: Use Xcode-native placement for XIB String
+Catalogs
+
+#732 placed each XIB's .xcstrings inside a hand-made
+mul.lproj folder.  An .lproj directory designates a single
+language, but a String Catalog already holds every language
+internally, so mul.lproj is contradictory and does not match
+what Xcode produces when localizing a XIB (the XIB stays in
+Base.lproj and the .xcstrings sits as a plain sibling). Move
+all 55 catalogs to bare siblings and repoint their
+PBXFileReferences so they round-trip cleanly through Xcode's
+catalog editor and string extraction. No content change;
+English-only, builds clean.
+
+2026-08-24: Restore macOS 13.0 deployment target after #732
+
+The String Catalog PR (#732) regenerated project.pbxproj
+under a newer Xcode, which silently rewrote
+MACOSX_DEPLOYMENT_TARGET from 13.0 to 12.4/12.0 across 56
+build configurations. That breaks the build against the
+prebuilt SwiftyMarkdown.framework, whose minimum deployment
+target is macOS 13.0. Restore all affected configs to 13.0.
+
+2026-08-24: Add String Catalog infrastructure for XIBs
+(#732) 2026-08-24: Respond to the dark-mode DSR query CSI ?
+996 n, not 997
+
+The color-palette-update-notifications DSR is queried with
+CSI ? 996 n and answered with CSI ? 997 ; N n. The handler
+switched on 996 vs 997 incorrectly (it used the reply code
+997 as the request code), so an explicit query fell through
+to the default no-op and nothing was sent.  Programs that
+query before rendering (e.g. delta) got no reply. Switch the
+case to 996 to match the request code.
+
+2026-08-24: Settings search: reveal controls on nested inner
+sub-tabs
+
+revealControl: only understood one level of tab nesting, so
+searching for a control on an inner sub-tab (e.g. General >
+AI > Features) failed: containsDescendant: walks up the
+superview chain, which is nil for an unselected
+NSTabViewItem's view, so the inner sub-tab was never
+selected and the scrim highlighted a bogus frame.
+
+Make revealControl: recurse down the view tree, enumerating
+NSTabView.tabViewItems explicitly so it can descend into
+unselected tab items at any depth. It selects each tab item
+along the path to the control before the scrim computes its
+cutout frame.
+
 2026-08-22: Add palette-index color bindings
 (SetColors=name=i:N)
 
