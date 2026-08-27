@@ -108,10 +108,10 @@ The progress bar can be controlled using OSC 9 with a leading `4` parameter:
     <li>1: Set progress to `[pr]` percent (success state)</li>
     <li>2: Set error state, optionally with `[pr]` percent</li>
     <li>3: Set indeterminate state (animates horizontally)</li>
-    <li>4: Set warning state with `[pr]` percent</li>
+    <li>4: Set paused state (the ConEmu "paused" state), optionally with `[pr]` percent</li>
 </ul>
 
-`[pr]` is the progress value as a number from 0 to 100. It is required for states 1 and 4. For state 2, it is optional; when omitted, the progress indicator enters an indeterminate error state.
+`[pr]` is the progress value as a number from 0 to 100. It is required for state 1. For state 2 it is optional; when omitted, the progress indicator shows an error state without a specific percentage. For state 4 it is also optional; when omitted, the current percentage is kept and simply recolored.
 
 To stop the progress bar, you can also use the abbreviated form:
 
@@ -131,7 +131,7 @@ Examples in bash:
     # Show indeterminate error state
     echo -e "\033]9;4;2\a"
 
-    # Show warning state at 25%
+    # Show paused state at 25%
     echo -e "\033]9;4;4;25\a"
 
     # Clear the progress bar
@@ -141,6 +141,17 @@ Examples in bash:
 To change the session's profile on the fly:
 
     OSC 1337 SetProfile=[new profile name] ST
+
+#### Set profile property
+To change one or more of the current session's profile properties at runtime:
+
+    OSC 1337 ; SetProfileProperty=[Key]=[base64-JSON] [ ; [Key2]=[base64-JSON] ...] ST
+
+Each `[Key]` is a profile property key and each `[base64-JSON]` is a base64-encoded JSON value for that key. Multiple key-value pairs may be separated by semicolons.
+
+For example, to set the `Cursor Type` property to `2` (underline), base64-encode the JSON value `2` (which is `Mg==`) and send:
+
+    echo -e "\033]1337;SetProfileProperty=Cursor Type=Mg==\a"
 
 #### Copy to clipboard
 To place text in the pasteboard:
@@ -173,6 +184,16 @@ To reset the window title and tab color, use this code:
 For example:
 
     echo -e "\033]6;1;bg;*;default\a"
+
+#### Session Status
+
+To set the tab's dot indicator, subtitle text, and subtitle color:
+
+    OSC 21337 ; indicator=[#rrggbb] ; status=[text] ; status-color=[#rrggbb] ST
+
+`indicator` is the color of the tab's dot indicator, `status` is the subtitle text, and `status-color` is the color of that text. Colors are given as `#rrggbb`. Any field may be omitted, and sending a field with an empty value clears it.
+
+See <a href="documentation-session-status.html">Session Status</a> for more about this feature.
 
 #### Change the color palette
 
@@ -524,6 +545,37 @@ This will reset the cursor to its default appearance. This is an intentional dev
     CSI 4 : 3 m
 
 This turns on curly underlines.
+
+#### Dual-mode Colors (light/dark variants)
+
+iTerm2 extends SGR so that a program can specify different colors for the light
+and dark appearances. iTerm2 shows the appropriate variant for the current
+appearance, so scrollback written in one appearance stays readable after the
+appearance is toggled.
+
+For 24-bit color, give a light RGB triple followed by a dark RGB triple:
+
+    CSI 38 : 12 : Rl : Gl : Bl : Rd : Gd : Bd m
+
+For 256-color (indexed) color, give a light index followed by a dark index:
+
+    CSI 38 : 13 : Nl : Nd m
+
+Use `38` for the foreground color, `48` for the background color, and `58` for
+the underline color. For example, `CSI 48 : 12 : ... m` sets a dual-mode 24-bit
+background and `CSI 58 : 13 : Nl : Nd m` sets a dual-mode indexed underline color.
+
+#### Double-width and Double-height Lines
+
+iTerm2 supports the DEC line-size control sequences, which affect the line
+containing the cursor:
+
+<ul>
+        <li>`ESC # 3` (DECDHL): top half of a double-width, double-height line.</li>
+        <li>`ESC # 4` (DECDHL): bottom half of a double-width, double-height line.</li>
+        <li>`ESC # 5` (DECSWL): single-width, single-height line (the default).</li>
+        <li>`ESC # 6` (DECDWL): double-width, single-height line.</li>
+</ul>
 
 #### Extended Device Attributes
 

@@ -11,15 +11,18 @@ Every trigger has a *match type*, an action, and an optional parameter. The matc
 </ul>
 
 #### Regular Expression
-Regular expressions conform to the <a href="https://unicode-org.github.io/icu/userguide/strings/regexp.html">ICU regular expressions</a> rules. Text that is written to the screen including the BEL control code are sent to the regex matcher for evaluation. Only one line at a time is matched. By default, matching is performed when a newline or cursor-moving escape code is processed. If a line is very long, then only the *last* three wrapped lines are used (that is, the last three lines as seen on the display). This is done for performance reasons. You can change this limit in Advanced Settings &gt; Number of screen lines to match against trigger regular expressions.
+Regular expressions conform to the <a href="https://unicode-org.github.io/icu/userguide/strings/regexp.html">ICU regular expressions</a> rules. Text that is written to the screen including the BEL control code are sent to the regex matcher for evaluation. Only one line at a time is matched. By default, matching is performed when a newline or cursor-moving escape code is processed. If a line is very long, then only the *last* three wrapped lines are used (that is, the last three lines as seen on the display). This is done for performance reasons. You can change this limit in Advanced Settings &gt; Number of screen lines to match against trigger regular expressions. Null bytes in received text are treated as spaces for the purpose of trigger regex matching.
 
 #### Actions
 The following actions are available:
 <ul>
         <li>Annotate: Associates a note with a matching text.</li>
         <li>Bounce Dock Icon: Makes the dock icon bounce until the iTerm2 window becomes key.</li>
-        <li>Capture Output: Save the line to the Captured Output toolbelt tool. See <a href="documentation-captured-output.html">Captured Output</a>. The parameter is text to send (as though it had been typed) when you double-click on an entry in the Captured Output tool.</li>
+        <li>Buffer Input: Starts or stops buffering typed input. See the Buffer Input feature.</li>
+        <li>Capture Output: Save the line to the Captured Output toolbelt tool. See <a href="documentation-captured-output.html">Captured Output</a>. The parameter is a coprocess command to run when you double-click an entry in the Captured Output tool.</li>
         <li>Change Style: Modifies the style of matching text.
+        <li>Enter Workgroup: Turns the session into a <a href="documentation-workgroups.html">Workgroup</a>, a cluster of related sessions.</li>
+        <li>Exit Workgroup: Leaves the current <a href="documentation-workgroups.html">Workgroup</a>. A leader-only option makes only the main session leaving tear the workgroup down.</li>
         <li>Fold to Named Mark: Collapses all lines between the matching line and a preceding named mark with a given name.</li>
         <li>Highlight Line: The entire line containing text matching the regex in the trigger will change color. The parameter sets the color.</li>
         <li>Highlight Text: The text matching the regex in the trigger will change color. The parameter sets the color.</li>
@@ -38,6 +41,7 @@ The following actions are available:
         <li>Send Text: Sends user-defined text back to the terminal as though the user had typed it.</li>
         <li>Set Mark: Sets a mark. You can specify whether you'd like the display to stop scrolling after the trigger fires.</li>
         <li>Set Named Mark: Associates a name with the matching range. Various features help you navigate to named marks such as the Toolbelt tool and Open Quickly.</li>
+        <li>Set Tab Status: Sets the session's status (dot indicator, subtitle, and subtitle color) shown on its tab. Part of the Session Status feature.</li>
         <li>Set Title: Sets the session's title.</li>
         <li>Set User Variable: Assigns a value to a user-defined [variable](https://iterm2.com/documentation-variables.html).</li>
         <li>Show Alert: Shows an alert box with user-defined text.</li>
@@ -97,6 +101,11 @@ For event triggers, `\0` is not defined (there is no matched text), but `\1`, `\
 
 #### Instant
 When <i>Instant</i> is set, the trigger will fire once per line as soon as the match occurs, without waiting for a newline. This was added for the benefit of the <i>Open Password Manager</i> trigger, since password prompts usually are not followed by a newline. This may cause certain regular expressions (for example, ".*") to match less than they otherwise might. <i>Instant</i> applies only to regular-expression triggers.
+
+#### Job
+Every trigger has an optional <i>Job</i> field. When it is set, the trigger is active only while a foreground job of that name is running (the match is case-insensitive). Leave it empty to keep the trigger active at all times. This makes it possible to write triggers that apply only while a particular program is running, for example Claude Code.
+
+The Job field is distinct from the <i>Job Started</i> and <i>Job Ended</i> events: those events fire once when a job begins or ends, whereas the Job field gates whether a trigger is considered at all.
 
 <a name="events"></a>
 #### Event Triggers
@@ -213,6 +222,9 @@ The available events are:
                 </tr>
         </tbody>
 </table>
+
+#### Importing and Exporting Triggers
+You can move triggers between profiles or share them with other people. In the trigger editor, select one or more triggers and click the share button. It offers <i>Export to File</i>, which writes an <code>.it2triggers</code> file, and <i>Copy Trigger as URL to Clipboard</i>, which puts a link to the selected triggers on the clipboard. Use the <i>Import</i> button to load triggers from an <code>.it2triggers</code> file.
 
 #### Example
 The [iTerm2-zmodem](https://github.com/RobberPhex/iTerm2-zmodem) project demonstrates hooking up iTerm2 to zmodem upload and download.

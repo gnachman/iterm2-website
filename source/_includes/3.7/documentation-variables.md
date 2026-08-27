@@ -25,7 +25,8 @@ The following variables are defined in the context of a session:
 #### Terminal
   * `columns` - Session's width in columns
   * `commandLine` - Command line of the current foreground job (job name including arguments)
-  * `jobName` - The name of the current foreground job (e.g., "emacs")
+  * `jobName` - The name of the current foreground job (e.g., "emacs"). As of version 3.7, `jobName` (along with the session icon and Automatic Profile Switching) reflects the job actually attached to the terminal, hiding helper subprocesses that run in the foreground process group but are piped to their parent (for example, an MCP server spawned by `claude`, or `caffeinate`). The raw deepest foreground job is available as `deepestJob`.
+  * `deepestJob` - The name of the raw deepest foreground job. Unlike `jobName`, this does not hide helper subprocesses that run in the foreground process group but are piped to their parent.
   * `jobPid` - The process ID of the current foreground job in this session.
   * `mouseReportingMode` - A number indicating how mouse events are reported. -1: Not reported, 0: button clicks reported, 1: not currently implemented, 2: reports clicks and drags, 3: reports clicks, drags, and movement
   * `parentSession` - The session that was current when this sessionw as created. This is an alias to the context of that session so you can access its variables.
@@ -117,6 +118,7 @@ for details on setting them.
   * `iterm2` - A reference to the variables belonging to the application (i.e., the global context)
 
 #### Window Title
+  * `title` - The fully rendered window title, as it appears in the window's title bar. This is the window analogue of a session's `presentationName` and a tab's `title`.
   * `titleOverride` - The value from evaluating the interpreted string in `titleOverrideFormat`, if set.
   * `titleOverrideFormat` - The window's interpolated string title. If not set, the current tab's title is used.
   * `currentTab` - The context of the current tab.
@@ -131,6 +133,7 @@ for details on setting them.
 <hr/>
 <a name="global-context"></a>
 ### Global Context
+  * `appBundlePath` - The path to iTerm2.app.
   * `effectiveTheme` - A space-delimited list of words describing the OS theme (e.g., "dark",  "light highContrast", "dark minimal")
   * `localhostName` - The best guess of what localhost's hostname is
   * `pid` - The process ID of the iTerm2 app

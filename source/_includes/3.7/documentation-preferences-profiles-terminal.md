@@ -79,6 +79,12 @@ If selected, iTerm2 will post a notifications when sessions receive output, beco
 #### Filter Alerts
 This button opens a panel that lets you customize which notifications will be posted.
 
+#### Suppress alerts from active session
+Found in the *Filter Alerts* panel. When enabled, alerts are not posted for the session that currently has keyboard focus, so you're only notified about activity you aren't already watching.
+
+#### Send alerts to paired iPhone
+Found in the *Filter Alerts* panel. When enabled, this profile's alerts (such as *alert on next mark* and *Post Notification* triggers) are delivered to a paired companion iPhone. This is opt-in.
+
 #### Environment
 You have the following options:
 

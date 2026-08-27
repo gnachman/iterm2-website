@@ -11,8 +11,8 @@ Opens a window with a Python REPL to facilitate working with the Python API.
 #### Scripts > Manage > Manage Dependencies
 Opens a window that lets you adjust dependencies of Python API scripts. This is meant for people authoring a script who need to bring in a new PyPI dependency.
 
-#### Scripts > Manage > Check for Updated Runtime
-Checks to see if a new version of the Python API Runtime is available.
+#### Scripts > Manage > Install Python Runtime
+Downloads and installs the Python API Runtime used by Python API scripts. If a runtime is already installed, this checks for and installs any available update. Hold the Option key to change this item to **Install Already-Downloaded Python Runtime**, which installs a previously downloaded runtime without fetching it again.
 
 #### Scripts > Manage > Reveal Scripts in Finder
 Opens a Finder window in the Scripts folder.

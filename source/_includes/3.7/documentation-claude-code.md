@@ -29,7 +29,7 @@ Shows the toolbelt (on the right side of the window) and enables the Session Sta
 Adds the Claude Code Workgroup to your settings. See [The Claude Code Workgroup](#the-claude-code-workgroup) below. You can customize the layout afterward in **Settings > Arrangements > Workgroups**.
 
 #### Auto-Enter Workgroup
-Lets you pick the terminal profiles you run `claude` in. iTerm2 adds triggers to each one so it enters the Workgroup automatically when `claude` starts and exits when `claude` stops. This step is optional; you can always enter the Workgroup by hand from **Shell > Workgroups > Claude Code**.
+Lets you pick the terminal profiles you run `claude` in. iTerm2 adds triggers to each one so it enters the Workgroup automatically when `claude` starts and exits when the main session's `claude` stops. The Exit Workgroup trigger is installed leader-only, so killing or reloading `claude` in a Peer (such as the Diff or Code Review session) does not tear the Workgroup down. This step is optional; you can always enter the Workgroup by hand from **Shell > Workgroups > Claude Code**.
 
 ## Session Status
 
@@ -38,6 +38,8 @@ The [Session Status](documentation-menu-items.html#toolbelt-session-status) tool
 - **working** while Claude is running a prompt or a tool
 - **waiting** when Claude needs your input, for example to approve a permission request
 - **idle** when Claude has finished and is waiting for your next message
+
+With a recent version of Claude Code, a session stays **working** while background agents or background tasks it launched are still running, even when the main conversation is momentarily idle between them. This keeps watchers from firing during the lulls between subagent phases; the session only becomes **idle** once the background work is actually done.
 
 A row may also show a short detail line, such as the tool a permission request is for or a snippet of Claude's last message. The tool sorts sessions by priority, so the ones that need attention rise to the top. Click a row to jump to that session.
 
@@ -53,7 +55,7 @@ Switch between the Peers with one click using the Workgroup's toolbar, and custo
 
 ## Entering the Workgroup Automatically
 
-If you installed the Auto-Enter Workgroup triggers, iTerm2 enters the Workgroup for you whenever `claude` starts in one of the profiles you chose, and exits it when `claude` stops. The triggers filter on the `claude` job, so they don't fire for anything else.
+If you installed the Auto-Enter Workgroup triggers, iTerm2 enters the Workgroup for you whenever `claude` starts in one of the profiles you chose, and exits it when the main session's `claude` stops. The triggers filter on the `claude` job, so they don't fire for anything else. The Exit trigger is leader-only: only the main (leader) session's `claude` ending tears the Workgroup down, so ending or reloading `claude` in a Peer like the Diff or Code Review session leaves the rest of the Workgroup intact.
 
 To enter the Workgroup by hand at any time, use **Shell > Workgroups > Claude Code**. To leave it, use **Shell > Workgroups > Exit Workgroup**.
 

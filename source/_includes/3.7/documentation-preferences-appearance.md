@@ -23,7 +23,7 @@ mouse to the top left of the window to reveal the red, yellow, and green buts.
 The area around them, when revealed, can be used to drag the window.
 
 #### Tab Bar Location
-Defines whether tabs appear at the top, bottom, or left side of your windows.
+Defines whether tabs appear at the top, bottom, left, or right side of your windows.
 
 #### Status Bar Location
 Defines where the status bar appears, if enabled.
@@ -55,7 +55,7 @@ If enabled, entering fullscreen mode will automatically turn off transparency fo
 Turn this off for a sleek appearance with the dark theme.
 
 #### Show proxy icon in window title bar
-When enabled, an icon representing the current directory is added to the window's title bar. You can drag it.
+When enabled, an icon representing the current directory is added to the window's title bar. You can drag it. This also works in the Compact and Minimal themes, where the icon appears next to the window's stoplight buttons.
 
 <hr>
 ### Tabs
@@ -86,6 +86,9 @@ If selected the tab bar will be visible in fullscreen windows.
 
 #### Stretch tabs to fill bar
 If selected, tabs will grow large enough to fill the entire tab bar, like system native tab bars. This is on by default.
+
+#### Tab bar scrolls when tabs don't fit
+When there are more tabs than fit in the tab bar, this option keeps the extra tabs in the bar and lets you scroll to reach them instead of moving them into an overflow menu. It works for tab bars on the top, bottom, left, or right. This is on by default.
 
 #### Support basic HTML tags in tab titles
 When enabled the following HTML tags are supported in tab titles: `<b>`, `<i>`, `<u>`.

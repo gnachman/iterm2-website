@@ -37,5 +37,8 @@ Logging saves all input received in a session to a file on disk.
 #### Session > Log > Import/Export Recording
 Lets you save or view an instant replay recording.
 
+#### Session > Make Screenshot...
+Creates a screenshot of the current session, including any highlights and redactions.
+
 #### Session > Bury Session/Buried Sessions
 Buries or unburies a session. See <a href="documentation-buried-sessions.html">Buried Sessions</a> for details.

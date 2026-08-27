@@ -111,6 +111,7 @@ supported:
   * Array dereferences
   * Function calls
   * Paths to variables
+  * Operators (arithmetic, comparison, logical, and ternary)
 
 ### Interpolated Strings
 
@@ -157,6 +158,45 @@ This implies that function calls may be composed.
 Variables in the current context can be referred to by a path like `jobName`,
 but you can also specify multi-part paths that refer to variables in different
 contexts. See the section **Following Context References**, below.
+
+### Operators
+
+Expressions support a set of operators. This lets an interpolated string, such
+as a badge or a title, compute a value rather than just substitute one. The
+operators are listed below from lowest precedence (binds least tightly) to
+highest:
+
+  * Ternary conditional: `condition ? whenTrue : whenFalse`
+  * Logical OR: `||`
+  * Logical AND: `&&`
+  * Equality: `==` and `!=`
+  * Relational: `<`, `>`, `<=`, and `>=`
+  * Additive: `+` and `-`
+  * Multiplicative: `*` and `/`
+  * Unary: `!` (logical NOT) and `-` (negation)
+  * Parentheses: `( … )` to group a subexpression
+
+For example, a badge that shows the total number of cells in the session:
+
+```
+\(rows * columns) cells
+```
+
+Or a title that changes depending on a user-defined variable:
+
+```
+\(user.env == "prod" ? "PRODUCTION" : "dev")
+```
+
+### Bind to Expression
+
+In **Settings**, some controls can take their value from an expression instead
+of a fixed setting. Right-click a color well or a checkbox and choose **Bind to
+Expression** to enter an expression whose value comes from a user-defined
+variable or a registered function. For a color well, the expression should
+evaluate to a string like `#ff8844`. For a checkbox, it should evaluate to a
+boolean. Once a binding is set, right-clicking the control again lets you edit
+or remove it.
 
 <a name="interpolated-strings" />
 ## Interpolated Strings
@@ -216,8 +256,12 @@ Interpolated strings use the following escaping rules:
  * `\a` -> Bel
  * `\t` -> Tab
  * `\r` -> Carriage return
- * `\\` -> Backspace
+ * `\b` -> Backspace
+ * `\f` -> Form feed
  * `\e` -> Esc
+ * `\\` -> Backslash
+ * `\"` -> Double quote
+ * `\/` -> Forward slash
  * `\uxxxx` -> where x is a hex digit, gives the unicode codepoint
 
 ### Contexts

@@ -1,11 +1,20 @@
 #### iTerm2 > Show Tip of the Day
 When you start using iTerm2 it will offer to show you a daily tip describing a feature. You can show a tip immediately by selecting this item.
 
+#### iTerm2 > Companion Device Settings
+Opens the pairing window for the companion app (iTerm2 Buddy). See <a href="documentation-companion.html">Companion</a> for details.
+
+#### iTerm2 > Suppressed Alerts...
+Lists warnings that are being answered automatically because you chose to remember a response. From here you can un-suppress them so they will prompt you again.
+
 #### iTerm2 > Check for Updates
 Checks to see if a new version of iTerm2 is available. If Settings > General > Prompt for test-release updates is turned on then this includes beta versions; otherwise only stable versions are downloaded.
 
 #### iTerm2 > Toggle Debug Logging
 This saves helpful debugging information in memory. When it is toggled off it is saved to /tmp/debuglog.txt.
+
+#### iTerm2 > Save Retrospective Debug Logs
+Writes recently captured low-frequency diagnostic information to a file, even if debug logging was never turned on. This is useful for reporting issues you did not anticipate.
 
 #### iTerm2 > Copy Performance Stats
 This copies information about drawing speed to the pasteboard. This is useful when reporting issues relating to poor performance.

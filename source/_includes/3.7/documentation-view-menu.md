@@ -71,6 +71,15 @@ Indicate the time of last modification of each line on the screen.
 #### View > Show Annotations
 Toggles the visibility of annotations.
 
+#### View > Show Clippings
+Toggles a panel in the session's right margin that lists clippings, bits of text collected for the session and shared with its <a href="documentation-workgroups.html">Workgroup</a> peers, which can be sent to the terminal.
+
+#### View > Show Inline Chat
+Toggles an AI chat panel hosted in the session's right margin, letting you converse with AI without opening a separate chat window.
+
+#### View > Show Session Note
+Shows, creating it if necessary, the session's floating note (opt-cmd-G). This is a freeform scratchpad attached to the session, distinct from the Notes toolbelt tool.
+
 #### View > Show Composer
 Toggles the visibility of the Composer, a text area that you can edit using native macOS keystrokes. This is convenient for preparing complex inputs.
 

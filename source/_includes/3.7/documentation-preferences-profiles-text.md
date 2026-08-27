@@ -10,8 +10,14 @@ This option is available for the underline and vertical bar cursors. It improves
 #### Blink
 If checked, the cursor will blink slowly to improve visibility.
 
+#### Smooth blink
+When enabled, the cursor fades smoothly in and out instead of toggling abruptly on and off. Click *Configure* to tune the fade-in and fade-out durations, the easing, and how long the cursor dwells fully visible and fully hidden. This is distinct from the *Blink* checkbox and is off by default.
+
 #### Animate movement
-If enabled, cursor movement in interactive apps will use a stretching animation to make it easier to follow.
+If enabled, cursor movement in interactive apps will use a stretching animation to make it easier to follow. This applies to the box cursor.
+
+#### Smooth-typing animation
+Available for the underline and vertical bar cursors, this makes the cursor slide smoothly to its new position as you type. It is distinct from *Animate movement*, which stretches the box cursor.
 
 #### Hide when keyboard focus lost
 If enabled, the cursor will become invisible when the terminal does not have keyboard focus.
@@ -47,6 +53,9 @@ All non-ASCII text (many accented Latin letters, non-Latin text, less-common sym
 
 #### Ligatures
 When enabled and you have a font that supports ligatures (such as FiraCode) then text will be rendered with ligatures. This makes drawing much slower for two reasons: first, it disables the GPU renderer. Second, it uses a slower API. Users on less-than-stellar hardware may not want to enable it.
+
+#### Contextual Alternates
+For ligature-capable fonts, the font picker's options menu includes a *Contextual Alternates* (calt) toggle. Some fonts use contextual alternates to produce substitutions you may not want (for example, Monaspace renders `[]` as a checkbox). Turning this off for the profile disables those substitutions while leaving ordinary ligatures alone.
 
 #### Special Exceptions
 When the non-ASCII font is enabled you'll have the option to manage special exceptions. A special exception is a rule that maps a range of codes from another font into the terminal, possibly at a different range. This is useful if you work in multiple languages. For example, if you want to use a different font for Korean versus Chinese, you could create special exceptions for Korean characters to pull from a different font.

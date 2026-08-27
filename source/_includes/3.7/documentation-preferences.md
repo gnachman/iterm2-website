@@ -83,13 +83,27 @@ You must consent to AI features before they can be used. This is a secure user d
 #### API Key
 Because AI features depend on your provider's API, users must provide their own API keys. Unlike most settings (which are saved in user defaults), the AI key is stored in the keychain to prevent unauthorized access.
 
-#### Always use the recommended model from
-Enable this to automatically use the most current model from the selected provider. If disabled, click Configure AI Model Manually to tweak values yourself.
+#### AI Model
+Selects the model used for AI features. The menu lists the models iTerm2 knows about, including any you have configured manually.
+
+#### Manage AI Models…
+Opens the Manual AI Models panel where you can add, edit, duplicate, and delete models. You can mark one model as the default and another as the economy model (a cheaper model used for frequent background jobs, such as command safety checks). See *Manual AI Models* below for the per-model fields.
+
+#### Automatically update available AI models from live online database
+When enabled, iTerm2 periodically refreshes the list of available models from an online database so newly released models appear without waiting for a software update. This is on by default.
+
+#### Zero Data Retention
+Turn this on if your OpenAI organization has Zero Data Retention enabled. iTerm2 then stops sending `previous_response_id` and sets `store=false` so that no response state is retained on the server. Leave it off otherwise, since it disables some optimizations.
+
+#### Use AI to check safety of commands before running them
+When enabled, iTerm2 checks a command with AI before it is run automatically. Deterministic rules run first, and your configured AI model is consulted only when those rules are inconclusive. This is opt-in and off by default.
 
 #### Timeout
 The maximum time to wait for a response to an AI query.
 
-### AI > General > Configure AI Model Manually
+### AI > General > Manual AI Models
+
+Reached through the **Manage AI Models…** button. This panel lists your manually configured models and lets you add, edit, duplicate, or delete them. A starred model is the default and another may be marked as the economy model. Each model has the following fields, edited in the add/edit sheet:
 
 #### Model
 The name of the model to use. This value is sent in the API request.
@@ -97,7 +111,8 @@ The name of the model to use. This value is sent in the API request.
 #### Token Limit
 Gives the maximum number of tokens in the context and in a response. If this value is too high your requests may fail.
 
-#### The URL of the endpoint to send requests to.
+#### URL
+The URL of the endpoint to send requests to.
 
 #### API
 Which style API to use.
@@ -111,6 +126,12 @@ The following features are available. Not all APIs support all features.
  * Streaming Responses - Most APIs support this
  * Code Interpreter - OpenAI Responses API Only
  * File Upload and Vector Store -OpenAI Responses API only. Vector store is not currently used.
+
+#### Supports temperature
+Enable this if the model accepts a temperature parameter. Some models reject requests that include one.
+
+#### Configurable thinking
+Enable this if the model supports a configurable thinking (reasoning) effort.
 
 ### AI > General > Prompts
 
@@ -127,11 +148,11 @@ This exposes information about the linked terminal to AI, including the current 
 #### Run Commands
 This makes functions available to AI that let it execute commands on your behalf.
 
-#### Type for You
-This makes functions available to AI that let it send keystrokes to the terminal.
+#### Control Terminal
+This makes functions available to AI that let it send keystrokes to the terminal. It also lets AI restart a session.
 
-#### View History
-This exposes your command history in the linked session to AI
+#### View Contents
+This exposes the contents of the linked session to AI, including your command history. When it is set to provide contents automatically, a session-bound chat also includes the terminal's visible screen with each message you send.
 
 #### View Manpages
 This lets AI view manpages. If you are using ssh integration, man pages from the remote host may be viewed by it.
@@ -203,7 +224,7 @@ When enabled, dropping a file into a terminal will ensure that its name is alway
 If enabled, new windows will be opened where they least overlap existing windows.
 
 #### Remember the size and position of previously closed windows
-When enabled, new windows use the size and position of recently closed windows.
+When enabled, new windows use the size and position of recently closed windows. Window frames are now remembered per profile rather than globally, so a new window opens where the last window using its profile was.
 
 #### Adjust window when changing font size
 If enabled, a change to a session's font will cause the window to grow or shrink.
@@ -221,7 +242,7 @@ The OSC 0 and OSC 2 control sequences set the window title. This setting control
 ### Settings
 
 #### Load settings from a custom folder or URL:
-If enabled, iTerm2 will load its settings from the specified folder or URL. After setting this, you'll be prompted when you quit iTerm2 if you'd like to save changes to the folder.
+If enabled, iTerm2 will load its settings from the specified folder or URL. After setting this, you'll be prompted when you quit iTerm2 if you'd like to save changes to the folder. Besides settings, iTerm2 can also sync your snippets, global notes, and session icon customizations through the folder. The first time this happens you'll be asked to consent, and if the same data was changed on more than one machine you'll be asked how to resolve the conflict.
 
 #### Save changes to folder when iTerm2 quits
 When you've turned on *Load settings from a custom folder* and this is on then any changes you make to your settings will be written to the custom folder.
@@ -235,6 +256,9 @@ If you need to back up/restore all of your settings, such as when moving to a ne
  * The contents `~/.iterm2`, such as shell integration scripts.
  * The contents of `~/Library/Application Support/iTerm2` which has your toolbelt notes, dynamic profiles, and more.
  * Python API scripts
+
+#### Erase All Settings and Data…
+Offers to export your settings and data first, then erases everything: your preferences, profiles, saved sessions, scripts, and the contents of `~/.iterm2` and `~/Library/Application Support/iTerm2`. iTerm2 quits immediately afterward. Items stored in the macOS Keychain (such as the AI API key and Password Manager entries) are not erased.
 
 <hr>
 ### tmux
@@ -268,7 +292,7 @@ tmux has a "paste buffer" which acts like its clipboard. When this option is ena
 ### Experimental
 
 #### Enable support for right-to-left scripts
-When enabled, RTL scripts such as Arabic are drawn properly instead of as left-to-right text. Selection will behave a little weird.
+When enabled, right-to-left scripts such as Arabic and Persian are reordered for display (bidi reordering) and their letters are joined in cursive form, instead of being drawn as plain left-to-right text. This is on by default.
 
 #### Use SSH integration for ssh: URLs
 If enabled, use [SSH integration](https://gitlab.com/gnachman/iterm2/-/wikis/SSH-Integration) when opening an SSH URL.
@@ -297,7 +321,7 @@ mouse to the top left of the window to reveal the red, yellow, and green buts.
 The area around them, when revealed, can be used to drag the window.
 
 #### Tab Bar Location
-Defines whether tabs appear at the top, bottom, or left side of your windows.
+Defines whether tabs appear at the top, bottom, left, or right side of your windows.
 
 #### Status Bar Location
 Defines where the status bar appears, if enabled.
@@ -329,7 +353,7 @@ If enabled, entering fullscreen mode will automatically turn off transparency fo
 Turn this off for a sleek appearance with the dark theme.
 
 #### Show proxy icon in window title bar
-When enabled, an icon representing the current directory is added to the window's title bar. You can drag it.
+When enabled, an icon representing the current directory is added to the window's title bar. You can drag it. This also works in the Compact and Minimal themes, where the icon appears next to the window's stoplight buttons.
 
 <hr>
 ### Tabs
@@ -360,6 +384,9 @@ If selected the tab bar will be visible in fullscreen windows.
 
 #### Stretch tabs to fill bar
 If selected, tabs will grow large enough to fill the entire tab bar, like system native tab bars. This is on by default.
+
+#### Tab bar scrolls when tabs don't fit
+When there are more tabs than fit in the tab bar, this option keeps the extra tabs in the bar and lets you scroll to reach them instead of moving them into an overflow menu. It works for tab bars on the top, bottom, left, or right. This is on by default.
 
 #### Support basic HTML tags in tab titles
 When enabled the following HTML tags are supported in tab titles: `<b>`, `<i>`, `<u>`.

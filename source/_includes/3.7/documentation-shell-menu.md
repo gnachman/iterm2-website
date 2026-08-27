@@ -31,6 +31,16 @@ Terminates all sessions in the current tab.
 #### Shell > Undo Close
 Undoes closing a session, tab, or window if the time limit has not expired yet. You can set the limit under **Settings > Profiles > Session > Undo can revive a session that has been closed for up to X seconds**.
 
+#### Shell > Archives > ...
+Lets you save and restore session archives. See <a href="documentation-session-archives.html">Session Archives</a> for details.
+
+  * **Save Archive of Current Session...**: Writes an archive of the current session to a file.
+  * **Restore Archive...**: Opens an archive file, recreating the saved session.
+  * **[Recent archives]**: The most recently saved archives are listed for quick restoration.
+
+#### Shell > Toggle Buffer Input
+Starts or stops buffering typed input. While buffering, keystrokes are held rather than sent to the session; toggling it off sends the buffered input.
+
 #### Shell > Broadcast Input > ...
 These options allow you to send keyboard input to more than one session. Be careful.
 
@@ -52,6 +62,9 @@ Closes an SSH integration SSH connection.
 
 #### Shell > ssh > Download files
 Available when SSH Integration is in use. Opens a file picker showing files on currently connected remote hosts. Selecting one or more files downloads them.
+
+#### Shell > ssh > Remote host can control iTerm2
+A per-connection permission that lets the `it2` command-line tool running on the remote host drive your local iTerm2. A checkmark is shown while the permission is granted.
 
 #### Shell > Workgroups > ...
 A <a href="documentation-workgroups.html">Workgroup</a> builds a set of related sessions from the current one. This submenu lists your configured Workgroups along with a command to leave the current one:

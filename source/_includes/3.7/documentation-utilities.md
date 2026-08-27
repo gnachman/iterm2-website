@@ -32,6 +32,46 @@ Usage:
 imgls [filename...]
 </pre>
 
+#### it2
+
+`it2` is a command-line tool that lets you drive iTerm2 from the shell. It is installed automatically wherever Shell Integration loads, so it is on your `PATH` without any extra setup.
+
+With `it2` you can create windows, tabs, and split panes, send text to sessions, run commands, manage profiles, set a session's status, monitor iTerm2 for events, and more.
+
+<pre>
+Usage:
+it2 subcommand [options]
+</pre>
+
+The available subcommands are:
+
+<pre>
+alias          Execute an alias from the config file.
+app            Control the iTerm2 application.
+auth           Manage authentication with iTerm2.
+clear          Shortcut for 'it2 session clear'.
+config-path    Show the configuration file path.
+config-reload  Reload the configuration file.
+load           Load a custom profile from the config file.
+ls             Shortcut for 'it2 session list'.
+monitor        Monitor iTerm2 events.
+new            Shortcut for 'it2 window new'.
+newtab         Shortcut for 'it2 tab new'.
+profile        Manage iTerm2 profiles.
+run            Shortcut for 'it2 session run'.
+send           Shortcut for 'it2 session send'.
+session        Manage iTerm2 sessions.
+set-status     Shortcut for 'it2 session set-status'.
+split          Shortcut for 'it2 session split'.
+tab            Manage iTerm2 tabs.
+vsplit         Shortcut for 'it2 session split --vertical'.
+window         Manage iTerm2 windows.
+</pre>
+
+Run `it2 --help`, or `it2 help subcommand`, for details on any of these.
+
+`it2` also works over SSH Integration. When you run it on a host you reached through iTerm2's SSH integration, its requests are routed back to your local iTerm2 and run there. This is gated by a per-session permission: the first time a remote `it2` command tries to control iTerm2 you are asked to allow it. The **Shell > SSH > Remote host can control iTerm2** menu item toggles this permission and shows a checkmark while it is granted.
+
 #### it2attention
 
 Requests attention. Can bounce the dock icon or show a fireworks animation at the cursor position.
@@ -71,7 +111,14 @@ For this to work you must enable **Prefs > General > Applications in terminal ma
 
 #### it2dl
 
-The `it2dl` program downloads files. This is useful when you are ssh'ed to a remote host. The downloaded files are placed in your *Downloads* folder.
+The `it2dl` program downloads files. This is useful when you are ssh'ed to a remote host.
+
+<pre>
+Usage:
+it2dl filename
+</pre>
+
+In iTerm2 3.7 and later, a terminal-initiated download asks whether to save the file to your *Downloads* folder or to choose a destination with a save panel. This prompt is silenceable: you can make it always save to *Downloads* or always show a save panel.
 
 #### it2getvar
 
@@ -162,11 +209,6 @@ Usage:
      Saves the current version with an optional name.
   it2universion pop [name]
      If name is given, all versions up to and including the one with the matching name are popped.
-</pre>
-
-<pre>
-Usage:
-it2dl filename
 </pre>
 
 ### Location

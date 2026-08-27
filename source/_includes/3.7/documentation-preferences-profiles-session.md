@@ -48,3 +48,9 @@ If selected, the specified ASCII code "X" (a number from 0 to 255) will be trans
 
 #### Avoid repainting while cursor is hidden to reduce flicker while scrolling
 When selected, the screen will slightly delay redraws while the cursor is hidden. This improves the visual appearance of scrolling in many programs but might introduce noticeable delays for some users.
+
+#### Archive sessions on closure
+When enabled, an archive of the session is saved automatically when it closes. Use the accompanying directory picker to choose where the archives are written. See <a href="documentation-session-archives.html">Session Archives</a> for details on what is captured and how to open an archive later.
+
+#### Buffer input by default
+When enabled, text you type in a new session with this profile is stored rather than sent, until you turn buffering off with **Shell > Toggle Buffer Input** (or a *Buffer Input...* trigger configured to stop buffering).

@@ -25,8 +25,11 @@ When enabled, this color is used for bold text.
 #### Underline Color
 If enabled, this color will be used for all underlining, independent of the color that underlined characters have themselves.
 
+#### Use ANSI colors for mark indicators
+When enabled, the command-prompt mark indicators are drawn using the color preset's ANSI blue, red, and yellow instead of the built-in mark colors. This lets the indicators match the rest of your theme. Off by default.
+
 #### Faint text opacity
-Selects how prominent "faint" text is.
+Selects how prominent "faint" text is. The minimum value is 0.1; lower values are clamped to that floor.
 
 #### Minimum Contrast
 Sometimes text in a terminal can be hard to read because the background and text colors are too similar. Because ANSI colors are configurable, apps have a hard time avoiding this problem. To ensure legibility, you can increase the Minimum Contrast setting. It has the effect of shifting text colors that are similar to their background colors closer to black or white. As this setting is increased, more colors are affected and the effect is greater. At 100, all text will be pure black or pure white. Minimum contrast never modifies background colors.

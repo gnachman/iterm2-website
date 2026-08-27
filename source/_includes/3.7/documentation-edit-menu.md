@@ -112,15 +112,23 @@ Reveals the next/previous mark by scrolling and highlighting it in blue or red (
 #### Edit > Marks and Annotations > Add Annotation at Cursor
 Adds an annotation to the word beginning at the cursor. An annotation is a scratchpad for you to write notes about a chunk of text in your history.
 
+#### Edit > Marks and Annotations > Annotate Selection
+Adds an annotation to the current selection. This item has no keyboard shortcut by default, but you can assign one under **Settings > Keys**.
+
 #### Edit > Marks and Annotations > Next/Previous Annotations
 Reveals the next/previous annotation.
 
-Adds an annotation to the word beginning at the cursor. An annotation is a scratchpad for you to write notes about a chunk of text in your history.
 #### Edit > Marks and Annotations > Alerts > Alert on Next Mark
 When a mark is set (typically by <a href="documentation-shell-integration.html">Shell Integration</a> when the currently running shell command terminates) then show an alert. 
 
 #### Edit > Marks and Annotations > Alerts > Alert on Marks in Offscreen Sessions
 When disabled, **Alert on Next Mark** alerts even if the session is not currently visible. When enabled, only visible sessions (those that are in a non-hidden window in a selected tab) will alert.
+
+#### Edit > Fold Selected Lines
+Folds the selected lines, collapsing a block of output into a single foldable line. Click the fold to expand it again.
+
+#### Edit > Fold All
+Folds everything in the session, aside from folds at the very top of history.
 
 #### Edit > Clear Buffer
 Clears the entire terminal history and the mutable area.

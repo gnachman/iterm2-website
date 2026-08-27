@@ -176,6 +176,7 @@ Various properties which are readable and settable affect the session's colors:
   * foreground color
   * selected text color
   * selection color
+  * underline color
   * ANSI black color
   * ANSI red color
   * ANSI green color
@@ -198,6 +199,8 @@ An example:
     set foreground color to {65535, 0, 0, 0}
 
 Because AppleScript is kind of a dumpster fire, the standard syntax for a color is `{red, green, blue, alpha}` where each value is a number between 0 and 65535.
+
+There is also a boolean `use underline color` property that controls whether the `underline color` is applied, and a `color preset` property that you can set to the name of a color preset to apply it.
 
 <p class="script-entry">answerback string</p>
 

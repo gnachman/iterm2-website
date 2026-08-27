@@ -148,11 +148,26 @@ active-state: documentation
 {% include 3.7/subdoc.md title="Session Restoration" anchor="documentation-restoration.html" %}
 {% include 3.7/documentation-restoration.md %}
 
+{% include 3.7/subdoc.md title="Session Archives" anchor="documentation-session-archives.html" %}
+{% include 3.7/documentation-session-archives.md %}
+
+{% include 3.7/subdoc.md title="Session Notes" anchor="documentation-session-notes.html" %}
+{% include 3.7/documentation-session-notes.md %}
+
+{% include 3.7/subdoc.md title="Session Status" anchor="documentation-session-status.html" %}
+{% include 3.7/documentation-session-status.md %}
+
+{% include 3.7/subdoc.md title="Tab Groups" anchor="documentation-tab-groups.html" %}
+{% include 3.7/documentation-tab-groups.md %}
+
 {% include 3.7/subdoc.md title="Utilities" anchor="documentation-utilities.html" %}
 {% include 3.7/documentation-utilities.md %}
 
 {% include 3.7/subdoc.md title="Claude Code Integration" anchor="claude-code-integration.html" %}
 {% include 3.7/documentation-claude-code.md %}
+
+{% include 3.7/subdoc.md title="Companion App" anchor="documentation-companion.html" %}
+{% include 3.7/documentation-companion.md %}
 
 {% include 3.7/subdoc.md title="Workgroups" anchor="documentation-workgroups.html" %}
 {% include 3.7/documentation-workgroups.md %}
