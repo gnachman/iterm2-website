@@ -84,7 +84,7 @@ AI settings live in **Settings > General > AI**. The provider and model you choo
 
 You can define your own models in the manual model editor. It includes presets for common OpenAI-compatible providers (Ollama, OpenRouter, z.ai, Qwen, and MiniMax) that fill in the endpoint URL for you. You can also set custom HTTP headers, use the **Test Connection** button to check that a model works, and set the **Supports temperature** and **Configurable thinking** checkboxes to match the model's capabilities. AI chat can connect to models hosted on your LAN over plain HTTP, not only HTTPS.
 
-You can keep several manual models and mark one as the **economy** model (the leaf icon). iTerm2 uses the economy model for cheap, frequent background jobs such as command-safety checks and screen-idle detection, so those do not run up costs on your main model.
+You can keep several manual models and mark one as the **economy** model (the leaf icon). iTerm2 uses the economy model for cheap, frequent background jobs such as command-safety checks and screen-idle detection, so those do not run up costs on your main model. If you use on-device Apple Intelligence for command-safety checks, those run on Apple Intelligence instead.
 
 ## Zero Data Retention
 

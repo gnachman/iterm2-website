@@ -96,7 +96,7 @@ When enabled, iTerm2 periodically refreshes the list of available models from an
 Turn this on if your OpenAI organization has Zero Data Retention enabled. iTerm2 then stops sending `previous_response_id` and sets `store=false` so that no response state is retained on the server. Leave it off otherwise, since it disables some optimizations.
 
 #### Use AI to check safety of commands before running them
-When enabled, iTerm2 checks a command with AI before it is run automatically. Deterministic rules run first, and your configured AI model is consulted only when those rules are inconclusive. This is opt-in and off by default.
+When enabled, iTerm2 checks a command with AI before it is run automatically. Deterministic rules run first, and a low-cost model is consulted only when those rules are inconclusive: either the economy model or, if you use on-device Apple Intelligence for this, Apple Intelligence. This is opt-in and off by default.
 
 #### Timeout
 The maximum time to wait for a response to an AI query.

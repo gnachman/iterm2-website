@@ -61,7 +61,7 @@ The bell button at the bottom of the tool arms notify-on-status-change. With a r
 
 ## The Cockpit
 
-The Cockpit is a floating panel that shows session status across every window at once, not just the front one. Open it with **Window > Cockpit** (`⌥⌘C`). It floats above your terminal windows while iTerm2 is active and gets out of the way when you switch to another app.
+The Cockpit is a floating panel that shows session status across every window at once, not just the front one. Open it with **Window > Cockpit** (`⌥⇧⌘C`). It floats above your terminal windows while iTerm2 is active and gets out of the way when you switch to another app.
 
 The Cockpit organizes its list three ways, selectable from the toolbar:
 
