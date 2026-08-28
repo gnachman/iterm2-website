@@ -1,3 +1,636 @@
+2026-08-27: AI command suggestions: replace the line for
+natural-language prompts
+
+When the composer text reads as a plain-English request
+rather than the start of a command, accepting an AI
+suggestion now replaces the whole line with the generated
+command instead of appending it after the prompt.  Partial
+commands are still completed in place.
+
+The model is asked to label each suggestion as append or
+replace, but the label is advisory. The suggestion's
+relationship to the typed text is reconciled client-side, so
+classification is correct even when a provider omits or
+mislabels the mode (common with small and local models such
+as DeepSeek). A coincidental character overlap between the
+tail of an English word and the start of a command no longer
+misclassifies a replacement as a completion.
+
+Also fix {{FILE}} placeholder expansion to substitute the
+filename into the surrounding command rather than discarding
+the verb, so "rm {{FILE}}" expands to "rm error.log" rather
+than "error.log".
+
+Adds a new aiReplacement completion kind (defined here in
+AICompletion.swift).  The composer-side handling that
+references it landed earlier in fb1006acd; this commit
+supplies the enum case that commit relies on, so a clean
+master checkout builds again. Covered by
+ModernTests/AICompletionParseTests.
+
+Fixes issue 12969.
+
+2026-08-27: Cockpit: cross-session command composer and live
+status
+
+Turn the Cockpit into a keyboard-first console for directing
+many agent sessions at once.
+
+- Dock the real multi-cursor composer (profile ASCII font)
+along
+  the bottom; opening the Cockpit focuses it. The panel is
+  now an iTermFocusablePanel so it actually takes key focus
+  and typed keys land in the composer instead of the
+  terminal underneath.
+- @-mentions: type @ to pick a session, tab, or window from
+the
+  AI chat's picker (with live preview). Each pick is an
+  atomic chip target; a tab/window chip fans out to all its
+  panes. Only chips are targets, so all typed text
+  (including a literal @x that never became a chip) is sent
+  verbatim. With no chips the command goes to the selected
+  rows. Chips and the outline selection stay two-way in
+  sync.
+- The list and composer are resizable split-view panes so
+the
+  user can trade vertical space between them. The list is a
+  rounded, inset card (no source-list vibrancy).
+- Show each session's live status (its own status word and
+color,
+  plus the detail line) in every grouping, not just Status.
+  A dynamic filter bar narrows to any one status with live
+  counts.  Fix a diff bug where a same-text/different-color
+  status update did not repaint (snapshot statusColor in
+  TreeShape).
+- Composer: don't show the drag ("grab") cursor when docked
+and
+  non-draggable; keep @-mention chips through editing;
+  in-window status line replaces the screen-center toast.
+
+Send status confirmations appear in a line under the
+composer.
+
+2026-08-27: Show browser titles and follow page colors in
+the minimal theme
+
+Browser sessions now show a proper tab/window/pane title
+and, in the minimal theme, tint their tab and chrome to the
+loaded page's background color instead of the terminal
+profile color.
+
+Title: - Guarantee a session-name component for browser
+sessions in the
+  session_title function so the page title shows regardless
+  of the profile's configured title components.
+- For a page that finishes loading with no title, fall back
+to the host
+  and then the profile name; keep the current name during
+  load so the tab does not flicker to the bare host on every
+  navigation.
+- Fix restore: stop the arrangement variable-restore loop
+from writing
+  the reserved session id/termid, which decoupled session.id
+  from the session guid (the session map key) and blanked
+  restored titles.
+- Never let a blank built-in title clobber a good cached one
+for a
+  browser session, while still honoring deliberate empties
+  from script/API title providers.
+
+Background color (minimal theme only): - Feed the web view's
+underPageBackgroundColor (read once per load at
+  didFinish and resolved to sRGB) into the session's
+  effective background so the tab tint and light/dark
+  decision match the page.  The commit is rate limited and
+  skipped in non-minimal themes.
+- Route the three consumers through one
+minimalBrowserTintColor
+  accessor so they cannot drift.
+
+Settings: - Hide terminal-only Session Title components for
+browser profiles, but
+  keep an already-selected one visible so it can be
+  deselected.
+
+Adds iTermBrowserSessionTitle with unit tests for the title
+fallback and component-visibility logic.
+
+# Conflicts: #       iTerm2.xcodeproj/project.pbxproj
+
+2026-08-27: Match tab group rename/create dialog appearance
+to window in minimal theme
+
+In the minimal theme the effective light/dark mode is
+derived from the terminal background color rather than the
+system appearance. The tab group name prompt was using the
+default system appearance, so it could show in dark mode
+over a light window (or vice versa). Match it to the window
+the way the window-title alert already does.
+
+2026-08-27: Use the economy model for AI command safety
+checks
+
+The safety-check side-query (both the chat/Engage-AI path
+via RemoteCommand.isSafe and the orchestrator session_*
+gate, which share
+CommandSafetyChecker/AISafetyClassifierBackend) now prefers
+the cheaper same-vendor economy model when one is available,
+falling back to the configured chat model otherwise. A
+safety check is a frequent, low-stakes judgement where the
+full chat model is overkill.
+
+Grandfathered Apple Intelligence users are unaffected: when
+kPreferenceKeyAISafetyCheckUsesAppleIntelligence is set they
+keep the on-device path. New users default that pref to
+false and so get the economy model.
+
+Hoisted the economy-model resolver out of ScreenWatchPoller
+into a shared LLMMetadata.economyModel() so the poller and
+the safety backend resolve it identically (user-designated
+economy model first, else the configured model's catalog
+economy variant, preserving its url/api so a custom base URL
+is honored and the API key is not leaked to a public vendor
+host).
+
+2026-08-27: Fix crash tearing down a maximized pane (issue
+12992)
+
+While a tab is maximized, root_ holds exactly the one
+maximized SessionView and every other view is parked in
+idMap_. Several paths could change root_'s subview set
+without the unmaximize/maximize dance, leaving root_ with 0
+or more than one subview while isMaximized_ stayed YES. The
+corruption was latent and only aborted later when
+-unmaximize ran, which most often happens during teardown
+(for example a dropped tmux -CC connection from killall
+ssh), via assert([[root_ subviews] count] == 1).
+
+- removeSession: also unmaximizes when the removed view is
+the one
+  currently occupying the maximized root_ slot even if it is
+  not in idMap_, so the removal cannot empty root_ while
+  maximized.
+- replaceActiveSessionWithSyntheticSession: remaps idMap_ to
+the
+  synthetic view (mirroring showLiveSession:inPlaceOf:), so
+  a filter or instant-replay swap into a maximized root_
+  stays consistent with idMap_.
+- replaceWithContentsOfTab: unmaximizes both tabs before
+rewriting
+  root_.
+- replaceViewHierarchyWithParseTree: asserts it is not
+called while
+  maximized; its sole caller unmaximizes first.
+- unmaximize: uses ITAssertWithMessage for the coupled-state
+checks
+  and, if root_'s subview count is wrong, reports via
+  ITCriticalError (which writes a debug log and keeps
+  running) and rebuilds from idMap_/savedArrangement_
+  instead of aborting.
+
+2026-08-27: Remove orphaned kHelpMargin constant
+
+It was left unused when 26df78e4a removed the macOS 11
+compatibility code that referenced it, which broke the build
+under -Werror,-Wunused-const-variable.
+
+2026-08-26: Fix smooth-blink cursor fading through light
+gray in the Metal renderer
+
+The block, underline, and bar cursor renderers used the
+default straight-alpha blend, whose alpha channel is
+(srcAlpha=SourceAlpha, dstAlpha=OneMinusSourceAlpha).
+Filling the cursor cell at a partial fadeAlpha during a
+smooth blink dropped the render target's alpha to 1 - fade +
+fade^2 (minimum 0.75 at fade=0.5). That partial hole let the
+backing show through mid-fade, so a fading black box
+appeared to pass through light gray in light mode rather
+than fading straight to the background color. The legacy
+renderer, which fades the whole cursor as one group, did not
+have this problem.
+
+Switch these three solid-fill cursor renderers to
+compositeSourceOver (the shadow cursors already used it). It
+keeps the alpha at max(src, dst) = 1 while producing the
+identical RGB result, because applyFadeAlpha premultiplies
+the color for that blend mode, so the fill stays opaque
+throughout the fade. The change is a no-op for an opaque
+window with a full-opacity cursor.
+
+Issue 12990
+
+2026-08-26: Make the Current Directory status bar
+component's icon a draggable proxy icon
+
+No status bar component was a drag source, so there was no
+equivalent of dragging the working directory out of a window
+title bar's proxy icon into another app.
+
+Add an optional statusBarComponentProxyIconURL protocol
+method. When a component implements it, the container hosts
+iTermStatusBarProxyIconImageView in place of the plain icon
+image view: it keeps the monochrome template glyph for
+display (so it matches the other status bar icons) but
+becomes a drag source that vends the file URL, using the
+real Finder icon as the drag image. A plain click still
+opens the component's menu, and clickRecognized is guarded
+so the click cannot open the menu twice.
+
+The Current Directory component returns a URL only for a
+local directory that exists, so a remote or missing path
+stays non-draggable.
+
+2026-08-26: Show [undef: x] for undefined variables in
+Interpolated String status bar component
+
+References to undefined variables in interpolated strings
+are silently replaced with an empty string (the lax nil
+policy), so a typo in the Interpolated String status bar
+component is indistinguishable from a resolved-but-empty
+value, a lost width fight, or a text color problem.
+
+Add an "annotate undefined variables" parse mode that
+renders a bare reference to an undefined variable inline as
+"[undef: <path>]" instead, and route the Interpolated String
+component through it via a new iTermAnnotatingSwiftyString
+subclass. Other interpolated strings (window titles, badges,
+etc.) keep the lax empty-string behavior. Genuine errors
+such as bad syntax or unregistered function calls still
+surface as a ladybug, and intentional optionals written as
+\(x?) still render empty.
+
+2026-08-25: Inform Claude of the new deployment target
+
+2026-08-25: Remove obsolete macOS 11.x compatibility code
+(#737)
+
+The macOS deployment target is now 13.0. Remove obsolete
+macOS 11.x compatibility code and align subproject
+deployment targets to 13.0.  2026-08-25: Add floating panes
+design doc
+
+2026-08-25: Fix false unavailable-directory notice for tilde
+custom working directories
+
+The issue 12955 pre-launch availability check called
+fileExistsAtPath: on the raw PWD, which does not expand a
+leading tilde. A profile with a custom working directory
+like ~/www was therefore reported as unavailable and fell
+back to the home directory, even though PTYTask standardizes
+PWD (expanding the tilde) before launch so the directory
+exists. Standardize the path before the existence check so
+the check agrees with the actual chdir target. Issue 12997
+
+2026-08-25: Fix Tahoe tab divider colors in light and dark
+mode
+
+Light-mode dividers used displayP3 0.82 (209/255), which sat
+too close to the 229/255 tab bar background. Dark-mode
+dividers used ~0.29 (75/255), rendering as a light gray
+line. Set light dividers to 205/255 and dark dividers to
+38/255 for correct contrast against the tab bar.
+
+2026-08-25: Notify tmux when tab bar visibility changes
+without a window resize
+
+In full screen, hiding or showing the tab bar doesn't change
+the window frame, so -windowDidResize: never runs and tmux
+sessions keep their old size. Notify tmux after re-laying
+out, as -windowDidResize: does.
+
+2026-08-25: Fix ghost window that blocked Dock-reopen from
+opening a new window
+
+The SCP-download "fly into the Downloads menu" animation
+created a borderless NSWindow, faded its alpha to 0, and
+then released it without ordering it out. Since an on-screen
+NSWindow is retained by AppKit's window list, the release
+only balanced the alloc and the invisible window lingered in
+-[NSApp orderedWindows] forever. After the last terminal
+closed, that stray ordered window made AppKit believe iTerm2
+still had a visible window, so clicking the Dock icon never
+triggered -applicationOpenUntitledFile: and no new terminal
+window opened.
+
+Fade the animation window out, then -orderOut: it before
+releasing.
+
+Issue 12996.
+
+2026-08-25: Make AI timeout an idle timeout, not a
+total-time cap
+
+The AI timeout pref was applied to both
+timeoutIntervalForRequest and timeoutIntervalForResource.
+The latter is a hard cap on total request wall-clock time
+that URLSession never resets on incoming data, so a healthy
+but slow generation (a reasoning model still thinking, or a
+cold local model) was killed even while streaming. This
+produced spurious timeouts against local Ollama servers
+(issue #12995).
+
+Apply the pref only to timeoutIntervalForRequest, which is
+an idle timeout that resets every time bytes arrive. A
+slow-but-progressing request now runs to completion while a
+dead connection still fails.  Leave
+timeoutIntervalForResource at its default (7 days). Raise
+the default timeout to 20 minutes.
+
+2026-08-25: Companion: update forward-compat test for
+deleteMessages/messagesRemoved
+
+The message-deletion sync feature added .deleteMessages to
+CompanionClientMessage and .messagesRemoved to
+CompanionHostMessage (and their keys to knownPayloadKeys),
+but the exhaustive switches and representative arrays in
+CompanionEnvelopeForwardCompatTests were not updated, so the
+ModernTests target failed to build. Add the missing switch
+branches and representative values so the reps match
+knownPayloadKeys again.
+
+2026-08-25: Fix framework builds on case-sensitive
+filesystems (#730)
+
+Every framework sub-build passes
+CONFIGURATION_BUILD_DIR=$(SRCROOT)/Build/ $(CONFIGURATION)
+to xcodebuild, so products land in Build/Release (or
+Build/Debug), but the mv that collects them reads from
+lowercase build/Release. On the default case-insensitive
+APFS those are the same directory; on a case-sensitive
+volume the mv fails with 'No such file or directory'
+immediately after a successful build.
+
+Affected: the SwiftyMarkdown and Highlightr recipes in the
+top-level Makefile, and the all/dev targets in the
+BetterFontPicker, ColorPicker and SearchableComboListView
+Makefiles. Reference Build/ consistently; this is a no-op on
+case-insensitive filesystems.
+
+Verified by a clean 'make paranoid-deps' + 'make
+Development' run on Case-sensitive APFS, which previously
+failed at each of these steps in turn.  2026-08-25: Fix AI
+chat wedging when a pending approval is ignored
+
+When the AI asked permission to run a tool and the user
+ignored the request and sent a new message, the chat stopped
+responding. An approval-gated tool call parks the in-flight
+turn at the head of the per-chat queue, and finishTurn never
+runs for a parked turn, so a message enqueued behind it was
+never dispatched.
+
+ChatService now abandons a genuinely-unanswered approval and
+drains the queue in two complementary cases: when the user
+composes a new message while the head is parked
+(message-arrival trigger), and when a turn parks while a
+user message is already queued behind it (park-arrival
+trigger, via a new ChatAgent.onParkedOnUser hook). The new
+message is enqueued before the park is abandoned so a queued
+watcher event cannot jump ahead of the user's interjection.
+
+An approved command that is mid-execution is left to finish
+rather than be killed and orphaned, tracked via the client's
+.executingCommand signal; Stop resets that tracking so a
+hung command cannot silently disable the fix for the chat.
+The now-orphaned tool call is healed on the next turn by
+AIChatToolCallRepair.
+
+Covered by live queue tests in AILiveChatQueueTests.
+
+Fixes GitLab #12984.
+
+2026-08-25: Fix typo in rpcs.rst (#729) 2026-08-25: Keep
+occluded windows warm at 1 Hz instead of stopping entirely
+
+#728 bailed the Metal keep-warm timer entirely when a window
+was ordered out or fully occluded. But that timer exists
+(see the metalRedrawPeriod advanced setting) to avoid the
+latency spike when the GPU pipeline draws for the first time
+after inactivity, so disabling it let a hidden hotkey
+window's pipeline go cold and hitch visibly the moment it
+was revealed.
+
+Instead of stopping, throttle the keep-warm redraw to once
+per second (matching the 1 Hz background update cadence)
+while occluded. That keeps the pipeline warm and the content
+fresh for a small fraction of the visible cost, preserving
+the real savings from #728 (dropping the active cadence to
+background).
+
+2026-08-25: Stop hidden hotkey windows from redrawing at
+full cadence (#728)
+
+An orderOut'd hotkey window was invisible to the cadence
+controller, the occlusion path, and the Metal keep-warm
+timer, so a session with continuous output kept rendering at
+the full active cadence while hidden. Adds an isVisible
+check to the cadence predicate, observes occlusion-state
+changes to re-evaluate cadence on orderOut/orderFront (with
+a redraw on reveal), and bails the Metal keep-warm timer
+when the window is not visible.
+
+Squashed and merged from #728.
+
+2026-08-25: Add Cmd-F find within the AI chat conversation
+
+Pressing Cmd-F in an AI chat now opens a find bar to search
+the current conversation, with match counts, next/previous
+navigation, and in-place highlights. Supports smart-case,
+case-sensitive, and regex modes.
+
+Search runs against the rendered (markdown-stripped) text
+produced by the same MessageRendition the cells display, so
+match ranges map 1:1 onto the cells' text views for exact
+highlighting. A ChatFindController scans an in-memory
+per-message segment cache; rescans on conversation changes
+are targeted to the modified messages and coalesced per
+runloop turn to avoid re-rendering the whole conversation
+while a reply streams.
+
+Find actions are routed to the conversation from the focused
+message and input text views (which otherwise claim
+performFindPanelAction:) and from the window controller when
+nothing is focused, so the menu item is enabled regardless
+of focus. Clicking in the conversation anchors the find
+cursor so Find Next/Previous navigate relative to the click.
+The bar is styled to match the floating chat toolbar.
+
+2026-08-25: AI: per-model custom HTTP headers; support
+authenticated self-hosted endpoints. Issue 12975
+
+Custom HTTP headers for AI requests are now configured per
+manual model in the model editor instead of one global list,
+so each endpoint can send its own auth header. This is how
+an authenticated self-hosted or proxied OpenAI-compatible
+endpoint is supported (issue 12975): add its Authorization
+header on that model.
+
+- AIMetadata.Model gains customHeaders; LLMMetadata parses
+it per config and
+  the legacy single model inherits the former global pref.
+  AICustomHeaders.merged now takes the model's headers; all
+  request/vector-store/file builders pass
+  provider.model.customHeaders.
+- One-time migration copies the former global headers into
+each existing manual
+  model configuration lacking its own. Done-flag is set
+  after the write, treats an empty header list as
+  not-yet-migrated, and sanitizes entries. Legacy
+  single-model users are warned once that headers are now
+  per model.
+- Manual model editor: editable Header/Value table
+(view-based, vertically
+  centered cells) with add/remove and RFC 7230 validation at
+  save time; Save and Test commit the active cell edit
+  first. Test Connection now includes the model's custom
+  headers so an authenticated endpoint is not falsely
+  reported as failing.
+- The manual model editor and main AI screen show which
+stored API key (if any)
+  a model uses. Self-hosted (Llama) and Apple Intelligence
+  show "No API key is used" rather than naming a key you
+  cannot enter.
+- Self-hosted/private endpoints and Apple Intelligence keep
+the no-auth
+  placeholder registration (never send a stored vendor key
+  off to a local server); authenticated self-hosted
+  endpoints use custom headers instead.
+- Remove the orphaned "Advanced AI Settings" xib view and
+its now-dead code
+  (the old global-headers UI and single-model detail
+  controls), preserving the live default-model pref sync.
+
+2026-08-25: Memoize window title label rendering to cut idle
+CPU
+
+The window title is polled about once per second per visible
+session even while idle. Each poll rebuilt the fake window
+title label (two attributed string constructions plus an
+alignment layout pass) even when nothing had changed, so
+idle CPU grew linearly with the number of open windows
+(issue 12982).
+
+Add iTermWindowTitleLabelInputs, an immutable snapshot of
+every input that affects the rendered label: content (title,
+subtitle, icon), drawing attributes (text color, font, HTML
+parsing, effective appearance, and the PUA fonts resolved
+from the terminal font), and the alignment inputs (frame
+width, toolbelt width, tab bar insets, tab bar control on
+loan, and the macOS 26 minimal left-align setting).
+setWindowTitleLabelToString: builds a snapshot and skips the
+rebuild when it equals the last rendered one.
+
+Add PSMResolvedPUAFonts to fingerprint the PUA (Nerd Font /
+Powerline) fonts the provider resolves for the code points
+that actually render, decoding HTML the same way the
+renderer does so a terminal font change still invalidates
+the cache.
+
+2026-08-25: Fix backwards doc comment on -[PTYTab
+realParentWindow]
+
+The comment claimed the method returns nil when the parent
+is a proxy during instant replay, which is backwards:
+setFakeParentWindow: leaves realParentWindow_ pointing at
+the real window, and session:setLiveSession: reads it right
+after installing the fake parent. Reword to match the
+canonical PTYSession version: it returns the real window
+controller (not the instant-replay proxy), and is nil only
+because the weak ref is non-nil only while the parent is a
+PseudoTerminal.
+
+2026-08-25: AI chat: sync message deletion/edit to companion
+clients
+
+Message deletion (the new Delete and the pre-existing Edit,
+both of which truncate the conversation from a chosen
+message onward) went straight through
+ChatViewControllerModel -> ChatListModel.delete, mutating
+the store and the Mac UI directly but never touching the
+broker. So nothing was fanned out and a companion phone
+viewing the same chat never learned the log had changed.
+
+Route deletion through the broker instead, mirroring the
+new-message path: - Add ChatBroker.Update.messagesRemoved
+and ChatBroker.deleteMessages
+  (listModel.delete + fanOut), exposed via
+  ChatClient.deleteMessages.
+- The Mac's edit/delete now call the client; the fan-out
+echoes back to
+  every subscriber (this window, other windows on the chat,
+  the chat-list snippet, and the companion bridge), so the
+  local UI updates via the same subscription that delivery
+  uses. ChatViewControllerModel gains messageIDs(fromIndex:)
+  and removeMessages(withIDs:) for this.
+- The companion bridge forwards messagesRemoved to a phone
+at the new
+  messageDeletionRevision (protocol bumped to 12, additive;
+  older phones reconcile on reconnect via the messagesSince
+  seq reset), and accepts a new deleteMessages client
+  message so the phone can delete too.
+- The phone applies messagesRemoved to its transcript and
+offers
+  Delete From Here on its own messages when the Mac supports
+  it.
+
+Addresses issue 12986.
+
+2026-08-25: AI chat: add Delete to message context menus
+
+Right-clicking your own message now offers Delete, which
+truncates the conversation from that message onward (the
+same primitive Edit already uses). When the message text is
+selectable the text view is the right-click hit target, so
+the cell's Edit/Copy/Fork menu was replaced by NSTextView's
+default menu; graft Edit, Fork, and Delete onto that menu
+too so the message actions stay reachable.
+
+Addresses issue 12986.
+
+2026-08-25: Fix PromptState.FINISHED enum value in Python
+API (2 not 3)
+
+The handwritten PromptState enum in prompt.py defined
+FINISHED = 3, but the protobuf wire enum defines FINISHED =
+2, which is what the server always sends. As a result
+PromptState(2) raised ValueError for every FINISHED prompt.
+Change FINISHED to 2 to match the wire value. Value 3 was
+never emitted by any iTerm2 version, so no correct client
+could have depended on it.
+
+Bump the iterm2 module version to 2.22.
+
+Fixes #12987
+
+2026-08-25: Keep a subparameter whose parameter was stored
+(#724)
+
+Follow-up to #722 and fd151a4. The overflow flag was set
+from the parameter count at the semicolon, but a semicolon
+does not always open a parameter: a parameter substring that
+starts with a colon takes no slot of its own, and its
+subparameters belong to the parameter before it. So after a
+full list, CSI 1;...;16;:5 m discarded a subparameter that
+belonged to the 16th parameter, which had been stored
+perfectly well.
+
+Track whether the most recently opened parameter was stored
+instead of whether the list is full. Subparameters are kept
+exactly when the parameter they belong to was stored, which
+is the rule the two earlier patches were each approximating:
+
+  ;;:5   after 15 parameters  the blank 16th is stored, so
+  keep ;:5    after 16 parameters  belongs to the stored
+  16th, so keep ;17:5  after 16 parameters  the 17th was
+  discarded, so discard ;17;:5 after 16 parameters  belongs
+  to the discarded 17th, so discard
+
+I checked this against a model of the documented behavior
+written separately from the parser, over 512 generated
+parameter lists around the limit: master disagrees with it
+on 18, this agrees on 0. The only inputs whose parse changes
+are the 18 in that family.
+
+Co-authored-by: George Nachman <gnachman@gmail.com>
 2026-08-24: Remember HTTP basic-auth credentials in the
 built-in browser
 
