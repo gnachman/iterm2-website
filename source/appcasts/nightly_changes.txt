@@ -1,3 +1,234 @@
+2026-08-28: Alt-screen bidi migration: run after
+custom-folder prefs are copied down
+
+Move the AlternateScreenBidi to DisableBidiInAlternateScreen
+migration out of +[iTermAdvancedSettingsModel initialize],
+which fires before custom-folder (Dropbox) prefs are copied
+into local defaults, and into performMigrations, which runs
+after. Otherwise a copied-down opt-out was silently reverted
+on upgrade with no way to recover.
+
+2026-08-28: Paste: strip additional zero-width bidi and
+format characters
+
+Add the LRE/RLE/PDF/LRO/RLO range, the isolate controls, and
+ALM to the zero-width format character set removed when
+stripping on paste.
+
+2026-08-28: Bidi Companion: report selection in logical
+coordinates
+
+Source the Companion selection range from
+logicalSubSelections and clamp the visual column span to the
+line width so end-of-line padding does not inflate it.
+
+2026-08-28: Bidi: route selection consumers through logical
+coordinates
+
+Update accessibility (coord-for-point, frame-for-range,
+set-selected-range, IME and VoiceOver read paths),
+find-on-page shift-extend, the context menu and gesture
+smart-select entries, the Python get_selection API, and drag
+endpoint handling to convert visual input to logical
+coordinates once at the boundary and read committed
+selection from logicalSubSelections. Keep internal
+pixel-geometry consumers on the raw live range.
+
+2026-08-28: Bidi copy mode: select in logical order
+regardless of visual direction
+
+Anchor and extend copy-mode selection using logical
+coordinates so character and line selection behave the same
+on RTL and mixed-direction lines as on LTR.
+
+2026-08-28: Bidi selection: commit and expose selection in
+logical coordinates
+
+Commit subselections in logical coordinates while the live
+character range may stay visual during a bidi drag.
+Decompose the live visual range into logical runs for
+external consumers, extend past trailing nulls only on
+right-justified RTL endpoints, clamp visual spans to the
+column window, and normalize upward and empty ranges.
+setSelectedLogicalRange now sets the selection mode, fires
+liveSelectionDidEnd, and posts selectionDidChange for parity
+with mouse-up.
+
+2026-08-28: Bidi rendering: consolidate coordinate
+converters and fix CoreText/DWC glyph alignment
+
+Add shared visual<->logical column converters on
+iTermBidiDisplayInfo so selection, accessibility, and
+Companion all use one implementation. Fix the CoreText
+permutation tie-break to place the base cell first, and fix
+a stale predecessor lookup when a DWC right-half precedes a
+combining mark.
+
+2026-08-28: Bidi: release notes for RTL rendering,
+selection, and paste
+
+2026-08-28: Consolidate alternate-screen bidi into one
+opt-out setting
+
+Replaces the two overlapping settings (alternateScreenBidi
+and a later duplicate) with a single
+disableBidiInAlternateScreen, defaulting to NO so
+right-to-left text is reordered in the alternate screen by
+default.  That default comes from issue 12131: a Persian
+user needed reordering inside vim (which hands bidi to the
+terminal with 'set termbidi'), and macOS Terminal reorders
+there too. A code comment lays out the tradeoff (editors and
+pagers that emit logical order benefit; full-screen apps
+that pre-order their own text can turn it off).
+
+2026-08-28: Paste: option to strip zero-width bidi/format
+characters
+
+Adds an off-by-default setting (double-gated on
+right-to-left support) to remove zero-width format
+characters like the Persian half-space (U+200C), ZWJ, LRM,
+and RLM from pasted text. They are invisible but macOS
+classifies them as control characters, so line editors
+render them as a visible <200c> at the prompt. Off by
+default because the characters are meaningful and enabling
+it changes the pasted text.
+
+2026-08-28: Bidi mouse selection: work in logical
+coordinates, drag visually
+
+The whole selection model (character drags, word/line/smart
+ranges, the highlight, and copy) now operates in logical
+coordinates. Mouse clicks are converted from the visual
+column the mouse points at to the logical cell before
+anything else, so double-click and Look Up land on the right
+word on right-to-left lines, and the highlight tests logical
+indexes so it no longer lights the mirror-image cells.
+
+Character selection is visual: the live range stores the
+columns the drag actually covers (a logical range would be
+discontiguous over embedded English or digits, so part of
+12345 could not be selected), and it is decomposed into
+logical subselections when the drag ends so copy stays in
+reading order. The per-line share of a multi-line selection
+follows each line's reading direction, so extending upward
+from a right-justified line keeps the anchor line's words. A
+single visual sweep across logically separated pieces copies
+them concatenated in reading order.
+
+Also: pressing on a selection without Cmd, when Cmd is
+required to drag text, now starts a new selection instead of
+doing nothing (a dead end on right-to-left lines, where a
+repeat drag starts on the previous selection). Fixes an
+append-drag highlight bug where the visual live range was
+folded into the multi-subselection slow path as if its
+columns were logical.
+
+2026-08-28: Keep Arabic joining across a selection or SGR
+color split
+
+Text was shaped in fragments split at every foreground or
+background change, so a selection boundary or a mid-word SGR
+color turned cursive words like  into isolated letter forms.
+Runs that differ only in color are now shaped as one string
+with per-range colors: the segmenter does not break on a
+color-only change, the builder spreads the per-cell index
+attributes across the merged string, and the CoreGraphics
+drawer fills per color span. On the Metal renderer the whole
+bidi row is shaped in one call instead of one per background
+run (glyph tinting stays per-cell from the attributes
+buffer, so only shaping is affected).
+
+2026-08-28: Mirror brackets and reorder RTL text via
+CoreText resolution
+
+Computes, per source cell, whether its glyph must be drawn
+bidi-mirrored (UBA rule L4: a mirrorable character CoreText
+resolved into a right-to-left run) and draws the mirrored
+counterpart on both the CoreGraphics and Metal glyph paths.
+Because the decision comes from CoreText's own resolution, a
+bracket around an embedded left-to-right run (Persian
+(English)) is correctly left un-mirrored, and the manually
+mirrored glyph is forced left-to-right so CoreText does not
+mirror it a second time.
+
+The same reorder-table pass also: - ignores a combining
+mark's glyph position so it cannot set its cell's
+  visual position (fixes misplaced letters in words like
+  and that combine a lam-alef ligature with a diacritic);
+- treats empty cells (code 0) as spaces so BN holes in TUI
+output do not
+  perturb the reorder;
+- lays the line out with, and right-justifies by, its
+paragraph
+  direction, detected by first strong character per UBA
+  P2/P3 (walking scalars so supplementary-plane RTL scripts
+  are not missed).
+
+Also fixes a bidiLUT[i - i] typo that always read cell 0.
+
+2026-08-28: Align embedded LTR islands glyph-by-glyph in RTL
+lines
+
+Anchor each glyph to its own display column's base glyph
+rather than to the previous glyph's trailing edge. That is
+what lets a run whose display order runs opposite to its
+glyph order lay out correctly, as with a left-to-right list
+marker ("8)", "10)") embedded in a right-to-left line: its
+columns are placed right-to-left, so the glyphs must be
+un-piled column by column while combining marks still land
+on their base.
+
+2026-08-28: Keep the reorder map on wrapped RTL lines in
+scrollback
+
+_wrappedLineWithWrapWidth already sliced this display row's
+bidi info (padded to width); subInfoInRange re-applied the
+same offset, which for continuation rows (offset == width)
+asked for cells past the end and got nothing, leaving those
+rows unreordered. Return the already-sliced info directly so
+wrapped right-to-left lines drawn from scrollback keep their
+display order.
+
+2026-08-28: Move the RTL annotation with row content in
+scrollRect
+
+Bidi analysis is gated on a per-line rtlFound flag, so it
+has to travel with the content when a scroll region shifts
+rows (full-screen programs, AI agent CLIs). Otherwise
+right-to-left text is left drawn in logical order and
+scrambles. Carry rtlFound from source to destination row: a
+full-width move replaces the whole row, a partial move only
+ever sets it (a stale YES costs a wasted analysis; a stale
+NO would scramble text).
+
+2026-08-28: Keep cursive scripts off the no-shaping fast
+path
+
+iTermCharacterSupportsFastPath used macOS
+isalpha()/isnumber(), which are locale-aware and return true
+for non-ASCII letters and digits. That routed Arabic and
+Persian through the CoreText-skipping fast path, which draws
+each character's isolated glyph and so severed cursive
+joining.  Restrict the fast path to ASCII. Pre-existing bug,
+independent of the rest of the RTL work.
+
+2026-08-28: Add generated bidi bracket-mirroring table
+
+Adds iTermBidiMirroredCounterpart(), backed by a generated
+table of Unicode Bidi_Mirroring pairs (BMP only), along with
+the generator and template that produce it. The CoreGraphics
+and Metal glyph paths use it to draw mirrorable punctuation
+as its counterpart in right-to-left runs.
+
+2026-08-28: Add a snooze button to the Session Status
+toolbelt tool
+
+Add a toggle button next to the notify button that snoozes
+the selected session, doing the same thing as the row's
+right-click Snooze menu item. It is enabled only when a row
+is selected and reflects the selected session's snoozed
+state.
+
 2026-08-27: AI command suggestions: replace the line for
 natural-language prompts
 
