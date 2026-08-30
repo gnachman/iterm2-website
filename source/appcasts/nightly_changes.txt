@@ -1,3 +1,44 @@
+2026-08-29: Add "Prevent sleep" profile setting and "Set
+Profile Setting" trigger
+
+Keeps the Mac from idle-sleeping while a session wants it,
+driven either by a static profile checkbox or dynamically by
+triggers. This is an alternative to the name-sniffing
+approach in #736.
+
+- New profile setting KEY_PREVENT_SLEEP ("Prevent sleep
+while a session
+  with this setting enabled exists"), a checkbox in Profiles
+  > Session, with a status label showing how many sessions
+  are preventing sleep. A new advanced setting
+  preventSleepOnBatteryToo (default off) gates it to AC
+  power.
+- New generic "Set Profile Setting" trigger action that
+toggles a
+  session-local profile boolean, with a searchable
+  path-grouped picker built from the settings catalog (title
+  reporting excluded; plain checkboxes only). Paired with
+  Job Started / Job Ended triggers it gives declarative
+  "while this job runs" behavior.
+- iTermSleepPreventionCoordinator holds one
+system-idle-sleep assertion,
+  re-derived from the live set of sessions with the setting
+  enabled (never an incremental counter, so it cannot leak),
+  gated by the AC preference and observing session
+  lifecycle, profile, power, bury, and profile-switch
+  events.
+- Trigger restore reconciliation: on restore, re-derive the
+Job Ended
+  edges lost across save/restore for jobs that were running
+  at save but have since died. Determined synchronously from
+  the restore type (fresh relaunch or exited: every saved
+  job is gone; reattach: one synchronous walk of the
+  still-live process), which avoids the ambiguity of async
+  post-restore ancestry readings.
+
+Also removes an unused const in ToolCommandHistoryView.m
+that broke the -Werror build (leftover from #737).
+
 2026-08-28: Alt-screen bidi migration: run after
 custom-folder prefs are copied down
 
