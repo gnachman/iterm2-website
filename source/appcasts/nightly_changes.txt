@@ -1,3 +1,160 @@
+2026-09-02: Merge PR #731: show the window name beside the
+tabs in Compact and Minimal
+
+2026-09-02: Wire up the HDR cursor checkbox in Profiles >
+Colors
+
+Add the "Use HDR cursor when available" checkbox to the
+Colors pane in PreferencePanel.xib, connect its _hdrCursor
+outlet to the Colors view controller, and set its tooltip.
+Now that the control exists, drop the temporary nil-guard
+around its defineControl: call so the setting is wired
+unconditionally.
+
+The prior commit shipped the code with the guard and no
+checkbox, so the setting was only reachable via the profile
+key; this exposes it in the UI.
+
+2026-09-02: Add "it2 notify" to push a notification to the
+companion device
+
+The it2 CLI can now send a plaintext push notification to
+the paired iTerm2 Buddy phone with "it2 notify <title>
+<body>". It invokes a new app-context built-in function,
+iterm2.send_companion_notification, which routes the title
+and body through CompanionPushSender to the push relay,
+reusing the same path as the AI orchestrator's notify tool.
+The function gates on CompanionPushRegistry.canNotify and
+reports a specific reason when no push can be sent
+(notifications denied, not yet enabled, or no paired
+device). The per-chat mute check is skipped because a CLI
+notification has no chat context.
+
+2026-09-02: Fix empty Keys > General tab in Edit Session
+after editing a browser session
+
+The Edit Session panel is a reused singleton. Editing a
+browser session hides the Keys > General terminal-mode
+enclosures and detaches the General sub-tab from the Keys
+tab view. When a terminal session was edited afterward,
+setVisibility walked the view hierarchy to decide what to
+reveal before re-attaching the sub-tab, so the sub-tab's
+enclosures were never seen by the walk, never made it into
+the reveal list, and stayed hidden. The tab appeared empty.
+
+Restore the saved layout (original frames plus any
+previously removed nested tab view items) before walking, so
+the walk sees the re-attached sub-tab and the reveal step
+un-hides its controls. Split saveOrRestoreFrames into
+restoreFrames (called before the walk) and
+saveFramesIfNeeded (called after), hoisting the
+configuration assignment to the call site so it advances on
+every call while the pristine frame baseline is captured
+only once. First-call behavior is unchanged.
+
+2026-09-02: Add an HDR cursor to the legacy and Metal
+renderers
+
+Add a per-profile, per-appearance "HDR cursor" setting
+(KEY_HDR_CURSOR, Profiles > Colors) that draws the cursor at
+bright HDR white on an EDR-capable display. It is a hint: it
+only takes effect when the display has real headroom and the
+cursor sits on a dark background; otherwise the normal
+cursor draws and cursor boost / smart cursor color still
+apply.  This replaces the old experimental "HDR cursor"
+advanced setting.
+
+Both renderers agree on appearance: - Shared enablement
+predicate and a shared box-frame-only rule so the
+  legacy (drawRect:) and Metal paths cannot drift.
+- The cursor glyph is drawn bold at the source so
+decomposed, regular,
+  and ASCII glyphs all get the same treatment regardless of
+  RTL or ligatures.
+- A shared maximum brightness so toggling the GPU renderer
+does not
+  change the cursor's peak.
+- Smart cursor color is suppressed and the block/glyph AA
+are forced
+  white where the block is actually filled (not for an
+  unfocused hollow box).
+
+EDR engagement is held by a small invisible per-session
+keep-alive layer (iTermHDREngager) so that toggling the GPU
+renderer or tearing down the Metal view cannot latch the
+window out of extended range. It engages only while the HDR
+cursor is enabled and the display has headroom, presents a
+few frames before latching, retries slowly rather than
+giving up, tracks live display changes (screen move, preset
+switch, occlusion), and disengages by clearing the flag and
+presenting rather than removing the layer.
+
+The Metal framebuffer, pipeline states, and intermediate
+textures use fp16 per session when the HDR cursor is
+enabled, via a single shared pixel-format helper, and every
+margin sub-renderer adopts it so no pipeline is built
+against a mismatched target. Flipping the setting live
+rebuilds the metal stack. Debug frame capture handles the
+fp16 layout.
+
+The Profiles > Colors checkbox still needs to be added to
+PreferencePanel.xib and its _hdrCursor outlet connected;
+until then the setting is controlled via the profile key.
+
+2026-09-02: Add on-device AI-generated tab titles
+
+Name a tab after the work visible in its session, generated
+on-device by Apple Intelligence and published as the
+session's "aiTitle" variable. Off by default; enable the
+"Name tabs after the work on screen, using on-device AI"
+advanced setting, then add the "AI-generated name" title
+component to a profile (or interpolate \(session.aiTitle) in
+a custom title format). Screen contents never leave the
+machine and no API key is used; when the on-device model is
+unavailable no title is produced and the session keeps its
+name.
+
+The generator is driven from the display-update cadence and
+coalesces by rejection: a session with a generation in
+flight, or whose screen has not meaningfully changed, is
+dropped rather than queued. Change detection uses the
+content digest for shells, a background-color histogram for
+full-screen apps, and the program's OSC 1/2 title plus
+alternate-screen transitions. An idle-progress watchdog
+times out only on a lack of forward progress, so a
+slow-but-progressing generation is not killed, and a
+monotonic epoch scheme keeps a stale generation from
+applying its title to a terminated-and-revived session.
+Model replies are sanitized before they reach the tab (quote
+unwrap, whitespace and control/bidi stripping, length cap).
+An opt-in local corpus (off by default) captures inputs for
+offline prompt grading.
+
+Also make prettyPWD:homeDirectory: slash-safe: collapse
+redundant slashes and handle a root home so an abbreviated
+path never contains "//".
+
+2026-09-01:  fix(compact-tabs): stop toolbelt drag from
+squeezing tabs
+
+- `-tabBarInsetsForCompactWindow` (iTermRootTerminalView.m)
+now floors `-maximumToolbeltWidthForViewWidth:` instead of
+reading `_toolbelt.frame`, which lags a full pass behind
+during a live toolbelt drag and previously over-reserved
+space, squeezing a tab cell below its minimum - Add
+`-naturalWindowNameBesideTabsTextWidth` (via
+`it_boundingRectWithSize:`) so
+`-measuredWindowNameBesideTabsTextWidth` only applies
+`iTermWindowNameBesideTabsMinimumWidth` when the name's
+natural width actually exceeds the allowance, instead of
+hiding names that would have fit in tight slack - Extract
+`-windowNameBesideTabsMetricAttributes` so measurement and
+`-applyWindowNameBesideTabsAttributes` share one
+font/kerning source instead of two that could drift - Fix
+the header comment in
+`ModernTests/PSMTabBarMinimumCellAreaTests.swift`
+(iTerm2XCTests  ModernTests) to match its actual target
+
 2026-08-31: Companion: link the setup wizard to the App
 Store at launch
 
@@ -289,6 +446,58 @@ the selected session, doing the same thing as the row's
 right-click Snooze menu item. It is enabled only when a row
 is selected and reflects the selected session's snoozed
 state.
+
+2026-08-28:  fix(compact-tabs): unify window-name inset with
+tab fit
+
+- Add `-maximumLeftInsetFittingAllCellsMinimallyForWidth:`
+to PSMTabBarControl, mirroring
+`-cellWidthsForHorizontalArrangementWithOverflow:`, so
+`-allowanceForWindowNameBesideTabs` asks the tab bar what
+actually fits (chips, pinned tabs, spacing) instead of a
+stale tab-count estimate that could crowd tabs out of the
+bar - Introduce
+`-widthOfDecorationsBeforeWindowNameBesideTabs` in
+iTermRootTerminalView so `-tabBarInsetsForCompactWindow` and
+`-leadingEdgeForWindowNameBesideTabs` share one calculation,
+fixing a stoplight-button width mismatch and removing the
+now-redundant
+`iTermRootTerminalViewCompactProxyIconExtraPadding` extern -
+Fix `-applyWindowNameBesideTabsAttributes` to always dim the
+window name via `iTermWindowNameBesideTabsAlpha`, even when
+the delegate returns no tab bar color, instead of only
+inside a non-nil check - Cache
+`-windowNameBesideTabsTextWidth` per layout pass and skip a
+full `-layoutSubviews` in `-updateWindowNameBesideTabs` when
+only the label text changed but the reserved width didn't,
+avoiding relayout thrash as presentation titles tick - Move
+the tab-style property pushes earlier in `-layoutSubviews`
+so the reservation reflects current settings on the same
+pass - Add `PSMTabBarMinimumCellAreaTests.swift` and a
+`-cells` accessor on PSMTabBarControl to pin the two width
+calculations against each other
+
+2026-08-28:  feat(compact-tabs): show window name beside
+tabs
+
+- Add `-rootTerminalViewWindowNameBesideTabs` in
+PseudoTerminal.m to surface the window's custom/automatic
+title next to the tab strip in Compact/Minimal themes, which
+have no title bar - Add `iTermWindowNameBesideTabsMode` enum
+and `showWindowNameBesideTabs` advanced setting (Never /
+When a custom name is set [default] / Always) in
+iTermAdvancedSettingsModel.h/.m - Add
+`_windowNameBesideTabsLabel` plus layout/attribute helpers
+(`updateWindowNameBesideTabs`,
+`applyWindowNameBesideTabsAttributes`,
+`frameForWindowNameBesideTabsLabel`) in
+iTermRootTerminalView.m/.h to size, truncate, and reserve
+tab-bar inset space for the label - Yield the label's width
+before a tab is pushed into the overflow menu, and hide it
+entirely when too little room remains to identify a window -
+Reserve the label's width in PseudoTerminal.m's top-tab
+inset calculation so it doesn't overlap tab titles -
+Document the behaviour in docs/notes-3.7.txt
 
 2026-08-27: AI command suggestions: replace the line for
 natural-language prompts
