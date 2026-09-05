@@ -1,3 +1,33 @@
+2026-09-04: Log when the window-name-beside-tabs label is
+squeezed
+
+Add a gated RLog that fires only when a named window's name
+cannot be shown in full beside the tabs (truncated, or
+hidden below the readable minimum). It records the tab count
+and strip width, the two inputs that starve the name's
+allowance, so a field debug log captures the state behind a
+report that the name has no room. Gated on natural >
+allowance so it stays silent in the common case and off the
+per-layout hot path.
+
+2026-09-04: Fix locale description color not adapting to
+dark/light mode
+
+The locale description in Settings > Profiles > Terminal
+used [[NSColor textColor] colorWithAlphaComponent:0.5],
+which flattens the dynamic color to a static one, so it did
+not follow appearance changes.  Switching to
+secondaryLabelColor alone was not enough: NSTextField does
+not re-resolve an already-set attributed string's colors
+when the appearance changes, and when it does change the
+field's own effectiveAppearance lags the window's by a
+runloop.
+
+Rebuild the field's attributed string on appearance changes
+(deferred one runloop so the field's effectiveAppearance has
+settled) and when the Terminal tab is selected (in case the
+appearance changed while the tab was hidden).
+
 2026-09-02: Merge PR #731: show the window name beside the
 tabs in Compact and Minimal
 
