@@ -1,3 +1,298 @@
+2026-09-06: Make utility preference sheets titled so they
+can become key
+
+These panels were declared as utility windows without the
+titled style bit, so canBecomeKeyWindow returned NO. When
+presented as sheets they never became the key window, and
+dismissing a warning parented to them let AppKit hand key
+and front ordering to the app's main window (a terminal),
+which would jump in front of Settings. Adding titled makes
+them proper key sheets, matching the sibling panels that
+already behaved correctly.
+
+Affected sheets: hotkey configuration, additional hotkeys,
+special exceptions, bulk copy, key mapping touch bar, and
+split-with-profile.
+
+2026-09-06: Fix Actions settings not redrawing action column
+on edit
+
+Editing an existing action while leaving its title unchanged
+did not update the table view because the edit handler
+reloaded only column 0 (the title column), not the
+action-display column.
+
+2026-09-06: Fix two beta11 crashes in session launch
+
+showUnavailableWorkingDirectoryNoticeIfNeeded read the
+stashed working directory into an unretained local (this
+file is MRC), niled the copy property, and then used the
+now-deallocated string as a %@ argument. Build the message
+before clearing the property so the argument stays live.
+This was the cause of the large majority of beta11 crash
+reports (issue 12955).
+
+iTermLocaleGuesser treated a present-but-unparseable
+EncodingsWithLowerCase.plist as an empty dictionary, which
+later tripped the lowerCaseEncodings-is-empty assert. Treat
+a parse failure the same as a missing file: warn via
+AppSignatureValidator and it_fatalError as a damaged bundle.
+
+2026-09-06: Fix Companion reconnect wedge: honor task
+cancellation in RelayTransport.receive()
+
+When the phone reconnects and the relay socket is healthy
+(keepalive pings succeed) but the mac's bridge has died and
+re-parked, the Noise handshake reply never arrives. AppModel
+wraps the reconnect handshake in
+withTimeout(reconnectHandshakeTimeout), whose timeout leg
+cancels the task running NoiseHandshake.perform ->
+transport.receive(). Because withTimeout is a task group, it
+cannot return until that body task finishes, so the timeout
+can only surface if receive() observes cancellation.
+
+Previously it did not: receive() parked on a bare
+continuation whose only wakeups were an explicit close() or
+a keepalive death. With the ping healthy and the task merely
+cancelled, nothing unblocked it, so the handshake and the
+whole reconnect loop hung until the user force-quit ("paired
+but never reconnects").
+
+Wrap the read-vs-close race in withTaskCancellationHandler
+whose onCancel routes into the same cancelAndSignalClosed()
+path that close() and keepalive death use: the close arm of
+the race resolves, the continuation throws
+.closed, and the abandoned socket read is cancelled. This also resolves the
+matching wedge in CompanionHostBridge.runReceiveLoop on the
+mac side.
+
+Adds RelayReceiveCancellationTests, which models a
+cancellation-ignoring socket with a healthy keepalive and
+asserts receive() throws on task cancellation.
+
+2026-09-06: Put tab bar in titlebar for
+accessory/maximized/centered windows on macOS 26
+
+The Tahoe titlebar-accessory tab bar promotion was only
+applied to WINDOW_TYPE_NORMAL, so single-use (accessory)
+windows and maximized/ centered windows kept the tab bar in
+the content view. That gave them a tab bar background that
+did not match the titlebar plus a dark titlebar separator
+line. Apply the macOS 26 promotion to all titled window
+types.
+
+2026-09-06: Fix white rectangle right of a collapsed tab
+group in Minimal theme
+
+When a collapsed tab group was the rightmost item in the tab
+bar (with no overflow), the add-tab-button margin was left
+unpainted, showing the raw view background through as a
+white rectangle.
+
+A collapsed group's trailing members stay in the cell list
+with a zero-size frame and isInOverflowMenu==NO.
+lastVisibleCell only skipped overflow cells, so it returned
+such a zero-height member, giving endInsetFrame zero height
+so drawEndInset painted nothing. Skip isCollapsedHidden
+cells too, mirroring _shouldDrawCell, so the chip (with
+proper height) is returned and the end inset paints
+correctly.
+
+2026-09-06: Remove the revision-11 relay migration machinery
+
+The direct-relay-to-resolver migration shipped in betas 8-12
+and has done its job: nobody has used the legacy direct
+relay in a week and the server is down. Remove the one-shot
+rewrite code on both sides (phone
+migrateDirectRelayToResolver, mac
+migrateDirectRelayToResolverIfNeeded), the update-your-peer
+notices, the CompanionRelayMigration constants and their
+tests, and the relay-move re-pair prompt with its
+recordCurrentRelays tracking (the recorded push relay URL
+could only ever equal the current host, so that prompt
+branch could never fire).
+
+Scrub the now-orphaned defaults keys at launch on both
+platforms so a device that ran the beta-era builds does not
+carry stale flags forever, and update the release notes to
+describe the shipping behavior: older peers are refused with
+an update prompt, and a pairing made before the move must be
+made again.
+
+minimumPeer stays at 11; pre-resolver peers have no way to
+rendezvous.
+
+2026-09-06: Various localization fixes
+
+2026-09-06: Shorten and refine de/ru/pt-BR translations
+
+Shorten several overlong German, Russian, and Brazilian
+Portuguese Settings labels so they fit their controls, and
+give the Subtitle label a trailing colon in every language
+to match the source.
+
+2026-09-06: Widen Settings fields in PreferencePanel to fit
+translations
+
+2026-09-06: Shorten Russian strings and document brevity for
+animal names
+
+Shorten several overlong Russian Settings labels so they fit
+their controls, and replace four long Russian workgroup
+animal names (including the two-word  ) with short
+single-word animals. Update the translator guide to state
+that workgroup animal names must be chosen for brevity,
+substituting a different short animal when the literal
+translation is long.
+
+2026-09-06: Polish German, Japanese, and Russian
+translations
+
+- Shorten several overlong German and Russian strings so
+they fit their
+  controls, and shorten German workgroup animal names to
+  match the terse English ones.
+- Standardize German Code Review as Code-Review everywhere.
+- Use a real ellipsis () in the de/ja/ru/pt-BR translations
+of affordance
+  strings, matching the source.
+
+2026-09-06: Adjust UI to fit localized strings and fix
+related issues
+
+- Widen fields in several Settings xibs so longer
+translations fit, and
+  widen the manual AI model window by 50pt so the API-key
+  hint under the API popup is not truncated.
+- In the workgroup session detail view, push a labeled row's
+control right
+  when a localized label reaches the gutter, keeping its
+  right edge fixed.
+- Fix the ProfilesWindow split buttons losing their SF
+Symbol icons: the
+  modifier handler now restores each button's split symbol
+  instead of clearing the image, and captures the xib
+  symbols up front.
+- Use a real ellipsis () instead of ... in menu items,
+buttons, and
+  labels. Menu-item identifiers keep the literal ... for
+  compatibility.
+
+2026-09-05: Complete Japanese and Russian localizations
+
+Fills the remaining ja (1) and ru (5) translation shards
+that hit the session limit in the first pass, so de, ja, and
+ru now cover all 6748 translatable units.
+
+2026-09-05: Add German, Japanese, and Russian localizations
+
+Adds de (complete), ja, and ru translations to the String
+Catalogs and registers the three languages in knownRegions.
+Japanese is missing one shard and Russian five shards, which
+fall back to English until filled in.  Machine-translated
+with a review pass; format specifiers, plurals (per CLDR
+categories), and substitutions preserved.
+
+2026-09-05: Fix crash with HDR cursor in Metal
+
+2026-09-05: Localize iTerm2 (String Catalogs, pt-BR/zh-Hans,
+plurals, i18n infra)
+
+Squashed the localization work stream into one commit for a
+clean rebase onto upstream. This lands the String Catalog
+infrastructure, converts user-facing strings to localization
+macros, establishes plurals and positional specifiers, adds
+Brazilian Portuguese and Chinese (Simplified) translations,
+retires the original iTerm .strings-table lookups, and keys
+UI behavior on identifiers rather than localized titles.
+
+Squashed commits (chronological): - Fix XIB String Catalog
+extraction and localize Settings XIBs - Look up menu items
+by identifier, not localized title - Key menu-item bindings
+on identifiers, not localized titles - Stop detecting UI
+state by comparing localized strings - Add make pseudorun
+for pseudolocalized testing - Add code-string extraction for
+the Localizable.xcstrings catalog - Find Downloads/Uploads
+menus by identifier, not localized title - Format configured
+pointer actions without an embedded ellipsis replace -
+Relabel Profiles New Window/Tab items with localized titles
+- Localize window-size unit pop-up titles in Profiles
+settings - Add find_ui_strings.py: locate user-facing string
+literals to localize - Annotate user-facing strings for
+localization in Tasks, API, PasswordManager - Annotate
+user-facing strings for localization across ~37 directories
+- Annotate the remaining l10n gap files (error-key +
+cross-file sources) - Localize Script Console output: flip 6
+markers to // TODO(l10n) - Convert iTermController
+user-facing strings to macros (conversion pilot) - Convert
+user-facing strings to localization macros (wave 1) -
+Convert user-facing strings to localization macros (wave 2)
+- Convert user-facing strings to localization macros (wave
+3) - Convert user-facing strings to localization macros
+(wave 4) - Convert user-facing strings to localization
+macros (wave 5a: Settings part 1) - Convert user-facing
+strings to localization macros (wave 5b: Settings part 2) -
+Convert user-facing strings to localization macros (wave 6a:
+tail part 1) - Convert user-facing strings to localization
+macros (wave 6b: tail part 2) - Localize advanced settings,
+decoupling category from the description - Make
+advanced-settings category names searchable again;
+locale-aware sort - Populate the code string catalog from
+the completed conversion - Localize tmux/copy prompts as
+complete sentences, not word fragments - Localize the
+session context menu and other discovery-missed strings -
+Use positional format specifiers in multi-argument localized
+strings - Fix mis-numbered tmux tokens and the Download-menu
+fragment injection - Identify iTermWarning
+cancel/never-remember by role, not label - Replace injected
+translated fragments with complete localized sentences -
+More complete-sentence fixes for injected translated
+fragments - Restructure three fragment-injection sites to
+complete sentences - Complete per-type prompt for pasting
+image data - Complete-sentence step lines in the shell
+integration installer - Establish String Catalog plurals;
+fix the two plural-count warnings - Fix medium-severity
+injected-fragment and plural warnings - Document the
+boundaries of plural preservation in CLAUDE.md - Localize
+relative-time strings via NSRelativeDateTimeFormatter for
+non-English UIs - Fix low-severity untranslated fallbacks, a
+plural, and a fragment - Keep compact relative-time a bare
+duration in all languages - Plural sweep: paste-size
+confirmations and smart-selection action count - Plural
+sweep: arrangement trust-gate risk findings - Plural sweep:
+warning suppression titles and sleep-prevention status -
+Plural sweep: count-shown confirmations, menus, and status
+strings - Plural sweep: remaining count-dependent strings
+across the app - Plural sweep: last two two-count strings -
+Properly pluralize the some-files-missing paste error -
+Localization markers: permission raw values, context-menu
+actions, sentinels - Localize paste-action labels and the
+snippet search help - Localize tip-card button titles - Fix
+missed and incorrectly-pluralized count strings - Localize
+durationString separator and high-res duration units - Port
+wtcpython zh-Hans translations into the string catalog -
+Port wtcpython zh-Hans translations for XIB catalogs - Add
+Brazilian Portuguese (pt-BR) localization - Add localization
+developer and translator docs - Support LANGUAGE=xx in the
+run makefile target - Make more UI strings localizable -
+Ship the Brazilian Portuguese Python REPL banner - Fix
+localization code-review findings - Consolidate duplicated
+localization keys - Fix follow-up localization review
+findings - Prune stale catalog entries and consolidate
+duplicate keys - Localize Python API, key-binding actions,
+and UKCrashReporter - Modernize the last legacy
+iTerm.strings-table lookups - Localize new strings, add
+pt-BR translations, update i18n docs
+
+Claude-Session:
+https://claude.ai/code/session_01GQPWYWaDCtDxRbHWjgTtm9
+
+# Conflicts: #       iTerm2.xcodeproj/project.pbxproj #
+sources/Companion/CompanionWizardWindowController.swift #
+sources/Settings/Base.lproj/PreferencePanel.xib #
+sources/Settings/ProfilesGeneralPreferencesViewController.m
+#       sources/Settings/iTermAdvancedSettingsModel.m
+
 2026-09-04: Log when the window-name-beside-tabs label is
 squeezed
 
