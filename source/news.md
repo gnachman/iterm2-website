@@ -4,6 +4,10 @@ title: iTerm2 - macOS Terminal Replacement
 active-state: news
 ---
 
+#### iTerm2 version 3.7 released
+<i>Sunnyvale, CA&mdash;September 8, 2026</i>
+Version 3.7 of iTerm2 has been released. It adds many new features. The highlights include support for a companion iOS app so you can use iTerm2 while away from your computer, a Claude Code integration, and support for creating groups of tabs. Read the <<a href="https://iterm2.com/downloads/stable/iTerm2-3_7_0.changelog">release notes</a> for details.
+
 #### iTerm2 version 3.5 released
 <i>Sunnyvale, CA&mdash;May 20, 2024</i>
 Version 3.5 of iTerm2 has been released. It adds a number of new features, such as improved navigation, filtering, light/dark mode color schemes, ChatGPT integration, and integration with 1Password. Read the <a href="https://iterm2.com/downloads/stable/iTerm2-3_5_0.changelog">release notes</a> for details.
