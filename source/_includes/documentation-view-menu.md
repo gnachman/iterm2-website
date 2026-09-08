@@ -40,6 +40,10 @@ This toggles the visibility of the Profiles tool, which lets you select profiles
 #### View > Toolbelt > Recent Directories
 This toggles the visibility of the Recent Directories tool. It shows recently used directories sorted by a combination of recency and frequency of use. You must install <a href="documentation-shell-integration.html">Shell Integration</a> for this to know your directory history. You can right click a directory to open a context menu that allows you to "start" a directory. This keeps it pinned at the bottom of the list so it's easy to find.
 
+<a name="toolbelt-session-status"></a>
+#### View > Toolbelt > Session Status
+This toggles the visibility of the Session Status tool, which lists your sessions along with the status each one reports. A session can report a status such as "working," "waiting," or "idle" from a trigger, from the OSC 21337 control sequence, or from an integration like <a href="claude-code-integration.html">Claude Code</a>. The tool sorts sessions by priority so the ones that need attention rise to the top. Click the gear icon to reorder the priorities, and click a row to jump to that session.
+
 #### View > Toolbelt > Snippets
 This toggles the visibility of the Snippets tool, which helps you send frequently used text strings.
 
@@ -66,6 +70,15 @@ Indicate the time of last modification of each line on the screen.
 
 #### View > Show Annotations
 Toggles the visibility of annotations.
+
+#### View > Show Clippings
+Toggles a panel in the session's right margin that lists clippings, bits of text collected for the session and shared with its <a href="documentation-workgroups.html">Workgroup</a> peers, which can be sent to the terminal.
+
+#### View > Show Inline Chat
+Toggles an AI chat panel hosted in the session's right margin, letting you converse with AI without opening a separate chat window.
+
+#### View > Show Session Note
+Shows, creating it if necessary, the session's floating note (opt-cmd-G). This is a freeform scratchpad attached to the session, distinct from the Notes toolbelt tool.
 
 #### View > Show Composer
 Toggles the visibility of the Composer, a text area that you can edit using native macOS keystrokes. This is convenient for preparing complex inputs.

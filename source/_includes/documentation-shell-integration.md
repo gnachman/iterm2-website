@@ -336,3 +336,5 @@ If you have trouble, see <a href="https://gitlab.com/gnachman/iterm2/-/wikis/scp
 
 If you use SSH Integration then file transfer happens over the SSH Integration framing protocol rather than by using scp. This is generally more reliable because it doesn't require opening a new connection.
 
+In iTerm2 3.7 and later, SSH Integration runs the `ssh` command through your login shell, so your dotfiles run first and `ssh` sees your exported environment. One benefit is that a custom `SSH_AUTH_SOCK` pointing at an agent that holds your keys is now honored.
+

@@ -1,4 +1,4 @@
-`CSI u` mode is no longer recommended. Applications should implement the Kitty key reporting protocol instead.
+`CSI u` mode is no longer recommended. Applications should implement the <a href="https://sw.kovidgoyal.net/kitty/keyboard-protocol/">Kitty keyboard protocol</a> instead.
 
 `CSI u` is a mechanism for reporting keystrokes that is more powerful than the standard used in Unix.
 

@@ -72,6 +72,15 @@ Check *Settings > General > tmux* for configuration settings. You can also adjus
 
 See also the tmux section of <a href="documentation-preferences-general.html">General Settings</a>.
 
+### Improvements in 3.7
+
+iTerm2 3.7 brings several enhancements to tmux integration:
+
+  * An advanced setting, *Open tmux windows and tabs in the background?*, reveals a newly attached or created tmux window or tab without moving keyboard focus to it. Focus stays on the session you were already using.
+  * When a tmux window is created outside iTerm2 (for example, by running `tmux new-window` in another client), an advanced setting now lets you choose where it opens: in a new window, in the window that currently has keyboard focus, or in the topmost window that already shows a tab from that tmux session.
+  * OSC 52 clipboard query responses now work with tmux 3.6 and later in tmux integration.
+  * Per-pane key reporting (modifyOtherKeys) state is now restored when you reattach, using formats available in tmux 3.5 and later. Reattaching while an app such as nvim is running keeps the correct key reporting mode. Bracketed-paste state is restored the same way where your tmux build reports it.
+
 ### Best Practices
 
 For practical tips on how to configure iTerm2 for use with tmux integration in the real world, please

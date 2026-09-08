@@ -11,7 +11,10 @@ If selected, non-default background colors will be opaque. This is only availabl
 If selected, the window background is blurred provided the background has some transparency. Selecting a large radius will blur the background more, but (especially on Retina displays on older machines) comes with a performance penalty.
 
 #### Rows/Columns
-When creating a new window with this profile, it will be created with this many rows and columns.
+When creating a new window with this profile, it will be created with this many rows and columns. For most window types you can instead express the initial size as a percentage of the screen: switch the units control from cells to percentage and enter the width and height you want the new window to occupy.
+
+#### Lock window size automatically
+When enabled, the window created with this profile cannot be resized. This is the per-profile counterpart to the **Window > Lock Size** menu item.
 
 #### Hide after opening
 If enabled, a window created with this profile will immediately miniaturize after its creation.
@@ -32,7 +35,7 @@ Sets whether the transparency setting is respected for new windows created with 
 New tabs created with this profile will use this tab title by default. This is an <a href="documentation-scripting-fundamentals.html">interpolated string</a>.
 
 #### Background Image
-This allows you to select an image to display behind the terminal's text.
+This allows you to select an image to display behind the terminal's text. Instead of a single file you can choose a folder of images: the profile then rotates through the images in that folder, changing at the rotation interval you specify.
 
 #### Mode
 This allows you to select how the image is scaled to fit the window:

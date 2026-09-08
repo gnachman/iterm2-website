@@ -1,7 +1,7 @@
 ---
-layout: subdoc36
+layout: subdoc37
 title: General Preferences - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Preferences
 ---
-{% include 3.6/documentation-preferences-general.md %}
+{% include 3.7/documentation-preferences-general.md %}

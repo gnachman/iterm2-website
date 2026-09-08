@@ -27,6 +27,7 @@ A status bar is composed of components. iTerm2 ships with a number of components
 
   * **Clock** - Shows the current time and date.
   * **Custom Action** - A button that performs a configurable action.
+  * **Progress Indicator** - Shows a progress indicator reflecting the state of a long-running operation.
 
 #### UI Affordances
 
@@ -90,6 +91,8 @@ The function call component has a `Label` that is displayed in the status bar an
 
 Some components allow user interaction.
 
+Right-clicking a component opens a context menu. When the component has a value worth copying, the menu includes a **Copy** item that copies the relevant information to the pasteboard.
+
 #### git status
 
 Click the `git status` component to get the following options:
@@ -113,6 +116,8 @@ Click the component to view the recent working directories on this host. Select 
 ### Advanced Settings
 
 The **Advanced** button lets you configure settings that affect the status bar as a whole. You can set the separator color, background color, and default text color. When unset, these take reasonable values. You can also change the font. Not all fonts will look good because of size and alignment issues.
+
+There is also a **Draw separator between status bar and terminal** toggle, which draws a thin line between the status bar and the adjacent terminal content. This is distinct from the separator color, which colors the dividers drawn between components.
 
 You can also adjust the layout algorithm.
 

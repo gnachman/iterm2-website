@@ -50,6 +50,8 @@ If you prefer not to use browser features, you can completely hide them by setti
 - CONNECT proxy support for proxy-based adblockers.
 - The existing password manager has been integrated. Browser passwords are stored separately from terminal passwords.
 - Password manager integration for 1Password, and LastPass will use your existing web passwords.
+- HTTP authentication challenges (Basic, Digest, and NTLM) prompt for a username and password.
+- Geolocation is supported, with permission granted or denied per site.
 
 ### Remote Access
 

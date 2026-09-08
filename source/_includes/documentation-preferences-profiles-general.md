@@ -65,6 +65,9 @@ When you have selected SSH you can click the *Configure* button to further confi
 
 In this configuration window you can turn off `SSH Integration` to fall back to the system ssh command. You can also list environment variables to copy to the remote host. The values come from the current session. You can also edit the list of files to copy upon connection and where to place them on the remote host.
 
+#### Run command through your shell
+When the profile uses a custom *Command* (rather than a login shell), this option runs that command through your login shell first. Your dotfiles get a chance to run, so `$PATH` and any variables you export (API keys, `GEM_HOME`, and the like) are in place before the command starts. This option is only shown when a custom command is configured.
+
 #### Load shell integration automatically
 When enabled, [Shell Integration](/documentation-shell-integration.html) will be loaded into your shell when a new session is created. This is available for zsh, bash, and fish.
 

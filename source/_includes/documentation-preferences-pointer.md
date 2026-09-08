@@ -26,6 +26,8 @@ When enabled, right-clicking or middle-clicking on a window will give it keyboar
 #### Mouse Button and Trackpad Gesture Actions
 You may assign custom actions to mouse clicks and trackpad gestures. The left mouse button is not configurable because its behavior is rather complex, however. This is especially useful if you have a mouse with many buttons. Any combination of mouse button + number of clicks + modifiers may be assigned an action. For gestures, three finger taps and swipes may be configured in combination with modifiers. The following actions are available:
 
+  * *Copy Link Address* - Copies the address of the link under the pointer.
+  * *Copy or Paste* - Copies the selection if there is one; otherwise, pastes.
   * *Extend selection* - The text selection will grow, either from its beginning or end, to the location of the pointer.
   * *Ignore* - Perform no action
   * *Invoke script function* - Call a Python API-defined function.

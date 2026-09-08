@@ -19,6 +19,8 @@ Starting in iTerm2 version 3.2.0, Retina displays are properly supported. Previo
 
 ### Protocol
 
+This document describes iTerm2's own inline image protocol. In addition to it, iTerm2 also supports the <a href="https://sw.kovidgoyal.net/kitty/graphics-protocol/">Kitty graphics protocol</a> (using APC G escape sequences), which is documented separately by its authors.
+
 iTerm2 extends the xterm protocol with a set of proprietary escape sequences. In general, the pattern is:
 
 <pre>ESC ] 1337 ; key = value ^G</pre>

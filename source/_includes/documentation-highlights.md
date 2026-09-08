@@ -77,7 +77,7 @@ You can take a snapshot of your open windows, tabs, and panes with the menu opti
 Performing a quad-click does a "smart selection," which selects text under the pointer in a way appropriate to its content. For example, URLs, quoted strings, and email addresses (among many other objects) are recognized and selected in their entirety. You can also bind actions to a smart selection rule. The first action takes effect when you cmd-click on text matching the rule. All actions are added to the context menu when you right click on text matching the rule.
 
 #### Triggers
-Triggers are user-configurable regular expressions with associated actions that run when text is received that matches the regex. Actions include highlighting the matching text, showing an alert, sending text back, and more.
+Triggers are user-configurable actions that run in response to activity in a session. Most fire when received text matches a regular expression, but a trigger can also fire on events such as a command finishing or a job starting. Actions include highlighting the matching text, showing an alert, sending text back, and more. See the <a href="documentation-triggers.html">Triggers</a> documentation for the full details.
 
 One advanced use of a trigger is to capture output matching a regex and display just those matching lines in the toolbelt. For example, you could create a trigger that matches compiler errors. When you run Make the errors will appear on the side of your window and you can click each to jump right to it. More information is available at the <a href="documentation-captured-output.html">Captured Output</a> manual.
 

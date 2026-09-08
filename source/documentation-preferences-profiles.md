@@ -1,5 +1,5 @@
 ---
-layout: subdoc36
+layout: subdoc37
 title: Profile Preferences - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Preferences

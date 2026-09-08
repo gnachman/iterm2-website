@@ -1,7 +1,7 @@
 ---
-layout: subdoc36
+layout: subdoc37
 title: Window Profile Preferences - Documentation - iTerm2 - macOS Terminal Replacement
 active-state: documentation
 subhead: Preferences
 ---
-{% include 3.6/documentation-preferences-profiles-window.md %}
+{% include 3.7/documentation-preferences-profiles-window.md %}

@@ -21,3 +21,15 @@ Opens the password manager.
 
 #### Window > AI Chat
 Opens the AI Chat window.
+
+#### Window > Lock Size
+Prevents the window from being resized.
+
+#### Window > Lock Layout
+Freezes the window's layout. While enabled, you cannot split panes, add, close, or reorder tabs, close or drag panes, or move panes and tabs to other windows. Resizing panes, opening new windows, and closing the window itself still work.
+
+#### Window > Notify on Status Change
+Shows an alert when the session's reported status changes. See <a href="documentation-session-status.html">Session Status</a> for details.
+
+#### Window > Cockpit
+Opens the Cockpit window, which lets you browse the status each session reports across all your windows. See <a href="documentation-session-status.html">Session Status</a> for details.

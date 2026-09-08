@@ -17,6 +17,9 @@ This opens a panel with these options:
  * *Key click for virtual esc key* When you press esc on a touchbar, this causes a click sound to be played.
  * *Visual esc key indicator* When you press esc on a touchbar, make the cursor change shape briefly to provide feedback.
 
+#### Repair
+This button appears only when iTerm2 detects key bindings that were corrupted by a migration bug present in versions 3.4.x through 3.5.x. Such bindings still work but display incorrectly. Pressing Repair fixes them so they display correctly again.
+
 #### Presets > Factory Defaults
 Restores key bindings to the iTerm2 defaults.
 
@@ -55,6 +58,9 @@ Sets up a new hotkey window profile if you don't already have one. For more info
 
 #### Show/Hide iTerm2 all windows with a system-wide hotkey
 When enabled, you can focus the Hotkey: field and press a keystroke. From then on, pressing that keystroke (even when iTerm2 is not the front application) will cause iTerm2 to come to the front. If it is the foreground app, it will be sent to the back. This requires that you enable access for assistive devices in the Universal Access panel of System Settings. For more information, see <a href="documentation-hotkey.html">Hotkey Windows</a>.
+
+#### Open Quickly hotkey
+Focus this field and press a keystroke to assign a system-wide hotkey for Open Quickly. Pressing it while another application is in front invokes Open Quickly without activating iTerm2. iTerm2 comes to the front only once you commit a selection.
 
 ### Remap Modifiers
 
