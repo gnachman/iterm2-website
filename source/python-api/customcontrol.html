@@ -5,7 +5,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Custom Control Sequences &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -87,10 +87,10 @@
 <p>Enables defining a custom control sequence.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="iterm2.CustomControlSequenceMonitor">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">CustomControlSequenceMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">identity</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.CustomControlSequenceMonitor" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">CustomControlSequenceMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">identity</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.CustomControlSequenceMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers a handler for a custom control sequence.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>connection</strong> – The connection to iTerm2.</p></li>
 <li><p><strong>identity</strong> – A string that must be provided as the sender identity in
@@ -106,7 +106,7 @@ sessions (including those not yet created).</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>Example “<a class="reference internal" href="examples/create_window.html#create-window-example"><span class="std std-ref">Create Window — Custom Escape Sequence</span></a>”</p>
-</div>
+</aside>
 <p>Example:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">CustomControlSequenceMonitor</span><span class="p">(</span>
@@ -124,7 +124,7 @@ sessions (including those not yet created).</p></li>
 <em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Match</span><a class="headerlink" href="#iterm2.CustomControlSequenceMonitor.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Blocks until a matching control sequence is returned.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A <cite>re.Match</cite> produced by searching the control sequence’s
 payload with the regular expression this object was initialized
 with.</p>

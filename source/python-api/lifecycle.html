@@ -5,7 +5,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Life Cycle &#8212; iTerm2 Python API 0.26 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -94,7 +94,7 @@ exited. If the user closes a window, tab, or split pane they can still undo
 closing it for some amount of time. Session termination will be delayed
 until it is no longer undoable.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>connection</strong> – The <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> to use.</p>
 </dd>
 </dl>
@@ -109,7 +109,7 @@ until it is no longer undoable.</p>
 </div></blockquote>
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.SessionTerminationMonitor.async_get">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><a class="headerlink" href="#iterm2.SessionTerminationMonitor.async_get" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a><a class="headerlink" href="#iterm2.SessionTerminationMonitor.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <cite>session_id</cite> of a just-terminated session.</p>
 </dd></dl>
 
@@ -120,7 +120,7 @@ until it is no longer undoable.</p>
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">LayoutChangeMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.LayoutChangeMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Watches for changes to the composition of sessions, tabs, and windows.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>connection</strong> – The <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> to use.</p>
 </dd>
 </dl>
@@ -157,7 +157,7 @@ own window).</p></li>
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">NewSessionMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.NewSessionMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Watches for the creation of new sessions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>connection</strong> – The <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> to use.</p>
 </dd>
 </dl>
@@ -167,7 +167,7 @@ own window).</p></li>
 <li><p>Example “<a class="reference internal" href="examples/colorhost.html#colorhost-example"><span class="std std-ref">Per-Host Colors</span></a>”</p></li>
 <li><p>Example “<a class="reference internal" href="examples/random_color.html#random-color-example"><span class="std std-ref">Random Color Preset</span></a>”</p></li>
 </ul>
-</div>
+</aside>
 <p>Example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>  <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">NewSessionMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
       <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -180,7 +180,7 @@ own window).</p></li>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.NewSessionMonitor.async_get">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><a class="headerlink" href="#iterm2.NewSessionMonitor.async_get" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a><a class="headerlink" href="#iterm2.NewSessionMonitor.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the new session ID.</p>
 </dd></dl>
 
@@ -195,7 +195,7 @@ including those created in the future.</p>
 or you can use the static method <cite>async_foreach_session_create_task</cite> to
 have a task created for each session.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>connection</strong> – The <a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a> to use.</p></li>
 <li><p><strong>app</strong> – An instance of <a class="reference internal" href="app.html#iterm2.App" title="iterm2.app.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a>.</p></li>
@@ -209,13 +209,13 @@ have a task created for each session.</p>
 terminates.</p>
 <p>Includes sessions in existence now and those created in the future.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>app</strong> – An instance of <a class="reference internal" href="app.html#iterm2.App" title="iterm2.app.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a>.</p></li>
 <li><p><strong>task</strong> – A coro taking a single argument of session ID.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A future.</p>
 </dd>
 </dl>
@@ -238,7 +238,7 @@ terminates.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.EachSessionOnceMonitor.async_get">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><a class="headerlink" href="#iterm2.EachSessionOnceMonitor.async_get" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a><a class="headerlink" href="#iterm2.EachSessionOnceMonitor.async_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the session ID.</p>
 </dd></dl>
 
