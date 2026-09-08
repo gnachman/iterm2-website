@@ -12,8 +12,10 @@ Select one or more Clippings and use the panel's buttons to send them to the ter
 
 ## History
 
-The archive button snapshots the current list and clears it, which gives you a fresh list while keeping the old one. The back and forward buttons walk through your archived snapshots, and a counter shows where you are in the history. From a script you can archive with the `it2 session archive-clippings` command or the `iterm2.archive_clippings` API call, and add Clippings with `iterm2.add_clipping`.
+The archive button snapshots the current list and clears it, which gives you a fresh list while keeping the old one. The back and forward buttons walk through your archived snapshots, and a counter shows where you are in the history. From a script you can archive with the `it2 session archive-clippings` command or the `iterm2.archive_clippings` API call, and add Clippings with the `it2 session add-clipping` command or the `iterm2.add_clipping` API call.
 
 ## Clippings in Workgroups
 
 Every session in a [Workgroup](documentation-workgroups.html) shares one Clippings panel. iTerm2 routes each session's Clippings to the Workgroup's main session, so all of its sessions see the same list. This is what lets a Code Review session hand its findings to a coding-assistant session: the review adds Clippings, and the agent's session sees them in the same panel.
+
+A program running in the review session adds a Clipping with the `it2 session add-clipping <type> <title> <detail>` command (for example, a type of "Code Review Comment"). This is how the Claude Code Workgroup's review session posts its comments to the coding session.
