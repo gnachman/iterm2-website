@@ -1,3 +1,31 @@
+2026-09-07: Set workgroup checkmark in validateMenuItem, the
+reliably-called seam
+
+menu(_:update:at:shouldCancel:) only fires for lazy menus
+that implement numberOfItemsInMenu:, which this delegate
+does not, so the checkmark set there never ran. Move it into
+validateMenuItem:, which -[NSMenu update] drives for every
+item with an action.
+
+2026-09-07: Check the current session's workgroup in Shell >
+Workgroups
+
+The menu validator marks the workgroup the current session
+belongs to with a checkmark, resolved through the
+controller's registered instance so a stale back-pointer
+can't show a false positive.
+
+2026-09-07: Warn that iTermShortcutInputView needs a
+key-capable window
+
+Recording routes key events through the app's key window, so
+a field hosted in a window that cannot become key (e.g. a
+utility NSPanel missing the titled style bit) silently
+receives nothing. Document the requirement and the common
+xib trap on the class.
+
+2026-09-07: Add a note about how to run the app
+
 2026-09-06: Make utility preference sheets titled so they
 can become key
 
