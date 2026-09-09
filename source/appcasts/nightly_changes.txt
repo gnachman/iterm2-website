@@ -1,3 +1,256 @@
+2026-09-08: Rebuild main menu rst file
+
+Regenerate menu_ids.rst from master's
+sources/MainMenu/Base.lproj/MainMenu.xib now that the
+generator points there and every leaf menu item has an
+identifier. Picks up master-only menu items and the newly
+added Archives identifiers.
+
+Adapted from release_3.7.0 commit a3b1aa3a5 (regenerated
+against master's XIB rather than copied, since master's menu
+set differs).
+
+2026-09-08: Add missing menu item identifiers
+
+Several leaf menu items had no menuItem identifier, so the
+menu-id doc generator (which requires one on every leaf
+item) would fail on them: the Archives submenu's "Save
+Archive of Current Session" and "Restore Archive" items, and
+the master-only debug item "Check Settings Control
+Truncation".
+
+Adapted from release_3.7.0 commit 362788eed (which covers
+the two Archive items on the non-localized XIB) plus the
+master-only debug item, in master's localized
+Base.lproj/MainMenu.xib.
+
+2026-09-08: Fix python docs build scripts for new path to
+MainMenu.xib
+
+The MainMenu XIB moved out of Interfaces/. On master it
+lives at sources/MainMenu/Base.lproj/MainMenu.xib (the
+localized base), so point both the menu-id generator and
+gen_mainmenu at that path.
+
+Adapted from release_3.7.0 commit 9a58868c2, which targets
+the non-localized sources/MainMenu/MainMenu.xib path.
+
+2026-09-08: Fix z order and alignment of command warning
+
+Move the command-warning image view to the end of the
+terminal-mode enclosure's subviews so it draws on top
+instead of behind its siblings. The warning icon and the
+reason label are already co-aligned at the same y in this
+layout.
+
+Adapted from release_3.7.0 commit f3cf3627d to master's
+localized PreferencePanel layout, where the enclosure was
+re-laid-out for wider translated fields (icon at x=178
+rather than x=372).
+
+2026-09-08: Gate the Tahoe selected-tab HDR outline behind a
+new setting
+
+The selected tab's outline on macOS Tahoe used an additive
+plusLighter pass to render brighter than reference white,
+which relies on the display being in extended dynamic range.
+That is the same condition that could hang the system with
+the Metal HDR cursor, and the outline glow was
+unconditional.
+
+Add an "Allow HDR effects" advanced setting (allowHDR), off
+by default, and gate the plusLighter pass on it. When off,
+the selected outline is still tinted with the tab color; it
+just never exceeds reference white, so nothing forces the
+display into EDR mode.
+
+(cherry picked from commit
+984d782b0cb9e44ea95c57686aa18d789408c108) Adapted to master:
+allowHDR uses master's localized advanced-settings form;
+release-notes hunk omitted (master notes maintained
+separately).
+
+2026-09-08: Bump deployment target in pre-build summary
+
+(cherry picked from commit
+9d75d0283ec9a06e9bd0c9efebe6f47db84b28ad)
+
+2026-09-08: Change compaion app store URL to link to my page
+with a QR code you scan with your phone
+
+(cherry picked from commit
+b836ba5d0540c1b9d132adddd6b0be27e7c9e923)
+
+2026-09-08: Switch to appstore companion
+
+(cherry picked from commit
+02478a5befdd3fb416700ca3b2a86efa5f775ce9)
+
+2026-09-08: Get rid of stupid menu icons
+
+(cherry picked from commit
+b2f571e101a3266cb176cb8eefac21c812c53626)
+
+2026-09-08: Harden complex-char expansion and add a CoW
+mutation check
+
+Two changes aimed at the search-thread crash in
+ScreenCharArrayToString (a byte-write fault on the
+com.iterm2.search queue during global search):
+
+1. ComplexCharRegistry.expand(string:to:) clamped its
+   output to kMaxParts. Every ExpandScreenChar caller sizes
+   its destination for at most kMaxParts unichars per cell
+   (some pass a fixed kMaxParts stack buffer;
+   ScreenCharArrayToString allocates lineLength *
+   kMaxParts), but expand did getCharacters with no cap, so
+   a stored complex-char string longer than kMaxParts would
+   write past the destination. Now it clamps, trimming a
+   trailing high surrogate so it never emits half a
+   surrogate pair.
+
+2. LineBlock now asserts the copy-on-write invariant
+   ("when owner is nonnil or clients is not empty, a copy
+   must be made before mutation") on every write to a
+   block's shared character buffer or cumulative line
+   lengths. This traps a writer that mutates a buffer still
+   shared with a reader (e.g. a background search snapshot)
+   instead of letting it corrupt the reader later. Compiled
+   in only for BETA (debug/beta/nightly) builds, so stable
+   releases pay no per-mutation cost: the check becomes an
+   empty static function the optimizer eliminates at every
+   call site.
+
+Adds a test proving the check does not trip on the correct
+copy-then-mutate path.
+
+2026-09-08: Add register_timer: AI chats can act after a
+delay or at a set time
+
+AI chats (both orchestrator and session-linked) can now set
+a timer that fires once at a wall-clock time and wakes the
+agent, via a new register_timer tool. It reuses the existing
+async-watcher pipeline (persistence on the Chat, restart
+re-arm, status_update delivery, notify_user push) rather
+than adding a parallel mechanism.
+
+- Model: new WatchMode.timer plus optional fireDate/note on
+  WorkgroupWatcher (backward-compatible; a timer targets no
+  session and reads nothing, so no permission gating
+  applies).
+- Tool: register_timer takes exactly one of delay_seconds or
+fire_at
+  (ISO 8601), plus optional note and notify_user. Offered on
+  both surfaces; on a session-bound chat it's offered even
+  without a linked terminal, while register_watch stays
+  gated. list_watches and unregister_watch cover timers
+  unchanged.
+- Fire mechanism: a per-timer task sleeps to the absolute
+fireDate in
+  bounded chunks (robust to system sleep) and publishes a
+  new StatusUpdate.Reason.timerFired. Validation is
+  extracted into the pure static resolveTimerFireDate for
+  offline testing.
+- Restart resilience: reconcile excludes timers from the
+missing-session
+  drop and re-arms them, firing immediately if overdue. A
+  launch-time sweep (iTermChatTimerLaunch) reconstructs
+  dispatchers for timer-bearing chats so a timer whose
+  deadline passed during a Sparkle upgrade fires without the
+  user reopening the chat.
+
+Adds ModernTests/OrchestrationTimerTests and a release note.
+
+2026-09-08: Coalesce mouse-mode-change side effects to fix
+tmux hangs
+
+Navigating tmux sessions could freeze the UI for seconds.
+tmux re-asserts mouse mode on every session/window switch,
+and each mouse-mode escape sequence enqueued a heavyweight
+"mouse mode did change" side effect that recomputes terminal
+button frames (scanning marks over visible lines). Two bugs
+multiplied this into a flood the main thread drained in one
+pass without returning to the run loop:
+
+- The DECSET/DECRST handler and the terminal reset path
+fired
+  terminalMouseModeDidChangeTo: both through the mouseMode
+  setter and again explicitly, doubling the work per
+  sequence.
+- setMouseMode: had no guard, so re-asserting the current
+mode (exactly
+  what tmux does) still enqueued the side effect.
+
+Guard setMouseMode: to notify only on an actual change, and
+remove the now-redundant explicit delegate calls (DECSET
+handler, reset, and the menu toggle in PTYSession). The
+setter is the single source of truth.
+
+Adds MouseModeChangeCoalescingTests, which drives real
+DECSET/DECRST bytes through the parser: a burst of 20
+redundant assertions dropped from 40 side effects to 2 (only
+the genuine transitions).
+
+2026-09-08: Rebuild Sparkle and update to commit that
+respects -suite
+
+2026-09-08: Guard nil shared controller in sleep-prevention
+recompute
+
+SleepPreventionCoordinator observes session-teardown
+notifications and reads iTermController.sharedInstance(),
+which imports into Swift as an implicitly unwrapped
+optional. During app termination +[iTermController
+releaseSharedInstance] nils the singleton (and dispatch_once
+never re-fires), so a recompute driven by a window closing
+while quitting (e.g. Sparkle's Install and Relaunch, or an
+ordinary quit) implicitly unwrapped nil and trapped in
+requestingSessionGUIDs(). Guard the singleton and treat its
+absence as no requesters, since nothing needs to stay awake
+while quitting.
+
+2026-09-08: it2: list subcommands alphabetically in help
+
+Help output listed each command group's subcommands in
+ad-hoc declaration order. Add a sortedSubcommands() helper
+and wrap every subcommands array with it, so the CLI sorts
+by command name at configuration time regardless of source
+order (the root command was already hand-alphabetized; now
+it is enforced).
+
+Alphabetizing separates some related commands that used to
+sit next to each other, so add "See also" cross-references
+between get-var and set-var, and between
+get-background-tasks and set-status.
+
+2026-09-08: Fix Claude Code onboarding: workgroup layout is
+under Arrangements, not Shortcuts
+
+Correct the English defaultValue and all five translations,
+which had localized the wrong Settings tab (Shortcuts). Use
+each language's existing term for the Arrangements tab (de
+Anordnungen, ja , pt-BR Organizaes). ru keeps its
+English-style path and zh-Hans uses the English tab label
+since the Arrangements tab has no translation in those
+catalogs yet.
+
+2026-09-08: Reduce logging verbosity in
+rootTerminalViewShouldLeaveEmptyAreaAtTop
+
+2026-09-08: Fix crash on global search with a browser
+session
+
+browserFindManager(_:didUpdateResult:) called
+view?.findDriver?.viewController.countDidChange().
+iTermFindDriver.viewController has no nullability
+annotation, so Swift imports it as an implicitly-unwrapped
+optional and the bare member access force-unwraps it. It can
+legitimately be nil (e.g. a status-bar find driver created
+with no search view controller), and a global search routes
+a clearFind result-update through here, which trapped on the
+nil unwrap. The equivalent ObjC call sites are nil-safe
+no-ops, so match them with optional chaining.
+
 2026-09-07: Set workgroup checkmark in validateMenuItem, the
 reliably-called seam
 
