@@ -1,4 +1,570 @@
-2026-09-08: Rebuild main menu rst file
+2026-09-09: Fix a bug where removing a tab from the middle
+of a tab group gives you a discontiguous group
+
+2026-09-09: Fix Python API current_tab/current_session None
+after async_create
+
+A script that created a window and then immediately read
+Window.current_tab or Tab.current_session got None, so
+scripts that split panes or changed fonts on a freshly
+created window stopped working in 3.7.0. The iterm2 Python
+library learns a new window's selected tab and active
+session only from FocusChanged notifications, and 2.21 added
+an async_refresh re-entrancy guard that swallows the
+recovery refresh when those notifications arrive before the
+client knows the window exists. iTerm2 selects the new tab
+synchronously during creation, i.e. before the CreateTab
+response, so the client is always in exactly that state.
+
+Durable fix: carry the selected tab and per-tab active
+session in ListSessionsResponse (protocol 1.18) and read
+them in the library, so current_tab/current_session are
+correct straight out of the refresh that async_create
+already performs, with no dependence on notification timing.
+Library bumped to 2.23.
+
+Transitional server-only workaround for already-shipped
+clients in the affected range [2.21, 2.23): hold a
+connection's selected_tab and active-session FocusChanged
+notifications while it has a CreateTab in flight, then
+replay that create's own ids to that one connection after
+the response is sent. Encapsulated in
+iTermAPICreateTabFocusDeferral, gated on the
+x-iterm2-library-version header, scoped per connection so
+other connections keep receiving focus notifications live.
+Deletable once every supported client is 2.23+.
+
+Adds unit tests for the version gate and the deferral's
+hold/replay behavior, and a manual-test runner for the
+patched library.
+
+2026-09-09: Fix kitty drag-out failing with
+EINVAL:unexpected t=e (12961)
+
+Real kitten dnd's serializer omits any metadata key whose
+integer value is 0. For a single-file drag-out the offered
+text/uri-list sits at MIME index 0, so both the pre-send and
+the lazy data reply arrived with their addressing key
+absent, and iTerm2 required those keys:
+
+- handlePreSend required x=, so the index-0 pre-send was
+dropped and
+  the data was treated as missing.
+- handleDragDataReply required y=, so the reply was rejected
+as
+  EINVAL:unexpected t=e (the exact error in the report) and
+  the drag never started.
+
+Fixes: - handlePreSend: an absent x means index 0; ignore
+the empty t=p
+  completion terminator so it does not clobber stored bytes.
+- handleDragDataReply: an absent y means index 0. Switch to
+proper
+  accumulation of the raw base64 across t=e:y=idx messages,
+  decoding the concatenation at the empty terminator. This
+  matches how kitty frames replies (each in-memory blob or
+  64 KB file read is its own message followed by an empty
+  EOF) and fixes latent truncation of file-backed lazy pulls
+  larger than one read.
+- KittyDnDMessage: extract base64 decode into a static
+helper so the
+  accumulated reply is decoded as a whole, not per unaligned
+  chunk.
+
+The reply accumulator is drained everywhere pending requests
+are (reset, the t=E:y error path, and re-requesting an
+index).
+
+Adds two regression tests and a --kitten-compat mode to the
+manual drag_source.py harness that reproduces both wire
+quirks.
+
+2026-09-09: Duplicate Tab: keep a duplicated tab in its
+group
+
+A tab duplicated via Duplicate Tab inherits the source tab's
+group membership from its arrangement (group
+id/name/color/collapsed), but nothing made the copy a proper
+member: it was appended at the new-tab position and group
+contiguity was never repaired. With "new tabs open at the
+end of the tab bar" set, the copy stranded at the end as a
+phantom one-tab group that, sharing the source's id, was
+closed together with the original by Close Group. Without
+that setting it happened to land adjacent, which is why the
+behavior was intermittent and hard to reproduce.
+
+Finalize the copy's group membership after a same-window
+duplicate (the same path New Tab in Group and
+drag-into-group use): reconcile the group definition onto
+the copy, repair contiguity so it sits next to the source,
+update colors, and expand if the newly selected copy joined
+a collapsed group. This is done in the single-tab entry
+point rather than the shared
+createDuplicateOfTab:inTerminal: so duplicateTabGroup:,
+which assigns its copies a fresh group id, is unaffected.
+The new-window branch now clears the copy's group fields so
+a duplicate opened alone in a fresh window is not left a
+phantom one-member group named after an unrelated window's
+group.
+
+Fixes #13014.
+
+2026-09-09: Sample key reporting flags at FTCS D, not after
+the next prompt
+
+Fish 4.x and other shells that use the kitty keyboard
+protocol disable it before running a command and re-enable
+it when they draw the next prompt. The "key reporting mode
+may have been left in an unusual setting" offer compared the
+flags at command start against a live read of the flags at
+command exit. That live read happened in a deferred
+main-thread side effect, which could run after the next
+prompt had already turned the protocol back on, so a
+well-behaved shell looked like an app that left key
+reporting stuck on. Whether it misfired depended on whether
+the re-enable was processed in the same token batch as FTCS
+D, a race.
+
+Snapshot the key reporting flags on the mutation thread when
+the FTCS C and FTCS D tokens are processed and thread those
+values through to the heuristic instead of reading the live
+value later. At FTCS D the snapshot is 0 for a shell like
+Fish (it re-enables only afterward, for the next prompt), so
+the offer is suppressed; an app that genuinely crashed with
+key reporting on still reads non-zero at FTCS D and still
+triggers the offer.
+
+Issue 13015.
+
+2026-09-09: Add regression test for URL detection across
+blank lines (13011, 13020)
+
+2026-09-09: Bump companion to version 1.1 (1)
+
+2026-09-09: Companion: fix black QR scanner preview on first
+camera grant
+
+The scanner configured the AVCaptureSession in viewDidLoad,
+before requestAccess had answered. On the first launch that
+granted camera access this bound the input while
+unauthorized, and iOS 26 then silently delivers no frames,
+so the preview stayed black with no error (as seen in issue
+13019).
+
+Wait for authorization before configuring the session: use
+the authorized fast path when already granted, otherwise
+configure and start only from the requestAccess grant
+callback.
+
+Also: - Observe AVCaptureSession.runtimeErrorNotification
+and recover from
+  mediaServicesWereReset by restarting the still-configured
+  session, falling back to a user-facing error only for
+  unrecoverable codes.
+- Gate onCameraError on wantsRunning (with a main-thread
+re-check) so a
+  dismissed scanner never flashes a spurious banner on the
+  next screen.
+- Create and mutate the AVCaptureVideoPreviewLayer on the
+main thread.  - Add CompanionLog instrumentation throughout
+the scanner path.
+
+2026-09-09: Add live Ollama tool-call tests for non-string
+arguments
+
+Covers the issue-13017 defect end to end against a local
+Ollama: three tool-call round-trips whose schemas declare a
+single non-string parameter (lines: integer|null, lines:
+integer, append_newline: boolean|null), mirroring
+get_screen_contents, scroll_wheel, and send_text. Ollama's
+grammar-constrained output emits the null/number/bool wire
+types the decoder must accept, which is exactly what the
+hermetic LlamaToolArgumentTypeTests cannot exercise.
+
+Gated on LLAMA_API_KEY like the attachment matrix's llama
+lane; the model is configurable via LLAMA_MODELS so a small
+model can stand in for the 42GB default. run_ai_live.sh now
+forwards LLAMA_MODELS.
+
+2026-09-09: Decode Ollama tool arguments as AnyCodable, not
+String (#748)
+
+The Llama/Ollama native /api/chat response decoder typed
+tool_calls[].function.arguments as [String: String]. Ollama
+echoes tool arguments back with the JSON types the tool
+schema declared, so any non-string parameter (integer,
+integer|null, boolean|null) made the whole response fail to
+decode before the tool call reached the dispatcher.
+get_screen_contents against a tui or claude-code session
+failed every time, because its own description tells the
+model to send lines=null there.
+
+Widening the decoder's value type to AnyCodable makes the
+two ends agree: the downstream consumers already expect the
+schema types (GetScreenContentsArgs.lines is Int?,
+SendTextArgs.appendNewline is Bool?).
+
+Adds hermetic regression tests covering null lines, integer
+lines, non-nullable integer, boolean append_newline, and an
+all-string control.
+
+Fixes GitLab issue 13017.  2026-09-09: Password manager: add
+"Require Authentication on Every Open"
+
+Previously a successful Touch ID / password authentication
+was cached on the process-lifetime
+PasswordManagerDataSourceProvider singleton, so once you
+unlocked the password manager it never re-prompted until the
+screen locked (and only then if "Require Authentication
+after Screen Locks" was on). There was no way to require
+authentication on each open.
+
+Add a new secure user default,
+RequireAuthenticationOnEveryPasswordManagerOpen (default
+off, tamper-resistant like
+RequireAuthenticationToOpenPasswordManager), surfaced as a
+checkbox below "Require Authentication after Screen Locks"
+in the gear menu. When on, opening the password manager
+re-authenticates every time regardless of screen locks. The
+decision is factored into a pure
+PasswordManagerDataSourceProvider.mayReuseAuthentication(authRequired:
+requireEveryOpen:) so it is unit-tested without
+LocalAuthentication. The every-open preference only applies
+while authentication is required, and it subsumes the
+screen-locks option (which is shown checked-but-disabled
+when every-open is on).
+
+Also fix string extraction, which was broken independently
+of this change: xcodebuild -exportLocalizations builds every
+target, and iTerm2Tests and iTerm2ForApplescriptTesting
+failed to link because they reference the it2core Swift
+classes IT2Runner / IT2ChannelDisconnect (via
+iTermInProcessIt2.m) but never linked libit2core.a. Mirror
+the main app's it2core linkage (an it2core target dependency
+plus -force_load of libit2core.a in all four build configs)
+into both targets so extraction succeeds again.
+
+2026-09-09: Show embedded newlines in completion rows as a
+return glyph
+
+Command-history entries and file names can contain newlines.
+A raw newline in a single-line completion row spilled across
+adjacent rows in the suggestions popup. Collapse each line
+break into a return glyph (U+21A9) in the display string so
+the entry stays on one line. This is display-only; the
+item's unmodified value is still what gets inserted when the
+row is accepted.
+
+2026-09-09: Tint git toolbar arrows and fix shared-static
+leak
+
+The ahead/behind and dirty glyphs in the session toolbar and
+status bar git widget are flat black PNGs drawn as text
+attachments with no tint, so they stayed black in dark mode
+instead of matching the text.  Tint them to the git text
+color (resolved against the current theme) and cache the
+tinted bitmaps per maker, keyed on color and theme, so polls
+that don't change either reuse them. The toolbar container
+now rebuilds on effective-appearance changes so the arrows
+re-tint on a light/dark toggle.
+
+Also drop the app-wide static cache of the spacer and
+adds/deletes indicator strings. Because those baked in the
+first maker's gitFont and gitTextColor and were shared
+across every window, they leaked one component's font and
+color to all the others (and could freeze a concrete
+per-profile color that can't adapt per window, e.g. in the
+Minimal theme where two windows can render with different
+effective appearances at once). They're now built per call,
+matching how the branch, counts, and rich-stats strings were
+already built.
+
+2026-09-09: Fix crash restoring 3.6.11 scrollback that
+contains bidi text
+
+3.6.11 shipped bidi display info before the lineAttribute
+metadata field existed, so each of its scrollback entries is
+10 elements: the base continuation fields, [timestamp,
+eaDict, rtlFound], the @[] bidi delimiter, and the bidi
+dictionary. 3.7.0 added lineAttribute and now reads a fourth
+metadata scalar, so on a legacy entry it read the @[]
+delimiter where lineAttribute belongs and sent it -intValue,
+throwing NSInvalidArgumentException, -[__NSArray0 intValue].
+With session restoration enabled this aborted launch
+entirely, forcing the user to discard all restored sessions.
+
+Guard the optional trailing scalars (rtlFound,
+lineAttribute) so the @[] delimiter is never consumed as a
+scalar. Metadata scalars are never arrays, so an array at
+that position marks the start of the bidi block. Adds a
+regression test that reproduces the exact crash.
+
+2026-09-09: Re-add make run-nobuild to relaunch without
+rebuilding
+
+Split the run target so run: builds (Development) then
+delegates to run-nobuild: force, which does the actual
+launch. This lets `make run-nobuild` relaunch the last build
+without waiting for a rebuild. LANGUAGE support stays on the
+launch line. It was dropped while rebasing onto
+origin/master; restored here.
+
+Claude-Session:
+https://claude.ai/code/session_01RJEu5sVkuK33EeEVmHLesb
+
+2026-09-09: Document extract_strings.sh as the canonical
+catalog serializer
+
+docs/localization.md described extraction but never warned
+that writing Localizable.xcstrings any other way - notably
+Xcode's String Catalog editor - reserializes the whole file
+and produces unreviewable, conflict-prone diffs. Make
+tools/extract_strings.sh (make extract-strings) the
+authoritative path that owns the catalog's serialization,
+and note that unavoidable manual JSON edits (plural
+variations, substitutions) must be renormalized by
+re-running extraction rather than saved through the catalog
+editor.
+
+Claude-Session:
+https://claude.ai/code/session_01RJEu5sVkuK33EeEVmHLesb
+
+2026-09-09: Rebuild Localizable.xcstrings with
+extract_strings.sh as the canonical baseline
+
+Regenerate the code string catalog through
+tools/extract_strings.sh so the committed file matches the
+canonical extractor. Now that the undo feature's code is on
+master, this picks up its new keys (UndoMenu.* /
+UndoMigration.*), and it resets the whole catalog to
+canonical serialization so future extractions are small
+diffs rather than a full rewrite.
+
+Also fix the de/ja/pt-BR/ru/zh-Hans translations of
+AdvancedSetting.aiChatVerboseConsoleLogging: the English
+dropped the profanity (NSFuckingLog -> NSLog), leaving those
+translations mentioning the old identifier and flagged
+needs_review. Swap the identifier in each and restore them
+to translated; it is a bare identifier with no grammar, so
+no other wording changes.
+
+Claude-Session:
+https://claude.ai/code/session_01RJEu5sVkuK33EeEVmHLesb
+
+2026-09-09: Localize the undo feature's user-facing strings
+
+The Cmd-Z undo rework predated the localization pass, so it
+hardcoded English.  Wrap its strings in localization macros
+so they join the String Catalog:
+
+- iTermApplicationDelegate: the generic Undo/Redo menu
+titles set by
+  -validateUndoRedoMenuItem: (UndoMenu.Undo /
+  UndoMenu.Redo). These previously hardcoded English and
+  would override the xib's localized Edit-menu titles.
+- iTermUndoCloseMigrationWarning: the notice heading, body,
+and the two custom
+  action labels (UndoMigration.*); Cancel now uses
+  iTermLocalizedCancel().
+
+The switch on the warning result keys on the selection
+index, not the button label, so localizing the labels is
+safe. The keys reach Localizable.xcstrings via the build's
+extraction step; running extraction locally rewrote the
+whole catalog (tooling/ordering mismatch), so that churn is
+deliberately left out and will be picked up by a clean
+extraction on the Beta/Deployment builds.
+
+Claude-Session:
+https://claude.ai/code/session_01RJEu5sVkuK33EeEVmHLesb
+
+2026-09-09: Route Cmd-Z to the focused editor and add an
+undo-safety net
+
+Cmd-Z now performs text undo in the focused editor
+(composer, browser address bar, annotations, notes, AI chat)
+and Cmd-Shift-Z redoes, instead of Cmd-Z performing Undo
+Close. Undo Close moves to Shell > Undo Close (Cmd-Shift-T).
+The first time Cmd-Z is pressed while a just-closed session
+is still restorable, a one-time app-modal notice explains
+the change and offers Undo Close or a regular undo; the
+restorable-session termination countdown is paused while it
+is up.
+
+The app delegate now owns undo:/redo: dispatch (both menu
+items target it): it drives the focused NSText's own undo
+manager, otherwise forwards along the key window's responder
+chain to a validating responder. Redo is rerouted from First
+Responder to the app delegate to match.
+
+Adds NSTextView+iTermUndoSafety, a scoped
+viewWillMoveToWindow: swizzle that scrubs a text view's
+text-storage-targeted undo actions from the window's undo
+manager as it leaves the window, working around a
+long-standing AppKit bug (rdar://23443090) where such
+registrations dangle and crash the next Undo.  Editors that
+can outlive their window own private undo managers instead;
+iTermToolActions and iTermToolSnippets scrub their
+self-targeted registrations.
+
+PTYSession gains pause/resume of the hardStop termination
+timer so the migration notice can be shown without a
+restorable session expiring.
+
+Claude-Session:
+https://claude.ai/code/session_01RJEu5sVkuK33EeEVmHLesb
+
+2026-09-09: Make the Undo Close migration notice app-modal
+
+The one-time notice is triggered by a global Cmd-Z and may
+be shown while a whole window is being restored, or while
+the front terminal is itself mid-close, so no window
+sensibly owns it. Attaching it as a sheet to currentTerminal
+could put it on the wrong or a doomed window, so run it
+windowless (app-modal) instead.
+
+Claude-Session:
+https://claude.ai/code/session_01RJEu5sVkuK33EeEVmHLesb
+
+2026-09-09: Fix leak of individually-removed toolbelt tools
+and scope ProfileListView undo
+
+iTermToolWrapper bound its title field to self ([_title
+bind:@"value" toObject:self withKeyPath:@"name"]). Cocoa
+bindings retain the observed object, so _title retained the
+wrapper, forming a retain cycle whose only teardown was
+unbind: in removeToolSubviews. The single-tool removal path
+(removeToolWithName:) never calls removeToolSubviews, so
+every tool toggled off individually leaked its wrapper and
+its entire tool subtree; only -[iTermToolbeltView shutdown]
+broke the cycle. Since name is effectively write-once,
+replace the binding with a direct label assignment in
+setName:.
+
+ProfileListView registers reorder undo (setRowOrder:) with
+target:self on the window's shared undo manager. With the
+leak fixed these views now actually deallocate on tool
+removal, so scrub their actions in viewWillMoveToWindow: to
+avoid a dangling undo target and to stop a global Undo from
+mutating a tool no longer on screen, matching
+iTermToolActions/iTermToolSnippets.
+
+Claude-Session:
+https://claude.ai/code/session_01RJEu5sVkuK33EeEVmHLesb
+
+2026-09-09: Make smart-selection rule names fully
+translatable
+
+The rule name shown in the Smart Selection editor was built
+by appending a shared ", %ld actions" plural suffix to a
+precision phrase, which froze the word order as "<phrase>,
+<count>" and cannot be reordered per language. Replace it
+with two complete, self-contained strings per precision
+level: a plain phrase and a "<phrase>, %ld actions" variant.
+Because the phrase is now literal text and the count is the
+only variable, ordinary plural variations suffice (no
+substitution syntax), and every language can place the count
+where its grammar requires.
+
+The six WithActions keys are seeded from the existing phrase
+and suffix translations, so output is unchanged in the
+shipped languages. Also fix a pre-existing zh-Hans
+collision: very-low precision was , the same as low
+precision; it is now , mirroring the / high-end split.
+Remove the now-unused SmartSelection.ActionCountSuffix key.
+
+Claude-Session:
+https://claude.ai/code/session_01XkZ6zZoDDpCdR5AZmvTJeq
+
+2026-09-09: Settings: replace wrap-around field labels with
+single labels
+
+Several settings rows used a "text [field] text" layout
+where a sentence wrapped around a text field (for example
+"Instant Replay uses [  ] MB per session"). That split is
+inherently untranslatable: the words on either side of the
+field cannot be reordered per language, so translators had
+to smuggle fragments across the field.
+
+Rework each into a single leading label with the unit folded
+in: - Instant Replay memory: "Memory usage per session (in
+MB):" [field] - Undo revive window: "Undo can revive a
+closed session for up to
+  this many seconds:" [field]
+- Pause-a-pane threshold: "Pause a pane if catching up would
+take
+  longer than (seconds):" [field]
+- Idle keepalive: checkbox "Periodically send an ASCII code
+when idle"
+  with "ASCII code" and "Interval (seconds)" field labels
+
+Update PreferencePanel.xcstrings to match: refresh the
+reworded keys in all languages (the old translations would
+otherwise render as stale text) and remove the now-dead
+trailing-fragment keys.
+
+Claude-Session:
+https://claude.ai/code/session_01XkZ6zZoDDpCdR5AZmvTJeq
+
+2026-09-09: Translate remaining zh-Hans strings that were
+left in English
+
+28 keys were marked translated in zh-Hans but still held the
+English source text (progress and error messages from
+Import/Export, the SSH conductor, the Python runtime
+downloader, tmux gateway, image info, and a few labels).
+Provide Simplified Chinese for the ones that are genuine
+user-visible prose or labels.
+
+Left in English on purpose: brand and product names (Google
+Gemini, Apple Intelligence), protocol and technical tokens
+(mailto/Telnet URL, "tmux: %@", PID, [undef: %@]), macOS
+entity names (Application Support), export file names, and
+physical key legends (Tab, Esc +).  Format specifiers were
+kept identical to the source in every case.
+
+Claude-Session:
+https://claude.ai/code/session_01XkZ6zZoDDpCdR5AZmvTJeq
+
+2026-09-09: Make concatenated localized strings use format
+placeholders
+
+Several user-visible strings were built by gluing a
+localized fragment onto dynamic content, which freezes word
+order and hides fragile leading/trailing whitespace inside
+the translation (easy for a translator to drop). Convert
+them to %@ format strings so each language controls
+placement and spacing.
+
+- PseudoTerminal.CopySuffix: a duplicated tab group's name
+is now
+  "%@ copy" instead of appending a " copy" suffix. zh-Hans
+  had dropped the leading space, producing "Groupcopy".
+- AITerm.CouldNotDecode,
+ResponsesStreamingParser.SomethingWentWrong,
+  Codecierge.GoalPrefix, CommandInfo.StartedAtPrefix,
+  OpenQuickly.MenuItemUnder / AlternateMenuItemUnder:
+  prefix-plus-value concatenation replaced with format
+  strings. OpenQuickly substitutes the path by hand so the
+  breadcrumb run stays bold.
+- DynamicProfiles.AdditionalErrors: moved the "\n\n"
+separator into
+  code so no translation can drop it (zh-Hans had), leaving
+  the plural sentence self-contained.
+
+Every language value gains the placeholder so no locale
+silently loses the substituted text. Japanese OpenQuickly
+strings place %@ at the front to avoid opening with a
+dangling particle.
+
+Claude-Session:
+https://claude.ai/code/session_01XkZ6zZoDDpCdR5AZmvTJeq
+
+2026-09-09: Remove a bad word
+
+2026-09-09: Complete Simplified Chinese (zh-Hans)
+localizations (100% coverage) (#744) 2026-09-08: Rebuild
+main menu rst file
 
 Regenerate menu_ids.rst from master's
 sources/MainMenu/Base.lproj/MainMenu.xib now that the
