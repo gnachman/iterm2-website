@@ -1,3 +1,66 @@
+2026-09-10: Fix Tahoe tab bar shrinking/shifting after Lion
+fullscreen
+
+On macOS 26 the tab bar is a titlebar accessory for top
+tabs. Two problems with the vertical layout:
+
+1. -[PseudoTerminal tabBarInsets] added a one-sided +3 top
+inset while
+   in Lion fullscreen with the tab bar on loan. Because a
+   tab cell's height is (bar height - top - bottom), that
+   shrank the tabs rather than moving them. Worse, the value
+   was cached on the tab bar control and never recomputed
+   after exiting fullscreen (the windowed layout path only
+   reset on-loan insets when full screen), so the shrunken,
+   shifted-down tab bar survived back into the normal
+   window.
+
+2. The intent behind that inset was right: in fullscreen the
+accessory
+   sits flush against the top edge of the screen with no
+   stoplight row above it, so top-aligned tabs jam against
+   the edge. Replace the shrinking inset with a
+   size-preserving split that centers the tabs (moving the
+   gap from bottom to top), biased 0.5pt toward the bottom
+   to cancel the Tahoe pill's built-in 1pt top-heavy
+   drawing.
+
+Also reset the tab bar insets whenever the control is on
+loan to the titlebar accessory, not only in full screen, so
+a full-screen-specific inset can't survive the
+exit-fullscreen transition. This is inert pre-macOS 26
+(tabBarInsets returns zero for on-loan windows there).
+
+The debug hierarchy dump in
+updateTabBarControlIsTitlebarAccessory now roots at the
+window frame view so the titlebar accessory is captured in
+windowed states (it is a sibling of the content view and was
+invisible to the old content-view-rooted dump).
+
+2026-09-10: Reorder items in the tab context menu.
+
+2026-09-10: Fix a faint vertical line inside selected tabs
+in the dark Tahoe theme
+
+The dark style draws a selected tab's chrome as three tiled
+images (leftCap | mid | rightCap) abutting at rect.minX +
+capWidth and rect.maxX - capWidth. capWidth scales with the
+pill height and rect.minX moves with layout/scroll, so those
+inner seams landed on fractional device pixels. Both
+abutting image edges then antialiased against transparency
+there, leaving a faint ~0.5pt vertical line inside the pill.
+
+Snap the two inner seams to the backing-store pixel grid so
+the tiles meet on a whole device pixel. Both tiles reference
+the same seam value, so they always abut exactly regardless
+of rounding direction; the mid width is clamped to 0 so the
+seams can never cross on a narrow pill. The outer rounded
+cap edges are untouched, since their curves antialiasing
+over the bar background is correct.
+
+2026-09-10: Fix the tab group outline in Tahoe theme, which
+was clipped improperly
+
 2026-09-09: Fix a bug where removing a tab from the middle
 of a tab group gives you a discontiguous group
 
