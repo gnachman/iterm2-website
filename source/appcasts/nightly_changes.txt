@@ -1,3 +1,300 @@
+2026-09-12: Add control sequences to set and report window
+frames and to report screen frames.
+
+2026-09-12: Coalesce cursor-position and other DSR report
+syncs
+
+Issue 13035 reported that CSI 6 n cursor-position queries
+were paced one main-thread pause+sync per query, the same as
+OSC 4 color queries before they were coalesced. A program
+that pipelines a batch of them (the reporter's benchmark,
+and notcurses-style capability detection) waited seconds
+instead of milliseconds.
+
+Device status reports read either constants or
+mutation-thread-owned state that is always current at
+token-execution time (CSI 6 n reads the grid cursor), never
+the main-thread config snapshot. So they meet the same
+criterion OSC 4 does and can share a single sync across a
+run.
+
+Generalize terminalShouldSendColorReport: to
+terminalShouldSendCoalescibleReport: and route the
+device-status-report path through it. A run of DSR queries
+now pays one pause+sync instead of one per query; any state
+side effect in between disarms the skip-sync flag and forces
+a re-sync, and the allowNextReport one-shot still delivers
+every report on re-execution so nothing livelocks.
+Non-coalescible reports (device attributes, cell size) are
+unchanged.  Only affects non-tmux sessions: DSR passes
+tmuxAllowed=NO, so tmux clients still suppress it.
+
+Extends ReportSyncCoalescingTests: a 200-query
+cursor-position burst coalesces to one sync, a cursor query
+after a color burst shares that sync, and a genuinely
+non-coalescible report (secondary DA) after a burst still
+takes its own sync.
+
+2026-09-12: Answer CSI 16 t (report character cell size)
+
+The CSI t parser had no case for parameter 16, so CSI 16 t
+fell through to VT100_NOTSUPPORT and was silently dropped,
+while CSI 14 t and CSI 18 t were answered. Reported as a
+secondary observation in issue 13035.
+
+Add the parameter-16 parser case, a
+XTERMCC_REPORT_CELL_SIZE_PIX token, and a handler that
+replies CSI 6 ; height ; width t with the cell size in
+points.
+
+Report points rather than backing-store pixels: this matches
+xterm.js (VS Code and Cursor), which report CSS pixels for
+this and CSI 14 t, and it is consistent with iTerm2's own
+CSI 14 t, which is in points. Ghostty reports device pixels
+instead, but matching it would require also changing CSI 14
+t and would otherwise make columns = 14t-width / 16t-width
+come out wrong.
+
+2026-09-12: Fail loudly on notarization and staple errors in
+release scripts
+
+The release scripts submitted to notarytool without --wait
+and polled the status with a fragile text match, then
+stapled unconditionally. If notarization finished Invalid
+(or the poll loop exited early) the staple failed but its
+error was ignored, so the script re-zipped and shipped an
+un-notarized build. This is how a build with ad-hoc-signed
+Sparkle helpers went out.
+
+Submit with --wait, require status: Accepted (dumping the
+notarization log and aborting otherwise), and die on a
+failed staple or staple validation.
+
+2026-09-12: Fix auto-update failing when running
+translocated from Applications
+
+When a quarantined iTerm2 is unzipped or moved into an
+Applications folder from a terminal (not dragged in Finder),
+macOS runs it translocated from a read-only
+/AppTranslocation/ mount. Sparkle then refuses to update
+(running from the location it was downloaded to), and
+LetsMove, seeing the translocated path, offers a pointless
+and potentially destructive move that can trash the user's
+real copy.
+
+Detect translocation via the /AppTranslocation/ path,
+resolve the real location with
+SecTranslocateCreateOriginalPathForURL (weak-linked and
+validated), and if the app is already in an Applications
+folder, clear com.apple.quarantine and relaunch in place so
+it stops being translocated and auto-update works. Guard
+against relaunch loops by verifying quarantine removal
+(errno == ENOATTR) and attempting at most once per boot.
+Issue 13041.
+
+2026-09-12: Coalesce OSC 4 color-query report syncs. Issue
+13013
+
+3.7.0 made every OSC 4 color-report query pause and join the
+mutation and main threads. Terminal multiplexers like tmux
+-CC and herdr re-query the whole 256-color palette on each
+focus change, so one tab or window switch triggered ~256
+thread joins and froze the UI, making typed input lag or
+arrive in bursts.  This regressed in d4cdb98d2, which landed
+after 3.6.11.
+
+OSC 4 queries read the mutation-thread colorMap, which every
+write keeps current, so a run of them can share one sync.
+Add an opt-in gate, terminalShouldSendColorReport:, used
+only by the OSC 4 query path: its sync arms a skip-sync flag
+on the token executor that stays set across the run and is
+invalidated by any state side effect. Every scheduling lane
+disarms it, including the two dispatch_async unmanaged lanes
+that bypass the executor chokepoint. A burst now pays one
+join instead of one per query.
+
+A separate one-shot, allowNextReport, still lets every
+report, coalescible or not, pass on re-execution after its
+sync, so non-coalescible reports (DSR, DA, cell size, and so
+on) are delivered as before. Config-mirrored reports keep
+the plain always-sync gate so they can never read a stale
+snapshot.
+
+Adds ReportSyncCoalescingTests, which drives real bytes
+through the token executor and asserts, via a report-sync
+counter, that a 256-query burst coalesces to one sync, that
+output between queries forces re-syncs, and that
+non-coalescible reports such as DSR still deliver exactly
+once.
+
+2026-09-11: Ban merge commits: always squash-merge PRs
+
+2026-09-11: Sign Sparkle's nested Autoupdate helpers with
+Developer ID
+
+make sparkle builds Sparkle with signing disabled, so its
+nested Autoupdate.app helpers (Autoupdate, fileop) were
+ad-hoc signed. Xcode's CodeSignOnCopy re-signs the framework
+wrapper but not the nested app, so the helpers shipped
+ad-hoc and every notarized build since d65c5f096 was
+rejected by Apple (not signed with a valid Developer ID
+certificate / no secure timestamp).
+
+Add tools/sign_sparkle_helpers.sh to re-sign the nested
+helpers with Developer ID, a secure timestamp, and the
+hardened runtime, and invoke it from the sparkle make target
+when SIGNED is set. Rebuild the framework so its helpers are
+signed correctly.
+
+2026-09-11: Fix text not fitting in autocomposer and not
+enough space below separator
+
+2026-09-11: Fix companion wizard storing the API key on the
+wrong vendor (#754)
+
+The setup wizard saved the pasted API key under
+LLMMetadata.effectiveVendor (factory default OpenAI) instead
+of the vendor selected in the Provider popup, so a first-run
+user who picked a different provider stored the key in the
+wrong keychain slot and phone-originated chats found no key.
+Persist and roll back through CompanionWizardAIKeyPlan so
+the pasted key lands on the popup vendor's slot.
+
+2026-09-11: Do not falsely offer to reset key reporting on a
+stray FTCS D
+
+Issue 13032: with fish 4.x (native OSC 133) plus oh-my-posh
+(its own OSC 133), the shell stack emits a duplicate FTCS D
+as part of drawing the next prompt, after fish has already
+re-enabled the kitty keyboard protocol for that prompt. That
+stray D was sampled with key reporting on and misread as an
+app leaving key reporting stuck on, so iTerm2 offered to
+reset the key reporting mode after every command.
+
+maybeOfferToResetKeyReportingModeWithFlags: only consumed
+its _haveCommandStart flag on the path that actually shows
+the offer. The real (first, flags-off) FTCS D returned early
+at the flags==0 check and left _haveCommandStart set, so the
+stray (second, flags-on) D re-evaluated against the prior
+command's start flags and fired the offer. The FTCS-D-time
+flag snapshot from 13015 does not help here because the
+re-enable precedes the second D.
+
+Consume _haveCommandStart on the first FTCS D after a
+command start, before the flag-based early returns, so a
+subsequent FTCS D that arrives with no intervening FTCS C is
+ignored.
+
+Add an end-to-end regression test that drives the real OSC
+133 plus CSI =5u byte stream through the parser, terminal,
+screen, and session pipeline and asserts the reset offer is
+not consulted for the stray D while still firing for a
+genuine single-command stuck case.
+
+2026-09-11: Open duplicated tabs adjacent to the original by
+default
+
+Duplicate Tab now places the copy immediately to the right
+of the original tab instead of at the end of the tab bar.
+Add an advanced setting
+(duplicatedTabsOpenAdjacentToOriginal, default YES) to fall
+back to the general new-tab placement setting. Issue 13039
+
+2026-09-11: Point agents at the release-notes guidelines;
+document cumulative-file hygiene
+
+CLAUDE.md only said where to put release notes and the
+column limit, so agents wrote them without the existing
+guidelines (audience, what to omit, sections). Add a pointer
+to docs/release-notes-guidelines.md, mirroring the
+docs/localization.md pattern.
+
+Also document what the guidelines lacked: how the cumulative
+notes-3.7.txt is maintained across releases
+(only-unreleased-items, trim on release,
+verify-by-commit-not-wording, and the master vs
+release_x.y.z flow), plus two checklist items (no
+implementation-detail narration; no already-shipped items).
+
+2026-09-11: Reset notes-3.7.txt to only post-3.7.1
+(unreleased) items
+
+notes-3.7.txt had accumulated everything already shipped in
+3.7.0 and 3.7.1. Those remain preserved in the per-version
+notes files (notes-3.7.0*.txt, notes-3.7.1beta1.txt,
+notes-3.7.1.txt). Keep only the changes new since 3.7.1 so
+future release notes don't repeat published items.
+
+The Bidi write-up is split: the two bullets whose code
+shipped in 3.7.0 (the scroll-region RTL annotation fix and
+auto-detect paragraph direction) are dropped; the seven
+post-3.7.0 refinements are kept.
+
+Dropped the on-device AI tab-title feature: it is gated
+behind an advanced setting that is off by default, which is
+not release-note material.
+
+Localization is a Major New Feature: merged the two
+localization bullets into one item listing all languages
+(Brazilian Portuguese, German, Japanese, Russian, Simplified
+Chinese), which follows the system language.
+
+Reclassified the remaining items into New Features /
+Improvements / Bug Fixes by type. Header is a placeholder
+until the master release version is known.
+
+2026-09-11: Harden TmuxLayoutParser against empty and
+malformed layout strings
+
+tmux 3.8 emits an empty window_layout (and
+window_visible_layout) to a legacy-format control client for
+a window whose panes are all floating.  The empty string
+underflowed NSMakeRange(5, layout.length - 5) in
+parsedLayoutFromString: and threw an uncaught
+NSRangeException, crashing the app when attaching to such a
+session over -CC.
+
+Guard the entry point against strings shorter than the
+5-character header, and bail out of the two split-parsing
+paths when a matching brace is missing instead of passing an
+out-of-bounds range to substringWithRange:.  Bad input now
+returns nil (the caller shows an error and detaches) rather
+than crashing.
+
+Verified end to end against a live tmux 3.8-rc all-floating
+window: the fixed build reaches TmuxWindowOpener
+openWindows, gets nil, and shows an error instead of
+throwing. Adds regression tests covering empty, short,
+truncated, and unbalanced-brace inputs.
+
+Claude-Session:
+https://claude.ai/code/session_01SitiKfrHd4rUhJZ1V5r9Fw
+
+2026-09-11: Fix retain cycle in browser. Issue 13009
+
+2026-09-11: Require updating the plist sanitizer for new
+private defaults keys
+
+2026-09-11: Sanitizer: redact Foreground Job Ancestors
+arrangement key
+
+New on master since release_3.7.0:
+SESSION_ARRANGEMENT_FOREGROUND_JOB_ANCESTORS stores
+process/job names in saved arrangement sessions. Redact
+them.
+
+2026-09-11: Add tool to sanitize private info from the
+iTerm2 plist
+
+tools/sanitize_iterm2_plist.py surgically redacts commands,
+terminal contents, text-to-send, paths, hosts, credentials,
+regexes, and AI prompts from com.googlecode.iterm2.plist
+while preserving structure so the file stays loadable. A
+recursive key-name ruleset covers nested and embedded
+structures; JSON-in-Data blobs are decoded and re-encoded.
+--aggressive additionally redacts labels (profile names,
+tags, titles).
+
 2026-09-10: Fix Tahoe tab bar shrinking/shifting after Lion
 fullscreen
 
