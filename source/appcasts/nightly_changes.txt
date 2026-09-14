@@ -1,3 +1,476 @@
+2026-09-13: Support dropping a tab into a collapsed tab
+group
+
+Dragging a tab onto a collapsed group's pill now joins that
+group (expanding it only if the dropped tab becomes active),
+with the pill highlighted as the drop target instead of a
+misleading gap opening beside it. Dropping between two
+adjacent collapsed groups opens a gap between them, and
+dropping before the first group lands before it.
+
+The collapsed-group drag interaction is driven by a thirds
+model on the pill (center joins; an edge third with a pill
+neighbor is a "between" zone) plus several stability
+mechanisms found necessary through testing on real
+(scrollable) tab bars:
+
+- Hit-test pills against their settled positions, not the
+animating
+  frames, so an opening slot can't feed back into the target
+  decision.
+- Debounce which pill is under the cursor so a one-frame
+stale/transient
+  frame can't flash the highlight on the wrong pill or open
+  a spurious slot before the group.
+- A collapsed group never opens a slot beside it during an
+approach
+  sweep (which would shove the run and snap back); the
+  between/before gap opens only once the drop settles there
+  and stays open, keyed to the target's identity so slow
+  movement and hand tremor don't stutter it.
+- Settle the layout on drag entry so the first drawn frame
+is not a
+  transient shifted arrangement.
+
+Adds deterministic XCTests, including a scrollable
+integration harness that drives the real animation loop over
+many ticks to reproduce the feedback-loop and entry/stutter
+classes of bug.
+
+2026-09-13: Companion: bump iTerm2 Buddy to version 1.2,
+build 1
+
+Set MARKETING_VERSION=1.2 and CURRENT_PROJECT_VERSION=1 in
+the project generator (the source of truth) and regenerate.
+The 1.1 release was bumped only in the generated
+project.pbxproj, so a later regeneration silently reverted
+it to 1.0; bumping in the generator keeps it from being lost
+again.
+
+2026-09-13: Companion: regenerate Xcode project after
+rebasing on origin/master
+
+The committed project drifted from
+generate_companion_project.rb (the source of truth) during
+the rebase; regenerated so they match.
+
+2026-09-13: Companion (iOS): fix stale best-effort comment
+on reconnect handshake
+
+The reconnect version-handshake block no longer swallows
+failures: it retries and, on persistent failure, throws
+ReconnectHandshakeUnconfirmed to force a fresh reconnect so
+aiAvailable is never left unverified. Update the comment,
+which still claimed the handshake was best-effort and must
+not abort the reconnect. Comment only; no behavior change.
+
+2026-09-13: Companion: don't tear down an active pairing
+when AI toggles
+
+The advisory-refresh else-if in refreshGateState called
+showReadyToPair() whenever AI availability flipped in the
+unpaired state, but starting a fresh pairing doesn't change
+the gate, so during an active QR/SAS pairing this branch
+fired and showReadyToPair()'s
+stopAdvertising()/hideTopContent() silently aborted it (e.g.
+the user taps Show QR Code, then enables AI in Settings).
+Guard the rebuild on no active pairing
+(!controller.isListening && !pairingAuthInFlight), and leave
+lastAdvisoryAIAvailable unchanged while a pairing is up so
+the advisory refreshes once the button state returns.
+
+2026-09-13: Companion: don't self-perpetuate NSE wakeups
+when AI is off
+
+An AI-off syncSince deliberately leaves the message floor
+un-advanced (so undelivered chat messages survive until AI
+returns), but the wakeup coordinator's render check was
+AI-unaware: any chat backlog above the un-advanced floor
+kept re-arming a wakeup on every fetch, so one alert-driven
+syncSince could kick off an endless loop of contentless
+wakeups (battery + relay drain) until AI was re-enabled.
+Make the coordinator's render predicate AI-aware: when AI is
+off, chat messages are not renderable on the phone, so
+suppress the message branch (probe from Int64.max) and let
+only alerts arm a wakeup. The alert path is unchanged.
+
+2026-09-13: Companion (iOS): unify handshake application and
+fix AI-toggle edge cases
+
+- Extract applyHandshake(_:reconnect:) and
+moveOffChatsTabIfAIUnavailable() so the
+  initial and reconnect paths share one implementation (they
+  had drifted, and the tab-rescue rule was written three
+  times).
+- Fix pull-to-refresh: loadHome ran with phase==.home but
+gated the tab-rescue on
+  phase!=.home, so a refresh reporting AI off left the user
+  on the disabled Chats tab.
+  moveOffChatsTabIfAIUnavailable() now runs unconditionally
+  via applyHandshake.
+- On AI off->on, also re-subscribe the mounted conversations
+(reusing the reconnect
+  path), not just refreshLists: the Mac drops all
+  subscriptions when AI goes off and doesn't re-establish
+  them, so an already-open chat stayed silent until a full
+  reconnect.
+- On reconnect handshake exhaustion, throw so the loop tears
+down and re-establishes
+  rather than proceeding on a live socket with an
+  unconfirmed aiAvailable (which would leave chat surfaces
+  wrongly enabled/disabled with no push to correct it).
+
+2026-09-13: Companion: route aiAvailable() through its
+tested pure core
+
+The shipping aiAvailable() re-implemented the AND logic
+instead of calling the pure core the truth-table test
+exercises, making that test cover dead code. It now keeps
+the cheap short-circuit (to avoid the LaunchServices plugin
+probe when AI is off) but delegates the final decision to
+the core, so the test guards the real path and a future
+added condition is covered.
+
+2026-09-13: Companion: don't move the message floor in
+syncSince when AI is off
+
+My earlier fix jumped the message floor to the global tip
+when AI was off, which permanently dropped messages that had
+accrued while AI was ON but weren't yet pushed to the NSE: a
+later alert wakeup advanced the floor past them, so
+re-enabling AI never re-fetched them. Instead, when AI is
+off, serve no chat messages and echo the phone's incoming
+floor unchanged (advanceFloor is monotonic, so it's a no-op)
+- which also keeps a first-run phone in first-run, so
+re-enabling AI still triggers the teaser + jump-to-tip
+rather than flooding the backlog. The probe is skipped
+entirely when AI is off. Also make updateAIAvailability a
+true no-op before the first hello (guard on lastAIAvailable
+being seeded), so a settings write in the startup window
+can't enqueue an aiAvailabilityChanged frame ahead of the
+hello.
+
+2026-09-13: Companion (iOS): harden reconnect handshake
+retry and dedup session-tree push
+
+The reconnect handshake retry loop now rethrows
+CancellationError (from a torn-down client on unpair/reset)
+instead of swallowing it and hammering the dead client for
+three attempts, and only sleeps BETWEEN attempts, not after
+the final one. The unsolicited .sessionTree handler skips
+the assignment when the tree is unchanged, so a
+byte-identical push doesn't invalidate the SwiftUI Sessions
+view.
+
+2026-09-13: Companion: refresh the pairing window's AI
+advisory when AI toggles
+
+The unpaired ready-to-pair instructions bake in
+aiAdvisorySuffix() at build time and only rebuild on a gate
+transition, but the gate no longer includes AI, so enabling
+or disabling AI while the window sat open unpaired left the
+advisory stale exactly when the user was acting on it.
+refreshGateState now tracks the last advisory AI state and
+rebuilds the ready-to-pair text when it flips (the paired
+state already re-evaluates the suffix each poll).
+
+2026-09-13: Companion: propagate AI plugin install/remove to
+a connected phone
+
+aiAvailable() depends on the AI plugin being installed, but
+plugin presence has no OS notification, so installing or
+removing it mid-session never reached gateMayHaveChanged and
+the connected phone kept its stale AI panel until reconnect.
+Plugin.reload() (the single choke point the Settings
+reload/validate flow and the wizard installer both use) now
+posts didChangeNotification, which
+CompanionPairingController observes alongside the consent
+and admin-setting notifications, so the
+aiAvailabilityChanged event fires when the plugin comes or
+goes as the wire doc promises.
+
+2026-09-13: Companion: centralize AI gating and fix
+per-message gating bugs
+
+Replace the 13 hand-copied requireAI guards in the dispatch
+switch with one gate keyed off an exhaustive
+aiRequirement(of:) classification (open/mixed/aiOnly), so a
+new message case forces a compile error in one place instead
+of silently serving AI content when AI is off. Fixes several
+bugs this made visible:
+
+- setChatMuted and unsubscribe are persistence/cleanup, not
+AI actions, and are
+  now .open: a mute set while AI is off persists, and a
+  subscription can always be detached (previously both were
+  dropped fire-and-forget with no effect).
+- messagesSince is .mixed and gates AFTER classifyOnce
+inside its handler, so a
+  background NSE wakeup is still classified as solicited
+  instead of being escalated to a phantom interactive
+  connection by the 3s grace timer.
+- syncSince no longer burns the phone's first-run floor when
+AI is off: the message
+  probe and floor bookkeeping run either way (first run
+  jumps to the tip), and only the notifiable rows are
+  suppressed, so re-enabling AI no longer floods the user
+  with the entire historical backlog.
+- On an AI on->off transition the bridge now tears down live
+chat subscriptions, so
+  ChatBroker stops pushing chat deltas/typing/turn-lifecycle
+  to a phone that has hidden its chat UI (the gate no longer
+  drops the bridge to do this).
+- The chatListChanged push is gated on AI (and
+versionBlocked) to match the
+  listChatsAndSessions reply, so a mid-session chat change
+  can't repopulate the list behind the phone's
+  AI-unavailable panel.
+- Session-tree push: drop the PTYSessionCreated trigger
+(fires pre-attach, before
+  the session joins the tree), dedup byte-identical trees,
+  and gate on !versionBlocked && peerRevision >=
+  aiDecouplingRevision so a pre-13 peer isn't sent trees it
+  discards.
+- requireAI logs dropped fire-and-forget AI requests (e.g. a
+rev-11/12 phone's
+  .publish) instead of dropping them without a trace.
+
+2026-09-13: Companion: regenerate Xcode project after
+rebasing on origin/master
+
+Both this branch and upstream touched
+generate_companion_project.rb, so the committed project
+drifted from the generator (the source of truth) during the
+rebase. Regenerated so the checked-in project matches the
+merged generator.
+
+2026-09-13: Companion (iOS): keep aiAvailable accurate
+across reconnect and re-enable
+
+Three gaps in the phone's AI-availability tracking: - The
+reconnect handshake set aiAvailable but never re-gated
+selectedTab, stranding
+  a user on the disabled Chats tab if AI was turned off
+  during the outage. Now it moves off .chats, matching the
+  initial-pairing and live-event paths.
+- aiAvailabilityChanged(available:true) flipped the flag but
+never refetched, so the
+  Chats tab showed "no chats yet" instead of the Mac's real
+  chats until a reconnect.  It now kicks refreshLists on the
+  off->on transition so chats re-enable live.
+- A best-effort reconnect handshake that threw left
+aiAvailable stale (chat surfaces
+  shown as enabled on an unverified connection). It now
+  retries a few times before giving up, so a transient
+  failure self-heals to the true value.
+
+2026-09-13: Companion: don't offer AI setup in the wizard
+when AI is admin-disabled
+
+The router sends a never-paired user with companion allowed
+but AI admin-forbidden (generativeAIAllowed false) to the
+choose-mode screen. fullSetup doesn't check admin policy, so
+a managed user could install the plugin, enter an API key,
+and grant a password prompt, yet aiAvailable() stays false
+and AI is silently unavailable with no explanation. Disable
+the "Set Up with AI Features" button (and guard
+chooseWithAI) when AI is admin-disabled, with a note
+explaining why, and make terminal-only the default -
+steering managed users to the path that works.
+
+2026-09-13: Companion: serve terminal alerts over syncSince
+even when AI is off
+
+syncSince carries BOTH chat messages and terminal alerts,
+and alerts are a non-AI feature (their only push path).
+Gating the whole request on requireAI dropped alerts for
+companion-only users: postTerminalAlert stores the alert and
+fires a contentless wakeup with no AI check, but the NSE's
+syncSince fetch was rejected, so the alert was silently lost
+and the NSE burned wakeups retrying. Remove the gate on
+.syncSince and instead skip only the chat-message probe inside handleSyncSince when
+AI is off (leaving the phone's message floor untouched); the
+alert portion always runs. .messagesSince stays gated (it is
+chat-only).
+
+2026-09-13: Companion: live-update session names,
+rate-limited
+
+Re-add the presentation-name observer so a session rename
+reflects on the phone's Sessions tab live, and replace the
+plain 500ms debounce with a leading+trailing throttle: an
+idle change (a new session) still pushes immediately, but
+while a title churns rapidly the pushes collapse to at most
+one per interval (2s), with a trailing push so the settled
+name always lands. The rate-limit decision is a pure,
+nonisolated function tested without real time.
+
+2026-09-13: AI: stop re-logging the same plugin-load failure
+on every probe
+
+Plugin.instance() intentionally does not cache a failure (it
+re-probes each call so a later install is noticed), and
+callers probe on hot paths - notably menu validation of the
+inline-chat item, which calls
+iTermAITermGatekeeper.check(silent:) and reaches
+pluginInstalled() before the AI-consent check. With the AI
+plugin absent that logged "Plugin not found" on every probe
+(about once a second while a menu validates). load() now
+logs a failure only when its reason changes, so a missing
+plugin is logged once; a real change (e.g. signature
+invalid, or the plugin appearing then vanishing) still
+surfaces.
+
+2026-09-13: Companion: push live session-tree updates to the
+phone
+
+The Sessions tab only refreshed on appear or
+pull-to-refresh, so a session created on the Mac didn't show
+up until then - painful without AI, where terminal viewing
+is the whole feature. The bridge now observes session
+create/terminate and the window/tab count changing and
+pushes a debounced, unsolicited .sessionTree (the existing
+message reused as a push, so older phones simply ignore it).
+The phone updates model.sessionTree in handle(event:), so
+the list stays live. Renames are intentionally not observed
+to avoid title-churn traffic; names refresh on the next
+structural change or reconnect.
+
+2026-09-13: Companion: stop AI-plugin probe log spam when AI
+is off
+
+aiAvailable() now short-circuits on the admin and consent
+flags before calling
+iTermAITermGatekeeper.pluginInstalled(). That probe hits
+LaunchServices and, when the AI plugin isn't installed,
+re-probes and RLogs every call (the AI plugin intentionally
+doesn't cache a not-found failure). A user with AI turned
+off fails the consent check first, so polled callers (e.g.
+the pairing window's 2s refresh) no longer spam "Plugin not
+found" roughly once a second.
+
+2026-09-13: Companion: release notes for AI-optional pairing
+
+Update the Mac 3.7 notes so the Companion feature and its
+wizard describe the AI-optional path (terminal viewing and
+control without AI or an API key), and add an iTerm2 Buddy
+note that it now works with AI-off Macs and disables chat
+surfaces with an explanation.
+
+2026-09-13: Companion (iOS): disable chat surfaces with an
+explanation when AI is off
+
+Add AIUnavailablePanel and show it in place of the chat list
+(HomeView) and the new-chat screen (CreateView) when the
+paired Mac has AI off, disable the New Chat button and the
+conversation composer, and hide SessionView's
+compose-to-agent affordances (chatEnabled = allowsChat &&
+aiAvailable). Session browsing, live video, and keyboard
+control are untouched, so the phone remains a full remote
+terminal viewer/controller without AI.
+
+2026-09-13: Companion (iOS): track the paired Mac's AI
+availability
+
+AppModel gains aiAvailable (default true, so a pre-13 Mac
+reads as available), set from both the initial and reconnect
+handshakes and flipped live by the aiAvailabilityChanged
+host event. When AI turns off it moves the user off the
+now-disabled Chats tab to Sessions, and a fresh pairing
+lands on Sessions when AI is off. Adds a DEBUG test hook to
+drive host events and unit tests for the flag, the live
+flip, and the tab move.
+
+2026-09-13: Companion: drop dead AI gate handling from the
+classic window
+
+Remove the .ai* Gate cases and the classic pairing window's
+now-unreachable AI blocked-state branches (gate() no longer
+returns them). AI is instead surfaced as a short,
+non-blocking note appended to the pairing instructions when
+AI is off, so an already-paired user who turns AI off sees
+that chats are unavailable on the phone while terminal
+viewing/control still works. The gate-never-yields-AI test
+is updated to the reduced enum (the type system now enforces
+it).
+
+2026-09-13: Companion: fork the setup wizard on AI vs
+terminal-only
+
+Add a choose-mode first screen (1.0) offering "Set Up with
+AI Features" (routes to the existing full setup, API key
+required) or "Terminal Viewing & Control Only" (routes to
+the existing companion-only install, no AI). The onboarding
+router now sends a never-paired, unconfigured user to this
+fork instead of forcing AI setup, and an AI admin policy no
+longer forces the classic window (companion-only needs no
+AI). destination() gains a pure core so the routing is
+tested deterministically.
+
+2026-09-13: Companion: bridge serves non-AI requests when AI
+is off
+
+Add CompanionError.Code.aiUnavailable and a requireAI()
+guard at the top of every AI-only bridge handler (chat
+create/delete/mute/subscribe/publish/mentions-resolve for
+chats/messagesSince/syncSince/auto-provide). Session
+browsing, live video, and keyboard input are unguarded and
+keep working; listChatsAndSessions returns the sessions with
+an empty chat list when AI is off. The typed error goes only
+to a phone new enough to decode it
+(peerUnderstandsAIUnavailableCode, tested at the boundary);
+older phones get .internalError so the unknown string never
+drops a frame. Fire-and-forget requests are dropped silently
+rather than answered with an uncorrelated error.
+
+2026-09-13: Companion: drop AI from the pairing gate, keep
+it advisory
+
+gate() no longer consults AI (generativeAIAllowed / AI
+plugin / enableAI); it requires only the companion
+prerequisites, so a mac can pair and serve a phone with AI
+off. AI availability becomes advisory: the API-key prewarm
+is now guarded on aiAvailable(), and because the gate no
+longer reads AI, toggling AI mid-session no longer drops the
+bridge; instead gateMayHaveChanged() pushes the new
+aiAvailabilityChanged event (deduped in the bridge, seeded
+by its hello). gate() and aiAvailable() gain pure cores so
+the decoupling is tested deterministically without
+installing either plugin.
+
+2026-09-13: Companion: add the aiAvailabilityChanged host
+event
+
+Add an unsolicited
+CompanionHostMessage.aiAvailabilityChanged(available:) so a
+connected phone learns of a mid-session AI toggle without
+reconnecting, plus its knownPayloadKeys and shortName
+entries. A pre-13 phone forward-compat-decodes the unknown
+discriminator to .unsupported and ignores it, so the change
+is additive.
+
+2026-09-13: Companion: advertise AI availability in the host
+hello
+
+Add an optional aiAvailable field to
+CompanionHostMessage.hello and a
+CompanionPairingController.aiAvailable() helper
+(admin-allowed + AI plugin installed + AI consent) that the
+bridge sends in every hello reply. The phone reads it into
+HandshakeResult.aiAvailable, defaulting a missing field to
+true so a pre-13 mac (which only ever paired with AI on) is
+treated as available and existing users are unaffected.
+
+2026-09-13: Companion: add protocol revision 13 for AI
+decoupling
+
+Bump CompanionProtocolVersion.current to 13 and add
+aiDecouplingRevision.  The change is additive (minimumPeer
+stays 11): revision 13 lets the mac advertise AI
+availability and emit a live aiAvailabilityChanged event so
+a phone can degrade its chat surfaces when AI is off,
+without breaking any compatible pairing.
+
 2026-09-12: Add control sequences to set and report window
 frames and to report screen frames.
 
