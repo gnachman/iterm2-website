@@ -1,3 +1,436 @@
+2026-09-14: Rebuild sign_update as a universal binary
+
+tools/sign_update was an x86_64-only binary, so it failed
+with Bad CPU type on Apple Silicon without Rosetta, breaking
+the SparkleSign step of a release.
+
+Rebuild it as a universal (arm64 + x86_64) binary from
+iTerm2's Sparkle fork (gnachman/Sparkle
+sign_update/main.swift at d163511) plus the orlp ed25519
+submodule, modernizing only the deprecated unsafe-pointer
+closures. ed25519 signatures are deterministic, and the
+rebuilt tool was verified byte-identical to a direct C
+ed25519_sign call, so it stays compatible with the existing
+key.
+
+Add tools/build_sign_update.sh, which records the provenance
+and rebuilds, self-verifies, and installs the binary so it
+never needs archaeology again.
+
+2026-09-14: Build librailroad_dsl with a modern deployment
+target
+
+Xcode 27's linker (ld-27037) rejects the x86_64 slice of
+librailroad_dsl.dylib with "mis-aligned LINKEDIT string
+pool" because rustc's default x86_64-apple-darwin deployment
+target (10.12) emits the legacy LC_VERSION_MIN_MACOSX load
+command and a 4-byte-aligned LINKEDIT string pool, which the
+new linker requires to be 8-byte aligned. The arm64 slice
+defaults to 11.0, gets the modern LC_BUILD_VERSION command,
+and links fine.
+
+Pass MACOSX_DEPLOYMENT_TARGET=$(DEPLOYMENT_TARGET) to both
+cargo builds so both slices are stamped with
+LC_BUILD_VERSION (minos 13.0) and 8-byte-aligned LINKEDIT.
+Also check in the rebuilt dylib, since the release does not
+rebuild native deps and make clean restores this artifact
+from git.
+
+2026-09-14: Reserve the workgroups toolbar in tmux pane
+sizing
+
+The per-session toolbar (e.g. the workgroups toolbar) sits
+at the top of a SessionView and steals vertical space from
+cells, exactly like the title bar and bottom status bar. But
+the tmux size machinery didn't account for it, so a pane
+with a toolbar was told it had more rows than actually fit.
+The extra rows rendered behind the toolbar (and the content
+appeared to jump when toggling between the legacy and GPU
+renderers, which cope with the too-tall grid differently).
+
+Fix both directions of the tmux size round-trip:
+
+- Forward (view -> tmux): -variableTmuxSize now subtracts
+the toolbar height
+  per pane. The fixed-size path already reads the
+  toolbar-inset scrollview frame, so it needed no change.
+- Reverse (tmux layout -> view pixels):
++_sessionSizeWithCellSize... takes a
+  showToolbar flag and reserves +[SessionView
+  toolbarHeight], matching how it handles
+  showTitles/showBottomStatusBar. The tmux parse-tree pass
+  annotates each leaf with its session's toolbar state up
+  front (via -annotateShowToolbarInTmuxParseTree:) so the
+  geometry recursion stays a pure function of the tree.
+
+Renegotiate the tmux window when the toolbar
+appears/changes: route -numberOfSessionsDidChange,
+-sessionDidChangeDesiredToolbarItems:, and
+-sessionDidUpdatePreferencesFromProfile: through a shared
+-updatePaneTitlesRenegotiatingTmuxSizeIfNeeded: helper. The
+last of these no longer gates the renegotiation on the
+active session, so a background pane's profile reload
+resizes too.
+
+Note: because tmux tiles a rectangle, side-by-side panes
+must share a height, so a toolbar on one pane still shortens
+its row-neighbors. That is inherent to tmux layout and is
+why per-pane status bars are disabled in tmux.
+
+2026-09-14: Don't reload the profile for every tmux
+pane-title update
+
+setTitleFromTmuxTitleMonitor: wrote KEY_TMUX_PANE_TITLE with
+reload:YES, which divorces the profile and runs a full
+reloadProfile + SessionView relayout. KEY_TMUX_PANE_TITLE is
+not a real preference; it only seeds the Edit Session
+dialog, which reads it lazily when opened. The live title
+for display is already published to the
+iTermVariableKeySessionTmuxPaneTitle variable by the option
+monitor, and the tab/title UI is refreshed via
+sessionDidUpdatePaneTitle:.
+
+With tmux subscriptions the pane title is pushed on every
+change, so a program that animates a spinner in its title
+(e.g. Claude Code) forced a profile reload and relayout
+several times per second. Pass reload:NO to skip that
+needless churn.
+
+2026-09-14: Add regression coverage for the batched-OSC-4
+report livelock
+
+Microsoft edit probes the palette at startup with a single
+OSC 4 that batches every index into one token
+(ESC]4;0;?;1;?;...;7;? BEL). Before the issue-13013 report
+coalescing, the report gate's single-shot allowNextReport
+plus full-token rollback livelocked on this: the first query
+was released, the second rolled the whole token back and
+re-executed it from the top, so index 0 reported forever,
+the token never advanced, and the app hung. The existing
+suite only exercised one-OSC-per-index bursts, so it missed
+this.
+
+Add two tests to ReportSyncCoalescingTests: edit's batched
+single-token form must terminate and report every index, and
+edit's full startup handshake (two palette batches, OSC
+10/11, DSR, DA) must complete with the DA reply last. Both
+pass on the coalescing fix and would spin (then fail via
+feed()'s bound) without it. Also add
+tests/repro-edit-osc4-hang.sh, a manual reproducer that
+emits the exact trigger and reads the replies back.
+
+2026-09-14: Restore modifyOtherKeys state on session
+restoration
+
+setStateFromDictionary encoded sendModifiers but never read
+it back, so slot 4 (the xterm modifyOtherKeys / CSI > 4 ; m
+level) was dropped on every arrangement restore. With
+session restoration on, iTermServer keeps the inner job
+(e.g. a tmux client) alive across a relaunch; tmux only
+emits CSI > 4 ; 2 m on client attach and there is no query
+to re-derive the mode, so once the fresh app process came up
+with the mode off, extended keys like Shift-Enter reverted
+to plain codes permanently.
+
+Read kTerminalStateSendModifiers back as a bare assignment.
+The mapper reinstall is already re-fired by
+restoreFromDictionary once the delegate is connected, and
+keyReportingFlags and the reporting-mode stacks are restored
+separately, so the live parse path's zeroing of them is
+correctly not reproduced.
+
+2026-09-14: Drop default shift-cmd-X from Notify on Status
+Change
+
+The Notify on Status Change menu item (added in 44894ddc2)
+claimed shift-cmd-X as a default key equivalent. Menu items
+are consulted before Services in performKeyEquivalent:, so
+the item silently shadowed any macOS Service bound to the
+same shortcut (for example Apple's RadarX "Open Problems in
+Radar"), leaving affected users no recourse short of an
+NSUserKeyEquivalents defaults write.
+
+The shortcut bought little: the feature is a niche toggle
+already reachable from the Session Status toolbelt bell and
+the Window menu, and few users could have built muscle
+memory on it in the months since it shipped. Removing the
+default fixes the collision for everyone; anyone who wants a
+shortcut can assign one via System Settings > Keyboard
+Shortcuts > App Shortcuts.
+
+2026-09-14: Workgroup toggles: derive button state from the
+live session flag
+
+The auto-request-review and auto-send-clippings toolbar
+toggles read their state once at construction and cached the
+button views, but the idle-driven behavior reads the
+per-session flag live. Arrangement restore writes the flag
+directly (bypassing the toggle action), so after a relaunch
+the button showed a stale off state while the behavior was
+actually on, silently requesting reviews.
+
+Re-derive both toggles from their owning session's flag
+every time the toolbar is queried for display, mirroring how
+syncModeSwitchers keeps the mode switcher current. setOn
+does not fire the delegate, so syncing never writes the flag
+back. Applied to both toggles since they shared the latent
+bug.
+
+2026-09-14: AI presets: rename the Ollama OpenAI-compatible
+preset to a generic local one
+
+The two native Ollama presets ("auto-discover" and "native")
+are strictly better for Ollama: they control the think field
+and size the context window, which the /v1/chat/completions
+shim cannot. A third Ollama-branded entry that loses both
+was redundant and misleading (users reached for it expecting
+an Ollama auth field; see #13001).
+
+Rename it to "Local OpenAI-compatible (LM Studio, vLLM, )"
+with a neutral localhost URL and model placeholder, so it
+reads as what it actually is: the starting point for
+non-Ollama local runners. Authenticated endpoints supply
+their token via the existing Custom headers table.
+
+2026-09-14: Skip re-saving unchanged grids via a content
+generation counter
+
+Add a monotonic contentGeneration to VT100Grid so
+restorable-state saves can skip re-encoding a grid whose
+serialized content has not changed. Idle grids (e.g.
+background tabs with no output) are no longer rewritten to
+the SQLite state db on every save.
+
+The counter bumps on any mutation that -encode: serializes:
+cell content and per-line metadata (via
+markCharsDirty:/markCharDirty:), grid-wide scalars (cursor,
+scroll regions, useScrollRegionCols, savedDefaultChar) via
+their setters, and per-line metadata or continuation-cell
+raw writes via the new markLineDidChange:. It is preserved
+across copies and sync (copyDirtyFromGrid:/copyWithZone:
+adopt the source's value) and persisted in the grid POD by
+-encode:, restored by -initWithDictionary:.
+
+VT100Screen gates the grid node on contentGeneration instead
+of iTermGenerationAlwaysEncode, using new keys
+(PrimaryGridV2/AltGridV2) so pre-upgrade AlwaysEncode nodes
+are orphaned rather than colliding with the
+content-generation namespace. Old PrimaryGrid/AltGrid keys
+are still read so existing saves restore correctly; a
+pre-upgrade grid simply gets a fresh generation on load and
+is re-saved under the new key as a fresh node.
+
+Redraw-only signals that change no serialized state (cursor
+shape via DECSCUSR, markAllCharsDirty:updateTimestamps:NO)
+deliberately do not bump, so interactive sessions are not
+re-saved on every cursor-style toggle.
+
+2026-09-14: Use synchronous=NORMAL for restorable-state
+SQLite
+
+In WAL mode this syncs at checkpoints instead of on every
+commit, eliminating a per-commit fsync stall on the graph-db
+thread and cutting sustained disk I/O from restorable-state
+saves. The only cost is a small durability window: commits
+since the last checkpoint can be lost on power loss or
+kernel panic (never on an app crash, and the database cannot
+be corrupted). Restorable state is best-effort and re-saved
+constantly, so being set back to the previous save on a hard
+poweroff is acceptable, and avoiding the write pressure
+helps keep the process from being jetsammed on macOS
+versions that enforce a disk-write rate limit.
+
+synchronous is a per-connection pragma that resets to FULL
+on each open (unlike journal_mode, which persists in the db
+header), so it is set in createTables: which runs on every
+open.
+
+2026-09-14: Don't crash marking a dynamic profile rewritable
+
+markProfileRewritableWithGuid: passed a nil profile to
+writeModifiedProfile:toFile: when the on-disk file no longer
+contained the GUID (e.g. it was edited out from under us),
+tripping assert(rewritable), which aborts in release builds.
+
+Treat a nil or non-rewritable profile as a recoverable no-op
+instead of asserting, and bail early in the caller when
+there is no on-disk entry for the GUID.
+
+Claude-Session:
+https://claude.ai/code/session_01NVhwNZ8C9Wvy9PjW7c6hX7
+
+2026-09-14: Fix crash clicking the bookmark button on a
+command
+
+VT100ScreenMark's -command was renamed to
+-firstLineOfCommand to force a per-callsite audit, but the
+bookmark command-button action block typed the mark as id
+and still sent -command, so the compiler couldn't catch it
+and it raised an unrecognized-selector exception at runtime.
+Send -firstLineOfCommand instead.
+
+Claude-Session:
+https://claude.ai/code/session_01NVhwNZ8C9Wvy9PjW7c6hX7
+
+2026-09-14: Set Metal drawable timeout on the main thread
+only
+
+iTermMetalLayerBox.nextDrawableWithoutTimeout() set
+CAMetalLayer.allowsNextDrawableTimeout on the background
+get-drawable queue on every fetch. That setter pushes an
+implicit CATransaction, which aborts off the main thread on
+macOS 26 (CA_ABORT_ON_NON_MAIN_THREAD_TRANSACTION_PUSH).
+
+We never want the layer's own timeout (fetchDrawable imposes
+its own at the promise level), so set
+allowsNextDrawableTimeout to false once at layer creation on
+the main thread and drop the per-fetch set. Also remove the
+now-unused allowsNextDrawableTimeout accessor and
+nextDrawableWithoutTimeout() from the box.
+
+Claude-Session:
+https://claude.ai/code/session_01NVhwNZ8C9Wvy9PjW7c6hX7
+
+2026-09-14: Don't offer Claude Code upsell during app
+termination
+
+ClaudeWatcher.thresholdReached() offered the Claude Code
+status-tool upsell from within the job-change notification
+storm that fires as sessions tear down during quit. The
+offer reached into sessions that were mid-teardown and
+trapped (SIGTRAP); it was the largest 3.7.1 crash cluster.
+
+Go inert once iTermApplicationWillTerminate has been posted
+(before the window-close cascade), and additionally skip
+sessions that have exited or no longer exist. The offer
+decision is factored into a pure shouldOffer() predicate so
+the crash condition is unit-testable without a live app.
+
+Claude-Session:
+https://claude.ai/code/session_01NVhwNZ8C9Wvy9PjW7c6hX7
+
+2026-09-14: Fix filter showing all lines when refining an
+in-progress search
+
+When the filter query changes, the new AsyncFilter refines
+the previous one and copyStateForRefining copies the prior
+FindContext to resume its search position. That context also
+carries the search needle, so the copy silently replaced the
+new query with the old one. The correct needle is only
+re-established when resuming a completed search, so typing
+fast (each keystroke cancels a still-running search) let the
+stale needle chain back to the first keystroke and match
+every line containing it.
+
+Reset the copied context's needle to the updater's own
+query.
+
+2026-09-14: Ollama: native API provider, discovery, and
+AI-chat hardening
+
+Squash of the Ollama feature work and eight review passes.
+Adds native Ollama support as a first-class AI provider and
+hardens the surrounding AI-chat paths.
+
+Feature: - Native /api/chat provider with prompt-sized
+num_ctx and a Think toggle.  - Model discovery via /api/tags
++ per-model /api/show enrichment (capabilities +
+  real context window), with a synchronously-readable,
+  self-healing cache.
+- "Ollama (native)" and "Ollama (auto-discover)" presets;
+Ollama as a first-class
+  vendor in the default-model dropdown with Regular/Budget
+  pickers.
+- Manual model editor: Fetch/Refresh Models, Vision
+checkbox, auto-discovery.  - Tool calling while streaming;
+typed tool-call arguments; native vision (images).  -
+Localized the new user-visible strings (String Catalog,
+plural for the count).
+
+Hardening from review (selected): - Route pinned discovered
+models locally via one shared LLMMetadata.model(named:)
+  resolver used by UI, request routing, capability gating,
+  and provider binding, so a local-pinned chat is never
+  silently sent to a cloud vendor.
+- Cache: coalesced/forced-probe completions resolved by
+batch outcome (no false
+  rollback); suspicious-empty retention with a bounded,
+  consecutive-only escape hatch; recovery gated on current
+  failure state, not the success TTL.
+- Discovery: lenient per-element /api/tags decode; preserve
+reverse-proxy path
+  prefixes; IPv6 endpoints; skip redundant /api/show;
+  deterministic context_length.
+- Streaming: keep a preamble that co-arrives with a tool
+call; promote a
+  thinking-only reply to the visible answer without
+  double-showing reasoning.
+- Editor: restore Model name + API popup after toggling
+auto-discovery; reset the
+  selection when the URL changes; dedupe a manual entry at
+  the default endpoint.
+
+Full granular history (rebase of the original commits plus
+every review-fix commit, with regression tests) is preserved
+on branch origin/ollama-native-api (tip a0235dd83). See that
+branch for per-change commits and rationale.
+
+2026-09-14: Rebuild native dependency artifacts for new
+Xcode toolchain
+
+Regenerated build products from the dependency build under
+the updated Xcode: BetterFontPicker, ColorPicker, and
+SearchableComboListView frameworks, and the ThirdParty
+native libraries (libgit2, librailroad_dsl, libsixel).
+last-xcode-version records the toolchain these were built
+with.
+
+2026-09-14: Fix build errors from newer Xcode/Swift 6.2
+toolchain
+
+- Silence #ImplicitStrongCapture by making outer closures
+capture self
+  (or session) explicitly where an inner closure captures it
+  weakly: AITermControllerObjC, Conductor, TimingStats,
+  ContentNavigationShortcut, WorkgroupSessionSpawner.
+- Handle errors in unstructured throwing Tasks
+(#NoUseUnstructuredThrowingTask)
+  with do/catch in AttributedStringSaver (routed to the
+  existing save-failure warning),
+  SpecialExceptionsWindowController,
+  iTermBrowserFindManager, and iTermBrowserViewController.
+- iTermTextureArray: handle the 12 new three-channel
+MTLPixelFormat values
+  added in the macOS 27 SDK (guarded by
+  MAC_OS_VERSION_27_0).
+- AppleIntelligenceRunner: GenerationOptions(sampling:) is
+deprecated; use
+  the renamed samplingMode: label.
+
+2026-09-14: pwmplugin: rebuild universal adapter binaries
+
+Regenerated via UNIVERSAL=1 build.sh after the product-path
+fix. All four adapters are now universal (arm64 + x86_64)
+and Developer ID signed. iterm2-keeper-adapter is now
+genuinely rebuilt; the keepassxc and bitwarden binaries were
+previously stale (built March 30) because lipo was reading
+the old build-output path.
+
+2026-09-14: pwmplugin: derive product path from toolchain
+instead of hardcoding
+
+The SwiftPM build output layout changed in the Xcode 27
+toolchain: products now land in
+<scratch>/out/Products/Release rather than
+<scratch>/<arch>-apple-macosx/release. build.sh hardcoded
+the old path, so lipo and the native cp silently picked up
+stale binaries for the two older adapters and failed
+outright for iterm2-keeper-adapter (added after the layout
+changed), breaking make paranoid-deps.
+
+Query swift build --show-bin-path for each arch and use
+that, which is robust to the layout change.
+
 2026-09-13: Support dropping a tab into a collapsed tab
 group
 
