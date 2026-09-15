@@ -1,0 +1,91 @@
+Version 3.7.2 was built on September 14, 2026.
+
+Bug Fixes:
+- Fixed a crash when editing a dynamic profile
+  whose file had been changed on disk.
+- Fixed a crash when clicking the bookmark
+  button on a command in the terminal.
+- Fixed a crash in the GPU renderer on macOS 26
+  caused by configuring the drawable timeout off
+  the main thread.
+- Fixed a crash that could occur when quitting
+  iTerm2 while several Claude Code sessions were
+  running.
+- Fixed a crash when attaching over tmux -CC to
+  a window whose panes are all floating, which
+  tmux 3.8 reports with an empty layout.
+- Fixed the filter bar briefly matching every
+  line when you changed the query while a search
+  was still in progress, such as by typing
+  quickly.
+- Fixed tmux pane sizing when a per-session
+  toolbar (such as the workgroups toolbar) is
+  shown. Panes were told they had more rows than
+  actually fit, so content rendered behind the
+  toolbar and appeared to jump.
+- Stopped falsely offering to reset the key
+  reporting mode after every command when using
+  Fish with oh-my-posh, which together emit a
+  duplicate command-finished mark after
+  re-enabling the keyboard protocol for the next
+  prompt.
+- Fixed a performance regression from 3.7.0 that
+  made typing lag or arrive in bursts when using
+  terminal multiplexers (such as tmux -CC) and
+  other programs that query the terminal’s colors,
+  especially when switching tabs or windows.
+- Fixed a bug on macOS 26 where the tab bar
+  became short and shifted down after entering
+  and exiting Lion fullscreen, and where the
+  tabs sat jammed against the top of the screen
+  in fullscreen. Affects the Tahoe tab bar with
+  tabs on top.
+- The Companion setup wizard now saves the
+  pasted API key for the provider you chose
+  in the popup, so choosing a provider
+  other than the current default no longer
+  stores the key under the wrong service.
+- Fixed the workgroup toolbar’s
+  auto-request-review and auto-send-clippings
+  toggles showing a stale off state after a
+  restart even though they were actually on, so
+  the button now always matches whether the
+  behavior is enabled.
+- Notify on Status Change no longer claims
+  ⇧⌘X as a default keyboard shortcut. That
+  shortcut could shadow a macOS Service bound
+  to the same keys. Assign your own shortcut
+  in System Settings > Keyboard > Keyboard
+  Shortcuts > App Shortcuts if you want one.
+- Fixed extended key reporting being lost after
+  a restart with session restoration on. An app
+  that had turned on modifyOtherKeys (so keys
+  like Shift-Enter send a distinct code) now
+  keeps working when its session is restored,
+  instead of quietly reverting to plain keys.
+- Fix performance problems with window titles
+  changing in tmux.
+
+You can use the following to verify the zip file on https://keybase.io/verify:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+e77f7c35292b40bfdecaaa699cbbfa7ceea6e65ebed9c9ff720eeed210daae87
+-----BEGIN PGP SIGNATURE-----
+
+iQJPBAEBCAA5FiEEoSV4Xzv7YY5VD+aYJiz+XnkavhsFAmqovmkbFIAAAAAABAAO
+bWFudTIsMi41KzEuMTIsMCwzAAoJECYs/l55Gr4b43IP/02iGDGxM7se2bb3nNn3
+nCtm5Z7SC0BVmtE5DIzsGkfMyXm92IsSUxnkAs3uA0i2dpk244ByE5Xg55CganD+
+9Pnr6PsrSfln4azuJY6mo31fGACPrwFgYcC3hXpzOU4lWt1c3wkKeEaRw5/LnSb4
+ADpXla0+s3+69v8Cna4fWmAFAB/f+pU94A6cM/q1QQbO5qUO+Pnb412ceZ2fntmR
+ArypKA6r92t5R1XD3Gh+kUInyUQnRGZ5iy3eSUgDCPqzzCxkNyRMDUY17BjuFme/
+TxmDrTlErXZ1I6EIZbqYKqpxvGb3tAHg1RVtpJW64cfi/WCaUYECYM+N6Do97K8z
+hSOB5FlTHklyrqVEiVeCX/1s2Cb+7ml4sH7OV36dccsmSsCRxt4fBk36oECbchVT
+Jb7pIExp3YZm9wQ6f+O9CuJ+VrPmVK/caQxdj/kRf126BqhtnLuX3aGthOG/HbMa
+FReGeJQHNmAjYEPAGyXv5BnAu1vCXVXUsNCzS/DWu15if6+5ic7EqcJ7NsmSJrdg
+ekeDjRqbLfV8+/QCL1TBIwlAA4jtApAXvK3tNkdqN+Ym+TYqjZiqml/iwEP2LmlF
+nUkcyHvIOgR+ro5YrLK8AmH5OrN7D3myiSASB9pA1hvzxWfW5/k3qFjqQNOKr0i0
+LeyUGN0Gg6aFBtEPzVUOMyZc
+=wTQn
+-----END PGP SIGNATURE-----
