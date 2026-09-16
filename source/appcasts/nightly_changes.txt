@@ -1,3 +1,210 @@
+2026-09-15: Omit zero base-layout key in shifted Kitty
+reports
+
+The shifted branch of the Kitty CSI u alternate-key-code
+encoder did not guard against a base-layout code of 0, which
+is what ISO/JIS-only keys (with no PC-101 position) now
+produce. With shift held it emitted the base alternate as a
+literal 0 (e.g. CSI 167:177:0 u), whereas the unshifted
+branch already dropped it.
+
+Extract the alternate-key-code logic into pure
+kittyAlternateKeyComponents() so it can be unit tested, and
+treat a base-layout code of 0 as "no base alternate" in both
+the shifted and unshifted branches. Non-zero behavior is
+unchanged.
+
+2026-09-15: Fix Kitty base-layout key reporting (#741)
+
+Co-authored-by: George Nachman <gnachman@gmail.com>
+2026-09-15: Fix crash from autoreleased array of stack
+blocks in tab context menu
+
+-[PseudoTerminal tabView:menuForTabViewItem:] built its menu
+by collecting the section-builder blocks into an @[] array
+and iterating it. This file is manual retain/release, and
+those blocks capture locals (self, tabViewItem, rootMenu),
+so they are stack blocks. An @[] literal retains its
+elements but does not Block_copy them, so the autoreleased
+array held raw pointers to stack blocks that die when the
+method returns. The array outlives the frame (it drains with
+the top-level autorelease pool, after the menu has been
+used), and when -[__NSArrayI dealloc] then sends -release to
+each element it touches reclaimed stack memory and crashes
+with a bad access in objc_release.
+
+-release on a stack block is normally a no-op, so this only
+crashed once the stack region had been overwritten before
+the pool drained, which is why work-heavy actions like Close
+Tabs Below or Add Tab to Group triggered it while lighter
+ones did not.
+
+Call the builders directly in order instead of gathering
+them into an array, so they run while their frame is still
+live and nothing keeps a dangling reference past the return.
+
+2026-09-15: Say Below in tab menus when the tab bar is
+vertical
+
+With the tab bar on the left or right, the tab and tab group
+context menus were internally inconsistent: they offered New
+Tab to the Right and Close Tabs to the Right even though the
+tabs run top to bottom.  The close-tabs item already picked
+its wording from the tab position; this routes the new-tab
+item, the tab group close item, and the group close
+confirmation through one -tabBarIsVertical helper too, so a
+left- or right-side tab bar reads New Tab Below, Close Tabs
+Below, and Close all tabs below this group?. Horizontal tab
+bars are unchanged. Behavior is unaffected:
+newTabToTheRight: already inserts after the target tab and
+closeTabsRightOfGroup: already closes the tabs after the
+group, both of which are below in a vertical bar.
+
+Adds and translates the two new catalog strings (New Tab
+Below, Close all tabs below this group?) into all supported
+languages.
+
+Co-authored-by: Michel Storms <stormychel@me.com>
+
+2026-09-15: Fix About window credits sizing and
+appearance-callback ordering
+
+Follow-ups to the About window theming in #632:
+
+- setPatronsString: sized the credits scroll view from
+  heightForWidth: on the full frame width with no allowance
+  for the textContainerInset the credits text view gained.
+  Because that scroll view has no scrollers, the last backer
+  names could be clipped. Shrink the layout width by the
+  horizontal inset and add the vertical inset back to the
+  height.
+
+- viewDidChangeEffectiveAppearance could run before
+awakeFromNib
+  captured the stock material, applying a bogus material and
+  then letting awakeFromNib record that bogus value as the
+  stock one. Guard the callback until awakeFromNib has run;
+  it does the initial application itself.
+
+2026-09-15: Add pre-commit hook blocking untranslated new
+strings
+
+tools/check_untranslated_strings.py fails the commit if a
+key newly added to xcstrings/Localizable.xcstrings lacks a
+translated value in every language the catalog uses (correct
+plural categories per language). It only inspects the staged
+catalog and only newly-added keys, so preexisting
+needs_review entries and the Xcode-managed XIB catalogs are
+untouched. The tools/git-hooks/pre-commit wrapper skips all
+work (no Python, no JSON parse) unless the catalog is part
+of the commit, so it is effectively free on unrelated
+commits. Enable with: make install-hooks. Bypass with: git
+commit --no-verify.
+
+2026-09-15: Translate new strings into de, ja, pt-BR, ru,
+zh-Hans
+
+Fills in the ~46 recently-added strings that were
+untranslated in every language: the Ollama native provider
+and model discovery, the AI Model Editor, the Companion
+pairing mode picker, the Undo-close migration, and a few
+advanced settings. Machine-translated and validated for
+format-specifier parity, plural categories
+(one/few/many/other for ru, other-only for ja/zh-Hans), and
+punctuation. Purely additive: existing translations,
+including needs_review entries, were left untouched.
+
+2026-09-15: Extract new strings into Localizable catalog
+
+Adds AdvancedSetting.duplicatedTabsOpenAdjacentToOriginal
+and the Companion.ChooseMode.* strings picked up by
+tools/extract_strings.sh. English values only for now;
+translations will follow.
+
+2026-09-15: Keep the code string catalog out of Xcode's
+build-time sync
+
+Xcode's IDE sync-localizations step rewrites
+sources/Localizable.xcstrings on every build, marking nearly
+all strings stale and deleting untranslated ones. It does
+this because the code that references those strings compiles
+in the static-library targets
+(iTerm2SharedARC/iTerm2Shared), not the app target that owns
+the catalog, so the app target's stringsdata contains almost
+none of the keys. No build setting stops it, and only IDE
+builds do it (command-line xcodebuild does not).
+
+Move the canonical catalog to
+xcstrings/Localizable.xcstrings (tracked, updated by
+tools/extract_strings.sh) and gitignore the app-target build
+copy at sources/Localizable.xcstrings. The Makefile
+ingest-catalogs prerequisite and an Xcode scheme build
+pre-action copy the canonical file into place before each
+build; this must happen before build planning, or the
+xcstrings compile drops the localization. Command-line and
+IDE builds now compile the correct strings while Xcode's
+churn stays out of git.
+
+2026-09-15: Add newly-extracted XIB strings to their
+catalogs
+
+Xcode extracted a new menu item and new settings strings
+from the XIBs into the MainMenu, PreferencePanel, and
+ProfilesWindow string catalogs. English values only for now;
+translations will follow.
+
+2026-09-15:  feat(about-window): follow system theme with
+live updates (#632)
+
+- Observe appearance changes to apply styling dynamically
+when switching themes - macOS 26: use container-based design
+matching sponsor cards - Pre-26 systems: frosted glass with
+dark scrim for dark themes only - New
+iTermAboutCreditsWellView class to manage credits background
+- Shared helpers (iTermAboutContainerCornerRadius,
+iTermAboutContainerFillColor) for consistent styling
+
+Co-authored-by: George Nachman <gnachman@gmail.com>
+2026-09-15: Fix notification permission crash
+(EXC_BAD_ACCESS in invokeAllPendingCompletions) (#740)
+
+Copy completion block to heap before storing in
+pendingPermissionCompletions.  Without copy the stack block
+address becomes dangling after caller returns, and later
+[array copy] -> objc_retain faults on 0x3d76... (Thread 4
+com.apple.usernotifications.UNUserNotificationServiceConnection.call-out).
+
+Crash: iTerm2 3.6.1 macOS 15.5 incident
+31AEA055-9FBA-4455-AB8A-7C470ACCB211
+  objc_retain -> __NSArrayI_new -> -[NSArray
+  initWithArray:range:copyItems:] ->
+  -[iTermNotificationController
+  invokeAllPendingCompletionsWithResult:] ->
+  ensureNotificationPermissionsWithCompletion:_block_invoke
+
+Fixes GitLab issue (file separately at
+https://gitlab.com/gnachman/iterm2/-/issues) 2026-09-15: Git
+toolbar item: right-click Copy and drag the branch name
+
+Add a context menu with a Copy action to the git branch
+toolbar item and make the item draggable so it can be
+dropped into a text field to paste the branch name or onto
+the Finder as a text clipping.
+
+The menu is built in menu(for:) on the container view;
+because these toolbar items are plain NSObjects outside the
+responder chain that NSMenu's auto-enable pass consults,
+autoenablesItems is turned off and the item's enablement is
+set explicitly (matching CCDiffSelectorItem).
+
+The drag image renders just the branch name, and both Copy
+and drag are gated on a new displayedBranch accessor that
+returns the branch only when the label is actually showing
+one (not Rebasing, a status, the xcode warning, or before
+the poller is ready).
+
+Includes a release note under Improvements.
+
 2026-09-14: Rebuild sign_update as a universal binary
 
 tools/sign_update was an x86_64-only binary, so it failed
