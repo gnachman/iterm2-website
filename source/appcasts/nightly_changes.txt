@@ -1,3 +1,189 @@
+2026-09-16: Run CI on the Xcode 27 preview runner to match
+committed toolchain
+
+last-xcode-version was bumped to Xcode 27.0 but the
+xcode-tests job still selected Xcode 26.5 on macos-26, which
+doesn't have Xcode 27 installed, so every build failed the
+toolchain gate. Switch to the xcode-27 preview runner image,
+which ships Xcode 27.0 preinstalled.
+
+2026-09-16: Treat absent Kitty placeholder image-id MSB as
+zero (#13027)
+
+A Kitty Unicode placeholder cell whose diacritics give only
+row and column, omitting the optional third diacritic that
+encodes the most significant byte of the image id, was
+decoded with the image-id MSB left at its -1 "absent"
+sentinel. That -1 shifted to 0xff000000 and was or'd into
+the id from the foreground color, producing a bogus image id
+(e.g.  0xff000001 instead of 1) that matched no placement,
+so the cells drew nothing.
+
+The Kitty graphics protocol makes the third diacritic
+optional while the image id fits in 24 bits, and kitty and
+Ghostty render such cells.  Normalize a never-specified MSB
+to zero after the run-length carry-over, keeping the -1
+sentinel intact for the carry-over logic and the
+kittyPlaceholderDump consumer.
+
+2026-09-16: Decouple posix_spawn session launch from TCC
+disclaim; fix its PATH search and signal reset
+
+iTermSpawn previously always called
+responsibility_spawnattrs_setdisclaim, so it could only be
+used together with the "Disclaim ownership of children"
+advanced setting (issue 10360), even though posix_spawn's
+CLOEXEC_DEFAULT flag also sidesteps the slow
+file-descriptor-closing loop in iTermExec (issue 5391)
+independently of TCC attribution.
+
+Add a `usePosixSpawn` advanced setting (on by default in
+beta builds) that requests the posix_spawn launch path
+without disclaiming. `disclaimChildren` still implies
+posix_spawn, but posix_spawn no longer implies disclaiming.
+
+Also fix two bugs found while separating these: - Unlike
+execvp, posix_spawn does not search $PATH, so launching a
+bare
+  command name (e.g. "login") failed (issue 12770).
+  iTermSpawn now resolves bare names against $PATH itself,
+  using only async-signal-safe calls since this runs after
+  fork().
+- The SETSIGDEF signal set was built with sigfillset then
+had every
+  signal removed, leaving it empty, so a signal the parent
+  had SIG_IGN'd leaked into the child instead of being reset
+  to SIG_DFL like iTermExec does.
+
+2026-09-16: Populate CellStyle.url for OSC 8 hyperlinks in
+the API
+
+protoStyleForCharacter:externalAttributes: built an ITMURL
+from the cell's external attribute but never assigned it to
+the ITMCellStyle, so the Python API's CellStyle.url was
+always None even for hyperlinked cells. Assign it, and add a
+regression test.
+
+Fixes #13003
+
+2026-09-16: Add Python API for tab groups
+
+Expose tab groups to the Python API: discover them via
+Tab.tab_group and Window.tab_groups, create them with
+Window.async_create_tab_group, change membership with
+Tab.async_add_to_tab_group / async_remove_from_tab_group,
+and rename, recolor, or collapse them via the TabGroup
+class. The consecutive-tabs invariant is enforced in iTerm2,
+which reorders tabs as membership changes.
+
+The rename/recolor/collapse mutators are registered as
+app-scope built-in functions (iTermTabGroupBuiltInFunctions)
+that resolve the group's current host window at call time,
+so a TabGroup handle keeps working after its tabs are
+dragged to another window. Membership and creation stay
+window-scoped because they act on tabs whose window is known
+when called.
+
+New protocol version 1.19 carries the per-tab group id,
+name, color, and collapsed state in ListSessionsResponse.
+Bumps the iterm2 module to 2.24 and adds an interactive
+example plus its test wrapper.
+
+2026-09-16: Harden AI Usage toolbar item after review
+
+Correctness and robustness fixes to the AI Usage workgroup
+toolbar item:
+
+- Decode a usage item's provider from a raw string and map
+unknown values
+  to the default, instead of letting RawRepresentable
+  decoding throw. An unrecognized provider (e.g. prefs from
+  a newer build) previously propagated up and made the whole
+  workgroup model fail to decode, silently discarding every
+  saved workgroup.
+- Run the usage command through iTermBufferedCommandRunner
+instead of a
+  hand-rolled Process/Pipe/watchdog. stderr is discarded so
+  an unread pipe can no longer fill and deadlock the read
+  for the full timeout, and the shared runner's timeout and
+  kill handling is reused. Output is size-bounded.
+- Track in-flight runners and terminate them on app
+termination so a
+  usage command running at quit is not orphaned to launchd.
+- Treat a missing bundled script as a reportable error
+rather than an
+  exit-1 no-op that looked identical to a transient empty
+  result.
+- Give each usage toolbar item a config-derived identifier
+so two on one
+  session no longer share the bare "usage" identifier.
+
+Script (claude_usage.sh):
+
+- Join stdout and stderr with a separator before pattern
+matching so a
+  phrase cannot straddle the boundary and match by accident.
+- Consolidate the failure classification into one case with
+an explicit,
+  documented priority order.
+- Emit an empty short label for a non-Latin model name and
+let the
+  toolbar's Unicode-aware fallback derive one, instead of
+  collapsing to a bare "W".
+- On mktemp failure, skip stderr capture rather than using a
+predictable
+  PID-based temp path.
+
+Adds tests for the unknown/missing provider decode and the
+non-Latin short-label case.
+
+2026-09-16: Move Tab Left/Right move the tab, not its whole
+group
+
+Previously these keyboard shortcuts moved an entire tab
+group as one indivisible unit whenever the current tab
+belonged to one. Now they move just the current tab: sliding
+within a multi-tab group, popping it out of the group at
+that group's edge, or joining an adjacent group when an
+ungrouped tab crosses into one. A one-tab group has no
+siblings to separate from, so its sole tab instead moves as
+a unit, keeping its group (swapping with a neighbor, leaping
+an adjacent group in one step, or wrapping at the bar's
+end).
+
+2026-09-16: Add AI Usage workgroup toolbar item
+
+A new "AI Usage" toolbar item, available in all workgroup
+session modes, shows Claude subscription usage as inline
+determinate progress bars (session and weekly windows). It
+periodically runs a configurable command that reports usage
+as JSON and renders the bars from it.
+
+Parameters: provider (Anthropic via Claude Code), an
+overridable command (defaults to a bundled per-provider
+script), and a refresh interval.
+
+Data comes from a bundled script that runs "claude -p
+/usage" with ANTHROPIC_API_KEY unset so it uses the
+subscription login. The script emits a generic {bars, error,
+diagnostic, reportable} JSON contract, so other providers or
+a custom command can drop in without app changes.
+
+Failures are classified so users are not prompted to file
+issues about their own environment: no subscription, not
+signed in, API billing, rate limits, an old Claude CLI, and
+empty output are all expected states with tailored,
+non-reportable messages. Only output that looks like a usage
+report but cannot be parsed (a changed or localized format),
+or otherwise unrecognized output, is marked reportable.
+Reportable errors show a ladybug-prefixed message and, on
+click, open a pre-filled GitLab issue using the new "AI
+Usage" description template and copy the details to the
+clipboard as a fallback.
+
+Includes unit tests for the JSON model and the parser script
+across the recognized and failure cases, and a release note.
+
 2026-09-15: Omit zero base-layout key in shifted Kitty
 reports
 
