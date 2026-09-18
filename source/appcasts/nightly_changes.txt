@@ -1,3 +1,422 @@
+2026-09-17: Add a -parallel option to run_tests.expect
+
+Running test classes across worker processes takes the whole
+suite from about 90 seconds to about 50. Off by default,
+because a parallel run prints only the NAME of a failing
+test: no file, no line, no assertion message. Use it for a
+quick check when you do not expect failures, and re-run
+without it to find out why something failed. On a failing
+parallel run the script now says exactly that.
+
+With -parallel and no test name the whole suite runs, which
+the script could not do before: it required a test name.
+
+The shebang changes from "expect -f" to "expect --" because
+expect parses leading dashed arguments as its own options,
+so -parallel never reached the script (it died with "illegal
+option -- p"). The -- ends expect's option list.
+
+Ordering does become nondeterministic, which is worth
+knowing given the suite has demonstrated it carries
+cross-test contamination. One flake turned up in four
+parallel runs: BidiAccessibilityCoordTests
+testCoordForPointMapsVisualToLogicalOnBidiLine, which passes
+in isolation and in every serial run. Not investigated.
+
+2026-09-17: Fix the five ModernTests failures the hang was
+hiding
+
+With the suite able to reach the end again, five failures
+surfaced. None are new; they were simply unreachable behind
+the hang, which stopped the run thousands of tests early.
+
+AIProviderPresetTests looked for a preset named "Ollama
+(OpenAI-compatible)", which 8b12ad481 deliberately renamed
+to "Local OpenAI-compatible (LM Studio, vLLM, ...)". Point
+the test at the new name and rename it to match, since it is
+no longer about Ollama.
+
+WindowFrameEscapeTests asserted right after harness.sync().
+The SetWindowFrame delegate call goes out as an unmanaged
+PAUSED side effect, which performBlock(joinedThreads:) does
+not drain, so the call had not landed yet and the tests saw
+nothing at all. Every other test in the codebase that
+depends on a paused side effect waits on an expectation, so
+do that here too, via a new onSetWindowFrame hook on
+SpyingScreenDelegate.  They pass in about 5ms, so the wait
+costs nothing on a green run.
+
+Worth noting the other three tests in that file assert that
+NO call happens, so they stayed green the entire time the
+feature was untested.
+
+LocalizationHygieneTests flagged 32 catalog keys (28 ru, 4
+zh-Hans) for containing an em dash. Every one of them was
+correct: Russian uses an em dash where English uses a
+copula, and Chinese uses it as ordinary punctuation. Remove
+the test rather than demand ungrammatical translations.
+
+2026-09-17: Fix a tab-drag test hanging the whole
+ModernTests suite
+
+PSMTabGroupDragTests started real AppKit dragging sessions.
+A real -beginDraggingSessionWithItems: does not drag inline:
+it arms an NSCoreDragManager run-loop observer, and the drag
+begins the next time anything pumps the run loop. So the
+test that armed it passed, and the observer detonated inside
+a much later test, which blocked forever in AppKit's modal
+drag-tracking loop waiting for a mouse-up that never came.
+
+The victim was ReportSyncCoalescingTests, whose feed()
+helper pumps the run loop; it sorts after
+PSMTabGroupDragTests alphabetically. The suite stopped there
+every run. Measured: 2704 tests in 33 seconds, then a hang I
+let sit for 41 minutes at 0% CPU before killing it. In
+isolation that same test class passes in 0.1 seconds.
+
+The class already had two partial workarounds for this: a
+finishDrag() in tearDown (which resets the assistant's own
+state but not AppKit's armed observer) and a testAA prefix
+to sort one test ahead of its poisoning classmates. Neither
+helps anything outside the class.
+
+Put the two live AppKit services a drag needs behind
+PSMTabDragSessionDriver: the NSDraggingSession, and the
+CVDisplayLink that polls the pointer (the session's own
+callbacks are throttled).  PSMAppKitTabDragSessionDriver is
+the production implementation and holds the code that used
+to sit inline in the assistant. Tests install
+FakeTabDragSessionDriver instead, which records the session
+rather than starting one and drives pointer updates
+synchronously, so a test can step a drag without a run loop.
+
+The driver is compiled into iTerm2Shared, alongside its only
+caller, so the other three targets that link
+libiTerm2Shared.a resolve it too. It is manual
+retain/release like the rest of that directory, which is
+built with CLANG_ENABLE_OBJC_ARC = NO.
+
+The production drag path still needs a manual smoke test:
+nothing in the suite exercises a real NSDraggingSession any
+more, by construction.
+
+2026-09-17: Reveal a join-all-spaces hotkey window on the
+current space
+
+After a display reconfiguration (such as closing and
+reopening the laptop lid on a multi-monitor setup) macOS can
+drop a join-all-spaces window's membership in the active
+space and pin it to a single space.  Ordering it front then
+switches the user to that space instead of revealing the
+window in place.
+
+Before rolling in, momentarily clear CanJoinAllSpaces when
+the window is off the active space so it behaves like an
+ordinary window, then restore the desired collection
+behavior on the next runloop spin. The restore must be
+asynchronous because macOS coalesces collectionBehavior
+changes made within a single runloop iteration.
+
+Cherry-picked from the adhoc build the reporter verified.
+
+Issue 12968.
+
+Co-Authored-By: Claude Opus 5 (1M context)
+<noreply@anthropic.com>
+
+2026-09-17: Clear stale double-width/double-height line
+attributes (#13055)
+
+A DECDWL/DECDHL attribute set with ESC #3, #4 or #6 lives in
+per-line metadata and was only ever cleared by an explicit
+DECSWL or by the whole-screen scroll that recycles line
+metadata. Every other way a line can lose its content left
+the attribute behind, so the next text painted there was
+stored expanded (one character per two cells, with
+DWL_SPACER interleaved) and drawn double-size and clipped.
+Reported against 3.7.1 by an app that draws a double-height
+title and then repaints the screen.
+
+DEC's ED says when you erase complete lines, they become
+single-height, single-width lines, with all visual character
+attributes cleared, and xterm implements that in
+ClearBufRows. Where the two disagree, follow xterm: it was
+the only implementation of these codes for long enough that
+applications are written against its behavior.
+
+Paths fixed:
+
+- ED 0/1/2 reset the attribute on the lines they erase in
+full, matching
+  xterm's promotion of ED 0 at the home position and ED 1 at
+  the last cell to ED 2. EL still keeps the attribute, as in
+  xterm, and a selective erase resets nothing.
+- Scrolling a scroll region carries the attribute with the
+content on
+  whole-line moves and clears it on the lines scrolled in,
+  so IL, DL and region scrolls no longer strand it on the
+  row the text left.
+- Entering the alternate screen, restoring a saved alternate
+screen, RIS,
+  DECSTR, Clear Buffer, removeLastLine, the replace-range
+  path, DVR frame restoration and primary-grid restoration
+  all blank the grid and then restore only some of its
+  lines. They now go through the new -[VT100Grid
+  clearAllWithChar:], which returns every line to single
+  width before blanking, so the lines that are not restored
+  come back genuinely blank instead of holding DWL_SPACERs.
+  DECALN deliberately does not use it: xterm's alignment
+  test leaves line attributes alone.
+
+tests/dwl-line-attribute-repro.sh drives the same cases
+through a real terminal and checks them with a
+cursor-position probe.
+
+2026-09-17: Fix crash on an OSC 8 hyperlink containing an
+emoji
+
+-[NSString indicesOfCharactersInSet:] recorded only the
+first index of each match and resumed the search one unit
+later. A character outside the BMP occupies two UTF-16
+units, so the low surrogate was left out of the index set
+and the character after it was skipped entirely.
+
++[NSURL(iTerm) URLWithUserSuppliedStringImpl:] slices the
+string by those indices to build its placeholder map, so a
+split pair produced a substring holding a lone surrogate.
+When that substring came back in a query item,
+-stringByAddingPercentEncodingWithAllowedCharacters:
+returned nil, because UTF-8 cannot represent a lone
+surrogate, and the nil reached
+-replaceOccurrencesOfString:withString:options:range:, which
+raises. That runs on the mutation queue while executing the
+link token, so a URL like https://example.com/search?q=
+aborted the app. Session restoration replayed the same link
+and crashed again, so the affected tabs could not be
+restored.
+
+The index set now takes the whole matched range, which also
+stops the following character from being dropped from the
+URL. The query loop treats a nil encoding as a failure to
+parse the URL rather than passing it along, so no future
+ill-formed input can abort the mutation queue.
+
+Fixes issue 13063.
+
+Co-Authored-By: Claude Opus 5 (1M context)
+<noreply@anthropic.com>
+
+2026-09-17: Honor $CLAUDE_CONFIG_DIR when installing the
+Claude Code hook
+
+Claude Code resolves its own settings.json from
+$CLAUDE_CONFIG_DIR, defaulting to ~/.claude. That is the
+supported way to keep separate accounts (personal vs. work)
+on one machine, and we were ignoring it: every read and
+write was hardcoded to ~/.claude, so for those users we
+installed a hook Claude Code never reads.
+
+The variable lives in the user's interactive rc files, so
+reading it means spawning their shell with -i. That is far
+too slow for the read paths (menu validation, the
+launch-time cache reconciliation, the health monitor), so
+resolve it exactly once, at install time, and persist the
+answer in NoSyncClaudeCodeConfigDirPath. Everything else
+reads that key synchronously. It stays nil until a first
+install has run, in which case we assume the default,
+matching Claude Code's own behavior and where a from-scratch
+install would go.
+
+The onboarding panel starts the resolution as soon as it
+opens, so the answer is usually in hand by the time the user
+reaches Install. If they get there first, the button bar
+shows a spinner and a Cancel button until it lands. A failed
+lookup offers a retry rather than guessing a location:
+installing into the wrong directory and then recording it as
+ground truth is worse than asking again.
+
+Hook installation moves off the main thread. It was already
+doing file I/O that can block on a network-mounted home, and
+it now has an async step in front of it.
+
+Reinstalling into a different directory strips our hook from
+the previous one, so it stops firing from a file no read
+path will look at again. That happens only after the new
+settings.json is safely written, so a failed write cannot
+leave the user with the hook removed from the old location
+and not installed in the new one.
+
+User-visible strings that named ~/.claude now interpolate
+the real path, with translations updated for all six
+locales.
+
+Adds offline tests for the two pure helpers this introduces:
+the /usr/bin/env parser and the hook-stripping routine.
+
+2026-09-17: Add interactive mode to shell-script execution
+in pidinfo
+
+runShellScript: gains an `interactive` flag. When YES the
+shell runs with -i, so the user's interactive rc files
+(.zshrc/.bashrc/config.fish) are sourced and the captured
+environment matches what a real terminal would have. Callers
+that only need the exported environment (PATH,
+SSH_AUTH_SOCK) keep passing NO, since sourcing a heavy rc
+costs seconds.
+
+Sourcing rc files means the shell's own stdout is no longer
+trustworthy: greetings, oh-my-zsh nags, MOTD echoes and the
+like write there freely and would corrupt the result. So the
+command's stdout is now redirected to a private FIFO inside
+a 0700 mkdtemp directory, and the shell's real stdout is
+drained and discarded. That makes the captured output exact
+on every shell, interactive or not. It also imposes a
+precondition, noted in the protocol header: the script must
+be a single command, because the appended `> fifo` redirect
+would otherwise bind only to the last command of a compound
+script.
+
+Completion is now detected from the shell process exiting
+rather than from its pipes reaching EOF. Interactive rc
+files routinely background a long-lived daemon (ssh-agent,
+gpg-agent, powerline-daemon) that inherits the shell's
+stdout and keeps the pipe open indefinitely, so EOF may
+never arrive.
+
+Other robustness work needed to make -i safe:
+
+- A 15s wall-clock deadline (SIGTERM, then SIGKILL after a
+1s grace),
+  under the 20s watchdog on the entry point, since a bad rc
+  can hang forever. Previously nothing bounded the loop.
+- Negative status values distinguish "could not run" (-1
+output cap,
+  -2 everything else) from a real run's exit status, so
+  callers can tell a wedge from a clean run that produced
+  nothing.
+- The drain helper is bounded in both the capture and
+discard cases. The
+  old version only bounded the capture case and would spin
+  forever discarding output from a producer that keeps the
+  fd readable.
+- An fd that hits EOF or a hard read error is dropped from
+the select
+  set instead of being re-polled forever.
+- stdin is /dev/null rather than an unclosed pipe, so an
+interactive
+  shell cannot block trying to read input.
+
+On the app side, runCommandInUserShell: gains an interactive
+variant and an XPC error handler, so a caller waiting on the
+completion cannot hang forever if the service crashes or is
+invalidated mid-call.
+
+2026-09-17: Verify uv's TLS against the system trust store
+
+Provisioning was split-brained about certificates. iTerm2
+downloads the uv binary itself through URLSession, which
+honors the keychain, and then uv rejects the very next
+download (the interpreter, then the wheels) because it
+verifies against the Mozilla root set baked into its binary
+and ignores the keychain entirely.
+
+On a machine whose traffic is inspected by a proxy whose
+root CA is installed in the keychain, that shows up as
+"Python Environment Unavailable" with "invalid peer
+certificate: UnknownIssuer" from a github.com URL the user's
+browser downloads fine (issue 13059).
+
+Set UV_SYSTEM_CERTS=1 so uv asks the same authority the rest
+of the app already asks. Not UV_NATIVE_TLS: uv 0.12 still
+accepts that spelling but warns about it on stderr, and we
+fold uv's stderr into user-visible error alerts.
+
+Verified cold, with a scratch install dir and cache, that uv
+still downloads the interpreter from github.com and a wheel
+from PyPI under the full provisioning environment.
+
+2026-09-17: Fix crash saving a debug log containing an
+unpaired surrogate
+
+Stopping debug logging threw NSInvalidArgumentException from
+-[__NSPlaceholderArray initWithObjects:count:] with a nil
+object at index 1, which is the body chunk in
+FlushDebugLog's @[ headerData, bodyData, footerData ].
+
+The body came back nil because UTF-8 cannot represent a lone
+surrogate, and -dataUsingEncoding: returns nil for a string
+containing one even with allowLossyConversion:YES. The lossy
+flag substitutes characters the target encoding lacks; UTF-8
+lacks none, so it never engages and malformed UTF-16 is
+reported as invalid input instead. A single bad character
+anywhere in the capture took the whole encode down. Terminal
+contents, pasteboard text, and strings built from a
+half-delivered UTF-8 sequence all carry lone surrogates, so
+debug logs pick them up readily.
+
+DebugLogDataFromString() now encodes, and on failure repairs
+unpaired surrogates to U+FFFD and retries. It never returns
+nil, since both callers hand the result to something that
+raises on nil, so a failure writes a marker rather than
+losing the capture. LogForNextCrash had the same latent bug:
+-writeData: raises on nil and that path logs arbitrary text.
+
+2026-09-17: Fix stale tab shortcut numbers after a group
+reorder
+
+Removing the middle member of a tab group correctly reorders
+the tabs to keep the group contiguous, but the Cmd-N
+shortcut numbers (PTYTab objectCount, assigned by physical
+position in -updateTabObjectCounts) were left glued to the
+old positions, so the shortcuts became non-consecutive. The
+drag reorder paths request a renumber themselves; the
+context-menu group-membership paths did not. Request it once
+at -tabsDidReorder, the single choke point every reorder
+funnels through.
+
+2026-09-17: Make a tab opened from a link in a grouped
+browser tab join that group
+
+Opening a link in a new tab from the built-in browser
+inserts the new tab immediately after the originating tab
+but never copied its tab group, so the new tab was ungrouped
+and sat in the middle of the group's run, breaking
+contiguity. Inherit the origin tab's group, the same rule
+"New Tab to the Right" already follows. Only when the origin
+tab was found; otherwise the tab is appended at the end of
+the tab bar and has nothing to be adjacent to.
+
+Covers both browser entry points (target=_blank /
+window.open and Open in New Tab), since both route through
+-openTabWithURL:...
+
+Issue 13029.
+
+Co-Authored-By: Claude Opus 5 (1M context)
+<noreply@anthropic.com>
+
+2026-09-17: Fix blank Screen popup when Main Screen is
+selected
+
+The separator in the initial-screen picker in Settings >
+Profiles > Window was added without a tag, so it defaulted
+to 0, which is also the tag of the main screen's item. Since
+the separator precedes the screens in the menu,
+selectItemWithTag:0 selected the separator: the popup
+rendered with no title and Main Screen showed no checkmark.
+Give the separator a tag that cannot collide with a screen
+index or with the No Preference and Screen with Cursor tags.
+
+2026-09-17: Disable xcode-tests CI job until the Xcode 27
+build mismatch resolves
+
+The xcode-27 preview runner ships Xcode 27 beta 6
+(27A5252f), which does not byte-for-byte match the Xcode
+27.0 build (27A266a) the committed prebuilt deps were built
+with, so the toolchain gate fails on every run. Disabling
+until there's a runner with a matching build or the deps get
+rebuilt to match.
+
 2026-09-16: Run CI on the Xcode 27 preview runner to match
 committed toolchain
 
