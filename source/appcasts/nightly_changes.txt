@@ -1,3 +1,428 @@
+2026-09-18: Let a conductor command join a pipeline that is
+already in flight
+
+Conductor.send() only dispatched when the conductor was
+idle. If any command was on the wire, a newly enqueued one
+sat in the queue until that command's %end came back from
+the remote, which is a full network round trip.
+amendPipeline existed to top up an in-flight pipeline but
+was only ever called from handleCommandEnd and dequeue,
+never on enqueue.
+
+That defeated the point of making framerSend pipelinable
+(issue 11266): several keystrokes can be outstanding at
+once, but a keystroke could only join a pipeline still being
+formed, never one already sent, so typing faster than the
+round trip made every key after the first wait one out. In a
+debug log from issue 13013, against a host with a 147ms
+median round trip, 21 of 40 tmux commands waited over 100ms
+before they were even written; the median wait was 117ms and
+the worst 428ms.
+
+Extend the pipeline on enqueue instead. The two in-flight
+states differ only in which context is executing, so the
+shared helper takes a closure to record the new pipeline:
+willExecutePipeline replaces its contexts, executingPipeline
+keeps the command whose begin was already parsed and appends
+behind it. The existing size and pipelinability limits are
+unchanged.
+
+Making send() live in the in-flight states meant auditing
+every place that mutates a pipeline. They share one shape:
+read the pipeline, run a handler that can call back into
+send(), write the pipeline back. While send() was a no-op in
+those states the shape was harmless. Now a re-entrant call
+can install state that the write-back overwrites, leaving
+commands on the wire that `state` cannot attribute responses
+to, so their handlers never fire.
+
+- extendPipeline: taking contexts off the queue runs the
+handlers of
+  canceled and aborted ones, and those re-enter.
+  handleCheckForPython's cancel arm calls execLoginShell(),
+  which calls send(); several arms call fail(), which calls
+  forceReturnToGroundState(), so the write-back could also
+  resurrect a torn-down pipeline. Collect dropped contexts
+  and notify after the state is consistent. Reachable before
+  this commit through dequeue() -> amendPipeline([]).
+- extendPipeline's write loop: state is consistent there, so
+a
+  re-entrant send() would extend and write immediately,
+  interleaving with the loop. Wire order B, D, C against a
+  state of A, B, C, D misattributes D's %begin/%end to C.
+  Defer mutation across the loop.
+- handleCommandEnd: captures the pipeline from the pattern
+match and
+  writes the remainder back after running the handler.
+  Setting state first, as handle(line:) does, would be
+  tidier but changes behavior: handleReset throws
+  IgnoreCommandError precisely so an unrecognized command
+  end leaves state alone. Guard instead.
+- handleUnhook: ran abort handlers with the live pipeline
+still in
+  state and `state = .unhooked` many statements away. Settle
+  state and clear the queue first, as
+  forceReturnToGroundState does.
+- extendPipeline's nil-delegate path: the old branch only
+drained the
+  queue and forced .ground, which was safe when nothing
+  could be in flight. The executing context lives in state,
+  so it was dropped without its handler running;
+  performFileOperation's continuation is only resumed from
+  that handler, so the awaiting task would hang.  Abort what
+  is in flight as well.
+
+Only the first is reachable today. The rest need a future
+handler that re-enters, or a synchronous path from write()
+back into the same conductor, neither of which exists now.
+Enforced rather than left to the audit, since nothing else
+records the constraint.
+
+2026-09-18: Fix an unreachable arm of
+handleSideChannelOutput that wrote to the wrong state
+
+handleSideChannelOutput switches on backgroundJobs[pid], but
+its willExecutePipeline arm assigned the transition to
+self.state, the conductor's own command state, rather than
+back to the job's entry. It also dropped the line that
+triggered the transition instead of delivering it.
+handleTerminate, just above, keeps the two separate
+correctly.
+
+This is not reachable and never was, so nothing observable
+changes.  Entries are only created by addBackgroundJob,
+which builds them as executingPipeline, and the dictionary
+is deliberately excluded from coding keys because it is not
+restorable. So backgroundJobs[pid] is always
+executingPipeline, side-channel lines have always taken the
+other arm, and that arm delivers them correctly.
+
+Fix it anyway because the cost of it becoming reachable just
+went up.  Corrupting self.state used to mostly lose the next
+%end; now that send() extends an in-flight pipeline, a
+keystroke enqueued afterwards would be appended behind a
+background job's ExecutionContext and written to the wire.
+
+Write to backgroundJobs[pid] and deliver the line, mirroring
+how handle(line:) makes the same transition for the
+conductor's own pipeline. The matching arm in
+handleTerminate is dead for the same reason and is left
+alone.
+
+2026-09-18: Fix the tab color reset restoring a color the
+profile never had
+
+OSC 6;1;bg;*;default (and SetColors=tab=default) restores
+the tab color baselines captured before the escape sequence
+ran. -tabColorSettings captured those per key, but for a key
+the profile did not have it either skipped the key or
+substituted the key's default value. Both are wrong for the
+appearance variants, which an escape-sequence write invents
+when the profile uses separate light and dark colors but
+carries its tab color on the base key alone:
+
+- Skipping meant no baseline was recorded on the first
+write, so the next
+  write captured the escape-written color as if it were the
+  pre-escape value. With the usual
+  three-writes-per-component form, that value is the color
+  after only the red component was applied.
+- Substituting the default NO for an absent enable bit
+materialized a
+  Use Tab Color (Light)/(Dark) key, which
+  -amendedTabColorKey prefers over the base key, so the
+  profile's own tab color stopped being used.
+
+The reset then wrote both back: a color the profile never
+had, with the enable bit for the active appearance turned
+off. Depending on which keys the profile has, the tab ends
+up with a color the user never chose, often red, or with no
+color at all.
+
+Record an NSNull sentinel for keys the profile does not
+have, so the restore removes them instead.
+tests/tab-color-reset-repro.sh drives the sequence by hand.
+
+Issue 13058.
+
+2026-09-18: Revert Kitty source-crop normalization on
+retransmit
+
+The source crop (x/y/w/h) was stored as fractions and
+re-resolved against whatever bitmap the placement pointed
+at, so a cropped virtual placement re-pointed to a
+differently-sized bitmap sampled a proportional region.
+That behavior was never confirmed against kitty, and
+rendering a resized crop through Unicode placeholders
+exposed a coordinate bug that bled an adjacent quadrant into
+the block (visible in
+tests/kitty-crop-resize-retransmit.sh).
+
+Restore the original behavior: resolve the crop once against
+the image present at display time and store it in pixels,
+and do not re-point a cropped placement onto a new bitmap.
+The core issue 13028 fix (re-point crop-less virtual
+placements on retransmit) is unaffected. Remove the
+crop-resize tests and the crop-resize script.
+
+2026-09-18: Stop reading whole files on the main thread when
+pasting (#13024)
+
+Two main-thread reads of the entire clipboard file could
+beachball for seconds on a large file or one on a slow disk:
+
+- handleFilePaste computed canPasteAsText by reading the
+whole file to
+  check whether it was UTF-8, before the paste-options
+  dialog was even considered, so it happened on every file
+  paste including ones where the dialog was permanently
+  silenced. It now samples the first 50 KB through a
+  FileHandle. The sample is read one byte longer than it is
+  used so that filling it proves the file was cut short, and
+  a UTF-8 sequence straddling the cut is trimmed rather than
+  counted as binary.  A file that genuinely ends
+  mid-sequence is still rejected, and when the tail turns
+  out not to match the sample, pasteFileAsText already
+  reports the file as not being UTF-8 instead of pasting
+  garbage.
+
+- validateMenuItem enabled Paste File Base64-Encoded by
+calling
+  dataForFirstFile, so merely opening Edit > Paste Special
+  read the whole file. Added hasReadableFirstFile, which
+  decides from the file's metadata, and kept the full read
+  in pasteBase64Encoded: where the user has actually asked
+  for the contents.
+
+Also honor the "When pasting a dropped filename, wrap it in
+double quotes" setting in the paste-options dialog. Paste
+Path, Paste Paths, and Upload and Paste Path all hardcoded
+quoting, so they disagreed with the drag-and-drop path,
+which has always respected the preference and defaults to
+backslash escaping. All four now route through
+iTermNonTextPasteHelper.escapedPathForPaste, exposed to ObjC
+for the post-upload paste in PTYSession.
+
+2026-09-18: Fix deferred side-effect flushes never being
+armed, and stale timers after a session becomes visible
+
+Three related problems in PeriodicScheduler.
+
+markNeedsUpdate(deferred:) had its guard inverted. It
+returned the value of scheduledDeferred from before the
+defer block set it, so the first deferred request on an idle
+scheduler reported that a timer was already armed and armed
+none, while every later one armed a redundant timer. A lone
+deferred request has no other scheduling opportunity,
+because the hot caller (setSideEffectFlag) only reaches this
+on a flag's 0 -> 1 transition and the flag is not cleared
+until the side effects run. So on a quiet session a redraw
+could wait for an unrelated caller to flush it, which may
+never come. Issue 10206.
+
+Rebuild that path on the deadline-and-generation bookkeeping
+already used for the throttling reset: at most one deferred
+flush is armed, a request no sooner than the armed one
+coalesces into it, and a sooner one supersedes it.
+Coalescing matters because the side-effect flags hit this on
+every linefeed.
+
+Changing period does not disturb timers already armed at the
+old one, so a session that became visible could wait out
+whatever remained of a background-sized window before its
+first paint. Add expedite(within:), which shortens both
+armed timers without itself requesting an update, and call
+it on the transition to foreground. It deliberately does not
+set _needsUpdate: forcing a flush on every tab switch would
+cost a sync with nothing waiting. Both timers need it and
+they are independent, since a deferred flush can be the only
+thing scheduled on an otherwise quiescent session.
+
+Finally, guard period with the mutex. The mutation queue
+writes it when a session becomes visible or hidden while any
+queue may be reading it, and the deferred path now derives
+its deadline from it, so the read and the arm have to happen
+under one lock.
+
+2026-09-18: Expedite SSH conductor side effects so they
+escape background batching
+
+A session whose view is not in a window batches its side
+effects at 1s instead of 1/30s. A tmux gateway never has a
+window, so when tmux runs over an SSH profile the conductor
+-- which is a strictly serial request/response channel --
+advanced at exactly one command per second.
+
+The load-bearing side effect is "end ssh command". It calls
+Conductor.handleCommandEnd, which is the only thing that
+returns the conductor to ground and dequeues the next
+command, and it is a paused side effect, so it also holds
+the gateway's token executor stopped until it runs.
+Keystrokes are framerSend commands on that queue, and the
+echo arrives as TMUX_LINE tokens that the paused executor
+will not run, so a round trip paid the full second in each
+direction. Debug logs from issue 13013 show every SSH_END
+execution landing in handleCommandEnd 1.000s later, and
+keystrokes waiting up to 1.2s in the conductor queue.
+
+Add an urgent side-effect tier that opts out of batching,
+and move the conductor delegate methods that need it onto
+it. Urgent means the flush happens sooner; side effects stay
+in the same FIFO and are not reordered.
+
+The recovery handshake is the same shape and is included.
+The framer emits one line per process and per saved key
+between begin-recovery and end-recovery, and each arrives as
+its own paused side effect, so reconnecting a hidden ssh
+session would otherwise cost a second per line with all
+token execution stalled throughout.
+
+The tier means "a batching period would stall a protocol or
+hold a pause", not "belongs to the conductor". That is
+narrow on purpose: urgency is a no-op for a visible session,
+and because every tier shares one FIFO that is drained
+whole, an urgent flush carries everything queued ahead of
+it, so a non-urgent side effect is delayed only when it is
+the tail with no urgent sibling behind it. So "handle side
+channel" and "read raw ssh" stay non-urgent: the former's
+command output is always followed by an "end ssh command",
+and the latter only feeds a coprocess and gates nothing.
+
+PeriodicScheduler needs to honor an urgent request when a
+long reset is already armed, which in the steady state is
+almost always. It now tracks the armed reset's deadline and
+generation so an urgent request can supersede it, rather
+than arming a second reset and allowing two flushes in one
+period.
+
+Background batching is otherwise unchanged: visibility still
+governs it and still governs token-execution yielding.
+
+IMPORTANT: cherry-pick this into the 3.7.3 release branch.
+The regression arrived in 3.7.0 (commit 0f7425eea, not in
+3.6.11) and reporters confirm 3.7.1 and 3.7.2 are still
+affected.
+
+Fixes issue 13013.
+
+2026-09-18: Add a Centered, No Title Bar window style. Issue
+13043
+
+Before 3.7.0 the Centered style had no title bar, because it
+was modeled on the edge-attached window types. Commit
+4c0e8797f reclassified it as a normal window that happens to
+stay centered (issue 12918), which gave it a title bar in
+the Light and Dark themes and the merged compact chrome in
+Minimal and Compact. That was the right call for
+placement-only styles, but it deleted the only way to
+express centered plus chromeless, and the Style pop-up has
+no separate axis for chrome.
+
+WINDOW_TYPE_CENTERED_NO_TITLE_BAR restores that combination
+as its own style. It follows WINDOW_TYPE_NO_TITLE_BAR for
+everything about chrome (full-size content view, compact
+window class, no titlebar accessories, no standard window
+buttons, no proxy icon) and WINDOW_TYPE_CENTERED for
+everything about geometry (canonical centered frame,
+immovable, hides in place for hotkey windows, re-centers on
+restore and on screen changes). Like
+WINDOW_TYPE_NO_TITLE_BAR it is chromeless in every theme, so
+unlike the centered pair it needs no compact variant and
+passes through iTermThemedWindowType unchanged.
+
+It keeps the user's size across minimize and restore,
+sharing the preserveSize:YES canonicalization added for
+issue 12918, rather than snapping back to the profile grid
+size the way the pre-3.7.0 Centered style did.
+
+Two incidental fixes in code this touches:
+
+- changeToWindowType: now records the new type when the old
+type
+  was also chromeless. It previously only updated
+  window.movable, so switching between two chromeless types
+  left windowType stale.
+- tabBarShouldBeAccessory: switched on a ternary, whose
+value
+  promotes to int and silently disables -Wswitch. Hoisted
+  into a typed local, and its two RLog statements now report
+  the value the switch matched on instead of
+  self.windowType, which differ while exiting Lion full
+  screen.
+
+2026-09-18: Fix stale Kitty image when retransmitting under
+a reused image id (#13028)
+
+A virtual placement (Unicode placeholder) kept drawing the
+image that existed when it was first displayed.
+Retransmitting under the same image id and redisplaying
+showed the old bitmap, so one program could draw the picture
+a previous program left behind.
+
+Re-point virtual placements at the freshly transmitted
+bitmap on retransmission, and supersede a prior virtual
+placement with the same (imageId, placementId) so duplicates
+do not accumulate. Non-virtual placements are snapshots and
+are left untouched, so a program that reuses one id for a
+sequence of pictures does not have its scrollback collapse
+to the newest bitmap.
+
+Related placement-model corrections made along the way: -
+Placement identity is (imageId, placementId), scoped per
+image, in the
+  display supersede path, the placeholder finder (virtual
+  only), the relative-parent finder, and the delete-by-id
+  and delete-by-number paths.
+- Store the source crop (x/y/w/h) as fractions of the source
+bitmap and
+  resolve against the live bitmap, so a resize retransmit
+  samples the same proportional region. Reject an
+  out-of-range crop with EINVAL instead of silently drawing
+  the whole image.
+- Freeze a placement's footprint at creation so a resize
+retransmit
+  scales into the existing rect rather than relaying out the
+  placement.
+- Drop an evicted image's own placements (matched by unique
+id, so id-less
+  images sharing the last-image slot are not over-removed)
+  and prevent an evicted placement from resurrecting on id
+  reuse; do not cascade the eviction to relative children of
+  still-resident images.
+- Cascade deletion to relative children only when their
+resolved parent is
+  removed; guard cycle detection against duplicate
+  placement-id pairs.
+- Coalesce placement-changed notifications per transmission
+and bound the
+  Metal texture cache to the working set.
+
+The crop-normalization and non-virtual retransmit semantics
+are pending confirmation against kitty 0.46; see the scripts
+in tests/.
+
+2026-09-18: Stop external attributes leaking past their run
+in the API
+
+stringForLine:length:eaIndex:cppsArray:stylesArray:
+run-length-encodes cell styles, coalescing a cell into the
+preceding run when the screen_char_t attributes and the
+external attribute both match. But prevAttr was declared nil
+and never assigned, so the second half of that test really
+asked whether the cell had no external attribute at all. The
+first plain cell after an attributed run therefore joined
+that run and was reported to the Python API carrying the
+previous run's underline color, block ID, or OSC 8 URL.
+
+Assign prevAttr alongside prev. As a side effect, adjacent
+cells with equal external attributes now coalesce into one
+run instead of each emitting its own style.
+
+Make stringForLine a class method (it used no instance
+state) and declare it so ModernTests can exercise it
+directly, matching
+protoStyleForCharacter:externalAttributes:.
+
 2026-09-17: Add a -parallel option to run_tests.expect
 
 Running test classes across worker processes takes the whole
