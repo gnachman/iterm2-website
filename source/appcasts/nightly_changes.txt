@@ -1,3 +1,90 @@
+2026-09-20: Detect localhost via OSC 7 machineID instead of
+hostname matching
+
+Dragging a file into a local terminal showed the Paste File
+dialog instead of inserting the path whenever the reported
+hostname did not match a known local name (VPN/Tailscale
+FQDNs, issue 13012). Locality was inferred from the
+hostname, which is fragile.
+
+Report location via OSC 7 (file URL with a
+?machineID=<version>:<value> query) from all five shell
+integration scripts and decide "same machine" by identity.
+The identity is the HMAC-SHA256 of kern.bootsessionuuid
+under a fixed public key, computed on both sides and
+compared; iTermMachineIdentity maps a token to a
+VT100RemoteHostLocality, falling back to hostname matching
+when the identity is unavailable (version 0:) or absent. A
+machineID-verified local report also remembers its hostname
+in the process-wide local set so subsequent bare reports
+heal.
+
+The receiver (VT100ScreenMutableState) parses machineID out
+of the OSC 7 URL, threads locality through host/directory
+recording, and gates all OSC 7 (first- and third-party) on
+the AcceptOSC7 advanced setting; when it is off and a
+machineID report arrives with no prior RemoteHost/
+CurrentDir, PTYSession warns once with an offer to enable
+it. Adds a debug FakeBootSessionUUID setting (with a
+redaction rule in sanitize_iterm2_plist.py) and updates the
+bundled shell integration (bash 22, zsh 19, fish 25, tcsh 9,
+xonsh 4).
+
+Tests: iTermMachineIdentityTests and
+VT100ScreenOSC7ReceiverTests cover token parsing, locality
+verdicts, carry-forward, the acceptOSC7 gate, and
+percent-decoding; tools/test_shell_integration_encoders.sh
+pins the per-shell encoders, the shell/app machineID
+interop, and fish native- emitter suppression;
+tests/fish3-osc7-suppression exercises fish 3.x.
+
+2026-09-20: Clip tab bar accessories rather than hiding them
+outright
+
+The Tahoe progress ring is a per-cell view outset past its
+pill by 2pt on every side so it can draw around it.
+-hideAccessoriesOutsideScrollRegion tested that outset frame
+against the scroll region, whose bounds are the cell
+margins, so the first and last tab's rings counted as
+outside and were hidden even though the tabs were fully
+visible.
+
+Accessories are subviews drawn on top of -drawRect:, so they
+see neither the scroll-region clip nor the shape the style
+clips cells to. Build each one a layer mask out of all three
+constraints instead: the style's clip path for that kind of
+accessory, the bar's own painted shape (a new optional
+-accessoryClipPathForTabBar:), and the part of the accessory
+inside the scroll region. Paths are intersected by chaining
+shape layers through their masks, since AppKit has no bezier
+path intersection and even-odd winding gives symmetric
+difference.
+
+So an edge tab keeps its whole ring, a tab partly scrolled
+under the window decorations keeps the visible part of its
+ring and its activity indicator instead of losing them, and
+neither paints past the bar's rounded ends.
+
+Clipping now runs wherever accessories or the viewport move:
+progress bars in -syncTabProgressBars, where their frames
+are decided, and indicators in
+-clipAccessoriesToScrollRegionRemovingInvisible:, called
+from -reallyUpdate:, -setFrame:, the width animator's
+settle, and each tick of the collapse slide. -setFrame: and
+the slide pass NO, masking an invisible accessory away
+rather than removing it, because their cell frames are stale
+or mid-interpolation and only -_setupCells: can undo a
+removal.
+
+Also stop restarting the spinner of a determinate indicator,
+which hides it: -[PSMProgressIndicator setAnimate:] now
+decides from the mode it knows rather than trusting the four
+call sites that ask.
+
+PSMVisibleAccessoryInterval and PSMRectInLayerCoordinates
+are declared in the header so ModernTests can pin the
+geometry rules directly.
+
 2026-09-18: Let a conductor command join a pipeline that is
 already in flight
 
