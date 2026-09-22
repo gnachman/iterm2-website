@@ -1,3 +1,172 @@
+2026-09-21: List every manual AI model, including one on the
+default Ollama endpoint
+
+A dynamic entry pointing at the built-in default endpoint
+was dropped as redundant with the built-in Ollama vendor.
+The result was a row in Manage AI Models that appeared in no
+picker and gave no hint why, which is the state you land in
+by choosing the Ollama (auto-discover) preset and saving it
+unchanged, since that preset ships with the default
+endpoint.
+
+Expand every dynamic entry instead. The models do duplicate
+the built-in vendor's, but disambiguateDynamicCollisions
+already qualifies each manual copy with its server and
+leaves the built-in copy the clean tag, so the two are
+distinguishable and neither shadows the other.
+
+That makes the discovery cache's header-blindness reachable:
+the built-in vendor fetches the default endpoint with no
+headers while a manual entry can name the same endpoint and
+carry an Authorization header, and both the cached models
+and the in-flight coalescing were keyed by endpoint alone. A
+header-less fetch could satisfy an authenticated caller,
+which 401s, so the entry expanded to nothing. Headers are
+now part of the cache key, hashed so a credential never
+reaches the prefs plist (where the sanitizer, which rewrites
+values and not keys, could not redact it) and so the key
+stays valid XML.  Persistence carries the bare endpoint in
+the value, since the key is no longer a URL, and prunes by
+configured bucket; snapshots written before this still
+restore. NoSyncOllamaDiscoveredModels is removed by the
+plist sanitizer, because its keys embed endpoint URLs.
+
+2026-09-21: Fix Test Connection refusing to run for an
+auto-discover AI model
+
+In auto-discovery mode the Model text field is hidden and
+cleared, and the model lives in the popup beside it instead.
+saveClicked reads the popup; testClicked still read the
+empty field, so Test Connection answered Enter a model name
+and URL before testing the connection. for a fully
+configured entry, and had never worked for one.
+
+Resolve the model the way saveClicked does. A whole-server
+entry names no single model but the probe has to ask for
+one, so use a discovered model, which is what the entry
+expands to at runtime; if discovery has not run yet, say so
+instead of claiming the form is incomplete. The URL-empty
+and model-empty cases now get their own messages rather than
+one covering both.
+
+2026-09-21: Fix Test Connection reporting success for
+self-hosted AI models. Issue 13021
+
+The probe resolved its API key independently of the request
+path: it sent the stored vendor key where a real request
+sends a placeholder, so an authenticated local server
+reported Connection Succeeded while every chat message 401d.
+Both now go through AITermController.apiKeyPolicy, and a
+refusal over credentials explains that no key was sent and
+names the header to add, in the Test Connection alert and in
+chat alike. The advice is derived from the URL the request
+actually went to, so a 401 from an OpenAI vector store
+attached to a local model is not blamed on the local
+endpoint.
+
+Also fixed, all the same class of bug: - Host comparisons
+were verbatim, so capitalization or a trailing DNS root dot
+  changed which key was sent. http://LOCALHOST was not
+  recognized as self-hosted and received the provider key;
+  https://API.DEEPSEEK.COM was attributed to OpenAI and
+  received the wrong one.
+- A custom header differing only in case from a built-in one
+(authorization vs
+  Authorization) was sent alongside it rather than replacing
+  it, leaving which value the server saw up to dictionary
+  order.
+- The App Review placeholder key no longer loses to the
+self-hosted
+  substitution, which had it contact a real endpoint.
+- The Settings hints promised a vendor key for models that
+never receive one.
+
+The string catalog also picks up 20 keys from already-landed
+features that were never synced, and re-syncs
+AdvancedSetting.disclaimChildren, whose English gained a
+sentence in an earlier commit. Every new string is
+translated into de, ja, pt-BR, ru and zh-Hans.
+
+2026-09-21: Log window minimum sizes and per-view constraint
+counts
+
+While chasing a bug where a window could be grown by
+dragging but never shrunk, the existing debug logs could not
+distinguish the possible causes.  AppKit was clamping the
+proposed frame before windowWillResize:toSize: was ever
+called, so the delegate saw nothing, and the clamp turned
+out to equal the window's own size. Three gaps made that
+hard to see:
+
+- Nothing logged the window's minimum size, which is what
+AppKit actually
+  clamps to. Log it, along with contentMinSize, when a live
+  resize begins.  A healthy window reports {0, 0} for both.
+
+- The recursive view description reported only
+  translatesAutoresizingMaskIntoConstraints as
+  "autolayout=". A view with that set to YES can still carry
+  constraints, so windows that were in fact driven by the
+  layout engine looked clean. Report a constraint count so a
+  log can be searched for constraints=[1-9].
+
+- Window dumps started at the content view, which hides the
+theme frame and
+  any titlebar accessories. Start at the frame view instead.
+
+The constraint count excludes
+NSAutoresizingMaskLayoutConstraint. Once the layout engine
+is engaged anywhere in a window, AppKit synthesizes four of
+those per subview, and in a sample log 1412 of 1645 views
+had a count that was exactly four times their direct subview
+count. Reporting raw counts would bury the handful of
+authored constraints in noise.
+
+fittingSize is under DLog rather than RLog: reading it
+forces a constraint-based layout pass, and RLog always
+evaluates its arguments, so it would pay that cost for every
+user on every drag. hasAmbiguousLayout is only consulted
+when a view has authored constraints, both because it is the
+accessor that talks to the layout engine and because it is
+meaningless for a view laid out by its autoresizing mask.
+
+2026-09-21: Add session status to variables
+
+2026-09-21: Fix Select Menu Item key bindings losing their
+menu item when only the keystroke is edited
+
+The key binding editor reads the chosen menu item back out
+of its popup on OK, via iTermMenuItemPopupView's
+selectedTitle/selectedIdentifier, which go through
+SearchableComboView.selectedItem. That accessor returned the
+table view's selected row, which is the transient row the
+mouse is over, rather than the committed, checkmarked
+selection held in selectedTag. A row is only ever selected
+by user interaction, so when the sheet restored a binding
+programmatically with selectItemWithIdentifier: and the user
+changed only the keystroke without opening the popup,
+selectedItem was nil and the parameter was written as empty,
+erasing the menu item. The sheet still displayed the right
+title the whole time because selectItemWithIdentifier: calls
+setTitle, which is why this looked like the shortcut edit
+itself was at fault.
+
+SearchableComboView.selectedItem now uses a new checkedItem
+accessor that resolves selectedTag against the unfiltered
+rows, so it reflects a programmatic selection and survives a
+search filter that hides the selected row. This also fixes
+the same data loss for Toggle Setting key bindings and for
+menu item pointer bindings, which read their popups the same
+way.
+
+Broken since 817462d8d (v3.5.0beta3), when the plain
+NSPopUpButton was replaced with the searchable combo view.
+Includes the rebuilt framework binary.
+
+Co-Authored-By: Claude Opus 5 (1M context)
+<noreply@anthropic.com> (cherry picked from commit
+54db3916c5121b5582fd2e82f02d2ffba32251ed)
+
 2026-09-20: Detect localhost via OSC 7 machineID instead of
 hostname matching
 
