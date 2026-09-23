@@ -1,3 +1,162 @@
+2026-09-22: Fix flag emoji width and the preconverted-string
+predecessor merge
+
+A flag emoji occupied four columns instead of two, leaving a
+gap after it. Issue 13070.
+
+codePointsWithOwnCell is derived from Grapheme_Base, so
+regional indicators fell into it and the own-cell scan
+re-split the cluster that
+CFStringGetRangeOfComposedCharactersAtIndex had already
+grouped correctly. Each indicator became its own cell and
+fullWidthFlags then doubled each one. Conjoining Hangul jamo
+were already excluded from that set for the same reason, so
+exclude regional indicators too. The exclusion goes in
+generate_nscharacterset.py so it survives the next
+regeneration.
+
+A flag is now an ordinary one-cluster complex char, which
+retires the Metal glyph-key pairing added for issue 12927:
+the cell carries the whole flag string, so CoreText shapes
+it with no help. The const hoisting from that commit is
+kept, as is combiningSuccessor itself, which is still needed
+for spacing combining marks.
+
+Because a flag's width now comes entirely from its base
+regional indicator, force a regional indicator pair
+double-width rather than consulting
+iTermIsDoubleWidthCharacter. Two columns is what wcwidth
+reports for the pair, and one column would put a program's
+cursor arithmetic out of step with the grid. Unlike VS16
+widening this is not gated on the alternate screen, because
+it converges with what full-screen applications compute
+instead of diverging from it. That leaves fullWidthFlags
+affecting only a lone indicator, so relabel it.
+
+Making a flag a single cluster exposed three defects in the
+preconverted-string path, where the parser thread converts "
+" + string because it cannot know the predecessor:
+
+- The prepended space is a faithful stand-in only when it
+absorbs the
+  same prefix of the string that the real predecessor does.
+  UAX #29 GB11 (emoji ZWJ sequences), GB6 through GB8
+  (conjoining jamo) and GB12/GB13 (regional indicators) all
+  break that, leaving content in the buffer that the
+  mutation thread has already merged into the predecessor
+  cell. Neither thread can decide alone, so the parser
+  records how many UTF-16 units the space absorbed and the
+  mutation thread compares it against the real predecessor,
+  falling back when they differ. firstChar now comes from
+  the predecessor-augmented string; computing it from the
+  bare string gave a third answer that matched neither
+  conversion.
+
+- A narrow predecessor that widens by absorbing the incoming
+code point
+  has no DWC_RIGHT on the grid yet, and the space-augmented
+  buffer has none either. The slow path was skipping the
+  spacer, leaving the character one column wide with the
+  cursor inside it so the next write overwrote its right
+  half; the fast path dropped the cell entirely.  The slow
+  path now writes it and the fast path delegates. This also
+  fixes a base widened by a VS16 arriving in a later write.
+
+- At the right margin the widened character no longer fits,
+so rewind
+  onto the predecessor and re-emit it, letting the grid's
+  own right-margin handling produce DWC_SKIP and EOL_DWC and
+  place it on the next line. The predecessor's rendition is
+  carried over so a character whose halves arrive under
+  different SGR state keeps the first one.
+
+The slow path is extracted into appendStringAtCursorSlowly:
+so the fast path can delegate to a single implementation.
+
+Skin-toned emoji are still split from their base and are
+left for separate work: emoji modifiers have
+Grapheme_Cluster_Break=Extend, so Apple attaches one to
+whatever precedes it and CoreText draws a separate swatch
+when the base cannot take a modifier. Suppressing that split
+needs an Emoji_Modifier_Base check on the preceding code
+point.
+
+Also skip the seven PSMTabGroupDragTests that call
+-startDraggingGroupWithChip:. That reaches
+-beginDraggingSessionWithItems: for real, and headless there
+is no mouse-up, so the NSDraggingSession stays pending for
+the rest of the process. -finishDrag in tearDown clears the
+assistant's state but cannot end an AppKit session. The next
+test to pump the run loop trips the drag manager's observer
+into -[NSCoreDragManager
+_dragUntilMouseUp:location:modifiers:], which blocks the
+main thread that XCTest runs on, and the suite stops there.
+Sampling a stuck run shows that stack. The full suite now
+completes instead of stalling around the halfway mark.
+
+2026-09-22: Fix stray glyph ink surviving the clear with the
+GPU renderer when antialiasing is off
+
+iTermCharacterSource rasterizes every glyph into one
+CGContext shared by the session and afterwards clears only
+the glyph's measured bounding rect. That rect came from
+CTLineGetImageBounds, which consults the context's
+shouldAntialias flag, but drawWithOffset:iteration: sets
+that flag inside a save/restore pair, so the measurement
+always ran with antialiasing on. In a profile with
+Anti-aliased turned off the glyph was therefore drawn
+aliased and measured antialiased. Monaco 12's "~" draws at y
+7...9 while the antialiased bounds claim y 2.18...4.37, far
+outside the 2px fudge factor, so ink survived the clear and
+contaminated the next glyph rasterized into the shared
+context.
+
+iTermASCIITexture builds each texture by walking codes
+32...126, so "~" (126) is the last glyph drawn and SPACE
+(32) is the first glyph of the next texture built from the
+same context. Space has no ink of its own and bitmapForPart:
+copies the whole cell tile, so the leftover tilde became the
+space glyph. The plain texture is built first against a
+freshly cleared context; the bold, italic and thin-strokes
+textures are built lazily later and inherited the residue.
+That is why the reported symptom was bold spaces drawing a
+tilde, and why it persisted for the rest of the session once
+it appeared.
+
+Changes:
+
+- Measure a second time with shouldAntialias off when
+drawing will be aliased,
+  and union the two rects. Set the flag explicitly for both
+  measurements rather than relying on the caller, since
+  prepareToDrawIteration: reaches frameFlipped: with the
+  flag already lowered on the second and later runs of an
+  iteration.
+- Discard the aliased measurement when it cannot describe
+this context. Several
+  Nerd Font, Monaspace and BerkeleyMono builds answer in
+  font design units, e.g.  {139, 512, 987, 393} at every
+  point size.
+- Add -boundsAreTrustworthy. When there is no usable aliased
+measurement, clear
+  the whole context instead of trusting a rect already known
+  to be unreliable, as the emoji path does.
+  iTermGlyphCharacterSource reports untrustworthy bounds
+  whenever it draws aliased, because
+  CTFontGetBoundingRectsForGlyphs takes no context and
+  cannot account for hinting.
+- Apply the extra clear margin in drawWithOffset:iteration:
+rather than in
+  frameFlipped:, so that newParts does not select extra
+  parts to pay for it.
+- Scale the fake bold addend in
+frameForBoundingRect:flipped:. Both draw sites
+  offset the bolding pass by fakeBoldShift * scale while the
+  rect grew by the unscaled point value, leaving the
+  rightmost column of ink outside the bounds.
+
+Issue 13071
+
 2026-09-21: List every manual AI model, including one on the
 default Ollama endpoint
 
