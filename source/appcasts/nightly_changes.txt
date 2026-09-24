@@ -1,5 +1,297 @@
-2026-09-22: Fix flag emoji width and the preconverted-string
-predecessor merge
+2026-09-23: Fix the paste-options dialog remembering the
+wrong choice
+
+iTermWarning persists a silenced choice as a button index
+under the warning's identifier, but the paste-options
+dialogs build a different button list depending on the
+paste: local or remote, file or folder, text-decodable or
+not. All the single-file shapes shared one identifier, so an
+index remembered for one list meant a different action in
+another.  Answering "Paste Path" for a local file and
+checking "Remember my choice" made the next file dropped on
+a remote host upload itself without asking, because "Upload
+and Paste Path" occupies the same position there.
+
+Derive the identifier from the options offered instead of
+hand-naming it, so two pastes share a saved answer only when
+they present the same choices. The name is built from the
+actions' stable rawValues, sorted so that reordering buttons
+does not reset anyone, with cancel excluded (never
+remembered) and pasteAsText excluded (purely additive, so a
+text file and a binary file share one memory). Give every
+action a fixed iTermWarningSelection and pass it as an
+actionToSelectionMap, so a saved choice either names the
+same action or fails to resolve and the dialog asks again.
+Old saved answers were bare indexes with no sane migration,
+so the new identifiers drop them and ask once more.
+
+Also offer "Paste as Text" on a remote host. It types the
+local file's decoded contents into the tty exactly as "Paste
+Base64-Encoded Contents" types an encoding of them, so it
+never depended on where the far end of the tty was; it had
+only been grouped with "Paste Path", which genuinely is
+local-only. fileActions now splits along that axis: naming
+the file depends on the connection, sending its bytes inline
+does not.
+
+Add "Upload and Paste Paths" for several files on a remote
+host. This was the one case with no replacement for the
+local paths, so they were offered there as a best-effort;
+now they are not, and the multi-file branch follows the same
+rule as the single-file one. Uploads that fail contribute
+nothing to the pasted line, since their names would point at
+files that are not there and the failure is already reported
+in the file transfers window.
+
+Single-file and multi-file upload-and-paste now share one
+implementation. The in-flight transfers became a group with
+a generation counter so a completion arriving after a cancel
+can tell its group is gone, results go into a slot per input
+so the pasted order matches the order dropped, and the group
+finishes only once every upload has reported and all of them
+have been started.
+
+Finally, paste the path the file actually landed on. An
+upload over ssh integration never overwrites: if the name is
+taken on the far host it uploads as "name (2)" and records
+that. The completion reported the path predicted before the
+upload, so the pasted path named the pre-existing, different
+file.
+
+2026-09-23: Upload every dropped file over ssh integration,
+not just the first
+
+-[PTYSession uploadFiles:toPath:] loops over the files and,
+in the conductor branch, broke out of the loop after handing
+off the first one.  Every file after it was silently
+dropped: no error, no partial-success report. It affected
+both dragging several files onto a terminal and choosing
+Upload in the paste-options dialog, for anyone reached over
+ssh integration. The SCPFile branch was unaffected because
+it chains the transfers and runs to completion.
+
+Use continue instead. The conductor uploads are deliberately
+not chained: each runs as its own task writing to its own
+"<dest>.uploading-<uuid>" tempfile, and the
+create/append/stat/mv commands serialize on the conductor's
+command queue, so concurrent uploads interleave chunks
+without colliding. The upload is chunked precisely so it
+does not monopolize the connection.
+
+Present since efd6c3504 (February 2023).
+
+2026-09-23: Fix dragging, sizing and squeezing of the window
+name beside the tabs
+
+Hit-testing the name to the root view took it out of
+-[iTermTabBarControlView mouseDown:], which is the only
+thing that drags a compact window by its title bar:
+movableByWindowBackground is NO whenever the name is
+visible, and PSMTabBarControl answers NO to
+mouseDownCanMoveWindow. Detect the double-click where the
+strip already detects one, in the tab bar's -mouseUp:, and
+offer it to the tab bar's delegate before falling back to
+-it_titleBarDoubleClick. Hit-testing is unchanged, so
+dragging, scrolling and first-mouse over the name behave as
+they do everywhere else on the strip.
+
+Drop the -menuForEvent: carve-out. The name sits in the tab
+bar's reserved left inset, where -[PSMTabBarControl
+menuForEvent:] finds no cell and no chip and returns nil, so
+it never produced a menu, and the release note promised one.
+Run the rename off a dispatch_async so the modal alert does
+not start a nested run loop inside event dispatch.
+
+Two fixes to the name itself, both older than the
+double-click:
+
+The label's frame was the width of the glyphs, but a text
+field cell insets its text about two points on each side, so
+the cell was always about four points short and truncated a
+name that fit. Truncation drops whole characters, so four
+points shy cost far more than four points of name: "-zsh"
+measured 26, needed 30, and drew as "-...". Measure what the
+label needs instead.
+
+The name's allowance asked the tab bar for the largest inset
+that still fits every cell at its minimum width. A
+scrollable bar does not shrink cells to fit, so that
+reserved space no tab would ever be laid out in, and each
+new tab took another cellMinWidth from the name until it
+fell under the 44pt floor and vanished, typically at the
+seventh tab. Ask what the bar needs to stay usable: for a
+non-scrollable bar that is the same question, and a
+scrollable one insists only on room for one tab.
+
+The release note claimed the drag and a context menu that
+never existed. The name beside the tabs is itself
+unreleased, so the rename becomes a clause in that feature's
+bullet rather than a Bug Fixes entry.
+
+2026-09-23: Open Set Window Title by double-clicking the
+window name beside the tabs (#733)
+
+The Compact and Minimal themes show the window name beside
+the tabs, but the only way to change it was Window > Edit
+Window Title. Double-clicking the name now opens that same
+dialog.
+
+2026-09-23: Remove two Session Status reload tests with
+environment dependencies
+
+test_toolInNonVisibleWindowSkipsTheReloadUntilTheWindowIsBack
+orders a real window out and back in and asserts on
+it_isVisible, so it needs a live window server and fails on
+a headless host for reasons unrelated to what it covers.
+
+test_notificationBurstSchedulesExactlyOneReload posts seven
+app-wide notifications with a nil object. In the app test
+host those fan out to every other observer in the process:
+iTermAPIHelper ships a focus-change notification with
+selectedTab 0 to any connected API client,
+iTermApplicationDelegate rebuilds the session submenus, and
+CompanionHostBridge reacts to the session-count
+notification.
+
+The four remaining tests in the class still cover the hide
+and payback path. Updated two comments that described the
+removed coverage.
+
+2026-09-23: Avoid redundant Session Status reloads when
+switching or closing tabs (#749)
+
+* Make iTermGenericEvaluator.invalidate idempotent
+
+The usual lifecycle invalidates twice. Callers invalidate
+explicitly before dropping their reference
+(iTermSwiftyStringTextField.set, PTYSession's badge,
+auto-name and background-image swifty strings), and then
+-dealloc invalidates again.
+
+-[NSNotificationCenter removeObserver:] walks the whole
+process-wide registrar even when the object registered
+nothing, so the second pass costs as much as the first. A
+sample of a tab switch with the Session Status toolbelt tool
+open shows the two removals at 576 and 581 samples inside
+one call to set(interpolatedString:scope:), out of 1200 for
+the enclosing configure.
+
+Guard on a flag so only the first invalidate does the work.
+Every caller invalidates and then discards, so there is
+nothing to revalidate.
+
+* Stop the Session Status tool stalling tab switches and
+closes
+
+Switching tabs with the Session Status tool open in the
+toolbelt stalled for about a second on a window with 15
+tabs. Closing a tab is the same bug, worse.
+
+Every switch reloaded the tool's whole table three times.
+-[PTYTab setActiveSession:updateActivity Counter:] and
+-[PseudoTerminal tabView:didSelect TabViewItem:] each post
+iTermSessionBecameKey, and the latter also posts
+iTermSelectedTabDidChange; all three land in
+needsShortcutReload, which reloaded every row synchronously.
+
+Closing a tab selects another one, so it fires those same
+three and then two more: iTermNumberOfSessionsDidChange from
+-[Pseudo Terminal tabViewDidChangeNumberOfTabViewItems:] and
+from -[PseudoTerminal sessionWasRemoved], which -[PTYTab
+removeSession:] calls. That is five full-table reloads to
+close one tab. In a sample of five open-and-close rounds,
+those five reloads are 2631 of the 2925 samples under
+-[PTYTab closeSession:].
+
+Each row then rebuilt the swifty string behind its name
+label. configure() always passes the same interpolated
+string and the same session scope, so the rebuild produced
+an identical field while tearing down an evaluator and
+standing up a new one.
+
+Hiding the toolbelt did not help. Hiding it sets its hidden
+flag rather than removing it from the window, so the tool
+kept receiving notifications with a non-nil window and the
+window check in activeSessionDidChange did not fire.
+
+Three changes:
+
+- Coalesce the reloads onto the next runloop pass,
+  so a burst collapses into one. Scheduled with async rather
+  than the existing debounce interval so the shortcut labels
+  still land in the same frame as the switch.
+- Skip the reload entirely while the tool is
+  hidden, remembering the debt and paying it in
+  viewDidUnhide().
+- Reuse the swifty string in
+  iTermSwiftyStringTextField when the interpolated string
+  and scope are both unchanged.
+
+* Address review: coalesce shortcut reloads with
+IdempotentOperationJoiner
+
+Replace the hand-rolled pendingShortcutReload
+DispatchWorkItem with
+IdempotentOperationJoiner.asyncJoiner(.main), the existing
+coalescing primitive - same "first call schedules on the
+next main-loop spin, later calls join" contract,
+thread-safe, and already used by iTermGenericEvaluator in
+this PR's blast radius.
+
+The joiner has no transient cancel (invalidate() is
+permanent), so viewDidMoveToWindow no longer cancels a
+queued reload and eats one redundant pass over a
+toolbelt-sized table instead. That path is cold - the tool
+entering or leaving a window - and ChatInputView.layout()
+makes the same bargain with its layoutJoiner, so a new
+primitive is not worth it here. The
+missedShortcutReloadWhileHidden debt logic is unchanged.
+
+The tests no longer reach for the work item's identity,
+which the joiner does not expose. They assert on behavior
+instead: shortcutReloadCount counts reloads that actually
+ran, so "three notifications produce one reload", "a hidden
+tool reloads zero times", and "unhiding pays back exactly
+one" are now stated directly rather than inferred from a
+scheduled object.
+
+* Address review: skip reloads in non-visible windows, fix
+the counter
+
+shortcutReloadCount was incremented above the guard that
+bails when there is no table or no rows, so it counted
+scheduled invocations rather than reloads that ran. The
+previous commit's claim that it "counts reloads that
+actually ran" was wrong. A bare ToolStatus in a test never
+has rows, so every ToolStatusShortcutReloadTests test would
+still have passed if reloadShortcuts() stopped touching the
+table.  Move the increment below the guard, next to the
+reloadData call.
+
+The tests now build a tool with rows in an ordered-in
+window, through a setStatusesForTesting(sessionIDs:) seam,
+since the real path needs a toolbelt delegate to answer
+windowContains(sessionGUID:). A new test pins that a tool
+with no rows does not count a reload. With a window in
+place, the burst test posts the exact five notifications
+closing a tab produces, iTermSessionBecameKey included.
+
+Skip on !it_isVisible instead of
+isHiddenOrHasHiddenAncestor, matching relayout(). That adds
+a miniaturized or ordered-out window, which still paid the
+full per-row reload on every tab switch.  viewDidUnhide()
+does not fire when such a window comes back, so the tool
+also observes its own window's occlusion state, which
+changes on deminiaturize and order-in, and pays the debt
+there. A new test covers it, ordering the window out rather
+than miniaturizing it, which animates.
+
+The tests put NoSyncStatusToolLastUseDate back afterwards: a
+visible ToolStatus stamps it in relayout(), and
+ClaudeWatcher reads it.  2026-09-23: Remove obsolete
+scroll-view dismembering workaround (#763) 2026-09-22: Fix
+flag emoji width and the preconverted-string predecessor
+merge
 
 A flag emoji occupied four columns instead of two, leaving a
 gap after it. Issue 13070.
