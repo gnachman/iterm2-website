@@ -1,3 +1,50 @@
+2026-09-24: Don't change presentation options while the app
+is inactive
+
+Issue 12993: on macOS 26, cmd-tabbing out of a non-native
+fullscreen window with the menu bar hidden would flash the
+other app and then hand activation straight back to iTerm2,
+often leaving the user unable to switch apps without using
+the mouse.
+
+-[PseudoTerminal windowDidResignKey:] calls
+-[iTermPresentationController update] for fullscreen
+windows, and that wrote NSApp.presentationOptions while the
+app had already gone inactive (the debug log shows the write
+one millisecond before "Resign active"). Presentation
+options only apply to the active app, and macOS drops ours
+on deactivation without being asked, so the write
+accomplished nothing while perturbing the app-switch
+handshake.
+
+The restore-on-resign goes back to 2010, when it used the
+process-global +[NSMenu setMenuBarVisible:] and genuinely
+had to put the menu bar back.  Commit 4b6066281 moved it to
+presentation options in 2011, at which point it became
+redundant, and it survived two refactors unexamined.
+
+Skip the write from -update when the app is inactive.
+-forceShowMenuBarAndDock passes force:YES and still writes,
+because the hotkey window's previous-state restoration and
+the issue 4136 workaround both have to write while another
+app is active.
+
+Also add two manual probes under tests/ that measure what
+the menu bar APIs actually do, since this area is easy to
+reason about incorrectly.
+
+2026-09-24: Clean up after removing the dismember scroll
+view workaround
+
+Drop the orphaned AdvancedSetting.dismemberScrollView entry
+from the string catalog, which would have gone stale on the
+next extraction run and kept translators working on a
+setting that no longer exists, and add the release note for
+the removal.
+
+Co-Authored-By: Claude Opus 5 (1M context)
+<noreply@anthropic.com>
+
 2026-09-23: Fix the paste-options dialog remembering the
 wrong choice
 
