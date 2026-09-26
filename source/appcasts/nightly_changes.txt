@@ -1,3 +1,448 @@
+2026-09-25: Translate the new strings, and fix three that
+were wrong
+
+Regenerated with make extract-strings, so this also carries
+the comment changes from the previous commit and the
+reworded English for AdvancedSetting.fullWidthFlags, which
+the catalog had not caught up with.
+
+New keys translated into all five languages: the four
+set-status error reasons for expiring statuses,
+MenuTip.LockLocation, NonTextPaste.UploadAndPastePaths, and
+PTYSession.UploadingFileCount.
+
+That last one is "%ld files", which is count-dependent, so
+it is authored as a plural rather than translated flat: a
+flat value bakes in English's two number forms, and Russian
+needs four. Its en "other" is identical to the source string
+so sync keeps the variations.
+
+Three strings that were already here were wrong, not just
+untranslated:
+
+  - SetStatus.InvalidDotColor and SetStatus.InvalidTextColor
+  translated
+    the argument name in zh-Hans, so the message no longer
+    named the argument the caller passed. They now name
+    dot_color and text_color, like the other four languages
+    do.
+  - AdvancedSetting.fullWidthFlags now says something
+  different in
+    English, so all five translations described the old
+    meaning. They are rewritten from the new text rather
+    than left as needs_review.
+
+2026-09-25: Give each shared localizable string one comment
+
+extract_strings.sh warns when a key reaches the catalog with
+more than one comment, because a translator then sees the
+same key described two ways and cannot tell which context to
+translate for. Eight keys were in that state:
+
+  extractLocStrings: warning: Key
+  "EditKeyAction.ActionCopyModeCommands"
+    used with multiple comments
+  notice: Key "General.Delete" used with multiple comments:
+  "Delete",
+    "Delete button", "Delete menu item", and "Label for a
+    Delete control"
+
+In every case the sharing is deliberate: one short word
+serving a button and a menu item, or a submenu heading and
+the item that opens it. So unify the comments rather than
+split the keys, which would have created new keys needing
+five translations each for no linguistic gain. Each comment
+now names every context it covers.
+
+Only the comment arguments change; no string value moves.
+
+2026-09-25: Let it2 target the session showing a tmux pane,
+locally and over SSH integration
+
+A process in a tmux -CC pane cannot learn its iTerm2 session
+ID, so cc-status was reporting Claude Code's status to the
+buried gateway session (issue 13049). it2 now accepts --tmux
+"$TMUX" --tmux-pane "$TMUX_PANE" on set-status, get-status,
+set-var and get-var, and iTerm2 maps the address to the
+pane's session (TmuxPaneLocator). A pane address only means
+anything on the machine it was read on, so a lookup also
+carries the ssh conductor it arrived over and only tmux
+servers on that connection may answer.
+
+Which connection a pane's it2 calls over is decided by
+records the attached controllers publish on the tmux server:
+one global user option per attached client, @it2_client_<hex
+of tmux client name> = c_<hex of JSON>, holding the
+connection's socket and nonce (or the local suite). it2
+keeps only records whose client is still attached in control
+mode and tries the newest first, so a later attacher leaving
+never strands an earlier one, and a crashed iTerm2's record
+is ignored. Controllers remove their own record on detach
+and prune others on %client-detached.
+
+Also: set_session_status, get_session_status and
+session_id_for_tmux_pane built-ins; the background-task
+count moves to user.claude_background_tasks; the tmux server
+locality check retries instead of caching one failed sysctl;
+RLogOncePerKey for budgeted always-on logging; it2's tmux
+query is bounded by a real timeout.
+
+2026-09-25: Remove two no-op statements from the title code
+
++[PTYTab tabWithArrangement:...] set a Restoring label
+before the tab had a tab view item, so the message went to
+nil. The catalog key PTYTab.Restoring is left for
+extract_strings.sh to mark stale.
+
+-[iTermSessionNameController
+evaluateInvocationSynchronously:...] assigned neverReturnNil
+on a scope pointer that was still nil. Enabling it for real
+would pass unresolved variables to the title function as
+empty strings, so note that instead.
+
+2026-09-25: Republish a session's title when its tmux
+formatting changes
+
+iTermSessionNameController applies the tmux decoration when
+it evaluates and publishes, so a session that acquired or
+lost a tmux controller kept its undecorated title until
+something unrelated changed the base name. When a tmux
+window first loaded, its tab showed a bare session name with
+neither the tmux marker nor the subtitle line.
+
+Add -formattingDescriptorDidChange, which re-formats the
+cached base name and publishes it if it differs from what
+was published last. PTYSession calls it where the
+descriptor's inputs change (-setTmuxController:, gateway
+start, host disconnect), and the unchanged-base-name arm of
+a reevaluation calls it so an observed tmux variable change
+also carries the new formatting through.
+
+Make the synchronous evaluation arm publish through the same
+path as the asynchronous one. It used to hand the raw cached
+evaluation to the delegate, skipping -formattedName: and
+never updating session.name.
+
+Route publishing through -publishPresentationName rather
+than -presentationSessionTitle, and guard -updateIfNeeded
+against re-entry from a publish callback: an observer
+reading a title accessor during a publish could start a
+nested evaluation and publish twice for one change.
+
+Replace -[PTYTab loadTitleFromSession], which assigned the
+raw session name to the label (dropping a title override,
+the tmux marker and the subtitle line), with a public
+-updateTabTitle.
+
+Issue 13072.
+
+2026-09-25: Recompute the tab title before observers of an
+active-session change run
+
+-setActiveSession: recomputed the title only at the end,
+after posting iTermSessionBecameKey and telling the window,
+which re-renders the touch bar's tab labels. Those observers
+saw the outgoing pane's title and then rendered again once
+the title caught up. Move the recompute ahead of them.
+
+Instant replay, screenshot mode and clearing a filter swap a
+synthetic session in and out by assigning activeSession_
+directly, bypassing -setActiveSession:. On the way in, the
+synthetic session's synchronous name publish was dropped
+because it was not yet the active session, so the tab bar
+could draw a frame holding the live session's title; on the
+way out nothing recomputed the title at all until the next
+label refresh.  Recompute at the end of both swaps.
+
+Issue 13072.
+
+2026-09-25: Keep a manually set tab title when the tab label
+is refreshed
+
+A title set with Edit Tab Title (or a profile's custom tab
+title) lives in the tab's title override and is resolved
+into tab.title by -updateTabTitleForCurrentSessionName:. But
+-labelForActiveSession, which every label refresh went
+through (a tab-status change, a subtitle change,
+kUpdateLabelsNotification, -setTabViewItem:), rebuilt the
+label from the active session's name and so replaced the
+user's title with the profile name. The Claude Code
+integration's status hook made this happen constantly.
+
+Build the label from tab.title in one place (-tabBarLabel)
+and have -updateTabTitleForCurrentSessionName: use the same
+builder so the two paths cannot drift. While here: fall back
+to the session name rather than an empty tab title when the
+session has no presentation name yet, keep tab.title non-nil
+when there is no active session, and coalesce a nil subtitle
+so the tab bar never draws (null).
+
+Issue 13072.
+
+2026-09-25: cc-status: scope turn statuses to the turn
+
+Ask iTerm2 to drop a status back to idle when the session's
+progress protocol reports the turn ended, for the events
+that are only true while a turn is in flight:
+UserPromptSubmit, PreToolUse, PostToolUse, PermissionRequest
+and the waiting Notification subtypes. That edge is the only
+signal an Esc interrupt produces, since it runs no hook.
+
+Measured against Claude Code 2.1.274 by driving a session
+under a pty and recording both the hook events and the
+escape sequences: a turn start emits OSC 9;4;3 about 40ms
+after submit, a turn end emits 9;4;0 within about 120ms
+however it ended, Esc emits no hook of any kind, and the
+indicator stays on for the whole turn, including 15s with a
+permission prompt open and through an Esc swallowed by the
+slash-command menu. That last point is why the waiting
+statuses are armed too. The comment says so, and says to
+recheck it on a much newer Claude Code.
+
+SubagentStop with work remaining re-arms as well. It asserts
+a status, and any assertion disowns what the turn's last
+event armed, so without this an Esc between there and the
+next tool event went unnoticed. The remaining == 0 path
+deliberately stays bookkeeping-only: making it an assertion
+would cancel an expiration that iTerm2 is holding back for
+outstanding background work, when releasing that hold is
+exactly what that event is for.
+
+Also hoist the six color literals that were repeated across
+branches.  bin/cc-status rebuilt (universal).
+
+2026-09-25: it2: add the expiring-status options to
+set-status
+
+--expires-on progress-end, with --then-status,
+--then-dot-color, --then-text-color and --then-detail, pass
+through to iterm2.set_status.
+
+The top-level `it2 set-status` shortcut restated every
+option by hand and re-serialized them into the subcommand,
+which is how it ended up missing the new ones while `it2
+session set-status` had them. Both now share one
+SetStatusOptions through @OptionGroup, so an option added to
+one cannot be missing from the other. The shortcut still
+delegates through runParsedCommand rather than calling the
+implementation, since that is the choke point enforcing the
+remote-credential gate.
+
+bin/it2 rebuilt (universal).
+
+2026-09-25: Let a session status say when it stops being
+true
+
+A program that reports its status out of band cannot
+announce every way its work can end. Claude Code is the case
+in hand: pressing Esc to interrupt a turn runs no hook at
+all, so the tab kept reading "working" or "waiting" until
+the next turn, sometimes for many minutes.
+
+Let the program say up front what should happen instead. A
+status set through OSC 21337 or iterm2.set_status can carry
+expires-on=progress-end plus then-* fields, and iTerm2
+applies the replacement when the session reports through the
+progress protocol (OSC 9;4) that the operation running when
+the status was set has ended. Nothing here knows about any
+particular program: the progress protocol is one iTerm2
+already parses, and any long-running tool can scope a status
+to its own work.
+
+The decisions all live in iTermTabStatusController, which
+also owns the session's status object so there is no way to
+hold one whose governing state lives elsewhere:
+
+  - A new assertion supersedes whatever the last one asked
+  for. An
+    update carrying only bookkeeping, such as a
+    background-task count, is not an assertion and leaves
+    the arming alone.
+  - Only the program's own OSC 9;4 reports count, never the
+  screen's
+    progress property, which also changes on reset. Stopped
+    and error end an operation; paused and a bare percentage
+    do not.
+  - An end waits three seconds before acting, because the
+  program's own
+    status update travels a much slower path (a hook
+    process, then it2, then the API: 0.14s warm, 1.66s cold)
+    and its word should win.  Publishing a state the program
+    never reported is worse than being a few seconds late,
+    since anything watching for a transition acts on it.
+  - An expiration is held while the program reports
+  outstanding
+    background work, and released when that count reaches
+    zero.
+
+PTYSession keeps one ivar for all of this and forwards to
+it.
+
+set_status's argument parsing is now shared between the
+status and the replacement it hands off to, since they take
+the same fields. Its error reasons reach the user through
+the Script Console, so the new ones are localized like the
+rest; each names its own argument in a complete sentence
+rather than splicing a fragment into a frame.
+
+2026-09-25: Fix the universal build scripts finding no
+product to lipo
+
+Both build.sh scripts look for the release binary at
+.build-<arch>/<arch>-apple-macosx/release/<name>, which is SwiftPM's own
+layout. When Xcode is installed, swift build uses the Xcode
+build system instead and writes to
+.build-<arch>/out/Products/Release/<name>, so lipo found no
+inputs and the build failed after compiling successfully:
+
+    lipo: warning: file not found
+    '.build-arm64/arm64-apple-macosx/release/it2' lipo: no
+    eligible inputs found
+
+That left `make it2cli` and `make cc-status`, and their
+paranoid variants, unable to regenerate the binaries the app
+bundle ships.
+
+Ask SwiftPM where it put the product rather than assuming,
+so either layout works.
+
+2026-09-25: Add the string catalog entries for the Centered,
+No Title Bar window style. Issue 13043
+
+The menu items were added to MainMenu.xib and
+PreferencePanel.xib in 472a15465 without the matching
+entries in the string catalogs.
+
+2026-09-25: Stop offering to reset key reporting when the
+shell manages the mode itself. Issue 13032
+
+The offer to restore the kitty keyboard protocol misfired
+for anyone whose shell drives the mode: Fish 4.x arms it
+while drawing the prompt, and a prompt tool like oh-my-posh
+emits FTCS D from inside the prompt function, so the flags
+sampled at D were the shell's own rather than an app's
+leftovers.
+
+Move the decision into iTermStuckKeyReportingDetector. It
+watches for a whole-value write to the mode (CSI = flags ; 1
+u, or a sequence that zeroes the flags and empties both
+stacks) made while the shell owns the terminal, between FTCS
+D and the next FTCS C. A shell that makes such a write and
+drives the mode to zero before running a command will
+replace whatever an app leaves behind at its next prompt, so
+there is nothing for the offer to restore. Push, pop and the
+merge modes restore rather than replace, so they do not
+count. The verdict is recomputed at every command start so
+it follows whichever shell is at the prompt, local or over
+ssh.
+
+The terminal delegate now reports whether a change replaced
+the whole value, and iTerm2's own reset goes through a
+separate local path so it is not mistaken for the shell
+writing the mode.
+
+2026-09-25: Use a server this process launched for new
+sessions. Issue 12106
+
+macOS attributes TCC permissions, including Local Network
+access, to a process's responsible process. iTermServer
+inherits that from the iTerm2 that forked it, and every job
+under the server inherits it in turn. When iTerm2 restarts
+with sessions still running, after an update, a crash, or a
+force quit, the surviving servers are adopted by the new
+instance but still name the old, dead process, so anything
+they launch is denied local network access with No route to
+host.
+
+Restored sessions cannot be repaired: responsibility is
+fixed at spawn and there is no API to re-point it. New
+sessions did not have to inherit the problem, but did,
+because connection selection handed them whatever was first
+in the registry, which after adoption is an orphan.
+
+iTermForkedServerRegistry records the socket numbers this
+process has launched a server on, which is enough to
+establish ownership because every socket belongs to a single
+suite: both the application support directory and the dotdir
+fallback are per-suite, so concurrent instances use separate
+socket directories. Every earlier run's servers already
+exist when we start, so if one is listening at a number we
+attach rather than launch and never record that number; once
+we have launched at a number, only this process can put a
+server there. That is why the set only grows and needs no
+removal.
+
+- findAnyOwnConnectionCreatingIfNeeded replaces the previous
+selection,
+  which returned whatever was first in the registry.
+- tryCreatingConnectionStartingAtNumber skips socket numbers
+already
+  registered, since connectionForSocketNumber returns the
+  existing connection for those, and keeps walking when it
+  finds a live server it did not launch. Those skips get
+  their own budget rather than consuming the hard-failure
+  count.
+
+Also removes the primary-connection cache. It was a
+denormalized pointer into the registry that could go stale
+while the registry moved on, and now that ownership is a set
+lookup there is nothing worth caching.
+findExistingPrimaryConnection had no callers.
+
+Sessions restored from before the restart keep the dead
+attribution until they are restarted.
+
+2026-09-25: Add Window > Lock Location to pin a window to
+its display. Issue 13031
+
+When a display is disconnected, which is what a sleeping
+laptop looks like to AppKit, macOS relocates its windows
+onto whatever display is left and never puts them back. Lock
+Location remembers where a window belongs and restores it
+when its display returns.
+
+The anchor is a display, that display's size when the lock
+was taken, and the window's frame relative to the display's
+origin. Windows whose frame the user chose have the whole
+frame defended. Maximized, centered, and edge-attached
+windows have only their display pinned, because
+canonicalizeWindowFrame computes their frame from whatever
+screen they are on and would overwrite a remembered
+position; moving them to the right display and letting the
+canonicalizer reshape them there is what the user wants
+anyway.
+
+A lock also has to know when not to learn. The remembered
+frame follows legitimate resizes, and a resize cannot be
+told from a move by inspecting it: font size changes,
+toolbelt toggles, new splits, tmux layouts, and the Python
+API all resize windows with no mouse button down and no
+live-resize bracket. So the lock goes dormant the instant
+the displays change, on the undelayed notification rather
+than after updateScreenParamsDelay, and learns nothing from
+a frame until the window has verifiably been put back where
+it belongs.
+
+Dragging a locked window releases the lock. The menu item
+stays selectable whenever a lock is held, including while
+the window is full screen and enforcement is dormant, so it
+can always be turned off.
+
+Restoring a window to the Space it was on is not possible
+with public API, so a returning window lands on whichever
+Space its display is showing at the time. The release note
+says so.
+
+Manual test plan in tests/location-lock-manual-test-plan.md.
+The disconnect and reconnect behavior has not been verified
+on hardware.
+
+2026-09-25: Move the credit for Nimanou (nuved) to the top
+of the release notes
+
+2026-09-25: Credit Nimanou (nuved) for the right-to-left
+improvements in the release notes
+
 2026-09-24: Don't change presentation options while the app
 is inactive
 
