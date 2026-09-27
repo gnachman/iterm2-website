@@ -1,3 +1,199 @@
+2026-09-26: cc-status: support Codex CLI hooks, keeping
+their turn state in iTerm2
+
+Codex CLI (0.154+) runs the same hooks as Claude Code with
+the same payload shape, so the one binary now serves both;
+the hook configuration passes --agent codex to say which.
+Codex sends no background_tasks, fires no Stop when a
+detached sub-agent finishes after the turn that started it,
+reports Esc through an Interrupt hook, and does not draw the
+tab's progress ring for itself. cc-status counts its
+sub-agents from SubagentStart/SubagentStop, writes the ring
+to the agent's tty, and summarises apply_patch as the files
+it touches.
+
+The count and a turn-open flag live in iTermSessionTabStatus
+beside the rest of the status: RAM only, never written to an
+arrangement, and stored without counting as a visible
+change, so parking them does not repaint the tab, reload the
+Session Status tool or bump workgroup recency. Deltas are
+applied where the count lives, so two hooks changing it at
+once cannot lose one, and saturate instead of trapping on
+overflow.
+
+set_status and set_session_status now answer with the same
+dictionary get_session_status returns, plus turn_open, so a
+hook that changed the count learns the result in the same
+round trip. An update can carry preconditions (if_turn_open,
+if_background_tasks) that iTerm2 checks as it applies them,
+dropping the update whole when they no longer hold.
+cc-status uses them for every idle it decides from a status
+read a moment earlier, which closes the window where a
+prompt submitted in between would have had its "working"
+covered by a stale idle. A dropped update does not disturb
+an armed expiration either, and a delta that brings the
+count to zero releases a held one the way an assigned count
+does.
+
+Codex statuses never ask to expire on progress end:
+cc-status writes the ring for Codex itself, including the
+stopped state for a permission prompt, so an armed
+expiration would drop a waiting status while the prompt is
+still up. Interrupt closes the turn instead.
+
+it2 set-status gains --background-tasks-delta, --turn-open,
+--if-turn-open, --if-background-tasks and --json, shared by
+the subcommand and the shortcut. Session-context built-ins
+share one session lookup helper instead of repeating the
+missing-id and no-such-session checks. The Swift package
+build scripts fail loudly when a per-arch build fails
+instead of letting lipo fuse a stale product, and the
+paranoid make targets for it2cli and cc-status forward
+BUILD_DIR into the sandbox like the others do.
+
+tests/run.py drives the binary against a fake it2 that logs
+every call and keeps the state the real one keeps, with
+recorded payloads from Claude Code 2.1.201 and Codex 0.154:
+22 scenarios, no iTerm2 needed.  tests/cc-status-codex and
+tests/codex-hooks.json are the manual setup.
+
+Based on PR #759 by Todmy.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-09-26: Stop reloading the Snippets tool when nothing
+changed
+
+The Snippets toolbelt rebuilt its outline view from
+refreshTools, which fires on every tab switch and every
+foreground-job change. Each reload permanently strands one
+disclosure button, plus its cell and backing views, for
+every visible expandable row: -[NSOutlineView
+_makeOutlineControl] registers a notification observer whose
+block strongly captures the button and never unregisters it,
+so the button can never deallocate. Because it never
+deallocates, the observer that -[NSView _commonAwake] puts
+on it is never removed either, so each reload also grows the
+default notification center by two entries.
+
+That second effect is what hurt. AppKit unregisters a dying
+view by asking the notification center to drop every
+registration for it, at a cost that grows with the size of
+the center, so stranded buttons make every unrelated view
+teardown in the app slower. A six day old process had
+stranded 8292 disclosure buttons from this one tool and was
+spending 34 percent of its main thread in
+_CFXNotificationRemoveObservers.
+
+The leak is AppKit's, and
+tests/outline-view-disclosure-button-leak.m reproduces it
+with a stock NSOutlineView on 26A428 and 26B5091g. What we
+control is how often we reload, so reload only when the
+inputs the model is built from have actually changed. The
+edit path stays unconditional on purpose, since
+-[iTermSnippet isEqual:] compares guids only and would call
+an edited snippet unchanged.
+
+Also remove -update, which was dead on arrival when the tool
+was added in 2020 and had been quietly maintained since, and
+collapse a branch in -snippetsDidChange: whose two arms had
+become identical.
+
+Separately, recycle the session toolbar's divider views
+instead of building fresh NSBoxes on every layout pass,
+which was churning views through the same expensive teardown
+path.
+
+2026-09-26: Gate Session Note API on protocol 1.20 and fix
+hide-during-expand
+
+Bump the advertised API protocol version to 1.20 and have
+the Python Session Note methods raise AppVersionTooOld
+against older iTerm2 builds. Bump the Python module version
+to 2.25.
+
+Hiding a note while its expand animation was running saved
+the half-grown frame as the note's real size. syncModelFrame
+now rebuilds the expanded frame whenever an animation is in
+flight, and the animation timer is stopped when the note
+view is removed.
+
+2026-09-26: Fix Session Note API defects
+
+Persist note visibility. Arrangements encode a note whenever
+it has text, including one the user hid and one that only
+ever lived in the Notes toolbelt, and -didFinishRestoration
+restored all of them. Now that hydration happens early
+enough for restoration to actually fire, that meant a hidden
+note came back floating. The model gains a mirrored
+isVisible, which also bumps generation so the change reaches
+disk: the delta encoder reuses the previously encoded record
+whenever the generation has not moved. A missing key
+restores as visible, since that is how older arrangements
+behaved.
+
+Persist the note generation. The delta encoder reuses the
+saved record whenever the generation it is handed equals the
+record's, and a model built from an arrangement restarted
+near zero while the record kept its old count. The encoder
+bumped the record ahead on the first save, and once the
+user's edits carried the model up to that exact number the
+stale record was reused and the edits never reached disk.
+The generation is now saved with the note and restored last,
+so a restored model picks up where the saved one left off.
+
+Keep a per-session generation floor across model
+replacements. Clearing a note and creating another handed
+the encoder a fresh model counting from zero, which could
+match the generation the old note was saved at, and the
+stale text won.
+
+Tell observers when a session swaps note models. The API can
+now clear a note or create one without the user touching the
+Notes toolbelt, and the toolbelt holds its model until the
+key session or its mode changes. It would keep editing a
+model the session had dropped, silently losing the next
+keystroke. Creating the model from the toolbelt's own
+text-change handler posts that notification synchronously,
+so the handler ignores it while it is the one doing the
+replacing; otherwise the empty new model was reloaded
+mid-keystroke and the character lost.
+
+Align the two validators. The pre-check in -[iTermAPIHelper
+setSessionNote] looks only at explicitly supplied keys while
+applySessionNoteAPIUpdate fell back to current state, so
+hiding a note whose text was cleared in the toolbelt was
+rejected as an invalid value.
+
+Invalidate a running collapse animation before starting
+another. Two API calls in a row left both timers writing the
+frame, and the older completion fired partway through the
+newer animation, hiding the scroll view on a note that ended
+up full height. A collapse starting mid-animation also
+recorded the interpolated height as the expanded height and
+shrank the note for good; it now rebuilds the expanded frame
+from the last real height instead.
+
+2026-09-26: Add Python API support for Session Notes (#764)
+
+Add a strict, atomic session_note generic property for
+reading and patching Session Notes, plus typed Python SDK
+get/set methods and a read-only SessionNote value. A patch
+may be partial: omitted keys retain their current values,
+and an empty text removes the note.
+
+Preserve terminal focus for API-driven show, update,
+collapse and background-session operations.
+
+Restore Session Notes through a saved-state relaunch by
+hydrating the model in +sessionFromArrangement: instead of
+the async finish block, which ran after
+-didFinishRestoration and so left the model nil when
+restoration looked at it.
+
+The protobuf schema is unchanged. Only its documentation
+comments gained the new property.
+
 2026-09-25: Translate the new strings, and fix three that
 were wrong
 
