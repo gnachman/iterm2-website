@@ -1,3 +1,57 @@
+2026-09-27: Update translations
+
+2026-09-27: Find Swift stringsdata via xcodebuild's
+PROJECT_TEMP_DIR in extract_strings
+
+Overriding SYMROOT leaves OBJROOT wherever the Xcode
+build-location preference puts it (e.g. DerivedData), so the
+intermediates are not necessarily under BUILD_DIR. This
+broke make prod/Beta for anyone not using legacy build
+locations. Issue 13083.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-09-27: Skip non-BMP bidi mirroring pairs instead of
+failing
+
+Unicode 18 added mirroring pairs involving supplementary
+code points (e.g., 221D;1DB10), which made the generator
+raise and broke make unicode.  iTermBidiMirroredCounterpart
+maps a unichar to a unichar, so such pairs can't be applied;
+omit them in both directions so the table stays an
+involution.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-09-27: Don't truncate bodies in parse_ai_wire_log.py by
+default
+
+Change the --max-body default from 4000 to 0 (unlimited).
+Pass an explicit limit to get the old behavior.
+
+2026-09-27: Treat a trailing newline in send_text as the
+Return key
+
+The send_text tool description calls \n a newline and says
+the default appends one, so when the orchestrator wanted to
+press Return it sent text "\n" with append_newline=false. On
+a bracketed-paste terminal that was delivered as a paste of
+a bare LF, which Claude Code, vim and readline insert as a
+literal line break, so nothing was submitted.
+
+typeIntoPTY now peels one trailing CRLF, LF or CR off the
+payload and sends it as the submit gesture: a separate \r
+after the paste, exactly as append_newline=true does.
+Interior newlines stay in the pasted body, and only one is
+peeled so "foo\n\n" still pastes a line break before
+submitting. "foo\n" with the default append now submits once
+instead of pasting a line break and then submitting. The
+safety gate already counted any CR/LF as a submit, so
+delivery now matches classification.
+
+Update the tool description to say so, and add unit tests
+for the split.
+
 2026-09-26: cc-status: support Codex CLI hooks, keeping
 their turn state in iTerm2
 
