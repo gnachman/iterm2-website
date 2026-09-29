@@ -1,3 +1,155 @@
+2026-09-28: Handle the command selector an IME hands back
+after committing. Issue 13030
+
+When an input method finishes a composition by committing
+text via insertText:replacementRange: and then hands the
+original keystroke back as a command selector
+(deleteBackward: or insertNewline:), iTerm2 dropped the
+selector. With the Korean 2-Set IME this left a stray jamo
+on Backspace and swallowed Return during composition.
+
+Now doCommandBySelector: sends the event to the delegate
+when the IME committed text during the same keypress.
+Verified with Korean 2-Set, Japanese Hiragana, and Chinese
+Pinyin input sources: the Japanese and Chinese IMEs consume
+Return themselves when confirming a candidate, so they are
+unaffected.
+
+Based on GitHub PR 752 by Sejin Hong.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-09-28: Keep tmux panes' key encoding stable across a
+detach (issue 13076)
+
+In a tmux integration pane the app's terminal is tmux, but
+iTerm2 also saw the app's Kitty keyboard protocol requests
+in the pane output and acted on them. tmux cannot restore
+that state after a detach, so keys such as Shift-Enter were
+encoded one way before a detach and another way after.
+
+- Ignore the pane's Kitty keyboard requests in tmux mode,
+and treat the
+  Kitty flags as off for a tmux pane, including any carried
+  in from a restored arrangement.
+- On tmux 3.9 or later (assumed to include tmux PR 5615 with
+the fixes
+  requested there), send keystrokes to tmux by name so tmux
+  encodes each one for the pane's current mode: legacy,
+  modifyOtherKeys, or Kitty.  Keys that the byte path
+  handles before the input method are named there;
+  everything else is named only after the input method has
+  seen it. Text, keypad keys and F13 and up keep the byte
+  path, as do the user-chosen CSI u and raw modes.
+- Subscribe to #{pane_key_mode} and show tmux's mode in the
+Terminal
+  State menu, disabling toggles that no longer have an
+  effect.
+- Parse #{pane_key_mode} with TmuxPaneKeyMode.
+
+Known gap on tmux 3.9: text that is not a keystroke (pastes,
+snippets, reports) is still sent through send-keys, so tmux
+encodes it when the app uses the Kitty report-all-keys flag.
+It should be sent with send-keys -H.
+
+2026-09-28: Make HDR cursor brightness configurable
+
+Add a per-profile, per-appearance HDR Cursor Brightness
+setting (KEY_HDR_CURSOR_BRIGHTNESS) with a slider next to
+the HDR cursor checkbox in Profiles > Colors. It is a linear
+multiple of reference white, the same units as NSScreen's
+EDR headroom, ranging from 2 to 16 in whole steps.  The
+default of 16 matches the previous behavior of drawing as
+bright as the display allows.
+
+The cursor is drawn in an extended sRGB-curve color space,
+so its component values are gamma encoded: 2.0 is already
+about 5x white. A shared helper clamps the requested
+brightness to the display's headroom and encodes it with the
+sRGB transfer function, and both the legacy and Metal
+renderers use it so they agree on the peak.
+
+iTermSlider now accepts a typed value equal to the slider's
+maximum, and snaps typed values to tick marks for sliders
+that allow only tick values.
+
+Add tests/hdr-brightness-levels.swift, a manual test that
+shows which brightness levels a display can distinguish.
+
+2026-09-28: Redact directory tracker and other missed
+session keys in plist sanitizer
+
+The session directory tracker stores Directories, Hosts,
+Last Directory, Last Local Directory, and Last Directory SSH
+Identity flat in the session arrangement dict, and none had
+a rule, so paths, hostnames, and usernames survived
+sanitization. Also cover Pending Jumps (SSH reconnection
+args), Key Labels, tab Status Text, the deprecated Session
+Name keys, and the tmux gateway session name (aggressive
+only).
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-09-28: Keep a skin-toned emoji in one two-column cell.
+Issue 13079
+
+A skin tone modifier after an Emoji_Modifier_Base no longer
+starts its own cell, and the resulting emoji modifier
+sequence is double-width.  A modifier after anything else
+still gets its own cell, since CoreText draws it as a
+separate swatch. The preconverted-string fast path now
+segments the same way StringToScreenChars does so a skin
+tone arriving in a later write is merged into its base
+rather than written twice.
+
+2026-09-28: Make password manager authentication one
+exclusive choice
+
+The password manager's settings menu had three checkboxes
+whose interaction was unclear: "Require Authentication to
+Open" only asked once per launch, which users took to mean
+every open (#13084). Replace them with four mutually
+exclusive choices: never, once per launch, once per launch
+and after screen locks, and every open. The stored settings
+are unchanged.
+
+Every Open now also closes an open password manager window
+when the screen locks.
+
+Secure setting batch writes go through a shared helper that
+skips unchanged values and rolls back on partial failure.
+Failures show the save-failed warning, except when the user
+cancels the admin prompt.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-09-28: Fix two crashes on runs of spacing combining
+marks. Issue 13073
+
+The GPU renderer asserted when a spacing combining mark
+followed a box-drawing or image cell (such as a notcurses
+border). The attributed string builder appended the mark to
+the base's string, so the renderer, which skips box-drawing
+and image cells, shaped a string tagged as box drawing.
+Whether a cell can host a spacing mark is now decided by one
+predicate, iTermScreenCharCanHostSpacingMark, used by the
+builder, the drawability check, and Metal's
+combiningSuccessor. A mark after a box-drawing or image cell
+now draws on its own.
+
+Appending text whose first cluster joins the previous cell
+converted that cluster into a fixed eight-cell stack buffer.
+Aggressive base character detection gives each spacing mark
+its own cell, so a letter followed by more than seven
+spacing marks in a later write overflowed it. The buffer is
+now sized from the cluster, with a stack buffer for clusters
+up to kMaxParts. iTermStringToScreenCharsCapacity is the one
+sizing rule for StringToScreenChars callers, and the slow
+path now counts the predecessor when sizing its buffer.
+
+Also remove the unused -[LineBuffer appendMessage:], whose
+stack buffer was too small for double-width characters.
+
 2026-09-27: Update translations
 
 2026-09-27: Find Swift stringsdata via xcodebuild's
