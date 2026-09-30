@@ -1,3 +1,158 @@
+2026-09-29: Have the margin renderer's vertex buffer
+initializer return its vertex count
+
+drawNoExtensions drew a hardcoded number of vertices that
+had to be kept in sync by hand with the pool's buffer size
+and with which Draw case was filled.
+initializeRegularVertexBuffer now returns the number of
+vertices it wrote, the draw uses that, and an assert checks
+it fits in the buffer.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-09-29: Make Open Selection as URL work on scheme-less
+links (issue 13092)
+
+Selecting text like code.claude.com/docs/en/changelog and
+choosing Open Selection as URL handed LaunchServices a URL
+with no scheme, which macOS Tahoe reports as "The
+application can't be opened. -50".  Only cmd-click knew how
+to guess a default scheme, and the context menu offered the
+item for any short selection without checking whether a URL
+could be made from it.
+
+Add +[iTermURLActionFactory
+urlForUserSuppliedString:guessingScheme:] and use it both to
+decide whether to show the Open Selection as URL and
+split-pane items and to open them. Text with an explicit
+scheme is used as is when something can open it. Otherwise,
+if the text looks like a web address (dotted host, IP, or
+localhost, optional port and path), it gets the same default
+scheme cmd-click guesses, in preference to reading the text
+before a colon as a scheme, so localhost:8080/foo and
+example.com/wiki/Category:Physics work while mailto:alice,
+foo:bar, gemini://x, and relative paths do not become web
+URLs. Openability mirrors what openURL: can handle:
+scheme-bound profiles, file: and iterm2:, a configured URL
+handler command, and LaunchServices. The cmd-click fallback
+for a file that failed to open passes guessingScheme:NO so a
+missing src/main.c doesn't open a browser. Conservative URL
+guessing is honored.
+
+Share the hostname, IPv4, and port regexes across the
+factory, let the hostname pattern accept IDN labels, and add
+a trimming variant that doesn't treat the first colon as
+ending a scheme so example.com:8080/path is not cut down to
+com:8080/path.
+
+Tests use an openability override and pin the relevant
+advanced settings so they don't depend on the machine
+running them.
+
+2026-09-29: Don't read past the end of the margin renderer's
+vertex buffer. Issue 12604 (#776)
+
+The buffer holds 12 vertices but the draw call asked for 24.
+2026-09-29: CLAUDE.md: mark the legacy iTerm2XCTests target
+as deprecated
+
+Do not add to, edit, or run iTerm2XCTests. It uses the app
+as its test host without -suite, which conflicts with the
+running iTerm2. New tests go in ModernTests.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-09-29: Treat a %exit line inside a tmux response block
+as data on tmux 1.9 and later
+
+tmux 1.8 could send %exit inside a %begin/%end block without
+closing it, and both the parser and the gateway worked
+around that by ending the block and treating the %exit as
+real. Later servers always close the block first, so for
+them a %exit line inside a response is content, such as
+capture-pane output from a pane whose scrollback holds raw
+control-mode text from an earlier tmux -CC run. Attaching to
+such a session dropped the connection and printed the rest
+of the protocol stream into the window.
+
+Once the version is known, the controller tells the parser
+(through the gateway delegate, reaching SSH child parsers
+too) whether the server may still omit the end guard. Window
+opens requested before the version is known are deferred so
+no capture precedes that.
+
+2026-09-29: Move Show Clippings to cmd-shift-opt-G so
+cmd-shift-= makes text bigger again. Issue 13022
+
+Make Text Bigger uses the + key equivalent, which AppKit
+matches for both cmd-= and cmd-shift-=. Show Clippings
+claimed cmd-shift-= in 3.7.0 and sits earlier in the View
+menu, so it intercepted the shifted zoom keystroke that many
+users type for cmd-+.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-09-29: Give the wrap-dropped-filename-in-quotes setting
+its own tooltip. Issue 13086
+
+The checkbox was created by duplicating the
+click-to-select-command checkbox and kept its tooltip, so
+Settings > General > Selection showed the same text for
+both. The new tooltip describes the quoting versus
+backslash-escaping behavior, with matching updates to the
+XIB string catalog and its translations.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-09-29: Add CLAUDE.md rule against computer use and
+accessibility APIs
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-09-29: Track Package.resolved
+
+Every xcodebuild run resolves the swift-argument-parser and
+Yams package references and writes this file, which then sat
+untracked after each build. Committing it pins both packages
+to exact revisions so every checkout resolves the same
+versions, and Xcode only rewrites it when a pin changes.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-09-29: Re-enable the seven skipped PSMTabGroupDragTests
+
+The flag emoji commit (4c8d54a8d) was built from a branch
+that predated cc572deb2, which put the AppKit drag session
+behind PSMTabDragSessionDriver so tests drive
+FakeTabDragSessionDriver instead.  It re-added XCTSkipIf to
+the seven tests that call -startDraggingGroupWithChip:,
+along with a class comment describing the injectable-session
+refactor as future work. Both were already obsolete.
+
+Restore the file to the cc572deb2 version. setUp installs
+the fake driver before every test, so none of them start a
+real NSDraggingSession. The class runs 13 tests with no
+skips, and the full suite completes.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-09-29: Sanitize session names used in archive and
+autolog filenames. Issue 13094
+
+Archive Sessions on Closure built the filename from the raw
+session name, so a title containing a slash (for example one
+showing the tty or the current directory) turned into a
+nested path and the write failed with ENOENT. Add
+String.it_sanitizedForFilename, which replaces slashes,
+colons, characters illegal on SMB/exFAT/NTFS volumes, and
+control characters with underscores, trims whitespace,
+avoids a leading dot, and truncates to 255 bytes of UTF-8 on
+a grapheme boundary while preserving a short extension. Use
+it for archive filenames and for automatic session log
+filenames, which previously handled only slashes.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
 2026-09-28: Handle the command selector an IME hands back
 after committing. Issue 13030
 
