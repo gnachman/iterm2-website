@@ -1,3 +1,408 @@
+2026-10-03: Fall back to a GitHub Pages mirror of the
+companion shard map
+
+Some networks can't reach resolver.iterm2.com (Cloudflare),
+and since the relay is the only transport, pairing and every
+cold reconnect failed with "The request timed out." The
+shard map loader now also fetches a mirror published from
+the same file to GitHub Pages.
+
+- The phone fetches the mirror alongside the primary. The
+Mac only asks the
+  mirror when the primary is slow, failing, or out of date,
+  to stay clear of GitHub Pages rate limits.
+- The primary is authoritative. A mirror map, or a primary
+map on a cold
+  start, only wins if the loader would adopt it; a stale
+  copy counts as a failed attempt instead of ending in "no
+  host assigned".
+- When no source works, the error names each server and what
+went wrong
+  with it (DNS failure, no response, HTTP error, captive
+  portal, outdated copy), and suggests another network only
+  when every failure was in the network. Failures recorded
+  before an overall timeout are kept.
+- The phone shows the explanation in a Details section on
+the pairing
+  screen. The Mac shows a short message with the full text
+  in a tooltip and the debug log.
+- The Mac's plugin HTTP bridge now passes URLError codes
+through, so the
+  Mac explains failures as specifically as the phone.
+
+2026-10-03: CLAUDE.md: drop the note about the deleted
+iTerm2XCTests target
+
+2026-10-03: Make the Bitwarden integration report real
+errors and recover from rejected sessions
+
+The Bitwarden adapter hid bw's errors and could prompt or
+hang. It now runs bw with --nointeraction and a null stdin,
+keeps stdout and stderr apart, drains both while bw runs,
+passes the session in BW_SESSION rather than on the command
+line, and ignores SIGPIPE. Folder lookup and creation report
+bw's message instead of "Failed to create or find folder", a
+missing "iTerm2" folder produces an explanatory warning
+rather than an empty list, a wrong master password is
+reported as such, and login checks that bw accepts the
+session it just issued.
+
+In iTerm2, a rejected session now rebuilds the command on
+retry instead of rerunning one that still carries the old
+token, which also affected 1Password. Rejections are matched
+to the session the command was built with (AdapterSession),
+so a stale failure can't discard a newer session, and a
+session rejected before it ever worked stops with an error
+rather than prompting for the master password in a loop. A
+wrong master password reopens the prompt with the reason.
+Adapter error messages are shown and logged instead of "Not
+authenticated."
+
+Adapters find their CLI on the user's PATH before asking,
+and the open panel keeps the path the user picked instead of
+resolving symlinks, which pinned one installed version and
+broke on upgrade.
+
+Debug logs no longer include stdin or stdout of password
+manager commands, passwords in request structs, or
+environment values.
+
+Issue 13046
+
+2026-10-03: Run password manager adapters with the user's
+shell PATH
+
+Adapters were launched with an empty environment, so a CLI
+that is a script rather than a native binary could not find
+its interpreter.  Homebrew's bw is a Node script with a
+"#!/usr/bin/env node" shebang, so the Bitwarden integration
+could not run it at all (issue 13046).
+
+AdapterShellEnvironment reads PATH from the user's login,
+interactive shell through the pidinfo service, appends the
+standard install directories, and caches it in memory. Only
+the first adapter command waits, with a timeout after which
+it uses the fallback while the fetch continues. Refreshes
+happen only when the password manager opens, at most every
+ten minutes, and only when an adapter is the chosen source.
+
+To support that, the pidinfo shell runner takes a run mode
+(bare, interactive, or login-interactive) instead of a BOOL.
+The argument choice lives in iTermShellArguments, which adds
+-l only for shells known to accept it, since tcsh, csh and
+elvish reject it. Existing callers keep their previous
+behavior. The gateway's two shell methods now share one
+exactly-once delivery path.
+
+2026-10-03: Make the shell environment reply nullable and
+let the composer recover from a failed PATH read
+
+exfiltrateEnvironmentVariableNamed:shell:completion: passed
+nil when the shell could not be run despite a nonnull
+annotation. The header, implementation and callers now say
+nullable.
+
+LocalFileChecker had been bridging that nil to an empty PATH
+and marking every command invalid until the session ended.
+It now treats a failed read as unknown, retries after a 60
+second backoff rather than on every edit, and has its
+gateway calls and clock injected so this is unit tested.
+
+2026-10-03: Add backward search tests with the match in the
+final cell
+
+A review asked whether a backward search with offset 0 that
+starts on the last character of the line buffer reports that
+match twice, on the theory that the stop position one cell
+past the start does not exist there and
+SearchRequest.stopPosition falls back to the start itself.
+It does exist: it is the buffer's end position, equal to
+lastPosition(), so the fallback is not taken. These two
+tests pin that the match is reported once, with and without
+a trailing null cell.
+
+2026-10-03: Correct the Semantic History release note
+
+The note said the wrong path was sent for a space unless a
+line number was present. That described TextMate and BBEdit;
+for MacVim it was the other way around, and the fix also
+covers #, ? and literal percent escapes. Describe the
+symptom without the per-branch qualifier.
+
+2026-10-03: Send MacVim an escaped file URL and TextMate the
+raw path
+
+Commit 07b59768a made Semantic History send every
+scheme-based editor the raw path after file://,
+percent-encoded once. That is what TextMate wants, but not
+MacVim, and the two cannot share a format:
+
+- MacVim (MMAppController parseOpenURL: and
+handleGetURLEvent:) decodes
+  the url value once and parses the result with
+  URLWithString:, so the decoded value must be a well-formed
+  file URL with its path escaped.  Its source calls this
+  double encoding the canonical form
+  (mvim://open?url=file:///foo%2520bar) and names iTerm2 as
+  a tool that sometimes sent a single encode. With the raw
+  path a literal %41 in a filename was decoded twice, and
+  MacVim builds without the compatibility re-encoding also
+  broke on space, # and ?.
+- TextMate (handleTxMtURL:) decodes once, strips file://,
+and uses the
+  rest verbatim as the path. An escaped file URL makes it
+  look for a file literally named with %20.
+
+So choose the form by editor: MacVim gets
+fileURL.absoluteString, TextMate and BBEdit get the raw
+path. Both are then percent-encoded once with & = + # and %
+escaped, in a single assignment, with or without a line
+number. BBEdit is closed source and is reached through
+TextMate's scheme, so it keeps TextMate's form; that is
+unverified.
+
+The tests now model each editor's decoding and check the
+path it would open for a space, &, #, ? and a literal %41.
+The five expected-failure tests from the review are replaced
+by passing ones.
+
+2026-10-03: Add expected-failure tests for Semantic History
+editor URL values
+
+Since 07b59768a the url query value sent to MacVim, TextMate
+and BBEdit is the raw path after "file://", percent-encoded
+once. An editor that decodes it once and parses the result
+as a URL gets a string that is not a well-formed file URL: a
+"#" or "?" in the path becomes a fragment or query and
+truncates it, a literal "%41" is decoded a second time, and
+a space survives only where the URL parser escapes it
+itself.
+
+These five tests assert that the once-decoded value parses
+to the original path, and for a space that it equals the
+escaped file URL.  They fail today and are wrapped in strict
+XCTExpectFailure until the format is settled against the
+real editors. The space test conflicts on purpose with
+testEditorURLWithoutLineNumberEncodesSpaceOnce, which pins
+the current raw-path form.
+
+2026-10-03: Correct the all-null selection check's comment
+and add resize tests
+
+The comment on coordRangeContainsNonNullCharacter: claimed
+it was valid wherever runByTrimmingNullsFromRun: is. That is
+not true when the height shrinks: only some of the primary
+grid's rows are appended to the line buffer before the check
+runs, and getLineAtIndex: then serves a row past them from
+the top of the grid, so the check can wrongly report content
+for an all-null range below the cursor. It is harmless today
+only because the range conversion that follows cannot
+convert a range past the appended rows. Say so, so nobody
+relies on the check there.
+
+Two tests with text on the top rows and a blank selection
+below the cursor: a width-only resize, where the whole grid
+is appended and the check is what drops the selection (this
+fails if the check is removed), and a one-row height shrink,
+where the conversion drops it.
+
+2026-10-03: Release notes for the Semantic History, CSI u,
+selection and state-saving fixes
+
+2026-10-03: Drop a selection of only nulls when the screen
+is resized
+
+A selection containing nothing but nulls survived a resize
+as a phantom sub-selection with no content, so hasSelection
+stayed YES and copy, auto-copy and selection-gated UI acted
+on an empty selection. Since commit 5e401d357,
+-[VT100ScreenMutableState runByTrimmingNullsFromRun:]
+(VT100ScreenMutableState+Resizing.m) trims nulls only within
+the run's first and last lines, which is deliberate for
+notes and marks on blank lines, so an all-null multi-line
+selection trimmed to a null cell,
+positionRangeForCoordRange: succeeded, and didResizeToSize:
+re-added it.
+
+Before converting each sub-selection to the new width, on
+both the main and alternate screen paths, skip it when no
+cell in its range holds a non-null character. Trimming,
+notes and marks are unchanged, and a selection whose only
+text is on a middle line still survives.
+
+2026-10-03: Stop a wrapped backward search before the match
+it already reported
+
+A backward search with offset 0 that wrapped around reported
+the match at the starting coordinate twice.
+SearchRequest.stopPosition in SearchEngine.swift used the
+initial start as the wrapped pass's stop regardless of the
+offset, and -[LineBuffer findSubstring:stopAt:] keeps a
+backward match that starts exactly at the stop (it only
+drops matches before it, whereas the forward filter is
+half-open since commit 44da563ea). That inclusivity is what
+lets an offset-1 backward search find the skipped start
+match last after wrapping, so the first pass with offset 0
+had already reported the match at the start and the wrapped
+pass reported it again.
+
+For a backward wrap, place the stop one cell past where the
+first pass began (offset 1 - offset from the initial start):
+offset 1 still stops on the start itself, offset 0 stops one
+cell beyond it. Forward searches and LineBuffer are
+unchanged.
+
+2026-10-03: Send the meta byte for Option+key in the termkey
+key mapper
+
+With Option configured as Meta and CSI u disambiguation off,
+iTermTermkeyKeyMapper dropped Option+ASCII keypresses. In
+sources/Keyboard/iTermTermkeyKeyMapper.m,
+termkeySequenceForCodePoint:modifiers:keyCode: took the
+NSData from dataForOptionModifiedKeypress (which sets the
+high bit on the first byte, e.g. 0xE2 for b), decoded it as
+an NSString in the session encoding and postCocoaData
+re-encoded it. A lone byte >= 0x80 is not valid UTF-8, so
+the string was nil and nothing was sent. Present since the
+mapper was added in 0ac126e7c.
+
+The fix hands the Option-modified NSData back through an out
+parameter so postCocoaData sends the raw bytes, matching
+iTermStandardKeyMapper.  The Esc+ and Option-normal cases
+produce the same bytes as before, and the pre-Cocoa string
+path, CSI u disambiguation and every other path are
+unchanged. The regression test in TermkeyKeyMapperTests no
+longer expects failure.
+
+2026-10-03: Pad screen char arrays with null cells instead
+of the EOL code
+
+-[ScreenCharArray paddedToLength:eligibleForDWC:]
+(ScreenCharArray.m) copied the whole continuation cell into
+the padding since commit ca0dd907f, which extended the
+continuation so background colors draw correctly from
+scrollback. The continuation's code is the EOL type, not a
+character, so a soft-wrapped line was padded with code
+EOL_SOFT, which equals DWC_SKIP. The later check that
+upgrades the last history line to DWC_SKIP plus EOL_DWC when
+the grid starts with a double-width character (commit
+c54cccb04) tests for a null last cell and therefore never
+fired.
+
+Copy the continuation's colors and attributes into the
+padding with a zero code so the padding is genuinely empty
+and the EOL_DWC upgrade works again.
+
+2026-10-03: Encode editor URL query values exactly once in
+Semantic History
+
+Semantic History builds mvim://, txmt:// and x-bbedit://
+URLs in iTermSemanticHistoryController.m, in
+-openFile:inEditorWithBundleId:lineNumber:columnNumber:
+(introduced by commit 8d5f938e1). Without a line number it
+percent-encoded fileURL.absoluteString, which already
+contains escapes, so a space in the path became %2520 and
+TextMate looked for a file that does not exist. With a line
+number it assigned decoded queryItems back to
+percentEncodedQueryItems, so the two branches disagreed.
+Both used URLQueryAllowedCharacterSet, which leaves & and =
+raw, so a path containing an ampersand truncated the url
+query value.
+
+Now both branches build the raw file URL (file:// plus the
+unescaped path), encode it exactly once with a character set
+that also escapes & = + # and %, and assign the items to
+percentEncodedQueryItems together. MacVim, TextMate and
+BBEdit each decode the value once, so the path round-trips.
+The tests read the query items through URLComponents and no
+longer expect failure; the legacy no-line expectation now
+has literal slashes, which decode to the same value.
+
+2026-10-03: Skip the merged DWC_RIGHT when the cursor sits
+on the predecessor's spacer
+
+Appending text with the cursor on the DWC_RIGHT half of the
+previous character wrote the merged buffer's spacer at the
+cursor, producing [null][DWC_RIGHT][text][DWC_RIGHT] with
+the cursor two columns too far.  This is a regression of
+issue 9852: commit 4c8d54a8d rewrote the predecessor merge
+in appendStringAtCursorSlowly: (VT100ScreenMutableState.m)
+to consult only predecessorIsDoubleWidth, which
+coordinateBefore:movedBackOverDoubleWidth: leaves NO when
+stepping back from the spacer itself, and dropped the
+augmentedResultBeginsWithDoubleWidthCharacter check from the
+original fix (commit f0ed6987f).
+
+Also skip the spacer when the predecessor adjoins the cursor
+and the grid cell under the cursor is already a DWC_RIGHT.
+The appended text then overwrites the spacer, which erases
+the orphaned left half as usual, and the character after it
+is preserved.
+
+2026-10-03: Mark the optional iTermPythonArgumentParser
+properties nullable
+
+script, module, statement and their escaped variants were
+declared inside NS_ASSUME_NONNULL but are nil unless the
+matching argument was parsed. Swift callers therefore saw an
+empty string instead of nil and could not tell an absent
+argument from an empty one. Annotate them nullable to match
+the implementation; the regression tests check that Swift
+now sees nil.
+
+2026-10-03: Actually enable WAL mode in the graph database
+
+Commit fc83f8a5c changed the journal_mode=WAL and
+wal_checkpoint pragmas in iTermGraphDatabase from
+executeUpdate to executeQuery so the result set could be
+closed cleanly, but it never stepped the result set. FMDB's
+executeQuery only prepares the statement; sqlite3_step
+happens in FMResultSet next. So the pragma never ran, every
+database created or recovered since then stayed in
+rollback-journal mode, and the synchronous=NORMAL setting
+added later assumed a WAL that was not there.
+
+Step the result set before closing it in both places. The
+regression test asserts a fresh database reports
+journal_mode wal.
+
+2026-10-03: Port the legacy iTerm2XCTests to ModernTests in
+Swift and delete the old targets
+
+The iTerm2Tests app target and the iTerm2XCTests bundle had
+been broken since the VT100Screen mutable-state refactor;
+eight of their files were wrapped in #if 0 and the rest had
+not been run in years. Every test that still makes sense now
+lives in ModernTests as Swift XCTest cases (1,107 new test
+methods across 39 files), with multi-scenario legacy methods
+split into one test per behavior.
+
+Dropped on purpose: the PTYTextView golden-image drawing
+tests and the 299 PNGs under tests/Goldens, the Toolbelt
+tests that launch real windows, and a handful of tests whose
+subject no longer exists or is unreachable from Swift.
+
+Tests that exposed real production bugs are kept as strict
+XCTExpectFailure cases so the suite stays green and flags
+itself when the bug is fixed: the graph database WAL pragma
+that is never stepped, the termkey mapper dropping
+Option-as-Meta ASCII keys, scheme-editor URL encoding in
+semantic history, and the nonnull-but-nil Python argument
+parser properties.
+
+Supporting changes: - Expose the headers the ports need
+through the bridging header, with
+  nullability annotations on two headers so it compiles.
+- Look up the shell history Core Data model by the base
+class so a test
+  subclass in another bundle can construct the controller.
+- Move iTermSelectorSwizzler into sources/Infrastructure
+since
+  production code still uses it.
+- Remove both targets, the iTerm2Tests scheme, and their
+plist, prefix
+  header and localized resources from the project.
+
 2026-09-30: Add the BDSM and SCP escape sequences for
 controlling right-to-left reordering (issue 13102)
 
