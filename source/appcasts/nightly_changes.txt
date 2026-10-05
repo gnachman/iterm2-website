@@ -1,3 +1,312 @@
+2026-10-04: Let undo close restore sessions from their
+archives
+
+When a profile archives sessions on close, a closed session
+whose undo window runs out is archived and its undo close
+entry keeps the archive's path. Undo restores it from the
+archive in its original pane, tab, and window, and revives
+any sessions in the group that are still alive. The restore
+methods that revive sessions substitute each archived
+session's arrangement into the saved layout. A session
+restored this way reuses its archive if it is closed again.
+
+The 20 most recent fully archived undo close entries are
+saved in app restorable state and restored at launch. Their
+tabs are identified by GUID and looked up when undone, since
+windows may not be restored yet.  State is saved as soon as
+an entry becomes fully archived and after an archived entry
+is undone.
+
+Also: - Give archives unique filenames so split panes with
+the same name
+  don't overwrite each other's archives.
+- Don't warn that an archived session ended soon after
+starting.  - At quit, stop restorable sessions once, before
+saving state, without
+  skipping entries; and don't record undo entries for
+  windows closed while quitting, which re-archived their
+  sessions.
+
+2026-10-04: Stop old key bindings from hijacking the A key
+in physical-key mode
+
+Older versions stored some key bindings as
+0xchar-0xmods-0x0, using keycode 0 to mean "unknown".
+Keycode 0 is also kVK_ANSI_A, so with "Interpret key
+bindings based on physical key" on, bindings like Forward
+Delete fired when you pressed A, and Ctrl-A matched
+Ctrl-Home, which wrongly triggered the offer to enable
+physical-key matching.  Issue 13110.
+
+- Keystrokes with a keycode now serialize as four parts
+  (0xchar-0xmods-0xkeycode-0x1), meaning the keycode is
+  real. Older versions parse the first three parts and
+  ignore the fourth.
+- When parsing a three-part key, keycode 0 is trusted only
+if the
+  character is one the A key can type: a/A, or what keycode
+  0 types in an enabled keyboard layout. Otherwise the
+  binding has no keycode and matches by character.
+- A one-time migration rewrites three-part keys in the
+global key map,
+  profiles, and rewritable dynamic profiles, but only where
+  the answer doesn't depend on the enabled layouts.
+- Physical-key lookup scans the binding dictionary once and
+falls back
+  to keycode-less character matches.
+- The Python API writes four-part keys and leaves old
+keycode-0 keys
+  unchanged so iTerm2 can interpret them.
+- Fix dead-key handling in UCKeyTranslate calls that passed
+the
+  NoDeadKeys bit index instead of its mask, and stop reading
+  an uninitialized buffer when no characters are produced.
+
+2026-10-04: Fix histogram sampler weight overflow after
+weeks of uptime. Issue 13103
+
+The global Metal histograms live for the whole process and
+merge every frame, so after weeks of uptime the sampler's
+32-bit weight overflowed.  That corrupted the merge math and
+tripped an assertion in merge_from.  Make the weight 64-bit,
+draw reservoir indices with 64 bits of randomness once the
+weight passes 2^32, and clamp the per-side merge counts so a
+bad weight can never read past either vector or overfill the
+reservoir.
+
+2026-10-04: Keep it2 from relaunching iTerm2 while it quits
+
+When iTerm2 quits, closing sessions hangs up their jobs, and
+hooks run on the way out (Claude Code's SessionEnd runs
+cc-status, which runs it2 set-status) connect to the API and
+then request a cookie with an AppleScript tell. If iTerm2
+has exited by the time the Apple event arrives, the tell
+relaunches it. During a macOS restart, loginwindow then
+quits that short-lived instance and its empty window list
+replaces the saved state, so nothing is restored at the next
+login.
+
+it2 now asks for a cookie only if iTerm2 is running, as the
+Python library has always done. iTerm2 also stops accepting
+new API socket connections once a quit is confirmed, so
+those hooks fail at connect instead of reaching osascript.
+Existing connections are unaffected.
+
+Issue 13106
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-04: Fix crash when a new tab joins the current tab's
+group
+
+iTermApplicationDelegate.m is not ARC, so the didMakeSession
+block literal in -newTabAtIndex: was never copied to the
+heap. Its storage ended with the enclosing if statement, and
+iTermSessionLauncher later copied the dead stack block,
+crashing in objc_copyWeak. Copy it explicitly. Issue 13107.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-04: Make live harness tab title corpus tests opt-in
+
+The Apple Intelligence tests that walk the captured tab
+title corpus make one or more on-device generations per
+record, so with a real corpus a bare tools/run_ai_live.sh
+ran one experiment for ten hours. Skip them unless
+ITERM2_AI_LIVE_TAB_TITLE_CORPUS=1.
+
+2026-10-04: Fix live AI harness failures caused by vendor
+changes
+
+- Attachment matrix: move the Gemini lane from
+gemini-2.5-flash, which is
+  now restricted to existing users and returns HTTP 500 for
+  an inline DOCX, to gemini-3.5-flash-lite. Gemini 3.5 reads
+  TIFF and DOCX and accepts ZIP and octet-stream without
+  reading them, so re-baseline those cells.  Re-record the
+  lane's cassettes and remove the orphaned 2.5 ones.
+- Audio transcription: gpt-audio now declines to say what a
+clip contains,
+  so use gpt-audio-1.5, which answers the probe for both mp3
+  and wav.
+- Legacy completions: OpenAI shut down every /v1/completions
+model on
+  2026-09-28. Exercise the legacy prompt request shape
+  against Ollama's OpenAI-compatible /v1/completions
+  instead, gated like the other Ollama tests.
+- LLMProvider: drop a stale comment example claiming Gemini
+rejects TIFF.
+
+2026-10-04: Fix a race that could drop a new session's first
+tokens
+
+TwoTierTokenQueue initialized its per-priority queues with a
+lazy var.  The reader thread appends tokens while the
+mutation queue checks and executes them, and Swift lazy
+initialization is not thread safe: when a session's first
+append raced the first read, each thread could build its own
+queues and tokens appended to the losing set were silently
+lost.  Initialize the queues eagerly.
+
+This surfaced as an intermittent TmuxKeyReportingModeTests
+failure: turning on tmux mode schedules a paused side effect
+whose unpause wakes the mutation queue at the moment the
+test sends its first bytes. Add a direct regression test,
+which lost the token in about 30% of races before the fix.
+
+2026-10-04: Update the AI model catalog to current vendor
+lineups
+
+Rebuild ai-models.json (catalog version 4) from each
+vendor's published model docs:
+
+- OpenAI: add gpt-6-astra (now recommended), gpt-6.1-sol,
+gpt-6-sol,
+  gpt-6-luna (now the economy model), gpt-5.4-pro and
+  gpt-5.4-mini. Drop o4-mini, which shuts down 2026-10-23.
+  gpt-6-astra and gpt-6.1-sol reject reasoning effort
+  "none", so they think at "low" when thinking is off.
+  Correct gpt-4.1/gpt-4.1-mini limits and per-model tools
+  and service tiers to match the model pages.
+- Anthropic: add claude-opus-5-5 (now recommended),
+claude-fable-5-1,
+  claude-sonnet-5-5, claude-fable-5 and claude-opus-5, none
+  of which accept temperature. Opus 4.6+ and Sonnet 4.6+
+  have a 1M context window by default; Sonnet 4.6 and 5
+  allow 128K output.
+- Gemini: add gemini-3.8-flash (now recommended);
+gemini-3.5-flash-lite
+  is now the economy model.
+- DeepSeek: deepseek-v4-flash is a legacy alias; use
+deepseek-flash.
+
+The new Claude models can decline at the API layer with
+stop_reason "refusal", no content, and the reason in
+stop_details. The parser ignored those fields, so a refusal
+showed as a blank reply. Surface the explanation in both the
+streaming and non-streaming parsers.
+
+Capture refusal fixtures for the new models; gpt-6-astra,
+gpt-6.1-sol and gpt-6-sol block the refusal prompt at HTTP
+400 and are fixture-exempt.
+
+2026-10-04: Fix a crash and oversized panes when the API
+sets a layout with a browser session (#783)
+
+Tab.async_update_layout() converted each pane's grid size to
+points with the profile font's cell size. A browser
+session's grid is measured in points (its cells are 1x1), so
+a browser pane came out several times too big, squeezing the
+panes beside it. A 1444x1024 browser grid became a pane
+about 10,400 x 16,400 points.
+
+A pane that big holds so many one-point cells that
+saveToDvr's int byte count overflowed. The negative length
+got past DVR's size guard and failed the length assertion in
+-[DVREncoder _appendKeyFrame:length:metadata:info:].
+
+Use the session's own cell size for browser sessions, and
+compute the DVR frame length in 64 bits, skipping frames too
+big for an int.
+
+
+Claude-Session:
+https://claude.ai/code/session_01UZV8mwBt1GHX6NWmWrEH1A
+
+Co-authored-by: Claude Opus 5.5 <noreply@anthropic.com>
+2026-10-04: Keep the stoplight hotbox from covering
+clickable toolbars and status bars. Issue 13100
+
+In compact windows without a top tab bar, hovering the
+top-left corner revealed the stoplight hotbox over whatever
+was beneath it and swallowed clicks there, so the leftmost
+item of a workgroup toolbar or a top status bar could not be
+clicked.
+
+When the hotbox overlaps a session toolbar, pane title bar,
+or status bar, it now stays collapsed: a sliver of the
+hotbox slides in with a chevron toggle, and clicks elsewhere
+pass through. Clicking the chevron slides the hotbox fully
+in or back out. Without such an overlap the hotbox fades in
+on hover as before.
+
+The slide is driven by a single offset property animated
+with a cancelable NSAnimation subclass (iTermValueAnimation)
+so every moving view starts from where it is and a canceled
+slide can't overwrite later state. The hotbox's tracking
+area is now created once (it tracks the visible rect) so
+sliding doesn't produce spurious mouseEntered: events, and
+its mouse state is cleared when it is hidden or changes
+windows.
+
+2026-10-04: Keep user vars and shell integration state set
+while a tmux pane opens. Issue 13006
+
+Output for a tmux pane is dropped until its session exists,
+because its effect on the screen is recovered from
+capture-pane. Control sequences that change state only
+iTerm2 keeps were lost with it, so a badge using a user
+variable stayed empty until the shell's second prompt.
+
+While a pane is being opened (or a just-added window's
+layout is pending), its dropped output is parsed and the
+last SetUserVar per variable, RemoteHost, CurrentDir, and
+ShellIntegrationVersion are kept. Panes in hidden windows
+are not scanned. The opener applies captured user vars to
+the controller, which saves them in @uservars and overrides
+the stale value fetched during the open, and passes the
+tokens in the pane state so setTmuxState: executes them once
+the cursor is restored.
+
+2026-10-04: Recognize cc-status hook commands that use
+$HOME, ~, or a wrapper
+
+Claude Code runs a hook command with /bin/sh -c and never
+inspects it, so users write $HOME/.config/iterm2/cc-status
+(to share settings.json between Macs) or a wrapper that
+exits quietly when cc-status is missing.  The health check
+treated the whole command string as a file path, so those
+setups got a false "Looks Broken" alert on every launch, and
+Reinstall did not recognize them and added a second
+cc-status entry to each event (issue 13099).
+
+CCStatusHookCommand splits a command into words the way sh
+does and finds references to cc-status: a word whose last
+path component is cc-status, or a bare cc-status in command
+position. It expands ~, $NAME and ${NAME} from a supplied
+environment and never evaluates anything that would run
+code; such words, and bare names missing from PATH, are
+unresolvable and count as working. Install, uninstall and
+the health check all use it.
+
+The health check and the installer get the environment from
+one place, a login interactive shell, and only when some
+cc-status command needs it, so they agree on which commands
+are broken and the common case launches no shell. Reinstall
+keeps a working custom command and only replaces a plain
+absolute path or one that cannot run. The health check is
+skipped when the prompt is silenced, and the alert no longer
+claims Claude Code rewrote the file.
+
+2026-10-04: Align the password manager's Working label with
+its Cancel button's baseline
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-04: Make Find treat cells the cursor skipped over as
+spaces
+
+When a program moves the cursor past a cell (CHA, CUF, CUP)
+instead of writing a space, the cell stays nul. It draws as
+a blank but the search haystack held U+0000, so multi-word
+searches failed across it. Search now converts nuls before a
+line's last written cell into spaces, one unichar per cell
+so deltas are unchanged. Trailing nuls are untouched.
+
+Fixes #13101
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 2026-10-03: Fall back to a GitHub Pages mirror of the
 companion shard map
 
