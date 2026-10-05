@@ -1,85 +1,48 @@
-Version 3.7.3 of iTerm2 was built on September 22, 2026.
+Version 3.7.4 was built on October 5, 2026.
 
 Bug Fixes:
-- Fixed the Python API not reporting OSC 8
-  hyperlinks. A cell’s CellStyle.url is now
-  populated, so scripts reading screen contents
-  can see the link target.
-- Fixed the Screen setting in Settings >
-  Profiles > Window. Choosing “Main Screen”
-  left the popup blank and showed no checkmark
-  next to it when reopened, although the
-  setting was saved correctly.
-- Fixed a crash when a program wrote a hyperlink
-  whose web address contained an emoji or other
-  character outside the Basic Multilingual
-  Plane. The link is now handled correctly
-  instead of terminating iTerm2, which could
-  recur on restore because the saved session
-  replayed the same link.
-- Fixed severe typing lag in a tmux Integration
-  session running on a host you connected to
-  with an SSH profile. Keystrokes and the output
-  they produced were each held back about a
-  second, so typing arrived in slow bursts.
-- Fixed occasional delayed screen updates in a
-  session that had gone quiet. A redraw with no
-  other output behind it could be held back
-  until something else happened in the session.
-- Fixed a bug where a profile whose custom
-  working directory used a tilde (such as
-  ~/www) wrongly reported the directory as
-  unavailable and started in the home
-  directory instead.
-- Fixed a bug where editing only the keystroke
-  of a Select Menu Item or Toggle Setting key
-  binding erased the menu item or setting it
-  was bound to.
-- Fixed a bug where a flag emoji took four
-  columns instead of two, leaving a gap after
-  it. A flag is now always two columns, the
-  width other terminals report for it, so the
-  advanced setting “Lone regional indicators
-  render full-width” no longer affects flags.
-  Skin-toned emoji are still affected and will
-  be fixed separately.
-- Fixed a bug where a character that combined
-  with the one before it could come out the
-  wrong width when the two halves arrived in
-  separate writes, leaving the cursor inside
-  the character.
-- Fixed Cmd-number tab shortcuts becoming
-  non-consecutive after changing a tab group
-  from the context menu. Removing a tab from a
-  group reordered the tabs but left the
-  shortcut numbers on their old positions.
-- Fixed Kitty graphics placeholder cells
-  drawing nothing when the image id fit in
-  three bytes and the program omitted the
-  optional diacritic that carries the high
-  byte. Other terminals render these, and now
-  iTerm2 does too.
-- Fixed a crash when asking for notification
-  permission. The reply block could be called
-  after it had gone out of scope, which could
-  terminate iTerm2 at the moment a
-  notification was first requested.
-- Installing the Python runtime used by scripts
-  now trusts the certificates installed on your
-  Mac. On networks that inspect secure traffic,
-  it could fail with a certificate error even
-  though the same download succeeded in a
-  browser.
-- Fixed unbounded memory growth with programs
-  that animate using the Kitty graphics
-  protocol. Each redrawn frame was kept for the
-  life of the window, so a long-running
-  animation could consume many gigabytes.
-- Fixed a bug where blank space rendered as a
-  stray “~” with the GPU renderer in profiles
-  that have Anti-aliased turned off. It showed
-  up most often in bold runs and in the padding
-  of full-screen programs like k9s, and it
-  persisted for the rest of the session once it
-  appeared.
+- Fixed a crash that could recur every time
+  iTerm2 saved window state. Quitting while a
+  save was in progress could store duplicate
+  entries in the saved-state database, which
+  later saves could not handle.
+- Fixed a crash when opening a new tab next to a
+  tab in a tab group.
+- iTerm2 no longer crashes when its app was
+  moved, deleted, or replaced while running,
+  for example by an installer. It now explains
+  that the app is damaged and quits.
+- Fixed a crash when exiting full screen in a
+  window without a title bar, such as a tmux
+  integration window, on macOS 26.
+- Fixed a crash with the GPU renderer that
+  could happen after changing the font size
+  with Cmd-+ or Cmd--.
+- Fixed a crash that could happen when the GPU
+  renderer had been running for several weeks
+  without restarting iTerm2. Issue 13103.
+- Fixed a crash when pressing Cmd-Z after
+  closing a pane, toolbelt tool, or other view
+  that had text you had edited.
+- Fixed a crash when a program printed a
+  letter followed by many spacing marks (such
+  as Devanagari vowel signs) in a later write.
+  Issue 13073.
+- Fixed a crash in “Import All Settings and
+  Data” when the import changed a setting that
+  requires your administrator password.
+- Fixed “Export All Settings and Data” failing
+  with “Failed to copy file” after using SSH
+  Integration. Temporary connection files it
+  could not copy are now skipped.
+- Fixed crashes loading Dynamic Profiles files
+  with values of an unexpected type, such as a
+  null value or a Keyboard Map that is not an
+  object. These values are now ignored or
+  reported instead.
+- Fixed various other crashes, including ones
+  involving Find, the composer, splitting
+  panes, Smart Selection, right-to-left text,
+  VoiceOver, the GPU renderer, and quitting
+  while iTerm2 was still starting up.
 
