@@ -1,3 +1,383 @@
+2026-10-05: Keep a symlinked settings.json when writing the
+Claude Code hook. Issue 13098 (#775)
+
+Install, Reinstall, and Uninstall of the Claude Code
+Integration wrote settings.json with an atomic write to its
+unresolved path. An atomic write renames a temporary file
+over the path it is given, so when settings.json was a
+symlink into a dotfiles repo (GNU Stow, chezmoi), the rename
+replaced the link with a regular file. The link's target
+kept its old contents, Claude Code read the new copy from
+then on, and the copy did not inherit the target's mode: a
+0600 file came back as 0644 on macOS 26.7 (the issue reports
+0755 on macOS 27), readable by other users, although
+settings.json can hold API keys.
+
+Both write sites now go through one helper that resolves
+symlinks before the atomic write, so the rename happens next
+to the real file.  The link survives, and the real file
+keeps its mode. A dangling link resolves to itself, so
+writing through one still replaces it, as before.
+
+The new tests strip the hook through an absolute and a
+relative (Stow-style) link and check that the link survives
+with the same destination, that the target has the change,
+and that the target is still 0600.
+
+Co-Authored-By: Claude Opus 5.5 (1M context)
+<noreply@anthropic.com>
+
+2026-10-05: Fix frame of views in
+settings>general>ai>prompts
+
+2026-10-05: Don't let a skipped nanny update swallow later
+ones
+
+dbf0fa199 made iTermTitlebarAccessoryNanny.update() return
+without clearing needsUpdate when the window has no title
+bar, meaning to stay pending. But requests only trigger
+update() when needsUpdate goes from false to true, so with
+it stuck at true every later add, remove, or min-height
+change was a no-op, and updateIfNeeded() is only called from
+a few places. A window that regained its title bar never got
+its accessories installed or resized.
+
+Clear needsUpdate when skipping. viewControllers and
+pendingUpdates keep the desired state, so the next request
+applies all of it. Latent today, since PseudoTerminal checks
+for a title bar before using the nanny.
+
+2026-10-05: Take the texture pool's lock when the power
+manager empties it
+
+iTermTexturePool requests and returns textures under
+@synchronized(self) on the Metal queue, but
+powerManagerMetalAllowedDidChange: emptied the array and
+bumped the generation on the main thread without the lock.
+Emptying the array between -requestTextureOfSize:'s count
+check and its removal threw "removeObjectsInRange: range {0,
+1} extends beyond bounds for empty array". Take the lock
+there, and in stampTextureWithGeneration:, which reads the
+generation and is also called from iTermPooledTexture
+without it.
+
+Not covered by a test: the race depends on thread timing.
+
+2026-10-05: Skip smart selection rules that have no regex
+
+Smart selection rules can come from hand-edited, dynamic, or
+imported profiles. +[SmartSelectionController regexInRule:]
+returned the value unchecked, so a rule without one passed
+nil to RegexKitLite, which threw "The regular expression
+argument is NULL." Return nil unless the regex is a
+non-empty string, and have the text extractor, the context
+menu, and PTYSession's combined smart selection regex skip
+such rules.
+
+2026-10-05: Keep Metal frame statistics alive as long as the
+frames using them
+
+iTermMetalGlue gave each frame's
+iTermAttributedStringBuilder raw pointers into timing
+statistics stored in the glue itself. Frames can outlive the
+glue: a session that closes frees its glue while frames are
+still in flight on the Metal queue, and building rows and
+completing a frame write the builder's statistics. Those
+writes went into freed memory, which can corrupt the heap or
+whatever object reused it.
+
+Move the statistics into a small object that the glue owns
+and each builder retains through a new statsOwner property.
+The frame does not retain the glue itself, so the glue's
+last release can't move to the Metal queue.
+
+2026-10-05: Don't unwrap a nil iTermController when
+GlobalJobMonitor starts
+
+GlobalJobMonitor's initializer picks up existing sessions
+with iTermController.sharedInstance().allSessions().
+sharedInstance() imports into Swift as an implicitly
+unwrapped optional, and it is nil once
++releaseSharedInstance has run at termination. If a quit
+(Cmd-Q, or a logout or restart Apple event) was handled
+before launch finished, ClaudeWatcher.start() created the
+monitor from applicationDidFinishLaunching with the
+controller already gone, and the unwrap trapped. Treat a
+missing controller as no sessions, as 88228e721 does for
+sleep prevention.
+
+Not covered by a test: reproducing it needs the app's shared
+controller to be nil, and releasing it can't be undone in
+the test host.
+
+2026-10-05: Keep the grid size finite when a font measures
+as zero
+
+Adding a tab to a window sizes the new session from the
+existing view's size divided by the profile's cell size.
+TerminalWindowSizeHelper's
+gridSize(forContentSize:cellSize:) divided by the raw cell
+size, so a font that measures as zero made it infinite,
+Int32(clamping:) turned that into Int32.max columns, and
+allocating the grid's lines threw "-[NSConcreteMutableData
+initWithLength:]: absurd length". Treat a cell as at least
+one point, as the other sizing paths do, and never return
+fewer than one row or column.
+
+Also fix Int32(clamping: CGFloat), which compared against
+Int.max and Int.min, so values between those and Int32's
+limits reached Int32(value) and trapped.
+
+2026-10-05: Don't let tab accessibility elements outlive
+their cell unsafely
+
+Each tab cell vends an accessibility element, plus one for
+its close button, that refers back to the cell through an
+assign property, and nothing cleared it when the cell was
+freed. Assistive apps can keep an element after its tab
+closes and then ask for its parent, which messaged the freed
+cell and crashed in -[PSMTabAccessibilityElement
+accessibilityParent]. Make the reference weak.
+
+2026-10-05: Don't split a pane that left the window during
+an async split
+
+asyncSplitVertically: captures the target session and looks
+up the working directory before it splits. If the target was
+closed or moved to another window meanwhile (or there was no
+current session, the "should be impossible" path, which
+passes a nil target), the split fell back to the current tab
+and PTYTab asserted that the target's view was in its split
+tree.
+
+Before creating the new session, require the target to be in
+one of this window's tabs; otherwise log it and report
+failure through the completion block.
+
+2026-10-05: Don't trust value types in Dynamic Profiles
+files
+
+profilesInFile:fileType: assumed the types of the JSON or
+property list it read and crashed on: a "Profiles" value
+that is not an array, an entry that is not a dictionary, a
+"Keyboard Map" that is not a dictionary (the deprecated key
+mapping check subscripted it), and JSON null values (a null
+parent name reached bookmarkWithName:, and any null made the
+NSUserDefaults write throw "Attempt to insert non-property
+list object").
+
+Report a non-array "Profiles" and skip entries that are not
+dictionaries. Treat null as absent by removing it throughout
+each profile, drop and report a non-dictionary "Keyboard
+Map", and ignore a parent name or GUID that is not a string.
+
+2026-10-05: Fix a crash Cmd-hovering over a composer
+autosuggestion
+
+The hovered character index covers the prompt prefix, the
+typed text, and the gray autosuggestion. To find the command
+under it, characterRangeOfCommand(atCharacterIndex:) removes
+the prefix with withoutPrefix, and clearing the prefix also
+clears the suggestion. An index that was in the suggestion
+was then past the end of the shorter text, and
+paragraphRange(for:) threw "Range {17, 0} out of bounds;
+string length 3". Return nil for an index past the end.
+
+2026-10-05: Keep the titlebar accessory nanny away from
+windows without a title bar
+
+AppKit throws "titlebarAccessoryViewControllers not
+supported for this window style" when you get or change a
+window's titlebar accessories without
+NSWindowStyleMaskTitled. On exiting Lion fullscreen,
+PseudoTerminal restores the saved style mask, which can lack
+it (seen with tmux integration windows), and then on macOS
+26 calls forceReaddAll, which read the accessories and
+crashed.
+
+The nanny now only touches a window that has a title bar:
+forceReaddAll and probation review do nothing otherwise, and
+update() stays pending until the window has one.
+PseudoTerminal already skipped the nanny for untitled
+windows when managing the tab bar accessory.
+
+2026-10-05: Don't load the Settings window when the app
+hotkey is pressed
+
+To decide whether the hotkey was pressed while the Settings
+window's hotkey field had focus, the handler called
+-[PreferencePanel window], which loads the Settings nib the
+first time. If Settings was never loaded it can't be in use,
+so check isWindowLoaded first. Besides being wasted work,
+the forced load turned a damaged bundle (an old process
+whose app was replaced on disk) into a crash on an unrelated
+keystroke.
+
+2026-10-05: Explain and exit instead of crashing on other
+missing bundle resources
+
+Several resources the app can't run without crashed when
+they could not be loaded, which happens when the app's
+bundle is moved, deleted, or replaced while it runs. Use
+AppSignatureValidator.warnAndExit(reason:) for them, so the
+user is told the app is damaged and it exits without a crash
+report:
+
+- iTermLocaleGuesser's encodings list and the triggers
+status bar icon,
+  which warned and then called it_fatalError.
+- The default smart selection rules, which warned only when
+the file
+  was missing and then hit ITCriticalError.
+- Browser page templates and their included files, which
+called
+  it_fatalError without explanation.
+- iTermGraphicSource's bundled graphic maps, which passed a
+nil path to
+  NSData and raised.
+
+warnAndExit can now be called from any thread: off the main
+thread it hands the alert to the main queue and parks the
+calling thread so it never continues without the resource.
+It is exposed to Objective-C.
+
+2026-10-05: Explain and exit when the AI model catalog can't
+be loaded
+
+AIModelCatalog asserted when neither the bundled
+ai-models.json nor the downloaded cache could be read. That
+happens when the app's bundle is moved or deleted while it
+launches: for example, a Jamf App Installers staged copy
+gets launched, the "Move to Applications folder?" prompt
+holds up launch, and the installer removes the staged copy
+before the user answers. The bundled catalog always ships,
+so this means the app is damaged.
+
+Now the catalog reports that it is unavailable, and launch
+calls the new AppSignatureValidator.warnAndExit(reason:),
+which tells the user the app is damaged and exits without
+producing a crash report.
+
+Also fix AppSignatureValidator's messages, which were
+swapped: an official signature said it did not match the
+official distribution, and any other team's signature was
+called valid "against all odds". Remove a leftover print of
+the signing information.
+
+2026-10-05: Skip sockets when exporting all settings and
+data
+
+it2 over SSH creates live Unix domain sockets in
+~/.iterm2/it2.  "Export All Settings and Data" copies
+~/.iterm2, and deepCopyContentsOfDirectory called copyItem
+on the socket, which can't be copied, so the whole export
+failed with "Failed to copy file: "<hex>.sock" couldn't be
+copied to "it2"."
+
+Exclude ~/.iterm2/it2 from the export, and make both
+deep-copy helpers skip sockets, FIFOs, and devices, which
+are runtime state rather than data.
+
+2026-10-05: Fix a crash importing all settings that change a
+secure setting
+
+ImportExport called
+SecureUserDefaults.instance.deserializeAll(dict:), a
+mutating method on the static `instance`, which held
+exclusive access to it for the whole import. Writing a
+changed secure setting posts secureUserDefaultDidChange
+synchronously, and observers such as AIModelCatalogUpdater,
+the companion pairing gate, and the composer read
+SecureUserDefaults.instance, so Swift's exclusivity checker
+trapped with "Simultaneous accesses".
+
+serializeAll and deserializeAll are now static. They take
+the list of settings with a brief access to `instance` and
+read or write them with no access held, as setBatch already
+does.
+
+Adds SecureUserDefaultTestHooks.privilegedWriteRunner
+(ITERM_DEBUG only) so tests can exercise the write path
+without an administrator prompt.
+
+2026-10-05: Fix a crash from NSFont keys in the Metal font
+ID bijection
+
+-[NSFont it_metalFontID] keyed a bijection by NSFont. A font
+made by it_fontByAddingToPointSize: (Cmd-+ and Cmd--) is
+-isEqual: to the same font made any other way, but hashes
+differently, because CTFontCreateCopyWithAttributes with an
+explicit matrix adds an identity matrix attribute to its
+descriptor that -hash includes and -isEqual: ignores.
+Lookups for the zoomed font usually missed, so it was linked
+a second time under a duplicate key, and when that insert
+grew the dictionary Swift trapped with
+KEY_TYPE_OF_DICTIONARY_VIOLATES_HASHABLE_REQUIREMENTS.
+
+The bijection now recognizes objects conforming to
+BijectionIdentifiable, which supply their own identity, and
+keys by it while still returning the linked objects.
+NSFont's identity is its descriptor attributes, minus a
+matrix attribute that is the identity transform, so equal
+fonts share one ID and fonts that render differently
+(feature settings, variations, a real matrix) keep their
+own.
+
+Computing that identity is slow, so the ID is now computed
+once and carried with the font. PTYFontInfo computes its
+font's ID when the font is set, and
+iTermAttributedStringBuilder puts it in the attribute
+dictionary as iTermMetalFontIDAttribute next to
+NSFontAttributeName, so cheap and NSAttributedStrings both
+carry it. The GPU renderer reads the stored ID, which also
+removes a lookup it used to do for every glyph.  Only
+CoreText runs that use a substituted fallback font still
+call it_metalFontID, once per run. The bijection lock is now
+an os_unfair_lock.
+
+2026-10-05: Fix heap corruption from a stale find indicator
+range
+
+Selecting a find match computes the indicator range and
+shows it later in a dispatch_async. If the session got
+narrower in between, start.x was past the end of the line.
+TextClipDrawing.drawClip copies each line at the current
+width and blanks 0..<start.x with
+copyByZeroingVisibleRange:, which wrote zeros past the end
+of the malloced copy. Heap corruption crash reports have
+zeroed free-block headers in whole 12-byte strides, matching
+this write.
+
+The indicator is now skipped if the width changed before it
+is shown, drawClip refuses a range that starts past the
+width, and the zeroing methods ignore cells outside the line
+and RLog when asked to zero them.
+
+2026-10-05: Fix crash loops in the window state database
+from overlapping saves
+
+A synchronous save (applicationWillTerminate) could run
+while an async save was still pending. updateSynchronously:
+rejected only async saves while updating, so the sync save
+built its delta against the same self.record as the pending
+save, and both inserted every node new since then. The
+resulting duplicate sibling rows persisted in the database.
+
+On every later launch, for arrays of more than 16 elements,
+the delta encoder looked up the previous revision through an
+index in which the last duplicate won, while the save
+enumerator and restoration take the first. The mismatch
+either skipped inserting new children, so the next save
+threw MissingRowID and hit fatalError, or paired records
+with different rowids and failed assert(before.rowid ==
+after.rowid).
+
+A sync save now waits for a pending save to finish and
+publish its result before building its delta, so saves never
+overlap. The index now keeps the first duplicate, which
+stops the crash loop for databases that already contain
+duplicates.
+
 2026-10-04: Let undo close restore sessions from their
 archives
 
