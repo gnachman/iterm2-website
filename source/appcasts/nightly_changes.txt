@@ -1,3 +1,569 @@
+2026-10-06: Don't warn about another running instance in a
+test host
+
+Parallel test runs start several test hosts with the same
+suite, so the warning about another instance using the same
+settings stalled every host after the first until it was
+dismissed.
+
+2026-10-06: Add floating panes
+
+A floating pane floats over a tab's split panes. It can be
+moved, resized, raised, hidden, maximized, docked into the
+split panes, and dragged to other tabs and windows. Floats
+are saved with window arrangements and session restoration,
+can be created and controlled from the Python API, it2,
+AppleScript, key bindings and pointer actions, and work in
+tmux integration, which shows tmux's own floating panes.
+
+This squashes the floating-panes branch. See that branch for
+the individual commits.
+
+2026-10-06: Remove the incorrect claude- suite rule from
+CLAUDE.md
+
+The suite name is the last path component of the repo
+directory, which is what the other suite rule and the
+Makefile already say.
+
+2026-10-06: Translate remaining untranslated catalog strings
+
+Add de, ja, pt-BR, ru, and zh-Hans translations for the
+instance lock warning and nine other strings that had none.
+Complete the zh-Hans shell integration installer strings
+that had been cut short, and promote the remaining accurate
+needs_review drafts to translated.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-06: Warn when another instance is using the same
+settings domain
+
+A process-lifetime flock in $TMPDIR keyed by -suite (or the
+bundle ID when there is no suite) detects a second instance.
+It shows an iTermWarning offering to quit and switch to the
+running copy, or to launch anyway.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-06: Make offline shell integration install work
+without bash
+
+The offline installer launched bash to get a Bourne shell
+with known prompts, but bash isn't installed by default on
+FreeBSD or OpenBSD.  When it was missing, the commands ran
+in the user's shell, and tcsh never terminates <<'EOF' on a
+plain EOF line, so the install hung.
+
+Use POSIX sh as the helper shell instead, replace echo -n
+(which macOS /bin/sh prints literally) when picking the bash
+dotfile, and fall back to b64decode -r when base64 is
+unavailable (OpenBSD).
+
+2026-10-06: Use a secure text field for the AI API key
+prompt
+
+The registration sheet that asks for an AI provider's API
+key used a plain text field, so the key was visible as you
+typed it.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-06: CLAUDE.md: use iTermWarning rather than NSAlert
+so the phone can answer alerts
+
+2026-10-06: Keep verified OSC 7 locality from being
+overridden by stale third-party reports
+
+A third-party precmd hook (e.g. oh-my-zsh's
+omz_termsupport_cwd) can send a tokenless OSC 7 right after
+shell integration's verified one. When the shell's $HOST is
+stale, that report names a host we don't recognize and
+turned a local session remote, so file paste offered only
+upload actions.
+
+- Ignore a tokenless OSC 7 that arrives after a verified
+report and before the
+  first of 133;B, 133;C, or input written to the pty. A
+  report from a remote shell reached by plain ssh always
+  comes after input, so it is still honored.
+- Notify the session when only a host's locality or its
+verification changes,
+  not just its hostname.
+- Record whether a host's locality was proven (ssh
+integration, machineID
+  token) or inferred from the hostname, and persist it.
+- When remoteness is only inferred, the file and image paste
+dialogs also
+  offer to paste a local path, after the upload actions.
+
+Issue 13117.
+
+2026-10-06: Restore the braces lost rebasing the pairing
+controller onto master
+
+Two conflict resolutions in the rebase of the companion
+modal-alert work dropped closing braces, and the park
+supervisor's fault event now reports through reportFailure,
+which master added meanwhile.
+
+2026-10-06: Refuse a second answer to an alert that was
+already answered, and stop storing room secrets at unpair
+
+An alert that blocks stays registered, and in front, until
+its modal run loop ends, and a second remote press in that
+window would override the first. The registry now marks an
+alert answered after an accepted press and refuses later
+ones. A press the alert itself refused leaves it open to
+another.
+
+Unpairing deletes the stored room secret and then says
+goodbye to the phone a moment later. The link is now told to
+stop storing room secrets before any key material is
+deleted; the store and that flag share a lock, so a store
+already under way finishes first.
+
+2026-10-06: Fix review findings in how the phone answers and
+tracks Mac alerts
+
+The card names the alert it drew, and an answer or Not now
+for an alert the Mac has since replaced is dropped rather
+than applied to the new one.
+
+The wait that follows an answer belongs to that answer: it
+is numbered, cancelled by the next answer, and cancelled
+when the alert goes away, so a leftover wait from an earlier
+answer cannot cut a later one short.
+
+Clearing the Mac's status when a connection ends no longer
+forgets which alerts were set aside with Not now; the same
+alert reported again after a reconnect stays set aside.
+
+The status is also cleared when a reconnect attempt tears
+down or replaces its connection, and the liveness probe's
+verdict is ignored if the connection it pinged has been
+replaced since.
+
+A rejected answer clears when anything in the Mac's status
+changes, including whether it is blocked, not only the list
+of alerts.
+
+2026-10-06: Hide buttons that only make sense at the Mac
+from the phone
+
+Every place a warning is shown was read for buttons whose
+effect is to open something on the Mac that the companion
+app cannot see or operate: a file panel, Finder, Settings or
+another window, a web page, or a session revealed on the
+Mac's screen. Those 49 buttons are now marked as not offered
+remotely. On the Mac nothing changes.
+
+To make that a one-token change at a call site, the actions
+array of the showWarningWithTitle: methods accepts an
+iTermWarningAction in place of a label, and
++[iTermWarningAction localOnlyActionWithLabel:] makes one.
+
+A button stays visible when hiding it would leave the phone
+no way to dismiss the alert, or when it opens a terminal
+window, which the phone can see and drive.
+
+2026-10-06: Fix review findings in how warnings are
+published and answered
+
+A sheet no longer counts as showingWarning. That flag pauses
+redraws in every window and keeps the hotkey window from
+hiding, and many alerts that used to be plain sheets are now
+warnings.
+
+A remote answer sets the warning's own "don't ask again" box
+both ways, so a box ticked at the Mac is not honored when
+the phone did not ask for the choice to be remembered.
+
+The "Advanced" button on the paste warnings is not offered
+to the phone: it opens a panel on the Mac. Actions can be
+marked this way by label.
+
+A warning can mark its text as secret to keep it out of
+logs. The reveal-password alert does.
+
+2026-10-06: Refuse scroll-wheel reports during a stall and
+deliver stream acks off the main actor
+
+A scroll over a program that takes mouse reports is written
+to the terminal as input, so like keys it is refused while
+the main thread is blocked instead of being replayed when
+the alert closes.
+
+Stream acknowledgements now go from the link straight to the
+streamer.  The streamer stops emitting frames once it is
+about half a second ahead of the last one, so waiting for
+the main actor stalled the video for as long as an alert had
+the main queue frozen.
+
+2026-10-06: Act only on the phone's current connection, and
+close ones it gives up on
+
+Events and close notifications are ignored unless they come
+from the connection in use. A connection the liveness probe
+or the connection check declares dead is closed, so its
+pending requests fail at once and its late close cannot tear
+down the connection that replaced it.
+
+When the probe finds the connection dead while a reconnect
+is under way, clear the Mac status and close that
+connection. The reconnect was waiting on a request held
+because the Mac said it was blocked; this fails it so the
+reconnect tries again.
+
+2026-10-06: Remove the debug menu items for freezing the
+main queue
+
+They existed to test the companion app against a modal that
+freezes the main queue while that work was in progress.
+
+2026-10-06: Don't report a cancel after an accepted
+natural-language query prompt
+
+After OK, the prompt's completion was called with the text
+and then again with nil. The only caller ignores nil, so
+nothing visible went wrong, but a completion should be
+called once.
+
+2026-10-06: Convert most plain NSAlerts to iTermWarning so
+the phone can answer them
+
+About 125 alerts across the app become iTermWarnings, which
+publish themselves to the companion app. On the Mac each
+keeps its text, its buttons in the same order, what each
+button does, whether it blocks, and its parent window.
+Prompts with a plain text field publish it as a remote input
+and take focus through initialFirstResponder instead of
+laying out the alert and setting first responder by hand.
+
+Left as plain alerts: those with custom controls (combo
+boxes, popups, profile lists, a progress indicator, a
+multi-line text view), those shown during launch,
+termination or when the app bundle is damaged, the title
+prompts that set the alert window's appearance,
+script-defined alerts with an unbounded number of buttons,
+the account picker, the expression editor, the AI API key
+sheet, and the debug logging toggles.
+
+2026-10-06: Add a debug menu item that shows the password
+prompt from a main-queue block
+
+For testing the companion app against a password prompt that
+has the main queue frozen. Afterwards a warning reports what
+the prompt received.
+
+2026-10-06: Let the phone answer the password prompt and the
+scp password prompt
+
+Both can come up with nobody at the Mac: the password prompt
+when a trigger opens the password manager, the scp prompt
+some time after a transfer starts. Both are now
+iTermWarnings that publish the password as a secret input.
+The password prompt also publishes its user name field and
+its Remember checkbox. The Password Manager button on each
+opens a window on the Mac, so it is not offered to the
+phone.
+
+The password prompt's accessory is a stack view laid out by
+constraints, which has no frame until it is in a window, so
+it goes in a container with a real frame for iTermWarning to
+size.
+
+2026-10-06: Let the phone enter secrets, set an accessory
+checkbox, and skip Mac-only buttons
+
+Three additions to what a warning can publish for the
+companion app:
+
+A secret input, for a password field. The phone shows an
+obscured field.  What the Mac's field holds is never
+published: the remote input, the registry and the link each
+send an empty value. A secret the phone leaves blank is not
+sent, so the Mac's field keeps what it has.
+
+A remote checkbox: a checkbox in the accessory that the
+phone shows and sets the way it does a warning's own "don't
+ask again" box. The alert carries whether the box starts
+checked.
+
+An action can be marked as not offered remotely, for a
+button that only makes sense at the Mac. It stays in the
+list so indexes match, the phone does not show it, and an
+answer that names it is refused.
+
+2026-10-06: Only interrupt the phone for alerts that block
+the Mac or concern the session on screen
+
+An alert being up no longer counts as the Mac being blocked.
+When an alert that can block the app appears, the stall
+monitor probes the main queue at once and reports a stall
+after 0.3 s instead of 2 s. Keys from the phone are refused
+only during an actual stall, and the phone holds its request
+timeouts only then.
+
+Warnings shown over a terminal window carry the stable IDs
+of the sessions in that window's current tab (or one session
+named by the caller). The phone shows the full card when the
+Mac is blocked or when the alert is about the session on
+screen, and the pill otherwise. The session list marks
+sessions with an alert waiting.
+
+The video frame timer now runs in common modes so live video
+continues while an alert is up.
+
+2026-10-06: Fix a crash listing sessions for the phone when
+a tab has no title yet
+
+PTYTab.title returns nil for a tab that was just inserted,
+and the session lister runs from the notification that the
+number of tabs changed. Opening a tab with a phone connected
+could crash. Send "Tab N" for such a tab, as an untitled
+window is sent as "Window N".
+
+2026-10-06: Let the phone fill in the values a warning asks
+for
+
+Two warnings ask for input in an accessory view: pasting
+text with tabs (the tab size in spaces) and adding a Python
+script dependency (its name). The phone could see and answer
+them but not see or change the value, so answering meant
+confirming contents the user had not seen.
+
+A warning can now describe such controls with remoteInputs:
+free text backed by a text field, or a whole number with a
+range. The alert registry and the mac status message carry
+each input's label, kind, current value, and range. iTerm2
+Buddy shows a field for each on the alert card and sends the
+values back with the answer. Before clicking the button the
+Mac checks every value and then puts each into its real
+control, as if typed there. If any value is unacceptable the
+press is refused and no control changes.
+
+Declaring inputs says they are everything in the accessory
+that matters to the answer, so the phone no longer says more
+is shown on the Mac.
+
+The card's window takes key status when it has an input,
+since a text field only gets the keyboard in the key window,
+and gives it back when it goes away.
+
+This extends companion protocol revision 14, which has not
+shipped. The input kind is a string so a later Mac can add
+kinds without breaking this phone.
+
+2026-10-06: Fix review findings in the companion modal-alert
+work
+
+Unpairing left the Mac's status in place in iTerm2 Buddy, so
+the alert card stayed up over the pairing scanner and held
+timeouts and the liveness probe outlived the pairing. Both
+unpair paths now clear it.
+
+A warning shown as a non-blocking sheet stayed in the alert
+registry forever if its parent window closed first, because
+AppKit does not call the sheet's completion handler then. It
+now unregisters when the parent closes.
+
+Park supervisor events are read on the main actor after a
+delay, so one from a run that had since been stopped could
+be applied after a newer start: marking the supervisor
+inactive while it parked, or installing a bridge for a link
+nobody watched. Each command now has a generation, events
+carry it, and the controller drops events from any other.
+
+A press on a disabled or hidden button was reported as a
+success. It is now refused, and the phone's "sending" state
+gives the buttons back after ten seconds if the Mac never
+acts.
+
+A sheet registered after an alert that blocks the app became
+the one answerable alert, though the blocking alert was
+still in front. Sheets are now kept behind every app-modal
+alert.
+
+The stall monitor started measuring a second after a phone
+connected and reported only as of its last tick. It now
+starts at once and answers as of the current time, so a
+phone connecting during a freeze is told sooner.
+
+The link acted on an alert answer from a phone that had not
+completed hello at a revision that carries the status, and
+forwarded keystrokes and pastes during a freeze, to be typed
+into the session when the alert was dismissed. Such answers
+are now ignored and such input refused.
+
+Also: one factory for the production link, one shared weak
+observer list for the registry and the monitor, and a header
+comment that claimed an opt-out no call site uses.
+
+2026-10-06: Show and answer the Mac's alerts in iTerm2 Buddy
+
+The phone side of companion protocol revision 14. The Mac
+now reports which modal alerts are showing and whether its
+main thread is blocked, in its hello reply and in
+macStatusChanged events.
+
+An alert that blocks the Mac is shown as a card in front of
+everything, in its own window so it appears over a presented
+sheet: the Mac's heading and text, its buttons, a checkbox
+for "don't ask again" when the alert has one, and Not now.
+Setting it aside, or an alert that does not block the Mac,
+leaves a pill in the banner area that reopens it. If the Mac
+could not press the button, the card says to answer at the
+Mac.  When the Mac is blocked by something the phone cannot
+answer, a banner says so.
+
+Requests that the Mac's main thread has to serve now hold
+their timeouts while the Mac reports itself blocked, and get
+the full timeout again each time it unblocks. Before, they
+timed out against a Mac that was only waiting for an alert,
+which tore down a healthy connection and looped
+reconnecting. The handshake and the foreground connection
+check stay strict. While requests are held, a liveness probe
+pings every ten seconds, since the Mac answers pings without
+its main thread, so a connection that really died is still
+noticed.
+
+Release notes for both apps.
+
+2026-10-06: Tell the phone which alerts are showing and
+whether the Mac is blocked
+
+Companion protocol revision 14. The hello reply gains
+macStatus: the modal alerts the phone may answer and whether
+the Mac's main thread is blocked. It rides the reply, rather
+than a following event, so the phone knows before it sends
+requests that would time out. Changes afterwards go out as
+macStatusChanged, always the full state. The phone presses a
+button with answerModalAlert; if the Mac could not press it,
+it sends modalAlertAnswerRejected and then its status again.
+
+Everything is additive. The hello field is omitted for an
+older phone, the new events are sent only to a phone at
+revision 14 or later, and minimumPeer stays at 11.
+
+CompanionLink subscribes to the alert registry and to a new
+CompanionMainThreadMonitor, which posts a probe to the main
+queue about once a second while a phone is connected and
+reports the main thread blocked when the probe has not run
+for two seconds. That covers what the registry cannot: a
+plain NSAlert, an open panel, or a busy app. The monitor's
+clock does not advance during sleep. An answer is handled
+apart from the receive loop, so a press that cannot run yet
+does not hold up other requests.
+
+The pairing controller now skips link-up events for links
+that have already closed. A phone that does not know to wait
+reconnects over and over while the main actor is frozen, and
+each attempt used to get its own short-lived bridge once it
+thawed.
+
+2026-10-06: Publish modal warnings to a registry that other
+threads can answer
+
+A modal alert started from a main-queue callout freezes the
+main queue until it is dismissed. The companion app's
+connection now survives that, but it had no way to see the
+alert or press a button on it.
+
+ModalAlertRegistry records the alerts on screen.
+iTermWarning registers each alert just before its modal loop
+starts and unregisters as soon as the loop ends, for
+runModal, the sheet form, and runModalAsync. Other threads
+read a lock-protected copy of the list, and observers are
+told synchronously, so both are current before the main
+queue can freeze.
+
+An answer is delivered to the main thread through a run loop
+block in the common modes, which still runs inside such a
+modal loop. It is refused if the alert is no longer the
+newest one, the index is out of range, or some other modal
+session is in front, since a click would then end that
+session instead. Pressing a button checks the suppression
+box only when the warning shows one and the action may be
+remembered.
+
+A warning can opt out with remotelyAnswerable. Nothing reads
+the registry yet.
+
+For tests, iTermWarning gains a headless mode: it builds its
+alert, never shows it, and blocks in a nested modal-mode run
+loop until a button is clicked programmatically.
+
+2026-10-06: Let a paired phone reconnect while a modal
+freezes the main queue
+
+Parking in the relay room, accepting the phone, the Noise
+handshake, and re-parking after a drop all ran on the main
+actor, driven by the bridge's onClose. With a modal alert up
+that was started from a main-queue callout, the Mac never
+noticed a dropped connection and never parked again, so
+iTerm2 Buddy could not get back in until the alert was
+dismissed.
+
+CompanionParkSupervisor, an actor, now does this for an
+established pairing: park, accept, handshake, check the
+pinned phone key, start a CompanionLink, and park again when
+that link drops. The pairing controller sends it start,
+adopt, and stop commands through a synchronous call and
+reads its events on the main actor. Fresh pairing (QR and
+SAS entry) stays on the main actor and hands its live link
+to the supervisor once it succeeds.
+
+A connecting phone couriers the relay room secret before its
+hello and waits for the ack, so the link now answers that
+message too. It skips the keychain write when the secret is
+the one already held.
+
+The retry policy is a pure function with its own tests. A
+live connection that ends because it was displaced or
+evicted by a reshard now waits before re-parking, the same
+as a park that ends that way; before, only a quota teardown
+waited.
+
+ModernTests now links iTermSwiftPackages, so tests can use
+the Companion protocol types and run a real Noise handshake.
+The in-memory transport moves from the app target to the
+tests.
+
+2026-10-06: Keep the companion connection alive while a
+modal freezes the main queue
+
+A modal alert started from a main-queue callout (a
+@MainActor task or a DispatchQueue.main.async block) stops
+the main dispatch queue and every @MainActor job until it is
+dismissed. CompanionHostBridge is @MainActor and did all of
+its own network I/O, so iTerm2 Buddy went dead for as long
+as such an alert was up: even its foreground ping timed out.
+
+CompanionLink, an actor, now owns the transport, the receive
+loop, and the outbox drain. It answers hello and ping itself
+and forwards every other message to the bridge in wire order
+through an event stream, so the bridge's handlers are
+unchanged and simply lag during a freeze.  Main-actor code
+reaches the link only through synchronous nonisolated calls,
+never through a Task that would start on the frozen actor.
+
+Classification for the presence warning moves from the
+messagesSince and syncSince handlers to one pure function
+applied before dispatch.  The link also drops pushes queued
+for a version-blocked peer, except the unpair farewell.
+
+Tests use a harness that spins a modal-panel run loop inside
+a main-queue callout and asserts the freeze really happened,
+plus an in-memory transport. That transport lives in the app
+target because ModernTests cannot link CompanionProtocol.
+
+Development builds get three menu items that show a modal
+from a main-queue callout, for testing this by hand.
+
+2026-10-06: Preserve -suite when relaunching after importing
+settings
+
 2026-10-05: Keep a symlinked settings.json when writing the
 Claude Code hook. Issue 13098 (#775)
 
