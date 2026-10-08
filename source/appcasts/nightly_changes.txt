@@ -1,3 +1,326 @@
+2026-10-07: Keep session mentions linkable when markdown
+pairs their underscores
+
+Two stableIDs in one chat message (@ptys_A... and
+@ptys_B...) put an underscore before each body, which
+markdown treated as an emphasis pair and consumed, so the
+ids rendered as dead ptysXXXX text. Mentions are now swapped
+for alphanumeric placeholders before the markdown pass and
+restored afterwards, on both the Mac and the Companion app.
+Code blocks, indented code lines, inline code, link
+destinations, and URLs are left alone so a placeholder never
+leaks into a copy button or a link target.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-07: Make Voice Control corrections replace text
+instead of appending
+
+Voice Control corrects a word by selecting it through
+accessibility and then inserting the new text with no
+replacement range, expecting the insertion to replace the
+selection. iTerm2 ignored the selection, so replace world
+with there produced worldthere. Now, when an insertion
+arrives outside a keypress and the selection was set by
+accessibility, iTerm2 backspaces over the selected text
+first. It does so only when the selection ends at the cursor
+and soft alternate screen mode is off; otherwise the
+insertion is dropped.
+
+Also fix insertText:replacementRange:, whose backspaces went
+through -doCommandBySelector: and were dropped unless
+experimental key handling or the accent menu was on.
+Backspaces are now sent directly, counted in characters
+rather than UTF-16 code units, and read across soft-wrapped
+rows. In soft alternate screen mode they are still sent only
+when the accent menu or experimental key handling is on, as
+before.
+
+Text for these counts comes from a new
+-screenTextInNSRange:, split out of
+attributedSubstringForProposedRange:actualRange:, which
+doesn't clamp to the range length since a cell can hold
+several UTF-16 code units.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-07: Leave cc-status hook commands that also run the
+user's programs
+
+Uninstall removed, and Reinstall rewrote, any hook entry
+whose command mentioned a cc-status path anywhere. A command
+like `~/.config/iterm2/cc-status && say done` lost the rest
+of its work, and `echo done > /tmp/cc-status` was mistaken
+for our hook. PR 781 reported the same over-matching while
+fixing issue 13099.
+
+CCStatusHookCommand.runsOnlyCCStatus decides whether running
+cc-status is all a command does, apart from guards: [, [[,
+test, true, false, :, exit, type, which, command -v, and
+if/then/elif/else/fi. Guards may only redirect to /dev/null
+or a file descriptor, and command substitution anywhere
+outside the cc-status path counts as the user's code.
+Special parameters such as "$@" and $? and plain $((...))
+arithmetic do not. The lexer now treats redirection targets,
+including bash's &>, as files rather than references to
+cc-status.
+
+Uninstall removes only such commands. Reinstall rewrites a
+broken one, and next to a broken command that also runs
+something else it adds a fresh cc-status entry instead.
+After Uninstall, a warning lists any commands it left in
+place, and the installed flag is set from the same check
+reconcileHooksCache uses, so the menu doesn't change on the
+next launch.
+
+Co-authored-by: Heath Dutton <heathdutton@gmail.com>
+
+2026-10-07: Archive to a default folder when none is set.
+Issue 12980
+
+Archive Sessions on Closure with an empty folder resolved
+the archive path against the working directory, which is the
+read-only root of the startup volume, so every archive
+failed. Turning archiving on with an empty folder now fills
+in ~/Library/Application Support/iTerm2/Archives.  Profiles
+that already archive with no folder save there too, and
+Settings shows the default as the field's placeholder and
+checks it for the writable indicator without creating it.
+Typed folders now have ~ expanded when saving, matching the
+Settings check.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-07: Stop leaking the tmux window-change ignore
+counter.
+
+setCurrentWindow: incremented
+_ignoreWindowChangeNotificationCount for every select-window
+it sent, expecting one %session-window-changed echo for
+each. tmux sends no notification when the window is already
+current, so a redundant select left the count too high, and
+it then swallowed the next real notification, such as
+another client switching windows. iTerm2 kept showing the
+old tab until the next change.
+
+Send the select-window in a command list after a display of
+the current window, and increment only when that window
+differs from the target.  tmux runs a client's command list
+without running other clients' commands in between, so the
+check can't race with another client, and it holds back
+notifications until the list's output is written, so the
+echo always arrives after the increment. Both hold back to
+tmux 1.8.
+
+2026-10-07: Keep help popovers from clipping their last line
+
+In a popover, the text view's clip view adopts 6pt top and
+bottom content insets. Since the popover is sized to exactly
+fit the text, that cut off the last line and let the text
+scroll. Turn off the automatic insets, and don't rubber-band
+when all the text fits.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-07: Turn off automatic spelling correction,
+capitalization, and smart quotes and dashes
+
+The text input system can read the text before the cursor in
+the terminal, so these could rewrite what the user types, as
+the period substitution did in issue 13123. Text replacement
+stays on because it's useful in text views and the terminal
+implements it separately.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-07: Turn off Add period with double-space in iTerm2.
+Issue 13123.
+
+Since PTYTextView started returning screen contents from
+attributedSubstringForProposedRange: (for Voice Control),
+NSTextInputContext's double-space period substitution can
+see the space before the cursor and replaces it with ". ".
+In vim the period repeats the last command.
+NSTextInputTraits doesn't control this, so override
+NSAutomaticPeriodSubstitutionEnabled alongside the other
+system preference overrides.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-07: Move the menu bar item to Settings and show a
+bug on evaluation errors
+
+The menu bar item is now configured in Settings > Appearance
+> General with a Show Menu Bar Icon checkbox and a text
+field for the interpolated string, replacing the
+MenuBarItemString advanced setting. While iTerm2 is excluded
+from the Dock the checkbox is shown as on and disabled,
+since the icon is the only way back to Settings; the saved
+value comes back once iTerm2 is in the Dock again.
+MenuBarItemDrawsBadge stays an advanced setting.
+
+The string is evaluated strictly so a reference to an
+undefined variable is an error rather than an empty string.
+When evaluation fails the item shows a ladybug and its menu
+gains a Show Menu Bar Item Error item that explains the
+failure.
+
+2026-10-07: Menu bar status item for busy AI agents
+
+Adds iterm2.workingSessionCount and
+iterm2.waitingSessionCount application variables, counted
+from sessions whose status text is exactly "working" or
+"waiting" (what the cc-status hooks write).
+
+A new menu bar item shows an interpolated string evaluated
+in the global scope, the same way badges and the status bar
+component do. The MenuBarItemString advanced setting holds
+the string, and an empty string means no item.
+MenuBarItemDrawsBadge (off by default) draws a one-character
+result inside the square icon instead of next to it, with 0
+or empty showing the plain icon and + for 10 or more. The
+icon shown when iTerm2 is hidden from the Dock now uses the
+same status item and behaves as before.
+
+2026-10-07: Report BDSM as permanently reset when
+right-to-left support is off (issue 13102)
+
+With the global right-to-left text setting off nothing is
+ever reordered, so DECRQM for mode 8 now answers 4
+(permanently reset) instead of the escape sequence's state,
+which would misleadingly report implicit mode.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-07: Honor tmux new-window -d in tmux integration.
+Issue 13112.
+
+A window that tmux created on its own always opened as the
+selected tab, so `tmux new-window -d` still took focus.
+%window-add does not say whether -d was used, but tmux
+reports whether the new window became the session's current
+window: without -d, %session-window-changed for the new
+window arrives just before its %window-add, and the
+window_active field in the display reply we already send
+says the same.
+
+TmuxController now tracks tmux's current window from that
+ordered stream. It records every %session-window-changed
+before the ignore counter can drop it, and it uses
+window_active only when the reply describes our session,
+since a window may be linked into several. The window opener
+decides at tab-creation time and opens tmux-created windows
+in the background unless tmux reports them as current. The
+tmuxWindowsOpenInBackground advanced setting still forces
+background.
+
+2026-10-07: Remove a leftover merge conflict marker from the
+release notes
+
+2026-10-07: Substitute the user's name and email placeholder
+in the crash report message again
+
+The localization change renamed the tokens to {USERNAME} and
+{EMAIL} in code, but the crash report template in the xib
+still used %%LONGUSERNAME and %%EMAILADDRESS, so they were
+shown raw.
+
+2026-10-07: Keep Session Note open when shown from Open
+Quickly
+
+When Open Quickly invoked Show Session Note, the terminal
+window became key after the note took focus.
+windowDidBecomeKey did not treat the note's text view as a
+preferred first responder, so it moved focus back to the
+session, which ended editing and hid the empty note.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-07: Let a manual AI model choose which API key it
+sends
+
+A manual model authorized with whichever vendor key its name
+and URL suggested, so a model named gemini/gemma-4-31b-it on
+an Open WebUI server asked for a Gemini key even though the
+user had an OpenAI key (issue 13105).
+
+The manual model editor gains an API key setting: Automatic
+(the default, unchanged inference, now showing what it
+resolves to), a specific vendor's stored key, a key stored
+for that model alone in the keychain, or none. An explicitly
+chosen vendor key is sent even to a local endpoint.
+Configurations saved before this read as Automatic.
+
+The chat controller and the checks that run before a chat
+exists (Explain, Codecierge, the command safety check,
+Companion setup) now resolve the key through one shared
+function, so they agree on whether the default model can
+authorize and which vendor to prompt for.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-07: Hotkey window: skip the resign-active wait when
+nothing could flash
+
+On macOS 26 the hotkey window waits for iTerm2 to resign
+active before ordering out, to keep a background iTerm2
+window from flashing to the front. When there is no such
+window the wait does nothing useful, and in practice the
+resign-active notification often doesn't arrive before the
+0.3s fallback fires. Meanwhile the invisible hotkey window
+stays key and swallows keystrokes meant for the previous
+app. Order out immediately when no other visible window on
+the active space could be promoted. Issue 11372.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-07: Split environment entries on a literal '='
+(#789)
+
+-[iTermFileDescriptorMultiClientChild
+initWithReport:thread:] and +[PTYTask
+mutableEnvironmentDictionary] found the '=' in KEY=value
+with -rangeOfString:, which compares composed character
+sequences. When the value starts with a combining mark the
+'=' and the mark form one sequence, so the search fails.
+ITERM_PROFILE carries the profile name, so a profile named
+e.g. U+20E4 hit assert(false) in initWithReport.  That
+crashed iTerm2 when the session launched and again on every
+relaunch while iTermServer still reported the child.
+
+Use NSLiteralSearch so the split happens at the first '='
+code unit.
+
+Co-authored-by: Vlad Orlenko
+<27573+orlenko@users.noreply.github.com> Co-authored-by:
+Claude Opus 5.5 <noreply@anthropic.com> 2026-10-07: Tell the
+TUI safety check which session it is judging and when
+watches fire
+
+The screen-aware keystroke check held a plain message the
+user dictated for another coding agent. Haiku could not tell
+the screen belonged to the session named in the transcript,
+so it worried the text would go to the wrong place, and it
+never saw the watch the request was conditioned on fire,
+because watcher events were dropped from the safety
+transcript.
+
+- Name the target session outside the screen fence and say
+the keystroke
+  is typed there; mark a trailing send_text row as the
+  pending action.
+- Tell the model the destination is fixed, and to judge text
+typed into a
+  coding agent by what it asks the agent to do.
+- Project watcher events into the safety transcript as
+iTerm2 event rows,
+  built only from iTerm2-controlled fields (no role name or
+  detail).
+- Add the real failing case and an unsafe twin to the TUI
+eval fixtures.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 2026-10-06: Don't warn about another running instance in a
 test host
 
