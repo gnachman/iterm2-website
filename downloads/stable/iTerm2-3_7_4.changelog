@@ -1,4 +1,4 @@
-Version 3.7.4 was built on October 5, 2026.
+Version 3.7.4 of iTerm2 was built on October 8, 2026.
 
 Bug Fixes:
 - Fixed a crash that could recur every time
@@ -40,33 +40,53 @@ Bug Fixes:
   null value or a Keyboard Map that is not an
   object. These values are now ignored or
   reported instead.
+- Fixed a crash, repeated on every relaunch,
+  when a profile’s name began with a combining
+  mark.
 - Fixed various other crashes, including ones
   involving Find, the composer, splitting
   panes, Smart Selection, right-to-left text,
   VoiceOver, the GPU renderer, and quitting
   while iTerm2 was still starting up.
-
+- Pressing space twice in a terminal no longer
+  types a period when macOS’s “Add period with
+  double-space” setting is on. In vim this could
+  repeat your last command. Issue 13123.
+- iTerm2 no longer applies macOS’s automatic
+  spelling correction, capitalization, or smart
+  quotes and dashes. They could change what you
+  type in a terminal. Text replacements still
+  work.
+- Make Text Bigger works again when you type it
+  as ⌘⇧= (the way you type ⌘+). Since 3.7.0,
+  that keystroke opened the Clippings panel
+  instead, because Show Clippings had claimed it.
+  Show Clippings is now ⌘⇧⌥G. Issue 13022.
+- Help popovers, such as the ones shown by the ?
+  buttons in Settings, no longer cut off the last
+  line of text, and no longer scroll when all of
+  their text fits.
 
 You can use the following to verify the zip file on https://keybase.io/verify:
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
-3ceb3f93d180910024d05f0860eb9cb0f164f3c1b83c5c4fe366966bd78229c4
+4bf02ae616752600cd195ca504e55392afb21741cda7314199e375ed8a46f90c
 -----BEGIN PGP SIGNATURE-----
 
-iQJPBAEBCAA5FiEEoSV4Xzv7YY5VD+aYJiz+XnkavhsFAmrEIJobFIAAAAAABAAO
-bWFudTIsMi41KzEuMTIsMCwzAAoJECYs/l55Gr4bz+QP/jImRU3SnN0BteR7mCd5
-LU6v4PogVSqjDvNxhyIsDA2eQ49mH6hutDn9xPtN2FZENObp4IM6P2KCiC8F1B7V
-WakQFkvD/N9yw6UCMOV7+ZUfzkagkrapC3AvMVQ5ONgo/a2p2wOQmDdcaZ6nDHqG
-QTRMUXrEhwKHU5kh09RaLbZLrWBAxp2F1yRfUfH97DQPnEMkqXo1LdaVJiSz0sil
-CfK/jiolvgCFVq6mMV17f7xJXbjGZZk7RMt6/xtRedvNkLnzabNttOq1X0oQkAYS
-XUjgo5QIRFRhfiikaueoT1oXT/+pKVKsESDRmnq8h/tRYCFngStzBrO6zmuZdxVn
-EMq7/Hb2Y/4ry/zUix0NXxwZqZB9KZOOAymt9lOjSvRvoagCNP2Nx8VgO0Jx4dRV
-5vBSQqByMbge0iM3Cq6gj+pjVpZRSxUDWj2Rc2RsxdaSDl2yn7EUzK1RFH7kD9Ot
-h0pWoaRmr9UJEf29G6aPMH6XqnqcVJ+xbB1k0dkNNRvnEd/vuuy3reQOtArRvYeE
-G+gzaysFQl8JdALVh2kOBj/a+cIEhfI4mxwR5Z4o8CyWXbLItKZJKQBMzcZKsDlQ
-BMi78MQPXBCbsjKjIMkF/66WmB2OIBqUsvxjiy7GgavfBuk9qLKxFotG+PSj+rkK
-StPb6GHt3+yAE8kjUGMCZKx4
-=PloG
+iQJPBAEBCAA5FiEEoSV4Xzv7YY5VD+aYJiz+XnkavhsFAmrHw+4bFIAAAAAABAAO
+bWFudTIsMi41KzEuMTIsMCwzAAoJECYs/l55Gr4bXtEQAIKgng87ANS/M3pFKolL
+oowAbsokfuascIOg52iJ+7CS4QtDR3J2eexdcHfXr6r8rZsuNBOs8USRdeNmROWl
+KPKFBq/hryx2FNiIwiiVyVZY91UsSYP8KYNT4X6gntRUCdtWuVaNozPv4HeTgy5c
+uy6w8NAnuVIWQvcWUubpdhxOtLJoKIGrXDrkZt9QE/7I4da93nz88cddxKwu9qMr
+TSHjhxnQmRqvAAjCKdvG1loIXOiaROzqdjgZkSGjkbihEsLPeaPJtG553QsxIdJj
+AjCKV1gubBtDpN+ydI6s8D7C4FDqVQxJFkTFmCeQjrzSGf1mbVNnlbC779Y25jb1
+P2mUu9aweQPlJwHaUUMMIHVuu9Iun6PlJnZxFokkiVhZaCs+WaVZq1tQihsHr5De
+ije2DaRpU7s7hF7HYiHefvzaMah2ZFy9GOHEeMeXCUjj9A8zQw0+LZhEE/ET1Th0
+L1kDdnaDNyiJH6ugGx2rv0kFFO3R+SMRCt76lYV6VNfHrOo0LamA3n3vDUKYE2NW
+qA5WRTzTpUnqnUADZ0+75uXsHysME/ddRvsF3819w0QEqdvht6uiA2SDuh4tiMHi
+nX7BBdhqnHlIsBvedEjWWcEEWDuvV0QrhFZFhHQ4HBN3vfx+y5buF7Wm68MohuTv
+twHFevsVFb8YyrP+LVsRQD38
+=a6sT
 -----END PGP SIGNATURE-----
