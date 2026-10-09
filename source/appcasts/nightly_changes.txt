@@ -1,5 +1,65 @@
-2026-10-07: Keep session mentions linkable when markdown
-pairs their underscores
+2026-10-08: Skip tests that put windows on screen unless
+ITERM2_ONSCREEN_TESTS=1
+
+Tests built on TerminalWindowTestFixture make a terminal
+window key and order it front in every setUp, the find
+cursor tests left a screen-sized borderless window up for
+the rest of the run, and a few others order windows or
+alerts on screen. All of that gets in the way of using the
+machine while the suite runs.
+
+OnscreenTestGate skips them by default. To run them, set
+TEST_RUNNER_ITERM2_ONSCREEN_TESTS=1. tearDown methods
+tolerate a skipped setUp so they don't restore preferences
+they never saved.
+
+2026-10-08: Add --format to it2 session list. Issue 13088.
+
+it2 session list --format takes an interpolated string,
+evaluated in each session's context, such as
+'\(session.path)\t\(session.jobName)'. It prints one line
+per session in place of the usual columns, or with --json
+adds the result to each session as "formatted". Default
+output is unchanged.
+
+A new built-in function, iterm2.interpolate(string:),
+returns its argument; since a string argument is an
+interpolated string, invoking it in a session evaluates the
+format there. it2 probes for it up front so an older iTerm2
+fails cleanly. A session whose evaluation fails gets an
+empty string with a note on stderr, a format that fails in
+every session is an error, and a transport failure
+mid-listing ends the listing rather than blanking the
+remaining sessions. APIClient.invoke now throws
+IT2Error.functionFailed for errors the function itself
+reports so callers can tell them apart from transport
+errors.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-08: Tag AI tab-title corpus records by session and
+keep reworded titles
+
+Corpus records now carry an opaque sessionToken (truncated
+SHA-256 of the session GUID) so the grader can measure churn
+within a single tab instead of mixing interleaved records
+from concurrent tabs. The capture script writes the same
+token and the corpus grader prints a per-tab churn summary.
+
+A regenerated title with the same words as the applied one,
+ignoring case and order ("Deploy app" for "Deploy App", "Zsh
+Update" for "Update Zsh"), no longer renames the tab. Issue
+12971
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-08: Remove unused macOS 11 deprecation strings
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-08: Remove obsolete macOS 12.x compatibility code
+(#738) 2026-10-07: Keep session mentions linkable when
+markdown pairs their underscores
 
 Two stableIDs in one chat message (@ptys_A... and
 @ptys_B...) put an underscore before each body, which
