@@ -1,3 +1,69 @@
+2026-10-09: Remove dangling CompanionLoopbackTransport.swift
+references from the project
+
+The file moved to ModernTests in b387e2980, but its group
+entry and Sources build-phase entry were left behind
+pointing at a file reference that no longer exists.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-09: Support the Program Status Protocol (OSC 7501)
+and add done/error statuses
+
+OSC 7501 lets a program report that it is idle, working,
+blocked on the user, done, or failed, as records keyed by
+id. iTerm2 validates each report against the spec's grammar
+and limits, answers the feature query, keeps up to 256
+records per session, and shows the most urgent one as the
+session's tab status. Done and error records survive the
+next prompt and process exit and turn idle when the user
+types in the session. Records also drive the progress bar,
+without starting or ending OSC 9;4 operations, and give back
+any 9;4 bar they only paused or reddened.
+
+Session Status gains "done" and "error". The default
+priority order is now waiting, done, error, working, idle,
+and saved lists get the two new patterns below waiting with
+idle's notify setting. Typing in a session showing done or
+error turns it idle without posting a notification.
+cc-status reports a finished Claude Code or Codex turn as
+done and an API failure as error. Workgroups and the
+orchestrator treat both as idle.
+
+Adds a paused-indeterminate progress state, drawn as a still
+yellow band in the session and a pause glyph in the tab. OSC
+9;4;4 over a spinner and a blocked record now use it instead
+of a yellow bar at 10%.
+
+2026-10-09: Play custom bell sounds as alerts through System
+Sound Services
+
+NSSound plays at full volume on the default output device
+and ignores the Flash the screen when an alert sound occurs
+accessibility setting, so a custom bell sound behaved
+differently from NSBeep(). Play it with
+AudioServicesPlayAlertSound instead, which follows the alert
+volume, the Play sound effects through device, and the flash
+setting. Playing a sound that is still playing restarts it,
+so a burst of bells still sounds like a burst.
+
+System sounds are created from files, so a name is resolved
+to a file the way NSSound(named:) does it, and looked up
+again if that file changes or the Sounds folders do. This
+also keeps the bell from changing the shared NSSound that
+mark alerts play.
+
+tests/bell_alert_sound.swift compares the ways of playing a
+file by hand.
+
+2026-10-09: Let each profile choose the sound its bell makes
+
+Adds a Bell sound setting to Settings > Profiles > Terminal.
+It can be the system alert sound (the default), a sound
+installed in a Sounds folder, or any audio file. Issue 2635.
+
+From GitHub PR 761.
+
 2026-10-08: Skip tests that put windows on screen unless
 ITERM2_ONSCREEN_TESTS=1
 
