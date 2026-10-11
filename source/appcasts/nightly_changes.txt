@@ -1,3 +1,230 @@
+2026-10-10: Keep Script Console entries alive while their
+script is
+
+A launched script's entry now follows its process, not just
+its connection. It keeps observing API shutdown until the
+process exits, and reconnecting keeps the launched PID.
+
+Connections are counted per entry, so the entry stops only
+when the last connection with its key closes. A rejected
+request no longer overwrites the PIDs of an existing entry
+or stops it.
+
+The built-in entries (iTerm2 App, Automatic Profile
+Switching, Dynamic Profiles, Smart Selection Actions, Web
+Browser) never stop, so an API shutdown can no longer let
+Clear Terminated remove them.
+
+An entry is finished only when it is stopped and has no
+launched process still alive. The 200-entry cap, Clear
+Terminated, and the Clear Terminated button's enabled state
+all use that, and the console is told when a stopped entry's
+process exits.
+
+2026-10-10: Update the Snippets tool's comments about
+leaking reloads
+
+Its reloads go through reloadPreservingExpansionAndScroll,
+which now uses -it_reloadDataWithoutLeaking, so they no
+longer strand disclosure buttons.  The comments also claimed
+that -reloadItem:reloadChildren: leaks, which is only true
+when reloading the nil item.
+
+2026-10-10: Stop the job tree from leaking disclosure
+buttons on every tab switch
+
+The Jobs toolbelt tool sets a new pid on every tab switch,
+and the job tree answered by discarding its root and calling
+-reloadData, which strands a disclosure button and two
+notification center registrations for every visible
+expandable row. It did the same whenever the process info
+for its pid was briefly unavailable. A memory graph of an
+eight-day-old process had 14,034 stranded disclosure
+buttons, nearly all from six job trees.
+
+Use -it_reloadDataWithoutLeaking for every whole-tree
+reload, and treat a changed root pid as a reload instead of
+clearing the root first. When the process info is missing,
+only reload if there was a root to remove.
+
+2026-10-10: Stop a finished Script Console entry from
+observing the API
+
+Each history entry registers for the API server's message
+notifications and for the API shutting down, and kept those
+registrations until it was deallocated, long after its
+script or connection had ended. That wasted notification
+center space for every finished entry. Worse, on API
+shutdown, apiDidStop: sent SIGKILL to the entry's pid even
+if the process had exited long ago and the pid had been
+reused.
+
+Remove the registrations in stopRunning, and add
+resumeRunning to restore them. A stopped entry can come
+back: it2 over SSH shares one connection key per ssh
+session, and a client may reconnect with its old key, so
+connectionAccepted: finds the stopped entry for that key and
+reuses it. It now resumes the entry, so its traffic is
+logged again, and the entry counts as running so the cap on
+finished entries can't evict it mid-connection.
+
+When it resumes a stopped entry, connectionAccepted: also
+takes the new connection's pids, since it may come from a
+different process, and resumeRunning clears
+terminatedByUser, which described the previous run.
+
+Several connections can share a key at once: a script can
+open more than one, and a reconnecting client can be
+accepted before the server posts its old connection's close.
+So entries count their open connections and stop only when
+the last one closes; otherwise a connection that was still
+open would stop being logged and could be evicted by the
+cap. Stopping for any other reason, like the API shutting
+down, resets the count.
+
+2026-10-10: Cap the Script Console's finished entries at 200
+
+Every API connection adds a Script Console history entry,
+and nothing removed finished ones unless the user clicked
+Clear Terminated. Clients like it2 connect once per command,
+so a long-running process accumulated them without bound: a
+memory graph of an eight-day-old process held 62,749
+entries. Each one also kept three notification center
+registrations, which made every observer removal in the app
+slower, and lookups by identifier scan the whole list.
+
+Keep at most 200 finished entries, dropping the oldest when
+a new entry is added. Running entries are never dropped.
+
+Also ignore adding an entry that's already in the list. The
+connection rejected path and the script launcher's exception
+path re-added existing entries, so they appeared twice.
+
+2026-10-10: Add an NSOutlineView reload that doesn't leak
+disclosure buttons
+
+Reloading a whole NSOutlineView, with -reloadData or
+-reloadItem:nil reloadChildren:YES, permanently strands a
+disclosure button for every visible expandable row, and each
+stranded button leaves two registrations in the default
+notification center. That slows every view teardown in the
+app as it grows. The leak is AppKit's; reloading individual
+items and the batch insert/remove API don't trigger it.
+
+-it_reloadDataWithoutLeaking replaces every top-level row
+through the batch API, then restores expansion, selection,
+and the scroll position. It counts the old top-level rows
+from the view itself because -numberOfChildrenOfItem: asks
+the data source, which may already describe the new model.
+In a harness with a nested tree, 200 reloads held steady at
+20 disclosure buttons where -reloadData reached 2986.
+
+It differs from -reloadData in a few ways. Expansion is
+matched by item, and an expanded item under a collapsed
+parent is remembered rather than forgotten. Selection
+follows the selected items rather than their row indexes,
+falling back to the row indexes when no selected item can be
+found, as when items are recreated without isEqual:. The
+delegate is told about the restored selection and expansion.
+
+reloadPreservingExpansionAndScroll, used by the Snippets
+tool, now reloads this way. Also correct the reproducer's
+note, which said any -reloadItem:reloadChildren: leaks; only
+reloading the nil item does.
+
+2026-10-10: Improve clipboard image pasting and upload
+performance over SSH
+
+From PR #745:
+
+- SSH Integration uploads send 16 KiB chunks instead of 1
+KiB, about three
+  times faster. Cancelling cleans up the remote temporary
+  file and no longer leaves a finished transfer stuck in
+  "Cancelling...".
+- Pasted clipboard images in formats agents may not read
+(such as TIFF
+  screenshots) are converted to PNG, and each gets a unique
+  filename so uploads from different temporary directories
+  cannot collide remotely.
+- "Upload and Paste Path" uses the tmux gateway's SSH
+Integration connection
+  in tmux integration panes, and falls back to the
+  conductor's host and home directory when shell integration
+  has not reported a host or directory.
+
+Changes made while rebasing onto master:
+
+- Master had rewritten upload-and-paste to handle several
+files at once,
+  using a generation counter to ignore completions after a
+  cancel and pasting where each file actually landed. Kept
+  that design and dropped the PR's single-upload identifier,
+  which it made redundant.
+- Moved the PR's check that nothing is pasted if the session
+exited or its
+  host or ssh connection changed during the upload into
+  -finishUploadAndPasteWithRemotePaths:destination:conductor:.
+- That host check no longer requires the old and new host
+names to match
+  exactly. It also accepts two names the conductor
+  recognizes as its own host (the ssh alias, its ssh config
+  HostName, or hostname -f), so a host that shell
+  integration reports under its full name mid-upload no
+  longer silently suppresses the paste.
+- Merged the PR's upload availability into master's
+  -nonTextPasteHelperDestination:. Upload is offered only
+  when there is a destination path, and a tmux gateway's
+  conductor counts as SSH Integration.
+- Release notes moved into master's Improvements and Bug
+Fixes sections,
+  leaving out items master already covered.
+
+2026-10-10: List OSC 7501 tasks in Session Status and notify
+per task
+
+A session whose program reports more than one OSC 7501
+record now lists up to four of them under its row in the
+Session Status tool, most urgent first by the user's status
+priorities, with a "+N" row for the rest.  Each child row
+shows its label (the record's path, using reported titles),
+status, progress and message. The session row drops its
+detail while the records set its status, since a child
+carries it.
+
+With merged workgroups, every member's records are listed
+under the one row, prefixed with the member's name, and
+members without records appear by their plain status.
+Clicking a child reveals the peer it came from, and the
+selection follows the active session in both directions.
+Snoozing a child row snoozes only its peer; snoozed peers'
+children dim and sort last.
+
+Each record the program moves into a state whose priority
+entry notifies posts its own notification, rate-limited per
+session: the first goes out at once, later ones are held
+newest per record and sent together when the interval ends,
+and held ones are dropped once their record leaves a
+notifying state. Changes the records make to the tab status
+no longer also post the session-level notification.
+
+2026-10-10: Add missing translations and fix stale
+localizations
+
+Translate the strings added since the last extraction
+(floating panes, per-model AI API keys, program status, menu
+bar item error and badge, Claude Code hooks) into de, ja,
+pt-BR, ru, and zh-Hans, including the Russian four-form
+plural for hidden floating panes.
+
+Update the Session Status help and new-instance-open-style
+translations to match their changed English, fix missing
+colons in two Settings labels, translate untranslated XIB
+strings (Floating Panes menu, import status window, Ollama
+model labels), and add zh-Hans to the crash reporter.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 2026-10-09: Remove dangling CompanionLoopbackTransport.swift
 references from the project
 
