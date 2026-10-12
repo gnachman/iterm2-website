@@ -1,3 +1,104 @@
+2026-10-11: Add tools for agents to do hands-on QA on a test
+VM
+
+tools/vm/qa.sh builds the working tree (and optionally a
+baseline ref such as origin/master) on a test VM, launches
+it with its own settings suite, drives the pointer and
+keyboard, reports which element has focus, presses menu
+items, edits profiles, and takes screenshots, all over ssh
+so nothing happens on the developer's Mac. vmctl does the
+input and accessibility work on the VM.
+
+docs/vm-qa.md explains the one-time permissions, the
+workflow, and what was learned doing QA this way, such as
+confirming focus by typing because the accessibility tree
+can lag. Every command needs --host: the developer decides
+which VM an agent uses.
+
+2026-10-11: Rework Focus Follows Mouse so it stops taking
+focus from fields in a pane
+
+Focus follows mouse used to move focus to the terminal when
+the pointer left the find bar, composer, or another field in
+the same pane. Now one controller, PaneFocusFollowsMouse,
+decides from what is under the pointer instead of tracking
+areas spread across SessionView and PTYTextView.
+
+By default focus moves only between panes. Entering a pane
+restores whatever had focus in it, and moving within a pane
+changes nothing. A new setting, even to views like Search or
+Composer under Settings > Pointer (off by default), lets
+focus follow the pointer onto those fields and back onto the
+terminal: the find bar, composer, session note, inline AI
+chat, clippings, a browser pane's URL bar, and a per-pane
+status bar's search field.
+
+Behavior kept from before: no pane switching during drags, a
+still pointer doesn't take focus, stealing key focus,
+aggressive activation, hotkey windows, Spaces, and floating
+panes.
+
+Also, collapsing a session note that had keyboard focus now
+focuses its terminal instead of leaving nothing focused.
+
+2026-10-11: VM tests: clean up after hung runs, and free a
+lock whose connection died
+
+A hung or cancelled run could leave its test host, the
+host's pidinfo service, or a harness's private tmux server
+running, outside the job's process tree. A leftover pidinfo
+service made every later test host stop at launch. The VM
+side now kills those before each run and when it cancels
+one, and samples the test host's main thread before
+cancelling a run that went quiet, so a hang leaves its stack
+in the log.
+
+The lock's connection now carries a heartbeat. A connection
+that died without the VM noticing used to hold the lock for
+hours; now the VM releases it after two minutes of silence.
+A dropped connection during the copy is retried once.
+
+2026-10-11: VM tests: cancel a run that goes quiet, and run
+any command after --
+
+A test hung, or waiting on a modal alert nobody on the VM
+can answer, used to hold the VM forever. A run that prints
+nothing for 15 minutes (--idle-timeout) is now cancelled
+with a message saying so, and exits 124.
+
+Anything after -- is now run as a command, as the usage
+says, instead of only paths in the repo. The script is read
+whole before it runs, so editing it during a run no longer
+changes that run.
+
+2026-10-11: Answer iTerm2's first-run update prompt on test
+VMs
+
+The test host keeps its preferences in the iterm2-tests
+suite. On a fresh account Sparkle asks there whether to
+check for updates automatically, in a modal alert nobody
+answers. While it is up AppKit delivers no actions outside
+it, so menu and warning tests failed on a new VM. The
+provisioning script now answers it.
+
+2026-10-11: Run the tests on a VM instead of this Mac
+
+tools/run_tests_vm.sh takes the same arguments as
+run_tests.expect, or any command after --, and runs it on a
+macOS VM: it copies the working tree, uncommitted changes
+and submodules included, to a checkout kept on the VM, runs
+the command in the VM's GUI session (an app-hosted test
+needs one), streams the output, keeps the log in
+tmp/vm-tests, and exits with the command's status. It
+refuses this machine and anything that is not a VM, holds a
+lock per VM for the life of its connection, and picks the
+first free VM from a list. ITERM2_ONSCREEN_TESTS is
+forwarded only when it is set here.
+
+tools/vm/provision_test_vm.sh prepares a VM once: the same
+Xcode as this Mac, its license and Metal toolchain, tmux,
+ssh to itself, and no sleep, screen saver or crash dialogs.
+
 2026-10-10: Keep Script Console entries alive while their
 script is
 
