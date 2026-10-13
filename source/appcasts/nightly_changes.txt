@@ -1,3 +1,355 @@
+2026-10-12: Bump the Python API module version to 2.30
+
+2026-10-12: Join windowed and connected selection lines in
+the Python API
+
+Selection.async_enumerate_ranges told its callback to add a
+newline after ranges that iTerm2 joins, so async_get_string
+split lines that copying in iTerm2 keeps together. Two bugs,
+both differing from iTermSelection.m:
+
+- In a selection limited to a column range, it marked only
+the last
+  line as connected. iTerm2 connects every line except the
+  last.
+- It looked up connectors by a range's inclusive end, but
+connectors
+  are recorded at the exclusive end, so no range ever
+  matched one.  Connected sub-selections got a newline too.
+
+2026-10-12: Translate the nushell shell integration strings
+
+Add nu to the translated shell lists (automatic shell
+integration requirement, unsupported-shell message, and the
+SSH integration tooltip) and mark them translated. Translate
+the two new nushell installer messages, following the
+wording of the xonsh ones, in de, ja, pt-BR, ru and zh-Hans.
+
+2026-10-12: Embed the current it2.py in the nushell shell
+integration script
+
+The nu script embedded an older it2.py than the other five
+scripts, so it2 run from nushell lacked the tmux-pane
+targeting. The shell integration repo now carries the
+current it2.py; regenerate from it.  The other scripts come
+out byte-identical. The version header only changes order,
+to match the generator's output.
+
+2026-10-12: Bump the Python API module version to 2.29
+
+2026-10-12: Add release notes for Python API type
+annotations and fixes
+
+2026-10-12: Fix bugs and add guards in the Python API
+
+Behavior changes from PR 782 by djpadz, split out from the
+type annotations so they can be reviewed on their own.
+
+Changes that could affect existing scripts:
+
+- SubSelection.enumerate_ranges always calls its callback
+with
+  (subselection, range). Windowed selections used to pass
+  (range) and others (range, subselection), which made
+  Selection.async_enumerate_ranges raise TypeError for
+  non-windowed selections.
+- Rename the internal module globals tmux.DELEGATE,
+  tmux.DELEGATE_FACTORY, window.DELEGATE_FACTORY, and
+  transaction.CURRENT_TRANSACTION with a g prefix.
+- Add __all__ to the iterm2 package, which limits import *.
+- _async_subscribe returns the token when unsubscribing
+instead of
+  None.
+- A tab group reports collapsed as False instead of None
+when iTerm2
+  doesn't send the field.
+- Profile customizations passed to rpc.async_create_tab send
+None and
+  empty-string values as JSON null.
+
+Bug fixes:
+
+- Subscribing to profile change notifications referenced
+api_PB2 and
+  always raised.
+- ProxySession passed its session ID where Session expects a
+layout
+  link.
+- Color.hex raised for non-integer components, such as those
+from
+  Color.from_dict. It now rounds and clamps them.
+- rpc.async_create_tab with a command passed a profile
+object where a
+  dict was expected. It now layers the command over any
+  other customizations.
+- async_list_prompts named errors with the wrong status
+enum.  - Nested submenus in mainmenu.py are enum
+non-members, so their items
+  are reachable on Python 3.12 and earlier.
+- Selection.async_enumerate_ranges consumed an iterator
+twice, so it
+  never removed indexes from indexes_to_add.
+- The script name sent in the connection headers is always a
+string.  - LSBackgroundContextManager raised NameError on
+exit when the app
+  bundle already had LSBackgroundOnly set, instead of
+  restoring it.
+
+New guards, which turn a crash or assertion into a clean
+result or error:
+
+- App.get_session_by_id(None) returns None,
+  get_tab_and_window_for_session(None) returns (None, None),
+  and current_window returns None when there's no current
+  window.
+- Profile.background_image_mode, title_components, and
+title_function
+  return None when unset, and async_make_default raises
+  BadGUIDException without a GUID.
+- Connection.iterm2_protocol_version returns (0, 0) and
+  async_send_message raises RuntimeError when not connected.
+- Monitors' __aexit__ does nothing if the monitor was never
+entered.  - StatusBarComponent methods raise RuntimeError
+before async_register.  - Session.async_get_selection_text
+raises RPCException without a grid
+  size, and to_session_summary_protobuf skips a missing
+  size.
+- KeyBinding.__eq__ and Trigger.__eq__ return NotImplemented
+for other
+  types.
+- parse_binding_param raises ValueError for an action with
+no
+  constructor, PasswordTrigger handles a None user name,
+  EventTrigger.deserialize copies its event_params, and
+  KeystrokeMonitor stores advanced as a bool.
+
+Add tests for __all__, the mainmenu submenus, and
+LSBackgroundContextManager.
+
+2026-10-12: Add type annotations to the Python API
+
+Annotate the iterm2 package inline so type checkers can
+check scripts that use it. The generators for profile.py,
+binding.py, and mainmenu.py now emit annotated code. Run
+ruff format over the package, except the protoc-generated
+api_pb2 files.
+
+This commit is meant to leave behavior unchanged. Besides
+annotations and formatting, it only refactors: modules
+import names directly instead of through iterm2.*, map and
+lambda become comprehensions,
+.format() and % become f-strings, and similar. Where master's behavior
+doesn't match the new types, a type: ignore marks it, and
+the next commit fixes it.
+
+From PR 782 by djpadz, rebased onto master, with these
+regressions from the PR fixed:
+
+- Catch InvalidStatusCode when connecting, as the legacy
+websockets
+  client raises it, so a stale cookie's 401 fetches a fresh
+  cookie.
+- Restore Tab.async_create_floating_session.  - Store JSON
+null when a profile value is set to None, as master did.  -
+Pass a tab group's collapsed value rather than whether the
+field is
+  present.
+- Add from __future__ import annotations to auth.py so the
+package
+  imports on Python 3.9.
+- Import Self from typing_extensions so mypy passes on
+Python 3.10.  - Update the browser toolbar method from
+master to the new import style.
+
+2026-10-12: Add nushell shell integration (#795)
+
+Bundle the nushell shell integration script and wire nushell
+through automatic loading (NU_VENDOR_AUTOLOAD_DIR), the
+installer, SSH integration, settings and tests. Originally
+#792.
+
+Review fixes: keep nu out of the API script launcher's shell
+list (backslash escaping splits paths in nushell), join
+list-valued nushell variables in framer.py and keep $SHELL's
+full path to nu or xonsh, handle right prompts nested inside
+the primary prompt (reedline), and teach the live shell
+harness to answer DA1 and dump output on timeout.
+
+Co-authored-by: Sergey Sannikov <sergey@sannikov.dev>
+2026-10-12: Add submenu and visible_when to Python API
+context menu providers
+
+ContextMenuProviderRPC.async_register takes two new optional
+arguments.  submenu groups items under a submenu with that
+title, merging items from any script that share a title.
+visible_when is an expression evaluated in the clicked
+session's scope when the menu opens; the item is shown only
+if it yields a true or nonzero number. When omitted, items
+are always shown, so existing scripts are unaffected.
+
+visible_when is evaluated synchronously with no RPCs so
+opening the menu never waits on a script. Registration
+rejects expressions that fail to parse or that call
+functions. Strings are not truthy, matching the expression
+language and Automatic Profile Switching rules; the docs
+recommend `user.flag == 1`, which matches both a Python
+boolean and a string set from the shell with
+iterm2_set_user_var.
+
+Protocol version 1.23. The iterm2 module (2.28) warns when
+these arguments are passed to an older iTerm2, which would
+show the item everywhere, and adds
+capabilities.supports_context_menu_submenus_and_visibility.
+
+Includes a manual test
+(tests/run_context_menu_submenu_visibility_test.sh).
+
+Issue 13007
+
+2026-10-12: Translate the Manage Permissions button in
+Settings > General > Magic
+
+2026-10-12: Add Python API to run JavaScript in browser
+sessions
+
+New built-in method for browser sessions:
+iterm2.browser_eval_js(js:) runs a function body in the page
+world (it may await) and returns the result as JSON;
+returning nothing gives null. Like load_url, the first use
+on a site asks the user, and the answer is remembered per
+origin (scheme, host and port), as
+NoSyncBrowserJavaScriptAllowed_<origin>.  Only http and
+https pages can be scripted.
+
+The origin is read from the page (location.origin) rather
+than webView.url, which names the destination while a
+navigation is pending.  The script runs only if the page is
+still at the origin the user approved, checked in the same
+call that runs it.
+
+Errors reach the script: exceptions and syntax errors come
+back with their messages, and a session that closes while
+waiting for approval reports a failure. The WebKit code
+lives in a Swift extension on iTermBrowserViewController, so
+PTYSession.m does not import WebKit.
+
+Python: Session.async_eval_javascript(), gated on API
+protocol 1.22 (advertised version bumped from 1.21). Module
+version 2.27.
+
+Settings > General > Magic gets a Manage Permissions button
+that opens a panel listing the sites where scripts may run
+JavaScript or load URLs.  Sites can be added, removed,
+allowed or denied there. Edits clear the site's entry from
+the Suppressed Alerts list so it does not show a stale
+answer.
+
+load_url now keys its remembered answer by the lowercased
+host, and moves answers saved under a mixed-case host to the
+lowercased key.
+
+Also: sanitizer rules for both kinds of remembered answer,
+unit tests for the permission keys and their storage,
+translations, a rewritten smoke test
+(tests/browser_eval_smoke.py) that serves its own page, and
+tests/browser_eval.sh, which runs JavaScript in a browser
+session from the command line.
+
+2026-10-12: Add a Python API to hide a browser session's
+toolbar
+
+New built-in method
+iterm2.browser_set_toolbar_hidden(hidden:) and Python
+Session.async_set_browser_toolbar_hidden(). When hidden, the
+navigation buttons and URL bar are removed and the page
+fills the session, which suits a browser pane a script uses
+to show its own page. Open Location shows the toolbar again
+so the URL bar stays reachable. If the URL bar has focus
+when the toolbar is hidden, focus moves to the page. The
+setting is runtime-only and is not saved with the session.
+
+tests/browser_toolbar_test.py is a manual end-to-end check
+against a dev build: the page's innerHeight grows by the
+toolbar's 44 points and shrinks back, and terminal sessions
+are refused.
+
+Changes made when landing (George Nachman): added a Web >
+Show Toolbar menu item that toggles the toolbar and shows a
+checkmark while it is visible, so it can be hidden and shown
+without a script. Updated the docstring and release note to
+mention it.
+
+Closes https://github.com/gnachman/iTerm2/pull/785
+
+2026-10-12: Keep the manual size of centered hotkey windows.
+Issue 13125.
+
+Showing a hotkey window with a Centered style canonicalized
+its frame with preserveSize:NO, which snapped it back to the
+profile's grid size and undid any manual resize. Preserve
+the size and only re-center, as canonicalizeWindowFrame
+already does for these styles since issue 12918.  Also cap a
+preserved centered size to the screen's visible frame so a
+large window does not hang off a smaller display.
+
+2026-10-12: Only apply appearance settings from Instant
+Replay recordings
+
+An .itr recording embeds a profile that was used as-is to
+create the replay session, so a crafted recording could
+supply triggers (for example, an idle-event Run Command
+trigger) that executed when the file was opened. Recordings
+can come from anyone, so build the replay session's profile
+from an allowlist of drawing-only keys whose values pass the
+profile validators, migrate the deprecated keys that still
+affect drawing, and always assign a fresh GUID.
+
+Every profile key is now explicitly classified as allowed or
+denied for recordings, and a test fails when a new key is
+added without a decision.
+
+Issue 13128.
+
+2026-10-12: Point translation docs at the tracked string
+catalog
+
+The docs told translators to edit
+sources/Localizable.xcstrings, which is a gitignored build
+copy, so their edits could never reach a pull request. Point
+them at xcstrings/Localizable.xcstrings and recommend
+editing its JSON by hand instead of in Xcode's editor, which
+reorders the whole file.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-12: Add Rename Tab to the tab context menu
+
+The tab title dialog could only be reached by
+double-clicking a tab, which is not discoverable. The menu
+item opens the same dialog for the tab that was clicked.
+
+Changes by the maintainer while merging: the action now
+checks that the clicked tab is still in the window before
+selecting it, so a tab that closes while the menu is open no
+longer causes the dialog to rename whichever tab is current.
+The unrelated string catalog churn was dropped in favor of
+adding only the new string.
+
+Closes #772
+
+2026-10-12: Stop leaking the multiserve launch-request
+buffer. (#793)
+
+copyLaunchRequest: encodes into a temporary protocol buffer
+and parses a private copy of the strings. The server frees
+that temporary after the same encode/parse. The client left
+it allocated, and the decode-failure path allocated a second
+buffer that shadowed the first.  2026-10-12: VM tests:
+require --host instead of defaulting to vm1
+
+The developer decides which agent gets which VM, so there is
+no default host and no ITERM2_TEST_VM fallback.
+
 2026-10-11: Add tools for agents to do hands-on QA on a test
 VM
 
