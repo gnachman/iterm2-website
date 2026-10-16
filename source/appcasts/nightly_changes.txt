@@ -1,3 +1,2647 @@
+2026-10-15: Let KeePassXC remember browser basic-auth
+passwords
+
+The browser's basic-auth store names each remembered
+credential after its protection space, such as
+http://localhost:8022 (Realm). The KeePassXC adapter uses
+the account name as the keepassxc-cli entry path, and
+keepassxc-cli treats every / as a group separator with no
+way to escape it, so add-account always failed and Remember
+this password showed Could not save the password. Any
+account name containing / failed the same way, including a
+rename in the password manager window, which deleted the
+entry before the re-add failed.
+
+The KeePassXC data source now stores / in titles as U+2215
+DIVISION SLASH, which looks the same in KeePassXC, and maps
+it back when listing so names still match. Entries are still
+addressed by the adapter's own entry path. Other adapters
+receive account names unchanged. The fix is on the iTerm2
+side so the signed adapter binary does not need to be
+rebuilt.
+
+QA finding F-342.
+
+2026-10-15: Keep text view contents out of the undo-safety
+debug log
+
+With debug logging on, the undo-safety scrub that runs when
+an undo-enabled text view leaves its window logged the
+NSTextStorage with %@. Its description is the full text, and
+the text view is often the field editor of a secure text
+field, so passwords typed into the password manager or a
+KeePassXC prompt were written verbatim to the debug log.
+
+The log line is now built by iTermUndoSafetyScrubLogMessage,
+which describes the text storage by class, address and
+length and the text view by class and address, never by
+contents.
+
+QA finding F-341.
+
+2026-10-15: Don't offer a deleted directory from the status
+bar proxy icon
+
+The Current Directory status bar component's folder icon
+could still be dragged after its directory was deleted. The
+container computed the icon's URL, including the existence
+check, only when it updated the component, and the icon kept
+that URL. Deleting the directory from elsewhere changed
+nothing the container watched, so a drag still vended a URL
+to a folder that no longer existed.
+
+The icon now asks for its URL through a provider when a drag
+begins, and the component checks then that the path is a
+local directory that exists. The check moved into a small
+helper so it can be tested, and the stat on every status bar
+update is gone.
+
+QA finding F-214.
+
+2026-10-15: Open the status bar component menu when its
+proxy icon is clicked
+
+Since the Current Directory status bar component's icon
+became a draggable proxy icon, a plain click on it did
+nothing. The container's click gesture recognizer delays
+mouse events until it fails. On a click it recognized, so
+the icon never got the mouse-down and mouse-up it uses to
+tell a click from a drag, and clickRecognized: deliberately
+ignored clicks on the icon to avoid opening the menu twice.
+Drags still worked because the recognizer fails on movement
+and then delivers the delayed events. Hostname and Username
+share the same proxy icon class and had the same problem.
+
+Make the container the recognizer's delegate and decline
+every event of a gesture whose mouse-down lands on the proxy
+icon. The decision is latched at mouse-down so one press and
+release is never split between the icon and the recognizer.
+The icon then handles the click itself, opening the same
+menu as clicking the text, and dragging still works.
+
+QA findings F-213 and F-105.
+
+2026-10-15: Disable session-only composer actions in the
+Cockpit
+
+The Cockpit's docked composer has no terminal session behind
+it, but Edit > Paste Special > Advanced Paste (Opt-Cmd-V)
+and Session > Open Command History (Shift-Cmd-;) stayed
+enabled there: Advanced Paste did nothing and command
+history opened an empty popup outside the composer.  The
+composer's help popover also listed them, along with AI
+lookup (Cmd-Y), which the Cockpit already disables.
+
+The composer now has a sessionless mode, which the Cockpit
+turns on. It disables those two menu items and leaves them
+and AI lookup out of the help popover.
+
+QA finding F-377.
+
+2026-10-15: Keep chips' attachment characters out of Cockpit
+commands
+
+An @-mention chip in the Cockpit composer is an attachment,
+which is the character U+FFFC in plain text. Copying text
+with a chip put U+FFFC on the pasteboard, and since the
+composer pastes plain text, pasting it back dropped the chip
+but kept the invisible character. Shift-Return then sent it
+to the shell as part of the command ("command not found"),
+because only a selection send stripped U+FFFC, not a
+whole-field send.
+
+A send now never includes U+FFFC. With plain-text paste
+forced (the Cockpit), copying removes it from the copied
+text, including a copy with several cursors, and pasting
+text that contains it inserts the text without it as its own
+undo step.
+
+QA finding F-376.
+
+2026-10-15: Put @-mention chip edges on whole points from
+the baseline
+
+After 87c573476 the chip image's top and bottom sat a
+fraction of a point from the text baseline (for example 11.6
+above and 2.53 below for the 12 point monospaced system
+font). Plain text's baseline lands on the pixel grid, and
+the chip's fractional edges were rounded to it when drawn,
+so on a 2x display the name inside the chip sat one device
+pixel (0.5 point) below the adjacent typed text.
+
+The chip's ascent and descent are now rounded outward to
+whole points when the line box has room for it, which keeps
+the name on the text's baseline at 1x and 2x. When the line
+box isn't a whole number of points and rounding outward
+would make the line taller, the exact edge is kept so
+nothing is clipped.
+
+QA finding F-330.
+
+2026-10-15: Draw the Cockpit composer's placeholder once
+
+ComposerTextView named its placeholder property
+placeholderString, which overrides NSTextView's own
+(private) placeholder property. AppKit then drew a wrapped
+copy of the placeholder whenever the field was empty, on top
+of the composer's own single line. When the text fit on one
+line the two copies coincided, so it showed up only for a
+long placeholder in a narrow Cockpit, such as the Brazilian
+Portuguese one at 380 points.
+
+The property is now composerPlaceholderString, and the
+composer's own placeholder ends in an ellipsis when it
+doesn't fit instead of being cut off at the edge.
+
+QA finding F-263.
+
+2026-10-15: Keep the floating Cockpit panel from covering
+sheets
+
+The Cockpit panel floats above iTerm2's windows. iTerm2's
+warnings for a terminal window, such as the Broadcast Input
+confirmation, are sheets on that window, at its normal
+level, so the Cockpit covered them and hid their buttons
+until the user moved the panel.
+
+While another window shows a sheet, the panel now drops to
+the normal level just behind that window, and it floats
+again once no window has a sheet up (including when a window
+closes with its sheet still showing).  App-modal alerts
+already sit above floating panels.
+
+QA finding F-249.
+
+2026-10-15: Skip closed targets when sending from the
+Cockpit
+
+When a session chipped in the Cockpit composer had its tab
+closed, Shift-Return refused the whole send with "Unknown
+target @ptys_..." (the session's internal id), so the
+targets that still existed got nothing.
+
+A chip whose session, tab, or window no longer exists is now
+skipped: the command goes to the targets that remain, and
+the status line names the skipped ones by their chip names.
+If every target is gone, nothing is sent and the status
+names them.
+
+QA finding F-242.
+
+2026-10-15: Close the Cockpit's session picker when the
+caret leaves the @-run
+
+The Cockpit composer drove its @-mention picker from the
+first word-start @ anywhere in the text, whether or not the
+caret was in it. After typing "email me @ noon" the bare @
+still counted, so the picker stayed open on every keystroke
+and Return committed a chip in place of the @ instead of
+inserting a newline. Esc hid the picker only until the next
+keystroke.
+
+Only an @-run that contains the caret now drives the picker.
+Esc remembers the run it dismissed and keeps the picker
+closed until the caret leaves that run, and a key routed to
+an open picker first checks that the caret is still in the
+run (a click doesn't change the text).
+
+QA finding F-240.
+
+2026-10-15: Keep the stoplight hotbox off a browser's
+navigation bar
+
+In a Compact or Minimal window with no tab bar at the top,
+pointing at the top-left corner reveals the window buttons
+unless a clickable decoration lies beneath them, in which
+case only a chevron toggle appears. The check knew about the
+session toolbar, title bar and status bar but not a browser
+session's navigation bar, so the window buttons covered the
+back, forward and reload buttons and swallowed clicks meant
+for them.
+
+The browser view controller now reports its visible toolbar
+as a clickable decoration, and SessionView includes it in
+the check.
+
+QA finding F-339.
+
+2026-10-15: Update a browser tab's minimal theme tint when
+the page's color arrives
+
+In the minimal theme a browser tab's tint lagged one page
+load behind: it showed the previous page's background color.
+The page color was read only once, in didFinish, but WebKit
+updates underPageBackgroundColor a moment after the load
+finishes, so didFinish still saw the old page's color and
+the new one was never delivered until the next load.
+
+Observe underPageBackgroundColor with KVO and forward
+changes once the load has settled and the web view is no
+longer loading, so WebKit's transient values during a load
+still do not flip the tint. Repeated colors are not
+forwarded, so a stale value at didFinish does not use up the
+session's rate limit and delay the real color.
+
+QA finding F-039.
+
+2026-10-15: Keep long SSH integration framer commands from
+being cut in two
+
+Conductor encoded a framer command by base64-encoding each
+argument, joining them with newlines, and then splitting the
+whole string into 128-character lines that end in a
+backslash continuation. When the newline between two
+arguments fell exactly on a 128-character boundary, the next
+line began with that newline, so an empty line went over the
+wire. framer.py treats an empty line as the end of a
+command, so it ran the first half with a mangled last
+argument and then the rest as a separate command. Commands
+with several long arguments, such as login, save, and file
+suggestions, could hit it.
+
+Split each argument into continuation lines on its own
+instead, so the only empty line is the one that ends the
+command. framer.py rejoins continuation lines regardless of
+where they were split, so existing remotes decode the new
+output unchanged. The pre-framer conductor.sh encoding is
+unchanged.
+
+Found while adding the F-061 regression test. Tangential
+finding T-74.
+
+2026-10-15: Stop Engage AI from crashing in the Cockpit
+composer
+
+Edit > Engage Artificial Intelligence (Cmd-Y) in the
+Cockpit's docked composer crashed iTerm2. The Cockpit
+composer belongs to no session, so its variable scope is
+nil. The composer hides its AI controls there, but the menu
+item and key equivalent still reached
+performNaturalLanguageQuery:, which handed the nil scope to
+AITermControllerObjC and on to AIPromptTemplateEvaluator,
+whose force-cast of the scope's copy trapped.
+
+AIPromptTemplateEvaluator now takes an optional scope and
+falls back to an empty one, and the composer's scope and
+AITermControllerObjC's scope parameter are declared
+nullable. The large composer now disables Engage AI where
+its AI controls are force-hidden (only the Cockpit), and the
+action does nothing there. Ordinary composers keep the item
+enabled so the generative AI lockout explanation (F-115)
+still appears.
+
+QA finding F-370 (resolves T-45).
+
+2026-10-15: Write the nushell shell integration script in
+order and verify it
+
+The Internet-Free installer for nushell launched its helper
+sh and then typed the next command as soon as any output
+appeared, which the echo of the launch line itself provided.
+nushell's reedline reads typeahead in bulk, so commands
+meant for sh were consumed by nushell, a nested helper sh
+started late, mkdir landed inside the heredoc, and the
+autoload directory was never created. The step still
+reported that it wrote the script because it only waited for
+a prompt.
+
+For nushell, wait for the helper sh's own prompt before
+typing anything else (this also covers the utilities step).
+The script step now runs in the first helper sh with no
+nested one: it sets and creates the autoload directory and
+prints a sentinel, opens the heredoc only after that, and
+sends the script, terminator and a check in one piece. The
+check prints whether cat succeeded and the file is
+non-empty, and the step advances only when the file was
+written. Otherwise it shows an error and lets the user try
+again.
+
+Adds nushell tests with a fake terminal that loses typeahead
+to nushell the way reedline does, and updates the discovery
+command the existing installer tests expect.
+
+QA finding F-363.
+
+2026-10-15: Don't ask to copy settings at quit just because
+a migration ran
+
+With settings loaded from a custom folder and manual saving,
+quitting asks to copy settings to the folder whenever local
+prefs differ from the folder's plist. One-time launch
+migrations of synced keys (AlternateScreenBidi=NO becoming
+DisableBidiInAlternateScreen=YES, and a saved session status
+priority list gaining done and error) changed local prefs
+while the folder kept the old values, so every quit
+prompted. Choosing Lose Changes did not help because the
+migration ran again on the reloaded folder prefs.
+
+Migrations of synced keys now run through
++[iTermUserDefaults migrateKeys:inUserDefaults:block:],
+which reports the values they changed.
+iTermRemotePreferences applies those changes to its copy of
+the folder's prefs (only for keys whose folder value is the
+one the migration started from) and, in manual-save mode,
+compares local prefs against that. The folder is not
+rewritten for a migration alone; the migration just runs
+again next launch. Automatic saving keeps its old behavior
+of writing the migration to the folder once.
+
+QA findings F-216 and F-069.
+
+2026-10-15: Truncate the restorable state WAL after
+housekeeping and at quit
+
+The saved-state database runs in WAL mode. Launch
+housekeeping ran a passive checkpoint and then VACUUM, which
+writes a full copy of the database into the WAL. Nothing
+ever truncated it, and the connection is never closed at
+quit, so restorable-state.sqlite-wal stayed one to two times
+the database size and was left on disk after a clean quit.
+It grows with scrollback.
+
+Housekeeping now runs wal_checkpoint(TRUNCATE) after VACUUM.
+The synchronous save at quit also queues a TRUNCATE
+checkpoint on the database thread. It runs asynchronously so
+the main thread is not blocked; if the app exits first, the
+abandoned checkpoint is harmless and the next launch's
+housekeeping truncates the WAL.
+
+QA finding F-221.
+
+2026-10-15: Add regression tests for focus in iTermWarning
+text prompts
+
+QA finding F-018 suspected that text-field and password
+prompts built with iTermWarning lose keyboard focus because
+they rely only on initialFirstResponder. Runtime QA (F-030,
+F-031, F-034) did not reproduce it: typing without clicking
+landed in the field for app-modal alerts and sheets alike,
+including the scp password prompt. The code agrees: every
+path that shows a warning builds the alert with makeAlert,
+which hands the field to the alert window's
+initialFirstResponder, and AppKit focuses it when the alert
+is shown. No code change is needed.
+
+These tests pin that mechanism for a plain text field, a
+secure field (as in the scp prompt), and a field chosen from
+a container of several. They fail if makeAlert stops setting
+the window's initial first responder.
+
+QA finding F-018.
+
+2026-10-15: Add a regression test that keystrokes typed
+during a paste stay after it over SSH integration
+
+QA saw a stray "~" command run after pasting into an it2ssh
+session and pressing Return, and suspected the Return was
+being inserted inside the paste's bracketed-paste
+terminator. iTerm2 does not reorder this input.  PTYTextView
+holds key-downs while the paste helper is pasting and
+replays them after the last chunk is written; in an SSH
+integration session both paste chunks and keystrokes go
+through Conductor.sendKeys, whose queue is first in, first
+out and whose pipelining only appends; and framer.py runs
+one command at a time, writing each payload to the pty
+before reading the next.
+
+The symptom comes from zsh instead. Its bracketed-paste
+reader gives up when the next byte takes longer than
+KEYTIMEOUT (0.4 s by default) to arrive. If the final "~" of
+the closing ESC[201~ arrives late, zsh ends the paste early,
+inserts the "~" as a typed character, and Return runs it as
+a second command. A local pty experiment reproduces exactly
+this with a 0.6 s gap before the "~" and nothing else. On a
+loaded remote, the shell's pty can fill while zsh reads,
+which delays the last bytes.
+
+The tests decode what the conductor writes the way framer.py
+does and check that the remote receives the whole paste and
+then Return: for every order in which the remote's replies
+can arrive relative to the writes (both with and without
+command output, which moves the conductor into its executing
+state), for keystrokes queued behind a command that is still
+in flight, and end to end from the paste helper with Return
+pressed mid-paste. There is no timing dependence: timers are
+fired by hand and replies are delivered explicitly.
+
+QA finding F-061.
+
+2026-10-15: Keep the space between LTR and RTL text when
+copying part of a bidi line
+
+With right-to-left support on, a character drag is
+decomposed into one logical subselection per contiguous
+logical run. Dragging over the start of L4    end4 and part
+of the Hebrew yields the runs L4 and   . Copy extracted each
+run separately with trim whitespace on copy on, so the space
+after L4 was trimmed and the words fused: L4   instead of L4
+.
+
+Mark a decomposed run that is followed by another run on the
+same line (precedesSameLineBidiPiece, kept across copies and
+resizes). The selection extractor tells the text extractor
+to keep the trailing whitespace at the very end of such a
+range while still trimming before each hard newline inside
+it.
+
+QA finding F-321.
+
+2026-10-15: Never send a Llama (Local) chat to the cloud
+default vendor
+
+Picking Llama (Local) in an AI chat while no Ollama model
+was discovered pinned the chat to the discovery placeholder
+model. At send time LLMMetadata.model(named:) did not
+recognize the placeholder, so AIConversation used no
+provider override and the turn went to the global default
+vendor, e.g. OpenAI: it opened that vendor's key sheet or
+sent the message to api.openai.com while the picker still
+showed Llama (Local).
+
+The placeholder now resolves to the Ollama vendor's
+recommended local model once one is discovered. Until then,
+and for any unresolved Llama-family pin, the turn fails
+before any request or key sheet with an error asking the
+user to start Ollama. Chat renaming and icon generation,
+which send the chat's content and title, now run on the
+turn's model instead of the global default.
+
+OllamaModelCache gains a test hook so the new tests never
+reach a real Ollama server or have a fetch overwrite their
+cache state.
+
+QA finding F-283.
+
+2026-10-15: Don't act on a browser prompt answered after the
+script timed out
+
+load_url and browser_eval_js ask the user before acting, and
+the prompt never times out, but the script's call does: the
+Python API used the default 30 second invoke timeout. A user
+who took longer to answer got an RPCException: Timeout in
+the script while the prompt stayed up, and clicking OK
+afterward still loaded the URL or ran the JavaScript, after
+the script was told the call failed. A script that retried
+would act twice.
+
+The server-side timeout in iTermScriptFunctionCall dropped
+the method's late completion, but the method never learned
+it had been abandoned.  Each call with a timeout now carries
+an iTermScriptCallCancellation that is cancelled when the
+timer fires. iTermBuiltInMethod injects it into an argument
+named cancellation, the way it injects connectionKey,
+without adding it to the public signature. load_url and
+browser_eval_js check it when the prompt is answered (and
+browser_eval_js before showing it) and do nothing if the
+script stopped waiting.
+
+Session.async_eval_javascript and Session.async_load_url
+take an optional timeout that defaults to ten minutes, long
+enough to read the prompt.
+
+QA finding F-360.
+
+2026-10-15: Validate and clamp OSC 1337 SetWindowFrame
+
+SetWindowFrame=x;y;width;height parsed each field with
+doubleValue and passed the result straight to
+-setFrame:display:. Non-numeric fields became 0, and nan,
+zero, negative or huge values made the window 0x0 (so it
+vanished) or put it tens of thousands of points off screen.
+Any output printed to the terminal could do this when
+session-initiated window resizing is allowed.
+
+Parse strictly: the payload must have exactly four fields,
+each a finite number, or the sequence is ignored. When
+applying the frame, clamp its size between the window's
+minimum size (the largest tab minimum plus window
+decorations, as live resize does) and the union of the
+screens' visible frames, and move it onto the nearest screen
+unless its top edge and at least 40 points of it are already
+on one.
+
+QA finding F-059.
+
+2026-10-15: Return focus to the terminal when a focused
+session note is hidden
+
+When a script cleared or hid the session note through the
+Python API while the user was typing in it, the note view
+was removed from the window and AppKit left the window
+itself as first responder. Every keystroke after that was
+dropped until the user clicked the terminal.  Toggling the
+note closed with Edit Session Note while it had focus did
+the same.
+
+-[SessionView hideSessionNote] now checks whether keyboard
+focus is inside the note before removing it and, if so,
+gives focus back to the session, the same way collapsing a
+focused note already does. Hiding an emptied note when it
+loses focus is unchanged, since focus is already moving to
+wherever the user put it.
+
+QA finding F-308.
+
+2026-10-15: Never put a native session into a tmux tab as a
+split pane
+
+With a split new-instance open style (NewInstanceOpenStyle 2
+or 3) and a tmux integration tab current, opening a file
+such as a .command added a native split to the tmux tab. The
+next %layout-change terminated it, so the open was silently
+lost (before 35a475674 it took over tmux pane %0 instead).
+Open URL in a split pane in a tmux tab made a tmux shell
+pane and dropped the URL.
+
+PseudoTerminal now has canInstallNativeSplitPane, which
+refuses tmux tabs. When it refuses, the session launcher
+resolves split styles to a new tab (and reports the tab
+object type), and Open URL falls back to its existing new
+tab path via canOpenURLInSplitPaneOfTerminal:, the same
+fallback floating panes use.
+
+QA finding F-122 (and F-124).
+
+2026-10-14: Add a regression test for tmux detach releasing
+Prevent Sleep
+
+Detaching from tmux while the windows stay open marks each
+tmux pane's session exited ("tmux detached"). QA saw those
+panes still counted as Prevent Sleep requesters, keeping the
+idle sleep assertion held. That build predated 81dafd414,
+which made PTYSession post PTYSessionExitedDidChange
+whenever its exited flag flips; tmuxDidDisconnect goes
+through setExited:YES, so the coordinator already recomputes
+and drops the detached panes on master. A reattach builds
+new sessions (closeAllPanes forgets the old panes), which
+PTYSessionCreated covers.
+
+Add a test that calls the real tmux disconnect handler on
+two real sessions in a real window with Prevent Sleep on and
+windows kept open after detach, with the coordinator using
+the real session enumeration, and checks the count drops 2,
+1, 0 and the assertion is released. It fails with the count
+stuck at 2 if the exited-change post is removed.
+liveRequesterGUIDs becomes internal so the test can use it.
+
+QA finding F-212.
+
+(cherry picked from commit
+a578625277b8e3b76108c79e42f86664be246bb7) (cherry picked
+from commit 246fca93c8c3d6f07bacf62955d429688bb90521)
+
+2026-10-14: Free each AI request's URLSession, delegate and
+JSContext
+
+Every AI request leaked its URLSession, the session's
+delegate, its JSContext (about 150 KB each), and anything
+the request's closures captured, such as its Cancellation,
+so memory grew about 1 MB per AI chat message. Each
+request's URLSession was never invalidated, so it kept its
+delegate (and through the JS callback, the JSContext) alive
+forever. The blocks registered into the JSContext also
+captured the context strongly, a retain cycle that kept it
+alive on its own. And the request's Cancellation, which
+callers keep, held the per-call PluginClient.
+
+The delegate now invalidates its session when the task
+completes, which covers success, failure, and cancellation.
+The registered blocks and the promise handlers capture the
+context weakly (the call keeps it alive until it finishes),
+and the Cancellation holds the client weakly.
+
+Adds a test seam that reports the objects each call creates,
+and tests checking that after a completed streaming request,
+a cancelled request, and a call cancelled before its
+transfer starts, the delegate, client, JSContext and
+captured closures are all freed.
+
+QA finding F-281.
+
+(cherry picked from commit
+a84fa76ae83e1c9a334fa66fec42bfb5d7e8266f) (cherry picked
+from commit 68ad33722da7febd1b8bd4823038728bc8b1bdee)
+
+2026-10-14: Keep text editing shortcuts for an alert's text
+field
+
+iTermWarning gives each button without a key equivalent an
+automatic Cmd-<letter> shortcut from its label. Those
+shortcuts won over the field editor, so in the
+paste-with-tabs alert Cmd-A opened Advanced and Cmd-C
+pressed Convert tabs to spaces (which pastes) instead of
+selecting or copying in the tab-size field.
+
+When the accessory holds selectable or editable text,
+automatic shortcuts now skip A, C, V, X, and Z. Shortcuts
+the caller assigned are kept.
+
+The set of letters already used was never updated because
+the result of setByAddingObject: was discarded, so two
+buttons could get the same shortcut, or repeat one the
+caller assigned. It is now a mutable set, and actions that
+already have a key equivalent keep it.
+
+QA findings F-029 and F-020.
+
+(cherry picked from commit
+8ff7b90b0e0431aeb564074ea3c87db1a1096a49) (cherry picked
+from commit 5eebc20a8996a8c4475fe853eb4e72bfeebc5790)
+
+2026-10-14: Keep a manual model's economy requests on the
+manual model
+
+AIMetadata.economyModel(for:in:) fell back to the economy
+model of the catalog entry sharing the configured model's
+name. Manual models never carry an economy pointer, so that
+fallback applied exactly to them: a manual "gpt-5.4-mini" at
+a gateway with no designated economy model sent every
+command safety check and screen-watch poll to the gateway as
+"gpt-6-luna". A gateway that serves only the configured
+model rejects those, the safety check fails closed, and
+every AI-proposed command is flagged as potentially
+dangerous.
+
+Only a model's own pointer now selects an economy model, and
+only catalog models have one. A manual model without a
+designated economy model gets none, so the safety check and
+poller use the manual model itself, with its name, URL,
+headers and credential. Catalog and recommended models are
+unchanged.
+
+QA finding F-125.
+
+(cherry picked from commit
+06c8d234ffb2733a4324ae835d039851affa8f4d) (cherry picked
+from commit 5068dba94936db20cdfeb37f901b55ec6ffb60bb)
+
+2026-10-14: Stop localizing the Get Info version string
+
+sources/InfoPlist.xcstrings carried CFBundleGetInfoString as
+a "translated" value of the literal 3.7.dev for de, ja,
+pt-BR, ru and zh-Hans. Those compiled into each
+<lang>.lproj/InfoPlist.strings and overrode the real version
+that the build stamps into the base Info.plist, so
+non-English users saw 3.7.dev in Finder Get Info on release
+and beta builds.
+
+Remove the non-English localizations of
+CFBundleGetInfoString and mark it shouldTranslate=false
+(which alone does not stop existing translations from being
+compiled), so the OS falls back to the base plist value. Add
+a hygiene test that keeps version keys out of the localized
+overlays, and correct the Info.plist localization doc.
+
+QA finding F-226.
+
+(cherry picked from commit
+3a393b01607e033b72636c479f5e97200b0c0cdf) (cherry picked
+from commit b2b53669ea19f61021a0aa814fd0df14497031e3)
+
+2026-10-14: Fix typos and localization gaps in several
+user-visible strings
+
+- Release notes said avilable instead of available. QA
+finding F-192.  - The AI plugin policy error read Plugin not
+allowed by administator.
+  Fix the source string and the English catalog value; the
+  translations were already spelled correctly. QA finding
+  F-251.
+- The SSH Integration file transfer description had a stray
+") after
+  the user name and a stray " after the file path, which
+  every translation copied. Remove them from the source and
+  all localizations.  QA finding F-231.
+- Settings > Profiles > Window set the background image row
+label to a
+  hard-coded English Image: or Folder:, overriding the
+  translated XIB title. Localize both strings, reusing the
+  existing translations. QA finding F-229.
+- The Simplified Chinese title preview showed the English
+Job,
+  Job+Args, and User. Translate them to match the title
+  component menu items. QA finding F-233.
+- Fix Artifical in the AI prompt popup menu item (Edit >
+Engage
+  Artificial Intelligence) in PreferencePanel.xib and its
+  string catalog. QA finding F-112.
+
+(cherry picked from commit
+c5451952214e54096625493309628f5cb49a8332) (cherry picked
+from commit ced98911d4ab32146e5c6075e83eca2cdd9c79d2)
+
+2026-10-14: Authenticate every open of the standalone
+password manager window
+
+The standalone password manager window, used when no
+terminal window exists, was created once and reused. Its
+open gate was made only when it was created, so in Require
+Authentication on Every Open mode a second open showed the
+accounts with no prompt, and in the screen-lock modes
+reopening after a lock showed an empty window with no
+prompt. Each open now goes through the gate again, as a new
+window would: a closed window is reopened by replacing its
+gate and authenticating, and when a prompt is needed the
+rows, search text and two-factor field from the earlier open
+are cleared first. A prompt result from an earlier open is
+ignored.
+
+Also, a failed or cancelled prompt from any caller, or a
+screen lock, revokes the provider's authentication and locks
+every window, but windows kept showing the account names and
+user names they had loaded.  The provider now posts a
+notification when its authentication is revoked. Each
+unlocked window's gate then ends its open, so it stays
+locked even if another caller authenticates later, and the
+window clears its rows, ends its sheets and closes, as a
+screen lock already did. A fetch that finishes after a lock
+shows no rows.
+
+Follow-up to QA finding F-147.
+
+(cherry picked from commit
+d372c17bd73d1c0b42f4b969ec7ac081f4556e1d) (cherry picked
+from commit acdd8ea649b51b3175d16d477142df0b36aa8ed4)
+
+2026-10-14: Fix sanitizer gaps for Ollama models, adapter
+paths, and profile triggers
+
+tools/sanitize_iterm2_plist.py left the user-chosen Ollama
+model names (AIOllamaRegularModel, AIOllamaEconomyModel) and
+the password-manager adapter path (PathToExecutable_<id>,
+which contains the user name) in sanitized output. Add the
+Ollama keys to CONTENT_KEYS and the PathToExecutable_ prefix
+to PREFIX_CONTENT, with matching audit lines.
+
+It also redacted the parameter of Set Profile Setting
+triggers (iTermSetProfileBooleanTrigger), which is only a
+profile key plus 0/1, leaving the trigger as junk. Keep that
+parameter when it has exactly the key\x01<0|1> shape; other
+trigger parameters are still redacted.
+
+QA findings F-090, F-208 (resolves F-024), F-209.
+
+(cherry picked from commit
+795728651f618f7e0b08a91e9c46f0e1ab0d1ee4) (cherry picked
+from commit cf328152f59ed73a46576b9ae477725bfeb6522e)
+
+2026-10-14: Hide password manager accounts until an
+every-open prompt succeeds
+
+In Require Authentication on Every Open mode, once the
+password manager had been unlocked earlier in the launch,
+reopening it showed the account list (account names and user
+names) behind the authentication prompt. The provider stays
+authenticated for the whole launch, and the window decided
+whether to load and show accounts from that flag alone, so
+it filled the list while its own prompt was still up.
+
+Each window now owns a gate that counts the provider's
+authentication only when the mode lets an earlier unlock be
+reused, or once this window's own authentication succeeds.
+Every check in the window that used the provider's flag now
+asks the gate, so the list stays empty until the prompt
+succeeds, and a failed or cancelled prompt closes the window
+as before. Other modes behave as before.
+
+QA finding F-147.
+
+(cherry picked from commit
+3edb24a8d6de7d56ea8742d68041f6e6e75d2262) (cherry picked
+from commit 3d7851e7f4daf8963929723b7aefea1618949de7)
+
+2026-10-14: Cancel Companion wizard setup when the wizard is
+closed
+
+Closing the Companion setup wizard with Cmd-W while it was
+downloading did not stop setup. The Close menu item sends
+closeCurrentSession:, which the wizard did not handle, so
+the action went to the terminal window behind it (closing a
+session there) and the wizard kept going: it installed the
+plugin, raised the administrator password prompt, and on
+Don't Allow showed Setup Could Not Be Completed.
+
+The wizard now handles closeCurrentSession: by closing its
+window, which cancels the install. The install steps move
+into CompanionWizardSetupRunner, which checks for
+cancellation before every step with side effects, treats an
+error after cancellation as a cancellation rather than a
+failure, and silently rolls back any consent or API key it
+wrote. Cancellation no longer depends on the window being
+visible, so a panel hidden while the app is inactive does
+not abort setup. The plugin installer stops before
+installing into Plugins if cancelled during the unzip.
+
+QA finding F-036.
+
+(cherry picked from commit
+26903834ff0f53579871d7a64e818c15acb4b891) (cherry picked
+from commit 190c9f2fde4f190222f032d864d25685c662e463)
+
+2026-10-14: Keep tmux floats in place on attach by pinning
+window sizes first
+
+On attach, iTerm2 sent refresh-client -C with the profile
+size before listing windows, so new windows would get that
+size. With per-window sizes, a control client's size also
+applies to every window it has not sized itself, so tmux
+immediately shrank each existing window to the profile size
+(typically 80x25). tmux clamps floating panes into a
+shrunken window, and they stay there when the window grows
+back: a float at x=68 in a 157-column window came back at
+x=37, and tmux's own layout was rewritten.
+
+On tmux 3.8 and later (where floating panes exist), the
+client size now waits for the initial list-windows. Then
+iTerm2 sets the client size to the largest window size
+(which can only grow a window), pins every window at its own
+current size, and finally sets the profile size, which then
+only applies to windows created later. Older tmux keeps the
+previous attach order.
+
+QA: please also verify that attaching with tmux older than
+3.8 (for example 3.3, 3.4 and 3.7) behaves as before with
+regard to window and session size: windows should come back
+at the size tmux had for them (or the profile size, as in
+3.7.4), not be shrunk, grown or resized unexpectedly, and
+tiled pane layouts should be unchanged after attach.
+
+QA finding F-049.
+
+(cherry picked from commit
+e93ca9c9f05c38d2a08bc9deadfeb63722138270) (cherry picked
+from commit c352aadfc76fb96f63458a5569e18c45a098098a)
+
+2026-10-14: Keep @-mention chips on the text baseline
+
+A session @-mention chip in the Cockpit composer and the AI
+chat input is an image attachment. Its image was sized to
+the laid-out line height of its contents (rounded, with
+leading) and positioned from the font's exact ascender.
+TextKit 1 puts a plain line's baseline at a rounded baseline
+offset, so the chip reached above or below the box plain
+text gets: a line with a chip was taller, the text after the
+chip sat lower than on a line without one, and the name
+inside the chip was drawn off the adjacent text's baseline.
+
+The chip image now spans the font's own TextKit line box
+(without leading, clamped to the ascender and descender) and
+draws the name at an explicit baseline. When the name's
+glyphs reach further (an emoji), the box grows only as far
+as the line the name would get typed as plain text, so a
+chip never changes the line more than its name would and the
+name is not clipped inside that line.
+
+QA finding F-032.
+
+(cherry picked from commit
+87c573476f3b269146363861a2626c3e4ac649db) (cherry picked
+from commit 3240bb3b84db8a2f507dd61d2d68f4b6e62ebe46)
+
+2026-10-14: Recover from an SSH Integration connection that
+dies abruptly
+
+When an it2ssh connection ended without the framer's clean
+exit (the remote sshd killed, or the local ssh client
+killed), the session wedged: the local shell was back in the
+foreground, but nothing it printed was drawn and keystrokes
+were queued forever.
+
+On a clean exit conductor.sh prints an OSC 135 unhook, which
+drops the DCS 2000p conductor hook, and then the local
+it2ssh prints OSC 1337;EndSSH=<id>, which tears down the
+conductor. On an abrupt end no unhook arrives, so the hook
+stayed in place. It only recognized ST-terminated OSCs, so
+the BEL-terminated EndSSH and all later output, including
+the local prompt, were swallowed.
+
+The conductor parser now remembers the it2ssh unique ID from
+its init line and treats that it2ssh's EndSSH as an implicit
+unhook. It leaves the EndSSH unconsumed so the regular
+parser executes it, just as after a clean exit. An EndSSH
+relayed inside %output is honored only for this connection's
+ID, so a nested it2ssh's EndSSH is not mistaken for it.  The
+OSC parser also now backs up to the ESC when an OSC is
+interrupted by another one, instead of losing the ESC, so an
+EndSSH that follows a framer OSC cut off by the dying
+connection is still recognized.
+
+QA findings F-120 and F-269.
+
+(cherry picked from commit
+e01c4b065539ecd72e968099a816ae6d071df03a) (cherry picked
+from commit d9331d06e6b1e9c94cf885b3376cdeaed3b64b52)
+
+2026-10-14: Restore an archived floating pane as a float on
+Undo Close
+
+With Archive On Closure on, Undo Close of a floating pane
+whose undo window had run out restored nothing. The session
+was gone, so recreateTab: had no live session to put back as
+a float. It stripped the float records from the tab
+arrangement and rebuilt the tiled layout, which succeeds
+without the float, so the archive was silently dropped.
+
+Now recreateTab: finds archives whose session has a float
+record in the tab arrangement and restores each one as a
+float from that record (its frame, container size and grid),
+using a per-record helper extracted from
+restoreFloatingPanesFromArrangement:. An archive restored
+this way does not also get a tab of its own. If the float
+can't be restored, or its tab is gone, the archive gets its
+own tab as a tiled pane's does.
+
+QA finding F-004.
+
+(cherry picked from commit
+62ecc13ba0f3d274e60cae4aeec91e715e263450) (cherry picked
+from commit 1e2e3e5c6dc7c66225beb6b19461e1e265eedc1d)
+
+2026-10-14: Type a space instead of .  for double-space
+period substitution
+
+With macOSs Add period with double-space on, pressing space
+after a space makes the text input system call insertText:.
+with a replacement range covering the space before the
+cursor. The keyboard handler backspaced over that space and
+sent . , and in vim (where it doesn't backspace) the period
+repeated the last command.
+
+The fix for issue 13123 sets
+NSAutomaticPeriodSubstitutionEnabled to NO in iTerm2's user
+defaults, but NSSpellChecker reads the standard user
+defaults. When iTerm2 runs with a custom defaults suite
+(-suite), the override never reaches AppKit and the global
+setting wins, which is how QA saw it after using the
+Composer.
+
+The keyboard handler now recognizes the substitution (a .
+insertion replacing one character during a space keypress,
+with no marked text) and inserts the space the user typed.
+Dictation, Voice Control, and input methods committing
+marked text are unaffected.
+
+QA finding F-217.
+
+(cherry picked from commit
+e624cfe8e3914da1b8146e35ffcec47389088970) (cherry picked
+from commit dff3ea495854391b518080e60f4f3f75c15adda0)
+
+2026-10-14: Don't show the locale prompt as a sheet on an
+unseen hotkey window
+
+When no valid UNIX locale matches the user's language and
+region, the first session of a dedicated hotkey window asks
+the user to pick one.  That session is launched while the
+hotkey window is ordered in but still has an alpha of 0 (it
+only rolls in after its session exists). The prompt attached
+itself as a sheet whenever the window was visible, so it
+became a sheet on a fully transparent window: the user saw
+nothing, key focus was trapped in the hidden sheet, and the
+hotkey window could not appear until the sheet was answered
+blind.
+
+Only use a sheet when the window is visible, has nonzero
+alpha, and is not miniaturized. Otherwise activate iTerm2
+and show an app-modal alert.  The same rule applies to the
+wrong-encoding warning shown for a custom non-UTF-8 locale.
+The session still launches with the locale the user picks,
+as before.
+
+QA finding F-306.
+
+(cherry picked from commit
+4514cefcbda025da1ce107a17d3759ba511f2b74) (cherry picked
+from commit 4ab632807c49f3117d39bc02f1e898279a91812e)
+
+2026-10-14: Coalesce title changes so a title flood cannot
+swamp the main thread
+
+Each OSC 0, 1 and 2 added its own side effect. A window
+title in a session with no remote host also asked the main
+thread for the working directory, which sent one XPC request
+to the pidinfo service per title, armed a timeout timer on
+the main queue, and on completion went back to the mutation
+queue to log the directory, which queued another side effect
+that saved the recent directories database and updated the
+path variable. A program setting the title as fast as it
+could write queued hundreds of thousands of these. The main
+thread fell minutes behind and memory grew to gigabytes,
+held by the outstanding requests, their timers and closures,
+and the side effects they queued, until the backlog drained.
+
+Title changes with no other side effect between them now
+share one batch and one side effect, using the token
+executor's side-effect serial as the OSC 7501 batches do, so
+they keep their order relative to bells, reports and other
+side effects. The batch keeps only the latest window title,
+icon title and subtitle, whether to poll the local
+directory, and the first and last line at which to log the
+working directory, which is fetched once per batch. A change
+that needs the directory does not join a deferred batch, so
+it is not delayed as it was not before.
+
+QA finding F-327.
+
+(cherry picked from commit
+e9cb2fec5aedf79c001a0f6632d223f26d373072) (cherry picked
+from commit 616635a8fad25940e1318cb9d018b6c5dee4f754)
+
+2026-10-14: Show the basic-auth sheet instead of prompting
+in every-open mode
+
+In Require Authentication on Every Open mode, once the
+browser password manager had been unlocked, every basic-auth
+challenge for a remembered site raised the system open the
+password manager prompt. The basic-auth store only
+auto-fills when the password manager can be read without a
+prompt, but its check treated any earlier unlock as
+reusable. Every-open mode never reuses one, so the silent
+lookup prompted instead.
+
+The check now counts an earlier unlock only when the mode
+allows it to be reused. In every-open mode a challenge shows
+the plain basic-auth sheet, and the user can still choose
+the password manager from it, which authenticates as usual.
+
+QA finding F-099.
+
+(cherry picked from commit
+793d09e4f007954d06004a250aded514fc8e731c) (cherry picked
+from commit 4ca3cf60aca8db6113b72183912e656ff1064deb)
+
+2026-10-14: Revert the session.path ssh-exit heuristics
+built on the F-103 fix
+
+Reverts f72f61f2b, 4d2232a7a and 4b107878f. They tried to
+let a polled local directory replace a remote session.path
+after ssh exits, for a local shell that has no shell
+integration while the remote one does. Each rule exposed
+another edge case (subshells, tmux panes, sudo -s, screen, a
+race recording the foreground process group), and a review
+found the latest one could leave the path stuck on the
+remote directory.
+
+This keeps 01b50a4b1 (QA finding F-103), which restores the
+original Objective-C rule: a polled local directory never
+overwrites the path while a remote directory is current.
+After leaving ssh into a local shell without shell
+integration, session.path stays on the remote directory
+until the next directory report, as in 3.6. QA findings
+F-134, F-138, F-141, F-142 and F-144 are known limitations.
+
+(cherry picked from commit
+10ce518ddcfa4a2e045a574e61ccfd67625d0df3) (cherry picked
+from commit e225d36f637b4f5e5f0ce7f9fe8b5949d7c9232e)
+
+2026-10-14: Name the reattached tmux pane's workgroup in a
+re-bound AI chat watch
+
+When an orchestration chat's watch on a tmux -CC pane was
+held across a relaunch and re-bound to the pane's recreated
+session, only its session reference was updated. Its
+workgroup ID still named the old session (session:<old
+stableID>), while list_workgroups lists the pane under its
+new stableID, so list_watches and the watch's status_update
+named a workgroup that no longer exists and the model could
+not match them.
+
+The re-bind now also takes the workgroup ID, workgroup name,
+role ID, and role name from the new session, using the same
+context list_workgroups uses, before persisting the watcher
+and re-arming it.
+
+QA finding F-145.
+
+(cherry picked from commit
+222fbdced7227a14bd08887ebaf1956a49bf9de4) (cherry picked
+from commit e63f326eac0d6d8bab34d1dec1b7c02aeaa8aa96)
+
+2026-10-14: Cancel only the stopped AI request, not another
+chat's
+
+PluginClient was a singleton that remembered only the most
+recently started HTTP task, and every AI request's
+Cancellation cancelled through it. With two chats replying
+at once, pressing Stop in the chat whose request started
+first cancelled the other chat's request (it ended with
+"HTTP request failed with cancelled") while the stopped
+chat's transfer kept running to completion, still using
+tokens. Cancelling a request that had already finished could
+also kill another chat's request.
+
+Each plugin call now gets its own PluginClient, and
+Plugin.load ties the request's Cancellation to that client,
+so cancel stops exactly that request's transfer. The client
+also remembers that it was cancelled so a cancel that lands
+before the HTTP task is created keeps it from starting.
+
+Adds test seams (URLProtocol classes, a plugin built from
+test code, and a plugin override on iTermAIClient) and tests
+covering two concurrent requests, cancelling a finished
+request, and cancelling before the transfer starts.
+
+QA finding F-268.
+
+(cherry picked from commit
+58bd67892e9f09b265c63a9d25437e1070f5848f) (cherry picked
+from commit 8e30bfd5d1a81d19024cc266d15efcde3da3ff7f)
+
+2026-10-14: Keep the Claude Code hook when the config dir is
+an alias of ~/.claude
+
+Installing the Claude Code integration merges the cc-status
+hooks into settings.json in the resolved config directory,
+then strips them from the previously used directory if it
+changed. The "changed" check compared standardized path
+strings, so a CLAUDE_CONFIG_DIR that names the same
+directory as ~/.claude through a symlink (~/.claude ->
+~/dotfiles/claude) or a case variant on a case-insensitive
+volume (~/.Claude) looked different, and the strip removed
+the hooks Install had just written.
+
+Decide sameness by file identity (device and inode via stat)
+for both the directories and their settings.json files,
+falling back to comparing symlink-resolved paths,
+case-insensitively only on a case-insensitive volume, when
+either can't be stat-ed. The strip step is now
+stripStaleCCStatusHooks(previousDirectory:newConfigDirectory:)
+so it can be unit tested.
+
+QA finding F-274 (also F-013, F-064).
+
+(cherry picked from commit
+0a2c82e44d9725c9d4b4d0273b06620c70454683) (cherry picked
+from commit 70789d73a4f05b3ae195f3c2704dd489f8017d57)
+
+2026-10-14: Keep AI chat watches on tmux panes across a quit
+that restores windows
+
+On an ordinary quit with window restoration on, an
+orchestration chat's watch on a tmux -CC pane was still
+dropped when the pane closed, because the
+session-termination handler treats a tmux client session as
+never restored. Since watches registered from an
+orchestration chat now record the pane's tmux identity, and
+the next launch holds such a watch until the pane reattaches
+and re-binds it, there is no reason to drop it at quit.
+
+When a tmux client session terminates for a quit after which
+windows will be restored, the dispatcher now keeps that
+session's orchestration-chat watches that carry a tmux
+identity. If the pane does not reattach at the next launch,
+the existing five-minute deadline drops it. Real pane
+closes, Option-Quit, quits without restoration, watches with
+no tmux identity, and session-bound chats keep the old
+behavior.
+
+Follow-up to QA finding F-126.
+
+(cherry picked from commit
+78e184447be23740253cb111abfa9bb042d71d61) (cherry picked
+from commit c3d383a62fa570accfb6dc6d2d4373db0ca2fd35)
+
+2026-10-14: Tell the user when Stop or Disable Orchestration
+cancels AI chat timers
+
+Stop and Disable Orchestration cancel a chat's pending
+register_timer timers and watches without telling the model,
+so nothing told the user either, and they could keep waiting
+for a timer that would never fire.
+
+Both now publish one chat notice counting what was
+cancelled, such as Stop cancelled 1 pending timer. or
+Disabling orchestration cancelled 2 pending timers and 1
+watch. The notice is client-local, so it starts no agent
+turn and sends nothing to the model. Nothing is published
+when nothing was pending. Disable Orchestration's drop,
+clear, and notices move into
+OrchestratorClient.disableOrchestration so the counts are
+read from the persisted set just before it is cleared, with
+or without a live dispatcher. The strings are pluralized and
+translated into German, Japanese, Brazilian Portuguese,
+Russian, and Simplified Chinese.
+
+Follow-up to QA finding F-110.
+
+(cherry picked from commit
+a16ee361ca209b19a5266b18d7c991667dd3d50b) (cherry picked
+from commit 471808c3086e24f2ca559093f45189b822d37af7)
+
+2026-10-14: Keep AI chat watches on tmux panes across a
+relaunch
+
+After a kill -9 and relaunch, an orchestration chat's watch
+on a tmux -CC pane was dropped at launch with "could not be
+restored", which also started a paid agent turn. Watchers
+persist only the session's stableID, but a tmux client
+session is not restored by window restoration: the restored
+gateway reattaches tmux after the restoration gate has
+opened, and each pane comes back as a new session with a new
+stableID.
+
+Watchers now also record the pane's tmux identity (the tmux
+session's @iterm2_id and the pane number) when registered
+from an orchestration chat.  At reconcile, a tmux watch
+whose session is missing is held instead of dropped, and is
+re-bound to the pane's new session when tmux opens its
+window. It is dropped if that tmux session detaches (the
+detach notification now carries its @iterm2_id) or if the
+pane has not reattached five minutes after reconcile. A held
+watch gets no screen backstop until it is re-bound, and a
+held copy that duplicates a watch registered again on the
+reattached pane is discarded. Session-bound chats keep the
+old behavior, since their link still names the old pane
+session.
+
+QA finding F-126.
+
+(cherry picked from commit
+098675fcf2fb8bd1b6d672df4b5d0a5c3ec29e9f) (cherry picked
+from commit 2fe05b81ae21dfa68eee5a63a267e8d73f1db16e)
+
+2026-10-14: Keep pinned tabs out of unpinned groups on Move
+Tab Left/Right
+
+Move Tab Right on a pinned tab whose right neighbor was an
+unpinned tab group made the tab join that group in place.
+Joining copies the group's pinned state onto the tab, so the
+pin was silently lost. The symmetric case, Move Tab Left on
+an unpinned tab next to a pinned group, silently pinned the
+tab.
+
+iTermTabGroupOrdering.singleTabMove now takes the tabs'
+pinned states and makes the join a no-op when the
+neighboring group is across the pinned boundary, matching
+how a plain reorder across the boundary is already clamped.
+Joins on the same side of the boundary are unchanged.
+
+QA finding F-256.
+
+(cherry picked from commit
+9671c608685c2cbb0900e95e1618ab6869f62a8a) (cherry picked
+from commit 8d9f0a05ed02b1ec2a3ffbace78455e6816e6bf3)
+
+2026-10-14: Keep AI chat timers when a chat is unlinked from
+its session
+
+Unlinking a session-bound chat from its terminal session,
+which also happens when the linked session closes, cancelled
+every watcher on the chat, including register_timer timers.
+A timer targets no session, so the model was told it would
+fire, but nothing fired and list_watches came back empty.
+
+The unlink path now drops only the session watches it
+orphans and leaves timers armed and persisted, both with a
+live dispatcher and in the client's no-dispatcher path. Stop
+and Disable Orchestration still cancel timers: Stop exists
+so no later event can wake the agent, and disabling
+orchestration clears all watchers.
+
+QA finding F-110.
+
+(cherry picked from commit
+9941b60b3dce8575f2967000f7a2b54e6af13893) (cherry picked
+from commit f8556102e43cdd212477a4b8bded3f6bdc6b66a0)
+
+2026-10-14: Expand {{FILE}} in AI suggestions with the whole
+filename
+
+File completion items carry only the text to insert after
+the word being typed, so typing er with error.log present
+yields ror.log. AI command suggestions substituted that
+suffix for {{FILE}}, so rm {{FILE}} was offered as rm
+ror.log, which runs rm on the wrong name.
+
+Rebuild the name from the typed word plus the suffix and
+shell-escape it, since AI suggestions are inserted without
+the escaping applied to plain file completions. An append
+whose text begins with {{FILE}} is inserted right after the
+partial word, so it still gets just the suffix there.
+
+QA finding F-114.
+
+(cherry picked from commit
+e44fceefb41bd3814d585111a6f461fdc1b73811) (cherry picked
+from commit 1d7f17088d010446b26534bd8a5ce7362ecd53be)
+
+2026-10-14: Keep one rate-limit timer per program status
+notifier
+
+ProgramStatusNotifier treated a non-empty held set as
+meaning its post timer was scheduled. Handling a batch of
+OSC 7501 reports can drop every held notification (the
+record went back to working) while the timer is still due,
+so the next notification inside the interval scheduled a
+second timer for the same deadline. Under a flood, batches
+ran between those timers and each timer posted, giving two
+or three notifications within moments of each other instead
+of one per three seconds.
+
+The notifier now tracks whether its timer is outstanding
+explicitly, clears that when the timer fires, and holds new
+notifications while it is outstanding.
+
+QA finding F-326.
+
+(cherry picked from commit
+a434348d5bffd30cd137df4d737b8643aaa7196f) (cherry picked
+from commit c8bbd5a75d0769df0475eea8a608bfdfc51ea7d4)
+
+2026-10-14: Bound AI Usage command memory and kill its whole
+process group
+
+A custom AI Usage command that floods stdout, such as
+/usr/bin/yes, grew iTerm2's memory by gigabytes before the
+20 s timeout even though captured output was capped at 1
+MiB. iTermCommandRunner's read loop called -availableData
+outside its per-iteration autorelease pool, so every chunk
+read stayed alive until reading finished. The read now
+happens inside the pool, which bounds memory for every
+caller of the runner.
+
+The timeout also killed only the direct child. A wrapper
+whose child kept stdout open (for example a script running
+sleep 60) left the runner reading until that child exited,
+and orphaned children piled up.
+
+iTermCommandRunner gains an opt-in terminatesProcessGroup,
+which makes -terminate SIGKILL the command's process group
+(NSTask makes the command its group leader), and
+iTermBufferedCommandRunner gains an opt-in
+terminateWhenOutputExceedsMaximum, which terminates the
+command once the output cap is exceeded. The AI Usage item
+enables both; other callers keep their existing behavior.
+
+QA findings F-116 and F-117.
+
+(cherry picked from commit
+4cd0c197329ee9e1d8bec03f643af5156cc961f2) (cherry picked
+from commit e043a7a738cda93c2bcd2f8f3c0b35f3611c02d7)
+
+2026-10-14: Hold a remote session.path only while ssh's
+process group is in the foreground
+
+Three fixes to session.path (F-103, F-134, F-138) each added
+a special case: a polled cwd baseline taken after a remote
+push, and a shell/other classifier of the foreground job.
+Both broke in new places. ssh started from a local subshell
+kept the remote path after exit, because the subshell never
+classified as the shell (F-141). In a tmux integration pane
+the baseline was taken after the first local cd, which was
+then swallowed (F-142).
+
+Replace them with one rule. When a remote shell first
+reports its directory, record the local terminal's
+foreground process group (the group ssh runs in, or the root
+when the profile's command is ssh). The remote directory
+stays current only while that group is still in the
+foreground. A valid poll that finds anything else there, or
+can't read it, makes the polled local directory current.
+Later pushes in the same remote stretch keep the recorded
+group, so an OSC 7 processed after ssh exits still ends it.
+tmux integration panes have no local terminal to read, so
+polls win there as in 3.7.4. The group is saved in the
+arrangement so a session whose ssh survives a relaunch keeps
+its remote path; a new shell goes local on the first poll,
+and older arrangements behave as in 3.7.4.
+
+Known limit: wrappers that run their own pty (sudo with
+use_pty, script, screen, a local plain tmux) stay in the
+foreground, so a remote path set inside them lasts until
+they exit, as it did before this change.
+
+QA findings F-141 and F-142.
+
+(cherry picked from commit
+f72f61f2b72ceda3349eb89a68e3b52756fac24a) (cherry picked
+from commit 0c600af155b138da17880c3f1ec1f1426d48101f)
+
+2026-10-14: Don't overwrite an unparseable Claude Code
+settings.json on install
+
+Installing or reinstalling the Claude Code integration read
+settings.json with try? and fell back to an empty object
+when the file couldn't be read or parsed, then wrote the
+result. A settings.json with a single syntax error was
+replaced by a file holding only the cc-status hooks, losing
+the user's permissions, env, model, and every other setting
+without warning.
+
+Move the read/merge/write into mergeCCStatusHooks, which
+refuses to write an existing file that can't be read or
+doesn't parse as a JSON object and returns a result the
+wizard turns into a localized alert naming the file and
+asking the user to fix or remove it and try again. A missing
+or blank file still starts from an empty object. The
+uninstall path already left such files untouched; tests now
+pin that too.
+
+QA finding F-309.
+
+(cherry picked from commit
+acc5a7feae933c6d458529138f4db37f9fc7b8a4) (cherry picked
+from commit b602ce99379af8cf8f6a31c5ac1030b73e1abfa5)
+
+2026-10-14: Give the AI key hint room for its longest
+translation
+
+The hint under API key in the manual AI model editor had a
+fixed two-line height, so the German hint for a gateway
+endpoint (four lines at the label's width) was cut off after
+Whlen Sie, and several other hints needed three lines in
+German, Japanese, Portuguese and Russian. The same hints in
+Settings > General > AI were truncated to one line, in
+English too.
+
+The editor now measures every hint it can show in the
+running language at the label's width, sizes the label for
+the longest (keeping two lines as the minimum, so English is
+unchanged), and moves the controls below it and the window's
+height by the difference. In Settings the hint wraps to two
+lines, which every shipped language fits in the width
+visible in the tab, and the Timeout row and safety checkbox
+move down to make room. Should a future translation need
+more, the second line ends in an ellipsis.
+
+QA finding F-140.
+
+(cherry picked from commit
+ebbc6da6d71664616379fb45cfe46f3a378caef6) (cherry picked
+from commit 476cc855cb289b382b2a46897bb5f32f97f0c8d4)
+
+2026-10-14: Update session.path when the local shell returns
+from ssh without a cd
+
+After ssh'ing somewhere whose shell reports its directory
+with OSC 7 and then exiting back to a local shell without
+shell integration, session.path kept the remote directory
+until the user changed directory locally. The fix for F-134
+only accepted a polled local cwd that differed from the
+first one seen after the remote push, and the local shell
+comes back in the directory it ssh'ed from.
+
+The directory tracker now asks its delegate what is in the
+foreground of the local terminal. PTYSession reads the
+terminal's foreground process group from the kernel and
+reports whether the polled process (the shell, or login's
+child) leads it. Once another job such as ssh has been seen
+in the foreground while the directory is remote, a valid
+poll that finds the shell in the foreground again becomes
+the current directory even if it did not change. Requiring
+another job first keeps the remote directory for profiles
+whose command is ssh itself, and tmux integration panes
+report unknown and keep the earlier behavior.
+
+QA finding F-138.
+
+(cherry picked from commit
+4d2232a7ac5f180239e62e91507d76a215620990) (cherry picked
+from commit 425e2720c8d43d425643e12e4cdf5a30278d083c)
+
+2026-10-14: Coalesce OSC 7501 reports so a flood cannot
+swamp the main thread
+
+Each OSC 7501 report added its own deferred side effect, and
+each one ran the full program-status update on the main
+thread: comparing records, posting the records-did-change
+notification, building display records, calling the notifier
+and re-applying the tab status. A program flipping a task
+between two states as fast as it could write queued about a
+million side effects in ten seconds, so the session fell
+minutes behind drawing, memory grew to gigabytes, and
+rate-limited notifications kept arriving until the main
+thread caught up.
+
+Reports with no other side effect between them now share one
+batch and one side effect. The token executor exposes a
+side-effect serial so a report only joins a batch whose side
+effect is still last in the queue, which keeps reports in
+order relative to resets, OSC 21337 and other side effects.
+The batch keeps only each record's latest report, at the
+position of its last write, with clears as barriers, so a
+flood that cycles among a few records holds one report per
+record.
+
+The program status controller handles a batch at once: the
+records change once, the tab status is set once, and each
+record whose state changed over the batch, or that was
+written after a clear, is announced once in its final state.
+States a record only passed through within a batch were
+never on screen and are not announced.
+
+QA finding F-307.
+
+(cherry picked from commit
+db21cddb4f9ca911198385c1fe0a76368de95d6a) (cherry picked
+from commit 4177935d8d601910e54f6b5247d740f006e4aef7)
+
+2026-10-14: Translate the AI key strings and fix two zh-Hans
+Companion explanations
+
+Commit 29e978661 added three user-visible strings (the
+advice shown when a third-party AI gateway rejects a request
+because no API key was sent, the Settings hint for an
+endpoint not run by the model's provider, and the "Automatic
+(none for this endpoint)" API key popup title) but never
+added them to xcstrings/Localizable.xcstrings, so they
+appeared in English in every language. Add the three entries
+with German, Japanese, Brazilian Portuguese, Russian, and
+Simplified Chinese translations that follow the terminology
+of the neighboring AI settings strings.
+
+Also fix two Simplified Chinese Companion strings:
+Companion.InstallExplanation.Full held unrelated text
+instead of a translation, and
+Companion.InstallExplanation.CompanionOnly said data is sent
+to this Mac where the English says off this Mac.
+
+Commits 379a977a7 and 4b107878f were also checked; they add
+no new user-visible strings.
+
+Follow-up to QA findings F-092 and F-272.
+
+(cherry picked from commit
+8859f4f7691da0a20d07634010ceeaaed23af380) (cherry picked
+from commit 2ddaa8e1ac5aa1493f0924e354b075abdddacd2a)
+
+2026-10-14: Translate the Companion wizard strings added for
+AI model setup
+
+Commit 1dcf0564f added six user-visible strings to the
+Companion setup wizard (the choose-mode details for an
+already configured or manually chosen AI model, the
+full-setup explanations that replace the API key field, the
+cannot-authenticate setup failure, and the status shown when
+AI settings change while the screen is open) but never added
+them to xcstrings/Localizable.xcstrings, so they appeared in
+English in every language. Add the six entries with German,
+Japanese, Brazilian Portuguese, Russian, and Simplified
+Chinese translations that follow the terminology of the
+neighboring Companion strings.
+
+Commits 3e141285d and 3981d7ecb were also checked; they add
+no new user-visible strings.
+
+QA finding F-272.
+
+(cherry picked from commit
+514080945329a903e8a9749b1cc4f50d1b5917fb) (cherry picked
+from commit 8eba4c21343e822c4e7c3577777a929d8de012bb)
+
+2026-10-14: Send the OpenAI key automatically only to
+Azure's AI service hosts
+
+Under the Automatic key choice, any host ending in
+.azure.com counted as OpenAI's own host, so it got the
+user's OpenAI key. But anyone with an Azure VM chooses the
+label of its public DNS name
+(<label>.<region>.cloudapp.azure.com), so a third-party or
+company gateway there received the key, and Settings said it
+would.
+
+Key binding now uses a stricter predicate that matches only
+Azure's AI service endpoints (*.openai.azure.com,
+*.cognitiveservices.azure.com, *.services.ai.azure.com). The
+broader .azure.com test still picks the Azure request
+format, so a key the user chooses explicitly for such a host
+is still sent in the api-key header.
+
+QA finding F-135.
+
+(cherry picked from commit
+379a977a77cf2dbe92e34035428466f3403b92ea) (cherry picked
+from commit c176c7e8695add070e2ca660fa86f8316a4726f3)
+
+2026-10-14: Let the local cwd update session.path again
+after leaving ssh
+
+After ssh'ing somewhere whose shell reports its directory
+with OSC 7 and then exiting back to a local shell without
+shell integration, session.path stayed on the remote
+directory forever, even after cd. The fix for F-103 stopped
+the polled local cwd from writing the path, and once any
+shell has pushed a directory the poller never creates marks
+again, so nothing could update the path.
+
+The poller reads the login shell's cwd, which cannot change
+while a foreground job like ssh runs. The tracker now
+remembers whether the last directory was remote and records
+the first valid poll result after a remote push. A later
+valid result that differs means the local shell is back and
+changed directory, so it becomes the current directory. When
+the last directory is not remote, a differing poll result
+becomes current as before the F-103 fix. The remote flag is
+saved in the arrangement ("Last Directory Is Remote",
+already read for backward compatibility) and inferred for
+older arrangements, so a restored session whose ssh job
+survived a relaunch keeps its remote path.
+
+QA finding F-134.
+
+(cherry picked from commit
+4b107878f4e318e12177d6900ff5e53d32c28ade) (cherry picked
+from commit 5ecca869950f7c611a8520c6af8aea806c0c7ae0)
+
+2026-10-14: Show the AI lockout alert for Engage AI in the
+Composer
+
+With generative AI disallowed by the administrator
+(GenerativeAIAllowed), the Composer hides its Engage AI
+button, but Edit > Engage Artificial Intelligence and its
+key equivalent still reached the composer's
+performNaturalLanguageQuery: action, which never consulted
+the AI gatekeeper. 3.7.4 reached the gatekeeper indirectly
+because the missing registration made the controller ask for
+one, but a manually configured model now resolves its own
+registration, so the request went out. The request-path
+backstop added for F-089 stopped it from reaching a remote
+model, but the user saw a confusing Plugin not allowed error
+instead of the 3.7.4 alert, and the backstop does not cover
+Apple Intelligence.
+
+The action now runs the gatekeeper check up front, as the
+shell-prompt Engage AI path does, and sends nothing when it
+fails. Under the lockout this shows Feature Unavailable /
+Generative AI features have been disabled. This also
+restores the 3.7.4 must enable AI alert when AI is turned
+off in settings and a manual model is configured, which had
+been sending the composer text anyway.
+
+QA finding F-115.
+
+(cherry picked from commit
+3981d7ecb12b26068d612811f5fb1bcd8e2f84b1) (cherry picked
+from commit d8c42b3a7cdd590173e17500a0c6dbbc07f1e31d)
+
+2026-10-14: Size Companion wizard choose-mode details to fit
+their text
+
+The choose-mode screen gave each detail label a fixed height
+of 34 pt (two lines). The manual-model detail added for
+F-101 needs three lines in English, so its last word was cut
+off, and the German (also pt-BR and Russian) terminal-only
+detail was clipped the same way.
+
+Each detail label is now measured with its cell at the
+label's fixed width, keeping two lines as the minimum, and
+the controls below it are stacked from those heights.
+Two-line text keeps the original positions.
+
+QA findings F-267 and F-035.
+
+(cherry picked from commit
+3e141285d854d12f22fdf20bad22203c4f8a498f) (cherry picked
+from commit 7ad3740027ec6252f8ce82ee63648912940e297b)
+
+2026-10-14: Let a click replace Cockpit chips from clicked
+rows that are now hidden
+
+To keep a chip the user typed for a collapsed or
+filtered-out session, a click on another row stopped
+replacing any chip whose row was hidden.  That also kept
+chips the user got by clicking a row whose group was then
+collapsed (or hidden by a refresh). The next click added a
+target instead of retargeting, the chip survived the clear
+after a send, and every later send also went to the hidden
+session.
+
+The Cockpit now remembers which chips came from rows the
+user selected.  When the user replaces the selection
+(selects a row and either had nothing selected or dropped a
+visible row), those chips are replaced even if their rows
+are hidden. Collapsing a group, which only removes rows from
+the selection, and Cmd-clicking to add a row replace
+nothing.  Chips the user typed for hidden sessions still
+stay, and the clear after a send never drops a hidden chip
+on its own.
+
+QA finding F-264.
+
+(cherry picked from commit
+fb755db8b3aa267df209ba4ee44d496025eb7522) (cherry picked
+from commit 5e37e6d3ee57bedff9230059b10565c7092261df)
+
+2026-10-14: Send a vendor's key automatically only to that
+vendor's own host
+
+A manual AI model whose API key choice was Automatic sent
+the stored key of whatever vendor the model resolved to, and
+an OpenAI-compatible model at an unrecognized host
+(OpenRouter, z.ai, Qwen, MiniMax, a company gateway)
+resolves to OpenAI. So the user's OpenAI key was sent to
+third parties. A model name such as gpt-*, claude-* or
+llama-* at a gateway had the same effect with that vendor's
+key. Choosing a gateway preset also reset the key choice to
+Automatic, which could turn None into sending the OpenAI
+key.
+
+Automatic now sends a vendor's key only to that vendor's own
+host (api.openai.com and Azure for OpenAI, Anthropic, Google
+and DeepSeek); elsewhere it sends none and the user picks a
+key explicitly. Name inference still picks the request
+dialect. Ollama's key stays unbound for native Ollama
+servers. When a gateway refuses the keyless request, the
+error explains why and where to choose a key, and the
+editor's hints and Automatic title say no key is sent.
+Gateway presets select None.
+
+Configurations saved by older builds have no stored key
+choice and relied on the old behavior, so an absent choice
+is read as the key Automatic used to send, and new builds
+always store the choice (Automatic as "automatic"). This is
+decided on read rather than by a one-time migration so that
+prefs loaded from a custom folder or synced from an older
+build are covered. The legacy single manual model keeps its
+key the same way.
+
+Follow-up to QA finding F-092.
+
+(cherry picked from commit
+29e9786614900601f98d9e01da96567290e7a94a) (cherry picked
+from commit 1dcdfe99638f48793143f02328133b342ad2b3c1)
+
+2026-10-14: Run the AI safety check migration at launch so
+it never undoes a new choice
+
+The one-time migration that moves the AI command safety
+check off on-device Apple Intelligence only ran when the
+first AI controller was created. On a Mac without Apple
+Intelligence, a user who turned on Use AI to check safety of
+commands before running them before ever using AI chat was
+mistaken for a 3.6 user: the first controller cleared the
+setting and the nag flag, and the next proposed command
+asked whether to enable safety checking again.
+
+Run the migration at launch, after user defaults are
+initialized and before Settings can be opened, and have the
+Settings checkbox mark the migration done so an explicit
+choice is never migrated regardless of ordering. Users
+upgrading straight from 3.6 are still migrated once.
+
+QA finding F-084.
+
+(cherry picked from commit
+077cbf5c37e272da01405311626ebc11213d6963) (cherry picked
+from commit 794f30b6112a94118e80a73de2bfcdeded6805b9)
+
+2026-10-14: Reset custom headers and API key choice when a
+model preset is chosen
+
+Choosing a Preset in the manual AI model editor replaced the
+model, URL, API, limits, and features but kept the custom
+headers and the API key choice made for the old endpoint.
+Switching a local gateway model (an Authorization header and
+the OpenAI API key) to a Claude preset would send the
+gateway token and the OpenAI key to api.anthropic.com after
+Save.
+
+Both catalog and provider presets now clear the custom
+headers, select Automatic for the API key, and clear the
+model's own key field, which is what a new model made from
+the preset gets. Cancel still discards everything.
+
+QA finding F-092.
+
+(cherry picked from commit
+a99274add63cc85693f0f6971821a5da9b017a5a) (cherry picked
+from commit 932fb32eff4080876f36b8c4845de1522a8074c1)
+
+2026-10-14: Give same-named files in one SSH upload batch
+distinct remote names
+
+Uploading several files over SSH integration (Upload and
+Paste Paths) starts every upload at once. Each one chose its
+remote name by checking what existed on the remote host, so
+two files named x.txt both found x.txt free before either
+was moved into place. The second overwrote the first, both
+transfers reported success, and the same path was pasted
+twice.
+
+The conductor now keeps the names claimed by uploads in
+progress. A name is skipped if another upload has claimed
+it, re-checked after the existence query returns, and
+queried again if another upload placed a file while the
+query was in flight. The claim is released once the file is
+in place or the upload fails.
+
+QA finding F-102.
+
+(cherry picked from commit
+d81fddb8728a286511e2f742db3d63b7abef9001) (cherry picked
+from commit b76666bd7a23289fcca7b6d78213f219453bfd95)
+
+2026-10-14: Load triggers that have no regex instead of
+crashing
+
+A trigger dictionary without a "regex" key (or with a
+non-string one) made +[Trigger triggerFromUntrustedDict:]
+pass nil to -setRegex:, and NSRegularExpression threw on the
+nil pattern. Every session creation loads the profile's
+triggers this way, so a hand-written event trigger in a
+Dynamic Profile, which has no use for a regex, crashed
+iTerm2 before it could open a window.
+
+Treat a missing or non-string regex as "", which is how
+Settings stores an empty regex, so these triggers load and
+behave the same as ones saved from the UI.
+
+QA finding F-203.
+
+(cherry picked from commit
+feefa752604822f6a55cf1a9fe9cba9ef4181b0e) (cherry picked
+from commit bd929c28ccbbf5f24eb9060c683cac572bc4ce40)
+
+2026-10-14: Keep session.path on the remote directory when
+the local cwd is polled
+
+In a plain ssh session (no ssh integration) whose remote
+shell reports its directory with OSC 7, session.path
+switched to the local ssh process's working directory after
+running a command, so Upload and Paste Path sent files to
+the wrong remote directory.
+
+The directory tracker's lastLocalDirectory didSet wrote its
+value into the path variable. A remote directory push leaves
+lastLocalDirectory unpushed, so when the working directory
+poller (triggered by a key press and line feed) returned the
+local cwd, it was stored as the last local directory and
+clobbered the path. Whether the next OSC 7 landed before or
+after the poll result made it intermittent. The path write
+was added when directory tracking was extracted from
+PTYSession; the original setter never touched the path
+variable. Remove it so only setLastDirectory updates the
+path.
+
+QA finding F-103.
+
+(cherry picked from commit
+ea39eac26adf75341bdcd697bc1c69e31bbd3fca)
+
+2026-10-14: Keep focus and floats right for a filtered tmux
+pane on layout change
+
+With Find > Filter open on a tmux integration pane, the tab
+shows a synthetic stand-in session in place of the tmux
+session. The stand-in is not a tmux client, so its tmux pane
+id reads as 0, the same as tmux pane %0. On a layout change
+from tmux:
+
+- The active pane was computed from the stand-in's own id,
+so focus
+  moved to %0 instead of staying on the filtered pane.
+- The loop that decides which leftover sessions become
+floats used the
+  stand-in's id, so a filtered pane that tmux made a float
+  was terminated (taking its live session with it) and a
+  duplicate float was created, and the stand-in could be
+  taken for %0 becoming a float.
+- Float reconciliation and placement matched sessions by
+their own id,
+  so a filtered float was not found, was marked hidden, and
+  was never placed.
+
+Add +tmuxLayoutPaneForSession:, which maps a stand-in to its
+live session's pane and a non-tmux session to -1, and use it
+for the active pane, the leftover-float decision, float
+reconciliation, and float placement. The earlier part of
+this bug, where the stand-in took %0's slot, was fixed by
+keying reused views the same way.
+
+QA finding F-097.
+
+(cherry picked from commit
+d1a49cbff21a3fcec14a9a6f342149ab58aa3754)
+
+2026-10-14: Keep the Cockpit composer's chips and caret when
+the outline changes
+
+While a selected session changed status, the Cockpit moved
+its row to another status group by removing and reinserting
+it. That cleared and then restored the row's selection, and
+each change rewrote the composer from the selection, so the
+caret jumped to the end and text typed mid-line landed at
+the end. Clicking a row also replaced every chip with chips
+for the selected rows, silently dropping a chip for a
+session whose row was collapsed or filtered out and
+retargeting the command.  Sending did the same when it put
+the chips back.
+
+Selection changes made while the outline refreshes no longer
+touch the composer. After a refresh, the only chips removed
+are ones whose session, tab, or window has gone away. When
+the user changes the selection, the selected rows replace
+only chips the user could see and did not select (plus what
+a container row they just deselected had contributed). Chips
+for hidden rows stay, and the clear after a send keeps them
+too.
+
+QA finding F-241.
+
+(cherry picked from commit
+965774c55e5f07594236a0e9c70155ab735c7ac9)
+
+2026-10-14: Keep AI chat links and watches across a quit
+that restores windows
+
+An ordinary quit closes every window, so each session
+terminates and posts iTermSessionWillTerminate. The AI chat
+treated that like a real close: ChatViewController unlinked
+the chat from its terminal session, which also cancelled
+every watch and timer the chat had registered and posted
+This chat is no longer linked to a terminal session., and
+the orchestration dispatcher dropped watches on the session
+and reported them to the agent.  With window restoration on,
+the session comes back at the next launch with the same guid
+and stableID, so the link and its watches were lost for no
+reason.
+
+Both observers now leave everything in place when the
+session is going away for a quit that window restoration
+will undo: the app is quitting, windows will be restored at
+the next launch (Option-Quit discards saved state, so it
+still unlinks), and the session was not a tmux client (tmux
+tabs are not restored). Because -[PTYSession terminate]
+clears tmuxMode before posting, it now passes whether the
+session was a tmux client in the notification's userInfo.
+Watches whose session is not restored are still dropped by
+the launch-time reconcile.
+
+QA finding F-088.
+
+(cherry picked from commit
+be21b798c0aa7b2db4755450e8aa25bd004bf5f3)
+
+2026-10-14: Stop the companion wizard from asking for a key
+the AI model won't use
+
+The full (AI) setup path always showed an API key field and
+Provider popup, stored the pasted key under the chosen
+provider, and then verified that the default model could
+authenticate. With a manually chosen model that has no key,
+the provider choice had no effect, so verification failed
+with The AI and companion plugins did not load after
+installation. even though both plugins loaded, and the whole
+setup was rolled back.
+
+The screen now decides how to handle AI credentials with a
+pure, tested function. If the default model can already
+authorize, the key controls are hidden and Install neither
+requires nor writes a key or vendor. If a manual model can't
+authorize, the key controls are hidden, a note points to
+Settings > General > AI, and setup finishes without AI
+working yet. Only a recommended model with no usable key
+still shows the key field and Provider popup. Verification
+now tells a plugin that did not load apart from a model that
+can't use the entered key, and Install rebuilds the screen
+if AI settings changed while it was open.
+
+QA finding F-101.
+
+(cherry picked from commit
+127fffefd2fe44fc45a97a987193f6c9d8dd4e2f)
+
+2026-10-14: Send only the selected text from the Cockpit
+composer
+
+With text selected in the Cockpit composer, Shift-Return,
+Opt-Return and Opt-Shift-Return sent the whole field instead
+of the selection and then cleared it. The composer reported
+each selection separately, but the Cockpit ignored the
+reported text and always sent the field's typed text. With
+two selections the second report found only the target chips
+left and showed an Add a command after the @mention error
+after the first send had already gone out.
+
+In the Cockpit the composer now reports all selections as
+one command, one line per selection in document order. The
+Cockpit recognizes a selection send, sends just the selected
+text (minus any chips) to the chips anywhere in the field,
+and leaves the field as it was, the same as the regular
+composer.
+
+QA finding F-239.
+
+(cherry picked from commit
+7debbdf916be6ea05382fdb9c3697ee1fa20e47d)
+
+2026-10-14: Revoke password manager authentication on screen
+lock without its window
+
+In the Once per Launch and after Screen Locks mode, a screen
+lock only revoked the cached password manager authentication
+through a class observer that the password manager window
+registered in awakeFromNib. The browser password manager can
+be unlocked by saving a basic-auth credential without that
+window ever loading, so no observer existed and a lock left
+it unlocked: remembered basic-auth credentials were filled
+in silently and the browser password manager opened without
+authentication.
+
+The data source provider now observes the screen lock
+itself, so the cached authentication is revoked however it
+was obtained. The window keeps its own observer, which
+closes an open window.
+
+QA finding F-098.
+
+(cherry picked from commit
+a41515c79c87c95f0ff2e1ecf8395be710bf3f51)
+
+2026-10-14: Pass the shell's CLAUDE_CONFIG_DIR to the AI
+Usage command
+
+The AI Usage workgroup toolbar item ran `claude -p /usage`
+without CLAUDE_CONFIG_DIR. Users whose Claude Code login
+lives in a custom CLAUDE_CONFIG_DIR exported from their
+shell startup files got not signed in or another account's
+usage.
+
+AdapterShellEnvironment's single cached login-shell run now
+reports CLAUDE_CONFIG_DIR along with PATH, using one /bin/sh
+printf command that exits 0 whether or not the variable is
+set. Password manager adapters still get only HOME and PATH;
+the AI Usage item reads both values through a new
+shellValues(_:) API, so the login shell is not run any more
+often.
+
+The item sets CLAUDE_CONFIG_DIR from, in order: the value
+the shell exports (startup files run after the inherited
+environment, so this is what claude in a terminal uses), the
+value in iTerm2's own environment, and, only when the shell
+could not be read, the directory recorded when the Claude
+Code integration was installed
+(NoSyncClaudeCodeConfigDirPath).
+
+QA finding F-244.
+
+(cherry picked from commit
+62ee85941b1c888737cd35824c43b1e86f557c1d)
+
+2026-10-14: Treat a non-string bell sound in a profile as
+the system alert sound
+
+A dynamic or hand-edited profile whose Bell Sound was not a
+string (for example "Bell Sound": 5) crashed the app the
+first time the bell rang.  PTYSession read the value with
+stringForKey:inProfile:, which returns the stored object
+unchecked, so an NSNumber reached a Swift String parameter
+of iTermBellSoundPlayer and the bridge threw. Opening the
+profile in Settings would also have crashed calling -length
+on it.
+
+Add iTermBellSound helpers that return the value only when
+it is a string (logging and returning nil otherwise, which
+means the system alert sound) and use them for the bell and
+in Settings. Settings now selects the bell sound itself so a
+malformed value shows the system alert sound rather than an
+empty popup.
+
+QA finding F-106.
+
+(cherry picked from commit
+b1c5bad030aa241ba55620c40593f6876d304448)
+
+2026-10-14: Keep AI chat timers and watches from reaching
+the LLM under the AI lockout
+
+A timer registered by an AI chat kept working after an
+administrator disabled generative AI with the
+GenerativeAIAllowed advanced setting. At the next launch the
+persisted timer was re-armed, fired, and its timerFired
+status update started an agent turn that sent the chat
+history to the configured LLM endpoint, while every other AI
+entry point was blocked.  Watches registered by a chat had
+the same problem.
+
+The orchestration dispatcher now checks the lockout wherever
+a timer or watch would wake the agent. A blocked timer,
+tab-status fire, or screen-poll result leaves its watcher
+persisted but dormant, so turning AI back on does not lose
+it; it is re-armed at the next launch. Screen polling and
+escalation checks, which ask an LLM to judge the screen, do
+not run under the lockout, and launch-time timer re-arming
+is skipped.  As a backstop, iTermAIClient.request now
+refuses every remote LLM request while generative AI is
+disallowed.
+
+QA finding F-089.
+
+(cherry picked from commit
+5f5d78d13f0ff3e39e3907b087aab26ccc76dcfb)
+
+2026-10-14: Close only the detached tmux windows that asked
+when answering Always
+
+Answering Always to the Close tmux windows after detaching?
+announcement closed every session in the app, including the
+gateway (a plain shell again after the detach) and unrelated
+sessions. Every session's nagging controller observes the
+notification that broadcasts the answer, and each one closed
+its session unconditionally.
+
+Only a leftover tmux window asks the question, from
+tmuxDidDisconnect.  The nagging controller now remembers
+that it asked, and only controllers that asked act on the
+answer. Restarting the session forgets it.
+
+QA finding F-252.
+
+(cherry picked from commit
+02abd97be1f45290a8b757e367587e5469eb2a51)
+
+2026-10-14: Fix crashes acting on tmux windows left open
+after detaching
+
+After a tmux -CC detach that leaves the windows open, the
+controller's gateway is nil. Several actions on those
+windows built command lists from the gateway as array
+literals or with addObject:, which threw
+NSInvalidArgumentException on the nil entries: Maximize
+Active Pane (toggleZoomForPane:), swapping panes, arranging
+panes (select-layout), splitting a pane, resizing a floating
+pane, and creating a window from the dashboard.
+
+Return early with a DLog when the controller is detached or
+has no gateway, as setCurrentWindow: already does. A split
+with a completion block reports failure (-1) so the window
+undoes its pending-split state and notifies callers.
+
+QA finding F-096.
+
+(cherry picked from commit
+ea06c6c830d4f64be0ea46c300d555ff6e5a907d)
+
+2026-10-14: Fix offline shell integration install hanging
+for zsh
+
+The Internet-Free install discovers a zsh user's dotfile
+directory by typing an echo after learning the shell. It
+typed that echo before registering the expectation that
+waits for its output. Expectations reach the trigger
+evaluator only on the next sync, so a fast shell's output
+was checked before the expectation existed and the installer
+waited forever, including after Send Again. Type the echo
+only once the expectation is in place, as every other step
+does, and fall back to $HOME when the reported directory is
+empty.
+
+Skip on the discovery step advanced with the shell
+defaulting to bash and no dotfile directory, so later steps
+typed paths like (null)/.iterm2_shell_integration.bash.
+Discovery can no longer be skipped.
+
+QA finding F-236.
+
+(cherry picked from commit
+aabb1b162c9fc0ad0c2ee5709137ac49c6d953f0)
+
+2026-10-14: Keep a cleared screen in place when restoring a
+session
+
+A restored session is created at the wrong size and then fit
+to its window. When the screen had been cleared (ED 2) with
+the cursor moved down, that resize round trip trimmed the
+blank rows below the cursor and pulled the pre-clear lines
+from scrollback onto the screen. Restoring the saved cursor
+position afterwards then left the cursor pointing into the
+old text, above the new content.
+
+Restoration now records where the cursor was right after
+restoring. When the window has been fit, if only a resize
+slide moved the content (the cursor's absolute line is
+unchanged and the window is not taller than the saved grid),
+the screen is scrolled back up by the slide so the content
+returns to the rows it had when the state was saved, and
+then the cursor is restored as before.
+
+QA finding F-224.
+
+(cherry picked from commit
+8dc7345326f237d031601d924ef751cdd2eedd66)
+
+2026-10-14: Keep each color of a mid-word SGR split on the
+legacy renderer
+
+On a bidi line, runs that differ only in foreground color
+are appended to the same attributed-string builder so
+CoreText shapes the word as a whole. When the builder was
+still eligible for the fast path (zippy text drawing, or
+ASCII text), changing its attributes after characters had
+been appended snapshotted them into a cheap single-attribute
+string that shared the builder's character buffer.
+Characters appended after the color change landed in that
+same buffer, so the final string gave every character the
+first run's attributes: with the GPU renderer off, printf '
+\e[31m\e[32m' drew all of  in red.
+
+Changing attributes on a non-empty builder now disables the
+fast path, so the builder produces a real attributed string
+with per-range attributes and the CoreGraphics renderer
+fills each span with its own color while the word stays
+joined.
+
+QA finding F-077.
+
+(cherry picked from commit
+dd2424dfcb3e9e67eca696e750c249e789d7eea6)
+
+2026-10-14: Redact AI custom header values and keys from
+debug and wire logs
+
+A debug log of one AI chat send contained every per-model
+custom header value in clear (Authorization,
+Proxy-Authorization, X-Auth-Token, ...), because
+WebRequest.debugDescription and several JSFetch DLogs
+printed the request headers, and callAsync logged the
+JSON-encoded request. The raw AI wire log, which is meant to
+be safe to attach, fingerprinted only four header names and
+wrote other custom header values verbatim.  URLSession
+errors, RLogged always, also printed the failing URL, which
+carries the API key for Gemini.
+
+The wire log sanitizer now fingerprints every header value
+except a short allowlist of harmless headers (Content-Type,
+Accept, anthropic-version, ...), keeps an auth scheme prefix
+only for Authorization and Proxy-Authorization, and scrubs
+key-like URL query parameters. The debug log uses the same
+sanitizer for request descriptions, URLs, error text, and
+response and JS console output, and the encoded request
+arguments are logged as a count only. Nothing sent on the
+wire changes.
+
+QA finding F-085 (also F-016).
+
+(cherry picked from commit
+6ea2a4b65f8e131110e98b3b5527eafa28e722de)
+
+2026-10-14: Cancel an AI chat turn when its message is
+deleted
+
+Deleting a user message whose turn was still running did not
+cancel the turn. ChatService dropped removed messages only
+from the queue's undispatched tail, so the reply arrived
+later and was appended and persisted after the cut,
+answering a message that no longer existed.  ChatService now
+cancels the turn when the truncation removes its head
+message, and discards that turn's streamed chunks and reply.
+
+Cancelling exposed a second leak. AITermController is reused
+for the next turn, and cancelling does not always stop the
+streamed transfer, so a cancelled request's late words and
+final response were parsed as the next request's reply:
+after a delete (or Stop) the next message "answered" with
+the rest of the old reply. A cancel during the deferred send
+also still sent the request. A request generation, bumped on
+cancel, now drops a cancelled request's deferred send,
+streamed words, response, and tool-call follow-up.
+Cancelling while an attachment uploads, previously a fatal
+error, now fails the upload quietly.
+
+QA finding F-086, part A.
+
+(cherry picked from commit
+d900c8ad25a0b7d277e1dff5e3e18e72cb800657)
+
+2026-10-14: Keep observing variables an async evaluation
+reads late
+
+Session Status rows stopped following a session rename. The
+row's name label evaluates
+\(iterm2.private.session_name(session: id)), and that
+built-in reads its default name and profileName arguments
+from the scope only after its explicit argument has been
+evaluated. For the asynchronous evaluation, that happens
+after iTermGenericEvaluator had already snapshotted its
+dependencies, so it observed only "id". The synchronous
+evaluation's dependencies, which did include "name", were
+replaced and freed when the autorelease pool drained, so
+nothing observed the rename.
+
+This was latent before, but every table reload rebuilt the
+label's evaluator, which hid it. Reusing the evaluator when
+the string and scope are unchanged exposed it.
+
+Install the dependencies again when an evaluation completes,
+guarded by a generation counter so only the newest
+evaluation installs them and skipped after invalidate. While
+an asynchronous evaluation is in flight, merge what it has
+read so far into the existing dependencies instead of
+replacing them, so a change in that window is not lost.
+
+QA finding F-071.
+
+(cherry picked from commit
+4abc7207f570a78647af69d0568d0144039463b7)
+
+2026-10-14: Rebuild it2 to pick up session list --format and
+new status help
+
+The bundled it2 is the checked-in prebuilt it2cli/bin/it2,
+last rebuilt in c77dbd257. It predated 9e65c39eb (it2
+session list --format) and 49936d3a5 (set-status help
+listing done and error), so "it2 session list --format ..."
+failed with "Unknown option --format".
+
+Rebuilt from a clean scratch directory with the sandboxed
+"make paranoid-it2cli UNIVERSAL=1": universal arm64 and
+x86_64, minimum macOS 13.0, Developer ID signed with the
+hardened runtime, linking only system libraries.
+
+The paranoid-it2cli target now limits PATH to system
+directories. The Makefile's own PATH puts Homebrew first, so
+with no cached package checkouts SwiftPM tried to clone with
+Homebrew's git, which the sandbox blocks.
+
+QA finding F-070.
+
+(cherry picked from commit
+7aa50e08ace6c77aeb6e42a7208ea139ba1d3c60)
+
+2026-10-14: Never put a native session into a tmux tab as a
+floating pane
+
+A session iTerm2 runs itself (a shell from an external open
+with the Floating Pane open style, or a web page from Open
+URL in Floating Pane) could be installed as a float in a
+tmux integration tab. The launcher and Open URL paths only
+checked canCreateFloatingPane, which allows tmux tabs whose
+server supports floats, and when floats were not allowed
+(older tmux, instant replay) the launcher's floating pane
+case fell through into the split case, which installed the
+float anyway or made a native split. On the next
+%layout-change the native session, whose tmux pane id reads
+as 0, was laid out in place of tmux pane %0, hiding %0 and
+taking its input.
+
+Native floats now require canInstallNativeFloatingPane,
+which also refuses tmux tabs; when it refuses, the launcher
+opens a new tab and reports the tab object type. The
+create_floating_pane function no longer falls back to a
+native float in a tmux tab. As a safeguard, a tmux layout
+change only reuses sessions that are tmux panes, keying a
+filtered pane's synthetic session by its live session's
+pane.
+
+QA findings F-046 and F-047 (and F-008).
+
+(cherry picked from commit
+35a475674d153933afb18e19b5ba082045ec76b4)
+
+2026-10-14: Make Opt-Return and Opt-Shift-Return send in the
+Cockpit composer
+
+In the Cockpit, Opt-Shift-Return (send each) and Opt-Return
+(enqueue each) erased the typed command and the session chip
+and sent nothing.  Those actions extract each command as a
+plain string and delete it from the composer before calling
+the delegate. The Cockpit ignores that string and reads the
+composer's attributed contents to find its target chips and
+the command, so by then there was nothing left to send.
+
+The Cockpit composer holds a single command plus target
+chips and has no command queue, so when rich text (chips) is
+enabled, send each and enqueue each now act like Send
+(Shift-Return) and leave the contents in place for the
+delegate to read. Other composers are unaffected.
+
+QA finding F-001.
+
+(cherry picked from commit
+3f627dfe06f48f29b138576f62b590cfbb438f75)
+
+2026-10-14: Do not treat acknowledging a status as a change
+for Notify on Status Change
+
+Typing in a session whose status was done or error turns it
+idle. PTYSession wraps that in acknowledge{} so it posts no
+notification, but Notify on Status Change observes
+SessionStatusController directly and never saw the flag, so
+it popped a Session status changed alert and disarmed the
+watch.
+
+SessionStatusController now tracks which sessions are
+acknowledging, and TabStatusController.acknowledge marks the
+session there too. The notify controller absorbs a debounce
+burst whose status-text changes were all acknowledgments: no
+alert, still armed, and the next real change is measured
+from the acknowledged value. Changes to other fields in the
+same burst do not count as news.
+
+The alert also said the status changed from none. The
+controller is created lazily, and its window-scope baseline
+was filled only by changes it observed, so a status set
+before it existed had no baseline. It now seeds the baseline
+from existing statuses, which also stops a restated status
+from alerting.
+
+QA finding F-002.
+
+(cherry picked from commit
+8a3ae030dd44dabd61ce365e487c07a53c1038a3)
+
+2026-10-14: Run the AI Usage command with the user's shell
+PATH
+
+The AI Usage workgroup toolbar item ran its command with
+iTerm2's own environment. When iTerm2 is launched from the
+Dock, PATH is only /usr/bin:/bin:/usr/sbin:/sbin, so the
+bundled script's `command -v claude` failed for installs in
+~/.local/bin or /opt/homebrew/bin and the item reported that
+claude was not found.
+
+Before each run the item now asynchronously gets the login
+shell's PATH from AdapterShellEnvironment, the cached lookup
+the password manager adapters already use, and runs the
+command with iTerm2's environment with PATH replaced.
+~/.local/bin, where Claude Code's native installer puts
+claude, is appended when missing because the lookup's
+fallback lacks it.  The item never calls prefetch(), so it
+does not run the login shell periodically. The environment
+provider and command runner are injectable so tests can
+check what reaches the runner.
+
+QA finding F-011.
+
+(cherry picked from commit
+b85e309c05207ea90f78a131801ab93d5398b05b)
+
+2026-10-14: Defer AI chat watcher reconciliation until
+session restoration finishes
+
+At launch, applicationDidFinishLaunching re-arms persisted
+AI chat timers, which builds an orchestration dispatcher for
+each chat with a timer. The dispatcher's init reconciled its
+persisted watchers immediately, but window restoration had
+not run yet, so every watched session looked gone. Each
+watch was dropped, saved, and reported to the agent as a
+watcherDropped event, and each event started a paid agent
+turn.
+
+Add a one-shot SessionRestorationGate. A dispatcher now
+reconciles the watchers persisted at its creation only once
+the gate opens, and ignores tab-status changes for sessions
+it has not seeded yet, so restoration-time status updates
+are not mistaken for transitions. The app delegate opens the
+gate once restoreWindowsWithCompletion: has finished (which
+includes native full screen windows), the post-restoration
+steps (buried sessions, workgroup reconstruction, orphan
+adoption) have run, and no window is still decoding its
+restorable state. Without the restorable state controller
+the gate opens immediately.
+
+QA finding F-010.
+
+(cherry picked from commit
+a8aa8c061c32ef5d0603c05450070121d0ea8a13)
+
+2026-10-14: Truncate hidden rows and dequeue removed
+messages on AI chat delete
+
+Deleting or editing an AI chat message truncates the log
+from that message onward, but two things leaked past the
+truncation. The view names only the rows it displays, so
+hidden tool results and resolved tool requests after the
+chosen message stayed in the store and were sent to the LLM
+in the next turn's history. And ChatService ignored
+messagesRemoved, so a message typed while a turn was running
+and then deleted stayed in the pending queue and was still
+sent when the turn ended.
+
+ChatListModel.truncate now removes every stored row from the
+earliest requested ID to the end, except chat-state rows
+(permissions, vector store, rename) that the agent reads
+back from history. The broker fans out every removed ID, and
+ChatService drops them from the queue's undispatched tail,
+leaving the in-flight head for finishTurn to pop.
+
+QA finding F-009.
+
+(cherry picked from commit
+f556062a9284d0edd8acccbaeba3dd8cb0b590e8)
+
+2026-10-14: Keep a manual model's auth on its economy
+variant
+
+AIMetadata.economyModel(for:in:) copied only the url and api
+from the configured model onto the cheaper catalog model
+used for command safety checks and screen-watch polling. A
+manual model at a gateway that authenticates with custom
+headers, or that chose a specific API key, lost that auth on
+the economy request: the gateway answered 401, the safety
+check failed closed so every command needed manual approval,
+and polling failed too.
+
+Copy the custom headers, credential choice, manual
+configuration ID and vendor (which picks the key for
+automatic credentials) as well, so the economy request goes
+to the same endpoint with the same key and headers as the
+configured model.
+
+QA finding F-006.
+
+(cherry picked from commit
+93725756557bd662fde0f6b056f0359e92954963)
+
+2026-10-14: Re-take the Prevent Sleep assertion after
+Restart Session and Undo Close
+
+Restart Session (on a live shell or after the shell exited)
+and Undo Close brought a Prevent Sleep session back without
+re-taking the idle sleep assertion until some unrelated
+event recomputed.
+
+Restart Session cleared the session's exited flag in
+replaceTerminatedShellWithNewInstance but nothing told the
+sleep prevention coordinator, which had already dropped the
+session when the old process died. PTYSession now posts
+PTYSessionExitedDidChange whenever its exited state flips,
+and the coordinator recomputes on it.  This also replaces
+the explicit recompute in brokenPipe.
+
+Undo Close: -revive posts PTYSessionRevived before every
+caller puts the session back in a window, so the synchronous
+recompute could not see it. The coordinator now defers that
+recompute to the next main-queue turn, coalesced, which is
+after all revive callers have re-added the session.
+
+The coordinator takes an injectable environment (session
+source, power gate, scheduler, assertion) and notification
+center so these paths are tested deterministically.
+
+QA findings F-003, F-200, F-204.
+
+(cherry picked from commit
+81dafd414aaaf66ff5ab015a87f94b43f6fcba8c)
+
+2026-10-14: Wire the Prevent Sleep checkbox to
+settingChanged:
+
+The Prevent the system from sleeping while a session has
+this setting on. checkbox in Settings > Profiles > Session
+(and Edit Session) had an outlet but no action connection in
+PreferencePanel.xib. defineControl does not set a target or
+action, so clicking the box toggled it visually without
+writing Prevent Sleep to the profile or taking/releasing the
+power assertion.
+
+Connect the button's action to settingChanged: on the
+Profiles > Session view controller, like its neighbors. Add
+a test that loads the preferences panel and asserts every
+registered non-text-field control sends settingChanged: to a
+preferences view controller.
+
+QA finding F-210.
+
+(cherry picked from commit
+1e5fa97524c74a43b39ffb6ac070b9bd9ada95e9)
+
+2026-10-14: Fix crash when a tmux window becomes key after
+detaching
+
+After a tmux -CC detach that leaves the windows open, making
+one of them key called -[TmuxController setCurrentWindow:].
+Since 94a40e856 that method builds an array literal of
+command dictionaries from gateway_, which is nil after
+detach, so the literal threw NSInvalidArgumentException.
+Before that change it sent a single command to nil, which
+was a no-op.
+
+Return early when the controller is detached or has no
+gateway.
+
+QA finding F-211.
+
+(cherry picked from commit
+817cb9315602e6a5680459d69c71afe351b9b4f2)
+
+2026-10-14: Fix crash when a Set Profile Setting trigger
+fires
+
+The Set Profile Setting trigger scheduled its work with an
+ordinary side effect. PTYSession handles it by calling
+setSessionSpecificProfileValues:, which reloads the profile
+and joins threads. Joining from inside a non-paused side
+effect trips the assertion in -[VT100Screen
+performBlockWithJoinedThreads:], so any such trigger crashed
+iTerm2 as soon as it matched.
+
+Use a paused side effect and unpause after the delegate
+call, the same pattern the rename trigger and other
+profile-changing side effects use.
+
+Add a regression test that fires a real
+iTermSetProfileBooleanTrigger through the side-effect path
+and checks that joining threads is legal when the delegate
+is called.
+
+QA finding F-201.
+
+(cherry picked from commit
+699619fd36be4ea0c2ec265bde5e76f75eb1c870)
+
+2026-10-14: 3.7.5
+
 2026-10-12: Bump the Python API module version to 2.30
 
 2026-10-12: Join windowed and connected selection lines in
