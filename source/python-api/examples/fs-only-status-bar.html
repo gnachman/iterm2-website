@@ -2,18 +2,17 @@
 <!DOCTYPE html>
 
 
-<html>
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Show Status Bar Only in Full Screen Windows &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=6eb5f756"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -81,7 +80,7 @@
 	  <div class="body" role="main">
 	    
   <section id="show-status-bar-only-in-full-screen-windows">
-<span id="fsonlystatusbar-example"></span><h1>Show Status Bar Only in Full Screen Windows<a class="headerlink" href="#show-status-bar-only-in-full-screen-windows" title="Permalink to this headline">¶</a></h1>
+<span id="fsonlystatusbar-example"></span><h1>Show Status Bar Only in Full Screen Windows<a class="headerlink" href="#show-status-bar-only-in-full-screen-windows" title="Link to this heading">¶</a></h1>
 <p>This script automatically shows or hides the status bar depending on the window’s style. Full screen windows get a status bar, and regular windows do not. It demonstrates a few concepts:</p>
 <blockquote>
 <div><ul class="simple">
@@ -93,15 +92,15 @@
 </div></blockquote>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.7</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">iterm2</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">set_show_status_bar</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">show</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show or hide the status bar for one window by updating the profiles</span>
-<span class="sd">        of all sessions in that window.&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">set_show_status_bar</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">show</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Show or hide the status bar for one window by updating the profiles</span>
+<span class="sd">        of all sessions in that window."""</span>
         <span class="n">change</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">LocalWriteOnlyProfile</span><span class="p">()</span>
         <span class="n">change</span><span class="o">.</span><span class="n">set_status_bar_enabled</span><span class="p">(</span><span class="n">show</span><span class="p">)</span>
         <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
@@ -110,28 +109,28 @@
                 <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">async_set_profile_properties</span><span class="p">(</span><span class="n">change</span><span class="p">))</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">update</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update whether the status bar is shown for all sessions in all windows.&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">"""Update whether the status bar is shown for all sessions in all windows."""</span>
         <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">terminal_windows</span><span class="p">:</span>
-            <span class="n">style</span> <span class="o">=</span> <span class="k">await</span> <span class="n">w</span><span class="o">.</span><span class="n">async_get_variable</span><span class="p">(</span><span class="s2">&quot;style&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;non-native full screen&quot;</span> <span class="ow">or</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;native full screen&quot;</span><span class="p">:</span>
+            <span class="n">style</span> <span class="o">=</span> <span class="k">await</span> <span class="n">w</span><span class="o">.</span><span class="n">async_get_variable</span><span class="p">(</span><span class="s2">"style"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">"non-native full screen"</span> <span class="ow">or</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">"native full screen"</span><span class="p">:</span>
                 <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_show_status_bar</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_show_status_bar</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">tasks</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">watch_for_style_changes</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A task that calls `update` when a window&#39;s style changes.&quot;&quot;&quot;</span>
-        <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableScopes</span><span class="o">.</span><span class="n">WINDOW</span><span class="p">,</span> <span class="s2">&quot;style&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">watch_for_style_changes</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">"""A task that calls `update` when a window's style changes."""</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableScopes</span><span class="o">.</span><span class="n">WINDOW</span><span class="p">,</span> <span class="s2">"style"</span><span class="p">,</span> <span class="s2">"all"</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">theme</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
                 <span class="k">await</span> <span class="n">update</span><span class="p">()</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">watch_for_layout_changes</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A task that calls `update` when the layout changes (new window</span>
-<span class="sd">        created, session moves from one window to another, etc.)&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">watch_for_layout_changes</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">"""A task that calls `update` when the layout changes (new window</span>
+<span class="sd">        created, session moves from one window to another, etc.)"""</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">LayoutChangeMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
@@ -178,11 +177,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018, George Nachman.
+      &#169;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/examples/fs-only-status-bar.rst.txt"

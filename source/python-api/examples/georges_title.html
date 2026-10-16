@@ -2,18 +2,17 @@
 <!DOCTYPE html>
 
 
-<html>
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>George’s Title Algorithm &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=6eb5f756"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -81,7 +80,7 @@
 	  <div class="body" role="main">
 	    
   <section id="george-s-title-algorithm">
-<span id="georges-title-example"></span><h1>George’s Title Algorithm<a class="headerlink" href="#george-s-title-algorithm" title="Permalink to this headline">¶</a></h1>
+<span id="georges-title-example"></span><h1>George’s Title Algorithm<a class="headerlink" href="#george-s-title-algorithm" title="Link to this heading">¶</a></h1>
 <p>This code combines user-defined variables from Shell Integration with a custom session title function. It demonstrates <a class="reference internal" href="../registration.html#iterm2.registration.TitleProviderRPC" title="iterm2.registration.TitleProviderRPC"><code class="xref py py-func docutils literal notranslate"><span class="pre">iterm2.registration.TitleProviderRPC()</span></code></a>. The end result is a snazzy title that includes your git branch:</p>
 <a class="reference internal image-reference" href="../_images/georgesalgo.png"><img alt="../_images/georgesalgo.png" src="../_images/georgesalgo.png" style="width: 375px; height: 32px;" />
 </a>
@@ -90,81 +89,81 @@
 </div>
 <p>First, you need to install Shell Integration. Add this to your .bashrc:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>iterm2_print_user_vars<span class="o">()</span><span class="w"> </span><span class="o">{</span>
-<span class="w">  </span>iterm2_set_user_var<span class="w"> </span>gitBranch<span class="w"> </span><span class="k">$((</span>git<span class="w"> </span>branch<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span><span class="o">/</span>dev/null<span class="o">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span>grep<span class="w"> </span><span class="se">\*</span><span class="w"> </span><span class="o">|</span><span class="w"> </span>cut<span class="w"> </span><span class="o">-</span>c3-<span class="o">)</span>
-<span class="w">  </span>iterm2_set_user_var<span class="w"> </span>home<span class="w"> </span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">&quot;</span><span class="k">)</span>
+<span class="w">  </span>iterm2_set_user_var<span class="w"> </span>gitBranch<span class="w"> </span><span class="k">$((</span><span class="nv">git</span><span class="w"> </span><span class="nv">branch</span><span class="w"> </span><span class="m">2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="nv">dev</span><span class="o">/</span><span class="nv">null</span><span class="o">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nv">grep</span><span class="w"> </span><span class="se">\*</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nv">cut</span><span class="w"> </span><span class="o">-</span><span class="nv">c3</span><span class="o">-)</span>
+<span class="w">  </span><span class="nv">iterm2_set_user_var</span><span class="w"> </span><span class="nv">home</span><span class="w"> </span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">"</span><span class="k">)</span>
 <span class="o">}</span>
 </pre></div>
 </div>
 <p>Next, install this script in <cite>~/Library/Application Support/iTerm2/Scripts/AutoLaunch</cite>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">iterm2</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">iterm2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
-<span class="k">def</span> <span class="nf">hostname_dash_f</span><span class="p">():</span>
-    <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s2">&quot;hostname&quot;</span><span class="p">,</span> <span class="s2">&quot;-f&quot;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hostname_dash_f</span><span class="p">():</span>
+    <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s2">"hostname"</span><span class="p">,</span> <span class="s2">"-f"</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
     <span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
     <span class="n">exit_code</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
 
-<span class="k">def</span> <span class="nf">shortened_hostname</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">shortened_hostname</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">h</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">h</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
 
-<span class="k">def</span> <span class="nf">make_title</span><span class="p">(</span><span class="n">auto_name</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_title</span><span class="p">(</span><span class="n">auto_name</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">auto_name</span> <span class="o">!=</span> <span class="n">profile_name</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">auto_name</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">""</span>
 
-<span class="k">def</span> <span class="nf">make_hostname</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">localhost</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_hostname</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">localhost</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">hostname</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">""</span>
     <span class="n">short_hostname</span> <span class="o">=</span> <span class="n">shortened_hostname</span><span class="p">(</span><span class="n">hostname</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">short_hostname</span> <span class="ow">and</span> <span class="n">short_hostname</span> <span class="o">!=</span> <span class="n">localhost</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;➥ &quot;</span> <span class="o">+</span> <span class="n">short_hostname</span>
-    <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">"➥ "</span> <span class="o">+</span> <span class="n">short_hostname</span>
+    <span class="k">return</span> <span class="s2">""</span>
 
-<span class="k">def</span> <span class="nf">make_pwd</span><span class="p">(</span><span class="n">user_home</span><span class="p">,</span> <span class="n">localhome</span><span class="p">,</span> <span class="n">pwd</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_pwd</span><span class="p">(</span><span class="n">user_home</span><span class="p">,</span> <span class="n">localhome</span><span class="p">,</span> <span class="n">pwd</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">pwd</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">user_home</span><span class="p">:</span>
             <span class="n">home</span> <span class="o">=</span> <span class="n">user_home</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">home</span> <span class="o">=</span> <span class="n">localhome</span>
-        <span class="n">home_prefix</span> <span class="o">=</span> <span class="s2">&quot;📂 &quot;</span>
+        <span class="n">home_prefix</span> <span class="o">=</span> <span class="s2">"📂 "</span>
         <span class="k">if</span> <span class="n">pwd</span> <span class="o">==</span> <span class="n">home</span><span class="p">:</span>
-            <span class="n">home_prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-            <span class="n">pwd</span> <span class="o">=</span> <span class="s2">&quot;🏡&quot;</span>
+            <span class="n">home_prefix</span> <span class="o">=</span> <span class="s2">""</span>
+            <span class="n">pwd</span> <span class="o">=</span> <span class="s2">"🏡"</span>
         <span class="k">elif</span> <span class="n">pwd</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">home</span><span class="p">):</span>
-            <span class="n">pwd</span> <span class="o">=</span> <span class="s2">&quot;~&quot;</span> <span class="o">+</span> <span class="n">pwd</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">home</span><span class="p">):]</span>
+            <span class="n">pwd</span> <span class="o">=</span> <span class="s2">"~"</span> <span class="o">+</span> <span class="n">pwd</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">home</span><span class="p">):]</span>
         <span class="k">if</span> <span class="n">pwd</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">home_prefix</span> <span class="o">+</span> <span class="n">pwd</span>
-    <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">""</span>
 
-<span class="k">def</span> <span class="nf">make_branch</span><span class="p">(</span><span class="n">branch</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_branch</span><span class="p">(</span><span class="n">branch</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">branch</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot; ⎇ &quot;</span> <span class="o">+</span> <span class="n">branch</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
-    <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">" ⎇ "</span> <span class="o">+</span> <span class="n">branch</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s2">""</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="n">localhome</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;HOME&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="n">localhome</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"HOME"</span><span class="p">)</span>
     <span class="n">localhost</span> <span class="o">=</span> <span class="n">hostname_dash_f</span><span class="p">()</span>
 
     <span class="nd">@iterm2</span><span class="o">.</span><span class="n">TitleProviderRPC</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">georges_title</span><span class="p">(</span>
-        <span class="n">pwd</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;path?&quot;</span><span class="p">),</span>
-        <span class="n">hostname</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;hostname?&quot;</span><span class="p">),</span>
-        <span class="n">branch</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;user.gitBranch?&quot;</span><span class="p">),</span>
-        <span class="n">auto_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;autoName?&quot;</span><span class="p">),</span>
-        <span class="n">profile_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;profileName?&quot;</span><span class="p">),</span>
-        <span class="n">tmux_title</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;tmuxWindowTitle?&quot;</span><span class="p">),</span>
-        <span class="n">user_home</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;user.home?&quot;</span><span class="p">)):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">georges_title</span><span class="p">(</span>
+        <span class="n">pwd</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">"path?"</span><span class="p">),</span>
+        <span class="n">hostname</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">"hostname?"</span><span class="p">),</span>
+        <span class="n">branch</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">"user.gitBranch?"</span><span class="p">),</span>
+        <span class="n">auto_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">"autoName?"</span><span class="p">),</span>
+        <span class="n">profile_name</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">"profileName?"</span><span class="p">),</span>
+        <span class="n">tmux_title</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">"tmuxWindowTitle?"</span><span class="p">),</span>
+        <span class="n">user_home</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">"user.home?"</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">tmux_title</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">tmux_title</span>
 
@@ -172,11 +171,11 @@
                  <span class="n">make_hostname</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">localhost</span><span class="p">),</span>
                  <span class="n">make_pwd</span><span class="p">(</span><span class="n">user_home</span><span class="p">,</span> <span class="n">localhome</span><span class="p">,</span> <span class="n">pwd</span><span class="p">),</span>
                  <span class="n">make_branch</span><span class="p">(</span><span class="n">branch</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">parts</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">parts</span><span class="p">)))</span>
     <span class="k">await</span> <span class="n">georges_title</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span>
             <span class="n">connection</span><span class="p">,</span>
-            <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;George&#39;s Title Algorithm&quot;</span><span class="p">,</span>
-            <span class="n">unique_identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.georges-title-algorithm&quot;</span><span class="p">)</span>
+            <span class="n">display_name</span><span class="o">=</span><span class="s2">"George's Title Algorithm"</span><span class="p">,</span>
+            <span class="n">unique_identifier</span><span class="o">=</span><span class="s2">"com.iterm2.example.georges-title-algorithm"</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
@@ -212,11 +211,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018, George Nachman.
+      &#169;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/examples/georges_title.rst.txt"

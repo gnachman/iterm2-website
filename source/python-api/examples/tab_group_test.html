@@ -1,0 +1,408 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Tab Groups &#8212; iTerm2 Python API 0.26 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=6eb5f756"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  </head><body>
+  <header >
+    <div class="row">
+      <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="text-center"><a href="/index.html"><img src="https://iterm2.com/img/logo2x.jpg" width=800 height=312></a></div>
+        <div class="sticky contain-to-grid">
+          <nav class="top-bar" data-topbar>
+            <ul class="title-area">
+              <li class="name">
+
+              </li>
+              <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+              <li class="small-screen-donate">
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+            </ul>
+
+            <section class="top-bar-section">
+              <!-- Right Nav Section -->
+              <ul class="right"> <li>
+		  <a href="/donate.html"><img src="https://iterm2.com/images/DonateButton.png" width="92" height="26"></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- Left Nav Section -->
+          <ul class="left">
+            <li><a href="/index.html">Home</a></li>
+            <li ><a href="/news.html">News</a></li>
+            <li ><a href="/features.html">Features</a></li>
+            <li ><a href="/faq.html">FAQ</a></li>
+            <li class="active"><a href="/documentation.html">Documentation</a></li>
+            <li ><a href="/downloads.html">Downloads</a></li>
+          </ul>
+        </section>
+      </nav>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+    <div class="document">
+<div class="row">
+    <div class="small-12 medium-12 large-10 large-centered columns wide-row">
+        <div class="main panel">
+
+            <div class="doc-wrapper" style="text-align: right">
+                <a href="/documentation">Documentation</a> | <a href="/python-api">Python API</a>
+            </div>
+
+            <hr/>
+
+      <div class="documentwrapper">
+	<div class="bodywrapper">
+	  <div class="body" role="main">
+	    
+  <section id="tab-groups">
+<span id="tab-group-test-example"></span><h1>Tab Groups<a class="headerlink" href="#tab-groups" title="Link to this heading">¶</a></h1>
+<p>This script creates a new window (so your other windows are left alone) and presents an interactive menu for exercising the tab group API: creating a group from a set of tabs, adding and removing tabs, renaming and recoloring a group, and collapsing or expanding it. iTerm2 keeps a group’s tabs contiguous, so you can watch it reorder tabs as membership changes.</p>
+<p>Demonstrates <a class="reference internal" href="../tab.html#iterm2.Tab.tab_group" title="iterm2.Tab.tab_group"><code class="xref py py-attr docutils literal notranslate"><span class="pre">iterm2.Tab.tab_group</span></code></a>, <a class="reference internal" href="../window.html#iterm2.Window.tab_groups" title="iterm2.Window.tab_groups"><code class="xref py py-attr docutils literal notranslate"><span class="pre">iterm2.Window.tab_groups</span></code></a>, <a class="reference internal" href="../window.html#iterm2.Window.async_create_tab_group" title="iterm2.Window.async_create_tab_group"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.Window.async_create_tab_group()</span></code></a>, and the mutators on <a class="reference internal" href="../tabgroup.html#iterm2.TabGroup" title="iterm2.TabGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">iterm2.TabGroup</span></code></a> (<a class="reference internal" href="../tabgroup.html#iterm2.TabGroup.async_set_name" title="iterm2.TabGroup.async_set_name"><code class="xref py py-meth docutils literal notranslate"><span class="pre">async_set_name()</span></code></a>, <a class="reference internal" href="../tabgroup.html#iterm2.TabGroup.async_set_color" title="iterm2.TabGroup.async_set_color"><code class="xref py py-meth docutils literal notranslate"><span class="pre">async_set_color()</span></code></a>, and <a class="reference internal" href="../tabgroup.html#iterm2.TabGroup.async_set_collapsed" title="iterm2.TabGroup.async_set_collapsed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">async_set_collapsed()</span></code></a>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""Interactive exercise for the tab group Python API.</span>
+
+<span class="sd">To avoid disturbing your existing windows, this script creates its OWN new</span>
+<span class="sd">window on startup and does everything inside it. Every operation targets only</span>
+<span class="sd">that window; your other windows are never touched. On quit you can close the</span>
+<span class="sd">test window or leave it open.</span>
+
+<span class="sd">Run it with the wrapper so it uses this checkout's iterm2 module:</span>
+
+<span class="sd">    tests/run_tab_group_test.sh</span>
+
+<span class="sd">A debug iTerm2 build advertising the tab-group capability (protocol &gt;= 1.19)</span>
+<span class="sd">must already be running with the Python API enabled.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">iterm2</span>
+
+<span class="c1"># A few named colors to pick from when creating or recoloring a group.</span>
+<span class="n">PALETTE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"red"</span><span class="p">:</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">48</span><span class="p">),</span>
+    <span class="s2">"orange"</span><span class="p">:</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">149</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"yellow"</span><span class="p">:</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"green"</span><span class="p">:</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mi">199</span><span class="p">,</span> <span class="mi">89</span><span class="p">),</span>
+    <span class="s2">"blue"</span><span class="p">:</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">122</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="s2">"purple"</span><span class="p">:</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">175</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">222</span><span class="p">),</span>
+    <span class="s2">"pink"</span><span class="p">:</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">85</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TestWindow</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Holds the id of the window we created and re-fetches its live state."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">,</span> <span class="n">window_id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">connection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_id</span> <span class="o">=</span> <span class="n">window_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Re-reads app state so tab/group changes are reflected."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">windows</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">window</span><span class="o">.</span><span class="n">window_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_id</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">window</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">color_str</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"no color"</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="si">{}</span><span class="s2"> (rgb </span><span class="si">{}</span><span class="s2">,</span><span class="si">{}</span><span class="s2">,</span><span class="si">{}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">color</span><span class="o">.</span><span class="n">hex</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">color</span><span class="o">.</span><span class="n">red</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">color</span><span class="o">.</span><span class="n">green</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">color</span><span class="o">.</span><span class="n">blue</span><span class="p">))</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">show_state</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="k">await</span> <span class="n">test</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"The test window is gone. Quit and start over."</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Test window </span><span class="si">{}</span><span class="s2"> ==="</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">window_id</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Tabs (in tab-bar order):"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tab</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">):</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="n">current_session</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">tab</span><span class="o">.</span><span class="n">current_session</span> <span class="k">else</span> <span class="s2">"(?)"</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="n">tab_group</span>
+        <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">membership</span> <span class="o">=</span> <span class="s2">"ungrouped"</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">membership</span> <span class="o">=</span> <span class="s2">"group </span><span class="si">{}</span><span class="s2">[</span><span class="si">{}</span><span class="s2">]</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="nb">repr</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">group_id</span><span class="p">[:</span><span class="mi">8</span><span class="p">],</span>
+                <span class="s2">" (collapsed)"</span> <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">collapsed</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  [</span><span class="si">{}</span><span class="s2">] tab </span><span class="si">{}</span><span class="s2"> </span><span class="si">{!r:&gt;16}</span><span class="s2">  </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">i</span><span class="p">,</span> <span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">membership</span><span class="p">))</span>
+
+    <span class="n">groups</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">tab_groups</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Tab groups in this window:"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">groups</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  (none)"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">gi</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  (</span><span class="si">{}</span><span class="s2">) </span><span class="si">{!r}</span><span class="s2">  id=</span><span class="si">{}</span><span class="s2">  </span><span class="si">{}</span><span class="s2">  </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">gi</span><span class="p">,</span>
+            <span class="n">group</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">group</span><span class="o">.</span><span class="n">group_id</span><span class="p">[:</span><span class="mi">8</span><span class="p">],</span>
+            <span class="n">color_str</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">color</span><span class="p">),</span>
+            <span class="s2">"collapsed"</span> <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">collapsed</span> <span class="k">else</span> <span class="s2">"expanded"</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pick_tabs</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Prompt for space-separated tab indices; returns a list of Tab."""</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Tab indices (e.g. '0 1 2'): "</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">tabs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tabs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">tabs</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">token</span><span class="p">)])</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Bad index: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">tabs</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pick_group</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Prompt for a group index into window.tab_groups; returns a TabGroup."""</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">tab_groups</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">groups</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"This window has no tab groups yet."</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">gi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">"Group index: "</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">groups</span><span class="p">[</span><span class="n">gi</span><span class="p">]</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Bad group index."</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pick_color</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Prompt for a palette color name; returns a Color or None (auto)."""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Colors: </span><span class="si">{}</span><span class="s2"> (blank = let iTerm2 choose)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PALETTE</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Color: "</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">PALETTE</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Unknown color; letting iTerm2 choose."</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">PALETTE</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">do_create</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="k">await</span> <span class="n">test</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+    <span class="n">tabs</span> <span class="o">=</span> <span class="n">pick_tabs</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tabs</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Group name: "</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">"Group"</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">pick_color</span><span class="p">()</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="k">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_create_tab_group</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">tabs</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Created group </span><span class="si">{!r}</span><span class="s2"> id=</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">group_id</span><span class="p">[:</span><span class="mi">8</span><span class="p">]))</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">do_add</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="k">await</span> <span class="n">test</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+    <span class="n">tabs</span> <span class="o">=</span> <span class="n">pick_tabs</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tabs</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">tabs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Pick exactly one tab to add."</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">pick_group</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">await</span> <span class="n">tabs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">async_add_to_tab_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Added tab </span><span class="si">{}</span><span class="s2"> to group </span><span class="si">{!r}</span><span class="s2">."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tabs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">do_remove</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="k">await</span> <span class="n">test</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+    <span class="n">tabs</span> <span class="o">=</span> <span class="n">pick_tabs</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tabs</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">tabs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Pick exactly one tab to remove."</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">await</span> <span class="n">tabs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">async_remove_from_tab_group</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Removed tab </span><span class="si">{}</span><span class="s2"> from its group."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tabs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tab_id</span><span class="p">))</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">do_rename</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="k">await</span> <span class="n">test</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">pick_group</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"New name: "</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">group</span><span class="o">.</span><span class="n">async_set_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Renamed group to </span><span class="si">{!r}</span><span class="s2">."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">do_recolor</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="k">await</span> <span class="n">test</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">pick_group</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">pick_color</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"No color chosen; nothing to do."</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">await</span> <span class="n">group</span><span class="o">.</span><span class="n">async_set_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Recolored group to </span><span class="si">{}</span><span class="s2">."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">color</span><span class="o">.</span><span class="n">hex</span><span class="p">))</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">do_collapse</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="k">await</span> <span class="n">test</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">pick_group</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">want</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Collapse or expand? [c/e]: "</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">collapsed</span> <span class="o">=</span> <span class="n">want</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"c"</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">group</span><span class="o">.</span><span class="n">async_set_collapsed</span><span class="p">(</span><span class="n">collapsed</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="n">collapsed</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"iTerm2 refused (a whole-window group can't collapse). "</span>
+              <span class="s2">"State is now </span><span class="si">{}</span><span class="s2">."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"collapsed"</span> <span class="k">if</span> <span class="n">result</span> <span class="k">else</span> <span class="s2">"expanded"</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Group is now </span><span class="si">{}</span><span class="s2">."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">"collapsed"</span> <span class="k">if</span> <span class="n">result</span> <span class="k">else</span> <span class="s2">"expanded"</span><span class="p">))</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">do_add_tab</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="k">await</span> <span class="n">test</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Added a tab to the test window."</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="c1"># Fetch the app first: this installs the Window/Tab delegates that</span>
+    <span class="c1"># window.async_create_tab (and tab.window) rely on.</span>
+    <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Creating a new window for testing (your other windows are safe)..."</span><span class="p">)</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Could not create a window."</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">TestWindow</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">window</span><span class="o">.</span><span class="n">window_id</span><span class="p">)</span>
+
+    <span class="c1"># Give ourselves a few tabs to play with.</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">window</span><span class="o">.</span><span class="n">async_create_tab</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Test window </span><span class="si">{}</span><span class="s2"> created with 4 tabs."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">window_id</span><span class="p">))</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Tab Group Test ==="</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  1. Show window + groups"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  2. Create a group from tabs"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  3. Add a tab to an existing group"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  4. Remove a tab from its group"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  5. Rename a group"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  6. Recolor a group"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  7. Collapse / expand a group"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  8. Add another tab to the window"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  c. Close the test window and quit"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  q. Quit (leave the test window open)"</span><span class="p">)</span>
+
+        <span class="n">choice</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Choice: "</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">"q"</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">"c"</span><span class="p">:</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="k">await</span> <span class="n">test</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">target</span><span class="o">.</span><span class="n">async_close</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">"Closed the test window."</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">"1"</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">show_state</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">"2"</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">do_create</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">"3"</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">do_add</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">"4"</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">do_remove</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">"5"</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">do_rename</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">"6"</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">do_recolor</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">"7"</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">do_collapse</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">"8"</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">do_add_tab</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">"Unknown choice."</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># noqa: BLE001 - surface any RPC error and continue</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Error: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+
+<span class="n">iterm2</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference download internal" download="" href="../_downloads/3338b865bb1e53a9b63584f5bba60f67/tab_group_test.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
+</section>
+
+
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Note: scripts.js not loaded because it breaks anchors, which Sphinx makes a lot of. -->
+<script type="text/javascript">
+  function showId(id) {
+    document.getElementById("changelist" + id).style.display = 'block';
+    document.getElementById("show" + id).style.display = 'none';
+    document.getElementById("hide" + id).style.display = 'inline';
+  }
+
+  function hideId(id) {
+    document.getElementById("changelist" + id).style.display = 'none';
+    document.getElementById("show" + id).style.display = 'inline';
+    document.getElementById("hide" + id).style.display = 'none';
+  }
+  $(document).foundation();
+</script>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2018, George Nachman.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../_sources/examples/tab_group_test.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

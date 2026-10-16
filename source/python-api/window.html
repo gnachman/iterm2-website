@@ -2,18 +2,17 @@
 <!DOCTYPE html>
 
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Window &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=6eb5f756"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Variables" href="variables.html" />
@@ -82,10 +81,10 @@
 	  <div class="body" role="main">
 	    
   <section id="window">
-<h1>Window<a class="headerlink" href="#window" title="Permalink to this headline">¶</a></h1>
+<h1>Window<a class="headerlink" href="#window" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="iterm2.Window">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tabs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tabs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window" title="Link to this definition">¶</a></dt>
 <dd><p>Represents a terminal window.</p>
 <p>Do not create an instance of <cite>Window</cite> by calling the initializer yourself.
 To get a reference to an existing window, use <a class="reference internal" href="app.html#iterm2.App" title="iterm2.app.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a> and
@@ -93,7 +92,7 @@ query its <cite>windows</cite> property. To create a new window, use
 <a class="reference internal" href="#iterm2.Window.async_create" title="iterm2.Window.async_create"><code class="xref py py-meth docutils literal notranslate"><span class="pre">async_create()</span></code></a>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_activate">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_activate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.16)"><span class="pre">None</span></a><a class="headerlink" href="#iterm2.Window.async_activate" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_activate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#iterm2.Window.async_activate" title="Link to this definition">¶</a></dt>
 <dd><p>Gives the window keyboard focus and orders it to the front.</p>
 <p>Note that this won’t activate the app. Use the <a class="reference internal" href="#iterm2.Window.async_activate" title="iterm2.Window.async_activate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">async_activate()</span></code></a>
 method on <a class="reference internal" href="app.html#iterm2.App" title="iterm2.app.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">App</span></code></a> to activate the app. You’ll probably
@@ -102,7 +101,7 @@ want to call both methods.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_close">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#bool" title="(in Python v3.16)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_close" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_close" title="Link to this definition">¶</a></dt>
 <dd><p>Closes the window.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -117,7 +116,7 @@ confirmation.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_create">
-<em class="property"><span class="pre">async</span> <span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">async_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">iterm2.connection.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile_customizations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.16)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="profile.html#iterm2.LocalWriteOnlyProfile" title="iterm2.profile.LocalWriteOnlyProfile"><span class="pre">iterm2.profile.LocalWriteOnlyProfile</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#iterm2.Window" title="iterm2.window.Window"><span class="pre">iterm2.window.Window</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.Window.async_create" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="connection.html#iterm2.connection.Connection" title="iterm2.connection.Connection"><span class="pre">Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile_customizations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="profile.html#iterm2.LocalWriteOnlyProfile" title="iterm2.profile.LocalWriteOnlyProfile"><span class="pre">LocalWriteOnlyProfile</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#iterm2.Window" title="iterm2.window.Window"><span class="pre">Window</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#iterm2.Window.async_create" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new window.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -141,12 +140,12 @@ away.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>Example “<a class="reference internal" href="examples/create_window.html#create-window-example"><span class="std std-ref">Create Window — Custom Escape Sequence</span></a>”</p>
-</aside>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_create_tab">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_create_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/functions.html#int" title="(in Python v3.16)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile_customizations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.16)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="profile.html#iterm2.LocalWriteOnlyProfile" title="iterm2.profile.LocalWriteOnlyProfile"><span class="pre">iterm2.profile.LocalWriteOnlyProfile</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#bool" title="(in Python v3.16)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.tab.Tab"><span class="pre">iterm2.tab.Tab</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.Window.async_create_tab" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_create_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile_customizations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="profile.html#iterm2.LocalWriteOnlyProfile" title="iterm2.profile.LocalWriteOnlyProfile"><span class="pre">LocalWriteOnlyProfile</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.tab.Tab"><span class="pre">Tab</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#iterm2.Window.async_create_tab" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new tab in this window.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -175,8 +174,39 @@ without moving keyboard focus.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="iterm2.Window.async_create_tab_group">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_create_tab_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tabs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.15)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.tab.Tab"><span class="pre">Tab</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="color.html#iterm2.Color" title="iterm2.color.Color"><span class="pre">Color</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tabgroup.html#iterm2.TabGroup" title="iterm2.tabgroup.TabGroup"><span class="pre">TabGroup</span></a></span></span><a class="headerlink" href="#iterm2.Window.async_create_tab_group" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new tab group from the given tabs.</p>
+<p>All tabs must belong to this window. A tab already in another group is
+moved into the new one. iTerm2 reorders tabs so the new group’s members
+are consecutive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tabgroup.html#iterm2.TabGroup" title="iterm2.tabgroup.TabGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">TabGroup</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name for the new group.</p></li>
+<li><p><strong>tabs</strong> – The tabs to place in the group. Must be non-empty and all
+in this window.</p></li>
+<li><p><strong>color</strong> – The group’s color, or <cite>None</cite> to have iTerm2 pick one.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The newly created <a class="reference internal" href="tabgroup.html#iterm2.TabGroup" title="iterm2.tabgroup.TabGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">TabGroup</span></code></a>. Its
+<cite>color</cite> is <cite>None</cite> when iTerm2 picked one automatically; re-fetch the
+app to observe the assigned color.</p>
+</dd>
+<dt class="field-even">Throws<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RPCException</span></code> if something goes wrong (for
+example, if a tab is not in this window).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_create_tmux_tab">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_create_tmux_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmux_connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="tmux.html#iterm2.TmuxConnection" title="iterm2.tmux.TmuxConnection"><span class="pre">iterm2.tmux.TmuxConnection</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.tab.Tab"><span class="pre">iterm2.tab.Tab</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#iterm2.Window.async_create_tmux_tab" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_create_tmux_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmux_connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tmux.html#iterm2.TmuxConnection" title="iterm2.tmux.TmuxConnection"><span class="pre">TmuxConnection</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.tab.Tab"><span class="pre">Tab</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#iterm2.Window.async_create_tmux_tab" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new tmux tab in this window.</p>
 <p>This may not be called from within a
 <a class="reference internal" href="transaction.html#iterm2.Transaction" title="iterm2.transaction.Transaction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transaction</span></code></a>.</p>
@@ -194,12 +224,12 @@ without moving keyboard focus.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>Example “<a class="reference internal" href="examples/tmux.html#tmux-example"><span class="std std-ref">Tmux Integration</span></a>”</p>
-</aside>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_get_frame">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="util.html#iterm2.util.Frame" title="iterm2.util.Frame"><span class="pre">iterm2.util.Frame</span></a><a class="headerlink" href="#iterm2.Window.async_get_frame" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="util.html#iterm2.util.Frame" title="iterm2.util.Frame"><span class="pre">Frame</span></a></span></span><a class="headerlink" href="#iterm2.Window.async_get_frame" title="Link to this definition">¶</a></dt>
 <dd><p>Gets the window’s frame.</p>
 <p>The origin (0,0) is the <em>bottom</em> right of the main screen.</p>
 <dl class="field-list simple">
@@ -215,7 +245,7 @@ the title bar.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_get_fullscreen">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_get_fullscreen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/functions.html#bool" title="(in Python v3.16)"><span class="pre">bool</span></a><a class="headerlink" href="#iterm2.Window.async_get_fullscreen" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_get_fullscreen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#iterm2.Window.async_get_fullscreen" title="Link to this definition">¶</a></dt>
 <dd><p>Checks if the window is full-screen.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -229,7 +259,7 @@ the title bar.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_invoke_function">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_invoke_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">invocation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#float" title="(in Python v3.16)"><span class="pre">float</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_invoke_function" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_invoke_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">invocation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_invoke_function" title="Link to this definition">¶</a></dt>
 <dd><p>Invoke an RPC. Could be a registered function by this or another script
 of a built-in function.</p>
 <p>This invokes the RPC in the context of this window. Note that most
@@ -256,7 +286,7 @@ use the system default timeout.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_restore_window_arrangement">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_restore_window_arrangement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.16)"><span class="pre">None</span></a><a class="headerlink" href="#iterm2.Window.async_restore_window_arrangement" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_restore_window_arrangement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#iterm2.Window.async_restore_window_arrangement" title="Link to this definition">¶</a></dt>
 <dd><p>Restore a window arrangement as tabs in this window.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -271,7 +301,7 @@ named arrangement does not exist.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_save_window_as_arrangement">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_save_window_as_arrangement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.16)"><span class="pre">None</span></a><a class="headerlink" href="#iterm2.Window.async_save_window_as_arrangement" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_save_window_as_arrangement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#iterm2.Window.async_save_window_as_arrangement" title="Link to this definition">¶</a></dt>
 <dd><p>Save the current window as a new arrangement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -283,7 +313,7 @@ with this name.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_set_frame">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_set_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="util.html#iterm2.util.Frame" title="iterm2.util.Frame"><span class="pre">iterm2.util.Frame</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.16)"><span class="pre">None</span></a><a class="headerlink" href="#iterm2.Window.async_set_frame" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_set_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="util.html#iterm2.util.Frame" title="iterm2.util.Frame"><span class="pre">Frame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#iterm2.Window.async_set_frame" title="Link to this definition">¶</a></dt>
 <dd><p>Sets the window’s frame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -297,7 +327,7 @@ with this name.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_set_fullscreen">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_set_fullscreen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullscreen</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#bool" title="(in Python v3.16)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_set_fullscreen" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_set_fullscreen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullscreen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_set_fullscreen" title="Link to this definition">¶</a></dt>
 <dd><p>Changes the window’s full-screen status.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -312,7 +342,7 @@ that the fullscreen status could not be changed).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_set_tabs">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_set_tabs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tabs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.tab.Tab"><span class="pre">iterm2.tab.Tab</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_set_tabs" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_set_tabs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tabs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.15)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.tab.Tab"><span class="pre">Tab</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#iterm2.Window.async_set_tabs" title="Link to this definition">¶</a></dt>
 <dd><p>Changes the tabs and their order.</p>
 <p>The provided tabs may belong to any window. They will be moved if
 needed. Windows entirely denuded of tabs will be closed.</p>
@@ -335,12 +365,12 @@ window.</p>
 <li><p>Example “<a class="reference internal" href="examples/mrutabs.html#mrutabs-example"><span class="std std-ref">Persistent MRU Tabs</span></a>”</p></li>
 <li><p>Example “<a class="reference internal" href="examples/sorttabs.html#sorttabs-example"><span class="std std-ref">Sort Tabs</span></a>”</p></li>
 </ul>
-</aside>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.async_set_variable">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">async_set_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/constants.html#None" title="(in Python v3.16)"><span class="pre">None</span></a><a class="headerlink" href="#iterm2.Window.async_set_variable" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_set_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#iterm2.Window.async_set_variable" title="Link to this definition">¶</a></dt>
 <dd><p>Sets a user-defined variable in the window.</p>
 <p>See the Scripting Fundamentals documentation for more information on
 user-defined variables.</p>
@@ -359,7 +389,7 @@ user-defined variables.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="iterm2.Window.current_tab">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">current_tab</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional[iterm2.tab.Tab]</span></em><a class="headerlink" href="#iterm2.Window.current_tab" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_tab</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.tab.Tab"><span class="pre">Tab</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></em><a class="headerlink" href="#iterm2.Window.current_tab" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The current tab in this window or <cite>None</cite> if it could not be
@@ -370,7 +400,7 @@ determined.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="iterm2.Window.pretty_str">
-<span class="sig-name descname"><span class="pre">pretty_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#str" title="(in Python v3.16)"><span class="pre">str</span></a><a class="headerlink" href="#iterm2.Window.pretty_str" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pretty_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#iterm2.Window.pretty_str" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A nicely formatted string describing the window, its tabs,
@@ -380,8 +410,20 @@ and their sessions.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="iterm2.Window.tab_groups">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tab_groups</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.15)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tabgroup.html#iterm2.TabGroup" title="iterm2.tabgroup.TabGroup"><span class="pre">TabGroup</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#iterm2.Window.tab_groups" title="Link to this definition">¶</a></dt>
+<dd><p>The distinct tab groups in this window, in tab order.</p>
+<p>A tab group is a named, colored collection of adjacent tabs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of <a class="reference internal" href="tabgroup.html#iterm2.TabGroup" title="iterm2.tabgroup.TabGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">TabGroup</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="iterm2.Window.tabs">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">tabs</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[iterm2.tab.Tab]</span></em><a class="headerlink" href="#iterm2.Window.tabs" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tabs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.15)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tab.html#iterm2.Tab" title="iterm2.tab.Tab"><span class="pre">Tab</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#iterm2.Window.tabs" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a list of iterm2.tab.Tab objects.</p>
@@ -391,7 +433,7 @@ and their sessions.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="iterm2.Window.window_id">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">window_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#iterm2.Window.window_id" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">window_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></em><a class="headerlink" href="#iterm2.Window.window_id" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the window’s unique identifier.</p>
@@ -403,31 +445,31 @@ and their sessions.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="iterm2.CreateTabException">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">CreateTabException</span></span><a class="headerlink" href="#iterm2.CreateTabException" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CreateTabException</span></span><a class="headerlink" href="#iterm2.CreateTabException" title="Link to this definition">¶</a></dt>
 <dd><p>Something went wrong creating a tab.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="iterm2.SetPropertyException">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">SetPropertyException</span></span><a class="headerlink" href="#iterm2.SetPropertyException" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SetPropertyException</span></span><a class="headerlink" href="#iterm2.SetPropertyException" title="Link to this definition">¶</a></dt>
 <dd><p>Something went wrong setting a property.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="iterm2.GetPropertyException">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">GetPropertyException</span></span><a class="headerlink" href="#iterm2.GetPropertyException" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GetPropertyException</span></span><a class="headerlink" href="#iterm2.GetPropertyException" title="Link to this definition">¶</a></dt>
 <dd><p>Something went wrong fetching a property.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="iterm2.SavedArrangementException">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">SavedArrangementException</span></span><a class="headerlink" href="#iterm2.SavedArrangementException" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SavedArrangementException</span></span><a class="headerlink" href="#iterm2.SavedArrangementException" title="Link to this definition">¶</a></dt>
 <dd><p>A problem was encountered while saving or restoring an arrangement.</p>
 </dd></dl>
 
 <hr class="docutils" />
 <section id="indices-and-tables">
-<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
@@ -461,11 +503,11 @@ and their sessions.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018, George Nachman.
+      &#169;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="_sources/window.rst.txt"

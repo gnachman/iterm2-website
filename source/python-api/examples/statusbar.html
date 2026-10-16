@@ -2,18 +2,17 @@
 <!DOCTYPE html>
 
 
-<html>
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Status Bar Component &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=6eb5f756"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -81,47 +80,47 @@
 	  <div class="body" role="main">
 	    
   <section id="status-bar-component">
-<span id="statusbar-example"></span><h1>Status Bar Component<a class="headerlink" href="#status-bar-component" title="Permalink to this headline">¶</a></h1>
+<span id="statusbar-example"></span><h1>Status Bar Component<a class="headerlink" href="#status-bar-component" title="Link to this heading">¶</a></h1>
 <p>This example demonstrates registering a Python function to provide the content of a custom status bar component. It features a “knob” that allows configuration: in this case, whether to show a demonstration of variable-length values, or to show the size of the current session.</p>
 <p>After starting this script, navigate to <strong>Preferences &gt; Profiles &gt; Session</strong>. Turn on <strong>Status Bar Enabled</strong> and select <strong>Configure Status Bar</strong>. Drag the <strong>Status Bar Demo</strong> component into the bottom section. Select it and then click <strong>Configure Component</strong>. You’ll see a “Variable-Length Demo” setting that can be toggled to change the component’s behavior. Other standard knobs, like color adjustments, are also present.</p>
 <p>When the <strong>Variable-Length Demo</strong> knob is on, try making the window narrower and observer that the text changes as the amount of available space changes.</p>
 <p>This script is a long-running daemon since the registered function gets called whenever the size of a session changes. As such, it should go in the AutoLaunch folder.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">iterm2</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="c1"># Define the configuration knobs:</span>
-    <span class="n">vl</span> <span class="o">=</span> <span class="s2">&quot;variable_length_demo&quot;</span>
-    <span class="n">knobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterm2</span><span class="o">.</span><span class="n">CheckboxKnob</span><span class="p">(</span><span class="s2">&quot;Variable-Length Demo&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">vl</span><span class="p">)]</span>
+    <span class="n">vl</span> <span class="o">=</span> <span class="s2">"variable_length_demo"</span>
+    <span class="n">knobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterm2</span><span class="o">.</span><span class="n">CheckboxKnob</span><span class="p">(</span><span class="s2">"Variable-Length Demo"</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">vl</span><span class="p">)]</span>
     <span class="n">component</span> <span class="o">=</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">StatusBarComponent</span><span class="p">(</span>
-        <span class="n">short_description</span><span class="o">=</span><span class="s2">&quot;Status Bar Demo&quot;</span><span class="p">,</span>
-        <span class="n">detailed_description</span><span class="o">=</span><span class="s2">&quot;Tests script-provided status bar components&quot;</span><span class="p">,</span>
+        <span class="n">short_description</span><span class="o">=</span><span class="s2">"Status Bar Demo"</span><span class="p">,</span>
+        <span class="n">detailed_description</span><span class="o">=</span><span class="s2">"Tests script-provided status bar components"</span><span class="p">,</span>
         <span class="n">knobs</span><span class="o">=</span><span class="n">knobs</span><span class="p">,</span>
-        <span class="n">exemplar</span><span class="o">=</span><span class="s2">&quot;row x cols&quot;</span><span class="p">,</span>
+        <span class="n">exemplar</span><span class="o">=</span><span class="s2">"row x cols"</span><span class="p">,</span>
         <span class="n">update_cadence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;com.iterm2.example.status-bar-demo&quot;</span><span class="p">)</span>
+        <span class="n">identifier</span><span class="o">=</span><span class="s2">"com.iterm2.example.status-bar-demo"</span><span class="p">)</span>
 
     <span class="c1"># This function gets called whenever any of the paths named in defaults (below) changes</span>
     <span class="c1"># or its configuration changes.</span>
     <span class="c1"># References specify paths to external variables (like rows) and binds them to</span>
-    <span class="c1"># arguments to the registered function (coro). When any of those variables&#39; values</span>
+    <span class="c1"># arguments to the registered function (coro). When any of those variables' values</span>
     <span class="c1"># change the function gets called.</span>
     <span class="nd">@iterm2</span><span class="o">.</span><span class="n">StatusBarRPC</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">coro</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">coro</span><span class="p">(</span>
             <span class="n">knobs</span><span class="p">,</span>
-            <span class="n">rows</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;rows&quot;</span><span class="p">),</span>
-            <span class="n">cols</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)):</span>
+            <span class="n">rows</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">"rows"</span><span class="p">),</span>
+            <span class="n">cols</span><span class="o">=</span><span class="n">iterm2</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="s2">"columns"</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">vl</span> <span class="ow">in</span> <span class="n">knobs</span> <span class="ow">and</span> <span class="n">knobs</span><span class="p">[</span><span class="n">vl</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;This is an example of variable-length status bar components&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;This is a demo of variable-length status bar components&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;This demo status bar component has variable length&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Demonstrate variable-length status bar component&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Shows variable-length status bar component&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Shows variable-length text in status bar&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Variable-length text in status bar&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Variable-length text demo&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Var. length text demo&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;It&#39;s getting tight&quot;</span> <span class="p">]</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">x</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s2">"This is an example of variable-length status bar components"</span><span class="p">,</span>
+                    <span class="s2">"This is a demo of variable-length status bar components"</span><span class="p">,</span>
+                    <span class="s2">"This demo status bar component has variable length"</span><span class="p">,</span>
+                    <span class="s2">"Demonstrate variable-length status bar component"</span><span class="p">,</span>
+                    <span class="s2">"Shows variable-length status bar component"</span><span class="p">,</span>
+                    <span class="s2">"Shows variable-length text in status bar"</span><span class="p">,</span>
+                    <span class="s2">"Variable-length text in status bar"</span><span class="p">,</span>
+                    <span class="s2">"Variable-length text demo"</span><span class="p">,</span>
+                    <span class="s2">"Var. length text demo"</span><span class="p">,</span>
+                    <span class="s2">"It's getting tight"</span> <span class="p">]</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="si">{}</span><span class="s2">x</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
 
     <span class="c1"># Register the component.</span>
     <span class="k">await</span> <span class="n">component</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">coro</span><span class="p">)</span>
@@ -158,11 +157,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018, George Nachman.
+      &#169;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/examples/statusbar.rst.txt"

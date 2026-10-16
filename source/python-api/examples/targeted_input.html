@@ -2,18 +2,17 @@
 <!DOCTYPE html>
 
 
-<html>
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Targeted Input &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=6eb5f756"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -81,7 +80,7 @@
 	  <div class="body" role="main">
 	    
   <section id="targeted-input">
-<span id="targeted-input-example"></span><h1>Targeted Input<a class="headerlink" href="#targeted-input" title="Permalink to this headline">¶</a></h1>
+<span id="targeted-input-example"></span><h1>Targeted Input<a class="headerlink" href="#targeted-input" title="Link to this heading">¶</a></h1>
 <p>iTerm2 has a “broadcast input” feature that lets you send keyboard input to
 multiple sessions. The purpose of this script is to send a different string to
 each session to which input is broadcast.</p>
@@ -110,41 +109,41 @@ if it has a different name, modify the path below appropriately):</p>
 <p>Then, replace <cite>targeted_input.py</cite> with:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># NOTE: This script depends on aiohttp.</span>
-<span class="kn">import</span> <span class="nn">aiohttp</span>
-<span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">iterm2</span>
-<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">aiohttp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">iterm2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aiohttp</span><span class="w"> </span><span class="kn">import</span> <span class="n">web</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">send_html</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">binary</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">send_html</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">binary</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf8'</span><span class="p">)</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">StreamResponse</span><span class="p">()</span>
         <span class="n">resp</span><span class="o">.</span><span class="n">content_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
-        <span class="n">resp</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="s1">&#39;text/html&#39;</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="s1">'text/html'</span>
         <span class="k">await</span> <span class="n">resp</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">resp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resp</span>
 
-    <span class="k">def</span> <span class="nf">html_for_domain</span><span class="p">(</span><span class="n">domain</span><span class="p">):</span>
-        <span class="n">txt</span> <span class="o">=</span> <span class="s1">&#39;&lt;hr/&gt;&lt;form action=&quot;/send&quot; method=&quot;POST&quot;&gt;&#39;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">html_for_domain</span><span class="p">(</span><span class="n">domain</span><span class="p">):</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="s1">'&lt;hr/&gt;&lt;form action="/send" method="POST"&gt;'</span>
         <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">domain</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
-            <span class="n">txt</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: &lt;input name=&quot;</span><span class="si">{}</span><span class="s1">&quot; type=&quot;text&quot; value=&quot;Value to send to session </span><span class="si">{}</span><span class="s1">&quot; /&gt;&lt;br/&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="n">txt</span> <span class="o">+=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">: &lt;input name="</span><span class="si">{}</span><span class="s1">" type="text" value="Value to send to session </span><span class="si">{}</span><span class="s1">" /&gt;&lt;br/&gt;'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
             <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">txt</span> <span class="o">+=</span> <span class="s1">&#39;&lt;input type=&quot;Submit&quot;&gt;&lt;/form&gt;&#39;</span>
+        <span class="n">txt</span> <span class="o">+=</span> <span class="s1">'&lt;input type="Submit"&gt;&lt;/form&gt;'</span>
         <span class="k">return</span> <span class="n">txt</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">main_page</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-        <span class="n">txt</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;/&quot;&gt;Refresh&lt;/a&gt;&lt;br/&gt;&#39;</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main_page</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="s1">'&lt;a href="/"&gt;Refresh&lt;/a&gt;&lt;br/&gt;'</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">app</span><span class="o">.</span><span class="n">broadcast_domains</span><span class="p">:</span>
-            <span class="n">txt</span> <span class="o">+=</span> <span class="s2">&quot;Turn on broadcast input and click refresh&quot;</span>
+            <span class="n">txt</span> <span class="o">+=</span> <span class="s2">"Turn on broadcast input and click refresh"</span>
         <span class="k">for</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">broadcast_domains</span><span class="p">:</span>
             <span class="n">txt</span> <span class="o">+=</span> <span class="n">html_for_domain</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">send_html</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
         <span class="n">reader</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">session_id</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="n">session_id</span><span class="p">]</span>
@@ -153,22 +152,22 @@ if it has a different name, modify the path below appropriately):</p>
                 <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_send_text</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">suppress_broadcast</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">main_page</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">():</span>
         <span class="n">webapp</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
-        <span class="n">webapp</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">main_page</span><span class="p">)</span>
+        <span class="n">webapp</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">main_page</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">webapp</span>
 
     <span class="c1"># Set up a web server on port 9999. The web pages give the script a user interface.</span>
     <span class="n">webapp</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
-    <span class="n">webapp</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">main_page</span><span class="p">)</span>
-    <span class="n">webapp</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">&#39;/send&#39;</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
+    <span class="n">webapp</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">main_page</span><span class="p">)</span>
+    <span class="n">webapp</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">'/send'</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
     <span class="n">runner</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">AppRunner</span><span class="p">(</span><span class="n">webapp</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">runner</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
-    <span class="n">site</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">TCPSite</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span>
+    <span class="n">site</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">TCPSite</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="s1">'localhost'</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">site</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="c1"># Register a custom toolbelt tool that shows the web pages served by the server in this script.</span>
-    <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">tool</span><span class="o">.</span><span class="n">async_register_web_view_tool</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Targeted Input&quot;</span><span class="p">,</span> <span class="s2">&quot;com.iterm2.example.targeted-input&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;http://localhost:9999/&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">tool</span><span class="o">.</span><span class="n">async_register_web_view_tool</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">"Targeted Input"</span><span class="p">,</span> <span class="s2">"com.iterm2.example.targeted-input"</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"http://localhost:9999/"</span><span class="p">)</span>
 
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
@@ -206,11 +205,11 @@ to see it in action.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018, George Nachman.
+      &#169;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/examples/targeted_input.rst.txt"

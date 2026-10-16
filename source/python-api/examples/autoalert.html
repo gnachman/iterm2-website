@@ -2,18 +2,17 @@
 <!DOCTYPE html>
 
 
-<html>
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Alert on Long-Running Jobs &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=6eb5f756"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -81,30 +80,30 @@
 	  <div class="body" role="main">
 	    
   <section id="alert-on-long-running-jobs">
-<span id="autoalert-example"></span><h1>Alert on Long-Running Jobs<a class="headerlink" href="#alert-on-long-running-jobs" title="Permalink to this headline">¶</a></h1>
+<span id="autoalert-example"></span><h1>Alert on Long-Running Jobs<a class="headerlink" href="#alert-on-long-running-jobs" title="Link to this heading">¶</a></h1>
 <p>This script shows a notification when a job in any session runs for over thirty seconds.</p>
 <p>It demonstrates creating a task for every session, monitoring for changes of the currently running command, posting notifications, and some basic asyncio usage.</p>
 <p>This script requires that shell integration be installed in order to detect prompts and running commands.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.7</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">iterm2</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">sleep_then_alert</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show a user notification in `session` if this task is allowed to run</span>
-<span class="sd">        for 30 seconds.&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">sleep_then_alert</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Show a user notification in `session` if this task is allowed to run</span>
+<span class="sd">        for 30 seconds."""</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
-        <span class="n">code</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">]9;Alert</span><span class="se">\u001b\\</span><span class="s2">&quot;</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\u001b</span><span class="s2">]9;Alert</span><span class="se">\u001b\\</span><span class="s2">"</span>
         <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">async_inject</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
 
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">monitor</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait for commands to start or stop in this session.</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">monitor</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Wait for commands to start or stop in this session.</span>
 
-<span class="sd">        Start and cancel tasks to wait for long-running tasks.&quot;&quot;&quot;</span>
+<span class="sd">        Start and cancel tasks to wait for long-running tasks."""</span>
         <span class="n">session</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_session_by_id</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">session</span><span class="p">:</span>
             <span class="k">return</span>
@@ -133,7 +132,7 @@
     <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">EachSessionOnceMonitor</span><span class="o">.</span><span class="n">async_foreach_session_create_task</span><span class="p">(</span>
             <span class="n">app</span><span class="p">,</span> <span class="n">monitor</span><span class="p">)</span>
 
-<span class="c1"># This instructs the script to run the &quot;main&quot; coroutine and to keep running</span>
+<span class="c1"># This instructs the script to run the "main" coroutine and to keep running</span>
 <span class="c1"># even after it returns.</span>
 <span class="n">iterm2</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
@@ -167,11 +166,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018, George Nachman.
+      &#169;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/examples/autoalert.rst.txt"

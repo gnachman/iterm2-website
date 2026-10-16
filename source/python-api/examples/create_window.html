@@ -2,18 +2,17 @@
 <!DOCTYPE html>
 
 
-<html>
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Create Window — Custom Escape Sequence &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=6eb5f756"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -81,15 +80,15 @@
 	  <div class="body" role="main">
 	    
   <section id="create-window-custom-escape-sequence">
-<span id="create-window-example"></span><h1>Create Window — Custom Escape Sequence<a class="headerlink" href="#create-window-custom-escape-sequence" title="Permalink to this headline">¶</a></h1>
+<span id="create-window-example"></span><h1>Create Window — Custom Escape Sequence<a class="headerlink" href="#create-window-custom-escape-sequence" title="Link to this heading">¶</a></h1>
 <p>This demonstrates handling a custom escape sequence to perform an action. In
 this case, the action is to create a new window. This script is meant to be a
 starting point for developing your own custom escape sequence handler.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">iterm2</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">iterm2</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">CustomControlSequenceMonitor</span><span class="p">(</span>
-            <span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;shared-secret&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;^create-window$&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+            <span class="n">connection</span><span class="p">,</span> <span class="s2">"shared-secret"</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'^create-window$'</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">match</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">async_create</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
@@ -99,7 +98,7 @@ starting point for developing your own custom escape sequence handler.</p>
 </div>
 <p><a class="reference download internal" download="" href="../_downloads/6419772da134718f2d36070467266052/create_window.its"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p>
 <p>To create a window when this script is running, invoke this command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;\033]1337;Custom=id=%s:%s\a&quot;</span><span class="w"> </span><span class="s2">&quot;shared-secret&quot;</span><span class="w"> </span><span class="s2">&quot;create-window&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">printf</span><span class="w"> </span><span class="s2">"\033]1337;Custom=id=%s:%s\a"</span><span class="w"> </span><span class="s2">"shared-secret"</span><span class="w"> </span><span class="s2">"create-window"</span>
 </pre></div>
 </div>
 <p>The <em>shared-secret</em> string is used to prevent untrusted code from invoking your
@@ -133,11 +132,11 @@ sequences, but they won’t work unless they contain the proper secret string.</
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018, George Nachman.
+      &#169;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/examples/create_window.rst.txt"

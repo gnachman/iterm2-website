@@ -2,18 +2,17 @@
 <!DOCTYPE html>
 
 
-<html>
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Move Sessions Between Tabs, Windows, and Split Panes &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=6eb5f756"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -81,7 +80,7 @@
 	  <div class="body" role="main">
 	    
   <section id="move-sessions-between-tabs-windows-and-split-panes">
-<span id="apply-layout-example"></span><h1>Move Sessions Between Tabs, Windows, and Split Panes<a class="headerlink" href="#move-sessions-between-tabs-windows-and-split-panes" title="Permalink to this headline">¶</a></h1>
+<span id="apply-layout-example"></span><h1>Move Sessions Between Tabs, Windows, and Split Panes<a class="headerlink" href="#move-sessions-between-tabs-windows-and-split-panes" title="Link to this heading">¶</a></h1>
 <p>This script registers three functions that demonstrate
 <a class="reference internal" href="../app.html#iterm2.App.async_apply_layout" title="iterm2.App.async_apply_layout"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iterm2.App.async_apply_layout()</span></code></a> — a single API call that reshapes one
 or more tabs atomically. You can bind each function to a keystroke in
@@ -96,22 +95,22 @@ tabs you want to reshape and any sessions/tabs/windows you want to
 close, then hand it to <code class="docutils literal notranslate"><span class="pre">app.async_apply_layout(spec)</span></code>. The whole
 spec is validated up front and applied as a single transaction.</p>
 <section id="spec-basics">
-<h2>Spec basics<a class="headerlink" href="#spec-basics" title="Permalink to this headline">¶</a></h2>
+<h2>Spec basics<a class="headerlink" href="#spec-basics" title="Link to this heading">¶</a></h2>
 <p>A spec has up to four optional fields:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;tabs&quot;</span><span class="p">:</span>           <span class="p">[{</span><span class="s2">&quot;tab_id&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="s2">&quot;root&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">node</span><span class="o">&gt;</span><span class="p">},</span> <span class="o">...</span><span class="p">],</span>
-    <span class="s2">&quot;close_sessions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;session-guid&gt;&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
-    <span class="s2">&quot;close_tabs&quot;</span><span class="p">:</span>     <span class="p">[</span><span class="s2">&quot;&lt;tab-id&gt;&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
-    <span class="s2">&quot;close_windows&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="s2">&quot;&lt;window-guid&gt;&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="s2">"tabs"</span><span class="p">:</span>           <span class="p">[{</span><span class="s2">"tab_id"</span><span class="p">:</span> <span class="s2">"..."</span><span class="p">,</span> <span class="s2">"root"</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">node</span><span class="o">&gt;</span><span class="p">},</span> <span class="o">...</span><span class="p">],</span>
+    <span class="s2">"close_sessions"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"&lt;session-guid&gt;"</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="s2">"close_tabs"</span><span class="p">:</span>     <span class="p">[</span><span class="s2">"&lt;tab-id&gt;"</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="s2">"close_windows"</span><span class="p">:</span>  <span class="p">[</span><span class="s2">"&lt;window-guid&gt;"</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>A <code class="docutils literal notranslate"><span class="pre">&lt;node&gt;</span></code> is either a leaf referring to a live session:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;session_id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;session-guid&gt;&quot;</span><span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"&lt;session-guid&gt;"</span><span class="p">}</span>
 </pre></div>
 </div>
 <p>…or a splitter with at least two children:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;vertical&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;children&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">node</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">node</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span><span class="p">]}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">"vertical"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"children"</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">node</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">node</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span><span class="p">]}</span>
 </pre></div>
 </div>
 <p>Sessions, tabs, and windows are referred to by the same identifiers
@@ -119,9 +118,9 @@ the rest of the Python API uses (<code class="docutils literal notranslate"><spa
 <code class="docutils literal notranslate"><span class="pre">tab.tab_id</span></code>, <code class="docutils literal notranslate"><span class="pre">window.window_id</span></code>).</p>
 </section>
 <section id="example-script">
-<h2>Example script<a class="headerlink" href="#example-script" title="Permalink to this headline">¶</a></h2>
+<h2>Example script<a class="headerlink" href="#example-script" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.7</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Demo: move sessions between tabs, windows, and split panes via</span>
 <span class="sd">App.async_apply_layout.</span>
 
@@ -130,44 +129,44 @@ the rest of the Python API uses (<code class="docutils literal notranslate"><spa
 <span class="sd">  move_active_pane_to_next_tab()</span>
 <span class="sd">  move_active_pane_to_other_window()</span>
 
-<span class="sd">Bind any of these to a keystroke in Prefs &gt; Keys via &quot;Invoke Script</span>
-<span class="sd">Function&quot;.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Bind any of these to a keystroke in Prefs &gt; Keys via "Invoke Script</span>
+<span class="sd">Function".</span>
+<span class="sd">"""</span>
 
-<span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">iterm2</span>
 
-<span class="k">def</span> <span class="nf">leaf</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a leaf node for a session.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;session_id&quot;</span><span class="p">:</span> <span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">}</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">leaf</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build a leaf node for a session."""</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">}</span>
 
-<span class="k">def</span> <span class="nf">vrow</span><span class="p">(</span><span class="n">sessions</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a vertical-divider row of one or more sessions.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">vrow</span><span class="p">(</span><span class="n">sessions</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build a vertical-divider row of one or more sessions.</span>
 
 <span class="sd">    A single session is returned as a leaf; two or more become a</span>
 <span class="sd">    splitter. apply_layout requires splitters to have at least two</span>
 <span class="sd">    children.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sessions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">leaf</span><span class="p">(</span><span class="n">sessions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;vertical&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="s2">&quot;children&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">leaf</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">]}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"vertical"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">"children"</span><span class="p">:</span> <span class="p">[</span><span class="n">leaf</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">]}</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
     <span class="nd">@iterm2</span><span class="o">.</span><span class="n">RPC</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">swap_first_two_panes</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Swap the first two panes of the current tab.&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">swap_first_two_panes</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">"""Swap the first two panes of the current tab."""</span>
         <span class="n">tab</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span><span class="o">.</span><span class="n">current_tab</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">spec</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;tabs&quot;</span><span class="p">:</span> <span class="p">[{</span>
-                <span class="s2">&quot;tab_id&quot;</span><span class="p">:</span> <span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span>
-                <span class="s2">&quot;root&quot;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s2">&quot;vertical&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                    <span class="s2">&quot;children&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">leaf</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">leaf</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span> <span class="o">+</span>
+            <span class="s2">"tabs"</span><span class="p">:</span> <span class="p">[{</span>
+                <span class="s2">"tab_id"</span><span class="p">:</span> <span class="n">tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span>
+                <span class="s2">"root"</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"vertical"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="s2">"children"</span><span class="p">:</span> <span class="p">[</span><span class="n">leaf</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">leaf</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span> <span class="o">+</span>
                                 <span class="p">[</span><span class="n">leaf</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">[</span><span class="mi">2</span><span class="p">:]],</span>
                 <span class="p">},</span>
             <span class="p">}],</span>
@@ -176,9 +175,9 @@ the rest of the Python API uses (<code class="docutils literal notranslate"><spa
     <span class="k">await</span> <span class="n">swap_first_two_panes</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
     <span class="nd">@iterm2</span><span class="o">.</span><span class="n">RPC</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">move_active_pane_to_next_tab</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move the active pane from the current tab into the next</span>
-<span class="sd">        tab in the same window.&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">move_active_pane_to_next_tab</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">"""Move the active pane from the current tab into the next</span>
+<span class="sd">        tab in the same window."""</span>
         <span class="n">window</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">current_terminal_window</span>
         <span class="n">tabs</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">tabs</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tabs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
@@ -193,15 +192,15 @@ the rest of the Python API uses (<code class="docutils literal notranslate"><spa
 
         <span class="n">remaining</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">src</span><span class="o">.</span><span class="n">sessions</span>
                      <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">session_id</span> <span class="o">!=</span> <span class="n">active</span><span class="o">.</span><span class="n">session_id</span><span class="p">]</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;tabs&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"tabs"</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="k">if</span> <span class="n">remaining</span><span class="p">:</span>
             <span class="c1"># Source tab keeps the other panes.</span>
-            <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;tabs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="p">{</span><span class="s2">&quot;tab_id&quot;</span><span class="p">:</span> <span class="n">src</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span> <span class="s2">&quot;root&quot;</span><span class="p">:</span> <span class="n">vrow</span><span class="p">(</span><span class="n">remaining</span><span class="p">)})</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s2">"tabs"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">"tab_id"</span><span class="p">:</span> <span class="n">src</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span> <span class="s2">"root"</span><span class="p">:</span> <span class="n">vrow</span><span class="p">(</span><span class="n">remaining</span><span class="p">)})</span>
         <span class="c1"># Destination tab gains the moved pane on the right.</span>
-        <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;tabs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-            <span class="s2">&quot;tab_id&quot;</span><span class="p">:</span> <span class="n">dst</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span>
-            <span class="s2">&quot;root&quot;</span><span class="p">:</span> <span class="n">vrow</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dst</span><span class="o">.</span><span class="n">sessions</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">active</span><span class="p">]),</span>
+        <span class="n">spec</span><span class="p">[</span><span class="s2">"tabs"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">"tab_id"</span><span class="p">:</span> <span class="n">dst</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span>
+            <span class="s2">"root"</span><span class="p">:</span> <span class="n">vrow</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dst</span><span class="o">.</span><span class="n">sessions</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">active</span><span class="p">]),</span>
         <span class="p">})</span>
         <span class="c1"># If the source tab loses every pane, apply_layout will</span>
         <span class="c1"># close it for us automatically — no need to list it in</span>
@@ -210,9 +209,9 @@ the rest of the Python API uses (<code class="docutils literal notranslate"><spa
     <span class="k">await</span> <span class="n">move_active_pane_to_next_tab</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
     <span class="nd">@iterm2</span><span class="o">.</span><span class="n">RPC</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">move_active_pane_to_other_window</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move the active pane to the current tab of another</span>
-<span class="sd">        window. Picks the next window in app.terminal_windows.&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">move_active_pane_to_other_window</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">"""Move the active pane to the current tab of another</span>
+<span class="sd">        window. Picks the next window in app.terminal_windows."""</span>
         <span class="n">windows</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">terminal_windows</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">windows</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">return</span>
@@ -228,13 +227,13 @@ the rest of the Python API uses (<code class="docutils literal notranslate"><spa
 
         <span class="n">remaining</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">src_tab</span><span class="o">.</span><span class="n">sessions</span>
                      <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">session_id</span> <span class="o">!=</span> <span class="n">active</span><span class="o">.</span><span class="n">session_id</span><span class="p">]</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;tabs&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"tabs"</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="k">if</span> <span class="n">remaining</span><span class="p">:</span>
-            <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;tabs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="p">{</span><span class="s2">&quot;tab_id&quot;</span><span class="p">:</span> <span class="n">src_tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span> <span class="s2">&quot;root&quot;</span><span class="p">:</span> <span class="n">vrow</span><span class="p">(</span><span class="n">remaining</span><span class="p">)})</span>
-        <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;tabs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-            <span class="s2">&quot;tab_id&quot;</span><span class="p">:</span> <span class="n">dst_tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span>
-            <span class="s2">&quot;root&quot;</span><span class="p">:</span> <span class="n">vrow</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dst_tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">active</span><span class="p">]),</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s2">"tabs"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">"tab_id"</span><span class="p">:</span> <span class="n">src_tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span> <span class="s2">"root"</span><span class="p">:</span> <span class="n">vrow</span><span class="p">(</span><span class="n">remaining</span><span class="p">)})</span>
+        <span class="n">spec</span><span class="p">[</span><span class="s2">"tabs"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">"tab_id"</span><span class="p">:</span> <span class="n">dst_tab</span><span class="o">.</span><span class="n">tab_id</span><span class="p">,</span>
+            <span class="s2">"root"</span><span class="p">:</span> <span class="n">vrow</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dst_tab</span><span class="o">.</span><span class="n">sessions</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">active</span><span class="p">]),</span>
         <span class="p">})</span>
         <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_apply_layout</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">move_active_pane_to_other_window</span><span class="o">.</span><span class="n">async_register</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
@@ -244,7 +243,7 @@ the rest of the Python API uses (<code class="docutils literal notranslate"><spa
 </div>
 </section>
 <section id="notes">
-<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><strong>Atomicity.</strong> The whole spec is validated before any mutation
 begins, so a malformed spec leaves the workspace untouched. If a
@@ -294,11 +293,11 @@ it instead). <code class="docutils literal notranslate"><span class="pre">apply_
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018, George Nachman.
+      &#169;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/examples/apply_layout.rst.txt"

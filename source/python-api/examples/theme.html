@@ -2,18 +2,17 @@
 <!DOCTYPE html>
 
 
-<html>
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Change Color Presets On Theme Change &#8212; iTerm2 Python API 0.26 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=6eb5f756"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="HandheldFriendly" content="True">
@@ -81,20 +80,20 @@
 	  <div class="body" role="main">
 	    
   <section id="change-color-presets-on-theme-change">
-<span id="theme-example"></span><h1>Change Color Presets On Theme Change<a class="headerlink" href="#change-color-presets-on-theme-change" title="Permalink to this headline">¶</a></h1>
+<span id="theme-example"></span><h1>Change Color Presets On Theme Change<a class="headerlink" href="#change-color-presets-on-theme-change" title="Link to this heading">¶</a></h1>
 <p>This script changes the color presets of all profiles when the theme changes. It demonstrates <cite>VariableMonitor</cite>, which lets you know when a variable changes. It also demonstrates how to use color presets.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">iterm2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">iterm2</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">theme</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">theme</span><span class="p">):</span>
     <span class="c1"># Themes have space-delimited attributes, one of which will be light or dark.</span>
-    <span class="n">parts</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">&quot;dark&quot;</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
-        <span class="n">preset</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">ColorPreset</span><span class="o">.</span><span class="n">async_get</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Dark Background&quot;</span><span class="p">)</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"dark"</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+        <span class="n">preset</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">ColorPreset</span><span class="o">.</span><span class="n">async_get</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">"Dark Background"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">preset</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">ColorPreset</span><span class="o">.</span><span class="n">async_get</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">&quot;Light Background&quot;</span><span class="p">)</span>
+        <span class="n">preset</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">ColorPreset</span><span class="o">.</span><span class="n">async_get</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="s2">"Light Background"</span><span class="p">)</span>
 
     <span class="c1"># Update the list of all profiles and iterate over them.</span>
     <span class="n">profiles</span><span class="o">=</span><span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">PartialProfile</span><span class="o">.</span><span class="n">async_query</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
@@ -103,10 +102,10 @@
         <span class="n">profile</span> <span class="o">=</span> <span class="k">await</span> <span class="n">partial</span><span class="o">.</span><span class="n">async_get_full_profile</span><span class="p">()</span>
         <span class="k">await</span> <span class="n">profile</span><span class="o">.</span><span class="n">async_set_color_preset</span><span class="p">(</span><span class="n">preset</span><span class="p">)</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">async_get_app</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">update</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_get_variable</span><span class="p">(</span><span class="s2">&quot;effectiveTheme&quot;</span><span class="p">))</span>
-    <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableScopes</span><span class="o">.</span><span class="n">APP</span><span class="p">,</span> <span class="s2">&quot;effectiveTheme&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
+    <span class="k">await</span> <span class="n">update</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">async_get_variable</span><span class="p">(</span><span class="s2">"effectiveTheme"</span><span class="p">))</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableMonitor</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">iterm2</span><span class="o">.</span><span class="n">VariableScopes</span><span class="o">.</span><span class="n">APP</span><span class="p">,</span> <span class="s2">"effectiveTheme"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">as</span> <span class="n">mon</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># Block until theme changes</span>
             <span class="n">theme</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mon</span><span class="o">.</span><span class="n">async_get</span><span class="p">()</span>
@@ -145,11 +144,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018, George Nachman.
+      &#169;2018, George Nachman.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/examples/theme.rst.txt"
