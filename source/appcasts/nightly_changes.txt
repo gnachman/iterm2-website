@@ -1,3 +1,307 @@
+2026-10-16: Push relay: second instance with peer
+replication; apps fail over
+
+The push relay was a single instance, so a VPS outage at its
+host lost every push for hours. Add a second instance
+(push2.iterm2.com) and client failover, with no load
+balancer, so nothing is billed per request.
+
+Apps: CompanionPushRelay lists both hosts. The phone
+registers with the first that answers; the Mac pushes
+through the first that delivers. Both share one loop
+(tryInOrder) and move on unless the relay itself says the
+request is bad (400), or, for the Mac, rate limited (429),
+the APNs rejection is one any relay would get, or the secret
+was revoked ("bad secret"). After a failover the Mac prefers
+the host that worked for 5 minutes.
+
+Relays (host/peer.js, Node host only; src/worker.js
+unchanged): each relay queues every registration in a SQLite
+outbox before replying to the phone and forwards it to its
+peer's /peer/register, authenticated with a shared secret.
+A single drain loop sends live rows before backfill, backs
+off failing rows, and gives up a pass when the peer looks
+down. The receiver keeps the later registeredAt (relies on
+NTP) and writes atomically; a phone registration is stamped
+after anything the relay already held. Each relay resends
+everything at startup, on SIGUSR2, and when the peer's
+instance or boot id changes.  Shared APNs 4xx rejections go
+out as 422 so Cloudflare passes the reason through. SQLite
+now runs synchronous=FULL.
+
+Off unless PUSH_PEER_URL and PUSH_PEER_SECRET are set. See
+"Redundancy (two instances)" in
+Companion/PushRelay/ops/DEPLOY.md.
+
+2026-10-16: Make the live refusal scenario opt-in and soften
+its prompt
+
+The refusal scenario sent a bank phishing request to every
+model on every live sweep, and OpenAI flagged the account
+for suspected fraud.
+
+It now runs only when ITERM2_AI_LIVE_REFUSAL is set.
+"missing" sends the prompt only to models that lack a
+committed fixture; "all" refreshes every model. Cassette
+replay still runs it offline without the opt-in.  This
+replaces ITERM2_AI_LIVE_REFRESH_REFUSAL_FIXTURES. The prompt
+is now a low-severity request with no fraud or cyber
+framing.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-16: Keep launch-time prompts out of test hosts
+
+A modal window at launch blocks button and menu actions in
+the tests that follow, failing dozens of unrelated tests.
+Two could appear:
+
+- The crash reporter, whenever iTerm2 had crashed since it
+last reported.
+  Test hosts now skip it.
+- Sparkle's prompt asking whether to check for updates
+automatically.
+  Sparkle takes its suite from the -suite argument, so it
+  uses the shared base suite rather than the test host's
+  copy, and prompts when that lacks its settings. Test hosts
+  now give Sparkle a delegate that never prompts or checks.
+
+2026-10-16: Report archive failures and fix more values that
+broke saved files
+
+Session archives and window arrangements saved to a file are
+property lists. Follow-ups to the hyperlink fix for issue
+13143:
+
+- propertyListData returned the empty contents of a temp
+file when
+  serialization failed, so archiving wrote an empty archive
+  and reported success. It now returns nil, and archiving
+  shows its failure notification. The output on success is
+  unchanged.
+- Bidi info stored ranges as NSValue, which broke saving
+lines with
+  right-to-left text. Ranges are now [location, length]
+  pairs. Older saves still load, and malformed or
+  overflowing ranges are dropped instead of crashing.
+- Automatic profile switching stored NSNull for missing
+values. Missing
+  values are now omitted, saved entries are type-checked on
+  load, entries without an original profile are dropped, and
+  popping the stack can no longer loop forever when an
+  original profile is nil.
+
+Issue 13143
+
+2026-10-16: Isolate test hosts' settings and stop hung test
+runs
+
+Parallel test hosts shared one settings domain, Application
+Support folder, and config folder. A setting one test
+changed was visible to the other workers, only one worker
+could open the chat database, and a worker that crashed or
+was killed before its teardown left the setting changed for
+every later run. A test host launched with -suite NAME now
+uses its own suite, NAME.<pid>-<random>, seeded from NAME,
+which is never written.  State left by test hosts that are
+no longer running is removed at launch.
+
+run_tests.expect now treats 300 seconds without output as a
+hang. It saves each test host's process state and stacks to
+tmp/test-stall-*.txt, prints which test each host was in,
+and kills the run. The live harness scripts allow 30 minutes
+because a single live test can wait minutes.
+RUN_TESTS_STALL_SECONDS overrides the limit, and 0 turns it
+off.
+
+2026-10-16: Don't crash highlighting a composer that has no
+delegate
+
+iTermMinimalComposerViewController forwards the syntax
+highlighter request to its own delegate and returns nil when
+there isn't one, but ComposerTextViewDelegate declared the
+result non-optional, so Swift crashed calling highlight on
+it. This happened in the Cockpit composer tests and could
+happen when a rate-limited highlight fires after a
+composer's delegate is gone. Make the result optional and
+skip highlighting when it's nil.
+
+2026-10-16: Add a non-interactive stable release script
+
+release_stable_noninteractive.sh is the unattended
+counterpart of release_stable.sh, modeled on
+release_beta_noninteractive.sh. It reads secrets from the
+keychain, takes release notes from docs/notes-<version>.txt,
+and runs all cheap checks before building.
+
+Stable-specific behavior: - Releases from master or a
+release branch, as long as HEAD matches
+  origin.
+- Writes full_changes.txt, the stable changelog, .htaccess,
+and both
+  final appcasts.
+- Publishes the shell integration commit this release ships
+to the
+  website, after checking that the submodule matches HEAD
+  and is pushed.
+- Fails after the build if it modified tracked files, which
+means the
+  string catalog and translations are out of date.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-16: Sync the website's shell integration submodule
+on stable release
+
+release_stable.sh now checks out the
+iTerm2-shell-integration commit this release ships in
+~/iterm2-website and republishes its scripts with
+copy-shell-integration.sh, so the website no longer drifts
+behind the app. Before prompting for passwords it verifies
+that the local submodule is clean, matches the commit
+recorded in HEAD, and is pushed to origin.  The website is
+only modified after the build succeeds.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-16: PushRelay: recover from dead APNs connections;
+add APNs health stats
+
+A long-idle HTTP/2 session to Apple could die silently (no
+TCP keepalive), after which every push timed out until a
+restart, and nothing was logged because the worker turns the
+throw into a 500.
+
+- apns.js: discard + evict the session on a request timeout;
+replace sessions
+  idle > 5 min; open at most one new connection per second
+  per APNs host so an outage can't turn every push into a
+  connect attempt; telemetry hook.
+- server.js: log any 5xx on /push and /push/mutable.  -
+metrics: push_failed, apns_rejected{reason}, APNs latency
+histogram, connection
+  health counters, session gauges, last-delivery timestamp.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+2026-10-16: Fix release script checks that failed under
+pipefail
+
+grep -q exits on the first match, which can SIGPIPE the
+producer and make the pipeline fail even though the match
+succeeded.
+
+2026-10-16: Sync Password Manager export strings into the
+string catalog
+
+2026-10-16: Add Password Manager export to 3.7.7beta1
+release notes
+
+2026-10-16: Add a non-interactive beta release script
+
+tools/release_beta_noninteractive.sh builds, notarizes,
+signs, and publishes a beta without prompting. Secrets come
+from the login keychain: the Sparkle EdDSA key as a generic
+password, notarization via a notarytool keychain profile,
+and the gpg passphrase via pinentry-mac.  Release notes come
+from the committed docs/notes-<version>.txt instead of vi
+edits. Cheap checks run before the build, the website is
+published before the tag is pushed, and only the release's
+own website files are committed. A rebuild replaces the
+existing zip and moves the tag.  --no-publish stops before
+tagging, committing, or pushing.
+
+2026-10-16: Add release notes for 3.7.7beta1
+
+2026-10-16: Export and import Password Manager passwords.
+Issue 7471.
+
+Passwords saved with the Keychain password manager can be
+exported to a passphrase-encrypted .iterm2passwords file and
+imported on another Mac, from the password manager's menu,
+by opening the file, or as an optional part of Export/Import
+All Settings and Data.
+
+- SignedArchive gains passphrase encryption: AES-256-GCM
+with a PBKDF2
+  key (NFC-normalized passphrase, bounded iteration count),
+  the header and metadata bound as AAD. The extract tool can
+  decrypt.
+- Import asks about each conflict, with Always/Never
+Replace, skips
+  identical passwords, and reports partial progress on
+  failure.
+- Export and import always authenticate first.  - SSKeychain
+reports an error for an empty or non-UTF-8 password instead
+  of returning nil without one.
+- The Makefile builds non-Development configurations into
+their own
+  intermediates folders so switching doesn't leave a stale
+  PCH, and adds run-deployment.
+
+2026-10-16: Bump Companion marketing version to 1.3
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-16: Fix the Python API docs build
+
+Build in a private venv with sphinx-autodoc-annotation and
+the iterm2 package's runtime dependencies instead of relying
+on whichever sphinx-build is on the PATH. Update
+intersphinx_mapping to the format current Sphinx requires,
+exclude the venv from the docs sources, and regenerate
+menu_ids.rst.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-16: Re-sign example .its files with the current
+Developer ID Application certificate
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-16: Fix saving arrangements and archives that
+contain hyperlinks
+
+Window arrangements saved to a file with contents and
+session archives are written as property lists, which only
+allow string dictionary keys.  iTermExternalAttributeIndex
+encoded hyperlinks, underline colors, and similar per-cell
+attributes in a dictionary keyed by NSNumber, so
+serialization failed. The arrangement file was silently
+never written and the session archive was empty.
+
+Encode the index with string keys and accept both string and
+legacy NSNumber keys when decoding, so existing restorable
+state still loads.  Show an error when writing an
+arrangement file fails instead of discarding it.
+
+Issue 13143
+
+2026-10-16: Strip HTML tags from the profile name in window
+titles
+
+With Support basic HTML tags in tab titles on, the window
+title strips tags from every title source except the profile
+name, so a profile named <b>Work</b> with the Profile Name
+or Profile & Session Name component showed the literal tags
+in the native window title.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-16: Render HTML title tags in pane title bars
+
+With Support basic HTML tags in tab titles on, tabs render
+<b>, <i>, and <u>, but the per-pane title bar set its label
+from the plain string, so the tags showed up literally. It
+now runs the title through the same parser the tab bar uses
+before applying PUA fonts.
+
+The native window title is plain text, so a window title
+shows the text without the tags. That already held for
+titles from the session name, but a window name set by a
+program (OSC 0/2) or by tmux was returned verbatim, tags
+included. Every window-title source is now stripped.
+
 2026-10-15: Let KeePassXC remember browser basic-auth
 passwords
 
