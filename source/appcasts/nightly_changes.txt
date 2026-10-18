@@ -1,3 +1,37 @@
+2026-10-17: Fix a main-thread hang waiting on the Metal
+layer lock. Issue 13139
+
+iTermMetalLayerBox holds its lock across
+CAMetalLayer.nextDrawable() on the get-drawable queue, and
+the layer's drawable timeout was disabled, so a fetch could
+hold the lock forever when the drawable pool drained (for
+example under heavy memory pressure). The main thread then
+blocked on the same lock in per-frame property accesses and
+never recovered.
+
+- Re-enable the layer's drawable timeout so nextDrawable()
+holds the lock
+  for at most about a second. A fetch that completes with a
+  nil drawable ends the frame instead of retrying, so the
+  retry loop can't spin.
+- Skip the lock in the presentsWithTransaction setter, which
+runs every
+  frame, when the cached value already matches.
+- Move the zero-size check into
+iTermMetalLayerBox.nextDrawable() so it
+  runs under the lock. It throws, the fetch rejects its
+  promise, and the retry loop no longer asserts that every
+  rejection is a timeout or reuses a failed promise.
+- Add TimedMutex and use it for the layer lock. Setting the
+drawable size
+  defers while our own fetch is outstanding; fetchDrawable
+  waits on that fetch (bounded by the drawable timeout) and
+  then applies the size, and won't hand out a drawable until
+  it has. Main-thread waiting per frame stays bounded by the
+  drawable timeout.
+- Add iTermPromiseErrorDomain instead of repeating the
+literal.
+
 2026-10-16: Push relay: second instance with peer
 replication; apps fail over
 
