@@ -1,3 +1,75 @@
+2026-10-19: Fix Caps Lock reports when it switches input
+sources. Issue 13136
+
+With the Kitty keyboard protocol on and macOS set to switch
+input sources with Caps Lock, macOS changes the lock state
+with synthetic flags-changed events that have keyCode 255.
+These had no key number, so they were reported as malformed
+sequences like CSI 1:3 u, which some apps read as Control-C.
+
+Treat a lock-state change from an unknown key code as Caps
+Lock. When the setting is on, report nothing for a tap that
+switches input sources, and report a press and release when
+a hold or tap leaves the lock state changed. Never send a
+flags-changed report without a key number.
+
+Add unit tests for each recorded event sequence, harness
+steps for them, and a script that prints the key reports a
+terminal sends.
+
+2026-10-19: Recycle Snippets tool cells and reset their
+icons on reuse
+
+The cell views never set their own identifier, so
+makeViewWithIdentifier: never recycled them. Set it so it
+does. Folders and snippets share a reuse identifier, so also
+set the icon and tint each time a cell is used rather than
+only when it is created; otherwise a recycled cell shows the
+other kind's icon.
+
+2026-10-19: Keep Auto Layout out of the terminal window.
+Issue 13118.
+
+With the Minimal or Compact theme and the Snippets tool
+enabled in the toolbelt, a window could be made wider but
+not narrower. The inline AI chat panel caused the same
+thing.
+
+Any constraint in a terminal window engages the layout
+engine for the whole window. AppKit then turns every
+manually laid out view's autoresizing mask into constraints
+and clamps live resizes to the content view's fitting size.
+Several hidden views keep stale frames whose fixed margins
+become a minimum width: the hidden tab bar backing
+(CGRectZero since the layout calculator refactor, so the
+minimum was the current width and the window ratcheted), and
+the hidden toolbelt and fake title label (a fixed floor when
+the tab bar is shown).
+
+The Snippets cells pinned their text field and icon with
+constraints.  Lay out IconTableCellView by hand in layout(),
+and use it for the plain cell too. ChatInputView turned off
+translatesAutoresizingMaskIntoConstraints on its subviews
+even though it lays them out by hand; that gave its buttons
+and hint label content-size constraints. Stop doing that.
+
+An audit of code, xibs, the browser plugin and the inline
+chat found no other constraints in the terminal window.
+
+2026-10-19: Size tmux panes with each pane's own right
+gutter
+
+When applying a tmux layout, every leaf was sized with the
+window profile's right extra and no session, so right-gutter
+panels (clippings, inline chat) and per-pane adjacent
+timestamps were ignored. The pane showing them was too
+narrow for its grid, the panel covered the ends of its
+lines, and the window was left with an empty strip on the
+right.  Annotate each leaf with its session's
+desiredRightExtra alongside the toolbar flag and use it in
+the geometry pass, falling back to the profile only when the
+pane has no session yet.
+
 2026-10-17: Fix a main-thread hang waiting on the Metal
 layer lock. Issue 13139
 
