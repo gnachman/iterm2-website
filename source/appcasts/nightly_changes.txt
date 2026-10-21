@@ -1,3 +1,62 @@
+2026-10-20: Fix the setting name in the release note for
+issue 13145.
+
+2026-10-20: Make Hide Activity Indicator also hide the tab
+progress spinner. Issue 13145.
+
+OSC 9;4 progress drove the tab's activity indicator
+directly, bypassing the Hide Activity Indicator setting,
+which only gated the busy state.  PSMTabBarControl now asks
+its delegate whether to show activity indicators at all, and
+the window re-pushes processing state when settings change
+so toggling the setting takes effect immediately.
+
+2026-10-20: Honor disabled ligatures when not preferring
+speed to ligature support
+
+When the advanced setting preferSpeedToFullLigatureSupport
+is off, the legacy renderer shapes every run with CoreText
+but left the ligature level at the font's default even when
+ligatures were disabled. Fonts with a standard "fi" ligature
+drew it in one cell and left a gap. Set the ligature level
+to 0 when ligatures are disabled for the character's class.
+Issue 13133.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-20: Keep the kitty keyboard protocol across
+XTMODKEYS requests. Issue 13138
+
+CSI > Ps ; Pv m and CSI > Ps n used to zero the kitty
+keyboard flags and empty the push stack, so an app that
+pushed kitty flags and then asked for modifyOtherKeys (as
+Claude Code does) fell back to the modifyOtherKeys mapper,
+which never reports Command keys. kitty ignores these
+sequences and Ghostty keeps the kitty protocol in either
+order, so now they only record the modifyOtherKeys-style
+setting. Kitty flags already take precedence in the key
+mapper, and the recorded level takes effect once the app
+pops its flags. Full terminal resets still clear everything.
+
+Also fix an off-by-one in the CSI > Ps n bounds check.
+
+2026-10-20: Remove a stray conflict marker from the release
+notes
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-20: Add release note for it2dl bash path fix
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-20: Make it2dl find bash via env so it works where
+bash is not in /bin
+
+Bump the iTerm2-shell-integration submodule and recopy the
+utilities.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 2026-10-19: Fix Caps Lock reports when it switches input
 sources. Issue 13136
 
