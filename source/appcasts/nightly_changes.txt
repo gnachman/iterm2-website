@@ -1,3 +1,110 @@
+2026-10-21: Harden the x-man-page URL handler. Issue 5298.
+
+Validate man page names, apropos patterns, and sections
+against an explicit allowlist instead of the
+sanitizedCommand blacklist. The old code let a URL name a
+file path, which /usr/bin/man renders directly and whose .so
+directives it evals, and let an apropos pattern begin with a
+dash, which man.sh's second getopts pass reads as an option.
+
+An operand must now start with an ASCII letter, digit, or
+underscore and may contain only ASCII alphanumerics and . _
++ : @ -. Sections must be ASCII alphanumeric. Empty operands
+get their own warning instead of the disallowed-character
+one. The unused sanitizedCommand: helper is removed and the
+validators are exposed as class methods with unit tests.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-10-21: Fix vertically cropped Kitty images in the GPU
+renderer. Issue 13146.
+
+A direct Kitty placement's source frame is stored with a
+bottom-left origin, but the Metal renderer used it as a
+top-left texture rect, so a y=/h= crop sampled the mirrored
+band. Flip it first, as the unicode placeholder path already
+does. Adds unit tests and a manual repro script.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-21: Evaluate trigger-local interpolated parameters
+without pausing
+
+A trigger parameter written as an interpolated string was
+always evaluated with the session's variable scope, which
+costs a paused side effect. Token execution then stops until
+the main queue flushes side effects, which takes up to a
+second for a session that isn't visible.  tmux panes share
+TaskNotifier's reader thread, so a paused pane whose token
+queue fills blocks output in every session. Idempotent
+triggers like Make Hyperlink are rescanned constantly, so
+this happened often.  Issue 13160.
+
+Parameters that refer only to matches[N] and line are now
+classified once, cached, and filled in from a template on
+the mutation queue with no pause. Everything else is
+evaluated as before, but performBlockWithScope: now uses an
+urgent paused side effect so background sessions wait for
+the foreground flush period instead of the background one.
+
+2026-10-21: Fix the Make Hyperlink trigger's interpolated
+default parameter
+
+The interpolated default was https://\(match0), but no
+match0 variable exists. Trigger expressions get `matches`
+(an array) and `line`, so use https://\(matches[0]).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-21: Fix tab bar corruption when unpinning a tab left
+of the pin boundary. Issue 13154
+
+The reorder after a pin change and the pinned-zone clamp in
+moveTabAtIndex:toIndex: both computed the destination from
+the last pinned index in the current order. When the moving
+tab sat left of that boundary (unpinning any pinned tab but
+the rightmost, or mid-way through unpinning a group), the
+destination was one past the end, so PSMTabBarControl threw
+after removing the cell and its group chips, leaving the bar
+out of sync with the tabs.
+
+Count the other pinned tabs instead, guard against
+out-of-range destinations, unpin group members right to left
+so the group keeps its order, and add logging along the
+path.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-21: Release note for the xonsh shell integration fix
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-21: Update shell integration for the xonsh installer
+fix
+
+The installers now put the xonsh script in rc.d, where xonsh
+loads it.  The source line they wrote before never worked,
+so xonsh integration was installed but never loaded.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-21: Release note for the v2 shell integration
+installer fix
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-21: Download the v2 shell integration installer
+
+The Download and Run Installer path fetched
+install_shell_integration.sh from the legacy
+iterm2.com/shell_integration/ URL, which serves the frozen
+v1 installer. That installer downloads the v1 scripts, which
+are older than the versions 3.7 expects, so the out-of-date
+warning came back after every upgrade. Fetch the installer
+from /v2/ instead. Issue 13155.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 2026-10-20: Fix the setting name in the release note for
 issue 13145.
 
