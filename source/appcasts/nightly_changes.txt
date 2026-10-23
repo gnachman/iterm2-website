@@ -1,3 +1,79 @@
+2026-10-22: Send arrow keys and Tab an IME hands back after
+committing, not just Return and Backspace. Issue 13030
+
+An input method can commit its composition and then hand the
+keystroke back as a command selector. Only deleteBackward:,
+its decomposing variant, and insertNewline: were sent to the
+terminal. Any other selector, such as moveLeft: for an arrow
+key or insertTab: for Tab, was dropped along with its key.
+
+Add insertTab:, insertBacktab:, moveLeft:, moveRight:,
+moveUp:, and moveDown: to the selectors that are sent.
+
+Changes from the original version of this commit, made in
+review:
+
+- It originally sent every selector except noop:. A key
+bound to several
+  selectors (Option-Up is (moveBackward:,
+  moveToBeginningOfParagraph:)) calls doCommandBySelector:
+  once per selector, so the key reached the terminal twice.
+  It also would have started sending keys nobody had
+  checked, such as Ctrl-letters bound to editing selectors.
+  An explicit list keeps the change to the keys that were
+  tested.
+- The key is now sent at most once per keypress, even if a
+user's
+  DefaultKeyBinding.dict binds a key to a listed selector
+  more than once.
+- Added tests for a key bound to several selectors and for
+unlisted
+  selectors.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-22: Make tmux divider drags end where the window
+showed them (#796)
+
+When a divider in a tmux tab was dragged, the resize was
+sent as resize-pane to the first pane of the subview before
+it. tmux moves the divider of the nearest enclosing split of
+the same direction as seen from that pane, so with nested
+splits (three columns whose first column is itself split
+left/right) it moved the inner divider and the dragged one
+snapped back. Some dividers have no pane that can address
+them at all.
+
+Now the drag is sent as select-layout with a layout built
+from tmux's last layout, in which the two cells beside the
+divider get the sizes their panes were shown at, rounded to
+whole cells. Nested splits beside the divider share the
+change as the window previewed. Everything else keeps tmux's
+sizes. resize-pane, sent to a pane whose split owns the
+divider, is the fallback when no layout can be built
+(floating panes, a maximized pane, or a resize still waiting
+on tmux, since the layout would be stale). If neither works,
+the layout is fetched from tmux again.
+
+- The layout is quoted; unquoted, tmux parses its braces as
+a command
+  block.
+- A moved-divider layout counts as an outstanding resize
+until tmux
+  replies. If tmux rejects it, the layout is re-synced.
+- Commands that tmux should always be able to run can now be
+flagged to
+  report a malformed-command error (a critical error in
+  debug builds, an RLog otherwise) instead of being
+  tolerated silently.
+- iTermTmuxLayoutBuilder placed nested splits at the wrong
+offsets.  - The new controller methods do nothing after a
+detach.
+
+Based on a fix by breakerr, who found the nested-split case.
+
+Co-authored-by: breakerr <breakerr@qq.com>
+
 2026-10-21: Harden the x-man-page URL handler. Issue 5298.
 
 Validate man page names, apropos patterns, and sections
