@@ -1,3 +1,64 @@
+2026-10-23: Hide the AI chat submit hint when a long
+placeholder would overlap it
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-23: Pick an AI chat @-mention by clicking the
+session
+
+While an @-mention is being composed in an orchestration
+chat, every session shows the same Select this Session
+overlay used by Link this session, so the user can click the
+one they mean instead of hunting through the picker. The
+overlay also has a Reveal Chat button that returns to the
+chat with the partially typed mention, switching tabs for a
+chat in a session's sidebar.
+
+The session buttons stay up while a sidebar chat's tab is
+not selected and come down when the mention is finished,
+dismissed with Escape, or the chat is hidden, closed,
+detached, or its host session terminates.
+
+SessionSelector now notifies session views whenever the top
+request changes, not only when the stack empties, so stacked
+link and mention requests don't leave stale overlays. The
+overlay is centered over the terminal area rather than over
+a side panel.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-23: Make browser sessions work in iTerm2 Buddy
+
+Streaming a web browser session showed a black screen, and
+an AI chat that tried to run a command in a browser session
+linked as a terminal spun forever. Browser sessions now
+stream snapshots of the web view and are interactive from
+the phone.
+
+Mac: - Stream web view snapshots for browser sessions.  -
+Deliver taps, scrolls, and keys from the phone to the page.
+- Tell the phone when a text field has focus, checking the
+focused
+  element directly since the window is usually not key.
+- Draw a blinking insertion point into the frames when
+WebKit does not.  - Back, forward, reload, stop, and load
+typed text (URL or search).  - Report whether each listed
+session is a browser.  - A browser session can never be
+linked as a chat's terminal (or the
+  reverse); existing chats are repaired, including swapped
+  links.
+- A remote command that fails to start is reported to the
+model and the
+  user instead of leaving the turn hanging.
+
+Phone: - Tap to click, drag or flick to scroll, and pinch to
+zoom.  - The keyboard follows text field focus, with a
+toolbar toggle.  - Browser controls with an address field.
+- A globe icon for browser sessions in session lists.
+
+Protocol revision 15 adds the browser messages; minimumPeer
+stays 11.
+
 2026-10-22: Send arrow keys and Tab an IME hands back after
 committing, not just Return and Backspace. Issue 13030
 
