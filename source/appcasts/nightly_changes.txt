@@ -1,3 +1,3073 @@
+2026-10-24: Drop Tahoe tab bar insets when using
+Sequoia-style tabs. Issue 12498.
+
+With useSequoiaStyleTabs on macOS 26, tabBarInsets still
+returned the insets sized for the Tahoe pill, leaving
+padding to the left, right, and below the tabs and making
+the add-tab button taller than the tabs.  Return zero insets
+instead, matching earlier OS versions.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-24: 3.7.6 release notes
+
+2026-10-24: Show a globe on mention chips for browser
+sessions
+
+An @-mention chip for a web browser session showed the
+terminal icon. The mention picker now reports the icon with
+its choice, and chips rebuilt from tokens resolve the
+session to choose it.
+
+QA finding F-480.
+
+Show a globe on sent mentions of browser sessions
+
+A sent message's @-mention of a web browser session showed
+the terminal icon even though its chip in the message field
+showed a globe. Message bubbles now choose the icon the same
+way chips do, and a mention of a session that no longer
+exists keeps the terminal icon.
+
+QA finding F-501.
+
+2026-10-24: Return xonsh to its prompt after the
+Internet-Free install
+
+The Internet-Free shell integration install left xonsh users
+in the helper sh after writing the script. Two things caused
+it. The step that writes the script built its nested helper
+launch through an out parameter, which ARC passes as nil, so
+that launch started a chain of its own and was typed at the
+same moment as the outer one. And for xonsh the first
+command after a launch was typed as soon as xonsh echoed the
+launch. xonsh's line editor reads typeahead in bulk, like
+nushell's, so it kept those commands and ran them after the
+helper exited, starting a helper sh nobody exits.
+
+The expectation parameters are now inout so each step is one
+chain, and for xonsh, as for nushell, the installer waits
+for the helper's own prompt (not a wrapped row of the echo)
+before typing into it.
+
+QA finding F-436.
+
+2026-10-24: Render a streamed reply's final code block as
+code
+
+A streamed AI reply can end with a space after the closing
+fence. SwiftyMarkdown treated the whitespace-only last line
+as a setext heading underline, turning the last code line
+into a heading, and did not accept a closing fence with
+trailing whitespace. Normalize fence lines and blank
+whitespace-only lines outside code blocks before rendering.
+
+QA finding F-437.
+
+2026-10-24: Keep Session.preferred_size in step with layout
+changes in the Python API
+
+A Session's preferred_size was set from its grid size when
+the object was created and never refreshed. The App reuses
+Session objects across layout changes (update_from copies
+the new grid size but left the preferred size alone), so
+after async_split_pane() the original session still
+preferred its pre-split width. A no-op
+Tab.async_update_layout() then sent that stale width and the
+server grew the pane and the window back to it, past the
+screen edge.
+
+The server cannot tell a stale size from a requested one, so
+this is fixed in the client: preferred_size now follows the
+session's actual size on every layout refresh, unless the
+script has set it and async_update_layout() has not applied
+it yet.
+
+QA finding F-500.
+
+2026-10-24: Report -compare-rendering image save failures as
+errors
+
+The rendering comparer ignored whether its three PNGs were
+written, so run from an unwritable working directory it
+printed their paths and RESULT: PASS although none of the
+files existed.
+
+Saving and reporting now live in
+iTermRenderingComparer.saveAndCompare, which reports each
+failed save as an ERROR line, prints RESULT: ERROR, and
+returns a nonzero exit status. NSImage saveAsPNGTo: now
+returns whether it succeeded, and iTermImageComparison
+reports whether the diff image was written. Since
+NSApp.terminate always exits with status 0, a nonzero status
+is applied from an atexit handler after AppKit finishes
+terminating. The comparer's other ERROR paths exit nonzero
+too.
+
+QA finding F-435.
+
+2026-10-24: Stop counting the next prompt in Command Info's
+output size
+
+The output coord range for a command mark is half-open: it
+ends at column 0 of the next prompt's line. PTYTextView
+converted it to a line range inclusively, so the Output row
+counted the next prompt and any command typed at it ("echo
+HELLO" showed 39 bytes in 2 lines, "sleep 2" showed the
+27-byte prompt). The conversion now lives in -[VT100Screen
+lineRangeOfOutputForCommandMark:] and excludes that line.
+
+Also fix the size of output in scrollback:
+numberOfCellsUsedInRange: counted to the end of history for
+a range wholly in history, and LineBuffer's
+numberOfCellsUsedInWrappedLineRange:width: dropped the
+range's last line.
+
+QA finding F-419.
+
+Stop counting zsh's PROMPT_SP padding in Command Info's
+output size
+
+When output does not end in a newline, zsh's PROMPT_SP
+writes its inverse eol mark (% or #) after it and pads with
+spaces until the line wraps, so the next prompt starts on a
+new line. The output's last line then held the mark and a
+line's worth of spaces, and "printf abc" in a 195-column
+window showed 196 bytes.
+
+The OSC 133 D sequence arrives from precmd, after PROMPT_SP
+has already written the padding, so the cursor position at D
+does not mark the end of the output. Instead, when the
+output's last line soft-wraps into the next prompt's line
+and ends in an inverse % or # followed by spaces, those
+cells are not counted. Spaces before the mark belong to the
+output and are kept. If the mark is missing (an empty
+PROMPT_EOL_MARK) nothing is trimmed, so real output is never
+undercounted.
+
+QA finding F-350.
+
+2026-10-24: Translate Type @ as a verb in the Chinese
+Cockpit hints
+
+The Simplified Chinese Cockpit composer hint read @ (Input
+type: @ choose sessions), treating Type as the noun . The
+Type @ to pick a session status had the same mistake ( @ ).
+Use the verb  in both:  @  and
+ @ .
+
+QA finding F-512.
+
+2026-10-24: Shorten the German Undo timeout label in profile
+Session settings
+
+The German label above the Undo seconds field in Settings >
+Profiles > Session measured 561pt in the system font, wider
+than its 551pt clipping frame, so the trailing n: was cut
+off. Reword it as Sekunden, in denen Rckgngig eine
+geschlossene Sitzung wiederherstellen kann: (511pt), and add
+a test that every languages label fits the frame.
+
+QA finding F-511.
+
+2026-10-24: Make Find in Settings focus its search field
+
+With the Settings window key over a terminal window, Edit >
+Find > Find opened the find bar in the terminal behind
+Settings. Settings is a panel, so the terminal stays the
+main window, and nothing in Settings' responder chain
+handled performFindPanelAction:, so AppKit fell through to
+the main window's chain.
+
+PreferencePanel now handles Find by focusing its search
+field, and disables the other find panel actions. Settings'
+field editor forwards Find to it, since otherwise the field
+editor claims the action and disables it.
+
+QA finding F-418.
+
+2026-10-24: Size the Session Status priority popover to its
+translations
+
+The Session Status gear popover was a fixed 280 points wide
+with a fixed 44 point Notify column, so in German the column
+header read Bena and the Arbeitsgruppenstatus zusammenfhren
+checkbox was clipped. Measure the localized checkbox titles,
+Notify header and instructions, and widen the popover, the
+column, or the instructions as needed. English keeps its
+original size.
+
+QA finding F-496.
+
+2026-10-24: Dim the FFM subviews option on first show when
+FFM is off
+
+In Settings > Pointer, even to views like Search or Composer
+was enabled when the pane first appeared with Focus Follows
+Mouse off. Its shouldBeEnabled block was assigned after
+defineControl:, which had already updated the enabled state
+while no rule existed, and nothing updated it again until
+Focus Follows Mouse changed. Update the enabled state once
+the rule is in place.
+
+QA finding F-417.
+
+2026-10-24: Decode HTML tab title entities even when there
+is no tag
+
+With HTML tab titles on, newAttributedStringWithHTML:
+treated a title as HTML only if it contained <b>, <i> or
+<u>. A title that escaped only & or < (as a program must to
+show a literal <b>) was shown with raw entities, while the
+same text next to a bold word was decoded.
+
+Also take the HTML path when the title contains &lt; or
+&amp;, the two entities the parser decodes. Python API
+status bar components, which always go through this parser,
+now decode those entities without a tag too, consistent with
+how they already did with one.
+
+QA finding F-348.
+
+2026-10-24: Give the tab group context menu the window's
+appearance
+
+A tab's context menu takes its appearance from the window
+(or, in the Minimal theme, from the decoration background
+color), but the tab group pill's menu had none, so it was
+drawn in the system appearance when that differed from the
+window's.
+
+Move the appearance choice into a helper and use it for both
+menus.
+
+QA finding F-416.
+
+2026-10-24: Stamp a command mark's start date once for both
+thread copies
+
+Command Info showed Running Time: 0:-1.999 for any quick
+command.  setFirstLineOfCommand: stamped startDate with
+[NSDate date]. It runs inside a mutateObject block, which is
+replayed on the main-thread doppelganger when the threads
+next sync. For a quick command the C (command start), D and
+next A all arrive before that sync, so the doppelganger's
+startDate was stamped after its endDate (captured when D
+arrived), giving a running time of about -1 ms. The
+formatter then floored that to 0:-1.999.
+
+Capture the start date once, outside the mutation block, so
+the progenitor and the doppelganger agree, for both the
+shell integration and auto-composer paths. Also clamp
+negative intervals to zero in formattedHMS.
+
+QA findings F-415 and F-315.
+
+2026-10-24: Pick the URL search pane with the logical
+coordinate
+
+urlActionForClickAtCoord: and urlForCopyAtCoord: limit the
+URL search to the pane between column dividers. Divider
+columns are found in logical space, but the window was
+chosen with the visual coordinate under the pointer. On a
+reordered right-to-left row that touches a divider (a
+non-integration tmux split, for example), the visual column
+can be on the other side of the divider, so the search was
+confined to the wrong pane and the URL was not detected.
+
+Now both pass the logical coordinate they already computed.
+
+QA finding F-076.
+
+Hit-test a reordered URL's visual range in its drawn columns
+
+Cmd-hover underlines a URL only when the pointer is inside
+the URL action's visual range. That range kept the column
+window of the pane around the URL, which is in logical
+columns. On a right-to-left row in a non-integration tmux
+split, the URL can be logically right of the pane divider
+but drawn left of it, so no cell of the URL was ever inside
+its own visual range and nothing was underlined. Quick Look,
+drag and the context menu use the same check.
+
+visualWindowedRangeForLogical: now widens the column window
+to cover the columns the range is drawn in when bidi is on.
+
+The context menu's Copy for a URL action built a selection
+from the visual range, but selections are logical, so on a
+reordered row it copied the wrong cells (and with the wider
+window, more of them). It now uses the logical range.
+
+QA finding F-456 (follow-up to F-076).
+
+Bound every cell of a reordered range when finding its
+visual range
+
+Cmd-hover underlines a URL only when the pointer is inside
+the URL action's visual range, and otherwise leaves the old
+underline alone.  visualRangeForLogical: built that range
+from the visual positions of the range's first and last
+logical cells. A URL that ends in right-to-left text (such
+as https://example.com/ followed by a Persian letter) is not
+drawn in one run, so those two cells are not its visual
+edges and most of the URL fell outside its own visual range.
+Moving the pointer from another URL straight onto that part
+kept the other URL underlined.
+
+With bidi on, the visual range now spans the visual columns
+of every cell on its first and last rows.
+
+QA finding F-427.
+
+Test URL hover over every cell of a URL ending in RTL text
+in a tmux split
+
+QA found that in a non-integration tmux split, Cmd-hover
+underlined https://example.com/ followed by a Persian letter
+only over its first few drawn cells. The URL action's visual
+range was built from the visual positions of its first and
+last logical cells, which on that row span only the first
+three drawn cells. 89d9078fb (F-427) already fixed this by
+bounding every cell of a reordered range.
+
+This adds a regression test with QA's rows (t20l.sh in the
+left pane, t20r.sh in the right) that checks every drawn
+cell of the URL finds it and falls inside its visual range.
+It fails without 89d9078fb.
+
+QA finding F-495.
+
+Drop a redundant nil coalescing in BidiURLDividerTests
+
+VT100GridWindowedRangeDescription returns a non-optional
+String, so the ?? "" in two failure messages only produced
+compiler warnings.
+
+Found while landing QA finding F-495.
+
+2026-10-24: Make each GPU-unavailable reason a complete
+sentence
+
+Help > GPU Renderer Availability built its message by
+injecting a separately localized reason fragment into GPU
+rendering is off in the current session because %@. The
+fragments did not all fit the frame (because This tab has
+too many split panes, with a capital and no period), and
+translations could not reorder or reinflect them.
+
+Each reason is now its own complete localized sentence,
+shown as is, with German, Japanese, Brazilian Portuguese,
+Russian and Simplified Chinese translations. A few English
+reasons were also reworded to read correctly in the
+sentence.
+
+QA finding F-429.
+
+2026-10-24: Restore a float's place in the z-order on Undo
+Close
+
+Undo Close of a float installed it in front of the other
+floats. A maximized float fills the tab and is normally kept
+behind the other floats so they stay visible, so after Undo
+Close it covered them all.
+
+Both the live and the archived Undo Close paths now move the
+float just behind the backmost float that the closed tab's
+arrangement had in front of it, which is where it was. If
+none of those are still in the tab it stays in front, as
+before.
+
+QA finding F-428.
+
+2026-10-24: Show an error instead of crashing on a damaged
+script archive certificate
+
+Importing a .its script archive whose embedded signing
+certificate was corrupt crashed iTerm2 with "CFRelease()
+called with NULL". SIGCertificate's initWithData: returned
+nil when SecCertificateCreateWithData failed, and its
+dealloc then released the NULL SecCertificateRef.
+
+Guard every NULL CF path on the signature verification
+route: - SIGCertificate dealloc releases only a non-NULL
+certificate, and
+  initWithSecCertificate: returns nil for NULL instead of
+  retaining it.
+- certificateInArray: no longer passes a NULL subject to
+CFEqual.  - name initializes its out-parameter so a
+certificate without a common
+  name does not release stack garbage.
+- SIGArchiveVerifier fails with a malformed-certificate
+error when the
+  signing certificate has no extractable public key, and
+  stops when the archive has no certificates instead of
+  continuing with an error set.
+
+Verification now fails with
+SIGErrorCodeInputMalformedCertificate, which the importer
+shows as an alert.
+
+QA finding F-414.
+
+Balance Core Foundation ownership in SignedArchive
+
+SIGIdentity's initWithSecIdentity: stored the identity
+without retaining it but released it in dealloc. That only
+worked because allSigningIdentities leaked the keychain
+result array that held the identities. The initializer now
+retains, and the array is released.
+
+Also fix leaks in the same classes: - signingCertificate
+released no reference from SecIdentityCopyCertificate.  -
+longDescription and serialNumber leaked the CFErrorRef on
+failure.  - certificateIsRootWithName: leaked the anchor
+certificate array.  - secCertificateWithName: leaked the
+keychain result array; it is now
+  copySecCertificateWithName:, returning a retained
+  certificate that issuer releases.
+- SIGTrust's evaluateTrust: leaked the CFErrorRef, and a
+failed
+  evaluation without an underlying error reported no error,
+  so the script importer showed "Unknown error". It now
+  reports a trust error.
+
+Found while fixing QA finding F-414.
+
+2026-10-24: Clear the unsaved-settings indicator after Save
+Now
+
+With settings loaded from a custom folder and saved
+manually, the red "!" in the Settings title bar shows that
+local settings differ from the folder's.
+UserDefaultsUnsavedController rechecked only on
+UserDefaults.didChangeNotification, and Save Now writes the
+folder's plist without changing any local default, so the
+indicator stayed until the Settings window was reopened.
+
+iTermRemotePreferences now posts
+iTermRemotePreferencesSavedPrefsDidChangeNotification on the
+main thread whenever its saved copy of the folder's prefs is
+replaced, and the controller rechecks when it arrives. When
+saving automatically it only rechecks to clear an indicator
+that is showing, since an autosave snapshots defaults off
+the main thread and an edit made since then would otherwise
+flash the indicator.
+
+QA finding F-494.
+
+2026-10-24: Lay out the Minimal title again when only its
+subtitle changes
+
+In the Minimal theme a one-tab window draws its title and
+the profile's subtitle in place of the tab bar, in a label
+sized for one line or two.  A window from Shell > New Window
+gets its title before the session's path is known, so the
+label was laid out for one line. When the subtitle arrived
+later and the title stayed the same, PseudoTerminal only
+called -[iTermRootTerminalView setSubtitle:], which updated
+the label's text but not its frame, so the second line
+stayed clipped until a resize laid the window out again.
+
+setSubtitle: now relays out the window pane decorations when
+the subtitle changes, as windowTitleDidChangeTo: already
+does for the title.
+
+QA finding F-413.
+
+2026-10-24: Report a dead key's leftover character as the
+dead key in CSI u
+
+With kitty keyboard flags that report all keys as escape
+codes, a dead key followed by a key it doesn't compose with
+(German dead ^ then <) makes Cocoa insert the dead key's
+character and then the second key's text, both while the
+second key is the current event. Each insertion was encoded
+from the current event's key code, so the application got
+the second key's report twice and never saw the ^.
+
+The mapper now remembers a dead key press until the next key
+down. If the first text inserted for that key press is what
+the dead key types on its own (the key translated by the
+layout, or its charactersIgnoringModifiers), it is reported
+as the dead key's press.  Later insertions, text inserted
+outside that key press, and compositions (, or the bare
+accent typed with space) are encoded as before.
+
+QA finding F-346.
+
+2026-10-24: Describe an unfinished AI tool call accurately
+in the next request
+
+When the AI asked to run a command and the user ignored the
+Allow/Deny prompt and sent a new message, the next request
+paired that tool call with a stand-in result saying iTerm2
+had been restarted and inviting the model to re-issue the
+call. Nothing had restarted; the user had moved on, so the
+model was told something false and nudged to rerun a command
+the user passed over.
+
+The stand-in result now says the call did not complete,
+usually because the user moved on without answering the
+permission request, possibly because it was interrupted (for
+example, by a restart). It says the call's effects are
+unknown and asks the model not to run it again unless the
+user asks.
+
+QA finding F-493.
+
+2026-10-24: Open a popup browser tab's context menu in that
+tab
+
+A browser tab opened by a target=_blank link (including View
+Source links) showed no context menu. Its web view is built
+from the opener's configuration, so it shares the opener's
+user content controller: the context menu script it runs
+carries the opener's secret and posts to the opener's
+iTermBrowserManager. That manager opened the menu in its own
+web view, which sits in a hidden tab, and the script had
+already suppressed WebKit's default menu.
+
+Open the menu in the web view that sent the message instead.
+Other script message handlers still act on the opener's web
+view; they are left for a separate change.
+
+QA finding F-412.
+
+Give a browser tab opened from another its own script
+handlers
+
+A tab opened by a target=_blank link or window.open got a
+copy of its opener's configuration, including the opener's
+user content controller.  Its scripts carried the opener's
+secrets and posted to the opener's manager, which acted on
+the opener's page: selection and copy on select, hovered
+links, find, autofill, the password manager and named marks.
+Its URL scheme tasks also went to the opener's manager
+through a weak reference, so its iterm2-about pages stopped
+loading once the opener closed.
+
+Give such a tab a fresh user content controller and set it
+up like any other tab's, keeping the inherited data store
+and URL scheme handlers (WebKit requires the former for a
+related web view and won't replace the latter). The scheme
+handler now hands each task to the manager of the web view
+that asked, and fails it if that web view has none. A
+manager also ignores any script message from a web view
+other than its own, so no handler can act on a page other
+than the one that sent it. The new tab is now registered
+with the extension manager and gets the ad block rules too.
+
+Found while fixing QA finding F-412.
+
+2026-10-24: Let a session name from Edit Session out-rank an
+AI profile's fallback
+
+With a profile whose Title is AI-generated name and no AI
+title, the tab title falls back to the program's OSC 1 icon
+name before the session name. Editing the session name in
+Session > Edit Session left the title components alone for
+an AI profile, so after a program had set an icon name the
+tab kept it while the window showed the new name.
+
+Editing the name now turns on TemporarySessionName for an AI
+profile, as a manual rename or Set Title trigger does, so
+the deliberate name wins over both the icon name and the AI
+title.
+
+QA finding F-492.
+
+2026-10-24: Fit the installer's buttons to their translated
+titles
+
+The shell integration installer's buttons had fixed widths
+sized for English. In German the second page showed
+Installationsprogramm herunt and the Internet-Free page
+showed berspring; Cancel, Continue and Skip were also
+clipped in de, ja, pt-BR or ru.
+
+On the second page, widen both choice buttons to the widest
+title, move the descriptions beside them over by the same
+amount and widen the page to make room (the window is fitted
+to the page when shown). Right-aligned buttons such as
+Cancel grow leftward to fit. On the Internet-Free page,
+widen any of Cancel, Skip and Continue that needs it and lay
+the row out again from the right edge with the nib's
+spacing.
+
+QA finding F-406.
+
+Fit the installer's Preview Command button to its translated
+title
+
+On the shell integration installer's Internet-Free page, the
+small Preview Command button beside the step list had a
+fixed width sized for English, so in Russian it read  .
+02ccd9b9f refit the other installer buttons but not this
+one, whose title is set in code (Preview Command, or Send
+Again while a command runs).
+
+When the page loads, widen the preview buttons to the widest
+title they can show, keeping their right edge, and narrow
+the step list beside them if they would otherwise overlap
+it.
+
+QA finding F-411.
+
+2026-10-24: Let a browser tab's page follow appearance
+changes
+
+iTermBrowserWebView overrode
+viewDidChangeEffectiveAppearance without calling super.
+WKWebView's implementation is what tells the page that the
+appearance changed, so a page that supports both color
+schemes kept the scheme it had when the tab was created.
+Changing the theme from Minimal to Dark left open tabs
+light, and a tab opened under Dark stayed dark in Minimal,
+where its dark background kept the tab's chrome dark too.
+
+Now the override calls super.
+
+QA finding F-410.
+
+2026-10-24: Show the page source in the browser's View
+Source
+
+View Source always showed No source available.
+showSourcePage stored the generated page in a per-context
+iTermBrowserSourceHandler and then loaded
+iterm2-about:source, but decidePolicyFor drops every local
+page context before the scheme handler runs, so a fresh
+handler with no pending source served the fallback.
+
+The local page manager now owns a single source handler for
+its lifetime and reuses it for the iterm2-about:source
+context, so the pending source survives the context reset.
+resetAllHandlerState also resets it since it may not be in
+the active contexts.
+
+QA finding F-387.
+
+Keep View Source on the main thread and drop superseded
+source
+
+When the network refetch of a page's source failed,
+viewPageSource fell back to reading the DOM by evaluating
+JavaScript from the URLSession completion queue. The
+completion now hops to the main queue first.
+
+Since the source handler now lives as long as the local page
+manager, source stored for a View Source that never got
+served could be shown by a later visit to
+iterm2-about:source. decidePolicyFor now clears it for
+main-frame navigations that stay in the tab and aren't to
+the source page.
+
+QA finding F-387.
+
+Keep View Source links with ampersands intact
+
+View Source linkified URLs by inserting <a href="..."> into
+the code element's HTML, and the syntax highlighter then
+re-read that HTML and wrapped the &amp; inside the real href
+attribute in an entity span, whose quote ended the
+attribute. Every link containing an ampersand was garbled
+and pointed at a bogus URL.
+
+Links are now swapped for placeholders while the highlighter
+runs and restored afterward. Link targets are decoded
+properly (the serialized text, then the source's own
+references in attribute context), resolved against the page
+URL, and HTML-escaped. Only http and https URLs (and file
+URLs when the page itself is a file) become links, so
+JavaScript: URLs in the source are no longer clickable.
+
+QA finding F-409.
+
+2026-10-24: Fit the installer's utilities checkbox and
+description to their text
+
+On the first page of the shell integration installer, the
+Also install iTerm2 Utilities checkbox and its one-line,
+clipping description had fixed frames sized for English. In
+German the checkbox read iTerm2-Dienstprogramm and the
+description stopped after its first line; ja, pt-BR and ru
+were also too long.
+
+After the page loads, widen the checkbox to its title, up to
+the page's right margin, and let the description wrap. The
+description grows upward the same way the Internet-Free step
+list does: controls above it move up and the page grows, so
+the buttons at the bottom stay put. The window is fitted to
+the page when it is shown.
+
+QA finding F-406.
+
+2026-10-24: Localize the units in Advanced Paste and Paste
+History sizes
+
+Advanced Paste built its chunk size and delay labels by hand
+(%@ kB, ms, sec, min), and NSString it_formatBytes, used by
+Paste History, the paste-rate toast and the Python runtime
+download prompt, hard-coded bytes, kB and so on. In a
+non-English UI these English units sat next to translated
+text and tick labels.
+
+Add LocalizedUnitFormatter. For an English UI it keeps the
+existing strings exactly. For any other UI language, byte
+counts go through MeasurementFormatter with
+UnitInformationStorage in the UI language, and the Advanced
+Paste delay units come from new catalog strings with de, ja,
+pt-BR, ru and zh-Hans translations (MeasurementFormatter
+left duration units untranslated for ru inside the app). The
+language is the UI localization, as with the relative time
+strings.
+
+QA finding F-405.
+
+2026-10-24: Show the placeholder in the Toggle Setting and
+menu item pickers
+
+SearchableComboView only sets its default title when a
+selection fails, so a freshly created combo view shows a
+blank title. SettingPopupView and MenuItemPopupView recreate
+the combo view on every reloadData, which happens whenever
+the action changes in the key binding editor, so the Toggle
+Setting picker (and the Select Menu Item picker) stayed
+blank until a setting was chosen and the localized Select
+Setting title never appeared.
+
+Set the default title right after creating the combo view. A
+later selection replaces it.
+
+QA finding F-407.
+
+2026-10-24: Use ps ucomm to find the shell for offline
+installer discovery
+
+tcsh overwrites the first character of its argv[0] with -,
+so the comm that discovery read from ps showed -csh for a
+tcsh started as `tcsh` and -sh for one started as `csh`. The
+latter still fell back to $SHELL, so a csh started from a
+zsh login shell got zsh-only syntax and the Internet-Free
+install hung.
+
+Discovery now asks ps for ucomm (the executable name, which
+tcsh can't overwrite) followed by comm, falling back to comm
+alone where ps lacks ucomm. It tries ucomm first, then comm
+and comm's first word, because xonsh runs under python and
+names itself, with its arguments, only in its process title.
+csh still maps to tcsh. Otherwise it falls back to $SHELL as
+before.
+
+QA finding F-451.
+
+2026-10-24: Fix crash when AI Chats search finds a match
+
+The search results table measured each row by configuring a
+fresh ChatSearchResultCell and reading its fittingSize.
+Since the chat cells moved from auto layout to manual frame
+layout, the cell has no constraints, so fittingSize is zero.
+NSTableView raises when a delegate returns a zero row
+height, so inserting the first matching result crashed with
+an uncaught exception.
+
+Compute the row height with
+RegularMessageCellView.cellHeight(for: maxBubbleWidth:),
+which mirrors layout(), using the same bubble width the cell
+is configured with. If the result is ever non-finite or not
+positive, fall back to the height of a single-line bubble.
+
+QA finding F-389.
+
+2026-10-24: Keep the AI Usage report alert a manageable size
+
+When a usage command's output passed the 1 MiB cap, the item
+showed Unreadable usage data without mentioning the cap, and
+the report alert put the whole diagnostic (about 1 MiB) into
+its text. The sheet was taller than the screen, its buttons
+were off-screen, and the terminal window was left pushed
+down after Escape.
+
+Show at most 2000 characters of the report in the alert (the
+clipboard and bug report still get it all), and prefix the
+diagnostic with a note when the output was cut off at the
+cap. Decode the diagnostic lossily so output cut
+mid-character is still shown.
+
+QA finding F-375.
+
+Cap the AI Usage report alert by rows as well as characters
+
+The report alert showed at most 2000 characters of the
+report, but a usage command like yes prints two-character
+lines, so that was still about 1000 lines: the sheet ran off
+the bottom of the screen with its buttons out of reach, and
+Escape left the terminal window pushed down.
+
+Also stop after 30 rows, counting a long line as the rows it
+wraps to (assuming 80 characters per row). The clipboard and
+bug report still get the whole report.
+
+QA finding F-388.
+
+2026-10-24: Retire the global AI custom headers once models
+have their own
+
+The one-time migration that copies the former global
+AICustomHeaders list into each manual model treats a model
+with an empty header list as unmigrated (the editor stamps
+empty lists), and it never cleared the global list. On
+another Mac sharing the prefs, where the NoSync done flag is
+unset, a header the user had removed from a model was copied
+back in.
+
+Once configured models exist, turn off
+AICustomHeadersEnabled after the migration (also on launches
+where an earlier build already set the done flag) and
+whenever the models panel saves configurations.  The legacy
+single-model path, which still inherits the global list, is
+left alone. The list itself is kept for older builds.
+
+QA finding F-091.
+
+Keep a model's emptied custom header list empty during
+migration
+
+The one-time copy of the former global AI custom headers
+into each manual model treated a model with customHeaders =
+[] as unmigrated and gave it the global list. An empty list
+is what the model editor saves after the user removes every
+header, so on a Mac whose NoSync done flag is unset, with
+shared prefs last written by a build that left the global
+headers enabled, a removed header came back.
+
+Only a model with no header list at all now gets the global
+headers.  The empty-list rule existed because the editor
+could stamp an empty list before the lazily run migration;
+the models panel now runs the migration before it reads the
+configurations, so that can't happen.
+
+QA finding F-386.
+
+Carry the global AI custom headers into a converted legacy
+model
+
+A user with a single legacy manual AI model (no model
+configurations) sends the former global custom headers with
+its requests. Opening the models panel turns that model into
+a configuration, but the conversion left its headers out, so
+once the panel saved, the model sent none, and the global
+list was then retired.
+
+The conversion now copies the global headers when they are
+turned on, using the per-model migration's sanitizing, which
+it now shares. The sanitizing keeps well-formed entries one
+by one, so a header list with a malformed entry, which the
+legacy path dropped entirely, now carries its valid headers.
+The one-time alert shown when the panel opens no longer says
+that editing models loses the headers; it now says only new
+models start without them.
+
+Found while fixing QA finding F-386.
+
+2026-10-24: Keep the Minimal theme's page tint from reaching
+the web view
+
+In the Minimal theme a browser session's view is light or
+dark to match the page's background color. The web view
+inherited that appearance, so once a dark page tinted the
+session dark, a page that supports both color schemes
+rendered its dark variant, whose dark background kept the
+session dark through reloads and later pages.
+
+In the Minimal theme, give the web view the app's own
+appearance so pages follow the system setting while the
+surrounding chrome still follows the page.
+
+QA finding F-424.
+
+2026-10-24: Hide the AI-generated name title option for
+browser profiles
+
+With the aiGeneratedTabTitles advanced setting on, a browser
+profile's Session Title menu (in Settings and Edit Session)
+offered AI-generated name, but browser sessions are never
+AI-titled, so choosing it did nothing.
+
+Treat the AI component like the other terminal-only
+components: hidden for a browser profile unless it is
+already selected, so a stale selection can still be turned
+off.
+
+QA finding F-404.
+
+2026-10-24: Give the AI Chats window's chat pane a minimum
+width
+
+At the AI Chats window's 400pt minimum width with the chat
+list shown, the chat pane was about 200pt wide, so even with
+the find bar's mode popup and counter hidden its search
+field was only about 65pt and showed a single character of
+the query.
+
+Give the chat pane's split view item a minimum thickness
+wide enough for the find bar to keep its minimum search
+field width beside the chevrons and close button. Shrinking
+the window now collapses the sidebar (or stops at the wider
+size where it can't) instead of squeezing the chat.
+
+QA finding F-385.
+
+2026-10-24: Name settings.json, not its temp file, when a
+hook install write fails
+
+Installing the Claude Code hook over a dangling
+settings.json symlink writes a hidden .settings.json.<UUID>
+file beside the link and renames it into place. When the
+directory isn't writable, the Foundation error for that temp
+file was passed through, so the alert named a UUID file the
+user never created.
+
+Report the failure against settings.json, keeping the
+error's code so the message reads as it does for the regular
+atomic-write path.
+
+QA finding F-454.
+
+2026-10-24: Stamp a new chat's model vendor when the chat is
+created
+
+ChatBroker.create pins a new chat to the default model but
+stored no vendor for the pin; the manual-model stamp from
+the F-382 fix was only written by setModel, the launch
+backfill, or the refresh before a turn.  So an empty chat
+pinned to a manual model on a local server, whose model was
+then renamed or removed in Settings, showed OpenAI in the
+toolbar and sent its first message (and any attached
+terminal context) to api.openai.com instead of failing.
+
+New chats are now built by ChatBroker.makeChat, which stamps
+the pin's vendor the same way setModel does.
+ChatBroker.create is the only place a chat is constructed.
+
+QA finding F-384.
+
+2026-10-24: Add a regression test for Session Status rows
+following a job exit
+
+A Session Status row's name label kept showing the job that
+was running when the row was last configured (for example
+sleep) after the job exited, while the tab title went back
+to -zsh. Rows are configured only when the session's status
+changes, so between configurations the label has to follow
+the session's name variable on its own, and the label's
+evaluator stopped observing that variable once its
+asynchronous evaluation finished.
+
+This was fixed by 5b2327dd0. These tests drive
+ToolStatusCellView directly: they fail with that commit's
+iTermGenericEvaluator.m change reverted and pass with it.
+
+QA finding F-065.
+
+2026-10-24: Substitute browser template placeholders in a
+single pass
+
+iTermBrowserTemplateLoader replaced each {{KEY}} in turn, in
+dictionary order, so a substituted value that contained
+{{OTHER_KEY}} could be expanded by a later pass. That let
+untrusted text (a failed URL, an error description, a page's
+source) pull other values into unintended contexts.
+Placeholders are now replaced in one regex pass over the
+template, so values are inserted verbatim; placeholders
+without a substitution are left as-is, and COMMON_CSS and
+INCLUDE are still handled first. With that, the error page
+no longer needs to escape braces itself and goes back to
+plain HTML escaping.
+
+The view-source page put the HTML-escaped page URL inside a
+single-quoted JavaScript string, where entities are not
+decoded, so relative links were resolved against a corrupted
+base URL. The URL now goes in an escaped data-url attribute
+and the script reads it through dataset. The no-source
+fallback fills URL with an empty string.
+
+Found while fixing QA finding F-402.
+
+2026-10-24: Focus the pane under the pointer when a sheet
+closes
+
+With Focus Follows Mouse on, moving the pointer into another
+split pane while a sheet (such as Edit Tab Title) was open
+on the window could not move focus, because the window can't
+become key then. Focus follows mouse still counted the
+pointer as having entered that pane, so once the sheet
+closed and focus returned to the original pane, moving
+around inside the pane under the pointer did nothing until
+the pointer left it and came back.
+
+When focus does not follow the pointer into a pane that
+focus could otherwise move to, that pane is now remembered.
+When a sheet on that pane's window ends, the pane gets focus
+if the pointer is still in it and it isn't already focused.
+
+QA finding F-403.
+
+2026-10-24: Count each bad Dynamic Profiles file once in the
+error alert
+
+After a file's profiles failed to load, the Ignoring dynamic
+profiles in  because of an error. line was reported as an
+error of its own. That counted toward the alert's N
+additional errors may be seen in the log, so N bad files
+reported 2N-1 additional errors instead of N-1.
+
+The follow-up line is now only written to the log. Loading a
+file and logging that it was ignored is factored into
+-loadDynamicProfilesFromFileLoggingFailure:intoArray:guids:
+so a test can drive it.
+
+QA finding F-301.
+
+Don't double count Dynamic Profiles errors when the folder
+reloads twice
+
+When two bad Dynamic Profiles files appear at once while
+iTerm2 runs, the folder watcher can reload twice within a
+few milliseconds, before the error alert is shown. Each
+reload reported every file's error again and added it to the
+pending count, so two bad files reported 3 additional errors
+may be seen in the log.
+
+Each reload examines every file, so its errors now replace
+the pending errors from the previous reload instead of
+adding to them. Whether an alert is already queued is
+tracked separately from the count, and if a later reload
+finds nothing wrong the queued alert is not shown. The
+reload bracketing is factored into -performReloadPass: so a
+test can drive it.
+
+The existing release note for F-301 already describes this
+fix.
+
+QA finding F-421.
+
+2026-10-24: Let Show menu bar icon change when Dock
+exclusion needs hotkey windows
+
+With Exclude from Dock and -Tab Application Switcher on,
+Settings showed Show menu bar icon checked and disabled,
+since the icon is then the only way back to Settings. That
+also happened with but only if all windows are hotkey
+windows on, where iTerm2 is an ordinary Dock app whenever a
+normal window is open and the icon follows the saved
+setting. The box claimed the icon was on while it was
+missing, and could not be changed.
+
+The checkbox is now forced only when exclusion does not
+depend on hotkey windows, and it refreshes when that setting
+changes.
+
+QA finding F-250.
+
+Force Show menu bar icon on while only hotkey windows keep
+iTerm2 out of the Dock
+
+With Exclude from Dock and -Tab Application Switcher and but
+only if all windows are hotkey windows on, the fix for F-250
+stopped forcing the Show menu bar icon checkbox at all. When
+no ordinary window is open iTerm2 is out of the Dock and the
+menu bar icon is shown regardless, as the only way back to
+Settings, but the checkbox showed unchecked and enabled, and
+unchecking it did nothing. That is the state a user is in
+when they open Settings from the icon.
+
+The checkbox is now forced in that configuration while the
+app is actually a UI element, matching how the menu bar icon
+decides whether to show. iTermApplication posts a
+notification when the UI-element state changes so Settings
+refreshes the checkbox as ordinary windows open and close.
+
+QA finding F-423.
+
+2026-10-24: Keep the find field's caret after changing the
+window style
+
+Changing a window's style between one with a title bar and
+one without replaces the NSWindow. Since the fix for F-139,
+focus returns to the view that had it, such as the find
+bar's search field, but making a text field first responder
+selects all of its text. The next keystroke then replaced
+the query instead of continuing it.
+
+The field editor's selected ranges are now remembered before
+the window is replaced and put back once the field has focus
+again in the new window.
+
+QA finding F-422.
+
+2026-10-24: Escape untrusted text on the browser error page
+
+The internal error page (iterm2-about:error) inserted the
+failed URL, the error title and the error description into
+its HTML without escaping, and pasted the failed URL raw
+into a single-quoted JavaScript string for the Try Again
+button. A quote survives in a URL's absoluteString, so a
+link to a failing URL such as
+http://host.invalid/');alert(1);// could run script in the
+internal page, and markup in an error description (which can
+include a user-supplied file path) was rendered as HTML.
+
+All text substitutions are now HTML-escaped, with braces
+escaped too so a value containing a {{PLACEHOLDER}} can't be
+expanded by the template loader's later passes. The failed
+URL is put in an escaped data-original-url attribute on the
+button and read by the script through dataset, so it never
+appears in JavaScript source. The already-escaped TLS
+details are left alone, and the certificate chain label is
+now escaped for consistency.
+
+Privileges: the error page registers no message handler, and
+the local page manager only accepts a message whose name
+matches the current top-level iterm2-about: URL, so injected
+script could not drive the settings, history or other
+privileged handlers. It could run script in a
+trusted-looking internal page (spoofing) and navigate to
+other iterm2-about: pages, which navigation policy always
+allows.
+
+Found while fixing QA finding F-402.
+
+2026-10-24: Translate the browser error pages button and
+footer
+
+The browsers page-load error page had a translated heading
+and message, but its Try Again button and its footer were
+English literals in error-page.html. The page shown for an
+ssh: URL whose host has no ssh integration connection was
+entirely English. Both templates now take those strings as
+placeholders filled with localized strings (with de, ja,
+pt-BR, ru and zh-Hans translations), HTML-escaped, including
+the host name on the ssh page.
+
+QA finding F-402.
+
+2026-10-24: Shorten the German and Russian menu bar icon
+placeholders
+
+The German and Russian translations of the placeholder in
+Settings > Appearance > Generals menu bar icon text field
+were wider than the field and got clipped. Use shorter
+wordings ((global) and () for the scope note) that fit the
+field.
+
+QA finding F-401.
+
+2026-10-24: Size the Set Profile Setting On/Off popup to fit
+its items
+
+The On/Off popup of the Set Profile Setting trigger action
+was a fixed 70pt wide, so the pt-BR Inativo was clipped to
+Inati. The popup is now at least 70pt and as wide as its
+longest item, but never more than half the editors width.
+
+QA finding F-400.
+
+2026-10-24: Label the Profiles windows New Floating Pane
+button
+
+The New Floating Pane button in the Profiles window is
+icon-only and had a tooltip but no accessibility label, so
+VoiceOver read the SF Symbols name (screen sharing) instead
+of what the button does. Use its localized xib tooltip as
+its accessibility label, as the split buttons next to it
+already do.
+
+QA finding F-399 (remaining path of F-227).
+
+2026-10-24: Treat a csh parent as tcsh in offline installer
+discovery
+
+On macOS, /bin/csh is tcsh, and ps reports a tcsh started
+from a zsh login shell as -csh. Shell discovery stripped the
+dash but did not recognize csh, so it fell back to $SHELL
+(zsh), typed zsh-only syntax into tcsh, and the
+Internet-Free install hung. Discovery now treats a parent
+named csh as tcsh.
+
+QA finding F-451 (follow-up to F-260).
+
+2026-10-24: Keep a chat on a removed manual model from going
+to OpenAI
+
+A chat pinned to a manual model on a local OpenAI-compatible
+server (for example LM Studio or llama.cpp at
+http://127.0.0.1:8080) was sent to api.openai.com with its
+history once that manual model was removed or renamed in
+Settings. The F-380 fix stored each chat's pinned vendor but
+deliberately left manual models on non-Ollama APIs
+unstamped, since their vendor is guessed from the host and
+an unrecognized host counts as OpenAI. An unstamped pin that
+no longer resolved then fell back to OpenAI's recommended
+model in the chat UI and to the global default in routing.
+
+Such pins are now stamped with
+LLMMetadata.manualModelPinVendor, a value outside
+iTermAIVendor's range that means "a manual model". A pin
+with it resolves only among the configured manual models;
+when its model is gone the turn fails with an error that
+points to Settings, even if a built-in model has the same
+name. A manual model at its vendor's own public API host
+(api.openai.com, api.anthropic.com, and so on, but not Azure
+or a gateway) is stamped with that vendor instead, so it
+keeps falling back within that vendor as before. A
+Llama-named manual model on a non-Ollama API is a manual
+pin, not an Ollama one.
+
+Chats pinned before this change are stamped at launch while
+their manual model is configured, and the stamp is never
+changed by the backfill afterwards. Before each turn, a chat
+stamped with a cloud vendor or none moves to the manual
+stamp if its model is now a local manual model (for example,
+its URL was moved off a vendor's host), so a later removal
+fails instead of sending turns that went to the local server
+to that vendor.  The chat UI keeps showing the missing
+manual model so a send fails clearly, and the provider
+binding rejects turns that name another provider's model.
+
+QA finding F-382.
+
+2026-10-24: Keep the AI Chats list selection on the chat
+that moves to the top
+
+Sending a message moves its chat to the top of the AI Chats
+list. The list reloads on the model's change notification
+and re-selects the previously selected chats by ID, but it
+read those IDs by mapping the table's selected row indexes
+through the already reordered model, so it re-selected
+whichever chat now sat at the old row. The highlight stayed
+on that row while the transcript showed the moved chat.
+
+The list now records the selected chats' IDs whenever the
+selection changes, while rows still match the model, and
+re-selects those after the reload.
+
+QA finding F-383.
+
+2026-10-24: Resize AI chat @-mention chips when the input's
+font changes
+
+An @-mention in the AI chat input is a rasterized image
+baked for one font. Changing the font of the input's text
+with the Font menu or Font panel enlarged the typed text but
+left the chips at their old size; they were re-rendered only
+on an appearance change, and always in the text view's
+default font.
+
+ChatInputView is now the input's text storage delegate. When
+an edit changes attributes, it re-renders each mention chip
+in the edited range whose character font differs from the
+font its image was rendered for. The appearance-change
+re-render also uses each chip's own font.
+
+QA finding F-371.
+
+2026-10-24: Keep a re-bound tmux watch's names while the
+reattached pane is unnamed
+
+When a relaunch reattaches a tmux -CC pane, a held watch is
+re-bound to the pane's new session as soon as its window
+opens and takes its workgroup and role names from that
+session. At that moment the pane has no name yet (its
+session name is a blank " "), so list_watches, the
+status_update, and the chat notice showed a blank workgroup
+and role.
+
+The rebind still takes the new workgroup and role IDs, but
+keeps the watch's previous names when the new ones are
+blank.
+
+QA finding F-332.
+
+2026-10-24: Keep an AI chat's pending timer armed when
+orchestration is enabled
+
+Enabling orchestration tore down the chat's dispatcher,
+which owns the task that fires a pending register_timer
+timer, but kept the timer saved.  Nothing re-armed it, so it
+missed its deadline and fired only when the next
+orchestration tool call recreated the dispatcher, or at
+relaunch.
+
+OrchestratorClient.enableOrchestration now drops the
+dispatcher, writes the flag, and, if the chat still has
+pending timers or watches, builds a fresh dispatcher at once
+so it reconciles and re-arms them.  ChatViewController's
+Enable Orchestration uses it.
+
+QA finding F-278.
+
+2026-10-24: Resume AI chat watches at launch and let Stop
+cancel them without a dispatcher
+
+At launch only chats with a persisted timer got an
+orchestration dispatcher. A chat whose only watcher was a
+session watch kept the watch saved but nothing ran it: no
+screen polls, no tab-status checks, until something touched
+the chat. Because Stop is handled by the dispatcher,
+pressing Stop in such a chat neither cancelled the watch nor
+showed the cancellation notice, and the watch later fired
+and started the turn the user had tried to stop.
+
+Once launch-time session restoration is done, a chat whose
+watchers are all watches now gets a dispatcher too, if every
+one of its watches can still run (its session was restored,
+or it is an orchestration chat's tmux pane watch waiting for
+reattach). Any other such chat is still left until the user
+opens it, so dropping its watches doesn't start unattended
+agent turns at launch.
+
+OrchestratorClient also handles Stop itself: with a live
+dispatcher it calls the (idempotent) userDidStop, and with
+none it clears the chat's persisted watchers and publishes
+the same cancellation notice, which also covers chats left
+dormant under the administrator lockout.
+
+QA findings F-133 and F-279.
+
+2026-10-24: Recognize it2ssh's EndSSH mid-frame in a
+restored session
+
+When an SSH Integration connection dies abruptly, the
+conductor hook treats the local it2ssh's OSC 1337;EndSSH as
+an implicit unhook. Inside a %output frame it only does so
+when the EndSSH carries this connection's it2ssh unique ID,
+so a nested it2ssh's EndSSH relayed in the output is not
+mistaken for it. A parser hooked in recovery mode, after a
+session was restored by relaunch or by framer recovery,
+never saw the SSH_INIT line and so did not know the ID.
+Killing the remote sshd while output streamed then wedged
+the tab: the local shell was in the foreground, but nothing
+was drawn.
+
+The restored conductor knows the ID, so pass the outermost
+conductor's it2ssh unique ID to the parser when entering
+recovery mode. Nested parsers still get nil, as their IDs
+are not saved.
+
+QA finding F-331.
+
+2026-10-24: Draw only the cropped part of a Kitty
+placeholder image
+
+A Kitty Unicode-placeholder placement with a source crop
+drew the wrong pixels, two ways. Converting a cell's source
+rect to the bottom-up coordinates of the crop subtracted the
+crop's origin instead of adding it, so a crop of the
+top-left quadrant sampled below the image and drew nothing.
+And a cell in the letterbox padding around the image sampled
+outside the crop, so a strip of the neighboring part of the
+image appeared along the crop's edge.
+
+Add the crop origin, clip each cell's source rect to the
+crop and shrink its dest rect in proportion, and skip a cell
+that falls entirely in the padding. The Metal renderer now
+places a dest rect whose origin is not at the bottom of the
+cell correctly; before, every dest rect filled the whole
+cell so its origin was always zero.
+
+QA finding F-119.
+
+2026-10-24: Decode JSON values in the remaining it2 commands
+
+it2 app get-focus, app theme, app version, profile list,
+profile show, profile get, the monitor commands and the tmux
+pane lookup all took JSON-encoded profile properties,
+variable values and function results and only trimmed the
+double quotes, so escapes iTerm2 emitted leaked into the
+output: a profile named Q/P "x" printed as Q\/P \"x\ and a
+session name with a quote or backslash kept its escapes. A
+JSON null also came back as the string null.
+
+Replace trimJSONQuotes with jsonStringValue, which decodes a
+JSON string, maps null to the empty string and passes other
+values through, and use it at every call site that trimmed
+quotes by hand. Rebuilt the checked-in it2 binary with make
+paranoid-it2cli.
+
+QA finding F-450.
+
+2026-10-24: Keep Arabic joining at a selection edge in the
+legacy renderer
+
+With the GPU renderer off, the text of each background run
+was built and shaped separately, and runs were split
+wherever the selection or a find match started or ended. A
+selection edge inside an Arabic or Persian word therefore
+drew the letters on each side in isolated or initial forms
+instead of joined.
+
+On lines with right-to-left text, the foreground pass now
+combines runs across selection and find-match edges, so the
+word is shaped once. The attributed string builder takes the
+line's selected columns and picks the selected-text or match
+color per cell, and it no longer reuses the previous cell's
+attributes when the highlight changes between them. The
+legacy drawer already fills each color span of a multi-color
+string.  Lines whose text color depends on the background
+(minimum contrast, dimming, thin strokes on dark
+backgrounds) and faint text still split.
+
+QA finding F-080.
+
+2026-10-24: Keep each pane's size when the API changes a
+tab's layout
+
+A real Tab.async_update_layout() change lost a column or row
+and shrank the window a little each time. Two problems in
+setSizesFromSplitTreeNode:
+
+- A local split view variable shadowed the method's
+parameter and was
+  nil for a session pane, so the panes were laid out with no
+  room for the dividers. When the root then got its computed
+  size, the point came out of the last pane, which lost a
+  cell.
+- When only the split moved and the root kept its size,
+nothing fit the
+  sessions to their new frames, so they kept their old grids
+  and the window was sized from those.
+
+Rename the local and fit the sessions to their views before
+fitting the window to the tab.
+
+QA finding F-343.
+
+2026-10-24: Put the cursor right after the session restored
+banner
+
+Appending the Session Contents Restored banner already moves
+the preferred cursor position onto the banner, but
+appendRestoredBanner then added the cursor's whole movement
+on top of that. When the cursor had been mid-line, or the
+banner wrapped, the rows were counted twice and a blank row
+was left between the banner and the shell's first output.
+
+The preferred cursor position is now simply where the cursor
+ends up after the banner: the start of the row below it.
+
+QA finding F-324.
+
+2026-10-24: Don't treat a refused proxy icon drag as a click
+
+Dragging the Current Directory status bar component's folder
+icon when there was no directory to vend (deleted,
+nonexistent, or remote) made mouseDragged return before
+setting didDrag, so mouseUp saw a click and opened the
+component's menu. Once the mouse moves past the drag
+threshold, the gesture now counts as a drag whether or not a
+drag session can start.
+
+QA finding F-398.
+
+2026-10-24: Punctuate the Cockpit's skipped-target status
+and drop gone chips
+
+When a Cockpit send skipped a closed target, the status
+appended Cockpit.SkippedGoneTargets to
+Cockpit.SentToSessions with a space, so every language got
+two sentences run together with no period. The skipped name
+was the chip label, which for a window or tab picked from
+the @ picker included the picker's keyboard shortcut (for
+example 2), stale once the window closed. The gone chip also
+stayed in the composer, so every later send skipped it
+again.
+
+The status is now one localized string with a plural
+substitution (de, ja, pt-BR, ru and zh-Hans translations),
+replacing the separate skipped-targets key. Picker rows keep
+the shortcut separate from the name, and a chip is labeled
+with the name only. After a send, chips for targets that no
+longer exist are removed from the composer.
+
+QA finding F-396.
+
+2026-10-24: Don't archive a tmux integration pane on closure
+
+-hardStop skips archiving a tmux client, but -terminate sets
+the session's tmux mode to none before it calls -hardStop (a
+tmux client's termination is never undoable, so -hardStop
+runs at once), so the check never saw a tmux client. With
+Archive On Closure on, closing a tmux pane wrote an archive
+that Undo Close could not restore, and such archives just
+accumulated.
+
+-terminate now records that the session was a tmux client,
+and -hardStop checks that too.
+
+QA findings F-104 and F-335.
+
+2026-10-24: Stop double-escaping the composer's first file
+suggestion
+
+With AI command suggestions on, the composer's early result
+(the longest common prefix of the file completions, built
+from already shell-escaped names, or a history entry) is put
+at the top of the completion list that comes back from the
+AI request. didFindCompletions then escaped every non-AI
+item again, so the row for "my file.txt" read "my\\\
+file.txt" and a second, correctly escaped copy of the row
+appeared below it.
+
+CompletionItem now has a valueIsFinal flag. The early result
+is marked final and the shared escaping helper leaves final
+items alone.
+
+QA finding F-277.
+
+2026-10-24: Withdraw the it2 client record on Shell > tmux >
+Detach
+
+A tmux integration client advertises itself to it2 with an
+@it2_client_<hex> server option. -[PTYSession tmuxDetach]
+(Esc in the gateway) withdraws it before detaching, but
+Shell > tmux > Detach and the other callers of
+-[TmuxController requestDetach] sent only the detach, so the
+option lingered on the server. it2 ignores records of
+clients that aren't attached, so the only effect was a stale
+option.
+
+-requestDetach now withdraws the record before sending the
+detach. No release note: there was no visible effect.
+
+QA finding F-068.
+
+2026-10-24: Answer iTerm2-only reports in tmux integration
+panes
+
+tmux answers most reports itself, so a tmux integration pane
+doesn't send them. OSC 1337 ReportCellSize,
+ReportWindowFrame and ReportScreenFrames are unknown to tmux
+and pass terminalShouldSendReport:YES, but they were sent
+with terminalSendReport:, which drops every report for a
+tmux client, so they got no reply at all.
+
+Add terminalSendReportAllowedInTmux:, which skips that
+check, and use it for these three. Other reports keep the
+tmux check.
+
+QA finding F-058.
+
+2026-10-24: Don't let a dragged workgroup member become a
+float
+
+Swap With Session refuses a swap that would make a workgroup
+member float, but dragging the member onto a float in
+another tab went through -[MovePaneController
+dropFloatingPaneInTab:atWindowPoint:], which had no such
+check, so the member was installed as a float in that tab.
+
+The drop is now refused for a workgroup member, and
+-dropPlacesFloatingPaneOverFloat: says no for one, so a
+float doesn't offer itself as a drop target during the drag.
+
+QA finding F-257.
+
+2026-10-24: Anchor tmux floats to the right pane while a
+filter is open
+
+-tmuxFloatAnchorsForParseTree: found the tiled session for
+each layout leaf by comparing candidate.tmuxPane. With Find
+> Filter open on a tmux pane, the tab shows a synthetic
+stand-in whose own pane id reads as 0, so when it came
+before the real %0 in the tab it was taken for %0, and a
+float lying over %0 was drawn over the filtered pane
+instead.  d1a49cbff switched the other lookups to
++tmuxLayoutPaneForSession: but missed this one.
+
+Add +sessionShowingTmuxPane:amongSessions:, which matches by
++tmuxLayoutPaneForSession:, and use it for the anchors.
+
+QA finding F-131.
+
+2026-10-24: Don't count hidden floats toward the GPU
+renderer's pane limit
+
+-updateUseMetal turns the GPU renderer off when a tab has
+six or more panes, and counted self.sessions, which includes
+every float, hidden or not. Hidden floats already don't use
+Metal and don't take part in the other Metal checks, but
+hiding floats could not bring Metal back.
+
+The limit now counts the tab's sessions less its hidden
+floats.
+
+QA finding F-129.
+
+2026-10-24: Give floats restored from an arrangement the
+arrangement's name
+
+-restoreFloatingPanesFromArrangement: passed named:nil to
+-_recursiveRestoreSessions:, so a float made from a saved
+arrangement did not know which arrangement it came from,
+while the tab's tiled panes did. Change Profile in
+Arrangement was disabled for such a float, and the nag
+offering to fix a broken profile in the arrangement could
+not name the arrangement.
+
+The arrangement name is now passed down to the floats as
+well. Floats restored from an archive still get no name, as
+before.
+
+QA finding F-053.
+
+2026-10-24: Ask tmux to resize a tmux float instead of
+resizing it locally
+
+A session-initiated resize (View > Restore Text and Session
+Size, the Python API's grid size, and so on) of a float goes
+through -[PTYTab sessionResizeFloatingPane:columns:rows:].
+It declined tmux tabs, so a tmux float fell through to the
+tiled path, which resized the float's session in place and
+told tmux nothing. The content was laid out at the new size
+inside the float's unchanged frame, tmux kept the old size,
+and the float could draw blank until a later relayout.
+
+For a tmux float it now sends tmux a resize-pane by the
+difference in cells, as dragging the float's edge does, and
+the layout change that comes back resizes the float.
+
+QA findings F-048 and F-130.
+
+2026-10-24: Don't highlight a pane under a float as a swap
+target
+
+While picking a pane for Swap With Session, each pane's
+SplitSelectionView highlights itself on mouse moved events
+from its tracking area. Tracking areas are not
+occlusion-aware, so a tiled pane under a float was
+highlighted too while the pointer was over the float, and
+two panes said they would be swapped. The click itself
+already went to the float.
+
+The picker now ignores the pointer, and clears its
+highlight, where a click would go to a float other than the
+one the picker is in. Other views over the pane, such as its
+own subviews, don't hide it.
+
+QA finding F-051.
+
+2026-10-24: Keep focus on a float docked by Control-drag
+
+Dropping a dragged float on a tiled pane with Control held
+docks it via -[MovePaneController
+reallyDropInSession:half:atPoint:]. Removing the active
+float from its tab activates the frontmost remaining float,
+and the split that follows only activates the moved session
+when its target is the active session. So with another float
+open, focus went to that float instead of the docked pane.
+With no other float, the tiled pane that took over was
+usually the target, which hid the problem.
+
+Docking a float in its own tab now activates the docked
+session, as Dock Floating Pane already does.
+
+QA finding F-050.
+
+2026-10-24: Keep a maximized float's earlier frame on Undo
+Close
+
+Undo Close of a live float (within the undo timeout)
+restores it with
+-addRevivedFloatingSession:fromArrangement:, which passed
+NSZeroRect for the frame from before maximizing. The
+arrangement records that frame for a maximized float, but it
+was dropped, so the float came back as a plain float filling
+the tab and unmaximizing it could never return it to where
+the user had it. The archived path already passed it.
+
+Both paths now read the saved frame from the record the same
+way, so a revived maximized float comes back maximized and
+unmaximizes to its old frame.
+
+QA finding F-148.
+
+2026-10-24: Grow the Internet-Free installer's step list to
+fit its text
+
+The send-shell-commands page shows its steps in one text
+field with the fixed height from the nib. The message added
+for a failed script write wraps to two lines (three in
+German), so the steps after it were cut off: the end of step
+4 in English, and all of step 4 in German.
+
+After the steps are rendered, the field is measured with its
+cell at its fixed width, keeping the nib height as the
+minimum. The field grows upward by the difference, the
+controls beside it move up with it, the page grows by the
+same amount so the buttons at the bottom stay put, and the
+window controller refits the window to the page.
+
+QA finding F-381.
+
+Test that translated installer steps fit the step list
+
+The Internet-Free installer's step list had a fixed height
+sized for English, so in German step 4 for nushell was cut
+off after two lines.  The step list now grows to fit its
+text (sizeStepListToFit). Add a regression test that loads
+the real nib, gives the step list the nushell steps in every
+shipped language, and checks that the text fits, the list's
+top stays put, and the buttons along the bottom neither move
+nor overlap the steps.
+
+QA finding F-364.
+
+2026-10-24: Keep a running program's scroll region when
+restoring its session
+
+A restored grid read its scroll region (DECSTBM) from the
+saved state, but a restored session is created at the wrong
+size and then fit to its window, and every resize resets the
+scroll region. After a crash and relaunch, a program that
+was still running got full-screen scrolling instead of the
+region it had set.
+
+The grid now remembers the saved region and the size it was
+saved at.  After the window fits its sessions, the region is
+put back if the grid is at the saved size again and nothing
+has set a region since. A restored session that is not
+reattached to its program discards it.
+
+QA finding F-225.
+
+2026-10-24: Keep emoji ZWJ sequences and Base64 pastes
+intact when stripping
+
+With the advanced setting Strip zero-width bidi/format
+characters when pasting? on, the strip removed every ZWJ, so
+emoji ZWJ sequences such as  and  fell apart into separate
+emoji. It also ran before Base64 encoding, so an Advanced
+Paste with Base-64 encode no longer decoded to the copied
+bytes.
+
+Now a ZWJ between two pictographic characters (skipping a
+variation selector or skin tone modifier before it) is kept,
+approximating the UAX #29 emoji ZWJ rule. Other format
+characters, including a ZWJ between letters, are still
+removed. The strip is skipped entirely for Base64 pastes.
+
+QA findings F-075 and F-207.
+
+2026-10-24: Draw the copy mode cursor where its character is
+drawn
+
+Copy mode keeps its cursor in logical coordinates, as it
+moves and selects in logical space, but both renderers drew
+the cursor at that coordinate as if it were visual. On a
+reordered right-to-left line the cursor appeared in the
+blank area on the far side of the line and walked across
+empty cells while the selection grew from the real text.
+
+Add visualCopyModeCursorCoord to the drawing helper, which
+maps the column through the line's bidi table the same way
+the terminal cursor is mapped, and use it in the legacy and
+Metal renderers.
+
+QA finding F-082.
+
+2026-10-24: Keep pre-base vowel signs before their consonant
+in the legacy renderer
+
+The CoreGraphics renderer moves each CoreText glyph into its
+grid column, anchoring every column to its own first glyph.
+A pre-base vowel sign such as Devanagari  in  is stored
+after its consonant, so it belongs to a later column, but
+CoreText draws it to the left of the consonant. Anchoring it
+to its own column drew it after the conjunct, so  read    .
+Before per-column anchoring (3.7.4) the order was right.
+
+Now columns are gathered into groups first. A glyph that
+starts a new column but sits left of the previous group's
+baseline and belongs to a later character than any in that
+group joins the group, whose baseline becomes its x. The
+cluster keeps CoreText's internal layout and starts at its
+first cell. A reversed left-to-right island in a
+right-to-left line never matches, because its later columns
+hold earlier characters, so it is still placed column by
+column.
+
+QA finding F-081.
+
+2026-10-24: Start legacy underlines at the leftmost drawn
+cell of an RTL run
+
+The CoreGraphics renderer drew an underline or strikethrough
+from the position of the first character in the attribute
+run. On a bidi line the positions are visual, so for a
+right-to-left run the first character is drawn rightmost and
+the line started about a word's width too far right: printf
+' \e[4m' underlined the end of  and the space instead of .
+
+Now the line, and the underline mask that cuts around
+descenders, start at the smallest position in the run, in
+both the attributed-string and fast paths. Left-to-right
+runs are unchanged because their first position is already
+the smallest.
+
+QA finding F-078.
+
+2026-10-24: Anchor the Look Up highlight where an RTL word
+is drawn
+
+Look Up finds the word under the pointer in logical
+coordinates, then anchored its highlight and popover at
+pointForCoord of the range's logical start. On a reordered
+right-to-left line that column is far from where the word is
+drawn, so the yellow highlight landed over blank cells at
+the other side of the row.
+
+Now the anchor is the leftmost visual cell of the word
+range, via the bidi-aware extractor. Left-to-right lines are
+unchanged.
+
+QA finding F-320.
+
+2026-10-24: Drop alternate-screen bidi tables when
+reordering is turned off
+
+Turning on the advanced setting Do not reorder right-to-left
+text in the alternate screen while a full-screen app showed
+RTL text left the alternate grid's existing bidi tables in
+place. shouldPopulateRTLState returned NO in that mode, so
+populateRTLState never ran the branch that clears them. The
+renderer kept drawing the rows reordered from the grid's
+tables while selection treated them as unreordered, so drags
+highlighted and copied the mirror-image cells.
+
+Now shouldPopulateRTLState returns YES once more when the
+alternate grid still has bidi tables, so they are dropped
+and the rows redraw in logical order.
+
+QA findings F-074 and F-313.
+
+2026-10-24: Treat Azure's sovereign and serverless AI hosts
+as Azure AI services
+
+With the API key set to Automatic, only *.openai.azure.com,
+*.cognitiveservices.azure.com and *.services.ai.azure.com
+counted as OpenAI's own host. Azure OpenAI in Azure
+Government (*.openai.azure.us, *.cognitiveservices.azure.us)
+and Azure China (*.openai.azure.cn,
+*.cognitiveservices.azure.cn), and serverless model
+deployments on *.models.ai.azure.com, got no key, so users
+there had to pick it by hand. The sovereign hosts also
+failed the *.azure.com test that picks Azure's request
+format, so a key chosen explicitly went out as a Bearer
+token instead of in the api-key header.
+
+All of these hosts are run by Microsoft, so add them to
+hostIsAzureAIServiceAPI, and have hostIsAzureAIAPI accept
+every Azure AI service host. Look-alike hosts are still
+refused.
+
+QA finding F-373.
+
+2026-10-24: Don't double the typed directory when expanding
+{{FILE}}
+
+Typing please delete logs/er and getting the suggestion `rm
+logs/{{FILE}}` produced rm logs/logs/error.log: {{FILE}} is
+expanded with the whole typed word plus the completion
+suffix, and the model had already written the directory.
+
+When the text right before {{FILE}} starts a shell word
+(optionally after ./) with the directory part of the typed
+word, substitute the name without that directory.
+
+The prompt also described the file completion suffixes
+(ror.log) as the longest common prefix of valid filename
+completions. Give it the full names (typed word plus suffix)
+instead.
+
+QA finding F-372.
+
+2026-10-24: Stop logging every failed AI plugin validation
+
+c4802455a stopped Plugin.load() from re-logging the same
+load failure on every probe, but iTermAIClient.validate()
+still put the error in the retrospective log each time it
+failed. With the plugin missing, Settings > AI probes about
+every 10 seconds plus on every reload click or AI tab visit,
+so the ring filled with copies of the same line.
+
+load() already logs each distinct failure once, so
+validate() now only DLogs it. A test seam lets the test make
+the plugin look missing.
+
+QA finding F-379.
+
+2026-10-24: Escape the session name in the orchestration
+grant notice
+
+When an @-mention granted a chat control of a session, the
+notice inserted the session's name into Markdown unescaped,
+so underscores were read as emphasis: my_dev_box (-zsh) was
+shown as mydevbox (-zsh).
+
+Escape the name with escapedForMarkdown before formatting
+the notice.
+
+QA finding F-113.
+
+2026-10-24: Refresh the chat's permission buttons after an
+info menu change
+
+The permissions bubble's buttons show each category's state
+(View Contents: Ask). Only a click on one of those buttons
+reloaded the bubble, so changing a permission from the
+chat's info (i) menu left the buttons showing the old state
+until the chat was reopened.
+
+toggle(permissionCategory:) now reloads every permissions
+bubble in the transcript, so both paths refresh them.
+
+QA finding F-109.
+
+2026-10-24: Escape control characters in claude_usage.sh's
+JSON
+
+json_escape only escaped backslash, quote, newline and tab,
+so claude output containing ESC or BS (for example colored
+stderr) produced invalid JSON. The AI Usage item then showed
+a generic Unreadable usage data instead of the script's
+message. The parser's jsonesc had the same gap for
+usage-line details.
+
+Escape every other C0 control character and DEL as \u00XX in
+both.
+
+QA finding F-245.
+
+2026-10-24: Validate custom headers before an AI Test
+Connection
+
+Save refused a custom header with an invalid name (such as
+one with a space) or a value containing a newline, but Test
+Connection didn't check: the request builder silently
+dropped the header and the test reported Connection
+Succeeded, so the user couldn't tell the header would never
+be sent.
+
+Move the header check into
+AICustomHeaders.validationFailure(forHeaders:) (same strings
+and keys) and run it from both Save and Test Connection.
+
+QA finding F-248.
+
+2026-10-24: Fix the wording of AI network errors
+
+A URLSession failure was reported as HTTP request failed
+with The request timed out., a broken sentence shown in Test
+Connection alerts and chat error bubbles. Use HTTP request
+failed: <reason>.
+
+Errors for a manual model on an unrecognized host also said
+Error from Unknown Platform. LLMProvider.displayName now
+falls back to the endpoint's host name before Unknown
+Platform.
+
+QA finding F-247.
+
+2026-10-24: Let the user stop a running AI Test Connection
+
+Test Connection disabled its button for the whole test.
+Against an unreachable host the request only fails at the AI
+idle timeout (1200 seconds by default), so the editor sat on
+Testing for minutes with no way out short of cancelling the
+editor.
+
+AIConnectionTester.test now returns an AIConnectionTest that
+reports its outcome once and can be cancelled, which also
+cancels the plugin request. While a test runs the button
+reads Stop Test and stops it; cancelling the editor stops it
+too. The timeout itself is unchanged, since a slow local
+model can legitimately take that long.
+
+QA finding F-246.
+
+2026-10-24: Return focus to the chat input when the chat
+find bar closes
+
+Pressing Escape in the AI chat find bar removed the bar
+while its search field was first responder, leaving the
+window with no first responder, so anything typed afterwards
+was silently dropped.
+
+When the bar had focus at close, make the chat input's text
+view first responder.
+
+QA finding F-094.
+
+2026-10-24: Keep the AI chat find bar's search field usable
+when narrow
+
+The chat find bar laid out its mode popup (150pt), counter
+and chevrons at fixed widths and gave the search field
+whatever was left.  In the 400pt inline chat that left about
+20pt, and in a minimum-size chat window with the sidebar
+shown the field had zero width and the counter and chevrons
+were pushed off.
+
+Reserve a minimum width for the search field and drop the
+mode popup, then the counter, when they would not leave that
+much room. The popup decision assumes a typical counter
+width so it doesn't flicker as the counter text changes
+while typing.
+
+QA finding F-095.
+
+2026-10-24: Send Fetch Models through the AI proxy
+
+Fetch Models (and the Ollama model cache's /api/tags and
+/api/show probes) used URLSession.shared, so they ignored
+the aiProxy advanced setting and failed behind a required
+proxy, while chat requests and Test Connection went through
+it. The error also blamed Ollama for any server.
+
+Factor the proxy dictionary out of PluginClient into
+AIProxySetting and give discovery requests a per-task
+session that uses it. Reword the unreachable-server error so
+it names the server rather than Ollama.
+
+QA finding F-093.
+
+2026-10-24: Keep the Hotkey settings labels clear of their
+controls
+
+In Settings > Keys > Hotkey, the right-aligned Hotkey
+Window:, App Hotkey: and Open Quickly Hotkey: labels ended
+at x=261, but the localization relayout moved the controls
+beside them to x=255. The colon of App Hotkey: was drawn
+under its checkbox and Open Quickly Hotkey: touched its
+shortcut field. Shrink the labels to 251 points so they end
+before the controls with a small gap; every shipped
+translation still fits.
+
+QA finding F-234.
+
+2026-10-24: Widen the AI model editor's API key popup to
+show its choice
+
+The API key popup in the Add/Edit Manual AI Model sheet was
+a fixed 210 points wide, so with a local endpoint its
+Automatic (none for a local endpoint) choice read Automatic
+(none for a local, and translations were cut off sooner.
+
+Whenever the choice or its title changes, the popup now
+widens to show the selected title, up to the end of its row,
+and the key field beside it follows. The key field is shown
+only for This models own key, which is short, so the popup
+is back to its usual width whenever the field is visible.
+
+QA finding F-338.
+
+2026-10-24: Make room for translations in the manual AI
+model editor
+
+The Add/Edit Manual AI Model sheet lays out its form for
+English: a 150-point label column, checkboxes as wide as the
+right column, and a 150-point Test Connection button. Longer
+translations were clipped with no ellipsis, such as de
+Benutzerdefinierte Head, pt-BR Mximo de tokens de res, the
+ru Ollama checkbox and ru  .
+
+After building the form, the editor measures its labels and
+checkboxes.  The label column widens to fit the longest
+label and the right column to fit the longest checkbox; the
+window grows by the difference, the right column moves over,
+fields that reach the right margin widen, and the buttons
+pinned to the right edge move with it. The Test Connection
+button grows to fit its title and the spinner follows it.
+English is unchanged.
+
+QA finding F-276.
+
+2026-10-24: Size the AI chat find bar's mode popup to fit
+its titles
+
+The mode popup in the AI chat find bar had a fixed width of
+150 points, so in Portuguese Ignorar maisculas/minsculas was
+truncated to Ignorar maiscul. English Regular Expression
+needed a little more than 150 points too.
+
+The popup is now as wide as its longest title in the running
+language, and never narrower than before.
+
+QA finding F-111.
+
+2026-10-24: Size the website permissions columns for their
+translations
+
+The website permissions panel (Settings > General > Magic >
+Manage Permissions) gave its Permission and Allowed columns
+fixed widths that suited English, so German showed
+JavaScript ausfhr and Russian
+ Java and a  header.
+
+Each column is now as wide as its header and the permission
+names need, and never narrower than before, so English is
+unchanged. The Website column takes what's left.
+
+QA finding F-361.
+
+2026-10-24: Tell Badge and Icon apart in Russian
+
+Russian translated both Badge: and Icon: as :, so Settings >
+Profiles > General showed two rows with the same label.  is
+the usual word for an icon (and is used for icons throughout
+the app), so the Badge labels are now :, matching the pane's
+search term
+. The badge field's placeholders and tooltip use the same word.
+
+QA finding F-394.
+
+2026-10-24: Widen the Profiles window's New Tab button for
+its translation
+
+The New Tab button in the Profiles window had a fixed width
+that suited English, so the Russian title was truncated to
+. The New Tabs in New Window button was a little too narrow
+for its Russian title too.
+
+New Tab now grows to the left to match New Window's width,
+and New Tabs in New Window gets 10 more points, both staying
+clear of their neighbors.
+
+QA finding F-393.
+
+2026-10-24: Widen popup date columns to fit translated
+relative dates
+
+The Command History, Recent Directories and Paste History
+popups show relative dates in a column whose width suited
+the English wording. In a non-English UI the dates come from
+NSRelativeDateTimeFormatter, which is longer in some
+languages, so German entries were clipped to Vor 12 Sekunde.
+
+After a popup reloads and sizes its table, it measures every
+row's date and widens the date column to fit the longest,
+taking the room from the value column so the table's width
+doesn't change.
+
+QA finding F-312.
+
+2026-10-24: Fit the Smart Selection sheet's translated
+labels
+
+In German and Russian the Smart Selection rules sheet
+clipped its title, the No rule selected placeholder, the
+Load Defaults button, the debug logging checkbox, the
+Regular expression label, the Syntax Help link and the
+visualizer link.
+
+- The title spans the rules table, the placeholder spans the
+detail area
+  (centered), and both links get wider frames.
+- The Load Defaults button grows to fit its title, and the
+checkbox after
+  it moves over and grows to fit, stopping before the help
+  button.
+- The Regular expression label wraps to a second line when
+it doesn't fit
+  its column, moving the Syntax Help link down.
+- The Russian Syntax Help link, which can't fit the label
+column, is
+  shortened to .
+
+English is laid out as before.
+
+QA findings F-305 and F-319.
+
+2026-10-24: Fit Advanced Paste's translated labels
+
+In Russian, Advanced Paste clipped several labels: the
+Transforms header, the chunk size and delay titles (which
+ran into the values beside them), the Minimum Duration
+title, the regular expression placeholder and the
+substitution help text below it. German and Portuguese
+clipped some of the help text too.
+
+- The Transforms header and the help labels get wider
+frames.  - The chunk size, delay and minimum duration values
+move right to follow a
+  title that doesn't fit before them, so English is
+  unchanged; the duration row is wider to hold the moved
+  estimate.
+- Where the column can't hold a translation beside its value
+or in the
+  room the field has, the translation is shorter: the de and
+  ru delay titles, the ru placeholder, and the de and ru
+  help text.
+
+QA finding F-302.
+
+2026-10-24: Keep the donation link from truncating the
+window title
+
+The Settings and Edit Session windows show a randomly chosen
+donation call to action in the title bar. The long ones
+(Support the creator of iTerm2 Donate now! in English, and
+most of the Russian translations) left no room for the
+centered title, which was truncated to Edit Sessi or and
+could squeeze the toolbar search field down to an icon.
+
+The window now works out how wide the link can be while
+leaving its centered title intact, from its width and title
+when the link is added, and picks among the calls to action
+that fit. If none fits it shows the narrowest one.
+
+QA findings F-230 and F-300.
+
+2026-10-24: Grow the crash reporter's explanation to fit its
+translation
+
+The explanation at the top of the crash reporter had a fixed
+frame sized for English, so the German text needed a sixth
+line and was cut off after von diesem Absturz zu erfahren
+und.
+
+The crash reporter now measures the explanation at the
+label's width once it has set the text, grows the label
+downward by the difference and shrinks the tab view below it
+by the same amount, so the window keeps its size. English is
+unchanged.
+
+QA finding F-228.
+
+2026-10-24: Translate Show Toolbar and Bell sound, and match
+pt-BR profile tags
+
+The browser menu's Show Toolbar item and the Bell sound:
+label in Settings had no entries in their XIB catalogs
+(command-line builds don't add new XIB strings), so both
+were English in every language. Add the entries at Xcode's
+sort position with de, ja, pt-BR, ru and zh-Hans
+translations.
+
+pt-BR labeled the profile tags field Etiquetas: right next
+to the Tags > button, and the profile list and tag column
+also said Etiquetas while the tooltip, tips and search used
+Tags. Use Tags for profile tags throughout.
+
+Found while fixing QA localization findings.
+
+2026-10-24: Localize the AI tool-call bubbles and the Toggle
+Setting picker
+
+The bubbles that describe an orchestration tool call in AI
+chat (reading a screen, typing into a session, posting a
+clipping, setting up a watch, and so on) were English
+literals, as was the Select Setting placeholder of the key
+binding editors Toggle Setting picker.
+
+Each bubble is now a complete localized sentence, with
+separate strings for the scroll directions, the Code Review
+prompt kinds, an untitled clipping and a watch on the linked
+session instead of injecting English fragments. Session and
+workgroup mentions, quoted previews, commands and state
+names are still injected as self-contained values.
+Translated into de, ja, pt-BR, ru and zh-Hans.
+
+Found while fixing QA localization findings.
+
+2026-10-24: Use the Internet-free installer when the website
+rejects nushell
+
+The online shell integration installer pipes the install
+script from iterm2.com into bash. The deployed script
+predates nushell support and says nu is unsupported, so
+choosing the default online option in a nu session failed
+even though the bundled (Internet-free) installer handles
+nu. The website script is deployed separately from the app.
+
+When the online script reports that nu is unsupported,
+switch to the Internet-free installer instead of showing the
+unsupported-shell error.  Once the website serves an
+installer that supports nu this path is no longer reached.
+
+QA finding F-420.
+
+2026-10-24: Restore the find field's caret when focus
+follows the mouse back
+
+With focus follows mouse moving focus within panes,
+returning the pointer to a pane whose find field had focus
+made the field first responder again, and NSTextField
+selects all of its text when it becomes first responder. The
+next key typed replaced the query.
+
+Before moving focus away, remember the selection of the text
+field being edited in the window, and restore it after
+making that field first responder again. If the field's
+editor is still the window's first responder (focus went to
+another window and back), leave it alone instead of making
+it first responder again.
+
+QA finding F-038.
+
+2026-10-24: Keep a failed pairing's error when AI is toggled
+
+refreshGateState rebuilds the ready-to-pair state when AI
+availability changes so its AI advisory stays current,
+unless a pairing is in progress, which it detected with
+isListening. A failed pairing is no longer listening, so
+turning generative AI on while the window showed Pairing
+failed:  wiped the error, its tooltip and the QR code and
+went back to the idle Show QR Code state.
+
+Track whether the top shows a pairing failure (cleared
+whenever the top changes state) and don't rebuild while it
+does.
+
+QA findings F-100 and F-336.
+
+2026-10-24: Forget cached password manager account names
+when auth is revoked
+
+Fetching accounts saves their display names in a class-level
+cache so the Open Password Manager trigger's parameter popup
+can list them. The cache was never cleared, so after a
+screen lock revoked authentication the trigger editor still
+showed saved account and user names without
+re-authenticating.
+
+Observe the data source provider's revocation notification
+for each password manager class and clear its cache then.
+Clearing posts the accounts-loaded notification, so an open
+trigger editor reloads.
+
+QA finding F-323.
+
+2026-10-24: Don't animate status bar sparklines in Low Power
+Mode
+
+In Low Power Mode the sparkline's scroll animation set
+preferredFrameRateRange to 1 fps, but that is only a hint:
+on an M1 in real Low Power Mode the graph kept moving
+smoothly between updates, so the energy saving didn't
+happen.
+
+In Low Power Mode, move the graph in one step per update
+without an animation, as the
+AnimateGraphStatusBarComponents=NO path already does.
+
+QA finding F-391.
+
+2026-10-24: Tint the workgroup git arrows for the toolbar's
+appearance
+
+The workgroup toolbar's git item supplies labelColor as the
+tint for the ahead/behind arrow bitmaps, and the tinting
+resolves that dynamic color against the app's theme
+appearance. With the Minimal theme the toolbar takes its
+appearance from the terminal background, so a dark
+background in a light system gave light text but black
+arrows.
+
+Resolve labelColor against the toolbar view's effective
+appearance before handing it to the string maker. The item
+already rebuilds its string when that appearance changes.
+
+QA finding F-334.
+
+2026-10-24: Stop swallowing keys while an announcement
+slides away
+
+A Press any key to dismiss announcement (such as the
+clear-scrollback one shown after `clear`) stays the session
+view's current announcement for the 0.25 second slide-out
+after the first key dismisses it.  handleKeyDown: kept
+returning YES for dismissOnKeyDown announcements during that
+time, so every key typed then was eaten: typing `echo
+LOSTTEST4` right after `clear` ran `OSTTEST4`.
+
+Once the announcement is dismissing, return NO so the keys
+reach the session. Only the key that dismissed it is
+consumed.
+
+QA finding F-282.
+
+2026-10-24: Count each arrangement session's command once in
+the trust gate
+
+A session started with a command is saved with both a
+Program of type Command and a profile whose Custom Command
+is Yes with the same command.  RiskAnalyzer added the
+program count and the custom command count, so one command
+was reported as 2 custom commands that will run when the
+arrangement opens, for tiled panes and floating panes alike.
+
+Count a session as running a command once if either its
+Program or its profile names one.
+
+QA finding F-052.
+
+2026-10-24: Drop the doubled period from the ssh sessions
+ended banner
+
+sshEndBannerTerminatingCount:newLocation: put a period in
+the preamble for more than one session and then appended
+another, so the banner read 2 ssh sessions ended.., or 2 ssh
+sessions ended.  now at host.  with a location. Leave the
+period off the preamble, as the one-session case does. Also
+mark the location parameter nullable, which it is.
+
+QA finding F-329.
+
+2026-10-24: Keep -suite when LetsMove relaunches the app
+
+LetsMove's Relaunch() ran `/usr/bin/open <path>` with no
+arguments, both after moving the app to Applications and
+after the de-translocation relaunch. An instance started
+with -suite NAME came back on the default settings domain
+and opened that domain's restored windows.
+
+Forward a -suite argument from the current process to the
+relaunched one with `open <path> --args -suite NAME`,
+shell-quoted.
+
+QA finding F-392.
+
+2026-10-24: Fail -compare-rendering when another instance
+holds the lock
+
+-compare-rendering suppresses alerts by auto-answering them
+with the first button. When another instance held the
+suite's instance lock, that picked Quit on the iTerm2 Is
+Already Running warning, so the process exited with status
+0, printed nothing and ran no comparison.  A script would
+treat that as success.
+
+In compare-rendering mode, print a RESULT: ERROR line naming
+the other process to stderr and exit with status 1 instead
+of showing the warning.
+
+QA finding F-220.
+
+2026-10-24: Leave a tab alone when the API sets an unchanged
+layout
+
+Tab.async_update_layout() with no changes sent back the tree
+it was given, and apiServerSetTabLayout:handler: applied it
+anyway. Turning each pane's grid size into a view size and
+fitting the sessions back to those views can lose a cell, so
+every no-op call shrank the panes and the window by a column
+(a point for a browser pane).
+
+When every session's requested grid size matches the current
+one, report success without touching the layout. A real
+change still goes through setSizesFromSplitTreeNode:, whose
+rounding is not addressed here.
+
+QA finding F-073.
+
+2026-10-24: Return JSON null for built-in functions that
+return NSNull
+
+functionInvocationDidCompleteWithObject:error:completion:
+encoded the result with it_jsonStringForObject, which
+returns nil for a top-level NSNull. Functions that succeed
+with no value (set_floating_pane_frame, raise_floating_pane,
+dock_floating_pane, and move_session_to_new_tab or _window
+for tmux) return NSNull, so the response had an empty
+json_result and the Python client raised JSONDecodeError
+instead of returning None.
+
+Encode NSNull as "null" in a small class method used for the
+result.
+
+QA finding F-128.
+
+2026-10-24: Keep Remember unticked when the basic-auth
+prompt returns
+
+After the user opened the password manager from the
+basic-auth prompt and backed out of the picker, the
+coordinator re-prompted with rememberByDefault set whenever
+Remember was offered, so the checkbox came back ticked
+although the user never ticked it, and OK then tried to save
+the credential.
+
+Carry the checkbox state with the open-password-manager
+outcome, store it on the challenge context, and restore it
+on the re-prompt. Without a recorded state, use the first
+prompt's rule (on only after a saved credential was
+rejected).
+
+QA finding F-033.
+
+2026-10-24: Count Advanced Paste preview lines correctly
+
+The Advanced Paste stats label counted lines with -[NSString
+numberOfLines]. NSStringITerm defines that with
+lineRangeForRange:, but SmartSelectionController's
+NSString(iTermTextDataSource) category also defines
+numberOfLines as the number of LF-separated components, and
+that one won at runtime. So 1\n2\n3\n4\n5\n read as 6 lines,
+and the same text with Convert CRLF and LF to CR checked
+read as 1 line.
+
+Rename the NSStringITerm method to it_lineCount so it can't
+collide, and compute the label from the preview string
+through a new class method that uses it. The Russian
+translation also put the line count in the nominative ( 1 );
+use the prepositional forms.
+
+QA finding F-303.
+
+2026-10-24: Let Cmd-W close the Cockpit
+
+Shell > Close is wired to closeCurrentSession:, not
+performClose:. When the Cockpit panel was key nothing in its
+responder chain implemented it, and PseudoTerminal's
+validation enables the item only when the key window's
+controller responds to it, so the item was disabled and
+Cmd-W could not close the panel.
+
+Implement closeCurrentSession: on the Cockpit window
+controller to perform a close, as the Companion pairing
+window and other panels do.
+
+QA finding F-397 (found while fixing F-377).
+
+2026-10-24: Focus the number-of-spaces field in the
+paste-with-tabs prompt
+
+The You're about to paste a string with tabs warning has an
+editable tab-size field in its accessory view but never set
+the warning's initialFirstResponder, so typing a number
+without clicking the field first did not reach it.
+
+Build the warning in a class method that also makes the
+field the initial first responder, and expose the
+accessory's text field.
+
+Found while checking QA finding F-018.
+
+2026-10-24: Clamp SetWindowFrame to the title bar's minimum
+width
+
+The SetWindowFrame clamp used the largest tab minimum plus
+decorations and the window's minSize as the smallest allowed
+frame. For a titled window that is far narrower than a user
+can drag it: AppKit also keeps a titled window at least as
+wide as its title bar buttons need, so
+SetWindowFrame=0;0;0;0 produced a 24-point sliver with a 2x2
+grid while drag-resizing stopped at about 87 points.
+
+Also enforce NSWindow's minimum frame width for the window's
+style mask when it is titled, the same limit live resize
+hits.
+
+QA finding F-395.
+
+2026-10-24: Disable Prefer integrated GPU on a Mac without
+both kinds of GPU
+
+The Advanced GPU Settings sheet's view controller disabled
+Prefer integrated to discrete GPU unless Metal reported both
+a low-power and a discrete GPU, but on a single-GPU Mac the
+checkbox was still enabled and toggling it showed the
+restart warning and changed the setting. The checkbox's
+preference binding had no shouldBeEnabled, so the setting's
+enabled state was left to the view controller alone.
+
+Factor the check into +canPreferIntegratedGPU and give the
+binding a shouldBeEnabled that uses it, applied as soon as
+the control is defined.
+
+QA finding F-254.
+
+2026-10-24: Remove two advanced settings that nothing reads
+
+Settings > Advanced listed Disable the window shadow on
+Mojave when the window has a transparent session and on High
+Sierra and earlier, but nothing read either key any more, so
+toggling them did nothing. Remove both settings and their
+catalog entries. A value a user stored stays in their
+defaults, unused, as it already was.
+
+QA finding F-222.
+
+2026-10-24: Show the default in a string popup whose saved
+value isn't in its menu
+
+Settings selected a string popup's item with
+-indexOfItemWithRepresentedObject: and skipped the selection
+only when that returned NSNotFound. It returns -1 when
+nothing matches, so a value missing from the menu (for
+example a Dynamic Profile naming a progress bar color scheme
+that doesn't exist) went to -selectItemAtIndex:-1, which
+cleared the selection and left the popup blank.
+
+Add -it_selectItemWithRepresentedObject:fallback:, which
+falls back to the setting's default value, and use it for
+string popups. A nil or NSNull value still leaves the popup
+alone, and when neither value is in the menu it still shows
+no selection, so the keyboard locale popup stays blank when
+no locale is set instead of showing some other input source.
+
+QA finding F-265.
+
+2026-10-24: Don't move a hotkey window to a tmux window's
+saved position
+
+With Settings > General > tmux set to open tmux windows as
+tabs in the attaching window, running tmux -CC attach in a
+hotkey window that held only the gateway tab applied the
+tmux window's saved origin to the hotkey window, leaving it
+mostly off screen until it was hidden and shown again.
+
+A hotkey window's position comes from its profile, so the
+saved origin is no longer applied to one. The decision is
+factored into
++shouldApplySavedOriginUsingOriginalWindow:initialTabs:initial:isHotKeyWindow:
+so it can be tested without a tmux server.
+
+QA finding F-273.
+
+2026-10-24: Update pane title bars for sessions exchanged by
+Swap With Session
+
+-swapSession:withSession: refreshed each tab's pane titles
+and refit its sessions before updating the tabs'
+view-to-session maps. -sessions finds sessions through that
+map, so each tab skipped the session it had just received.
+Swapping the lone pane of a one-pane tab into a split tab
+left it without a title bar beside neighbors that had one,
+gave the one-pane tab a title bar, and could change the
+window's height.
+
+The maps are now updated right after the sessions' delegates
+change, before anything asks either tab for its sessions.
+
+QA finding F-317.
+
+2026-10-24: Don't copy Lock Location to a duplicated window
+
+Window > Duplicate Window opened the copy from the
+original's full arrangement, which includes its Lock
+Location state. The copy was locked to the original's frame,
+so it opened exactly on top of it and snapped back there
+when moved.
+
+The duplicate is now built with representsThisWindow:NO, the
+same way a tab group saved as an arrangement is, which
+leaves the lock out.
+
+QA finding F-037.
+
+2026-10-24: Keep keyboard focus in a window after changing
+its style
+
+Switching between a window style with a title bar and one
+without (for example Window > Window Style > No Title Bar)
+replaces the NSWindow. The replacement was only ordered
+front, so after the old key window closed there was no key
+window and the new one's first responder was the window
+itself. Typing went nowhere, and menu items that act on the
+current window, including Window Style, were disabled until
+the user clicked the window.
+
+The replacement window now becomes key when the old one was.
+Its first responder is the view that had focus before, if
+that view is inside the content view that moves to the new
+window (such as the find bar), and otherwise the current
+session's view.
+
+QA findings F-139, F-154, and F-040.
+
+2026-10-24: Keep Cmd-H, Cmd-Q, Cmd-W, and Cmd-M out of
+alerts' automatic shortcuts
+
+An alert's buttons get an automatic Cmd-<letter> shortcut
+from their labels, so in the Cant Find LastPass CLI alert
+Cmd-H pressed Help (opening a web page) instead of hiding
+iTerm2. Those four letters are the system-wide Hide, Quit,
+Close, and Minimize shortcuts, so automatic shortcuts now
+skip them. A shortcut the caller assigns is still kept.
+
+QA finding F-337.
+
+2026-10-24: Keep Cmd on an alert's shortcuts when it is
+shown again
+
+makeAlert wrote the shortcuts it chose back into each
+action's keyEquivalent: the Return or Escape that NSAlert
+gave a button, and the automatic Cmd-<letter> taken from the
+label. When the same warning was built again, as Permanently
+Forget Saved Selection does to re-show it, those values
+looked like ones the caller had chosen and were copied to
+the buttons with no modifier mask, so a plain letter pressed
+a button (bare a opened Advanced Paste).
+
+The automatic shortcut now lives in a private
+automaticKeyEquivalent property that is recomputed each
+time, and the action's keyEquivalent is never changed, so
+every build of an alert gets the same shortcuts.
+
+QA findings F-028 and F-366.
+
+2026-10-24: Keep a local-model chat on Ollama when its model
+disappears
+
+A chat created with Llama (Local) while Ollama was running
+is pinned to the discovered tag, e.g. qwen-fake:1b. If that
+tag later disappeared from Ollama's list, the pinned name no
+longer resolved. Routing only refused unresolved names
+containing "llama", so AIConversation fell back to the
+global default vendor and the chat UI mapped the name to
+OpenAI's recommended model: the chat and its history were
+sent to api.openai.com (or DeepSeek, for a deepseek-named
+tag).
+
+Each chat now stores the vendor of its model pin
+(Chat.modelVendor, a new migrated column), stamped whenever
+the pin changes. Existing chats are backfilled when the chat
+list loads, wherever the name still identifies the vendor
+(it resolves, it is the discovery placeholder or a
+Llama-family name, or it is an Ollama-style name:tag); other
+chats keep the old behavior. Manual models on non-Ollama
+APIs are not stamped, because their vendor is guessed from
+the host and an unrecognized local server counts as OpenAI.
+
+LLMMetadata.resolvePinnedModel resolves a pin within its
+vendor. An Ollama pin resolves only among Ollama models;
+when its model is gone the turn fails with an error instead
+of going to any other vendor or silently to a different
+local model. Other vendors keep their behavior: the pinned
+model, or the vendor's recommended model for a retired one.
+The rule is applied to chat turns (including turns from the
+phone), chat renaming, icon generation, the provider binding
+check, and the chat UI, which keeps showing the missing
+model on Ollama so a send uses it and fails clearly.
+
+QA finding F-380.
+
+2026-10-24: Don't read a partial line as the zsh dotfile
+directory
+
+The Internet-Free installer asks zsh for its dotfile
+directory and matched the reply with ^My dotfiles go in(.*),
+treating an empty capture as $HOME. Expectations are also
+checked against partial lines, so on a slow link the reply
+could match as soon as My dotfiles go in arrived, and a user
+with ZDOTDIR set got $HOME: the script went to $HOME and
+.zshrc would have been amended there, which zsh never reads.
+
+The reply now ends in a marker the regex requires.
+
+QA finding F-325 (T-24).
+
+2026-10-24: Detect the shell reading the offline installer's
+commands
+
+The Internet-Free shell integration installer decided which
+shell to install for from $SHELL. When the session runs a
+different shell, such as tcsh started from a zsh login
+shell, it typed zsh-only syntax into tcsh, which rejected
+it, and the installer waited forever.
+
+The discovery command now also reports the name of sh's
+parent process, which is the shell the commands are typed
+into, and uses it when it is a supported shell. It falls
+back to $SHELL when ps is unavailable or the shell runs
+under an interpreter (xonsh under python). The reply ends in
+a marker so a partially received line is not taken for the
+answer.
+
+QA finding F-260.
+
+2026-10-24: Give settings.json the default mode when
+replacing a dangling symlink
+
+Installing the Claude Code hooks when
+~/.claude/settings.json is a dangling symlink replaced the
+link with a regular file, as intended, but the atomic write
+carried the symlink's own mode over, so the new
+settings.json was 0755: executable and world-readable, where
+a newly created one is 0644.
+
+When the path is a dangling symlink, write a new file beside
+it and rename it over the link, so it gets the mode any new
+file gets.
+
+QA finding F-072.
+
+2026-10-24: Accept an empty settings.json when uninstalling
+Claude Code hooks
+
+Uninstalling the Claude Code integration with an empty or
+whitespace-only ~/.claude/settings.json reported that the
+file couldn't be parsed as JSON and asked whether to
+continue, because JSONSerialization rejects empty input.
+Install already treats such a file as an empty object. It
+has no hooks to remove, so the strip now succeeds without
+touching it.
+
+QA finding F-365 (T-52).
+
+2026-10-24: Keep hand-written triggers across a profile
+reload
+
+On a profile reload, PTYTriggerEvaluator reuses each
+unchanged trigger so it keeps its state, matching the
+profile's trigger dictionaries against the cached triggers'
+dictionaryValue. The profile side was only lightly
+normalized, so a hand-written trigger (in a Dynamic Profile,
+say) that omits keys dictionaryValue always writes, such as
+contentregex or matchType, never matched. Every reload
+rebuilt it and lost its state, and a partial-line trigger
+then fired a second time on the same line.
+
+Build the trigger from the profile dictionary and match on
+its own dictionaryValue, so both sides are normalized the
+same way.
+
+QA finding F-266 (T-39).
+
+2026-10-24: Show a restored session status in the tab bar
+
+A session's status came back from a saved arrangement into
+the Session Status tool and session.status, but the tab bar
+showed no subtitle or dot for it. The tab caches the winning
+session's status and refreshes it only when a session
+reports a change or the tab's sessions change. Restoration
+adopted the status silently, and it can finish after the
+session has already joined its tab, so the tab never learned
+of it.
+
+Adopting a restored status now reports a change like any
+other, flagged as a restoration so PTYSession doesn't post a
+status-change notification for it.
+
+QA finding F-066.
+
+2026-10-24: Send a plain it2 session set-var value as a JSON
+string
+
+The API takes a variable's value as JSON and ignores one
+that doesn't parse, so it2 session set-var user.x hello
+printed success and exited 0 while setting nothing; only a
+quoted '"hello"' worked. Send a value that already parses as
+JSON unchanged and encode anything else as a JSON string.
+Rebuilt the checked-in it2 binary with make paranoid-it2cli.
+
+QA finding F-067.
+
+2026-10-24: Decode session name and tty in it2 session list
+
+it2 session list fetched session.name and session.tty as
+JSON-encoded variable values and only trimmed the
+surrounding double quotes, so any escape iTerm2 emitted
+survived into the output: every tty printed as
+\/dev\/ttys000, and a name containing a quote or backslash
+kept its escapes. Decode the values as JSON strings instead.
+Rebuilt the checked-in it2 binary with make paranoid-it2cli.
+
+QA findings F-318 and F-127.
+
+2026-10-24: Label the Profiles window's icon-only split
+buttons
+
+The Profiles window's Split Horizontally / Split Vertically
+buttons became icon-only with no tooltip, and VoiceOver read
+the SF Symbol names (Square split one by two) instead of
+what the buttons do. Give both a localized tooltip and
+accessibility label, and switch them to Open in a New
+Window, Split  while Option is held, when the buttons show
+the new-window icon and open the profiles in a new window.
+
+QA finding F-227.
+
+2026-10-24: Fit the Tags toggle button title in pt-BR and
+Russian
+
+The Tags > / < Tags toggle under the profile lists is a
+fixed-width square button. The pt-BR Etiquetas > was clipped
+to Etiquet in Settings > Profiles and the Profiles window,
+and the Russian title that Settings sets in code ( >) was
+too wide as well. Use Tags > in pt-BR, which the Profiles
+window's code-set title already used, and
+ > in Russian, which the XIB titles already used. A test
+ measures
+every translation against the button's text area.
+
+QA finding F-232.
+
+2026-10-24: Address the user formally in the German website
+permissions strings
+
+The German UI addresses the user with Sie, but the three new
+strings for the browser website permissions panel used the
+informal du forms (fragt iTerm2 dich, Gib eine Website ein).
+Rewrite them with Sie.
+
+QA finding F-362.
+
+2026-10-24: Translate the OSC 7501 paragraph in the Session
+Status help
+
+The English Session Status help gained a Program Status
+Protocol (OSC 7501) paragraph, but no translation was
+updated, so the help in every other language lacked it and
+all five translations were left in needs_review. Add the
+paragraph in de, ja, pt-BR, ru and zh-Hans at the same place
+as in English and mark the translations reviewed.
+
+QA finding F-369.
+
+2026-10-24: Use  consistently in Japanese and localize
+(unknown)
+
+Japanese translations write user as  almost everywhere, but
+the title preview's User sample (in both the code catalog
+and the Settings XIB), the OSC 7 disabled message and the
+Meta key warning used the short form . Switch them to .
+
+The SSH Integration file transfer description also inserted
+a literal (unknown) when the user name was missing; localize
+it.
+
+QA finding F-368.
+
+2026-10-24: Use the custom headers term consistently in
+Chinese
+
+In Simplified Chinese the no API key hint told users to use
+, but the section it points to is labeled  and every other
+AI hint says . Use the same term in the hint.
+
+QA finding F-367.
+
+2026-10-24: Localize the AI chat watch consent body and
+timer bubble
+
+The body of the Allow repeated screen reads? prompt and the
+register_timer chat bubble (Setting a timer to fire in 5min:
+) were English literals assembled from fragments, so they
+stayed English in a translated UI even though the prompt's
+title and buttons were translated.
+
+Give each variant its own complete localized sentence: the
+consent body with and without a workgroup name, and the
+timer bubble for a duration, an absolute time or neither,
+each with and without a note. The duration still comes from
+the localized compact date formatter.
+
+QA finding F-280.
+
+2026-10-24: Localize the browser HTTP authentication prompt
+heading
+
+The browser's basic-auth prompt heading (The website host
+requires a user name and password [for realm].) and the
+Could not save the password for host toast were English
+literals, while the prompt's fields and buttons were
+translated. Wrap them in String(localized:) with positional
+placeholders and translate them.
+
+QA finding F-271.
+
+2026-10-24: Localize the Set Profile Setting trigger's
+picker and row text
+
+The Set Profile Setting trigger action's picker placeholder
+(Select Setting), its On/Off popup, and the trigger list row
+text were English literals. The row reused the English debug
+description, so an unconfigured trigger read <translated
+title> Set Profile Setting.
+
+Localize the placeholder and On/Off items, and give the row
+its own localized text: a complete sentence per value (Set X
+to On / to Off) so translators control word order, and no
+parameter text at all when no setting has been chosen, so
+the row shows just the action title.  The English
+description stays for debug logging.
+
+QA finding F-270.
+
+2026-10-24: Localize the AI-generated name title component
+
+Settings > Profiles > General > Title added its AI-generated
+name item with a hard-coded English title, and the title
+preview used the literal AI, so both stayed English (pt-BR
+showed AI where the rest of the UI says IA). Wrap both in
+NSLocalizedStringWithDefaultValue and translate them, using
+the same name the aiGeneratedTabTitles advanced setting
+tells the user to add.
+
+QA finding F-340.
+
+2026-10-24: Localize the workgroup session Mode popup titles
+
+iTermWorkgroupSessionMode.localizedTitle used Swift
+NSLocalizedString, which the extraction step (Swift
+stringsdata) does not pick up, so Regular, Code Review and
+Diff never reached Localizable.xcstrings and the Mode popup
+in Settings > Arrangements > Workgroups was English in every
+language. Switch to String(localized:) with symbolic keys
+and translate them, reusing the existing workgroup preset
+terms.
+
+QA finding F-311.
+
+2026-10-24: Translate the Focus Follows Mouse even to views
+option
+
+The Settings > Pointer sub-option even to views like Search
+or Composer (tXe-jL-3Kg) had no entry in
+PreferencePanel.xcstrings, so it was English in every
+language while the rows around it were translated.  Add the
+entry with de, ja, pt-BR, ru and zh-Hans translations
+matching the neighboring even if options and the existing
+Composer wording.
+
+QA finding F-310.
+
+2026-10-24: Translate the menu bar icon settings row
+
+Settings > Appearance > General's Menu bar icon: label, Show
+menu bar icon checkbox and the text field placeholder were
+missing from PreferencePanel.xcstrings (a command-line build
+does not run the IDE's XIB string extraction), so they were
+English in every language. Add the three entries with de,
+ja, pt-BR, ru and zh-Hans translations.
+
+QA findings F-262, F-304.
+
+2026-10-24: Translate Lock Location, Rename Tab and the Tab
+Color label
+
+Window > Lock Location had no entry in MainMenu.xcstrings,
+so it was English in every language. The tab context menu's
+Rename Tab had an English-only catalog entry, and the Tab
+Color: label drawn by ColorsMenuItemView was a hard-coded
+literal. Add the menu item's catalog entry, localize the
+label, and translate all three into de, ja, pt-BR, ru and
+zh-Hans using the neighboring Lock Size / Lock Layout and
+tab terminology.
+
+QA findings F-022, F-042, F-152.
+
+2026-10-24: Add QA VM provisioning doc
+
+Document the ~/bin vm-reserve/vm-return/vm-status workflow
+agents use to reserve a QA VM from the shared pool,
+including the PID-lifetime semantics, blocking with
+--wait/--timeout, and the pool config file.
+
 2026-10-23: Hide the AI chat submit hint when a long
 placeholder would overlap it
 
