@@ -1,3 +1,1671 @@
+2026-10-27: Bump companion version to 1.5
+
+2026-10-27: Make a held Delete key repeat when typing into a
+session in iTerm2 Buddy
+
+The system keyboard only auto-repeats Delete while the
+focused document has text before the caret. The hidden
+pass-through text view kept its document empty, so a held
+Delete sent a single backspace. Keep an invisible sentinel
+there instead and strip it from the composer draft.
+
+2026-10-27: Bump shell integration script versions
+
+Some script changes shipped without a version bump. zsh 21,
+bash 24, fish 27, tcsh 11, xonsh 6, nu 2.
+
+2026-10-27: Add 3.7.7beta2 release notes
+
+2026-10-27: Don't recover an adopted orphan job's SSH
+connection whose ssh ended
+
+When iTerm2 was killed before it ever saved state, a
+relaunch adopts the session's job as an orphan, so no
+restored conductor exists and the saved-arrangement check
+for a missing ssh client never ran. If ssh died while iTerm2
+was down, the dead connection's unread framer output then
+started framer recovery, typing base64 recover into the
+local shell and leaving a recovery conductor holding the
+keyboard. The first framer recovery request in an adopted
+orphan now checks the job for an ssh client and, if there is
+none, refuses recovery as is done for a restored connection
+whose ssh ended.
+
+QA finding F-970.
+
+2026-10-27: Expect a bare ^C for an EndSSH no connection
+started in the abort test
+
+21bc38e28 answers such an EndSSH with ^C (never a newline);
+the abort test still expected nothing to be written.
+
+2026-10-27: Put the F-920, F-921 and F-960 download code
+where F-724 moved it
+
+The F-920, F-921 and F-960 fixes were ported to the inline
+download code before F-724 moved it into
+ConductorDownload.swift.
+ConductorDownload.downloadOrViewChoice now lives in
+ConductorDownload, and the F-921 and F-960 tests are in
+SSHRemoteZipReplyTests.swift and
+ConductorDownloadTests.swift, as on master-fixes (05041a50d,
+6c374cb88). No behavior changes.
+
+2026-10-27: Put a floor of 15 under the screen's refresh
+rate for Metal views
+
+If a screen reports a maximum of 0 frames per second, the
+Metal view divided by it (a crash) and its interval between
+frames became infinite, so it would stop drawing. Use at
+least 15.
+
+QA finding F-726 (one possible cause; the reported freeze
+was not reproduced).
+
+2026-10-27: Clean up right away when a stalled SSH
+Integration download is stopped
+
+QA finding F-728. Stopping a Download using SSH Integration
+download whose connection had stalled left the partial
+hidden file .iTerm2.<UUID> in the Downloads folder, and the
+download stayed listed as stopping. Stop only marked the
+transfer stopped; removing the file and reporting the stop
+waited until the download task got its next reply, which
+never came.
+
+Stop now removes the file and reports the download as
+cancelled immediately, and cancels its fetches that haven't
+been sent yet. When replies that were already sent arrive
+later, they are ignored: nothing more is written, and a late
+failure doesn't replace the cancellation. A download stopped
+before its task starts no longer creates the file at all,
+and a folder stopped while it is being zipped is not
+downloaded and its archive is removed from the host.
+
+2026-10-27: Translate the SSH Integration download
+move-failure reason
+
+Adds the catalog entry for
+ConductorFileTransfer.CouldNotMoveIntoPlace (tangential
+finding T-180 from the QA fix pass) with German, Japanese,
+Brazilian Portuguese, Russian, and Simplified Chinese
+translations, and renormalizes recently added entries.
+
+2026-10-27: End a failed SSH Integration download in the
+failed state
+
+Tangential finding T-186 from the QA fix pass. When a
+finished Download using SSH Integration file couldn't be
+quarantined, or its attributes couldn't be read, the
+transfer reported an error but never left the downloading
+state, so it stayed listed as in progress with Stop
+available. Both now go through fail(reason:), which removes
+the temporary file and ends the transfer as failed.
+
+A file that couldn't be quarantined is deleted rather than
+kept, matching SCP and inline file downloads (SCPFile and
+TerminalFile), and the user gets the existing could not be
+quarantined or deleted warning if it can't be removed.
+
+2026-10-27: Fail an SSH Integration download that can't be
+moved into place
+
+Tangential finding T-180 from the QA fix pass. When a
+download started with Download using SSH Integration
+finished but its hidden temporary file couldn't be moved to
+its final name in the Downloads folder, the transfer
+recorded the error yet still reported success, posted
+Download finished, and pointed at a file that didn't exist.
+It now fails with a reason naming the destination and the
+system's error, removes the temporary file, and posts no
+success notification.
+
+2026-10-27: Download over SSH Integration with pipelined 4
+KiB requests
+
+QA finding F-725. A download started from Download using SSH
+Integration (or by Command-clicking a remote file) asked for
+1 KiB and waited for the reply before asking for the next,
+so its speed was one round trip per kilobyte. A 12 MB folder
+archive took about 17 minutes over loopback, while a file
+fetched through the file panel, which asks for 4 KiB with 8
+requests in flight, moved about 32 times faster. Both paths
+now use the same chunk size and number of requests in
+flight. Data is still written in order, a file that grew
+since it was examined is still read to its end, and a stop
+is noticed after each reply.
+
+The stopped-during-the-last-request test now stops during
+the request for the file's last bytes, since a file that
+ends in a short chunk no longer needs an extra empty
+request.
+
+A folder download stopped while the folder is examined no
+longer zips it, and one stopped while a request is
+outstanding ends as stopped even if that request then fails,
+instead of being reported as failed.
+
+2026-10-27: Remove the hidden temp file when an SSH
+Integration download fails
+
+QA finding F-724. A download started from Download using SSH
+Integration saves to a hidden file
+~/Downloads/.iTerm2.<UUID> and renames it when done. When
+the download failed (the folder couldn't be listed or
+zipped, the name was mistyped, the connection dropped) or
+was stopped, the file was left behind, empty or partly
+written. The transfer now removes it whenever it fails or is
+stopped before it is renamed, including when quarantining or
+moving the finished file fails. A download stopped during
+its last request now ends as stopped instead of staying
+listed, and a zip reply naming a folder no longer goes on to
+download after failing.
+
+The download flow moved into ConductorDownload, with the
+remote operations passed in, so it can be tested with fakes.
+
+2026-10-27: Keep a long download status from running into
+its size
+
+QA finding F-723. In the Downloads and Uploads menus the
+status and the size were each drawn across the whole bottom
+row, so a long status such as Finished, with some items left
+out ran into the size, and in German the two were drawn over
+each other. The size now keeps the room it needs on the
+right and the status gets the rest, truncating with an
+ellipsis if it doesn't fit.
+
+2026-10-27: Use the Russian word for sending in upload
+strings
+
+QA finding F-722. In Russian the upload notifications said
+. and   ., which read as downloads, while the Uploads menu
+is . Every Russian string about uploading now uses /,
+matching   : the upload notifications, the Uploads menu
+status, the upload indicator, SSH Integration and attachment
+upload messages, the upload failure heading, the it2ul
+advanced setting, and two tips.
+
+2026-10-27: Say when a folder download over SSH Integration
+left out files
+
+QA finding F-721. Downloading a folder over SSH Integration
+zips it on the remote host, and the framer silently skipped
+any file it couldn't read, so the download reported success
+and the archive just lacked the file. iTerm2 now asks the
+framer to report what it left out (an extra "report-skipped"
+argument that an older framer ignores; without it a newer
+framer still replies with the bare archive path). The
+download still finishes, but its notification says what
+couldn't be read, for example 2 items couldnt be read and
+were left out., naming up to two of them, and the Downloads
+menu says Finished, with some items left out. Unreadable
+subfolders are counted too, and a folder that can't be
+listed at all now fails with a permission error instead of
+downloading an empty archive.
+
+2026-10-27: Give the Uploads menu a Russian title distinct
+from Downloads
+
+QA finding F-719 follow-up. Russian translated both
+Downloads and Uploads as . Now that the menu bar shows the
+translated submenu titles, that put two identical menus side
+by side. Uploads is now , matching the existing Russian
+Upload ().
+
+2026-10-27: Give a folder download's archive permission
+error the generic reason
+
+QA finding F-718 follow-up. Downloading a folder over SSH
+Integration first zips it into a temporary file in the
+remote home folder. A permission error there said the file
+couldn't be read, which is not what went wrong; it now gets
+the generic permission reason.
+
+2026-10-27: Discard a declined terminal-initiated file
+instead of drawing it
+
+QA finding F-720. Answering No to Allow Terminal-Initiated
+Download? (or Allow Terminal-Initiated Display?) left the
+terminal out of file-receiving mode, so the rest of the OSC
+1337 File= payload was drawn as text: thousands of lines of
+base64 for a large it2dl. A declined file is now consumed up
+to its terminator and dropped, the way the
+untrusted-terminal path already hid it, and output after it
+is drawn normally. The untrusted path now drops the payload
+in the terminal too instead of passing it to a download that
+does not exist. A declined multipart file is unchanged,
+since its parts are control sequences that are never drawn.
+
+2026-10-27: Localize the Downloads and Uploads menu titles
+and sizes
+
+QA finding F-719. The size column of a file in the Downloads
+and Uploads menus was built as %@ of %@ with an English of,
+so German showed 1,2 MB of 20 MB. It is now a localized
+phrase with positional arguments, translated for de, ja,
+pt-BR, ru, and zh-Hans. The menu bar also kept showing
+Downloads and Uploads in Japanese because it shows the
+submenu's title, which was created in English; the submenus
+now get the localized title.
+
+2026-10-27: Say when an SSH Integration transfer fails for
+lack of permission
+
+QA finding F-718. A download of an unreadable remote file,
+or an upload into a folder you can't write to, failed with
+only The file operation failed on the remote host, so a
+permission problem looked like any other failure. The framer
+reported EACCES as a generic failure (its PermissionError
+branch was unreachable behind OSError), and iTerm2 folded
+every code other than ENOENT into one error. EACCES and
+EPERM now come back as permission denied, and the
+notification says the file couldn't be read or the
+destination folder isn't writable. A path with a non-folder
+in it also gets its own reason.
+
+The framer's create command passed the wrong arguments to
+file_error, so a failed create (such as the first step of an
+upload into a read-only folder) never ended and the upload
+waited forever. Malformed file commands no longer report
+code 1, which now means permission denied, and zip of a
+missing path reports ENOENT.
+
+2026-10-27: Localize SSH Integration file transfer failure
+reasons
+
+QA finding F-717 follow-up. Several reasons an SSH
+Integration download or upload can fail were English-only,
+and since F-717 they appear as the body of the failure
+notification. They are now localized complete sentences,
+with translations for de, ja, pt-BR, ru, and zh-Hans. A
+chunked download stopped from the Downloads menu now reports
+the existing localized cancellation error instead of a bare
+Canceled.
+
+2026-10-27: Treat a canceled file transfer as canceled, not
+failed
+
+QA finding F-717 follow-up. Canceling the save panel of an
+inline download, or declining to connect to a new host for
+an SCP transfer, was reported as a failure, so the Downloads
+menu said Failed with error and the notification read
+Download failed for . with Canceled. as the reason. These
+now stop the transfer the way the Stop menu item does: it is
+listed as canceled and posts no notification. An error
+reported for a transfer the user already stopped is also
+treated as the cancellation it is, and a stopped browser
+download now leaves Waiting to cancel once WebKit confirms.
+An inline download whose save panel was canceled is named by
+its suggested file name instead of Unnamed file.
+
+2026-10-27: Name the file in failed transfer notifications
+
+QA finding F-717. When a file transfer failed (for example
+an SSH Integration download whose remote file was deleted
+mid-transfer), the notification was only the bare reason,
+such as File not found. It now says Download failed for
+name. (or Upload failed) with the reason as its body,
+matching the success notification. Browser download failures
+now include the reason too. Stopping a transfer still posts
+no notification.
+
+Tests can intercept transfer notifications instead of
+posting them.
+
+2026-10-27: Start an injected remote bash as a login shell
+
+Over SSH Integration, a bash login shell that got shell
+integration injected was started as `-bash -c "/bin/bash
+--posix"`. The outer shell sourced ~/.profile
+non-interactively and exec'd the interactive one, which was
+not a login shell, so what ~/.profile defined (aliases such
+as the shell integration utilities) was gone.
+
+For a plain interactive session whose injection added
+arguments, the conductor now sends the framer `login <cwd>
+--iterm2-exec-login <shell> <args>`, and the framer execs
+that shell with argv[0] "-bash" so it is the login shell
+itself and its profile runs exactly once, in the interactive
+shell. Custom commands and env-only injections (zsh, fish,
+xonsh, nu) are unchanged.
+
+2026-10-27: Bump shell integration: it2ssh stops on a bare
+^C and returns ssh's status
+
+Pairs with the app answering an EndSSH it didn't start with
+a bare ^C, so it2ssh no longer leaves the terminal waiting
+for Return when ssh fails before connecting. Regenerates the
+bundled it2ssh copies.
+
+2026-10-27: Answer an it2ssh EndSSH no connection started
+with a bare ^C
+
+When ssh fails before connecting (a host that doesn't
+resolve, a bad option), it2ssh still prints EndSSH and
+waits, but no connection of the session started it, so
+iTerm2 sent nothing and the terminal looked stuck until
+Return. A newline can't be sent, since anything can print
+EndSSH and a newline could run a command. Send a bare ^C
+instead; a current it2ssh reads bytes and stops on it, and
+an older one is no worse off.
+
+2026-10-27: Log an unpauser released while still paused only
+when that happens
+
+Unpauser's deinit logged "Unpause in deinit! This should
+never happen." every time, even after unpause() had already
+run, which made normal paused side effects (such as starting
+tmux mode) look like they leaked a pause.
+
+2026-10-27: Explain why tmux integration can't start inside
+a tmux integration session
+
+Running tmux -CC in a tmux integration pane (for example
+through it2ssh) reached startTmuxMode:, which returned
+silently because the session is a tmux client. The remote
+tmux client was left waiting in control mode with no
+explanation. Show a warning that says so and that an empty
+line ends the waiting client.
+
+2026-10-27: Send nothing but the quit after an SSH
+connection's login shell exits
+
+When the remote login shell exited, the conductor told the
+framer to quit, but an autopoll report that arrived
+meanwhile was still answered.  The request waited for the
+quit's reply and was then written, by which time ssh could
+have exited, so the local terminal showed YXV0b3BvbGw=
+(base64 autopoll), and its blank line could release it2ssh's
+wait for the newline answering EndSSH. Once the login shell
+exits the conductor now stops flow control, drops its queued
+commands, and sends nothing but the quit.
+
+Ported from gap-ssh-port 915f9caa2. The review fix that
+keeps keys typed in that window for the shell that takes
+over (F-783, b180a4483) is not included: it depends on the
+let-go handling that is not on this branch.
+
+QA findings F-709 and F-951.
+
+2026-10-27: Frame keys typed in a connection nested in one
+without a framer
+
+An outer SSH Integration connection without a framer runs
+the login shell straight on the tty and unhooks, so it
+passes writes through. Its unhooked state still vetoed
+queueWrites for a connection nested in it, so a framer the
+inner connection started never got typed keys framed: they
+reached it raw, it took them for malformed commands, and the
+session took no input. A parent without a framer no longer
+has a say.
+
+QA finding F-971.
+
+2026-10-27: Don't recover a restored SSH connection whose
+ssh ended
+
+When iTerm2 restarted after a crash and reattached to a job
+whose ssh died while it was down, it forgot the restored SSH
+Integration state (F-786), but the dead connection's unread
+framer output then arrived outside any hook and started
+framer recovery. That typed base64 recover into the local
+shell and left a recovery conductor holding the keyboard.
+Framer recovery is now refused for that connection, as it is
+after Disconnect, until a new connection hooks.
+
+QA finding F-970.
+
+2026-10-27: Send tmux integration's opening ^C through the
+SSH Integration framer
+
+startTmuxMode wrote its ^C straight to the pty. With tmux
+-CC running over SSH Integration, the session held it for
+the framer, since the conductor queues writes, and flushed
+it to the local tty when the framer unhooked, just before
+the newline answering it2ssh's EndSSH.  it2ssh then read the
+line ^C^C instead of the one it waits for and kept the
+terminal at -echo until Return was pressed. The ^C now goes
+where tmux commands go: through the framer when there is
+one.
+
+QA finding F-864.
+
+2026-10-27: Don't type the pre-framer quit into a shell on
+Disconnect
+
+Once a connection without the framer (the host lacks its
+Python) has run the login shell, conductor.sh has unhooked
+and nothing reads conductor commands. Disconnect still wrote
+the pre-framer quit, so the remote foreground job got a ^C
+and the remote shell ran a line of base64. Disconnect is now
+unavailable for such a connection, and Conductor.quit()
+writes nothing for it. Disconnect still works while
+conductor.sh is reading commands during setup.
+
+QA finding F-950.
+
+2026-10-27: Add a release note for the user@host parsing fix
+
+2026-10-27: Report a failed context-menu download instead of
+doing nothing
+
+With the browser plugin installed, Download using SSH
+Integration examined a file with a known MIME type before
+asking whether to download or view it, and returned silently
+when that failed. Download it instead so the failure is
+reported in the Downloads menu with its reason.
+
+QA finding F-960.
+
+2026-10-27: Don't nest a folder downloaded over SSH
+Integration inside itself
+
+The remote archive holds the folder itself, and it was
+unzipped into the folder, giving sub/sub/in.txt. Unzip
+beside it and move the folder's contents in instead. An
+empty folder's archive, which unzip rejects, now gives an
+empty folder.
+
+QA finding F-921.
+
+2026-10-27: Fix crash finishing an SSH Integration download
+on a user@host connection
+
+it2ssh user@host left the user in the identity's host name,
+so the quarantine source URL couldn't be made and its force
+unwrap crashed when a Download Files download finished.
+Split user@host like ssh does (and honor ssh:// URLs, whose
+parsed host was being overwritten), and quarantine without a
+source URL when one can't be made.
+
+QA finding F-920.
+
+2026-10-27: Keep a finished program's output out from under
+the restart offer
+
+The Session ended announcement covers the top rows of the
+session, so a short program's output, like a custom command
+that echoes a line, was hidden behind it and looked erased.
+When the offer is shown, insert blank rows at the top of the
+screen so the content and the message end at the bottom.
+Only empty rows below the content are given up, scrollback
+is untouched (a cleared screen stays cleared), and marks
+move with their lines.
+
+QA finding F-609.
+
+2026-10-27: Test ending a nested it2ssh whose arguments
+can't be read
+
+QA finding F-708. When a nested it2ssh's arguments couldn't
+be decoded, its conductor was told to quit and torn down at
+once. Its hook's unhook then ended the outer conductor, and
+its EndSSH went unanswered, so the tab stopped responding.
+The F-705 fix on this branch (ignoring a deeper unhook, and
+remembering every disconnected connection) covers it; this
+adds the regression test at depth 1.
+
+2026-10-27: Translate the unreadable it2ssh arguments banner
+
+Adds the catalog entry for PTYSession.SSHArgumentsUnreadable
+(QA finding F-608) with German, Japanese, Brazilian
+Portuguese, Russian, and Simplified Chinese translations.
+
+2026-10-27: Accept non-ASCII it2ssh arguments and never
+leave the remote waiting
+
+it2ssh quotes its arguments with bash 3.2's printf %q, which
+can emit bytes that are not UTF-8. Decode the shell quoting
+at the byte level instead of requiring UTF-8. If the hook
+still can't be decoded, tell the remote conductor to quit
+and explain why in a banner rather than leaving the session
+stuck.
+
+QA finding F-608.
+
+2026-10-27: Bury a filtered tmux peer when a switch brings
+pane %0 into its slot
+
+A filter's stand-in is not a tmux client, so its tmuxPane
+reads 0. When another client swapped the leader's pane %0
+into the slot of a filtered peer, the new layout was
+compared by tmuxPane, looked unchanged, and was applied as a
+resize: the stand-in stayed, the peer was never buried, and
+keystrokes went to the parked peer's pane. The comparison
+now uses the pane the stand-in shows, as the rebuild already
+does. The workgroup attacher's check of which panes a tab
+shows does the same, so it no longer re-reads the layout on
+every pane-list change while such a pane is filtered.
+
+QA finding F-910.
+
+2026-10-27: Rebuild the it2 binary
+
+Picks up the it2cli change in e7bc90fa2 (QA finding F-911).
+Built from this branch's sources rather than taking
+18852700c, whose sources differ.
+
+2026-10-27: it2: route by tmux session id on both sides
+
+it2's tmux lookup prefers the iTerm2 client attached to the
+pane's own tmux session, but it compared #{client_session}
+(a session name, such as A) with the pane's #{session_id}
+(such as $0). They never matched, so the order was only
+newest attach first, and with two tmux -CC sessions of one
+server over two connections, it2 in the older connection's
+panes reached the newer connection. Ask list-clients for
+#{session_id}, which is the client's session there, in both
+it2cli and the Python it2 (submodule bump), and regenerate
+the shell-integration outputs.
+
+QA finding F-911.
+
+2026-10-27: Keep macOS metadata out of the utilities archive
+
+copy_shell_integration.sh built utilities.tgz with macOS
+tar, which adds AppleDouble ._ entries and LIBARCHIVE.xattr
+headers. GNU tar on Linux prints a warning for each header
+and extracts the ._ files into ~/.iterm2. Build it with
+COPYFILE_DISABLE=1 --no-mac-metadata --no-xattrs (as
+6447e3e8b did on master-fixes), and rebuild the archive: the
+same 21 entries with identical contents and modes, minus the
+21 ._ entries and xattr headers.
+
+QA finding F-881.
+
+2026-10-27: Update shell integration: it2ssh option checks,
+it2 tmux lookup, PATH order, nushell
+
+Bumps the shell-integration submodule to qa-fixes-it2: -
+8c53c96 it2ssh: exit 1 after usage, and refuse a misplaced
+--no-shell-integration (F-604, F-808) - 82b4bc3 it2: find
+tmux through its server, and don't guess when the tmux
+server can't be asked (F-610) - 7b871a5 Move ~/.iterm2/bin
+to the front of PATH rather than only adding it when missing
+(F-600 follow-up) - 3eadace nushell: load in tmux, put
+~/.iterm2/bin first on PATH, keep other builds' it2 (F-616,
+F-812, F-813)
+
+Regenerates the bundled scripts, it2.py, the it2 wrapper and
+utilities.tgz from it, which also puts the it2ssh fix into
+what Install Shell Integration & Utilities installs (F-807).
+The it2ssh test runs the submodule's copy again, and new
+tests cover the it2 tmux lookup and each shell moving
+~/.iterm2/bin to the front, including under zsh options and
+a stored ~ in xonsh.
+
+QA findings F-604, F-808, F-610, F-600, F-616, F-812, F-813
+and F-807.
+
+2026-10-27: Notice new flow control events once the
+monitor's list is full
+
+The controller keeps the last 40 events, so their count
+stops changing; compare the latest one's time.
+
+QA finding F-716.
+
+2026-10-27: Redraw the flow control monitor only when it
+changes or once a second
+
+The monitor drew its charts on every sample, ten times a
+second, which cost an idle iTerm2 about a fifth of a core.
+It now redraws at once when what it shows changes (bytes,
+window, statistics, events, round trips, the reason flow
+control is off), otherwise once a second so the time axis
+keeps moving, and not at all while its window is hidden or
+miniaturized, catching up when it is seen again.
+
+QA finding F-716.
+
+2026-10-27: Let Cmd-W close the flow control monitor
+
+Shell > Close sends closeCurrentSession:, which the
+monitor's panel did not handle. A panel never becomes the
+main window, so with it key the action went on to the
+terminal window behind and closed a session there. The panel
+now closes itself, as its close button does.
+
+Tangential bug found while fixing QA finding F-707.
+
+2026-10-27: Don't claim flow control was never tried on a
+stopped connection
+
+A connection whose controller was stopped has no recorded
+reason; say only that flow control is not running.
+
+QA finding F-701.
+
+2026-10-27: Keep the flow control monitor on across a
+restart
+
+Closing the monitor's window turns off the advanced setting
+that shows it, but quitting iTerm2 closes the window too, so
+the monitor never came back after a restart. Only a close
+the person asks for, which AppKit confirms with
+windowShouldClose, turns the setting off now.
+
+QA finding F-707.
+
+2026-10-27: Say why a connection is unpaced as decided when
+it started
+
+The flow control monitor worked out why a connection had no
+controller from the current setting, so after Pace output
+from remote hosts was turned back on, a connection opened
+while it was off claimed its framer did not support flow
+control. The conductor now records the reason when it
+decides not to pace (setting off, waiting for its parent,
+the parent not framing it, the framer refusing, flow on
+aborted), and the monitor shows that.
+
+QA finding F-701.
+
+2026-10-27: Let Download Files choose any file (F-895)
+
+The ssh Download Files panel filtered files by the AI
+provider's attachment types, copied from the chat attachment
+picker, so archives, binaries and most other files could not
+be selected.
+
+2026-10-27: Say what the tmux pane lookups' origin scoping
+actually guarantees
+
+The comments claimed a remote caller can't name another
+connection's origin, but any client that evaluates an
+expression, including a remote it2 through `it2 session list
+--format`, chooses it. The scoping keeps it2's own pane
+commands from getting answers about another machine's
+servers; it is not access control, and such a client can
+already list every session.
+
+QA finding F-867.
+
+2026-10-27: Give up on an unresponsive host quickly during
+uninstall and say so
+
+After the uninstall confirmation, a wedged connection held
+things up for about two minutes, mostly waiting 30 seconds
+at a time for the host's machine token, and the failure then
+said iTerm2 couldn't tell whether the host is this Mac.
+During uninstall the machine token now has the same 3 second
+deadline as the check before the confirmation, and a host
+that doesn't answer is reported as not responding.
+
+QA finding F-868.
+
+2026-10-27: Honor Stop Allowing during uninstall even when
+the hook stays
+
+Uninstall asks whether to stop always allowing a host to use
+the API, but revoked the grant only when the hook was
+removed, so for a host it then refused to touch or that
+didn't answer, the answer was silently dropped. The grant is
+now revoked once the removal finishes, whatever its result,
+and for a host that disconnected after the confirmation.
+
+QA finding F-866.
+
+2026-10-27: Treat nu named as the it2ssh command as a shell,
+so it gets shell integration
+
+it2ssh host /opt/homebrew/bin/nu started nu without iTerm2's
+nu integration. nu was missing from the names that make a
+command a shell, so it was run as an ordinary command, which
+is never injected (it got only ~/.iterm2/bin on PATH). It is
+now a shell named as the command, injected like zsh, fish
+and xonsh: NU_VENDOR_AUTOLOAD_DIR points at the uploaded
+script, which nu sources at startup.
+
+QA finding F-865.
+
+2026-10-27: Answer the EndSSH of an it2ssh whose connection
+aborted
+
+it2ssh prints EndSSH after ssh exits and waits, with the
+terminal at -echo -isig, for iTerm2 to send a newline.
+iTerm2 sent it for a connection it still had, or one that
+had quit, but a connection that aborted was forgotten, so
+its EndSSH went unanswered and it2ssh held the terminal
+until Return was pressed. An aborted connection is now
+remembered for its EndSSH as a quit one is. An EndSSH no
+connection of this session started is still not answered,
+since any output can contain one.
+
+QA finding F-864 (the repro's exact path is not confirmed;
+an abort after the tmux detach is the likely one).
+
+2026-10-27: Refuse an it2 prompt for a tmux pane this
+connection doesn't show instead of waiting forever
+
+A pane of another connection's tmux session on the same
+server could reach this connection through the socket it
+inherited from the tmux server. Its authorization prompt
+waited for the pane to appear in this connection's tmux
+client, which it never does, so no prompt was shown and that
+it2 call, and every later one on the connection, hung. A
+prompt for a pane in no window layout of this client is now
+refused at once without remembering a decision; one still
+waits for a pane in a hidden window. Prompts still waiting
+when the tmux client detaches are refused too, so later
+calls are not stuck behind them.
+
+QA finding F-863.
+
+2026-10-27: Put ~/.iterm2/bin on PATH once for a shell named
+as the it2ssh command
+
+A shell named as the command that could not be injected got
+~/.iterm2/bin from both the framer (IT2_PUT_BIN_ON_PATH) and
+its command's PATH prefix, so it was on PATH twice. The
+framer now does it only for the login shell itself, when
+there is no command.
+
+QA finding F-862.
+
+2026-10-27: Don't inject macOS's bash named as the it2ssh
+command under another login shell
+
+Whether bash can be injected was decided from getshell's
+version string, which describes the login shell. For it2ssh
+host bash with a zsh or tcsh login shell on macOS, that
+never matched the bash 3.2 check, so /bin/bash ran with
+--posix and an ENV it never reads: no shell integration,
+POSIX mode left on, and it2 not on PATH. The version now
+counts only when the login shell is that bash; otherwise
+bash or /bin/bash on a macOS host is taken to be macOS's own
+and gets it2 on PATH the way an uninjected shell does.
+
+QA finding F-860.
+
+2026-10-27: Name a remote session's job after the foreground
+job on its terminal
+
+A local session's job name is the deepest foreground job
+whose stdin or stdout is the terminal, so claude's
+caffeinate child, with its stdio on /dev/null, does not
+rename it. A remote session could not see file descriptors
+and used the deepest foreground job, so Session Status
+showed Claude Code (caffeinate) during a turn. framer now
+marks foreground processes whose stdio is not a terminal
+(from /proc, or lsof where there is none), and the remote
+job name follows the same rule as the local one. A session
+on a host reached through SSH Integration also looks its job
+up by the login shell's pid on that host, which is how its
+processes are known, rather than by the local ssh's pid.
+
+QA finding F-840.
+
+2026-10-27: Don't save window restoration state on tmux
+attach or detach
+
+Attaching and detaching tmux saved window restoration state
+at once, which encodes it on the main thread. They now only
+mark it to be saved, at the next resign-active or quit. A
+session restored as a gateway after a detach still checks
+that tmux runs in it before sending tmux anything, so
+restoring after a crash stays safe. The case where iTerm2 is
+killed while active, without switching away since attaching,
+is no longer covered by an immediate save (QA finding
+F-656), by the user's choice; the release note says when it
+is.
+
+2026-10-27: Name the filtered session in its close
+confirmation
+
+With Find > Filter or Instant Replay open, the close
+confirmation named the stand-in (for a tmux pane, tmux), not
+the session that closes. It now names the session the
+stand-in shows.
+
+QA finding F-846.
+
+2026-10-27: Keep a tmux workgroup's leader in place when
+detaching
+
+Detaching ends every tmux session here, and each follows its
+profile's end action. A workgroup's members are pinned to
+the default action so they stay, like a plain tmux window's
+panes, but the leader followed its profile and closed when
+that says to close sessions that end, leaving its slot empty
+beside the split. While in a workgroup, the leader now stays
+at a detach too. Outside a detach it keeps its own end
+action.
+
+QA finding F-845.
+
+2026-10-27: Refit filter stand-ins in tmux tabs when their
+views change
+
+tmux sizes the grids of its clients, but a filter's stand-in
+in a tmux tab is not one, so it kept the size it was given
+when it was swapped in. A filter put back while the tab was
+still settling after a peer switch from another Mac was then
+resized by later layouts and toolbar changes, and the rows
+its grid didn't cover drew as a black band. Stand-ins are
+now refit after each layout from tmux and after title bar or
+toolbar changes.
+
+QA finding F-833.
+
+2026-10-27: Fit a filter's stand-in to its view in tmux tabs
+
+A filter's stand-in starts with the grid of the session it
+shows. Outside tmux tabs it is then fit to its own view, but
+in a tmux tab it was skipped, though tmux doesn't size the
+stand-in. A tmux workgroup member has a toolbar the stand-in
+lacks, so the stand-in's view was taller than its grid and
+the rows it didn't cover drew as a black band. It is now fit
+in tmux tabs too.
+
+QA finding F-833.
+
+2026-10-27: Erase the user's typing before exiting the
+installer's helper sh
+
+After Cancel, the installer types exit once the helper sh
+shows it reads commands again. Text the user typed in the
+terminal in the meantime stayed on the helper's line, so the
+helper read something like "echoexit", which is not exit,
+and the user was left in the helper.
+
+The exit now follows a Control-U, which erases what is on
+the line: the tty does that for an sh without a line editor,
+such as dash, and it is the default binding of the line
+editors of bash, zsh and others. Only the typed exit has it,
+not the commands shown for pasting by hand.
+
+QA finding F-883.
+
+2026-10-27: Start the Internet-Free install's helper sh with
+one line
+
+The installer started its helper shells by typing three
+lines at once into the user's shell: one that starts an sh,
+one that starts a second sh inside it with ENV set, and one
+that sets the prompts. While bash's line editor reads the
+first line the tty is in raw mode, and when bash puts it
+back in canonical mode to run that line, Linux hands
+everything still queued to the next read() as one line. So
+dash, as the outer sh, read the other two lines at once, ran
+the one that starts the inner sh, and kept the rest for
+after that sh exited. The inner sh never got its prompts,
+and the step waited forever.
+
+The helper is now started with one line, sh -c '', which
+every supported shell parses the same way and which sets ENV
+and the prompts itself before it becomes the helper with
+exec env. It prints the ready marker right before the
+helper's first prompt. Nothing is typed until that prompt
+shows up, so no line can reach the wrong shell. There is one
+helper instead of two, so a step ends with one exit, and the
+depth check after a canceled launch expects one.
+
+The real-dash pty test now types the launch in raw mode and
+keeps canonical mode off until the helper prompts, so the
+outer shell reads everything typed ahead at once, as on
+Linux. It hung before this change.  The fake terminals check
+that nothing but empty lines is typed ahead of the helper.
+
+QA finding F-882.
+
+2026-10-27: Send the shell integration script to the helper
+sh in short lines
+
+The Internet-Free install typed the shell integration script
+into the helper sh as one here-document. dash, the sh of
+Debian and Ubuntu, reads it from the tty in canonical mode,
+and Linux's tty keeps at most 4095 bytes of a line, so the
+end of each longer line (the embedded it2.py line is over
+10000 bytes) was lost and the written script was broken:
+every login shell reported an unexpected EOF.
+
+The script now goes the way the utilities archive does:
+base64-encoded in 76-column lines, typed only after sh says
+its read loop is reading into a temporary file. sh decodes
+it, compares it with the POSIX cksum of the script, and only
+then copies it into place and makes it executable, printing
+whether it did. The step reports a failure instead of
+success otherwise, and Cancel stops typing the script as it
+does the archive, writing nothing. The path goes in a
+variable so the command stays short of macOS's 1024-byte
+line limit.
+
+Tests: the fake dash drops what goes past 4095 bytes in a
+line, every install checks that no typed line reaches 1024
+bytes, the receive command runs in real sh and dash, and a
+script with a line over 4096 bytes is written byte for byte
+through real dash in a pty.
+
+QA finding F-880.
+
+2026-10-27: Don't hang the Internet-Free install where sh is
+dash
+
+The installer waited for the helper sh prompt at the start
+of a row before typing anything after the launch. dash, the
+sh of Debian and Ubuntu, has no line editor, so the launch
+lines typed ahead are not echoed, and its prompt lands on
+the row after the helpers' own default prompts (or an
+exported PS1), as in "$ $ >> ". No row started with it, so
+the first step never went on.
+
+The line that sets the helper prompt now also prints a
+marker with no newline (written with empty quotes, so its
+echo can't match), and the helper prompt counts at the start
+of a row or right after that marker.  The dotfile step's
+first wait uses the same match.
+
+dash also leaves echoing to the tty, which echoes typed text
+before sh prints its prompts, so the script step's wait for
+"> EOF" would hang next and the dotfile step's wait for the
+prompt after fi depended on timing. Both now wait for an
+answer the helper prints after the here-document or fi.
+
+Tests run every helper scenario against a fake dash that
+doesn't echo typeahead and doesn't redraw lines, and start
+the helpers in real /bin/dash in a pty.
+
+QA finding F-870.
+
+2026-10-26: Rebuild the it2 binary
+
+Picks up the it2cli change in 936a28bb2 (QA finding F-610).
+
+2026-10-26: Let Disconnect end an SSH connection before its
+framer starts
+
+Disconnect no longer refuses with Cant Disconnect when the
+conductor isn't framing, as when it2ssh was killed during
+setup or the host lacks the framer's Python.
+Conductor.quit() sends the pre-framer quit in that case, and
+the forced unhook and the refusal of framer recovery apply
+as they do for a framing connection. Without automatic
+detection of a killed it2ssh, the refusal left such a
+session hooked with no way out.
+
+Removes the warning's strings, which nothing else used, and
+Conductor.minimumPythonVersionForFramer, which only the
+warning read.
+
+2026-10-26: Remove automatic detection of a killed it2ssh
+
+Removes SSHClientMonitor's watch of the local it2ssh process
+and the session's automatic abandonment of the connection
+when it exits, the SecretServer's LOCAL_PEERPID recording of
+the ancestry of the process that fetched a token, the
+SSH_UNFRAMED_PROMPT token and its plumbing from
+VT100ConductorParser to PTYSession, and the SSH connection
+...  ended unexpectedly announcement (and its string catalog
+entries).  Conductor.abandon() and its write guards go too:
+only the abandon path called it. Disconnect never used it.
+
+A killed it2ssh is now handled by the user choosing
+Disconnect, which still forces the hook off after 3 seconds,
+answers every disconnected connection's EndSSH, and refuses
+framer recovery and hooks from the disconnected connection.
+Disconnect now also stops holding back keystrokes for a
+connection that was still being set up, which the abandon
+path used to do; otherwise a killed it2ssh during setup
+would leave typed keys queued forever.
+
+SSHClientMonitor.swift is renamed
+SSHClientProcessLocator.swift and keeps only the check that
+a restored session's job still runs ssh (F-786).  The tests
+that drove the kept refusals through the abandon path now
+drive them through Disconnect. The tests that a conductor
+abandoned after its it2ssh died writes nothing go with
+abandon().
+
+Undoes QA finding F-482 (24bfcbcb8, the automatic part;
+Disconnect's forced unhook from 2ac96e3c1 stays). The
+holding of typed keys while the announcement was up (F-820,
+1129c9ce2 and 666f2f39f) and sessionDidLetGo() (F-703) were
+never applied to this branch.
+
+2026-10-26: Remove killing of orphaned ssh clients
+
+Removes the local SIGKILL of the ssh client a killed it2ssh
+left running (the record of it2ssh's ssh child, the
+ControlMaster and identity checks, and the iTermLSOF socket
+inspection) and the PTYSession calls that sent it.
+
+Also removes F-553's handling of a cut-off framer header in
+VT100XtermParser. The header was cut off because iTerm2
+SIGKILLed the ssh client while it was writing; an ssh client
+that is not killed finishes writing its frame, so an OSC 134
+it interleaves with the shell's output is terminated by its
+own next write. Ending such a header at a line break would
+instead draw the rest of it as text.
+
+Undoes QA findings F-351 (ecd1df6fe), its SIGKILL follow-up
+(0932bb993), and the framer header part of F-553
+(c2b9f75b3). The framer's killorphan command for a nested
+it2ssh (F-704, 85068e0f0) and its fail-safe check (F-782,
+1771207be) were never applied to this branch, so there is
+nothing of them to remove.
+
+2026-10-26: Remove tty mode repair after a killed it2ssh
+
+Removes TTYModeRepairer: the tty mode snapshot taken when
+it2ssh fetches its token, the repair at the prompt and at
+OSC 133 C, the watcher for forks of the shell that ran
+it2ssh, setting modes through the pty's slave, and the flush
+of unread tty input and of PTYTask's pending writes when a
+connection was abandoned as soon as its it2ssh was found
+dead.  A killed it2ssh is a rare case and this machinery was
+far more complex than the problem warranted.
+
+Undoes QA findings F-460 (8a840cd7e), F-541 (4dbb550b8), the
+tty mode part of F-553 (c2b9f75b3), and the input flush part
+of F-554.
+
+2026-10-26: Don't judge a connection back to this Mac as
+having a remote Claude Code hook
+
+The remote hook status had no this-Mac check, and the
+installer's pre-marking of the remote step called it
+directly, so for a connection back to this Mac the step
+could be marked done from this Mac's own settings. The
+status now reports not installed for this Mac and unknown
+for a host it can't tell apart from this Mac, which covers
+every caller.
+
+QA finding F-816.
+
+2026-10-26: Show the Claude Code uninstall confirmation
+promptly
+
+Before the confirmation, Uninstall asks each connected host
+whether it is this Mac, and waited up to 30 seconds per
+question, so a wedged connection left the menu item doing
+nothing visible for that long. The question now has a 3
+second deadline. A host that doesn't answer in time stays in
+the dialog, and the removal checks again and leaves it alone
+if it still can't tell.
+
+QA finding F-814.
+
+2026-10-26: Don't edit a remote host's Claude Code settings
+when it might be this Mac
+
+When a host's machine token couldn't be read (no answer, a
+Mac that couldn't compute it, or a version this Mac doesn't
+implement), its locality was unknown, the this-Mac check
+said no, and the remote install or uninstall went ahead, so
+a connection back to this Mac could still edit this Mac's
+settings. Both now refuse such a host and say why.
+
+QA finding F-815.
+
+2026-10-26: Accept a blank remote Claude Code settings.json
+and skip this Mac on uninstall
+
+Uninstalling with a live SSH Integration connection whose
+settings.json was empty reported that it couldn't be parsed
+as JSON. The remote install, status and uninstall now treat
+an empty or whitespace-only file as an empty object, through
+a parser shared with the local install and uninstall.
+
+Uninstall also had no check for a host that is this Mac
+reached over ssh, which Install refuses: the confirmation
+named it and the removal edited this Mac's settings through
+the connection. Such hosts are now left out of the
+confirmation, checked in parallel before it appears, and the
+remote uninstall itself leaves this Mac's settings alone. A
+second Uninstall click while the hosts are being checked is
+ignored.
+
+QA finding F-606.
+
+2026-10-26: Stop calling the Claude Code hook cc-status in
+user-visible text
+
+Installs now write an it2 handle-agent-hook command, but the
+onboarding list, the uninstall confirmation, the
+hook-removal failure alert, the kept-hooks notice and the
+broken-hook warning still called it the cc-status hook. They
+now call it iTerm2's status hook. The uninstall confirmation
+also named a menu item that reads Reinstall in some states;
+it now points at the iTerm2 menu instead. Translations
+updated for de, ja, pt-BR, ru and zh-Hans.
+
+QA finding F-605.
+
+2026-10-26: framer: remove a connection's /tmp it2 socket
+directory when it ends
+
+For a home too long for a socket path, each connection's it2
+socket goes in a fresh /tmp/.it2-<hex> directory, which was
+never removed. The framer now removes it with the socket on
+exit, including on SIGHUP and SIGTERM, and a framer starting
+in /tmp sweeps this user's directories that no live framer
+holds a lock in.
+
+QA finding F-752.
+
+2026-10-26: Give a remote workgroup peer the PATH of the
+user's interactive shell
+
+A peer of a leader on a host reached through SSH Integration
+runs as a remote command, which the login shell runs with
+-c: zsh skips .zshrc and macOS's bash reads no profile, so
+the Code Review peer could not find claude where Claude
+Code's installer put it. The peer's /bin/sh script now asks
+the user's shell, started as an interactive login shell with
+no input, for its PATH and runs the command with it,
+~/.iterm2/bin first. Only PATH is taken, so nothing else the
+startup files do runs in the peer. A peer started as a pane
+of the leader's framer runs the same script.
+
+QA finding F-750.
+
+2026-10-26: framer: take IT2_PUT_BIN_ON_PATH out of its own
+environment
+
+The flag was removed only from the environment the framer
+gives the login shell, so every other process the framer
+started inherited it. The framer now takes it out of its own
+environment when it starts and remembers it.
+
+QA finding F-810.
+
+2026-10-26: Exec a shell named as the it2ssh command instead
+of running it under the login shell
+
+it2ssh host bash ran PATH=...; export PATH; 'bash' under the
+login shell's -c, and bash 3.2 does not exec the last
+command of a list, so an extra non-interactive bash sat
+between the framer and the user's shell. A shell named as
+the command is now exec'd, in the login shell's syntax, when
+it is one simple command. The choice of syntax and of exec
+is now a tested function.
+
+QA finding F-809.
+
+2026-10-26: it2ssh: refuse --no-shell-integration wherever
+ssh reads options after the host
+
+Only the first word after the host was checked, so it2ssh
+host -t --no-shell-integration went ahead with shell
+integration loaded. Words after the host are now read as ssh
+reads them, as options (with their values) until the first
+word that is not one or --, and the flag is refused anywhere
+among them.
+
+QA finding F-808.
+
+2026-10-26: Align and localize the API access over ssh
+button and its sheet
+
+The button in Settings > General > Magic now lines up with
+Manage Permissions above it. It and the Remote Hosts Allowed
+sheet (and the Always Allow This Host choice the sheet
+refers to) are translated into German, Japanese, Brazilian
+Portuguese, Russian and Simplified Chinese, and the sheet's
+dates follow the UI language as other formatted values do.
+
+QA finding F-611.
+
+2026-10-26: Don't let a remote it2 in an unplaced tmux pane
+act on a tmux gateway
+
+A tmux pane inherits the IT2_SOCK of whichever connection
+started its tmux server. When it2 could not read the tmux
+client records, a call from another connection's pane
+arrived on that connection, could not be placed, and
+defaulted to the session it arrived on, the tmux gateway:
+it2 session set-name renamed the other connection's gateway
+and reported success. A tmux gateway is no longer the
+default target of a call from a tmux pane, and a remote call
+with nothing to act on now fails with a clear message
+instead of using the focused session.
+
+QA finding F-610.
+
+2026-10-26: it2ssh: exit 1 after usage, and refuse a
+misplaced --no-shell-integration
+
+With set -e and pipefail, ssh's usage status (255) ended
+it2ssh before its exit 1. A --no-shell-integration that is
+not the first argument, where ssh would read it as an option
+(among the options, or right after the host unless -- ended
+them), was ignored and the session loaded shell integration
+anyway; it2ssh now refuses it and says to put it first. A --
+before the host is now recognized; it used to be taken for
+an option whose value was the host.
+
+QA finding F-604.
+
+2026-10-26: Put it2 on PATH for a shell named as the it2ssh
+command
+
+it2ssh host sh -c ... and it2ssh host bash (macOS bash 3.2)
+were treated as custom shells, so they got neither injection
+nor the PATH prepend a command gets, and it2 was not found.
+An injected shell given -c (it2ssh host zsh -c ...) missed
+out too, since the scripts load only in an interactive
+shell. Such a shell now runs through
+commandPuttingIT2OnPath, in the login shell's syntax. An
+interactive injected shell is still left to its scripts.
+
+QA finding F-603.
+
+2026-10-26: Put ~/.iterm2/bin on PATH for a login shell that
+gets it2 without shell integration
+
+tcsh is never injected, so nothing put ~/.iterm2/bin on its
+PATH and it2 was not found by name over it2ssh although it
+was uploaded. The conductor now asks the framer, through
+IT2_PUT_BIN_ON_PATH, to prepend the directory to the PATH it
+gives the login shell and workgroup panes.
+
+QA finding F-601.
+
+2026-10-26: Turning off host control from the menu revokes
+the host's grant everywhere
+
+Unchecking Remote host can control iTerm2 forgot the Always
+Allow record but left other live connections to the host
+that the grant had let in working with no prompt. It now
+revokes the grant as Settings does, so those connections ask
+again.
+
+QA finding F-602.
+
+2026-10-26: Keep ~/.iterm2/bin first on PATH after a login
+zsh's startup files
+
+The injected .zshenv loads shell integration, which prepends
+~/.iterm2/bin, before /etc/zprofile's path_helper and
+~/.zprofile run, so over it2ssh the directory ended up last
+and an it2 earlier on PATH ran instead of iTerm2's. A
+one-shot precmd hook now moves it to the front before the
+first prompt.
+
+QA finding F-600.
+
+2026-10-26: Show a local tmux server's pane processes in
+Toolbelt Jobs
+
+When tmux runs on this Mac but the gateway session is an SSH
+Integration connection (for example it2ssh to 127.0.0.1), a
+pane's processes are this Mac's, and its job comes from this
+Mac's process cache. The Jobs tool asked the gateway's
+provider instead, the connection's remote process table,
+which doesn't track the pane, so it stayed empty. It now
+uses this Mac's processes for a pane of a local tmux server.
+Debug logging at each choice (the provider, the pane pid
+fetch) shows which applies if it still doesn't.
+
+QA finding F-612.
+
+2026-10-26: Don't send tmux commands to a shell after
+restoring a detached gateway
+
+Detaching from tmux left the saved window restoration state
+saying the session was a tmux gateway, since it was saved
+when tmux attached. If iTerm2 was then killed, the restored
+session took itself for a gateway, printed that tmux sent an
+unrecognized command, and typed its tmux commands into the
+shell. Restoration state is now saved when tmux detaches
+too. And a session restored as a gateway whose foreground
+job turns out to be a shell leaves tmux mode before its
+delayed writes go out, discarding them.
+
+QA finding F-832.
+
+2026-10-26: Drop the workgroup toolbar from tmux workgroup
+members that stay
+
+When a workgroup on a tmux server ends here, as at a detach,
+its split and tab members stay as ordinary panes. Their
+toolbars were not refreshed, so the tab member, in a tab of
+its own, kept its workgroup bar. Each kept member's toolbar
+is now refreshed.
+
+QA finding F-831.
+
+2026-10-26: Kill a filtered tmux pane when closing it
+
+Closing a session kills its tmux pane, but with Find >
+Filter or Instant Replay open the session closed is the
+stand-in, which is not a tmux client, so it was only
+terminated along with the session it showed and the pane
+stayed on the server. For a member of a tmux workgroup that
+left the workgroup half alive: the pane showed as an
+ordinary pane, its peers stayed parked, and Exit Workgroup
+did nothing. Closing a stand-in now kills the pane it shows,
+so the workgroup ends as it does when the member itself is
+closed.
+
+QA finding F-830.
+
+2026-10-26: Keep a tmux workgroup peer created this attach
+when detaching
+
+Detaching ends every tmux session here, and a session whose
+profile closes sessions that end closes then. Adopted peers
+and other members are pinned to the default end action, but
+a peer whose pane was created during this attach was not, so
+it closed and left its slot empty. It is now pinned like the
+others.
+
+QA finding F-652.
+
+2026-10-26: Forget the current tmux window when selecting it
+failed
+
+After select-window failed because tmux had already closed
+the window, the controller still took it as the current
+window, and every later reorder of tabs selected it again,
+failing each time. It is now forgotten when its selection
+fails.
+
+QA finding F-804.
+
+2026-10-26: Ask again where a tmux workgroup's leader is
+before ending it
+
+Removing a tmux workgroup from the server ended the instance
+whatever its queries returned. If tmux failed to say which
+window the leader was in, a parked leader was not brought
+out and stayed hidden, with nothing logged. The query is now
+asked again before the instance ends, and each failure is
+logged.
+
+QA finding F-803.
+
+2026-10-26: Ask before closing a filtered tmux workgroup
+member
+
+With Find > Filter or Instant Replay open, Cmd-W closes the
+stand-in that shows a session. The check for closing a
+member of a tmux workgroup, and the workgroup warning
+itself, looked at the stand-in, which is in no workgroup, so
+it closed without asking and ended the workgroup. Both now
+look at the session the stand-in shows.
+
+QA finding F-801.
+
+2026-10-26: Count a filtered workgroup peer in view as in
+its tab
+
+A filter or Instant Replay shows a session through a
+stand-in, which its tab holds instead of the session.
+Deciding whether a peer is in a tab when its workgroup ends
+looked only for the peer, so a filtered peer in view counted
+as buried and was terminated in place, or, on a tmux server,
+ended instead of being left to tmux. A peer whose stand-in
+is in the tab now counts as in it.
+
+QA finding F-800.
+
+2026-10-26: Keep the leader's window when exiting a
+workgroup whose peer was shown
+
+A peer that was shown and then switched away keeps its tab
+as its delegate while buried. Ending the workgroup took that
+as the peer being in the tab and closed it through the tab,
+and the tab, holding only the leader, closed with it, taking
+the window. A peer now counts as in a tab only if the tab
+has it, so a buried one is terminated and the leader stays.
+
+QA finding F-713.
+
+2026-10-26: Refuse workgroups in tmux Integration with tmux
+older than 3.2
+
+A workgroup in a tmux Integration tab keeps its state on the
+tmux server, which needs tmux 3.2 or later. With an older
+tmux, entering one fell back to native splits and tabs,
+which tmux's next layout change removed, ending the
+workgroup with no message. Entering is now refused there:
+the Workgroups menu disables its entries, with a tooltip
+saying why, and choosing one another way explains that tmux
+3.2 or later is needed.
+
+QA finding F-619.
+
+2026-10-26: Test that closing a tmux workgroup member leaves
+its peers to tmux
+
+Closing a member (Cmd-W on the split) ends the workgroup
+through the same teardown as Exit Workgroup, so the peer in
+view is left for tmux's layout and the leader's window no
+longer empties and hides. Covers that path too.
+
+QA finding F-618.
+
+2026-10-26: Ask before closing a member of a tmux workgroup
+
+Closing a member of a workgroup in a tmux Integration tab
+ends the workgroup and kills its other members' panes, but
+it could close without asking, because tmux hides panes'
+jobs and the usual reasons to ask didn't apply. Closing one
+now asks first with the same warning that the workgroup will
+end and its other sessions close.
+
+QA finding F-618.
+
+2026-10-26: Don't crash making a tab active after it left
+its window
+
+tmux can report that a window became current just after
+iTerm2 closed its tab, as when closing a member of a tmux
+workgroup tears it down. Making that tab active asked the
+window's tab view to select an item it no longer had, which
+raises an exception. The tab is now left alone when its tab
+view doesn't have it.
+
+QA finding F-618.
+
+2026-10-26: Adopt a tmux workgroup when its leader's window
+opens later
+
+With more tmux windows than the Dashboard limit, attaching
+opens the tmux Dashboard instead of the windows, so a
+workgroup's leader had no session when the workgroup would
+be adopted and it was skipped. Opening the leader's window
+later showed its panes as ordinary panes until the next
+attach. Now the workgroup state is read again, once, when
+the leader's pane gets a session, which adopts it.
+
+QA finding F-615.
+
+2026-10-26: Leave a tmux workgroup's peers in view to tmux
+when it ends
+
+Exit Workgroup swaps the leader back in through tmux and
+kills the members' panes, but it also closed the peers in
+view here at once. With two peer groups each showing a peer
+in the leader's window, that emptied the window's tab before
+tmux's layout brought the leader back, and closing a tmux
+tab's last session hides its window, so the leader's window
+disappeared and was listed as hidden. Peers in tabs of a
+workgroup on a tmux server are now left for tmux's layout to
+remove, as its other members already were.
+
+QA finding F-614.
+
+2026-10-26: Keep Toolbelt Jobs following its session's root
+pid and process provider
+
+Toolbelt > Jobs read its session's root pid and process info
+provider only when the toolbelt was refreshed. A tmux pane
+on an SSH Integration host can get them later without that
+happening, when its connection starts framing or recovers,
+so the tool kept reading a provider without the pane's
+processes and stayed empty while the tab showed the pane's
+job. The job tree now asks its host for both before each
+periodic refresh, and setting an unchanged value does
+nothing.
+
+QA finding F-612.
+
+2026-10-26: Save window restoration state when a tmux
+gateway attaches
+
+Window restoration state is saved only when iTerm2 resigns
+active or quits. If iTerm2 stayed active from attaching tmux
+-CC until it was killed, the saved state lacked the
+gateway's arrangement, so on relaunch its still-running
+session was adopted as an orphan showing raw control-mode
+output, and tmux integration did not resume. Saving once the
+gateway knows its tmux session lets restoration take the
+existing path that resumes tmux integration.
+
+QA finding F-656.
+
+2026-10-26: Leave parked tmux workgroup windows out of the
+tmux Dashboard
+
+The Dashboard listed windows holding parked workgroup peers
+with the hidden windows, where opening one did nothing and
+the remove button killed it, ending the whole workgroup.
+They are now left out, as the hidden-window menu already
+does.
+
+QA finding F-655.
+
+2026-10-26: Bury a filtered tmux workgroup member when a
+peer switch parks it
+
+With Find > Filter open on a workgroup member in a tmux
+Integration tab, the tab shows a stand-in session in its
+place. When a peer switch parked the member's pane, the
+stand-in was found among the sessions leaving the tab and
+terminated, and so was the member's session behind it, so
+switching back built a fresh session from tmux's history.
+The stand-in is now ended as leaving a filter does and the
+member's session is buried, and its filter is put back when
+it returns as the active session.
+
+QA finding F-654.
+
+2026-10-26: Apply user variables a new tmux workgroup peer
+sets before its session exists
+
+A peer created in a parked window can print its first prompt
+before iTerm2 learns the window is parked and gives the pane
+a buried session. That output was dropped and the pane's
+screen came from capture-pane, so the user variables its
+prompt set were lost until the next prompt. The control
+sequences captured from it are now executed when the buried
+session is filled, as for a window being opened. A parked
+window also stopped counting as awaiting its layout, which
+had kept every later new pane's dropped output being
+scanned.
+
+QA finding F-651.
+
+2026-10-26: Keep a tmux workgroup's peer in view when
+detaching
+
+Detaching terminates the buried sessions, the parked
+leader's among them, which ends the workgroup on this Mac.
+Ending it closed the peer in view, leaving an empty area in
+the window where it had been. When the tmux connection is
+gone, peers in tabs now stay in place like any other pane of
+a detached window; only buried ones end.
+
+QA finding F-652.
+
+2026-10-26: Keep focus in a tmux workgroup's slot when
+switching peers
+
+Switching peers swaps the peer's pane into the slot, and the
+tab is rebuilt from tmux's layout. The active member's pane
+was gone from that layout, so focus went to its nearest
+neighbor, the split member, and iTerm2 then told tmux that
+pane was active. Now the peer that takes the active member's
+place becomes active, as in a local workgroup, which also
+makes it tmux's active pane.
+
+QA finding F-650.
+
+2026-10-26: Don't end a tmux connection selecting a window
+tmux already closed
+
+A tmux workgroup's teardown kills its members' panes. The
+native tab of a killed window can become current before
+tmux's %window-close arrives, and the select-window sent for
+it failed, which aborted the whole connection. select-window
+now tolerates errors, and a failed one no longer leaves a
+window-change notification counted as expected.
+
+QA finding F-653.
+
+2026-10-26: Finish SSH Integration downloads in the
+Downloads menu
+
+QA finding F-714. A file fetched through the file panel
+(Shell > ssh > Download Files, or attaching a remote file)
+is saved by the panel itself, so its transfer was never told
+it ended and stayed listed as Downloading 20 MB of 20 MB. It
+is now marked finished (or failed) when the panel's download
+ends. Also, a conductor transfer stopped counting as a
+download once it finished, so Clear All never removed
+finished SSH Integration downloads and their notification
+said Upload finished; the direction is now kept.
+
+Tests can turn off opening the Downloads menu, which pressed
+it through accessibility and stopped the test runner.
+
+2026-10-26: Don't reset a framer that didn't survive a
+restart
+
+QA finding F-786. After a restart, a session that reattached
+to its job server reset its SSH Integration framers, but
+reattaching proves only that the job's shell survived. If
+ssh had died while iTerm2 was down, the reset (base64 reset2
+and a UUID) was typed into the local shell. The session now
+resets only if an it2ssh or ssh client still runs in the
+job, and otherwise forgets the saved SSH Integration state.
+
+2026-10-26: Recognize a late unhook by its hook, not just
+its depth
+
+QA finding F-787. A conductor nested in one without a framer
+has the same depth as its parent, so after Disconnect on the
+inner connection its late unhook passed the depth check and
+the outer conductor took it as its own end. The unhook token
+now carries its hook's ID, and the session ignores the
+unhook of a hook whose conductor it already let go of,
+unless a live conductor (such as one recovered from the same
+framer) still owns it.
+
+2026-10-26: Don't type framer commands into the new shells
+of restored SSH sessions
+
+QA finding F-706. A conductor restored from a saved
+arrangement reset its framers as soon as it was created,
+before the session knew whether it had reattached to the
+process that still ran ssh. After Cmd-Q that process is
+gone, so the session started a new local shell, and the
+reset (base64 reset2 and a UUID, each followed by a newline)
+was typed into it. The restored conductor now writes nothing
+until the session has reattached; only then does it reset.
+
+2026-10-26: Keep the outer SSH connection going after
+disconnecting a nested one
+
+QA finding F-705. Disconnect on the inner hop of a nested
+SSH Integration connection unhooked the inner conductor at
+once. When the inner hook's own unhook arrived later, the
+session handed it to the outer conductor, which took it as
+its own end: it turned flow control off and stopped sending
+commands, so nothing more was drawn. The inner it2ssh's
+EndSSH also went unanswered, since only the outermost
+disconnected connection was remembered, so it waited with
+echo off in the outer host's shell.
+
+An unhook from deeper than the innermost conductor is now
+ignored, and every disconnected or abandoned connection is
+remembered so its EndSSH gets the line that lets it2ssh
+exit.
+
 2026-10-26: Remove the LIVE badge from the iTerm2 Buddy
 session view
 
