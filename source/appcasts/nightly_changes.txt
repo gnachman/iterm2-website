@@ -1,3 +1,58 @@
+2026-10-28: Run sheet warning completions after the sheet
+has ended
+
+AppKit calls a sheet's completion handler while it is still
+ending the sheet. When that completion showed another
+warning on the same window, the new sheet began before the
+old one detached, and after it was answered it stayed
+attached as a dead sheet. The window then ignored all input
+until the app was force-quit. This happened when choosing
+Paste as Text for a pasted file whose contents needed a
+paste confirmation.
+
+Defer the completion of a sheet-style iTermWarning to the
+next pass of the main queue. App-modal and silenced warnings
+still complete synchronously.
+
+Issue 13169
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-28: Bump companion MARKETING_VERSION to 1.5 in the
+project generator
+
+The generated project was already at 1.5, but the generator
+still said 1.3, so the next regeneration would have reverted
+it.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-28: Skip call stack logging when reloading dynamic
+profiles. Issue 13174.
+
+A reload replaces every dynamic profile, and
+setBookmark:atIndex:sideEffects: symbolicated a call stack
+for each one, about 5 ms per profile. With hundreds of
+dynamic profiles this froze the app for a second on every
+reload.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-28: Bump PushService extension version to 1.5
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-28: Opt out of AppKit window and tab title indexing
+
+On macOS 26 AppKit donates every distinct window and tab
+title to CoreSpotlight, which runs each through on-device
+text embedding.  Terminal titles change constantly, so this
+burned a lot of CPU in mediaanalysisd and
+spotlightknowledged. Set NSEnableWindowTabIndexing to NO
+with the other system preference overrides. Issue 13066.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 2026-10-27: Bump companion version to 1.5
 
 2026-10-27: Make a held Delete key repeat when typing into a
