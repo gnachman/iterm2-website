@@ -1,3 +1,817 @@
+2026-10-29: Expect the process group column in the framer's
+ps command
+
+afce7c434 added pgid to the columns the framer asks ps for.
+
+2026-10-29: Read the Claude session's terminal mode through
+the task's owned descriptor
+
+PTYTask no longer exposes a raw fd. Add
+-withFileDescriptor:, which keeps the descriptor open while
+tcgetattr reads it.
+
+2026-10-29: Point the shell integration submodule back at
+0296291
+
+8634ad695 (Bump companion version to 1.5) accidentally moved
+it back to 20a786c, eleven commits older than the copies
+bundled in Resources.
+
+2026-10-29: Read advanced settings without racing a change
+on another thread
+
+Each setting was a strong static object that the main thread
+replaced while mutation queues and parser threads read it,
+so a reader could retain a value as it was being released.
+Each value now lives in an atomic slot that readers load
+without a lock. A replaced value is kept alive, and values
+are swapped only when they change.
+
+2026-10-29: Keep the workgroup list behind a lock so
+triggers can read it off the main thread
+
+EnterWorkgroupTrigger reads iTermWorkgroupModel.workgroups
+on the session's mutation queue while the main thread
+replaces it. Readers now get a whole list from a
+MutableAtomicObject. The main thread is still the only
+writer.
+
+2026-10-29: Wait for character width tables to finish
+initializing before reading them
+
+ensureInitialized() returned as soon as the state was
+nonzero, so a thread that arrived while another was filling
+the full-width and ambiguous-width bitmaps (state 1) read
+them half-filled and could give characters the wrong width.
+Now it returns only when initialization is done (state 2);
+otherwise it waits, as the code already intended.
+
+Sessions convert text on their own reader and mutation
+queues, so several threads can reach this at once right
+after launch.
+
+2026-10-29: Hash and compare complex character strings
+outside the registry's lock
+
+Every combining mark, emoji, and other multi-code-point
+character goes through one process-wide registry behind a
+mutex. In a profile of four sessions flooding mixed output
+it took about 12% of token execution, more than half of it
+waiting for the lock, and hashing and comparing the NSString
+keys took most of the time the lock was held.
+
+Now a string's hash is computed before taking the lock, the
+lock is held only to fetch the entries with that hash, and
+the string is compared after releasing it. Codes are stored
+as unichar rather than NSNumber. In an optimized build, a
+lookup of a registered string is about 30% faster on one
+thread and 25% faster with four threads contending; with
+eight, the lock's handoffs still dominate.
+
+The registry takes an injectable hash function and maximum
+code, so tests can make hashes collide and make the codes
+wrap.
+
+2026-10-29: Load the terminal's weak delegate once per token
+
+VT100Terminal's delegate is weak, so each message to it
+loads it through the Objective-C runtime's weak reference
+table. Executing a token sent it at least two messages, and
+VT100Grid sent its own weak delegate gridCursorDidMove on
+every cursor move; together about 3% of token execution in a
+profile of four sessions flooding mixed output.
+-reallyExecuteToken: now loads the delegate into a strong
+local once (it changes only in a join, between tokens), and
+gridCursorDidMove, whose implementations were all empty, is
+gone.
+
+2026-10-29: Check the execution permit time slice every 8
+tokens instead of every token
+
+Reading the clock for every token took about 1.6% of token
+execution in a profile of four sessions flooding mixed
+output. The holder now reads it on the first token after its
+clock (re)starts and then every 8 tokens, so a slice can run
+a few tokens long, which takes microseconds. The holder's
+clock is injectable, for the test.
+
+2026-10-29: Add a script that generates different kinds of
+terminal output
+
+tests/13141/loadgen.py writes a chosen kind of output to
+stdout, for loading iTerm2 while profiling or measuring:
+short, long, and prose-like lines; empty and mostly empty
+lines; wide, emoji, combining, and right-to-left text;
+16-color and 24-bit SGR; tabs; carriage-return progress
+bars; full-screen redraws; OSC 8 hyperlinks; or all of them
+mixed. It can stop after a size or a time, limit its rate,
+and write line by line instead of in 64 KB writes. Writes
+end on character boundaries, and it resets the terminal when
+it stops.
+
+workloads.py now generates its data with loadgen's
+generators and accepts any loadgen kind as a workload. Its
+"color" workload is now "sgr".
+
+2026-10-29: Don't make a UUID for every line block
+
+Each new line block got a fresh UUID as its identifier, and
+making one takes a global lock in the system's random number
+generator. With 16 sessions scrolling heavy output, that was
+about 3% of token execution time, mostly waiting for the
+lock. Blocks now get a UUID made once per process plus a
+counter. The identifier is only compared and stored, so its
+format doesn't matter, and restored blocks keep the
+identifiers they were saved with.
+
+2026-10-29: Add a workload script for measuring output
+throughput and its CPU cost
+
+tests/13141/workloads.py runs a fixed set of workloads, each
+aimed at a different cost (line-at-a-time seq, short lines,
+long lines with and without wrapping, frequent color
+changes, wide and combining characters, and full-screen
+redraws), at several session counts. It reports executed
+MB/s, iTerm2's CPU, CPU-seconds per GB, and the execution
+overhead from the token execution stats, so builds can be
+compared on the same workload.
+
+2026-10-29: Time each keystroke's echo in the token
+execution stats
+
+The 13141 harness measured keystroke to pty and DSR round
+trips, which can't show whether the echo reaches the screen
+promptly. Each session's executor update ticker client now
+times the update that follows a keystroke: from the
+keystroke until its output finished executing, from then
+until the update started on the main thread (the ticker and
+the dispatch), and how long main took to handle it,
+including the redraw it starts. With
+NoSyncTokenExecutionStatsFile set, each block reports
+percentiles of all three, and run_experiment.py prints them
+per phase.
+
+The harness's process and stats helpers move to
+tests/13141/harness.py so other scripts can use them.
+
+2026-10-29: Add an advanced setting to turn off the limit on
+sessions processing output
+
+If the limit causes trouble, a beta user had to turn off the
+whole new input and output implementation, losing the fix
+for typing lag that came with it. The new
+limitSessionsProcessingOutput setting turns off just the
+limit (after a restart): sessions then execute tokens
+without taking permits, as before the limit existed, and the
+Settings control for it is disabled.
+
+2026-10-29: Put execution permit state in debug logs
+
+Debug logs now list every session's place: holding a running
+or parked permit (and when it was last heard from) or
+waiting (for how long, and whether it is paused), with each
+one's virtual time, plus the capacity and the floor. Waits
+of over a second are summarized in the debug log at most
+every ten seconds.
+
+Subsystems add their state to the header and footer of debug
+logs with iTermRegisterDebugLogStateProvider, so
+DebugLogging doesn't depend on them. Providers are called
+with the debug log lock held, so nothing logs while holding
+the permits' lock.
+
+2026-10-29: Recover from lost execution permit wakeups
+
+A lost wakeup would leave a session frozen with no crash and
+no clue.  Once a second, while anyone waits for a permit or
+holds a running one, ExecutionPermits now hands free and
+idle permits to waiters that can run and have waited over a
+second, and wakes running holders that haven't checked in
+for five seconds (a holder that is really running checks in
+every slice). An unneeded wake only costs an extra
+execute().  Each repair is written to the debug log, since
+it means a bug. A silent holder is never expected, so debug
+builds crash on one.
+
+2026-10-29: Send executor updates to the main thread from
+one shared ticker
+
+Each session ran its own 120 Hz timer while it had output,
+to tell the main thread how much it executed. With 16
+sessions flooding, re-arming those timers took about a core,
+mostly blocked in the kernel, and sent about 2,000 blocks a
+second to the main thread.
+
+With per-session queues (UseTaskIOMonitors), one ticker now
+runs while any session has an update, and each tick sends
+every pending update in one dispatch. A session's update
+goes out right away if it hasn't sent one within the last
+period, so the first sign of new output isn't delayed by
+other sessions' output. After a keystroke, the session's
+next update (normally the echo) goes out right away even if
+one just did, so the redraw that shows it isn't throttled.
+
+VT100Screen owns the main-thread side, and the mutable state
+only marks that an update is needed. Sessions on the shared
+queue send updates with their own timers, as before.
+
+2026-10-29: Report bytes executed per second in the token
+execution stats
+
+Each block in the NoSyncTokenExecutionStatsFile file now
+says how many MB of input a second finished executing, so a
+run shows whether iTerm2 or the kernel's pty layer is the
+limit. Every execute() is sampled, not only those of
+sessions with execution permits, so runs with and without
+per-session queues can be compared.
+tests/13141/run_experiment.py reports it per phase.
+
+2026-10-29: Keep execution permits off the lock when
+sessions aren't competing
+
+With 19 sessions flooding on 16 cores, nobody ever waited
+for a permit, yet 750 to 1000 ms of every second went to the
+permits' lock: each execute() took it twice, and execute()
+runs once per chunk read.
+
+- A session that runs out of tokens parks its permit instead
+of giving
+  it up: it keeps it, idle, and resumes it lock-free when
+  tokens arrive. A session that needs a permit when none is
+  free takes one from an idle holder under the lock. A
+  parking holder marks itself idle before checking for
+  waiters, and a waiter gets in line before looking for idle
+  holders, so a waiter that can run is never left in line
+  beside an idle permit. Paused waiters don't make a holder
+  give its permit up; they take the idle permit when they
+  ask again.
+- Wakes happen after the lock is released.  - A holder
+releasing with work left keeps its permit when nobody else
+  is owed it, instead of handing the permit to itself and
+  waking up.
+- A yield owed to a waiter happens even if a join pauses the
+holder as
+  its slice ends.
+- After the cap is lowered, idle permits go first, so only a
+running
+  holder that is really over the cap stops.
+
+Permit time fell to about 10 ms a second in the same test.
+
+2026-10-29: Limit how many sessions execute tokens at once
+
+With per-session mutation queues, GCD ran about one thread
+per busy session, so heavy output in many sessions used
+every core. Token execution now takes an execution permit
+first. Sessions waiting for a permit hold no thread and are
+woken when one is handed to them.
+
+Permits are shared by stride scheduling: each session's
+virtual time goes up by the time it ran divided by its
+weight, and the next permit goes to the waiter with the
+lowest. Visible sessions weigh more (advanced setting,
+default 4), so they get more turns without starving
+background sessions. A holder gives up its permit at a token
+boundary after a 5 ms slice when a waiter is owed it. Joins
+never take a permit or the permits' lock; a session paused
+only for joins keeps its permit, and any other pause gives
+it up.
+
+The limit is "Sessions processing output at once" in
+Settings > General > Magic: automatic (2 to 4, by core
+count) or 2 up to the core count. It applies right away.
+
+The hidden default NoSyncTokenExecutionStatsFile names a
+file that gets a summary of token execution time, permit
+overhead, permit waits, and join waits once a second.
+tests/13141/run_experiment.py reads it with --exec-stats.
+
+2026-10-29: Add a tmux control-mode backlog repro and record
+threads and memory in the 13141 harness
+
+2026-10-29: Turn on task I/O monitors and per-session
+mutation queues in beta builds
+
+2026-10-29: Keep tmux from queuing a backlog when the
+gateway pauses reading
+
+With task I/O monitors on, the gateway's byte budget was
+charged only when main appended %output to a pane, so it
+read far ahead of main and then stopped reading for seconds.
+A tmux bug makes tmux keep reading a pane without limit
+during such a stop, so keystrokes to tmux panes ran a minute
+or more late after a flood.
+
+Charge each tmux line against the budget from when it is
+handed to main until main has handled it, resume the gateway
+once its budget drops 16 KiB below capacity rather than at
+half, and wake a reader waiting on the token budget as soon
+as one slot frees.
+
+2026-10-29: Wait for queued tokens to execute in screen
+tests instead of relying on an empty join
+
+Many tests injected bytes and then did an empty join,
+expecting the join to run after the injected tokens
+executed. That held only while a join on the shared queue
+with Maximize Throughput on first waited for the queue to go
+idle. A join that pauses right away, as it does for a
+session with a queue of its own or with Maximize Throughput
+off, stops the scheduled execution, so the test read the
+screen before its input ran.
+
+waitForQueuedTokensForTesting() joins until the executor has
+no pending tokens or tasks, letting the main queue run side
+effects that are delivered outside a join and executing
+pending work directly on the executor's queue between
+rounds.
+
+2026-10-29: Add the issue 13141 keystroke latency harness
+
+Measures keystroke and DSR round-trip latency in an idle
+session while other sessions flood output, adapted from the
+reporter's reproducer.
+
+2026-10-29: Don't wait for a busy session to go idle before
+joining it when it has its own queue
+
+With Maximize Throughput on, a join first gave the mutation
+queue up to 30 ms to go idle before pausing it, because
+pausing the shared queue stops every session. A session with
+a queue of its own pauses right away and waits only for its
+current batch: pausing costs only that session, and a queue
+that is busy with a flood never goes idle, so every join
+would block the main thread for the whole grace period
+(issue 13141).
+
+2026-10-29: Give each session a mutation queue of its own
+when task I/O monitors are on
+
+Every session's mutable state ran on one serial queue, so
+joining any session, which every refresh does, waited for
+and paused every other session's token execution. With a few
+sessions producing heavy output, all sessions lagged (issue
+13141).
+
+With task I/O monitors on, each session's mutable state now
+gets its own mutation queue, and a join pauses only that
+session. With them off, every session still shares one
+queue, as before.
+
+2026-10-29: Fix more state that is unsafe once sessions have
+mutation queues of their own
+
+- scheduleTriggerCallback: ran its block inline on any
+mutation queue.
+  It now does so only on its own state's queue.
+- iTermImageInfo's decode completion wrote its ivars without
+the
+  instance lock.
+- The DEBUG-only OSC 1337 Debug=RemapFn and QueryFnState
+wrote a
+  preference and read the modifier remapper on the mutation
+  queue. They run on main now and reply through the
+  terminal's queue.
+- The regex cache was a static dictionary with no lock.  -
+The per-process "joined" flag, used only to label debug log
+lines,
+  was wrong with nested joins and other sessions' queues.
+  The label comes from the per-queue safety markers instead.
+- Mutation queue assertions accepted main while it had
+joined any
+  queue. The mutable state and token executor now assert for
+  their own queue.
+
+2026-10-29: Always join in
+performBlockWithJoinedThreadsReentrantSafe:
+
+It ran its block inline, without joining, whenever it wasn't
+called from inside an unpaused side effect, which is nearly
+always. The block then changed mutable state while token
+execution ran on the mutation queue. This has been the case
+since it was added, and became common when the color setters
+started using it. Setting colors and the echo probe delegate
+(broadcast password input) were affected.
+
+It now always joins. It differs from
+performBlockWithJoinedThreads: only in also being allowed
+inside an unpaused side effect. A comment spells out what a
+block passed to it may do there.
+
+2026-10-29: Restore the main-thread state after joins in
+screen tests, and assert it
+
+The test FakeSession ignored screenRestore:, so after the
+first join a test screen kept reading mutable state through
+the sanitizing adapter while its mutation queue changed it.
+Thread Sanitizer reported this as a race on the interval
+tree. It now restores like PTYSession does, and VT100Screen
+asserts after its outermost join that the delegate restored
+the state.
+
+Three tests relied on the missing restore, because ending a
+join syncs and marks the grid clean. They now check inside
+the join.
+
+A join can also release the last owner of the screen's
+session, so the screen keeps itself alive until it returns.
+
+2026-10-29: Pause only the joined session when it has a
+mutation queue of its own
+
+Joining a session pauses token execution so its queue
+reaches the join quickly. On the shared queue that must stop
+every session, but a session with a queue of its own now
+pauses only itself, and background sessions no longer yield
+to active ones they don't share a queue with.  Every session
+still uses the shared queue, so nothing changes yet.
+
+2026-10-29: Make process-wide caches and counters safe to
+use from several mutation queues
+
+Sessions' mutation queues will run concurrently, and these
+were only safe because they all shared one queue: - The
+"last made" caches in iTermExternalAttribute and iTermURL
+were
+  read and replaced without a lock, which could free an
+  object another queue was using. They are locked now, read
+  as a unit, and release the old object after unlocking. A
+  URL decoded from data is no longer reused for a lookup by
+  code.
+- iTermImageInfo's lazy-decode list is shared by every
+instance but was
+  locked per instance, so it already raced with the decode
+  queue.
+- Kitty image sequence numbers and button mark IDs use
+atomics.
+
+2026-10-29: Track mutation queue join state per queue
+instead of per process
+
+Groundwork for giving each session its own mutation queue.
+Whether the main queue is inside a joined block now lives in
+an iTermMutationQueueJoinState stored on each mutation
+queue. Sessions on the shared queue share it, so behavior is
+unchanged: a nested join of another session still takes the
+reentrancy shortcut, as it must when the one queue is
+already paused. With a queue per session, such a join will
+pause that session's queue too.
+
+The queue-safety markers are per queue, and the main queue
+stays marked until the outermost of nested joins ends. A
+token executor runs a task synchronously only on its own
+queue, and PathSniffer uses the session's queue instead of
+the shared one.
+
+2026-10-29: Log task I/O monitor lifecycle events and stalls
+
+Rare lifecycle events on the task I/O monitor path are
+RLogged so debug logs from the field show them: a monitor
+finishing its stop, coprocess start and end on a monitor, a
+pane input queue closing, the reaper waiting for and reaping
+a pid, and a pid that stays unreapable.
+
+Waits for read capacity happen many times a second under
+load, so they stay DLog. A monitor that has had no room to
+read for 5 seconds logs once, and again when the stall ends,
+with how long it lasted.
+
+2026-10-29: Give owned file descriptors pipe and flag
+helpers, and use them in place of fcntl
+
+iTermOwnedFileDescriptor gains +pipe, which returns both
+ends wrapped, and nonblocking and closeOnExec properties
+that change one flag inside withFileDescriptor and do
+nothing once closed. The job managers, the multiserver
+child, Coprocess, and tests use them instead of fcntl.
+
+Coprocess still makes its pipes with pipe() because the
+child needs plain descriptors after fork(), but it now
+checks for failure, and its fork() failure path no longer
+leaks the pipes or the environment copy.
+
+2026-10-29: Read tmux pane output from memory, with gateway
+backpressure, when task I/O monitors are on
+
+A tmux pane's session appends %output to a TaskInputQueue
+instead of writing it to a pipe, and the pane's
+TaskIOMonitor reads it through a user-data dispatch source
+that the queue signals. Closing the queue ends the task's
+input like closing a pipe's write end.
+
+Unread pane output counts against a ByteBudget owned by the
+gateway session. While it is full the gateway stops reading
+from tmux (writes continue) until the panes drain it to
+half. Without this, a flood in a pane grew memory without
+bound and starved the main thread. Leaving gateway mode
+wakes a gateway waiting on the budget.
+
+With task I/O monitors off, panes keep using the pipe.
+
+2026-10-29: Restart sessions only after the old task's
+monitor stops
+
+With task I/O monitors on, restarting a session deregisters
+the old task and waits on the main queue until its monitor
+has stopped before resetting the parser and starting the new
+program. This keeps two tasks from reading into one token
+executor. Tokens the old program sent that haven't been
+executed yet are discarded; injected tokens are kept.
+
+Each pid is handed to the reaper once per task, however many
+times the task is deregistered. The record lives on the task
+because a weak reference to it can't be formed while it
+deallocates.
+
+A restart requested while one is already pending is ignored.
+
+2026-10-29: Replace the SIGCHLD handler with logging when
+task I/O monitors are on
+
+With useTaskIOMonitors on, the SIGCHLD handler only woke a
+select loop that no longer runs, so don't install it. Child
+exit is detected by EOF on the pty, and ChildReaper reaps. A
+dispatch signal source RLogs each SIGCHLD instead, which
+needs no signal handler.
+
+Remove the multiserver job manager's extra brokenPipe on a
+failed attach; finishAttaching:task: already reports it.
+
+Add a characterization test that a child exiting causes
+exactly one broken pipe on every backend, with no SIGCHLD
+handler installed.
+
+2026-10-29: Give task file descriptors an owner that
+monitors lease
+
+iTermOwnedFileDescriptor owns an fd and closes it exactly
+once: when its owner calls close() (owners also do so in
+dealloc), or as a backstop when it is deallocated. Closing
+waits until no Lease or withFileDescriptor: block is using
+the fd, so it is never closed under a TaskIOMonitor's
+dispatch sources and its number can't be reused while one
+watches it. A close that fails with EINTR is not retried;
+EBADF asserts.
+
+- The job managers, the multiserver child, and Coprocess own
+their fds through
+  the wrapper. Raw int fd getters and setters are gone from
+  iTermJobManager, iTermTask, PTYTask, the multiserver
+  child, and Coprocess. TaskNotifier's select loop is the
+  only code that reads a raw number.
+- PTYTask's reads, writes, password detection, and
+window-size ioctl go
+  through the wrapper.
+- -[PTYTask setReadOnlyFileDescriptor:] is replaced by
+  -readTmuxPaneOutputFrom:, which takes a wrapper.
+- Each monitor source holds a lease until its cancel handler
+runs.
+  Registration reports whether the task had an open fd.
+
+2026-10-29: Add TaskIOMonitor behind the useTaskIOMonitors
+gate
+
+With the gate on, each registered task is serviced by its
+own TaskIOMonitor instead of TaskNotifier's select loop: a
+serial queue with dispatch sources for the pty and the
+coprocess. Before each read the monitor checks the session's
+token capacity, and when there is none it suspends reading
+until the TokenExecutor drains, so a slow session never
+blocks another's reads.
+
+- TaskIOMonitorRegistry owns the monitors. TaskNotifier
+forwards register,
+  deregister, and the new unblockTask: to it and doesn't
+  start the select thread.
+- PTYTask calls unblockTask: where it called unblock, and
+gets read capacity
+  from its delegate (PTYSession -> VT100Screen ->
+  TokenExecutor).
+- TokenBudget: registering a capacity handler while one is
+pending now runs
+  the pending one instead of asserting, so a session's next
+  task isn't stranded by a handler its previous task left
+  behind.
+- The coprocess ending path signals the coprocess before
+reaping it.  - The characterization suite also runs against
+monitors, with backpressure
+  tests and a multi-threaded stress test.
+
+The monitor does not own its file descriptors yet.
+
+2026-10-29: Replace TokenExecutor's semaphore with
+TokenBudget
+
+TokenBudget limits how many token arrays from the pty a
+TokenExecutor buffers, as the DispatchSemaphore did.
+acquire() blocks the same way, so the select-based reader is
+unchanged. It also supports a reader that must never block:
+hasTokenCapacity tells it whether reading is safe, and
+notifyWhenTokenCapacityAvailable(on:_:) dispatches a
+one-shot block onto the reader's queue once the executor has
+drained to half full. The per-task readers that will use
+this come later.
+
+TokenArray now releases its slot through a single method
+that clears it, so no path can release twice. A bufferDepth
+of zero or less is treated as one rather than blocking reads
+forever.
+
+2026-10-29: Add ChildReaper behind the useTaskIOMonitors
+gate
+
+Adds the useTaskIOMonitors advanced setting (default NO),
+latched once per process by +[TaskNotifier
+usesTaskIOMonitors]. When it is on, the shared TaskNotifier
+hands pids to ChildReaper instead of its polled dead pool.
+ChildReaper watches each pid with a kqueue process-exit
+source and never blocks in waitpid, since macOS has been
+seen to hang there on an exited child; it retries with
+backoff instead.
+
+Every dead pool insertion now goes through -reapPid:, which
+ignores pids <= 0. Previously the monoserver could pass pid
+0, and the dead pool then called waitpid(0), reaping
+arbitrary children in our process group.
+
+The characterization suite now also runs with ChildReaper
+doing the reaping. Removes the unused -lock and -unlock.
+
+2026-10-29: Fix task I/O bugs ahead of the TaskNotifier
+migration
+
+- processRead treats read() == 0 as EOF. A pty master reads
+0 (not EIO)
+  when its slave has no openers; that already ended sessions
+  via the select exception set, but a tmux pane's pipe at
+  EOF spun forever. Bytes read before EOF or an error are
+  now delivered before brokenPipe.
+- brokenPipe always deregisters but reports to the session
+only once.
+  It can be called twice (EOF plus the exception set, or the
+  multiserver attach path), and after a restart the second
+  report would end the new shell.
+- writeToCoprocess: wakes TaskNotifier. Bytes written from
+the SSH path
+  could otherwise sit in the coprocess buffer until
+  something unrelated woke the select loop.
+- registerTask: ignores a task that is already registered,
+and tmux panes
+  no longer register twice (registerTmuxTask becomes
+  markAsTmuxTask).
+- The coprocess-change notification no longer blocks the I/O
+thread on
+  the main thread.
+- VT100Parser: conductor recovery mutates the SSH parser
+table under the
+  parser lock; the debug histogram is locked; the async
+  preconvert budget can no longer be overshot by concurrent
+  parsers.
+- Coprocess closes the child's stderr after EOF instead of
+leaking an fd
+  per coprocess.
+
+2026-10-29: Make TaskNotifier testable and add
+characterization tests
+
+TaskNotifier was only reachable through a never-stopping
+singleton with a static unblock pipe. Test instances can now
+be created with an injectable select() and coprocess-change
+handler, started on their own thread, and stopped. The
+unblock pipe moves into ivars; the shared instance publishes
+its write end to a static that the SIGCHLD handler reads, so
+it stays async-signal-safe. UnblockTaskNotifier() now
+preserves errno and does nothing before the shared instance
+exists.
+
+The new tests pin down the select loop's current behavior
+(ordering, pause, broken pipe, reaping, coprocesses, the
+global stall) so the planned per-task GCD backend can be
+checked against the same contract.
+
+2026-10-29: Offer the Claude Code integration only for
+interactive claude sessions
+
+The offer appeared for any claude in the foreground,
+including short-lived non-interactive runs like claude
+plugin list, even ones started by a shell script.
+
+This began as a three-second wait: the offer came only after
+claude had been in the foreground that long, using a
+per-session pending check cancelled when claude exits, when
+the session closes, or when claude is relaunched. That
+structure is kept, but a wait alone still offered the
+integration for a claude -p that ran longer than three
+seconds. The check now decides from the run itself:
+
+- claude's command line rules out one-off runs right away:
+-p,
+  --version, --help, --bg, or a management subcommand
+  (plugin, mcp, doctor, ...) as the first argument. attach
+  is left out because it opens a session. Only raw argv is
+  classified, which a local claude has. SSH Integration's
+  argv is split from ps output, which has lost the argument
+  boundaries, so those runs are left to the tty check.
+- Otherwise, offer once claude's tty is in raw mode while
+claude's own
+  process group has the tty's foreground. Interactive Claude
+  Code puts its tty in raw mode, and claude -p never does.
+  Every common shell also goes raw at its prompt, so a raw
+  reading only counts when claude, not a shell nested
+  anywhere, has the foreground.
+
+The session is judged by the outermost claude, the one the
+user ran, not one its hooks or tools started. The tty is
+read from whatever owns claude's pty: tcgetattr and the
+process table for a session on this Mac; framer over SSH
+Integration, which now reports the foreground process group
+with the modes, checks the login shell's tty once a second
+rather than only when it writes, and puts each process's
+group in its ps rows; and for a tmux pane, run-shell with
+stty and ps -t on the server's host, which needs tmux 2.4.
+The three-second wait remains as the fallback when the tty
+can't be read, and every check ends within fifteen seconds.
+
+Co-authored-by: George Nachman <gnachman@gmail.com>
+
+2026-10-29: Keep right prompts out of command history and
+fix stale autocomplete prefix. Issue 13168.
+
+Since OSC 133 k= support, the executed command was extracted
+with contentInRange:excludingSubranges:, which skipped nulls
+and kept going.  A right prompt that the shell doesn't mark
+with P;k=r (such as zsh's RPROMPT with iTerm2's own shell
+integration) was therefore glued onto the command and saved
+in the mark and in command history. Add
+kiTermTextExtractorNullPolicyMidlineEndsLine, under which a
+null after content on a line drops the rest of that line
+while later lines are still extracted, and rebuild the
+excluding extractor on locatedStringInRange: with that
+policy.
+
+The auto command history popup inserted the chosen command
+minus the length of the prefix it last loaded with. The
+session only reloads it while the cell under the cursor is
+empty, so a zsh autosuggestion drawn after the cursor left
+the length stale and the last typed character was repeated
+("aws" became "awss"). The popup now asks its delegate for
+what is typed when a row is chosen, matches it
+case-insensitively as history lookup does, and inserts
+nothing if the command no longer matches.
+
+2026-10-29: Keep a session's profile type fixed when its
+shared profile changes type
+
+The Profile Type control in Settings > Profiles > General
+rewrites KEY_CUSTOM_COMMAND in the shared profile. That
+change flowed into sessions already using the profile, so a
+terminal session's profile could claim to be a browser (or
+the reverse) while its view stayed as it was. Among other
+things, this made open sessions lose their tab and window
+names.
+
+A session's type is now fixed when it is created. When a
+shared profile changes type, sessions on the other side of
+the line divorce and override KEY_CUSTOM_COMMAND, keeping
+their command type while still following the rest of the
+shared profile. Session-specific writes, such as from the
+Python API, can't change the type either.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-29: Keep Claude Code hooks from piling up behind an
+unanswered consent prompt. Issue 13175.
+
+it2 handle-agent-hook got its API cookie by running
+osascript on every hook event. When macOS needs the user's
+consent before an AppleEvent may reach iTerm2, AE.framework
+in iTerm2 blocks a serial queue on tccd until the prompt is
+answered, and each later AppleEvent strands a dispatch
+thread behind it.  With hooks firing on every tool call in
+every session, an unanswered prompt overnight reached the
+512-thread limit and hung iTerm2.
+
+handle-agent-hook now asks macOS first, without prompting,
+whether the event would be allowed
+(AEDeterminePermissionToAutomateTarget). If it is, it sends
+the event itself instead of running osascript. If consent is
+needed and no prompt is pending, it starts a detached helper
+(the hidden "it2 request-consent") that prompts while
+holding an advisory lock, and waits for it. Hooks that find
+the lock held give up at once. The helper runs in its own
+session with no inherited descriptors, so the agent killing
+the hook neither cancels the prompt nor waits on the helper.
+On this path the cookie is fetched before connecting,
+because iTerm2 drops a connection that sends nothing for 30
+seconds.
+
+Every other it2 command keeps the osascript behavior, so
+existing scripts see no change.
+
+tests/ae_permission_guard/aeguard.swift is the manual test
+tool used to check that the precheck predicts what a real
+send does.
+
 2026-10-28: Run sheet warning completions after the sheet
 has ended
 
