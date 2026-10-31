@@ -1,3 +1,132 @@
+2026-10-30: Say what was still pending when screen tests
+give up waiting for tokens
+
+waitForQueuedTokensForTesting now gives up after 30 seconds
+rather than 10,000 rounds, and its failure names what the
+executor still had: queued tokens, tasks, and whether it was
+paused. Also note that it executes without a permit on
+purpose.
+
+2026-10-30: Test that a session freed while waiting for or
+holding a permit gives it up
+
+Covered so far only at the ExecutionPermits level. These
+free a real TokenExecutor while it waits in line and while
+it holds an idle permit, and check that the line empties and
+another session can run.
+
+2026-10-30: Test the ticker's real timer source and
+expedites racing marks
+
+The dispatch timer source had no tests, and misusing a
+dispatch source crashes. It now asserts that starts and
+stops alternate, and its deinit resumes a source that never
+started or was stopped before cancelling, since releasing a
+suspended or inactive source crashes. A test starts, stops
+and restarts it and releases it in each state. Another races
+a keystroke's expedite against marks from other threads and
+checks the waiting update goes out right away exactly once.
+
+2026-10-30: Test that coprocess EOF terminates the coprocess
+before reaping it
+
+terminate() signals the pid, which could belong to an
+unrelated process once it has been reaped. The test records
+whether the coprocess was terminated when its pid was handed
+to the reaper, on both backends.
+
+2026-10-30: Test registering a task without a usable
+descriptor, and a redundant registration
+
+Job managers start without a descriptor, so a task can be
+registered before it has one. Such a task, or one whose
+descriptor is already closed, is not read and is
+deregistered, which hands its process to be reaped. A
+redundant registration's discarded monitor gives back its
+leases, so the descriptor can still be closed. Also correct
+the double registration test's comment: it passes because
+registration ignores a task that is already registered.
+
+2026-10-30: Share the task read capacity decision between
+PTYSession and the tests
+
+PTYSession's taskHasReadCapacity and its notification had no
+tests, and the I/O characterization tests' FakeTask
+reimplemented them, already without the check that wakes a
+gateway that left tmux mode while being registered.
+iTermTaskReadCapacity now holds the logic for both. Tests
+cover each budget being full, waiting for each in turn, a
+drained token executor, and leaving gateway mode around the
+check, and a real session wakes a waiting monitor when
+setTmuxMode: leaves gateway mode.
+
+2026-10-30: Test that a join of one session leaves another
+executing
+
+This is the point of per-session mutation queues (issue
+13141). The test fails if a join pauses every session.
+
+2026-10-30: Make concurrency tests able to see the bugs they
+guard against
+
+- The complex character registry test now checks that racing
+to create a
+  string's code allocates exactly one.
+- The owned descriptor test holds uses open across close()
+on another
+  thread and releases them one at a time, instead of hoping
+  a close lands in a window of a few nanoseconds.
+- The permit cap test stays running while holding a permit,
+so holders
+  overlap.
+- The tmux input queue test checks that the budget counts
+exactly the
+  unread bytes before closing, since closing gives
+  everything back.
+- Permit executor tests give up after 30 seconds instead of
+spinning
+  forever when a join never pauses a session.
+
+Each was checked against a deliberately broken
+implementation.
+
+2026-10-30: Log a Metal view's colorspace only when it
+changes
+
+The setter runs whenever the window moves or backing
+properties change, usually with the same value, which
+spammed the RLog.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-10-30: Read a tmux pane's tty with if-shell instead of
+run-shell
+
+To learn whether claude in a tmux pane is interactive,
+iTerm2 sent run-shell 'stty -a < tty; ps ...' to the tmux
+server. In control mode tmux ends that command's reply right
+away and prints the output afterward, outside any reply. The
+gateway took the stray lines for a broken connection
+("Unrecognized command from tmux") and detached, so running
+claude in a tmux integration pane could end the session.
+
+Use a guarded if-shell instead. Its branch replies in a
+block of its own: YES when the pane's tty is in raw mode and
+a process whose argv[0] is claude is in its foreground
+process group, NO otherwise. NO can't lead to an offer; it
+reads as canonical and keeps checking until the policy gives
+up. A host where stty or ps -o ... -t doesn't work falls
+back to waiting until claude has run for three seconds.
+
+Before tmux 3.2 the reply to an if-shell branch is flagged
+as server-originated, so the gateway doesn't match it to the
+command and hands it the next command's reply instead. Older
+servers keep the three-second wait.
+
+Checked against every tmux release from 2.1 through 3.8-rc3
+with the exact command strings, and end to end through the
+gateway on 2.0, 2.1, 3.0a, 3.1c, 3.2 and 3.8.
+
 2026-10-29: Expect the process group column in the framer's
 ps command
 
