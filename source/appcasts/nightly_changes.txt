@@ -1,3 +1,195 @@
+2026-11-02: Fix upload-and-paste menu handling
+
+Don't auto-open the Uploads menu while upload-and-paste
+runs. If an upload fails, open it after the path paste and
+any queued pastes drain. Uploads that fail before starting
+(unreadable file, folder that can't be archived) are now
+registered so the menu lists them, for both SSH Integration
+and SCP. Menus are pressed from a run-loop timer so the main
+queue keeps draining while they're open. On macOS 27,
+briefly open the Uploads menu once per launch so its title
+draws.
+
+Canceling a paste that is waiting for a shell prompt now
+also discards keystrokes typed while it waited and any
+pastes queued after it. Previously they stayed queued until
+the next paste.
+
+2026-11-02: Translate the theme warning and catch up the
+string catalog
+
+Adds translations for the new light/dark theme warnings, the
+new sentence in the window-name-beside-tabs setting, and the
+Korean AI usage toolbar messages that were missing.
+
+2026-11-02: Say which colors a theme that overrides the
+system appearance leaves unused
+
+The warning next to the light/dark mode checkbox now says
+that a dark theme keeps the light mode colors from being
+used (and vice versa), since users read the Editing popup
+resetting as their color changes not being saved.
+
+2026-11-02: Fix crash drawing the HDR cursor over a
+character in the legacy renderer
+
+The HDR cursor used +[NSColor whiteColor], a grayscale
+color. It was passed as the background color for the
+character under the cursor, and -brightnessComponent raised
+when deciding whether to use thin strokes.  Construct white
+in the default color space instead, and assert that the
+foreground color has enough components before indexing them.
+
+2026-11-02: Don't blame the Mac's version when the hello
+reply never comes back
+
+When the phone's 15-second hello timer fired, it assumed the
+Mac predates the version handshake and showed the upgrade
+panel. The timer also fires when the connection has died, or
+when iOS suspended the app mid-handshake and the deadline
+passed during the suspension. On resume the timeout could
+beat the connection-lost error and wrongly tell the user
+their Mac's iTerm2 was too old.
+
+Before concluding that, ping the Mac (which answers pings
+off its main thread). If the ping fails, the transport error
+takes the normal reconnect path. Also stop logging "Home
+loaded" when loadHome ended on the upgrade panel.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-02: Make AI usage failures explain themselves and
+drop session usage
+
+The AI Usage toolbar item showed "No usage data" whenever
+the usage command printed nothing, which hid the likely
+cause: claude -p /usage running past the 20 second limit on
+a busy machine.
+
+- Raise the command timeout to 40 seconds.  - Report
+timeouts, a silent bundled script (a bug, so reportable),
+and a
+  silent custom command (with its exit status) as distinct
+  messages.  iTermCommandRunner now exposes timedOut so
+  callers can tell a timeout apart. A run that timed out but
+  still delivered a valid report uses it.
+- Log every run's outcome: DLog on success, RLog on failure,
+so a debug
+  log saved after the fact shows why the item showed an
+  error.
+- Anthropic retired session limits. Stop drawing a Session
+bar, and treat
+  a lone session line as valid output rather than format
+  drift.
+- Center the bar rows at their natural height so two rows
+don't leave a
+  hole between them.
+- Replace the "AI usage..." placeholder with one that says
+what it is
+  waiting for, with a tooltip noting it can take several
+  seconds.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-02: Don't charge a holder for slices it ran while
+nobody waited
+
+A holder whose slice ended with nobody in line kept running
+uncharged but carried that time forward, so its virtual time
+and the floor stayed put.  A session that joined later was
+raised to the stale floor, and the holder was then charged
+for its whole solo run at once and had to wait about as long
+again. Such a slice is now dropped and a new one starts, so
+a newcomer joins level with the holder and they take turns.
+
+Also: handOff() removes the chosen waiter by index instead
+of searching the line again; the linear checks of the line
+and the locked-acquire counter exist only in debug builds;
+enqueue() uses binarySearch; and handOff() and park() share
+one helper for publishing that a permit may be free and
+looking again.
+
+2026-11-02: Keep synthetic modifiers from sticking on QA VMs
+
+vmctl posted Cmd-flagged keys without pressing or releasing
+Command, which left the VM's modifier state at Command.
+Later keys created without explicit flags, like the 13141
+harness's spaces, arrived as Cmd-key shortcuts. vmctl now
+presses and releases the real modifier keys around a
+modified key, and the harness clears modifiers on the keys
+it posts.
+
+The harness also activates Finder before iTerm2 so the probe
+sees a focus change; activating an app that is already
+active reports nothing.
+
+2026-11-02: Keep the permit line in order so deciding who is
+next looks only at its front
+
+Every checkpoint, handoff, and floor update scanned the
+whole line under the permits' lock, asking each waiter
+whether it was paused. With 200 busy sessions that ran
+hundreds of times a second. A waiter's virtual time doesn't
+change while it waits, so the line is kept sorted by virtual
+time and arrival: the next in line is the first waiter that
+isn't paused, and the floor is the first waiter's time.
+
+2026-11-02: Let a holder whose slice is over keep running
+without the lock when nobody waits
+
+Each holder took the permits' lock at the end of every slice
+to charge its time and decide whether to yield. With nobody
+in line and no more permits held than there are, there is
+nothing to decide, so it keeps running and is charged later,
+at its next checkpoint, release, or park.  Asking still
+counts as being heard from for the health check.
+
+2026-11-02: Let a session already waiting for a permit ask
+again without the lock
+
+A session in line asks for a permit each time output
+arrives. Every ask took the permits' lock and scanned the
+line, so with 200 busy sessions and two permits, asking cost
+more than executing tokens and the threads blocked on the
+lock made GCD start more. A waiter is woken when a permit is
+handed to it, so asking again only matters when a permit was
+left free or idle while the waiters were paused. A hint, set
+before reading whether waiters are paused and cleared only
+when no permit is free or idle, tells it when to ask under
+the lock.
+
+2026-11-02: Don't let a test's waits keep a freed executor
+alive
+
+testSessionFreedWhileHoldingAnIdlePermitGivesItUp captured
+the whole session in its wait closures, and an expectation
+can outlive its wait, so under Thread Sanitizer the executor
+was never freed. Capture only the delegate, and end the
+session's scope with an autorelease pool.
+
+2026-11-02: Don't refresh every window on tab drags when the
+tab bar is always shown. Issue 13187.
+
+Drags force hide tab bar with one tab off so single-tab
+windows accept drops (issue 12846). The setter posted
+kRefreshTerminalNotification even when the effective value
+didn't change, which made every window and session refit
+twice per drag and stuttered with many windows. Only post
+when the effective value actually changes.
+
+2026-11-02: Hide the tab status dot along with the status
+subtitle. Issue 13186.
+
+Programs like Codex CLI now report status on every state
+change, so their tabs carried a permanent colored dot that
+no setting could turn off. The Session Status checkbox that
+hid the status text left the dot behind, which on its own
+says little. The dot now follows the same setting, and the
+checkbox is retitled Show status on tabs (with a new string
+key so stale translations are not reused).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 2026-10-31: Fill in missing translations after extracting
 strings
 
