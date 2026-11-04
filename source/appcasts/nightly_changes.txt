@@ -1,3 +1,44 @@
+2026-11-03: Keep the flicker fixer from dropping a full
+repaint
+
+When a saved grid that was drawn expires, the grid is marked
+all-dirty so every row gets repainted. If a new saved grid
+was taken before the next sync (the cursor hidden again, or
+a new synchronized update), VT100Grid's copy dropped the
+all-dirty flag. The new saved grid had no dirty rows, so the
+legacy renderer left rows that changed in the meantime
+stale.
+
+Copy allDirty_ along with its generation base and timestamp
+so a copy is as dirty as its original.
+
+2026-11-03: List announcements in the Suppressed Alerts
+panel
+
+Announcements at the top of a session that are hidden or
+answered automatically because the user chose Never, Always,
+Dont Ask Again, or a similar option now appear in iTerm2 >
+Suppressed Alerts alongside remembered alerts. Un-suppress
+clears the saved choice so the announcement is shown again.
+An item is listed as soon as the choice is made, for
+announcements and for iTermWarning alerts alike.
+
+Always show alerts with remembered selections now applies to
+announcements too. When it re-shows a prompt whose
+completion can't apply the saved choice later (text
+replacement, profile properties, escape sequences changing
+the profile, closing tmux windows after detach, the bell),
+the saved choice is applied anyway.
+
+Repeated scrollback clears and DECRQCRA requests are
+recorded at most once a second. Allowed DECRQCRA requests
+are now reported so the Yes entry counts.
+
+DECRQCRAs remembered answer moves from NoSyncDisableDECRQCRA
+to the DisableDECRQCRA advanced setting. A migration carries
+over a saved Yes or No; previously Yes was not remembered
+across restarts.
+
 2026-11-02: Fix upload-and-paste menu handling
 
 Don't auto-open the Uploads menu while upload-and-paste
