@@ -1,3 +1,85 @@
+2026-11-04: Keep the hotkey ref when re-registering after a
+fast user switch
+
+When the login session became active again, the success and
+failure branches were swapped: a successful
+RegisterEventHotKey discarded the returned EventHotKeyRef
+and a failed one kept a garbage value. With no ref stored, a
+later unregister could not call UnregisterEventHotKey, so
+changing or removing a hotkey after a fast user switch
+leaked the old registration and it kept firing. Found while
+investigating issue 13190.
+
+2026-11-04: Only log a stack trace in setBookmark when the
+profile GUID changes
+
+Escape sequences that change colors (OSC 12/112, etc.)
+replace a session profile with a new version of itself,
+which could happen many times per second. Symbolicating a
+backtrace for each one cost several milliseconds on the main
+thread and made tmux pane switching lag when a pane's
+program set a cursor color. The trace exists to diagnose
+profiles landing in the wrong ProfileModel, which only
+happens when the GUID changes, so capture it only then.
+Issue 13192.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-11-04: Hold the screen while nushell repaints its
+prompt
+
+reedline (nushell's line editor) repaints the whole prompt
+line on every keystroke in one write: hide the cursor,
+erase, OSC 133;A, the prompt, OSC 133;B, the command, show
+the cursor. A sync that lands partway through, such as one
+from a join that pauses token execution, draws the line with
+the command erased, so typing blinks. It shows most with the
+legacy renderer and a large window.
+
+When the cursor is hidden while a command is being entered,
+look ahead in the token queue. If the queued tokens prove a
+prompt repaint (a 133;A followed by showing the cursor, with
+no 133;C or 133;D and no second hide in between), start the
+flicker fixer in a new prompt-repaint mode that applies even
+when Reduce Flicker is off. Showing the cursor ends it, and
+the usual timer still expires it.
+
+The holdScreenDuringPromptRepaint advanced setting turns
+this off. The flicker fixer's expiration timer can be put
+under a test's control so tests that check that the hold
+ends can't pass because the timer fired.
+
+2026-11-04: Skip the flooding-command footprint test
+
+Its 300 MB limit depends on the machine's state: it fails on
+a clean master with about 355 MB of growth and passes at
+other times.
+
+2026-11-04: Add release note for the zoomed tmux pane
+garbling fix
+
+2026-11-04: fix(tmux): preserve zoomed grids during layout
+updates
+
+Native pane zoom delivers both a layout notification and a
+list-windows response. Reapplying the layout shrank the
+alternate screen to the hidden split size before expanding
+it again, discarding TUI rows without another SIGWINCH from
+tmux.
+
+Before laying out the hidden splits, work out which session
+maximize will size to the window (accounting for the junior
+session a user-driven split activates) and leave its grid
+sizing to maximize. Pass it to the resize as a parameter
+rather than reading _tmuxZoomedSession, so a stale zoomed
+session left behind by a local unmaximize or pane switch
+can't make a later reload skip the wrong pane.
+
+Validated on Mac Studio with tmux 3.7b: 18 local layout
+regressions, horizontal and vertical native splits, repeated
+zoom/unzoom, window shrink/grow while zoomed, and htop.
+Terminal contents match capture-pane.
+
 2026-11-03: Keep the flicker fixer from dropping a full
 repaint
 
