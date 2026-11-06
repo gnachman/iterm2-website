@@ -1,3 +1,662 @@
+2026-11-05: Rebuild SwiftyMarkdown.framework from the fork
+at 1a795d6
+
+2026-11-05: Fix Kitty DnD drops into Yazi and restore
+registrations on reattach (13176)
+
+Send the hover MIME list on every t=m, as kitty does. The
+spec only requires it on the first move, but Yazi 26.9.1
+re-reads it from each move and rejects the drop when it is
+absent, so a Finder drag bounced back. The list is recorded
+at drag entry even when the program is not yet accepting,
+cleared when the drag ends, and omitted when empty.
+
+Save the program's drag-and-drop registrations in the
+session arrangement and restore them when reattaching to a
+still-running program after relaunch, since programs
+register only once at startup.
+
+Add debug logging to the accept-drop path.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-05: Recognize AI chat code fences with any language
+name
+
+sanitizeMarkdownLines only recognized fences whose info
+string was lowercase letters, so ```c++ or ```Swift rendered
+as text and the closing fence opened a block that swallowed
+the rest of the reply. Accept any info string without a
+backtick and drop the ones SwiftyMarkdown can't parse.
+
+Add end-to-end rendering tests for AI chat and the imgcat
+Markdown porthole, split into output that must not change
+and output the SwiftyMarkdown block parser rewrite should
+change, and bump SwiftyMarkdown for its new tests.
+
+2026-11-05: Make Markdown shown with imgcat look like a
+rendered document
+
+SwiftyMarkdown understands a narrow dialect, so a
+preprocessor rewrites CommonMark and GFM into it (reflowed
+paragraphs, hard breaks, list numbering and nesting by text
+column, task lists, fences, front matter, tables, entities,
+bare URLs, footnotes, HTML inline tags) and a styler
+post-processes the result (spacing, hanging list indents,
+code and quote blocks, rules, tables, link color).
+
+Images in files on this Mac appear as fixed-size
+placeholders and are read only when clicked, in a popover,
+so the layout can't reveal whether a local file exists.
+Remote images are never fetched.
+
+Also fixes restored portholes resolving relative paths
+against the parent of their saved directory.
+
+2026-11-05: Move the AI chat sidebar toggle into the
+floating toolbar
+
+On macOS 26 the chat window has no NSToolbar, so the split
+view controller floated its own sidebar button over the top
+left of the conversation and repositioned it with frame
+observers and a series of delayed relayouts. It now lives as
+the leading item of the floating toolbar with the provider
+and model pickers, styled like the other toolbar buttons.
+Before macOS 26 the window's NSToolbar already has a
+toggleChatList item, so the floating button was a duplicate
+there and is no longer shown.
+
+Also localize the show/hide tooltips, which were bare
+English.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-05: Extend the AI chat input backdrop up to the
+divider
+
+The blur behind the input bar stopped at the top of the text
+field, but the hairline divider sits at the top of the input
+view, about 12pt higher. Messages scrolling underneath
+showed through that strip unblurred, so the divider looked
+like it was floating over the conversation. The backdrop now
+fills the input view.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-05: Hide an OSC 9;4 progress bar after 15 seconds
+without an update
+
+A program that reports progress with OSC 9;4 and exits
+without sending 9;4;0 left its bar up forever. Composer does
+this: it reports 100% and never clears it. Like Ghostty and
+kitty, take the bar down once it has gone without an update
+for a while. The new progressReportTimeout advanced setting
+controls how long, defaulting to 15 seconds; 0 keeps the old
+behavior.
+
+Each report moves the fire date of one timer rather than
+scheduling a new one. When it fires, the bar comes down as
+if the program had sent 9;4;0, but only if no newer report,
+reset, or OSC 7501 record has changed it since.
+
+A restored session brings its bar back with nobody left to
+report on it, so restoring starts the same timer.
+
+Issue 13166.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-05: Add a run-deployment-release make target
+
+2026-11-05: Rebuild Sparkle.framework from the fork with the
+closable Ready to Install window
+
+2026-11-05: Bump Sparkle fork: closable Ready to Install
+window, no Swift package dependency
+
+2026-11-05: Report both clicks of a double click in an
+unfocused pane
+
+The first click in an unfocused pane only focuses it and is
+not reported, so a program with mouse reporting saw only the
+second click and could not recognize a double click. When
+the next click continues the same multi-click sequence,
+report the focusing click before it.
+
+2026-11-05: Make Escape, not Shift-Return, collapse a
+session note
+
+Shift-Return now inserts a newline in a session note,
+matching chat and prompt inputs. Escape collapses the note
+and returns focus to the terminal. Issue 13180.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-05: Fix the tooltip on the right-to-left scripts
+setting
+
+The checkbox in Settings > General > Experimental was copied
+from the tmux auto-bury checkbox and kept its tooltip. Give
+it one that describes the feature and replace the stale
+translations.
+
+Fixes #13179
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-05: Keep the jobs tool's bottom controls from
+overlapping when narrow
+
+Slide the signal picker and send button left, then shrink
+the picker to a minimum width, and finally hide the inspect
+button if there still isn't enough room.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-05: Test side effects against the mutation thread's
+state
+
+SideEffectSnapshotTests covers the preceding fixes for side
+effects that read screen state: command output capture and
+its cap, the Stop Scrolling and Fold triggers, selections in
+scroll regions, status bar labels, logging, the auto
+composer, the last command mark cache, prompt notifications
+and the consumer registry. ToolCodeciergeSessionTests covers
+the Codecierge session's capture, stopping and stale
+replies. The mutable state exposes its queue for tests.
+
+2026-11-05: Tell the AI an aborted command had no exit
+status
+
+An aborted command, such as one interrupted at the prompt or
+rejected by the shell, decoded as exit status 0, so AI Chat
+and Codecierge described it as a success with empty output.
+The exit code is optional, nil for an abort, and both
+consumers say the command was aborted instead. An abort is
+still encoded with an exit code of 0, plus a flag marking
+it, so older builds and companion apps can read saved and
+sent commands.
+
+2026-11-05: Capture command output only for sessions
+something consumes it from
+
+Copying up to 2,000 lines for every command that ends is
+wasted in the sessions no AI chat or Codecierge goal is
+watching. Consumers register with iTermCommandOutput under
+the session's guid or stable ID, which the configuration now
+carries, and the mutation thread asks the registry when a
+command ends, so a consumer that came or went since the last
+sync counts without a hand-off between threads. A consumer
+that registered after a command ended finds no output and
+skips it.
+
+AI Chat registers while streaming and follows the chat's
+session link, which the chat list model now announces
+whenever it changes, including when turning on orchestration
+or closing the session clears it; repairing a chat's links
+writes the final values directly. Codecierge registers while
+a goal is running.
+
+2026-11-05: Keep the main thread's last command mark cache
+current between syncs
+
+The main thread's copy of the cache was refreshed only by a
+sync, so a side effect drained before the next sync, such as
+the Captured Output tool reloading after a Capture Output
+trigger or ClearCapturedOutput, saw the previous command's
+mark. A change to the mutation thread's cache now queues an
+update carrying a generation, so one queued before a sync
+does not replace the newer value the sync copied.
+
+A mark leaving the interval tree, by an abort or by clearing
+the buffer, is forgotten on both threads. Each thread fills
+its cache lazily on its own, so the main thread's can hold a
+mark the mutation thread's never did; the shared removal
+hook compares against each. The two abort paths call that
+hook now instead of removing by hand, which also keys their
+mark cache removal the way marks are added.
+
+2026-11-05: Capture a finished command's output on the
+mutation thread
+
+The command-exit notification pointed its observers at the
+main thread's copy of the screen, which could be missing the
+output's last lines or have scrolled its start off by the
+time they read it, and the output range could start on the
+wrong line after a command continuation line.  The mutation
+thread now copies the output's last 2,000 lines into an
+iTermCommandOutput when the command ends, and the
+notification carries that along with how many earlier lines
+were left out, counting any that had already scrolled out of
+the buffer. Only lines holding output count toward the cap,
+and the scan past trailing blank lines stops at the cap.  AI
+Chat and Codecierge decode the notification through
+CommandExitNotification, whose omitted-lines note is
+localized with a plural.
+
+2026-11-05: Report prompt details from the mutation thread's
+state
+
+The prompt-ended side effect read the command range, the
+cursor, the working directory and the terminal's encoding
+from the main thread's copy of the screen, which may be from
+before the prompt. The mutation thread passes them, and the
+screen exposes the current command's text for the session to
+fall back on. A prompt taller than four lines keeps its last
+four lines rather than a range that started at line four,
+and GetPrompt subtracts the scrollback overflow before
+looking up the prompt line's directory.
+
+2026-11-05: Join the threads to place the auto composer and
+to fold a block
+
+Revealing the composer uses the last prompt mark and the
+scrollback size, and folding a block finds the block and
+reads its lines. Both can have changed since the last sync,
+so these side effects join the threads rather than pausing
+token execution and reading the main thread's copy.
+
+2026-11-05: Log session text with the encoding in effect
+when it arrived
+
+The side effect that logs appended text encoded it with the
+main thread's copy of the terminal encoding, which could be
+stale just after a program changed it. The mutation thread
+passes the encoding, and whether the text is plain, along
+with the text.
+
+2026-11-05: Record the cursor line for a status bar label on
+the mutation thread
+
+screenSetLabel:forKey: took the status-changed line from the
+main thread's copy of the screen, which may not have the
+cursor's line yet.  The mutation thread passes the cursor's
+absolute line.
+
+2026-11-05: Move a selection in a scrolled region using the
+mutation thread's lines
+
+The absolute line of the region's top row came from the main
+thread's scrollback count, which can be behind the mutation
+thread's when the side effect runs, so the selection could
+move to the wrong place. The mutation thread passes the
+absolute top.
+
+2026-11-05: Fold from the Fold trigger on the mutation
+thread
+
+The trigger folded through the delegate, which read the
+placeholder line from the main thread's copy of the screen;
+lines that had arrived since the last sync were not there
+yet, so the fold sometimes did nothing. The range is now
+fixed on the mutation thread and the fold runs there too,
+after the side effect that leaves copy mode (as folding from
+the main thread does, since copy mode and the selection are
+placed against line numbers a fold shifts) and after the
+line's other triggers, which act on those line numbers as
+well. Token execution stays paused until the fold has run,
+so no later token can change the lines first.  As before,
+the trigger declines to fold while an app owns the alternate
+screen. The screen's main-thread fold method had no callers
+left and is removed.
+
+2026-11-05: Scroll to a Stop Scrolling trigger's line once
+the main thread has it
+
+The trigger's side effect ran against the main thread's copy
+of the screen, which may not have had the matching line yet,
+so it sometimes did nothing. The mutation thread now passes
+the absolute line. The session scrolls to it if its copy has
+the line, otherwise right after the next sync, and marks the
+view as user-scrolled only when it scrolls.
+
+2026-11-05: Fix Codecierge stopping the wrong session and
+keeping stale replies
+
+Stop Codecierge in the usage warning stopped whichever
+session the toolbelt was showing rather than the one that
+asked, and a remembered Stop ended every later goal silently
+once it reached the command count; only Keep Going can be
+remembered now. Stopping a goal releases its conversation,
+pending completion and queued requests. A reply to a goal
+that has since stopped is dropped instead of being appended
+to the next goal's transcript with its conversation
+installed over the new one. The unused History struct is
+gone.
+
+2026-11-05: Let tests give the screen harness their own
+delegate
+
+TerminalTestHarness takes a SpyingScreenDelegate, or a
+subclass, so a test can observe or answer delegate calls the
+spy doesn't, such as syncing a real screen from screenSync:
+the way PTYSession does.
+
+2026-11-05: Keep trigger parameter classifications in an LRU
+dictionary
+
+NSCache could drop an entry at any time, so looking a
+parameter string up twice did not always give the same
+object. The cache is a bounded LRUDictionary under a lock. A
+miss is classified outside the lock so one session's regex
+work does not stall the other sessions' mutation threads; if
+two threads classify the same new string, the first to
+insert wins. Each Trigger also keeps the classification of
+its own parameter string, so the per-line hit is a string
+comparison with no lock at all.
+
+2026-11-05: Make LRUDictionary reads count as a use
+
+Reading an entry through the subscript never bumped its
+recency, so the dictionary evicted in insertion order: an
+entry read constantly went before one never read again. The
+subscript now bumps, peek reads without, and the ObjC
+wrapper's lookup counts too. Bumping relinks the existing
+list node instead of allocating a new one.
+
+The Kitty image cache's display lookups keep an image fresh
+while its whole-cache scans use peek, so a displayed image
+outlives one that was transmitted later and never shown. The
+Metal line cache is shared by every session's per-frame
+state, but those are all built on the one Metal queue, so a
+lookup reordering it needs no lock; a comment now records
+that assumption.
+
+2026-11-05: Add Grok as a built-in AI provider (#755)
+
+Grok (xAI) is now a first-party AI vendor that can be chosen
+in Settings > General > AI, the AI chat provider menu, and
+the Companion setup wizard, with its own keychain slot,
+instead of being set up as a manual OpenAI-compatible
+endpoint.
+
+- Add iTermAIVendorXAI. Keys live in the "xAI API Key for
+iTerm2"
+  keychain account. api.x.ai and its regional subdomains
+  (us.api.x.ai) are the vendor's own host; a look-alike host
+  is not. Model names containing "grok" classify as this
+  vendor, and an xai- key is not mistaken for an OpenAI or
+  DeepSeek key.
+- Catalog: grok-4.7 (recommended, 500k context) and grok-4.3
+(economy,
+  1M context, has a no-reasoning mode) on chat completions.
+  Catalog version 6.
+- Chat completions send reasoning_effort for xAI models when
+an effort
+  is selected. Other chat-completions servers keep the body
+  they had.
+- api.x.ai accepts image attachments through the existing
+  chat-completions image parts. Inline PDF parts are not
+  offered since that endpoint rejects them.
+- Opt-in live harness lane via XAI_API_KEY and
+tools/run_ai_live.sh xai,
+  with an attachment-matrix column for grok-4.7, and refusal
+  fixtures for both models.
+
+2026-11-05: Fix find-on-page when porthole results are
+present
+
+SearchResult's compare: returned NSOrderedSame whenever an
+internal result was compared against an external (porthole)
+one, so the sorted result set treated every grid match as a
+duplicate of a porthole match and dropped it. Matches were
+found but never highlighted or counted, and Find Next stayed
+on the porthole. The comparison is now a total order.
+
+Along the way: - Find Next and Find Previous advance from a
+porthole result to grid results
+  instead of wrapping, and from a removed result to the next
+  one.
+- Porthole results outside the selected command are not
+searched or added,
+  and hidden portholes (line -1) are never searched.
+- Removing a line removes every porthole result on it, not
+just the first.  - The tail find no longer removes porthole
+results it cannot put back.  - A porthole rendered while a
+search is active takes part in it.  - Selecting,
+deselecting, or turning off click-to-select for a command
+runs
+  the search again under the new range. The old restart flag
+  had no reader since the SearchEngine rewrite. Deselecting
+  does not scroll.
+- The selected result is dropped when it is removed, and a
+hidden porthole
+  match is never selected from a coord cursor.
+
+Also skips
+FramerFlowLedgerTests.testBytesThatMakeNoTokensAreStillCounted,
+which is flaky under load.
+
+2026-11-05: Reload only colors when an escape sequence
+changes a profile color
+
+Programs that set colors with escape sequences (OSC
+4/10/11/12/112 and friends) rewrite the session's profile,
+and every rewrite ran the full profile reload: font table,
+layout, status bar, bindings, and so on. tmux emits a cursor
+color change on every pane switch, which made switching
+panes lag and burn CPU. It also reset the session mode, so
+the change kicked the user out of Copy Mode.
+
+A profile change now produces a plan from a hand-built table
+of profile key to reload scope (ProfileReloadScope.swift).
+When every changed key is a color, only
+reloadColorsFromProfile: runs. Any other key, including one
+nobody has classified, runs the full reload as before. The
+color pieces of the full reload moved into
+reloadColorsFromProfile: so the two paths share one
+implementation, and the appearance change handler goes
+through it too so the tmux tab color and colors.* variables
+follow a light/dark switch.
+
+The badge color and tab color are cached from the profile
+being applied instead of read from the live profile at draw
+time, which was a hidden dependency that would have left
+them stale.
+
+In debug builds iTermProfileReadRecorder wraps both the
+profile being applied and the live profile during every full
+reload and asserts, with a backtrace, if a colors-scope key
+is read outside the colors reload. It caught two real leaks
+during development.
+
+Fixes issue 13192.
+
+2026-11-05: Re-extract strings and fill in missing
+translations
+
+Restore the keepJobsRunningWhenQuitInstallsUpdate advanced
+setting and its translations, which were lost when the
+catalog was re-extracted upstream, and translate
+holdScreenDuringPromptRepaint, which had only English.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-05: Bypass the URL cache when fetching the backup
+update feed
+
+The feed is normally a 404, and the server's Last-Modified
+header on that response let the URL cache treat the error as
+fresh for a long time, so a copy of iTerm2 that had seen the
+404 once kept seeing it after the file was published. Ignore
+local and remote caches for this request.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-11-05: Treat a quit with an update ready to install as
+an upgrade
+
+Once Sparkle 2 has extracted an update, its installer is
+staged and installs after the app quits for any reason, not
+only after Install and Relaunch. Sparkle 1 abandoned the
+update on such a quit. Set the pending-install flag when the
+update is extracted so that a quit from the Ready to Install
+window saves restorable state, keeps the quit confirmation,
+and honors the keep-jobs advanced setting, whose description
+now covers this case.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-11-05: Add a backup update notice independent of
+Sparkle
+
+If a shipped version turns out to have a Sparkle bug that
+keeps it from updating itself, there needs to be a way to
+tell its users. Once a day, and only when the user has said
+yes to automatic update checks, fetch
+https://iterm2.com/appcasts/backup_update.xml?betas=0 (or
+1), a file that normally does not exist. When it lists a
+version newer than the running one, show a warning once per
+version with a Download button that opens
+https://iterm2.com/download-backup.html. Nothing is
+downloaded or installed, and nothing from Sparkle is used:
+the URL is hardcoded and the version comparison is its own.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-11-05: Migrate software updates from Sparkle 1.21.2 to
+Sparkle 2.10.1. Issue 13152.
+
+The Sparkle 1 status window could not be dismissed or
+minimized while an update was downloading. Sparkle 2's
+status window can be minimized.
+
+Sparkle 2 has no shared updater, so a new
+iTermSoftwareUpdater owns an SPUStandardUpdaterController,
+starts it once the initial window exists, chooses the
+appcast from the Info.plist keys plus the rollout shard at
+check time (instead of writing SUFeedURL into user defaults
+at every launch), and never starts in test hosts. The
+SUUpdater object and outlet are gone from MainMenu.xib.
+
+Saving state before the app quits for an update is layered
+so no single Sparkle code path is load-bearing:
+SUUpdaterWillRestartNotification, the updater delegate's
+willInstallUpdate and updaterWillRelaunchApplication, an
+install-pending flag for the "Install on Quit" and
+automatic-install paths where Sparkle sends no further
+callback, and as a last resort the quit Apple event's sender
+pid, which is checked against Sparkle's Updater.app bundle
+id in applicationShouldTerminate:. Flags set during a quit
+are rolled back if the user cancels it. A new advanced
+setting, keepJobsRunningWhenQuitInstallsUpdate (default
+off), lets an Install on Quit quit leave jobs running in
+their servers as Install and Relaunch does.
+
+The Sparkle fork (submodules/Sparkle, branch forked_2.10.1)
+carries the same -suite patches as the 1.x fork: suite-aware
+user defaults, and the progress agent relaunches the app
+with the same -suite argument. XPC services and the legacy
+SUUpdater stub are compiled out. The embedded framework's
+nested helpers (Autoupdate and Updater.app) are not
+re-signed by CodeSignOnCopy, so
+tools/sign_sparkle_helpers.sh was updated for the Sparkle 2
+layout and run on the checked-in framework; a signed build
+passed notarization.
+
+Also bumps the iTerm2-shell-integration submodule.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+
+2026-11-05: Add Move Session to Floating Pane and Select
+Next Floating Pane
+
+Session > Move Session > Move Session to Floating Pane lifts
+a tiled pane into a float in its own tab, placed like a new
+float. A pane's context menu offers it where it applies. In
+tmux it sends break-pane -W, and a refusal beeps and is
+logged. Window > Split Pane > Floating Panes > Select Next
+Floating Pane cycles through the visible floats.
+
+Floating and docking share one lifecycle: a removal that
+keeps the active session and tells no one about a tab
+between two states, one install tail for the underlay,
+focus, blur and dimming, one placement entry point for
+floats placed right after installing, one eligibility
+predicate, and one focus rule for both directions. A pane
+keeps focus if it had it and otherwise takes it by the rule
+for a new pane, no other pane's activity counter changes,
+and the floats are shown when a pane becomes one.
+
+Verified in the tmux source that floating the last tiled
+child of a layout node is fine, so no guard on the node is
+needed. Docking is disabled while a tmux window is zoomed,
+as floating is.
+
+2026-11-05: Add GPT-6.1 Terra, Claude Haiku 5.5, and Gemini
+4 Argon to the AI model catalog
+
+Bump the catalog to version 5 with the models each vendor
+has added since version 4:
+
+- OpenAI: add gpt-6.1-terra. It accepts reasoning effort
+"none", the
+  priority and flex service tiers, web search, and code
+  interpreter.
+- Anthropic: add claude-haiku-5-5 (1M context, 128K output).
+It rejects
+  temperature. It is now the economy model for every Claude
+  entry, at about a tenth of the price of claude-haiku-4-5.
+- Gemini: add gemini-4-argon, Google's GA flagship, and make
+it the
+  recommended Gemini model in place of gemini-3.8-flash. The
+  models API reports a 32K output limit, but requests with
+  65,536 succeed and the docs give 65,536.
+- DeepSeek: no change. V4.1 Flash 1017 is served under the
+existing
+  deepseek-flash ID.
+
+Refusal fixtures for the three new models are not captured
+yet, so AIMetadataFixtureCoverageTest fails until they are.
+
+2026-11-05: Don't read the keychain when opening Settings
+
+The API key hint under the default AI model popup read every
+relevant key from the keychain each time the General pane
+rendered or the model list refreshed. A denied read is never
+cached, so opening Settings could prompt for keychain access
+several times. The hint now consults only the in-memory key
+cache and stays neutral until the user forces a read by
+opening the Manage AI API Keys sheet or starting a chat.
+
+2026-11-05: Skip the old-nightly warning in the unit test
+host
+
+The test host counts as a nightly build, so once the build
+date was more than 30 days old every run put up the modal
+warning at launch.  Nobody is there to answer it, so the
+runner waited until its stall detector gave up. Skip the
+warning when running unit tests, as the local network prompt
+already does.
+
+2026-11-05: Circle the rainbow around the tab ring while a
+tab is busy
+
+With the Rainbow progress bar color scheme, an indeterminate
+progress bar on the Tahoe tab ring now shows a rainbow that
+circles the tab outline instead of a band sliding across it.
+The ring is a conic gradient whose color stops are spaced
+evenly by arc length around the pill, so the colors move at
+one speed on the long edges and around the caps, and a
+keyframe animation shifts each stop to the next hue. Flat
+bars still draw the scrolling band.
+
+Close the scrolling Rainbow band with red so the tiled band
+has no hard pink-to-red edge, and reset gradient locations
+when a scheme changes the stop count so the determinate bar
+renders every stop.
+
+Installing an indeterminate container only swaps sublayers
+and asks for layout; layoutSublayers sizes it and starts its
+animation as it already did after a resize. Detaching a
+container also stops its animations, so a detached layer is
+never mistaken for a running one and pausing no longer
+instantiates unused layers.
+
+Originally submitted as PR #809 with a separate Rotating
+Rainbow scheme; folded into Rainbow since the two were
+identical everywhere but the ring.
+
 2026-11-04: Keep the hotkey ref when re-registering after a
 fast user switch
 
