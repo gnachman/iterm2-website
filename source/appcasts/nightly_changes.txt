@@ -1,5 +1,286 @@
-2026-11-05: Rebuild SwiftyMarkdown.framework from the fork
-at 1a795d6
+2026-11-06: Render Markdown in AI chat and imgcat with
+SwiftyMarkdown's new block parser
+
+Bump SwiftyMarkdown to b999a82, whose CommonMark/GFM block
+parser handles paragraphs spanning lines, blocks inside list
+items, nesting by indentation, start numbers, nested quotes,
+and task lists, and rebuild SwiftyMarkdown.framework from
+it.
+
+AI chat drops sanitizeMarkdownLines, which only worked
+around the old parser, and keeps newlines as line breaks.
+
+The imgcat porthole's MarkdownPreprocessor shrinks to inline
+rewrites (images, HTML, entities, escapes, footnotes)
+applied through SwiftyMarkdown's inlineTransform, and
+reflows paragraphs. The styler uses the list level and quote
+depth attributes: content in a list item lines up with its
+text, quotes nest, code blocks get their own boxes with a
+visible gap between adjacent blocks, and a table in a quote
+is inset to the quote's text (TextKit can't draw a table
+nested in another text block).
+
+Copying rendered Markdown turns its U+2028 line breaks into
+newlines, except in code. Orchestration mentions are
+protected using the exact code lines SwiftyMarkdown reports.
+
+2026-11-06: Log exceptions that AppKit crashes on through
+_crashOnException:
+
+An exception raised while a view draws ends in
++[NSApplication _crashOnException:], which bypasses both the
+uncaught exception handler and -reportException:, so the
+crash log said nothing about the exception.  Replace that
+class method's implementation to log the exception and its
+backtrace first, then call the original.
+
+2026-11-06: Keep the code review model and git base in a
+tmux workgroup's record
+
+The instance record on the tmux server now holds the code
+review model (new optional key "crm", no version bump), so a
+client that attaches later adopts the current pick. The git
+base and model are rewritten when the user changes them;
+before, the record kept the git base from entry.
+
+A rewrite reads the record back, applies only its own
+change, and writes it with a compare-and-set guarded on the
+value read, so it neither reverts another client's change
+nor brings back a record another client removed. Top-level
+keys this build doesn't know survive the rewrite, so a field
+a later build adds the same way isn't stripped. Values
+restored from the record or window restoration are not
+written back.
+
+2026-11-06: Improve tmux dashboard session selection and
+loading state
+
+Select the attached session when the dashboard opens. The
+sessions table disallows an empty selection, so NSTableView
+picked row 0 on every reload; only a selection the user
+clicks is now preserved, and otherwise the attached session
+is selected and scrolled into view.
+
+Show a spinner over the windows list while list-windows is
+in flight and the list is empty.
+
+Show a grayed checkmark next to sessions that other
+connections to the same tmux server are attached to.
+
+2026-11-06: Save only a tmux session's own tabs in its
+per-tab settings
+
+Saving one tmux session's per-tab settings, such as custom
+tab titles, included every tmux tab in every window, keyed
+by tmux window id. Window ids repeat across sessions, so
+another session's @1 title was saved as this session's, and
+reattaching this session gave its @1 the other session's
+title. This happened even with the sessions in separate
+windows.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-06: Close and detach only the tmux sessions being
+closed
+
+Closing tmux tabs prompts to Hide, Detach, or Kill. When the
+window held tabs from more than one tmux session, the prompt
+counted every session's windows, so closing one session's
+last tab asked about all of them. Detach acted on the
+selected tab's session instead of the closing one, so
+closing a window detached only one session, and nothing
+detached if a regular tab was selected. Now the prompt
+counts only the tabs being closed, and Detach detaches each
+attached session that has a tab being closed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-06: Don't let one tmux session's window change
+select it over another session's tab
+
+When a native window holds tabs from more than one tmux
+session, tmux reporting a new current window in one session
+selected that session's tab even while the user was working
+in another session's tab. Keystrokes then went to the wrong
+session, possibly on another host. Now a current-window
+change leaves the selection alone when the selected tab
+belongs to a different tmux session.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-06: Redesign the About window and list backers in
+columns
+
+Based on PR #753 by Erwann Mest, which redesigned the About
+window with sponsor cards, push buttons for the home page,
+bug reports and credits, a backers well with higher-tier
+backers first, and a support footer.
+
+Changes on top of that PR:
+
+- List backers in columns, like names on a memorial wall, in
+a new
+  AboutBackersColumnsView. Each name gets its own cell and
+  names fill down each column before moving to the next.
+  Higher-tier backers form their own block above everyone
+  else on the same grid. Names that are too wide are
+  truncated instead of wrapping.
+- Put the app icon beside a left-aligned column of title,
+byline,
+  version line and buttons, with the pair centered, to
+  remove empty space at the top. The icon is sized so its
+  artwork spans the text column.
+- Match higher-tier backers on U+2B50 only, with a literal
+search. The
+  old character set also contained the emoji variation
+  selector, which promoted names containing other emoji such
+  as a heart.
+- Keep the window on screen when it grows to fit the backer
+list.  - Remove trailing newlines from the translations of
+the build version
+  and What's New strings, which no longer have them in
+  English.
+- Give the What's New link the same font as the rest of the
+version
+  line.
+- Turn off the footer's vertical scroller, which appeared
+once the
+  footer became one line tall.
+- Remove a stray merge conflict marker from the release
+notes.
+
+2026-11-06: Keep animated titles moving in background tabs
+
+A hidden session batches its side effects for up to a
+second, so a title that changes every 100 ms (a spinner, for
+example) advanced only about once a second in a tab that
+wasn't selected.
+
+Title changes in a hidden session now request a flush
+deferred by the foreground amount (1/60 s) that escapes the
+background period, rate limited to at most one every 0.1 s.
+Requests made while one is owed ride that flush. The flush
+drains the single side-effect FIFO in order, so nothing is
+reordered. Visible sessions are unaffected since their
+period is already shorter than the limit.
+
+The expedite is skipped when the profile disallows title
+setting and when the title matches the last one the program
+set. That cache is cleared on a title pop and on reset,
+since either can change the displayed title behind its back.
+
+Based on the diagnosis in PR 773 by korboybeats.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-06: Give clippings unique IDs and add it2 session
+delete-clipping
+
+it2 session add-clipping now prints the new clipping's ID,
+and it2 session delete-clipping removes a live clipping by
+that ID. The code review system prompt tells agents to keep
+the IDs and delete clippings for findings they withdraw, and
+the code review settings allow the new command in auto mode.
+
+Clippings persist their ID in the arrangement; ones restored
+from older arrangements get a fresh ID. The 3.7.7 default
+prompt's hash is recorded so a stored copy of it is offered
+the new default.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-06: Remember tab groups of tmux integration tabs
+across detach and reattach
+
+Tab group membership, name, color, and collapsed state are
+saved in a new @tab_groups session option and restored as
+tabs open on attach. A separate option is used instead of
+extending @per_tab_settings because an older iTerm2 attached
+to the same server rewrites that option wholesale and would
+erase the groups.
+
+Entries for windows without a tab (hidden, buried, parked,
+or still opening) are kept and their group definitions
+refreshed from live members; entries are removed when tmux
+closes the window or the tab leaves its group, and pruned
+against the initial window list on attach. Each group is
+confined to one window using the saved affinities, in case
+an older iTerm2 moved a member into another window.
+Collapsed groups stay collapsed on attach; if the active tab
+lands in one, the selection moves out of it instead.
+
+A failed open of the last initial window now still completes
+the initial attach, so saving is not disabled for the rest
+of the connection.
+
+Issue 13069
+
+2026-11-06: Add a model picker to the code review toolbar
+
+A new Code Review Model toolbar item lets the user pick the
+model a code review session runs with. It is an editable
+combo box offering default, fable, opus, sonnet, and haiku
+plus previously typed names.  The pick is per workgroup
+instance, applies to the next review, and is saved with
+window restoration. It reaches the command through a new
+\(codeReviewModelFlag) template variable, which is empty for
+default so claude keeps choosing its own model.
+
+A star button beside the picker sets the model new
+workgroups start with (WorkgroupCodeReviewDefaultModel).
+Clicking it commits any pending edit first.
+
+The preset review command and toolbar include the picker,
+and a one-time backfill adds both to existing Claude Code
+workgroups. The git base selector's combo box logic moves
+into a shared WorkgroupRecentsComboBoxItem base class used
+by both pickers.
+
+2026-11-06: Use iTerm2's bundled it2ssh instead of a stale
+installer alias
+
+Install Shell Integration & Utilities aliased it2ssh to a
+copy in .iterm2, which hid the newer it2ssh iTerm2 adds to
+PATH. The shell integration scripts now remove that alias at
+the first prompt when the first it2ssh on PATH is the one in
+iTerm2's app bundle, and leave it alone otherwise (for
+example on a remote host where the alias is the only way to
+reach it2ssh).
+
+Bumps the shell-integration submodule and the bash, fish,
+tcsh, and zsh script versions.
+
+2026-11-06: Fix soft text in transparent windows when
+underlines are visible (13194)
+
+The multi-pass underline composite used compositeSourceOver,
+whose alpha blend is max(Sa, Da). In a transparent window
+that leaves anti-aliased glyph edges with too little alpha,
+so the backdrop bleeds through every glyph whenever any
+underline is on screen. Use premultipliedCompositing so the
+result matches drawing text directly.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-06: Combine script permissions into one tabbed
+Manage Permissions sheet
+
+The API access over ssh button opened its own sheet even
+though remote host grants are a kind of permission. Manage
+Permissions in General > Magic now opens a single sheet with
+a Browser Scripting tab and an API Access over SSH tab, and
+the separate button is gone.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-06: Fix the spelling of the performance issue
+template's filename (#810)
+
+iterm2.com/bugs links "Report performance issues" to
+issuable_template=Performance%20Issues, which matched no
+template because the file was named "Perfomance Issues.md",
+so the link opened an issue with an empty body.  2026-11-05:
+Rebuild SwiftyMarkdown.framework from the fork at 1a795d6
 
 2026-11-05: Fix Kitty DnD drops into Yazi and restore
 registrations on reattach (13176)
