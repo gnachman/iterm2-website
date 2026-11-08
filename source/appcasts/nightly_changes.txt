@@ -1,3 +1,27 @@
+2026-11-07: Keep tmux per-tab settings and tab groups across
+hiding and session switches
+
+Each save of a tmux session's @per_tab_settings was rebuilt
+from open tabs only, so a hidden window lost its custom tab
+title the next time anything saved. Saves now merge open
+tabs into the saved settings, as tab groups already did. A
+closed window's title is forgotten when tmux reports the
+close, and titles of windows that no longer exist are pruned
+on attach.
+
+Switching the client to another session could write the old
+session's titles and groups into the new session's options
+before they were read, losing the new session's for good.
+The old session's state is now cleared on a switch, and
+neither option is saved until the new session's has been
+read, nor while tabs close.
+
+A window that leaves the session and returns with the same
+ID (move-window, link-window) is no longer treated as
+closed, so its title and group changes are saved again.
+
+Ported from the hardening in PR 803.
+
 2026-11-06: Render Markdown in AI chat and imgcat with
 SwiftyMarkdown's new block parser
 
