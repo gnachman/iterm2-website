@@ -1,3 +1,25 @@
+2026-11-08: Run each AI chat tool request at most once
+
+iTerm2 Buddy's chat history snapshot included persisted
+auto-run tool requests but hid their responses, so the phone
+showed already-run requests as pending Allow/Deny prompts.
+Approving one ran the tool a second time and stored a second
+tool_result for the same tool_use, which Anthropic rejects
+on the next turn.
+
+- Drop answered .classic requests from the history sent to
+the phone.  - ChatClient.requestIsSettled (running or
+already answered) now gates
+  execution, both response publishers, and the Mac and phone
+  decision handlers, so a stale Allow or Deny is a no-op and
+  changes no permissions.
+- Cancel a session's running remote command when its process
+ends or
+  the session terminates, so the tool call gets a response
+  instead of wedging the turn.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 2026-11-07: Keep tmux per-tab settings and tab groups across
 hiding and session switches
 
