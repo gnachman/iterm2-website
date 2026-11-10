@@ -14,3 +14,11 @@ RewriteRule ^.*$ /appcasts/shard-%1/testing_new.xml [R=302,L]
 
 AddCharset UTF-8 .txt
 
+
+# iTerm2 builds with the NoSyncSoftwareUpdateTestFeed user default set append
+# test=TOKEN to the appcast URL. Serve the staged copy of the same appcast from
+# /misc, where test.sh puts appcasts awaiting testing, instead of the public
+# one. The rewrite is internal, so the public appcast's URL and caching are
+# unaffected.
+RewriteCond %{QUERY_STRING} (^|&)test=[A-Za-z0-9_-]{1,64}(&|$)
+RewriteRule ^([a-z0-9_]+\.xml)$ /misc/$1 [L]
