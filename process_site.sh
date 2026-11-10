@@ -8,6 +8,10 @@ tar -c -v -z --exclude=$HOME/iterm2.com/nightly --exclude=$HOME/iterm2.com/adhoc
 cp -v -n downloads/beta/* ~/iterm2.com/downloads/beta/
 export GEM_HOME=$HOME/.gems2
 rm -rf ~/iterm2.com_stage
+# copy-shell-integration.sh copies from the submodule's working tree, which a
+# plain git pull leaves at the old commit. Check out the commit the website
+# records so the deploy publishes the scripts the release pointed it at.
+git submodule update --init submodules/iTerm2-shell-integration || { echo "Could not update submodules/iTerm2-shell-integration" >&2; exit 1; }
 ./copy-shell-integration.sh
 ./generate_downloads.py > source/downloads.md
 $GEM_HOME/bin/bundle exec jekyll build -d ~/iterm2.com_stage
