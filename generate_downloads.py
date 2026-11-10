@@ -102,6 +102,9 @@ def Description(zip):
 def ChangeLog(zip):
     content = Metadata(zip, "changelog", onError="")
     if len(content):
+        # Changelogs are plain text; escape them so text like <b> isn't
+        # parsed as markup inside the <pre>.
+        content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         id = abs(hash(zip))
         content = \
 '''<p><a href="javascript:showId('%s')" id='show%s'>&#x25b8; Show Changelog</a></p>
