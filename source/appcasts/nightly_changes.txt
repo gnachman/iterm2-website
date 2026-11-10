@@ -1,3 +1,226 @@
+2026-11-09: Test iTermReflection type-string parsing
+directly
+
+The Objective-C runtime does not parse quoted class names in
+method type encodings, so registering a method with one
+cannot exercise the parser. Call the type-string parser
+directly instead.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-09: Add tests for class name extraction in
+iTermReflection
+
+Covers quoted, single-character, empty, and unquoted object
+type encodings, guarding the off-by-one fixed in PR 816.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-09: Fix external attribute index equality
+
+isEqualToExternalAttributeIndex: compared each of our
+attributes against itself, so indexes with different
+attributes compared equal. Compare against the other index's
+attribute instead, using the nil-safe comparison since a
+column may be present on only one side. Comparing a
+dual-mode color attribute against nil would otherwise crash.
+
+Uniform indexes keep their attribute outside the attributes
+dictionary, so they were also compared as if empty. Give
+them their own equality.
+
+Based on a fix by Kim Dong Han in PR 815.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-09: Remove dead dictionary conversion code for grid
+coords
+
+VT100GridCoordFromDictionary lost its only caller in 2022,
+when cursor restoration from the "Cursor Coord" arrangement
+key was removed, and VT100GridCoordRangeFromDictionary never
+had a caller. An analyzer cleanup later inverted its nil
+checks so it could never succeed, which went unnoticed
+because nothing ran it. Delete these helpers and stop
+writing the unread key into arrangements. Reported in PR
+814.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-09: Use up the JSON promotion only when it is
+actually shown
+
+promoteIfJSON recorded the promotion as shown before calling
+back, but the session shows it only when the current
+selection offers a JSON replacement. Copying JSON that
+didn't start at column 0, a box selection, a range copied
+from the context menu, or a selection that changed during
+the parse used up the one-time promotion without ever
+showing it. The callback now reports whether it showed the
+promotion and the default is set only then.
+
+2026-11-09: Fix tiebreaks when sorting pointer action rows
+
+The gesture comparator compared the modifier field with
+intValue, but that field is a string of modifier characters
+like "cso", so it always compared equal. Compare the
+modifier masks instead. Also fix the button comparator's
+duplicated nil check so a key without parts sorts before one
+with parts.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-09: Log the needsDisplay value being set, not the
+previous one (#811)
+
+The setter interpolated needsDisplay, which calls the getter
+and returns super.needsDisplay: still the old value. Every
+setNeedsDisplay: line therefore reported the flag's state
+before the write.  2026-11-09: Compare against the other key
+when sorting gesture rows (#818)
+
+otherParts was built from self, so every gesture comparison
+reported NSOrderedSame and gesture rows in Pointer
+preferences were never ordered relative to one another.
+2026-11-09: Clear the JSON pretty printer's busy flag on
+every path (#817)
+
+busy was only cleared when the selection parsed as JSON, so
+the first selection that began with a brace but was not JSON
+latched it on for the life of the process and the promotion
+never ran again.  2026-11-09: Keep the last character of a
+class name from a type string (#816)
+
+The name spans index 1 through closeQuote.location - 1, so
+its length is closeQuote.location - 1. Every parsed class
+name lost its last character and NSClassFromString then
+returned nil.  2026-11-09: Extract the response body before
+stripping it from the buffer (#813)
+
+start and end index the string unparsed held before the
+assignment, and the assignment deletes exactly the span they
+point into, so subscripting the shorter result with them
+traps. Read the body out first.  2026-11-09: Stop
+it_containsSubarray: from reading past the end (#812)
+
+The search range ran to the end of the array, so a
+first-element match near the end let the inner loop index
+self[idx + j] out of bounds. Limit the range so a match
+always leaves room for the whole subarray.  2026-11-09: Let
+a user default ask iterm2.com for a test appcast
+
+Testing that a build can update itself used to mean editing
+the version in its Info.plist. Sparkle 2's installer refuses
+to talk to an app whose signature is broken, so that no
+longer works. With NoSyncSoftwareUpdateTestFeed set to a
+token, the appcast URL gets test=TOKEN appended and the
+server can answer with a staged appcast instead. The appcast
+still comes from iterm2.com, and Sparkle still checks every
+update's EdDSA signature, team ID, and version.
+
+2026-11-09: Add 3.7.8beta1 release notes
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-09: Trim the release notes of everything that
+shipped in 3.7.7
+
+Add notes-3.7.7.txt from the release branch and remove every
+bullet from the cumulative file whose commit is in v3.7.7
+(or an earlier stable), leaving only changes that are on
+master alone. The AI Usage gauge bullet becomes an
+Improvements item for the follow-up change that dropped the
+Session bar and explained failures, since the gauge itself
+shipped.
+
+2026-11-09: Stop staging gitignored shell integration paths
+in the release scripts
+
+source/shell_integration and source/utilities have been
+gitignored in the website repo since 2021; process_site.sh
+regenerates them on the server from the submodule. git add
+refused them, which aborted the 3.7.7 release at the publish
+step before the website commit, push, and tag. Commit only
+the submodule pointer.
+
+2026-11-09: Exempt new catalog models from refusal fixtures
+instead of capturing them
+
+Capturing a refusal fixture sends a prompt designed to be
+refused, which got the account behind our OpenAI key flagged
+for abuse. Add a refusalNotCaptured set to the live harness,
+which never sends the refusal prompt to its models, and
+accept it in AIMetadataFixtureCoverageTest as a reason for
+fixtureExempt. Mark gpt-6.1-terra, gemini-4-argon, and
+claude-haiku-5-5 exempt.
+
+2026-11-09: Use the renamed verifiedLocalDirectory for the
+known local working directory
+
+415378116 added a use of polledLocalDirectory, which
+9c83fba6f renamed.
+
+2026-11-09: Release note for new sessions using the outer
+shell's directory in a nested shell
+
+2026-11-09: Poll the shell the user is in, and keep a
+verified push of its directory
+
+New sessions and Claude Code workgroup panes take their
+directory from verifiedLocalDirectory, which could describe
+a different shell from the one the user had just cd'ed in.
+
+Polls now read the foreground shell instead of the session's
+root process. Starting from the terminal's foreground
+process group, the leader is used if it is a shell at its
+prompt (shell name, exec'ed, no script or -c in its
+arguments). Otherwise the shell is the nearest ancestor
+outside the group, since only a shell doing job control
+gives a job its own group, so subshells, scripts, and
+commands that change their own directory don't count. If the
+leader exited, the walk starts from another member. A job
+that relays a pty of its own (sudo -s with use_pty, poetry
+shell, script, expect) is followed onto that pty when an
+interactive shell is there; otherwise the shell that started
+the job is used. A poll at a prompt reads only the leader;
+anything else reads the process table once, into an array of
+structs.
+
+A push whose OSC 7 machineID matches ours counts as verified
+and sets verifiedLocalDirectory directly. Its symlinks are
+resolved out of process (pidinfo, F_GETPATH) so later polls,
+which give resolved paths, can be compared with it: a poll
+replaces it only if it names neither the push nor its
+resolution. Requests are stamped so polls from before a
+strong push can't override it.
+
+Reading process arguments now sizes the buffer to the
+argument area instead of allocating KERN_ARGMAX for every
+read.
+
+2026-11-09: Release note for stale directory in new sessions
+after cd
+
+2026-11-09: Refresh the local directory new sessions use
+when the shell reports a cd
+
+New local sessions (tabs, splits, workgroup peers) start in
+the tracker's polled local directory, which since issue
+12616 ignores pushed directories so a hostless OSC 7 from a
+remote fish can't pass for local. Nothing refreshed it on a
+push, so after `cd foo; claude` the Claude Code workgroup's
+code review and diff peers could start in the old directory.
+
+On every strong push, refresh it: use the pushed directory
+when its OSC 7 machineID token matched ours, and otherwise
+poll the local shell. The verdict is threaded from the OSC 7
+parser per report, because the remote host on the line is
+inherited by hostless reports and proves nothing.
+Directories fetched by polling are verified too.
+
+Rename polledLocalDirectory to verifiedLocalDirectory to
+match.
+
 2026-11-08: Run each AI chat tool request at most once
 
 iTerm2 Buddy's chat history snapshot included persisted
