@@ -1,3 +1,107 @@
+2026-11-10: Don't quit while a buried tmux gateway is about
+to be restored
+
+With Quit when all windows are closed and auto-burying of
+the tmux gateway on, closing the last tmux window and
+choosing Detach or Kill could quit the app. AppKit's
+last-window-closed check ran before the %exit that unburies
+the gateway was handled. Defer the quit while a buried
+gateway's controller expects tmux to exit: a detach went
+out, or a window kill went out and no hidden or parked
+window keeps the session alive. Issue 12644.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-10: Resume interrupted update downloads. Issue
+13199.
+
+Bump the Sparkle fork and rebuild Sparkle.framework (make
+paranoid-sparkle). An update download that hits a transient
+network error now resumes from where it stopped, and if that
+keeps failing it restarts once in a fresh session that goes
+over TCP rather than the HTTP/3 path macOS cached for the
+host. The progress bar starts over when the download
+restarts, and each retry and the final failure are logged
+with the protocol and the full error chain.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-10: Fetch Models lists models from OpenAI- and
+Anthropic-compatible servers
+
+The manual AI model editor's Fetch Models button only knew
+Ollama's /api/tags, so it could not list models on vLLM, LM
+Studio, llama.cpp, LiteLLM, hosted gateways, or
+Anthropic-compatible servers. For every API except Ollama
+and Gemini it now fetches GET <base>/models and offers the
+returned ids. The base comes from the configured URL with
+its endpoint suffix (/chat/completions, /completions,
+/messages, /responses) removed, so a base URL like
+http://host:8000/v1/ also works. Anthropic gets limit=1000
+because its listing is paginated.
+
+The request carries the key a chat request would send, in
+that API's header, plus custom headers, and never prompts
+for one. Error messages show the listing URL without
+userinfo or query. The button is disabled for Gemini and
+while a fetch is in flight.
+
+Also extracts and translates strings from earlier commits
+that had not reached the catalog yet.
+
+Issue 11509
+
+2026-11-10: Ignore Shift variants of Spaces and Mission
+Control symbolic hotkeys
+
+macOS keeps the Shift variants (IDs 34, 35, 37, 63, 80, 82)
+of Mission Control, Application Windows, Show Desktop,
+Dashboard, and Move left/right a space enabled even though
+they no longer do anything. They used to run the base action
+in slow motion. Because performKeyEquivalent: deferred to
+any enabled matching entry, Control-Shift-Arrow was
+swallowed on macOS 15+ and never reached the terminal. Issue
+13202.
+
+2026-11-10: Keep the first line's styling in a fold summary
+
+Folding replaced the colors of the whole summary line with a
+faint italic default style, which mangled prompts that
+depend on colored segments such as powerline themes. The
+first line now keeps its original styling and only the line
+count marker and last line are muted.
+
+The summary is also now always a single-width line:
+DWL_SPACERs are removed from a double-width first line and
+its line attribute is cleared from the external attributes,
+which otherwise made the whole summary double height once it
+reached scrollback. External attributes are limited to the
+visible part of the first line so they no longer spill onto
+the marker. The marker is measured in cells rather than
+UTF-16 units so the line always has the expected length.
+
+Issue 13197
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-10: Release note: closing the Ready to Install
+window installs on quit. Issue 13152.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-10: Report no agent status from inside Zellij
+
+Zellij multiplexes many panes onto the one session iTerm2
+sees, and every pane inherits the TERM_SESSION_ID of the
+session Zellij started in. Agents in different Zellij tabs
+all wrote to that session and overwrote each other's status.
+iTerm2 cannot tell which Zellij tab is on screen, so treat
+Zellij like plain tmux and report nothing. ZELLIJ is added
+to the remote environment allowlist so the same holds over
+SSH integration. Issue 13201.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 2026-11-09: Test iTermReflection type-string parsing
 directly
 
