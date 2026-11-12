@@ -1,3 +1,277 @@
+2026-11-11: Ship the Zellij it2.py change from the
+shell-integration submodule
+
+569dde456 added ZELLIJ to it2.py's environment allowlist so
+agents in Zellij report no status over SSH integration too,
+but made the change only to the bundled
+OtherResources/it2.py. The scripts that materialize it2 on
+remote hosts are built from the submodule's copy, so they
+kept the old one, and testBundledCopiesMatchTheSubmodule
+failed.
+
+Backport the change to the submodule and regenerate with
+tools/copy_shell_integration.sh. The scripts, it2-remote,
+and utilities.tgz now carry the new it2.py under its new
+hash.
+
+2026-11-11: Support smooth-typing animation with the block
+cursor
+
+Smooth-typing animation previously worked only with the
+underline and vertical bar cursors, because the block cursor
+also redraws the character under it in a contrasting color,
+and that is keyed to a single cell.
+
+On the Metal renderer, each column the sliding box overlaps
+now has its glyph foreground crossfaded toward the cursor
+text color in proportion to how much of the column the box
+covers, and the background the glyph is antialiased against
+is crossfaded by the same amount. Both use one shared
+coverage calculation on iTermMetalCursorInfo. At rest this
+reduces to the previous per-cell inversion. The hollow
+unfocused frame slides along with the filled box.
+
+The legacy renderer's screenshot-based animation can't do
+this, so a box cursor there keeps jumping. The Smooth-typing
+animation checkbox is disabled for the box cursor when GPU
+rendering is off, and its tooltip says the box cursor
+animates only when GPU rendering is in use.
+
+The cursor slide animator now queues at most one deferred
+end per slide and ignores it if a newer slide has started,
+so fast typing no longer cuts a slide short.
+
+2026-11-11: Choose where workgroup sessions start by the
+kind of leader
+
+Sessions a workgroup opens beside its leader all took "the
+leader's local directory", and each kind of leader got a
+sensible result only through later fallbacks. A tmux
+integration pane on another machine handed its remote path
+to a local session, which then showed a notice that its
+directory was unavailable, or started in an unrelated local
+directory when the same path happened to exist.
+
+WorkgroupPeerStartingDirectory now decides by kind: a local
+shell (including one running plain ssh) or a pane on a local
+tmux server starts in the leader's current directory; a
+leader reached through SSH Integration starts in its
+directory on the host, which the launch plan supplies; a
+pane on another or not-yet-known tmux server starts in the
+home directory. The caller passes whether the new session
+runs on the leader's host, so the choice can't disagree with
+where it runs.
+
+PTYTask treats a pid of 0 (a tmux client) as having no
+process, so its directory lookup no longer falls through to
+launchd.
+
+2026-11-11: Release notes for event taps no longer slowing
+typing in other apps. Issue 12645.
+
+2026-11-11: Stop iTerm2's keyboard event taps from slowing
+typing in other apps. Issue 12645.
+
+A filtering event tap makes the system hold every matching
+keystroke until iTerm2's callback returns, so a busy main
+thread stalled typing system-wide.
+
+- Install the modifier remapper's taps only while iTerm2 is
+active. Remapping
+  never happened while inactive anyway. Keys typed while
+  iTerm2 is becoming active, before the taps exist, are
+  remapped by the app instead.
+- While inactive, hotkey and double-tap observers use a
+listen-only tap.  - Filtering taps run on a dedicated
+thread. While inactive it passes events
+  straight through and defers observer delivery to the main
+  thread; while active it runs the existing callback on the
+  main thread and waits.
+- Replace the flags-changed tap's event count with a ledger
+that tracks which
+  events the tap saw, so the app knows which ones to inject.
+- Add it_isActiveThreadSafe and post a notification when it
+changes.
+
+Keys typed into a nonactivating panel (floating hotkey
+window, Open Quickly) while iTerm2 is inactive now get
+remapped by the app, as they already did with secure input
+on or global remapping off.
+
+2026-11-11: Make the full-socket descriptor send test
+deterministic
+
+The test signaled its background send before calling it, so
+the drain often won the race and the send found room on the
+first try, never reaching the wait-and-retry path. It could
+pass against the old code.
+
+Let the caller supply the wait-for-writable step. The test's
+waiter drains the socket on the same thread and the test
+asserts it ran exactly once, so the retry is always
+exercised. Also assert the premise, that a raw descriptor
+send on a full socket fails with EMSGSIZE, and cover a
+waiter that reports an error.
+
+Clarify in the release note that the fix covers sessions
+created after updating, since servers left running by an
+older version keep the old code.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-11: Give a suite named iterm2 its own folders
+instead of the main app's
+
+A suite's folders are named after it, so a checkout at
+~/git/iterm2 runs under -suite iterm2 and gets
+~/Library/Application Support/iterm2 and ~/.config/iterm2.
+On a case-insensitive volume the first is the main app's
+iTerm2 folder, and the second is exactly the main app's dot
+directory. A development build would then adopt the main
+app's session servers and share its sockets.
+
+Map a suite equal to iterm2 in any case to iterm2.suite for
+every folder derived from the suite name: Application
+Support, the dot directory, the long-path socket fallback,
+and the secure settings fallback. IT2_SUITE and the tmux
+ownership record carry the same name, since the it2 CLI and
+the Python module use the suite only to find the Application
+Support folder, so existing clients keep working unchanged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-11: Don't crash quitting while claude runs because
+the controller is already gone
+
+During termination +[iTermController releaseSharedInstance]
+nils the shared controller before windows close. Closing
+them ends their jobs, so GlobalJobMonitor posts a change for
+claude, and ClaudeIntegrationHealthMonitor unwrapped the
+now-nil implicitly unwrapped sharedInstance() and trapped.
+Ignore job changes when the controller is gone, and use
+optional chaining at the other sharedInstance() call sites
+in the Claude Code health monitor and watcher that can run
+during teardown.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-11: Wait for room instead of failing when a
+descriptor send finds the socket full
+
+macOS fails a blocking sendmsg that carries a file
+descriptor with EMSGSIZE, rather than blocking, when the
+peer's receive buffer is completely full. The multi-server's
+blocking writes can leave the buffer exactly full right
+before the next descriptor send, so reporting many children
+during the handshake failed with "Message too long" whenever
+the client fell behind. The client then gave up on the
+server and restored every session's contents into new
+shells, orphaning the running jobs.
+
+On EMSGSIZE, wait for the socket to become writable and
+retry once.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-11: Harden the Set Character Encoding key binding
+action
+
+- Validate the encoding before applying it, and ignore
+bindings whose
+  encoding is unavailable on this Mac instead of writing a
+  garbage value into the session's profile.
+- Keep an unavailable encoding intact when editing a binding
+instead of
+  saving -1. The popup shows an Unavailable Encoding
+  placeholder for it.
+- Show the confirmation as an in-session unobtrusive message
+instead of a
+  floating toast.
+- Fill the encoding popup once and change only its
+selection, so view
+  updates no longer reset it. Reset it to UTF-8 when the
+  action changes so a new sequence row does not inherit the
+  previous row's encoding.
+- Share the sorted encoding list with Profiles > Terminal
+via
+  NSString(iTerm) and cache it.
+- Show a non-blank name for bindings with a missing or
+unavailable
+  encoding.
+- Add SET_CHARACTER_ENCODING to the Python API's
+BindingAction enum.  - Add Korean translations, tests, and a
+release note.
+
+2026-11-11: Add a key binding action to set the character
+encoding (#801)
+
+2026-11-11: Accept a base URL for manual AI models
+
+A manual model's URL may now be a base URL such as
+http://localhost:8000/v1 instead of the full endpoint.
+LLMProvider appends the selected API's endpoint path
+(/chat/completions, /completions, /responses, /messages, or
+/api/chat) when the path is empty, ends in a version segment
+(/v1, /api/paas/v4, /v1beta), or ends in the API family's
+gateway base (/anthropic gets /v1/messages, /openai gets the
+endpoint path). Every other URL, including {{MODEL}}
+templates, Gemini, MiniMax, Azure deployments, and Ollama's
+/v1 shim, is still sent as typed. Issue 11509.
+
+Fetch Models derives its listing URL through the same rule,
+so it lists beside the endpoint chat posts to. A scheme-less
+URL (localhost:8000/v1) is now taken as http:// by chat as
+well as by model discovery; the API key policy still parses
+strictly so a key is never sent over plain http.
+
+The URL field's placeholder follows the selected API. Adds
+unit tests and live harness tests for OpenAI, Anthropic,
+DeepSeek's Anthropic gateway, Gemini's OpenAI base, and
+Ollama.
+
+2026-11-11: Add an Unpin link to the pinned Hotkey Window
+indicator. Issue 13096.
+
+Clicking the pin indicator now shows a popover with a link
+that unpins the window, using a tokenized
+iterm2:unpin-hotkey-window URL like the other indicator
+actions.
+
+Also make profileHotKeyForWindowController: return nil for a
+nil window controller. Previously it matched any hotkey
+whose window had not been created yet, so the Pin Hotkey
+Window menu item with no current window could change an
+unrelated profile's pinning.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-11: Look up the leader's directory when a workgroup
+spawns its peers
+
+Code review and diff peers start in the leader's directory,
+which they took from the tracker's cached
+verifiedLocalDirectory. A strong push refreshes that cache,
+but nothing does when the shell doesn't report its directory
+(no shell integration, or a nested shell without it): the
+poller re-polls only on a line feed after a keypress, so
+after `cd foo` and `claude` were pasted or typed ahead the
+peers started in the old directory.
+
+Workgroup spawns now look the directory up when they need
+it. For a local shell that's a foreground-shell poll,
+recorded like any other so a verified push still wins when
+it names the same directory. For a tmux client pane, which
+has no local process, ask tmux for pane_current_path
+directly: subscriptions are checked about once a second, and
+an outstanding updateOnce request may predate the cd. If
+tmux doesn't answer within two seconds, use the cached
+value, and release the caller's completion so a reply that
+never comes doesn't keep the new session alive.
+
+Also clear iTermTmuxOptionMonitor's outstanding-request flag
+when tmux replies with an error; before, one failed request
+suppressed every later updateOnce.
+
 2026-11-10: Don't quit while a buried tmux gateway is about
 to be restored
 
