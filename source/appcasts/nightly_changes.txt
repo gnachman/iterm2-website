@@ -1,3 +1,722 @@
+2026-11-13: Fill in the gaps in nested tab groups
+
+Making an existing group a sub-group: - Drag a group by its
+label into an expanded top-level group to nest
+  it there. A group with sub-groups of its own still can't
+  be nested, and a drop inside a sub-group nests in that
+  sub-group's parent.
+- A group's context menu has "Move Group Into" (top-level
+groups it can
+  join) and, for a sub-group, "Move Group Out of Parent
+  Group".
+- Python API: TabGroup.async_set_parent(parent or None),
+backed by a new
+  iterm2.set_tab_group_parent function.
+- Window > Tab > Move Tab to New Sub-group... in the main
+menu.
+
+tmux: nesting is saved in a new @tab_group_parents option
+and restored on attach. @tab_groups keeps its old shape, so
+an iTerm2 without nesting shows sub-groups as ordinary
+groups, and the nesting survives its saves.  On attach a
+parent link is dropped if its sub-group is gone, its parent
+lives in another window, or it would nest two deep.
+Restoring a group no longer clears its parent, and settling
+collapse after attach accounts for a collapsed parent.
+
+Fixes: - Tearing off a sub-group cleared its parent before
+creating the new
+  window, so a failure left it top-level in the middle of
+  its parent.
+- Saving a sub-group as a window arrangement kept its
+parent, which
+  recreated the parent in a second window on restore.
+- New groups take a palette color no group in the window
+uses, and a
+  sub-group never takes its parent's color.
+- Sub-group outlines in the squared tab styles (Minimal,
+Compact, etc.)
+  sat on their parent's outline; they're now inset 2pt
+  inside it.
+- Python docs list the nesting members; new strings are in
+the catalog.
+
+2026-11-13: Nest tab groups one level deep
+
+A tab group may now have a parent group. A sub-group's tabs
+are kept contiguous inside its parent's run, the tab bar
+draws the sub-group's chip inside the parent's run, and each
+level collapses on its own: collapsing the parent hides the
+sub-group's chip and tabs, collapsing the sub-group shows
+its collapsed chip inside the expanded parent.
+
+The definition still rides the member tabs: a sub-group's
+tabs also carry the parent's id, name, color, and collapsed
+state (PTYTab.tabGroupParent*), so a parent whose tabs are
+all in sub-groups still exists. These persist in the tab
+arrangement, so window arrangements and restart restore the
+hierarchy.
+
+- Ordering: canonical order compacts each top-level group
+(its direct
+  tabs and sub-groups) into one block, then each sub-group
+  within it.  Move Tab Left/Right passes a sub-group as one
+  unit, and a sub-group's own tab leaves it for the parent
+  at the sub-group's edge.
+- Drops join the deepest group both neighbors share, so
+dropping between
+  a parent's tab and its sub-group joins the parent. A
+  sub-group dropped at or outside its parent's run's edge,
+  or moved to another window, becomes top-level. New and
+  duplicated sub-groups take the parent's pinned state.
+- Tab context menu: Move Tab to New Sub-group; Add Tab to
+Group lists
+  sub-groups indented under their parent. Removing a tab
+  from a sub-group moves it to the parent.
+- Python API (protocol 1.24, module 2.31):
+TabGroup.parent_group_id,
+  Tab.tab_group_parent, Window.tab_groups lists parents
+  before their sub-groups, and Window.async_create_tab_group
+  takes parent=.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session:
+https://claude.ai/code/session_01Rb3XBkDXoNX8d6q6ZEtTG1
+
+2026-11-13: Brace variables before curly quotes in release
+script messages
+
+Bash took the first byte of a curly quote as part of the
+variable name, so a failing preflight check died with an
+unbound variable error instead of its message.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-13: Add 3.7.8beta2 release notes
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-13: Hold event triggers until a session is set up,
+and stop them when it terminates
+
+A Variable Changed trigger whose parameter is an
+interpolated string, such as \(tab.id), crashed in
+SwiftyStringWithBackreferencesEvaluator.amendedScope if it
+fired while the screen had no delegate: -[VT100Screen
+performBlockWithScope:] handed Swift a nil scope. That
+happens in two places:
+
+- A split pane's new session joins its tab, which sets the
+tab
+  variable and can fire the trigger, before
+  -setScreenSize:parent: gives the screen a delegate.
+- A terminated session keeps observing its old tab's
+variables until
+  its evaluator is freed, so closing the rest of a window
+  fires its triggers on a screen whose delegate was cleared.
+
+The event trigger evaluator now has a firing state.
+PTYSession creates it held, so fires are queued, and resumes
+it at the end of -setScreenSize:parent:, once the view,
+grid, terminal, and shell delegate are in place. A Variable
+Changed trigger on a tab variable now runs for a new split
+pane instead of being lost. -terminate stops it (dropping
+held fires, timers, and variable observers) after Session
+Ended triggers have run, and -revive resumes it.
+
+iTermTriggerScopeProvider's block now takes a nullable scope
+and object and must always be called, since callers settle a
+promise in it and iTermPromiseSeal asserts if freed
+unsettled. Trigger rejects the promise when there is no
+scope. VT100Screen calls the block with nil when it has no
+delegate. VT100ScreenMutableState used a paused side effect
+that is silently skipped with no delegate, which would free
+the promise unsettled; it now uses a new urgent no-delegate
+paused side effect that always runs and passes nil when
+there is no delegate.
+
+Issue 13210. Diagnosis by Evan Alter.
+
+2026-11-13: Add a US Spanish localization
+
+2026-11-13: Add a Philippine English localization
+
+2026-11-13: Add a European Portuguese localization
+
+2026-11-13: Add a Hong Kong Traditional Chinese localization
+
+2026-11-13: Add a Latin American Spanish localization
+
+2026-11-13: Add a Canadian French localization
+
+2026-11-13: Add an Indian English localization
+
+2026-11-13: Add a Canadian English localization
+
+2026-11-13: Add an Australian English localization
+
+2026-11-13: Add a British English localization
+
+2026-11-13: Add a Cantonese translation
+
+2026-11-13: Add a Catalan translation
+
+2026-11-13: Add a Thai translation
+
+2026-11-13: Add a Hindi translation
+
+2026-11-13: Add a Malay translation
+
+2026-11-13: Add an Indonesian translation
+
+2026-11-13: Add a Ukrainian translation
+
+2026-11-13: Add a Greek translation
+
+2026-11-13: Add a Romanian translation
+
+2026-11-13: Add a Hungarian translation
+
+2026-11-13: Add a Croatian translation
+
+2026-11-13: Add a Slovenian translation
+
+2026-11-13: Add a Slovak translation
+
+2026-11-13: Add a Czech translation
+
+2026-11-13: Add a Finnish translation
+
+2026-11-13: Add a Norwegian Bokml translation
+
+2026-11-13: Add a Danish translation
+
+2026-11-13: Add a Swedish translation
+
+2026-11-13: Add a Dutch translation
+
+2026-11-13: Build libgit2 as a release build and drop stale
+dylibs
+
+libgit2's CMake defaults to a Debug build when no build type
+is given, so the archive was built at -O0. Pass
+-DCMAKE_BUILD_TYPE=Release, remove the CMake package files
+the install step writes, and delete the unused libgit2 1.1
+dylibs. The app links libgit2.a by path.
+
+2026-11-13: Note that qa.sh build kills the running QA app
+
+2026-11-13: Fix Reader Mode and Remove Distractions in the
+browser
+
+safelyEvaluateJavaScript wrapped scripts as `return
+<script>`. Scripts that began with a comment became `return
+// comment`, which automatic semicolon insertion turns into
+a bare return, so they never ran. Strip leading comments
+before wrapping.
+
+2026-11-13: Cap libsixel allocations at the largest accepted
+image
+
+sixel_decode_raw sizes its pixel buffer from the raster
+attributes before reporting dimensions, so a few bytes of
+output could make the sandboxed worker commit gigabytes.
+Pass an allocator that refuses buffers larger than
+iTermSixelMaxPixels.
+
+2026-11-13: Fix Highlightr coloring of class and function
+names
+
+highlight.js 11 marks class and function titles with
+multi-class spans, which the theme lookup did not recognize,
+so those names lost their color. Rebuild
+Highlightr.framework with the fix.
+
+2026-11-13: Remove unused third-party code and the websocket
+test server
+
+cpp-lru-cache, tmux-MacOSX-pasteboard, and
+AMIndeterminateProgressIndicator are no longer referenced by
+any target, and tests/websocket targets a long-gone version
+of the API. Remove their license entries too.
+
+2026-11-13: Remove the unused adblock-rust submodule
+
+Nothing builds or links it anymore. Also drop its include
+directory from the header search paths.
+
+2026-11-13: Rebuild librailroad_dsl with current
+dependencies
+
+Rebuilt with make paranoid-librailroad_dsl UNIVERSAL=1 after
+updating the crates to their latest compatible releases.
+
+2026-11-13: Require patched protobuf and websockets in the
+Python API package
+
+protobuf before 5.29.6 and websockets before 9.1 have known
+vulnerabilities. Raise the minimum versions so new installs
+avoid them.
+
+2026-11-13: Update PushRelay test tooling to vitest 5
+
+vitest-pool-workers is deprecated in favor of
+@cloudflare/vitest-plugin, which needs vitest 5 and clears
+all 16 npm audit findings in the dev dependencies. The new
+plugin has no fetchMock, so test/helpers.js provides a small
+replacement that stubs the global fetch and still fails on
+unexpected or unconsumed requests.
+
+2026-11-13: Update WhisperKit to 1.1.1 in the Companion app
+
+Picks up fixes for crashes during transcription and for
+canceled model downloads leaving a partial model that looked
+complete. The generator's minimum version is updated to
+match.
+
+2026-11-13: Update unordered_dense to 4.11.0
+
+Version 4.11 moved its standard library includes into stl.h,
+so add it alongside the main header.
+
+2026-11-13: Update Yams to 6.2.2
+
+Picks up parser fixes from the 6.x releases. Used by iTerm2
+and it2.
+
+2026-11-13: Update Readability to 0.6.0 and turndown to
+7.2.5
+
+Both pick up fixes for inputs that could make them hang.
+Keep our change that routes Readability's debug logging
+through console.debug.
+
+2026-11-13: Update Highlightr to highlight.js 11.12.0
+
+highlight.js 9.13.1 is several years old and has known
+regular expressions with catastrophic backtracking. Merge
+Highlightr upstream 2.3.0 into our fork and rebuild it with
+a full highlight.js 11.12.0 bundle (all 193 languages). Use
+the version 11 highlight(code, options) API, since the old
+signature logs a deprecation through console, which a bare
+JSContext may lack.
+
+Add a paranoid-Highlightr target to build it in the sandbox.
+
+2026-11-13: Check IDN hostname length before allocating on
+the stack
+
+The length limit was tested after alloca, so a very long
+hostname in terminal text could overflow the stack.
+
+2026-11-13: Fix crashes in the Porter stemmer on long or
+unencodable words
+
+A token of 256 or more bytes filled the stack buffer without
+a terminator, and a string that can't be encoded as UTF-8
+passed NULL to strncpy. Return the input unstemmed in both
+cases, and fall back to the input if truncation splits a
+multibyte character.
+
+2026-11-13: Reject oversized sixel images instead of
+overflowing the RGBA buffer
+
+The decoder computed width * height * 4 in an int, so
+dimensions libsixel accepts (up to 1,000,000 on a side)
+could wrap to a small allocation that the conversion loop
+then wrote far past. Size the buffer with overflow checks
+and cap decoded images at 8192x8192 pixels.
+
+Also drop the sixel_decoder_setopt loop, which passed each
+parameter's index as an option letter and had no effect.
+
+2026-11-13: Update libgit2 to 1.9.7
+
+pidinfo used libgit2 from 2021 (1.1.0 plus 261 commits) to
+read git status in whatever repository a session is in, so a
+crafted repository was untrusted input. Move to v1.9.7 for
+the security fixes since then.
+
+The build options needed updating: BUILD_CLAR became
+BUILD_TESTS, and 1.9 builds a command-line tool by default.
+Pin USE_HTTPS to SecureTransport so the build can't pick up
+an OpenSSL; pidinfo makes no network requests either way.
+
+2026-11-13: Update NMSSH to OpenSSL 3.5.9 and libssh2 master
+
+NMSSH linked OpenSSL 1.1.1g (2020, out of free support since
+2023) and libssh2 1.11.0 (2023). Move the openssl submodule
+from the fork to upstream at openssl-3.5.9, the current LTS,
+and libssh2 to current master, which has many security fixes
+that are in no release yet (among them CVE-2026-55200, an
+out-of-bounds write in ssh2_transport_read). Rebuild
+NMSSH.framework.
+
+libssh2 master disables MD5 host key hashes, ssh-rsa (SHA-1)
+signatures, DSA, and old ciphers by default. Follow upstream
+except for fingerprints: NMSSH now reports SHA256
+fingerprints in OpenSSH's format, and SCPFile names the hash
+in its host key prompts.
+
+Copy only *.a files into build-fat/lib: OpenSSL 3.5's tree
+has a python-ecdsa directory that the old *a glob matched.
+
+2026-11-13: Fix crashes reported in 3.7.7
+
+- Launch: removing a nil menu item outlet threw, seen right
+after an
+  update when the binary loaded an older MainMenu nib.
+- Tip of the day: the card's body outlet was nil and @[
+_body ] threw.  - In-process it2: concurrent commands raced
+on TmuxOwnership's static
+  strings and double-released the old value. Guard them with
+  a lock.
+- AI chat: AIConversation.complete can call back
+synchronously (a model
+  with no API key of its own), and the callback read
+  self.conversation while it was still under modify access,
+  an exclusivity violation.  Defer a synchronous callback to
+  the next main-queue turn.
+- RTL: lengthOfParagraphFromLineNumber: counted one line
+past the grid
+  when the last line was soft-wrapped. Adds a test.
+- Undo Close of a hotkey window whose profile lost its
+hotkey added a
+  nil window to the controller.
+- Malformed profile values: a non-dictionary cursor guide or
+active pane
+  border color, a non-string status bar font or
+  non-dictionary status bar colors, and an unknown window
+  type.
+- Splitting with a deleted profile from a pointer binding
+asserted.  - An Action that selects its own menu item
+recursed until the stack
+  overflowed.
+- Appending a banner after the session's terminal was
+disabled asserted.  - Truncating an annotation that starts
+before line 0 when the screen
+  starts at 0 made an invalid interval.
+- A nil password manager window was passed to beginSheet:.
+
+2026-11-13: Don't crash when an ssh server disconnects
+during agent authentication
+
+Bump NMSSH, whose connectToAgent loop used the agent after
+the server's disconnect callback had freed it (typically
+"Too many authentication failures" with many keys in the
+agent), and rebuild NMSSH.framework.
+
+2026-11-13: Update the pointer when Option is pressed or
+released
+
+Option bypasses mouse reporting, so updateCursor already
+shows a plain I-beam instead of the circled reporting I-beam
+when Option is held. But flagsChanged only reached
+updateCursor through updateUnderlinedURLs, which returns
+early without Cmd, so the pointer didn't change until the
+mouse moved. Update it directly when Cmd isn't down. Issue
+13208.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-13: Combine Claude Code's own status reports with
+what its hook knows
+
+Claude Code (2.1.322) reports its status through the Program
+Status Protocol (OSC 7501, app=claude-code), and its hook
+reports too, so the two took turns overwriting the tab
+status. Neither is enough alone: with background agents
+Claude Code says working for the whole wait, with background
+shells it says done the moment the turn ends, its done
+carries no message, and inside tmux it does not report at
+all.
+
+Now neither writes the tab status while both are present.
+
+- The agent hook names itself on every set-status it runs
+(--agent
+  claude or codex). An iTerm2 from before the argument
+  refuses the call; the hook then says it again without the
+  flag.
+- A session knows Claude Code is reporting from its first
+report until
+  it clears its own record (which it does as it exits), the
+  program exits, a later shell prompt begins, or the
+  terminal is reset. While it is, a write marked claude
+  stores only its facts: the turn flag, the count of
+  background work, and the turn's last message.
+- One pure function, ClaudeCodeStatusOverlay, decides what
+the reports
+  and the facts add up to: background when the hook says the
+  turn is over with work still counted and Claude Code says
+  working, done or idle; Claude's last message as the detail
+  of a finished turn that reports none of its own. A
+  permission prompt or an error is always shown as reported.
+- Claude Code going back to working from done or idle after
+the hook
+  closed the turn counts as a new turn even if the hook's
+  word for it never arrives.
+- The count and turn flag are forgotten when the program is
+gone, even
+  if no status was on display then, so a run that ended
+  without its SessionEnd hook cannot make the next one read
+  as background.
+
+With only one of them present it drives alone, as before:
+the hook in tmux or with a Claude Code that does not report,
+the reports when no hook is installed. Codex's and unmarked
+writes are unaffected.
+
+The tests replay runs recorded from Claude Code in every
+order the two sources could have arrived in (events under
+300 ms apart may swap).  tests/claude-code-status-capture
+has the scripts that made the recordings, for when Claude
+Code changes what it sends.
+
+2026-11-13: Answer the OSC 7501 feature query in tmux
+integration panes
+
+A program asks whether the terminal speaks the Program
+Status Protocol with OSC 7501 ; ?. The reply was allowed for
+tmux clients, since tmux does not know the query, and then
+sent through the path that drops every report for a tmux
+client. A program in a tmux integration pane never heard
+back, so it never reported its status there.
+
+2026-11-13: Stop registering built-in functions once per
+combination of optional arguments
+
+A function was stored under one dictionary key for every
+subset of its optional arguments, so registering cost 2^n
+entries: 32,768 each for set_status and set_session_status,
+which take 15. One more argument would have doubled that.
+
+The registry now keeps functions by qualified name and
+matches a call by its argument names: every name passed is
+one the function takes, and every argument it requires is
+present. That accepts exactly the calls the old keys did.
+Two functions may still share a name as long as no call
+could mean either. Method lookup by signature goes through
+the same match, using the method's own optional arguments.
+
+2026-11-13: Show a background status when an agent's turn
+ends with work still running. Issue 13080.
+
+A session whose turn is over while sub-agents or background
+tasks it started keep running read "working", the same as a
+busy session. The agent hook now reports "background"
+(purple) for it, with the count as the detail, so a tab that
+will take input can be told apart at a glance.
+
+- Turn endings (Stop, StopFailure, Interrupt, the idle
+nudge) report
+  background while work is counted, and close the turn for
+  Claude Code as they already did for Codex.
+- Sub-agents run the session's own hooks, so a background
+agent's tool
+  calls used to write working. On the Claude path those
+  events (they carry agent_id) and a SubagentStop that
+  leaves work running now read the turn flag and say
+  background or working accordingly. On the Codex path,
+  where a sub-agent's tool call cannot be told from the
+  session's, the working write requires an open turn.
+- Writes decided from a status read a round trip earlier
+carry what
+  they assumed as a precondition, the idle nudge's included.
+  The count is stored in a write of its own so a dropped
+  display write cannot lose it. A status update whose
+  precondition fails is now dropped whole: its progress ring
+  used to be applied anyway, which would have left the ring
+  spinning beside "done" after a Codex utility agent's tool
+  call.
+- With the turn closed and no work counted, a sub-agent's
+tool event no
+  longer leaves a "waiting" from its answered permission
+  prompt up.
+- A SessionStart after compaction is no longer treated as a
+session
+  boundary.
+- Workgroups and the orchestrator treat background as
+working, and the
+  Session Status priorities gain a background pattern after
+  work, with a migration for saved lists.
+
+2026-11-13: Add a Vietnamese translation
+
+2026-11-12: Add a Polish translation
+
+2026-11-12: Don't crash explaining output when </response>
+precedes <response>
+
+Search for the closing tag only after the opening tag, so a
+malformed AI reply can't produce a backwards range. Add
+tests for that and for the stale-index fix from #813, plus a
+release note.
+
+2026-11-12: Keep ligatures whole under a block cursor in the
+GPU renderer
+
+With ligatures on, a ligature like "--" in Fira Code is one
+glyph that belongs to its last cell and draws over the cells
+before it. The GPU renderer colored each glyph with its
+cell's color, so a block cursor on that last cell drew the
+whole ligature in the cursor text color, and the part
+outside the cursor vanished against the background.
+
+Color text under the cursor per pixel instead. The glyph in
+the cursor cell keeps its normal color, and the text
+fragment shaders draw pixels inside the cursor box in the
+cursor text color. The box geometry is shared with the
+cursor renderer so the two always agree, including while a
+smooth-typing slide moves the box across columns. This
+matches the legacy renderer, which clips its cursor redraw
+to the cursor. Issue 13203.
+
+2026-11-12: Add a Turkish translation
+
+2026-11-12: Change the case of translated text using the UI
+languages rules
+
+Plain uppercasing turns Turkish i into I instead of . The
+job info headers and the capitalized file type names in
+Paste Special and the save panel now follow the UI
+localization.
+
+2026-11-12: Add an Italian translation
+
+2026-11-12: Add a Traditional Chinese translation
+
+Also drop the parenthesized shortcut letter that Chinese and
+Japanese announcement actions use ((_A)), since the button
+already shows the Option-key shortcut.
+
+2026-11-12: Keep kitty keyboard flags independent per screen
+
+The main and alternate screens had separate key reporting
+mode stacks but shared one base value used when a stack was
+empty. CSI = flags u on the alternate screen with an empty
+stack changed the main screen's flags too, leaving the shell
+receiving CSI u key events after programs like Junie CLI
+exited. Give each screen its own base value, and save and
+restore both. Issue 13204.
+
+2026-11-12: Accept the default line break mode Xcode omits
+from the API key hint
+
+2026-11-12: Translate the Set Character Encoding strings
+into Spanish and French
+
+2026-11-12: Add a French translation
+
+Also fit translated titles in the Paste Special view and the
+AI model editor's Fetch Models button by widening them in
+code only as far as the current language needs, and disable
+CurlInstallerIt2Tests.
+
+2026-11-12: Build the silent-run confirmation from complete
+sentences
+
+The prompt shown before a URL runs a command silently was
+assembled from translated fragments ("Run command", "as %@",
+"on %@", "in %@", "?"), which can't be made grammatical in
+other languages. Use one complete sentence for the command
+and self-contained "User:", "Host:", and "Directory:" lines
+for the optional details, translated in every language.
+
+Also translate the pinned Hotkey Window indicator text,
+which had not been extracted yet.
+
+2026-11-12: Add a Spanish translation
+
+Translate every string catalog (code, XIB, and Info.plist
+strings) and the Python REPL banner into Spanish, add es to
+the project's known regions, and include es in the
+per-language localization layout tests.
+
+2026-11-12: Turn on per-session mutation queues for 1% of
+stable users
+
+The useTaskIOMonitors setting, which also gives each session
+its own mutation queue, now defaults to on for beta builds
+and for a random 1% of other installs. Each install picks a
+bucket once and stores it under a NoSync key so it stays in
+or out across launches. An explicit value in Settings >
+Advanced still wins.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-12: Fix layout of profile key bindings settings view
+
+2026-11-12: Add a Control-Tab switcher for Cycle Tabs
+
+Based on PR 805 by Oleh (kopyl). While the Cycle Tabs
+Forward or Backward modifier is held (Control-Tab by
+default), an overlay lists the window's tabs in
+most-recently-used order. Pressing the key again, the arrow
+keys, hovering, or scrolling moves the highlight. Releasing
+the modifier, pressing Return, or clicking a row switches to
+it, and Escape cancels. The visual design comes from the
+author's Tab Finder app.
+
+Changes on top of the original PR:
+
+- Off by default, behind a new setting: Settings >
+Appearance > Tabs >
+  Control-Tab Switcher (ShowTabSwitcherWhenCyclingTabs).
+  With it off, Cycle Tabs behaves exactly as before. It also
+  stays off for windows with a single tab.
+- Rows show the tab's icon, its new-output, bell, idle, or
+status
+  indicator, the tab color as a stripe, the session status
+  and detail, the remote host and directory, a tmux client
+  or gateway badge, and how long ago the tab was last
+  selected.
+- A preview of the highlighted tab beside the list,
+composited from all
+  of its split panes (new -[PTYTab contentSnapshot]) and
+  shown with iTermSessionPreviewPanel, the panel Open
+  Quickly uses.
+- The highlighted tab is outlined in the tab bar once the
+overlay is
+  showing, in a shape each tab style supplies (a pill in
+  Tahoe, a rectangle elsewhere). The list and preview are
+  placed to avoid covering the tab bar when there is room.
+- W or Delete closes the highlighted tab through the normal
+close
+  confirmation, and the list updates in place. VoiceOver
+  announces highlight changes once the overlay is visible.
+- The working directory comes from the session's path
+variable instead
+  of the blocking currentLocalWorkingDirectory.
+
+Fixes to the original event handling:
+
+- Cycling is cancelled if the window stops being key or the
+app
+  deactivates, so the overlay and key monitor can't get
+  stuck.
+- A tab selected another way while the overlay is open, such
+as by
+  clicking the tab bar, wins over the highlighted one.
+- Keys the switcher doesn't use, such as Control-C, select
+the
+  highlighted tab first and then go to it, as they did when
+  cycling switched tabs immediately. Keys bound in the
+  destination tab's profile pass through to it.
+- The overlay sits above floating hotkey windows.  - Adding
+or closing tabs keeps the right row highlighted, and the MRU
+  order stays correct when the switcher is cancelled.
+- The key monitor can't swallow keys if the tab view goes
+away.
+
+2026-11-12: Use black text on a full-white HDR cursor when
+smart cursor color is on
+
+Smart cursor color is suppressed for the HDR cursor because
+the block is forced to full white. Draw the character in
+black in that case so it keeps the contrast the user asked
+for. Applies to both the legacy and Metal renderers.
+
 2026-11-11: Ship the Zellij it2.py change from the
 shell-integration submodule
 
