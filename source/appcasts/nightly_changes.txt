@@ -1,3 +1,31 @@
+2026-11-16: Don't scroll the view on sideways trackpad
+events when alternate scroll is vertical-only
+
+With "Restrict alternate mouse scroll to vertical scrolling"
+on, scroll events whose horizontal delta was at least as
+large as the vertical delta (common mid-swipe, and every
+zero-delta phase event) fell through to the scroll view.
+That scrolled the alternate screen into the primary screen's
+history. If the first momentum event was one of these, the
+whole momentum coast scrolled the view instead of sending
+arrow keys.
+
+Such events are now discarded while alternate mouse scroll
+is active. They still go to the swipe tracker so swiping
+between tabs keeps working (issue 11476). Issue 13212.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-16: Fix the P3 example in the tab color menu
+setting's help text
+
+The help text suggested color(p3 1 0.5 0.25), which the
+parser never accepted (and which would be split apart on
+spaces anyway). Show the p3#RRRRGGGGBBBB form that actually
+works.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 2026-11-13: Fill in the gaps in nested tab groups
 
 Making an existing group a sub-group: - Drag a group by its
