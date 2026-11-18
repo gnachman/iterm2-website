@@ -1,3 +1,80 @@
+2026-11-17: Release inline images that have been drawn over.
+Issue 13214.
+
+-[IntervalTree enumerateLimitsAfter:atNode:block:] pruned a
+node when its own entries ended before the threshold,
+without visiting its subtrees. In any session with an older
+mark (a prompt, path, or remote host) above the screen, the
+overwritten-image scan never saw an on-screen image mark, so
+every inline image stayed in memory until the buffer was
+cleared or the tab closed. A program redrawing a live
+picture grew memory by gigabytes in minutes. Prune on
+maxLimitAtSubtree instead.
+
+That scan only looked for an image's cells above its mark,
+and marks stay put when a scroll region or inserted lines
+move the cells. With the scan working again, such an image
+would have been released while visible. Now collect the
+image codes on screen (plus enough history for the tallest
+image) in one pass and keep any image whose code appears
+there.
+
+2026-11-17: Open tmux windows at the tmux profile's size
+again with tmux 3.8
+
+On tmux 3.8, attach pinned every window at its current size
+before setting the client size, so the profile size only
+applied to windows made later. A window smaller than the
+profile, like the 80x24 one that tmux -CC new makes, stayed
+that small.
+
+Pin each window at the larger of its own size and the client
+size in each dimension instead. Windows still never shrink,
+so floating panes are not clamped. Notifications are off
+during attach, so the layout change for a window that grew
+is not seen; list windows again and open them from the fresh
+listing.
+
+Issue 13218.
+
+2026-11-17: Keep the saved command when duplicating a tab or
+restoring an arrangement
+
+Since 9d71745f7, arrangements encoded without contents omit
+the session's environment. Restoration treated a missing
+environment as a sign of a legacy arrangement and discarded
+the saved command and $$VAR$$ substitutions, then recomputed
+the command from the profile without prompting. Duplicate
+Tab and saved window arrangements therefore lost
+substitution values.
+
+The environment is no longer required to reuse the saved
+program data; legacy arrangements are still detected by the
+missing program key.  Duplication, which never leaves
+memory, includes the environment again.
+
+Issue 13216
+
+2026-11-17: Keep the terminal flush with the bars above it
+when zooming
+
+A zoom that is not a live resize (Option-clicking the green
+button, or any zoom with Reduce Motion on) gets no
+windowDidEndLiveResize:, so the windowDidResize: that was
+ignored while zooming was never replayed. The session grid,
+window title, and tmux size stayed stale until the next
+resize. Replay it when the zoom is reset.
+
+During a zoom no layout pass runs, so only autoresizing
+positions the root view's subviews, and the flexible margins
+added for Issue 13118 scaled the space around them. That
+opened a gap between a top status bar or tab bar and the
+terminal that grew over the zoom animation. While zooming,
+autoresize those views with their intended fixed-margin
+masks and restore the flexible ones afterwards.
+
+Issue 13213.
+
 2026-11-16: Don't scroll the view on sideways trackpad
 events when alternate scroll is vertical-only
 
