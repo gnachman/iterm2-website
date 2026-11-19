@@ -1,3 +1,316 @@
+2026-11-18: Keep hosts that share a HostName apart in the
+SSH integration
+
+Lima, OrbStack, Colima and Vagrant write ssh config hosts
+that all have HostName 127.0.0.1 and differ only in Port.
+With Include honored, every such host got the same
+SSHIdentity, so it2 grants traded places, revoking one VM
+reset the others, and per-host state merged.
+
+When a HostName applies, the identity now also takes the
+config's Port, and its User when none was given; an explicit
+-p, -l or user@ still wins. A key from before this can lack
+that user or have port 22, so the grant fallback accepts
+those too, and the conductor tries every candidate grant,
+its own first, rekeying the one the host verifies.
+
+Always Allow and switching it2 off from the menu only touch
+the grant under the current key, since an older-key
+candidate may be another host's. Switching it2 off also
+removes older-key grants this host verifies, which would
+otherwise let its next connection in.
+
+A split pane reconnects by the host as typed rather than the
+resolved hostname, so ssh applies that host's config block
+(IdentityFile, host key settings) again.
+
+2026-11-18: Rebuild NMSSH with make paranoid-NMSSH
+
+Built in the sandbox that keeps Homebrew libraries out,
+universal, and with CFLAGS, CPPFLAGS and LDFLAGS unset. The
+bundled OpenSSL had been compiled without optimization
+because OpenSSL's Configure lets a CFLAGS in the environment
+replace its default -O3. Same OpenSSL 3.5.9 and libssh2
+sources as before.
+
+2026-11-18: Keep it2 host grants made before ssh config
+Include and Match
+
+Reading ssh config the way ssh does can change a host's
+resolved hostname, and so the SSHIdentity key its "Always
+Allow This Host" grant is filed under: a HostName that only
+an Include or Match block supplies used to be invisible (the
+key used the host as typed), and a HostName is now
+lowercased. Without a fallback those hosts would ask again.
+
+When no grant is filed under the current key, look for one
+under the host as typed or a differently capitalized
+hostname, with the same user and port. The host must still
+present the grant's secret, and once it does the grant is
+refiled under the current key. Minting a new grant or
+switching it2 off from the menu also finds the old record.
+
+Also adds the release note for issue 13219.
+
+2026-11-18: Honor ssh config Include and Match for SCP and
+SSH integration
+
+Issue 13219. SCP downloads and uploads, and the hostname
+lookups behind the SSH integration and it2 host grants, now
+resolve hosts with NMSSH's new port of OpenSSH's config
+parser instead of the old one, which ignored Include and
+Match. All config files (iTerm2's ssh_config, ~/.ssh/config,
+/etc/ssh/ssh_config, /etc/ssh_config) are evaluated in one
+pass, as ssh does. Match exec never runs.
+
+SCP keeps its old precedence: the config's User and Port
+still beat the ones from the remote host. An unconfigured
+host keeps its name as typed so its identity key doesn't
+change.
+
+Rebuilds NMSSH.framework, adds OpenSSH's notices to
+Licenses.txt, and moves the config tests onto the resolver,
+with ports of OpenSSH's unit and cfginclude regression
+tests.
+
+2026-11-18: Rebuild NMSSH with modules and Swift enabled
+
+Bump NMSSH to a commit that sets DEFINES_MODULE and
+SWIFT_VERSION on the framework target, and rebuild
+ThirdParty/NMSSH.framework from it.  The rebuilt framework
+is universal, has the same public headers, and adds a module
+map. It was built against the libssh2 and OpenSSL libraries
+already in the submodule.
+
+2026-11-18: Add tests for ssh config parsing before
+reworking NMSSH
+
+NMSSH's own config tests never run because its test target
+needs a live-server config.yml. Port them to ModernTests,
+which now links NMSSH.framework, so they exercise the
+framework iTerm2 ships.
+
+Add characterization tests for behavior that agrees with
+OpenSSH, a separate class recording where NMSSH differs from
+OpenSSH today (Match settings leaking into the previous Host
+block, last value winning within a block, Key=Value, port
+parsing, and others), and tests for how iTerm2 combines
+several config files for SCP, hostname lookup, and
+SSHIdentity.
+
+To make that testable without reading the real
+~/.ssh/config, iTermSSHHelpers gains configsAtPaths: and
+iTermHostnameFinder takes an injectable config provider.
+Tests that used the real finder now use an empty config
+list.
+
+2026-11-18: Keep the floating session note above the
+clippings panel
+
+Right gutter panels and their dividers are (re-)added to
+SessionView after the note, so they landed on top of it.
+Order every view added below the find view beneath the note,
+not just the toolbar.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-18: Add 3.7.8 release notes
+
+2026-11-18: Update shell integration for imgcat's absolute
+path
+
+2026-11-18: Don't grow split tmux windows when attaching in
+tabs mode
+
+With tmux windows opening as tabs in the attaching window,
+the client size is measured from that window's frame. A tab
+with split panes needs a larger frame than one pane of the
+same size, so growing split windows to the client size
+widened the window by a few columns on every attach.
+Windows with one tiled pane still grow, as they fit a tab
+exactly.
+
+2026-11-18: Add release notes for the tmux zoom fixes
+
+2026-11-18: Keep tmux windows zoomed when attaching
+
+On attach, iTerm2 unzoomed every zoomed window with
+resize-pane -Z because tmux 2.1 couldn't say which pane was
+zoomed. tmux 2.2 and later send the visible layout, which
+does, but with tmux 2.8 a pane zoomed this way kept stale
+content from before the zoom until its program redrew. So
+with tmux 3.3 and later, the oldest version tested to work,
+ask for the window's layout once it opens so the zoom is
+applied as when another client zooms. Older versions unzoom
+as before.
+
+Right after attaching, the tab doesn't know which pane tmux
+has active, so it maximized the wrong one. When a layout
+names the zoomed pane, make it active first, without telling
+tmux, unless a float is active over the zoom.
+
+2026-11-18: Retry a tmux size request the resize oscillation
+guard refused
+
+When the guard stopped a resize ping-pong, the refused size
+was often the one that fit, and nothing sent it again, so
+tmux stayed a few columns narrower than the window. Now a
+refusal schedules one more fit once the guard's interval has
+passed. Only a guard reset (a user resize, a zoom toggle, or
+a fit that isn't a response to a layout change) re-arms the
+retry, so a loop that is still going can't keep retrying in
+the background.
+
+2026-11-18: Don't crash when tmux zooms a window without
+sending its visible layout
+
+tmux before 2.2 sends no visible layout, and tmux 3.8
+occasionally leaves it empty.
+collectTiledLeavesInTmuxParseTree: read a nil node's type as
+0, which is kLeafLayoutNode, and inserted nil into an array.
+Found in 3.7.8beta2 QA: zooming a pane with tmux 2.1 crashed
+every time, and changing window-size with a second client
+attached crashed once with tmux 3.8. 3.7.7 has the same
+crash.
+
+2026-11-18: Have imgcat send the file's absolute path as its
+name
+
+Markdown shown with `cd docs && imgcat README.md` resolved
+relative image paths against the prompt's directory, which
+predates the cd. With an absolute name,
+MarkdownImageLoader.baseDirectory finds the file's real
+directory with no app change. URLs are still sent as given,
+and -p still prints the name as typed.
+
+The download confirmation shows only the last path component
+so the prompt doesn't fill up with a long path.
+
+The copy in submodules/iTerm2-shell-integration needs the
+same change.
+
+2026-11-18: Add release notes for fixes from 3.7.8beta2 QA
+
+2026-11-18: Don't sync the local build directory to test VMs
+
+The rsync exclude for /Build/ is case-sensitive and the
+local directory is named build, so about 10 GB of build
+products were copied to each VM, filling their disks.
+
+2026-11-18: Use curly quotes in N instances of job
+descriptions
+
+2026-11-18: Fix truncated labels in Edit Session and
+Profiles > General translations
+
+The Edit Session view's labels were sized for English, so
+translations such as Spanish were cut off. Grow them
+leftward to the margin and, when needed, move the fields
+right and narrow them so their right edges stay put. English
+is unchanged.
+
+Shorten the Send text at start: translations that didn't fit
+in French, Canadian French, Greek, Finnish, and Ukrainian.
+
+2026-11-18: Show the window title atop a left tab bar at its
+default width
+
+With the Minimal or Compact theme and the tab bar on the
+left, the title was positioned after the window number's
+fixed-width box plus a margin.  Beside the window buttons
+that left too little room for even a short title at the
+default tab bar width. Position it after the number's
+measured width instead; the labels' own insets separate
+them.
+
+2026-11-18: Resolve relative images in imgcat'd Markdown
+against the file's directory
+
+imgcat sends the file name as typed, but relative image
+paths in the Markdown were resolved against the prompt's
+directory, so `imgcat docs/README.md` couldn't find
+docs/images/x.png. When the name includes a directory and
+names a local file that exists, use that file's directory.
+
+2026-11-18: Fix scp transfers stalling while the Downloads
+or Uploads menu is open
+
+The transfer thread waits for each progress update on the
+main thread, which ran from a timer in the default run loop
+mode. The Downloads or Uploads menu opens when a transfer
+starts, and while a menu is open the run loop is in event
+tracking mode, so the timer didn't fire and the transfer
+crawled until the menu closed (minutes for a 1 MB file). Run
+progress updates in the common modes.
+
+The last steps of a transfer also waited for the menu to
+close: moving a download out of its temporary name into
+~/Downloads, and reporting that a transfer finished or
+stopped. Run those in the common modes too. Two cases still
+wait for the menu to close: when the destination name is
+taken, because iTerm2 asks whether to replace the file, and
+when the transfer has a completion block, such as Upload and
+Paste Path's, which can paste or open a menu.
+
+2026-11-18: Fix Select Current Command dropping text typed
+over a hidden right prompt
+
+When a command grew long enough that zsh or tcsh hid the
+right prompt marked by shell integration, the prompt mark
+still excluded the cells where the right prompt had been.
+Command History drops such stale exclusions when the command
+ends, but Select Current Command used them as is, so the
+selection and copy lost the characters typed over those
+cells.  Drop stale exclusions of the live prompt mark before
+computing the selection.
+
+2026-11-18: Fix a hang when resizing a tmux window with a
+zoomed pane
+
+Whenever tmux resizes a zoomed window, even to its current
+size, it unzooms it, announces the unzoomed layout, and
+zooms it again. iTerm2 fitted the window to the transient
+unzoomed layout, which asked tmux for a size that suited the
+unzoomed panes; the zoomed layout that followed asked for
+one that suited the zoomed pane, and the two resized each
+other forever with the CPU pinned and input starved. This
+happened with a full-screen program like vim in the zoomed
+pane after resizing the window or adding a tab.
+
+When a layout change reports that a zoomed tab is unzoomed,
+ask tmux for the window's layout instead of resizing the
+window. By the time tmux answers it has re-zoomed a
+transiently unzoomed window, and the answer fits the window
+to whichever layout is real.
+
+Also add a guard against any unbounded ping-pong: size
+requests made in response to layout changes are refused once
+a window's size flips back and forth between the same values
+within a few seconds. It resets after a quiet period, a user
+resize, or a zoom toggle.
+
+2026-11-18: Fix a leak of the scrolled-lines vector on every
+batch of output
+
+-[VT100Grid
+fastPathScrollLinesAtAndAboveCursorIntoLineBuffer:] created
+a CTVector for the lines it appended to the line buffer and
+never destroyed it, leaking about 6 KB per batch. Heavy
+output grew the app by gigabytes that were never returned,
+even with the default 1000-line scrollback and after closing
+every window. Destroy it after appending, as the other
+appendLines: caller already does.
+
+2026-11-18: Keep modifiers on Home and End in tmux
+integration. Issue 13220.
+
+For tmux clients, Home and End sent CSI 1 ~ and CSI 4 ~
+regardless of modifiers (added for issue 3748), so
+Control-Home arrived as plain Home.  Use the tilde form only
+for unmodified keys; modified keys now send CSI 1 ; mod H/F,
+matching tmux's own encoding and tmux-256color's kHOM5/kEND5
+entries.
+
 2026-11-17: Release inline images that have been drawn over.
 Issue 13214.
 
