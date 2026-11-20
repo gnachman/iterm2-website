@@ -1,3 +1,132 @@
+2026-11-19: Add a script that charts source lines added per
+month
+
+tools/plot_code_history.py counts lines added to
+hand-written source per month, skipping vendored and
+generated code, localization, xibs, project files, docs,
+test fixtures, duplicated commits and bulk imports. It plots
+them on a log scale above commits per month, with bands
+marking when Claude Code took over writing code and commit
+messages.
+
+2026-11-19: Ship the new tips of the day in it2tip
+
+2026-11-19: Keep the parent alive when repairing over-deep
+tab group nesting
+
+A parent group with no direct tabs exists only as the parent
+fields on its sub-groups' tabs. The nesting repair made each
+violator top-level, so when the violator was that parent's
+only sub-group, the parent's name and color vanished. Now,
+if promoting a group would leave its parent with no tabs,
+the group stays put and its own sub-groups move up beside it
+instead. The repair is planned in iTermTabGroupNesting as an
+ordered list of moves and logged as such.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-19: Let users choose session status colors
+
+Each Session Status priority pattern can now override the
+dot and text colors of the statuses it matches, so Claude
+Code's working, waiting, and idle statuses (or any other
+program's) can use a scheme of the user's choosing. Two
+color well columns, Dot and Text, sit in the Session Status
+settings popover; an empty well keeps the program's color.
+
+Overrides apply at draw time only. The colors the program
+sent are still what is stored, saved in arrangements, and
+returned by the API.  The first matching pattern decides, as
+it does for priority. A text override applies even when the
+program sent no text color; a dot override never adds a dot.
+
+The wells update live. Changes made while a picker is open
+form one undo step, and the defaults write is deferred until
+picking pauses, the popover closes, or the app quits. A
+lightweight colors notification redraws tabs and visible
+Session Status rows without re-sorting, and tabs also follow
+every other edit that can change which pattern matches
+(undo, delete, reorder, pattern edits).
+
+Issue 13130
+
+2026-11-19: Repair tab groups nested more than one level
+deep
+
+A window ended up with a group that was both a sub-group and
+a parent, so it drew in two places. The saved arrangement
+carried the bad hierarchy, and restoring applied it without
+validation.
+
+iTermTabGroupNesting.groupsViolatingNestingDepth finds
+groups that have a parent and are themselves a parent (or
+are nested in themselves). PseudoTerminal makes each one
+top-level, keeping its own sub-groups under it, once after
+restoring an arrangement and at the top of every
+-tabsDidReorder. A repair RLogs the trigger, the hierarchy,
+and a stack trace so the operation that broke the rule can
+be found.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-19: Quieter tab group chips in the Minimal theme
+
+Minimal no longer inherits the squared full-height group
+blocks. A group's name sits in a short tinted capsule (the
+group color blended into the bar color, label
+contrast-clamped), and a 2pt strip in the group color runs
+along the bar edge from the chip cell through the last
+member, with sub-group strips stacked inside their parent's.
+Member tabs other than the selected one get a faint wash. A
+collapsed group shows its name, a count badge, and a
+right-pointing chevron. Group names share the tab titles'
+baseline.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-19: Fill in missing translations and unify tab
+switcher wording
+
+Translate strings that were missing from the XIB and code
+catalogs, including the floating pane and nested tab group
+menu items, password import/export, and the code review
+model selector. Make the control-tab switcher and Cycle Tabs
+wording consistent within each language, and use
+Werkzeugkasten for the German Toolbelt.
+
+2026-11-19: Add tips of the day for recent features
+
+Add tips 124 through 143 covering features added since the
+tips were last updated, with translations, and mention the
+adjustable undo timeout in the Undo Close tip.
+
+2026-11-19: Web Quick Look on the browser engine, plus Quick
+Look on hover
+
+Quick Look on a web link can use the built-in browser's
+engine, so sites you sign in to stay signed in, with Open in
+Tab, Open in Window and Open in the system browser buttons.
+
+Quick Look can also open when the pointer rests on a link
+(or with Cmd held).  Hover only previews domains in an
+allowlist, managed in a CRUD table in the Settings > Pointer
+> Configure sheet, or added from an announcement offered
+when a link doesn't preview. Allowing every domain is a
+secure setting that never covers private addresses. Hover
+previews use a throwaway data store and can't leave allowed
+domains until clicked. The hover state lives in
+iTermWebQuickLookCoordinator rather than PTYTextView.
+
+2026-11-19: Use an ease-out curve for the Open Quickly
+resize animation
+
+setFrame:display:animate:YES is fixed at ease-in-ease-out,
+so animate the frame through NSAnimationContext instead.
+Since the animation is now asynchronous, track its target
+frame for preview placement, ignore stale completion
+handlers, and cancel any in-flight animation when the window
+is presented or dismissed.
+
 2026-11-18: Keep hosts that share a HostName apart in the
 SSH integration
 
