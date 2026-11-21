@@ -103,7 +103,7 @@ The *Dynamic* will automatically be added to all Dynamic Profiles.
 
 ### Troubleshooting
 
-If something goes wrong loading a Dynamic Profile, errors will be logged to Console.app.
+If something goes wrong loading a Dynamic Profile, iTerm2 shows an alert describing the problem. Click *View Log* in the alert to see every error in the Script Console, which you can also open with **Scripts > Manage > Console**.
 
 ### Triggers
 
