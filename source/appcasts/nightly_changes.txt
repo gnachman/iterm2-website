@@ -1,3 +1,70 @@
+2026-11-20: Add 3.7.10beta1 release notes
+
+2026-11-20: Strip control characters from all terminal
+report paths
+
+A follow-up to the Kitty image response-injection fix: two
+more report paths echoed attacker-influenced text to the PTY
+input stream without removing control characters, the same
+command injection class.
+
+- Kitty drag-and-drop (OSC 72): several replies echo
+  request-supplied values verbatim (the query i, and the raw
+  Y/y in error replies). The OSC parser preserves C0 bytes
+  other than BEL/CAN/SUB/ESC, so a crafted request could
+  embed a control character (e.g. a newline, or a
+  line-accepting key such as ^O) in an echoed value. The
+  outbound sanitizer stripped only CR/LF; it now strips
+  every control character.  This path has no trust gate and
+  is on by default.
+
+- Title reporting (reportSafeTitle): replaced only a handful
+of
+  characters, leaving ^O and other controls. The composed
+  title can include bytes from a user variable (SetUserVar
+  accepts base64), so it now strips all control characters.
+  Lower risk: gated behind Allow Title Reporting and
+  terminalIsTrusted.
+
+Introduce one shared sanitizer,
+stringByReplacingControlCharac- tersWithSpace on NSString,
+and route the Kitty image, Kitty drag-and-drop, and title
+paths through it so they cannot drift.  Replaces every
+Unicode Cc character (C0, DEL, C1) with a space.
+
+Reported by Minseong Kim of NSHC Red Alert Labs.
+
+2026-11-20: Sanitize Kitty graphics responses to prevent
+command injection
+
+The Kitty image protocol's file-transmit path built its
+error response from NSError.localizedDescription, which
+embeds the offending file path verbatim. A crafted path
+containing literal newlines therefore produced a response
+with raw control characters. Because responses are written
+to the PTY input stream, those newlines were delivered to
+the shell as if typed, so merely displaying a crafted file
+(e.g. with cat) could run arbitrary commands.
+
+Strip C0 control characters (including ESC and CR/LF) and
+DEL from the free-text portion of every Kitty response
+before it is framed and sent. This is applied at the
+respondToTransmit and respondToDisplay choke points,
+covering the file, shared-memory, and display error paths.
+The protocol framing is added after sanitization, so
+well-formed responses still parse.
+
+Reported by Minseong Kim of NSHC Red Alert Labs.
+
+2026-11-20: Save settings containing NUL characters as XML
+
+A hotkey recorded as Ctrl+Space stores a NUL as its
+characters. XML property lists cannot represent U+0000, so
+saving settings to a custom folder and exporting all
+settings both failed. Encode such strings with their NULs
+removed plus a sidecar entry holding the original parts, so
+older versions still read a plain string. Issue 13224.
+
 2026-11-19: Add a script that charts source lines added per
 month
 
