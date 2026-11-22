@@ -1,3 +1,2814 @@
+2026-11-21: Save restorable state faster by skipping
+unchanged objects
+
+Saving window state for restoration re-encoded every object
+on every save, which stalled the main thread when switching
+away from iTerm2 with many sessions or long scrollback.
+Objects now carry generations from a shared counter, and the
+delta encoder reuses a saved record when the generation is
+unchanged.
+
+- Add iTermGeneration, a shared generation counter. It
+starts at zero and
+  adds a baseline above every saved generation once the
+  database loads.  Objects restored before then adopt their
+  saved generation only if they haven't changed since
+  launch.
+- Give VT100ScreenMark, ResilientCoordinate and
+CapturedOutput generations,
+  and let MonotonicCounter take a data source so screen char
+  generations share the counter.
+- Interval trees track a generation of their own. Adding,
+removing and
+  mutating through the tree change it, as do resilient
+  coordinate notifications, the encoding offset changing and
+  a capture trigger's command arriving late. An unchanged
+  tree's record is reused without visiting its objects. Beta
+  builds sample a check that nothing changed without a new
+  generation.
+- The database skips rewriting always-encoded rows whose
+bytes are
+  unchanged, comparing a digest of what was written.
+- Route the Captured Output tool's checkmark through the
+interval tree so
+  it is saved, and share a pending command promise with the
+  main-thread copy so double-clicking a captured line runs
+  its command.
+- Remove the unused it_restorableStateInvalid flags.
+
+2026-11-21: Keep the API server accepting connections after
+fd exhaustion
+
+Issue 13230: under load, rejected API connections piled up
+to thousands of file descriptors. Two things then made
+iTerm2 unrecoverable until it was restarted:
+
+- iTermHTTPConnection waited for I/O with select(), which
+raises
+  EXC_GUARD and fails for descriptors at or above FD_SETSIZE
+  (1024), so every later connection failed to read its
+  request. It now uses poll().
+
+- The accept loop returned on any error other than EINTR or
+EWOULDBLOCK,
+  so hitting the fd limit stopped it for the life of the
+  process and new clients got ECONNREFUSED. It now skips
+  ECONNABORTED and backs off (100 ms doubling to 1 s,
+  logging once at the start and once on recovery) on EMFILE,
+  ENFILE, ENOBUFS, ENOMEM, and poll() EAGAIN.
+
+Because the loop can now be waiting when -close runs, the
+loop owns the listening descriptor: -close wakes it through
+a pipe and the loop closes the socket itself. Otherwise a
+reused fd number could make a stopped server's loop accept a
+new server's connections.
+
+it2 handle-agent-hook no longer connects without a cookie
+when macOS's automation permission check timed out or a
+consent prompt is pending, since unless all apps are allowed
+iTerm2 rejects those connections, and under load every hook
+was making one. Denied, not running, and unrecognized
+statuses still connect without a cookie. A failed connect is
+also remembered for the rest of the hook event so later
+commands don't repeat it.
+
+The leak of rejected connections itself is not yet
+understood.
+
+2026-11-21: Match popups and panels to the theme, and to the
+session under Minimal
+
+Toasts, Global Search, Instant Replay, the session popups
+(autocomplete, command history, paste history, directories),
+and the About window now follow the theme. Under the Minimal
+theme they take their light or dark look from the current
+session's background color instead of the system setting, so
+a dark session no longer gets light panels next to it.
+
+Other themes leave the window appearance nil so it inherits
+NSApp's, which already tracks the theme live. Toasts, which
+used to always be dark, now follow the theme too. Global
+Search and About are long-lived, so their appearance is
+refreshed each time they are shown.
+
+Based on PR 641 by Erwann Mest.
+
+Co-authored-by: Erwann Mest <m@kud.io>
+
+2026-11-21: Limit parallel test runs to two workers
+
+Uncapped, xcodebuild starts roughly one test host per core
+and the hosts together exhaust the machine's memory.
+
+2026-11-21: Shrink saved scrollback in
+restorable-state.sqlite
+
+Line blocks saved their entire character buffer, including
+unused capacity. Blocks are often sealed when only partly
+full (copy-on-write seals the last block once it holds 1024
+chars), so most of the saved character data was empty space.
+Save only the used prefix and restore the saved capacity on
+load, ignoring implausible capacities so a corrupt value
+can't cause a huge allocation. Older saves containing the
+full buffer still load.
+
+Per-line metadata was archived as a separate array for every
+line, at about 150 bytes each, even when consecutive lines
+(such as runs of empty lines) had identical metadata. Reuse
+the previous line's array instance when equal so
+NSKeyedArchiver encodes it once. The saved format is
+unchanged.
+
+LineBlock -isEqual: now compares only the used part of the
+buffer, since bytes past rawSpaceUsed are meaningless and
+may be uninitialized.
+
+Issue 9360
+
+2026-11-21: Add translations for Quick Look and session
+status color strings
+
+Translate the strings added for hover link previews, web
+Quick Look buttons, and the Session Status Dot and Text
+color columns into all catalog languages. Also mark the
+existing Report a Bug translations for de, ja, ko, pt-BR,
+ru, and zh-Hans as translated.
+
+2026-11-21: Offer to turn off light/dark reports left on by
+a program
+
+When a program enables DEC mode 2031 and exits without
+disabling it, every light/dark change sends CSI ? 997 ; Ps n
+to the shell, which echoes 997;1n at the prompt. Detect that
+echo the same way leftover mouse and DEC 2048 reports are
+detected and offer to turn the mode off. Also turn it off
+when shell integration reports a host change.
+
+Issue 13228.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-21: Port iTermColorSuggester to Swift
+
+A whole-class translation. The runtime name, the selector
+-initWithDefaultTextColor:defaultBackgroundColor:minimumDifference:seed:
+with its type encoding, and the two readonly properties are
+unchanged.  PTYSession.m, the only user, drops the import,
+and the header leaves the bridging header again. srand48 and
+drand48 are kept, in the same order, because the shared
+generator's state is observable. The tests pass unchanged.
+
+Not pure translation:
+
+- The two color parameters are nullable. The Objective-C
+messaged a nil
+  background, which read as lightness 0, and ignored the
+  text color; both still hold.
+- A beta assertion that the initializer runs on the main
+thread; every
+  caller is a menu or status bar action.
+- -init and +new, which were NS_UNAVAILABLE, are now Swift's
+trapping
+  stub. Nothing calls them.
+- The seed is declared NSInteger where it was long, the same
+type on
+  64-bit.
+
+As before, a minimum difference the default background
+leaves no room for never finishes.
+
+The project file was edited by
+tools/swift_migration/pbxproj_swap.py.  Runtime snapshot
+comparison passes; the nullability and integer sanitizers
+report nothing in the unit's tests; the whole suite passed
+in a build lane. The unit's dossier is deleted with this
+commit, which closes the unit. Reviewed once, nothing
+blocking.
+
+Swift-Port: iTermColorSuggester kind=port
+
+2026-11-21: Add characterization tests for
+iTermColorSuggester
+
+Pin the class before its port to Swift: golden colors for
+four seeds and backgrounds, computed by the Objective-C on
+arm64; determinism; the default text color is ignored; the
+background keeps the minimum lightness distance; one attempt
+takes exactly two numbers from the shared drand48 generator
+after reseeding; results are in gamut and opaque. An
+Objective-C test, declaring the class locally, pins that a
+nil default background acts as black and a nil text color is
+accepted.
+
+Each listed behavior was seen to fail under a one-line
+change to the class, except the two-draws one, whose change
+did not build; the review's swap of the two draws in the
+port was caught. The header joins the bridging header until
+the port, and the unit's short dossier is added.  This is
+the first unit on the light path of
+docs/swift-migration/lifecycle.md. Reviewed once with the
+port, nothing blocking.
+
+Swift-Port: iTermColorSuggester kind=test
+
+2026-11-21: Close the iTermCacheableImage unit
+
+The class is ported and the owner has reviewed the unit's
+commits, so its dossier and evidence file are deleted; the
+history keeps them. The two test files no longer point at
+the dossier.
+
+Swift-Port: iTermCacheableImage kind=dossier
+
+2026-11-21: Skip a flaky AsyncFilter test
+
+AsyncFilterDeliveryQueueTests.testDeliveriesQueuedDuringCatchUp
+failed once in a full parallel run and passed when run alone
+on the same tree.  It delivers a line while a second filter
+with a 1 ms cadence is catching up, so it probably depends
+on timing. Skipped by the flaky test rule of
+docs/swift-migration/test-speed.md and recorded in bugs.md;
+not debugged.
+
+2026-11-21: Port iTermCacheableImage to Swift
+
+A whole-class translation of the one-entry custom icon
+cache. The class keeps its runtime name and its one
+selector, -imageAtPath:ofSize:flipped:, with the same type
+encoding (on x86_64 too, read from an Intel build) and the
+annotated nullability. PTYSession, its only user, is
+unchanged apart from dropping the import, and the header's
+import leaves the bridging header again. Keys are still
+compared as NSString, literally. The Swift characterization
+tests pass against it unchanged; the Objective-C test file
+declares the class locally in place of the deleted header,
+because ModernTests cannot import the generated Swift
+header.
+
+Two things are not pure translation:
+
+- The method gains a beta assertion that it runs on the main
+thread, as
+  concurrency.md asks for a ported method whose thread is
+  known. Every caller found is on the main thread. Release
+  builds only log.
+- An icon path that is not a string, which only a
+hand-edited profile can
+  produce, now raises in Swift's bridging before the method
+  runs instead of inside AppKit after the new key was
+  stored. The app crashes on the exception either way.
+
+The project file is edited by hand, not with
+add_file_to_xcodeproj.rb: the four entries of the .m become
+entries for the .swift file in the same group and target,
+and the four entries of the .h are removed.
+
+Runtime snapshot comparison passes; the full suite passed in
+a build lane; the nullability and integer sanitizers report
+nothing in the tests that do not create a session. Reviewed
+once, nothing blocking.
+
+Swift-Port: iTermCacheableImage kind=port
+
+2026-11-21: Add characterization tests for
+iTermCacheableImage
+
+Pin the one-entry cache's behavior before its port to Swift:
+a hit returns the identical image; changing the path, size
+or flipped state misses and replaces the only entry, so
+going back to the first inputs gives a new image; keys
+compare literally, so precomposed and decomposed spellings
+of a name miss; a failed load is never a hit and replaces
+the entry; unreadable paths give nil; and results have the
+requested size and orientation. One test goes through
+PTYSession's tab graphic, in a class of its own because
+creating a session reaches an existing nullability sanitizer
+report unrelated to this class (bugs.md). An Objective-C
+test pins that the cached key is a copy of the string passed
+in, which Swift cannot exercise.
+
+Each test was seen to fail under a one-line change to the
+class: 13 changes to the Objective-C, of which one changes
+nothing observable, and the review's asymmetric-flip change
+to the port. Reviewed once, nothing blocking.
+
+Swift-Port: iTermCacheableImage kind=test
+
+2026-11-21: Annotate iTermCacheableImage's nullability and
+expose it to Swift
+
+-[iTermCacheableImage imageAtPath:ofSize:flipped:] returns
+nil when there is no path or the file is not a readable
+image, and its caller passes a nullable path. Claim both
+positions nullable:
+
+-[iTermCacheableImage imageAtPath:ofSize:flipped:] return
+nullable  O-default (failable file read; it_imageOfSize: is
+_Nullable) -[iTermCacheableImage
+imageAtPath:ofSize:flipped:] path    nullable  I1: tested
+for nil, messaged with copy, never passed to a nonnull
+position
+
+Add the header to the bridging header so that Swift tests
+can reach the class until it is ported. Swift sees
+image(atPath: String?, of: NSSize, flipped: Bool) ->
+NSImage?: the label is "of", because Swift drops "Size"
+before a parameter of type NSSize.  The Swift interface
+gains nine lines: that method, and the class with its
+superclass and conformances appearing. The object code is
+unchanged. The one caller, PTYSession.m, is unaffected. The
+Objective-C nil-path test now passes nil directly.
+
+Changing the bridging header recompiles the whole Swift
+module, which shows three existing concurrency warnings in
+Companion files that an incremental build hides; they are
+not from this change.
+
+Reviewed once, no blocking findings; the reviewer reran the
+nullability sanitizer on the test (no reports).
+
+Swift-Port: iTermCacheableImage kind=annotate
+
+2026-11-21: Stop passing a nil icon path to NSImage
+
+-[iTermCacheableImage imageAtPath:ofSize:flipped:] receives
+the profile's custom icon path from a nullable getter and
+passed it to -[NSImage initWithContentsOfFile:], whose
+parameter AppKit declares nonnull. AppKit returns nil for
+it, but it is a contract violation, and the nullability
+sanitizer aborts there. Skip the call for a nil path: the
+result is nil either way, and the cached path, size and
+flipped state are updated as before.
+
+The bug is logged in the unit's dossier
+(docs/swift-migration/units/iTermCacheableImage.md), not in
+bugs.md. To reproduce before this change:
+tools/swift_migration/sanitizer_tests.sh nullability
+ModernTests/iTermCacheableImageNilPathTests reports
+invalid-null-argument at iTermCacheableImage.m:32. The new
+Objective-C tests pass in a normal run before and after;
+they fail only under that sanitizer before. They pass nil
+through NSInvocation because the header still claims the
+path nonnull, and a direct nil would be reported at the
+test's own call.
+
+Reviewed once, no blocking findings.
+
+Swift-Port: iTermCacheableImage kind=fix
+
+2026-11-21: Add the dossier for iTermCacheableImage
+
+The first pilot unit's dossier, in two files. The dossier
+itself is short: the claims later steps rely on, the hazards
+found, one table of checks that came back clear, and the
+plan (fix, annotate, test, port).  The evidence file has
+every command and its output, in sections the dossier points
+into. The first version put everything in one file, 907
+lines for a 42-line class; the owner asked for this form.
+
+The header claims a nonnull result and path. Both can be
+nil, and the method passed a nil path to an AppKit parameter
+declared nonnull.
+
+Reviewed twice; the first review's two blocking findings
+(the nullability reasoning for the path, and two planned
+tests that could not fail for what they named) were
+corrected, and the second review found nothing blocking.
+
+Swift-Port: iTermCacheableImage kind=dossier
+
+2026-11-21: Remove the stale copy of the CoreParse sources
+
+ThirdParty/CoreParse/ was a copy of the CoreParse sources
+last changed in 2020. Nothing builds it: the app links
+ThirdParty/CoreParse.framework, which make CoreParse builds
+from submodules/CoreParse, and the Xcode project's CoreParse
+group points at the submodule. The copy had drifted from the
+submodule in seven files (for example CPNumberToken's number
+property, which the shipped framework calls numberValue),
+and had already misled a tool that took it for the shipped
+source.
+
+2026-11-21: Harden kitty graphics against huge keys,
+truncated zlib and oversized data
+
+A delete by cell and z-index (d=q) with x=4294967295 trapped
+adding 1 to Int32.max and crashed; the addition is now done
+in CGFloat, and d=q now treats x and y as 1-based cursor
+positions, as the protocol says and as d=p already did. A
+truncated zlib payload made inflate loop forever, because
+zlib returns Z_BUF_ERROR on every call once input runs out;
+that and Z_NEED_DICT now fail, and the whole inflate runs
+inside withUnsafeBytes so the input pointer stays valid.
+Inflated output, accumulated chunks, files and shared memory
+are capped at the image cache budget (320 MB, the same as
+kitty's quota); exceeding it abandons the transmission and
+answers ENOSPC. A t=t temporary file is now opened without
+following symlinks, checked to be a regular file, read
+through that descriptor and unlinked; a directory with a
+matching name used to be deleted recursively.
+
+Tests: KittyProtocolRobustnessTests. Before the fixes the
+delete crashed the test host, inflate did not return, the
+caps gave a generic error, and the directory was deleted.
+
+Reviewed once, no blocking findings, by reading and two
+standalone probes: the reviewer was not able to run tests,
+and relied on the author's runs (the full suite passed). A
+copy of both inflate loops in C gave identical output for
+660 valid streams. Known and left, recorded in
+docs/swift-migration/bugs.md: the error for an abandoned
+chunked transmission is sent with the final chunk's id, and
+opening a FIFO named like a t=t temporary file blocks.
+
+Swift-Port: integer-findings-fixes-4a kind=fix
+
+2026-11-21: Make a lost atomic attribute a check in the
+runtime snapshot comparison
+
+By the owner's decision, an atomic Objective-C property
+relied upon across threads is ported with its value in a
+MutableAtomicObject and an @objc computed property over it,
+which the runtime cannot see. For a class that moves from
+Objective-C to Swift, atomic becoming nonatomic is now one
+item per property to check against the source, unless the
+property also changed in a way that fails on its own.
+Nonatomic becoming atomic still fails, and so does any
+atomicity change between two snapshots of the same language.
+
+The atomic port fixture is written the prescribed way, with
+an object, a struct and a scalar property, and its snapshot
+pair passes with the checks counted. A new pair, whose port
+also made a property readonly, must still fail.
+
+The fixture's setters use getAndSet, so the old value is
+released after the lock is dropped as an Objective-C atomic
+setter does: the reviewer showed that assigning through
+value releases it under the lock, which is not recursive, so
+a deinit that reads the same property would kill the
+process.
+
+Reviewed once, no blocking findings. The setter form was
+changed by the orchestrator after the review and has not
+been built; the next full suite run covers it.
+
+Swift-Port: phase0-runtime-snapshot-atomic kind=tool
+
+2026-11-21: Add the test tier record and the thread
+sanitizer baseline
+
+test-tiers.md has the timing data behind the fast test tier,
+two measured runs and the work list for the slowest tests.
+thread-baseline.tsv lists the thread sanitizer reports the
+gate accepts, by the key
+tools/swift_migration/sanitizer_summary.py computes;
+thread-baseline.md explains each.
+
+2026-11-21: Fix DECCRA's destination, DCH at the margin,
+DECFRA's range and the checksum
+
+DECCRA read its destination's row and column swapped:
+xterm's order is Ptd;Pld. DCH and DECDC did nothing with the
+cursor on the right margin; they now delete the character
+there, as xterm does. (Right after printing in the last
+column the cursor is past the margin, pending a wrap, and
+DCH still deletes nothing.) DECFRA narrowed its character to
+16 bits before checking the range, so 65601 filled with A.
+
+The DECRQCRA checksum's test for iTerm2's private codes
+could never be true, so the right half of a wide character
+and tab fillers were added; they are now skipped, which
+changes the checksum of a screen that has them. Whether that
+matches xterm for those cells was not established. Its sum
+overflowed int on a large screen; it now wraps in unsigned
+arithmetic and is reduced to 16 bits.
+
+Tests: CSIHugeCountTests, which also gains a wraparound tab
+test and a stronger bottom-margin case for the previous fix.
+
+Reviewed once, no blocking findings. Known and left,
+recorded in docs/swift-migration/bugs.md: the DECRQCRA
+report prints eight hex digits for a checksum of 0x8000 or
+more, and DECCRA's destination ignores origin mode.
+
+Swift-Port: integer-findings-fixes-3b kind=fix
+
+2026-11-21: Bound program-controlled sizes in the kitty and
+inline image protocols
+
+A kitty placement moved the cursor one line feed per row of
+its height, taken from the r key or the v key in pixels, so
+r=4294967295 kept the mutation thread scrolling for billions
+of lines. The rows are now capped at 65535, as REP caps its
+count; the protocol leaves the cursor position undefined
+past the screen. Raw kitty images multiplied the s and v
+keys in Int, which trapped for large values and crashed; the
+products are now checked and an image too large for any
+payload is rejected.
+
+Inline images (OSC 1337 File=) divided their size by a
+backing scale factor that is 0 without a window, so every
+image filled the line; a scale that is not positive is now
+treated as 1. Their size conversions saturate instead of
+overflowing. A huge requested height no longer leaves the
+image undrawn with the cursor at column 0.
+
+Tests: ImageProtocolSizeTests. Before the fixes the kitty
+tests scrolled without bound or crashed the test host, and
+the inline image tests put the cursor in the wrong column.
+
+Reviewed once, no blocking findings; results for ordinary
+input were shown unchanged. Known and left, recorded in
+docs/swift-migration/bugs.md: a kitty delete with a huge x
+traps, a truncated zlib payload loops forever, and inflated
+and chunked data have no size cap.
+
+Swift-Port: integer-findings-fixes-3a kind=fix
+
+2026-11-21: Add an instance census and lifetime witness
+tests for sessions, tabs and windows
+
+InstanceCensus counts live instances of chosen classes in
+the test host by hooking +allocWithZone: and -dealloc from
+test code, with a weak reference per instance and allocation
+serial numbers so a test counts only what its scenario made.
+Heap enumeration was ruled out: the address sanitizer's
+malloc zone does not support it.
+
+SessionLifetimeWitnessTests, TabLifetimeWitnessTests and
+WindowLifetimeWitnessTests close a split pane, a session
+with output pending on its paused token executor, a tab, a
+split tab, a window and the last session through the app's
+close paths and assert that the session, its screen, text
+view, terminal and token executor, the tab, the window
+controller and its window are freed, on the main thread, and
+that the dealloc notifications fire. The undo-close variants
+check that sessions are kept while the close can be undone
+and that windows and tabs are not, then that -hardStop frees
+everything; teardown stops any session still kept so nothing
+outlives a test. Each test was seen to fail with a retain
+cycle added. No leak or cycle was found in today's code.
+
+The first session closed in a process is held for a second
+or two after -hardStop: by reading and timing experiments
+(not a retain trace), the completion block of -[PTYSession
+renderMetalFramesAndShowMetalView:] keeps the session until
+its first asynchronous Metal frames complete. A one-time
+warm-up in class setUp absorbs that;
+docs/swift-migration/lifetimes.md records it as an open
+question for a port of either method.
+
+TerminalWindowTestFixture takes an optional profile.
+
+Reviewed once. The one blocking finding, an overstated entry
+in traps.md about Swift convenience initializers, was
+corrected; the other changes made after the review (the
+pending-output test now pauses the executor; teardown
+cleanup) were checked by the orchestrator, not reviewed
+again.
+
+Swift-Port: phase0-lifetime-witnesses kind=test
+
+2026-11-21: Make the false nonnull claims of the expression
+language and variables nullable
+
+The nullability sanitizer showed these claims false (unit N7
+of docs/swift-migration/nullability-triage.md; 15 rows, 22
+positions):
+
+-[iTermVariables valueByUnwrappingWeakVariables:] return
+nullable  O-default  a weak property's value
+-[iTermVariables valueByUnwrappingWeakVariables:] value
+nullable  I1  castFrom: nil, then returned -[iTermVariables
+strongArrayFromWeakArray:] weakArray       nullable  I1
+count of nil is 0: empty array -[iTermVariables
+setValue:forVariableNamed:withSideEffects:weak:] value
+nullable I1 nil unsets the variable
+-[iTermVariableRecordingScope recordedReferences] return
+nullable  O-default  map over a set made on first lookup
+-[iTermVariablesIndex setVariables:forKey:] key
+nullable  I1  NSMapTable ignores a nil key
+-[iTermBuiltInFunctions
+haveFunctionWithName:namespace:arguments:] namespace_
+nullable I1 nil means global -[iTermBuiltInFunctions
+callFunctionWithName:namespace:...] namespace_ nullable I1
+nil means global; error text omits it
+-[iTermExpressionEvaluator
+initWithParsedExpression:invocation:scope:] invocation
+nullable  see below -[iTermExpressionEvaluator
+initWithInterpolatedString:scope:] interpolatedString
+nullable I1 parses to a string expression with no value
+-[iTermParsedExpression initWithString:] string
+nullable  see below -[iTermParsedExpression
+initWithObject:errorReason:] object nullable  I1  nil makes
+a Nil expression +[iTermSessionTitleBuiltInFunction
+titleForSessionName:...] sessionName, profileName, job,
+commandLine, pwd, tty, user, host nullable I1 each tested,
+measured with length, or formatted
++[iTermSessionTitleBuiltInFunction titleForSessionName:...]
+rows, columns nullable I1 read through intValue
+
+Two of them are not plain I1: - invocation is copied,
+formatted with %@, and passed on: to
+  -[iTermScriptFunctionCall
+  performFunctionCallFromInvocation:...], whose parameter
+  iTermScriptFunctionCall+Private.h claims nonnull although
+  the implementation only formats it and forwards it to
+  inner evaluators; and to the non-optional Swift @objc
+  evaluate(invocation:) of Subexpression and IndirectValue,
+  where a nil arrives as "" and only appears in error text.
+  Nothing fails on nil. The private header's claim is left:
+  it is visible to Swift through the bridging header, so it
+  belongs to a later annotate step.
+- string is stored in _object, which backs -string and
+-object, both
+  claimed nonnull; -string asserts that _object is a string,
+  so for this expression -string and -description abort.
+  That is not I1, which needs a nullable destination. The
+  parameter is nullable anyway because the app passes nil
+  (iTermExpressionParser.m, from a nil interpolated string
+  such as semantic history's unset script), so nonnull would
+  be a false claim; the getters' contradiction is the intent
+  being violated, logged in bugs.md per nullability.md
+  section 7. No live path reads -string or -description of
+  that expression: the evaluator reads -object, and its
+  NSLog of the parsed expression runs only when its debug
+  property is set, which nothing does.
+
+The three iTermVariables methods are file-local, and
+iTermVariables.m and iTermVariableScope.m are under
+NS_ASSUME_NONNULL, where an implicit nonnull that conflicts
+with a nullable declaration does not compile, so those
+implementations are annotated too. The three iTermVariables
+entries in sanitizer_nullability_suppressions.txt, which hid
+the reports these claims caused while every test host
+launched, are no longer needed and are removed; the file now
+has no entries.
+
+No Swift line failed to compile and none changed meaning.
+recordedReferences has no Swift reader outside the new test;
+iTermVariablesIndex.h is not visible to Swift; every Swift
+caller of the other changed parameters (tests,
+AIPromptTemplateEvaluator, Mux) passes a non-optional value,
+so none passed an implicitly unwrapped nil that used to
+trap. The Swift interface of the six visible headers differs
+in exactly these declarations.
+
+Tests: ExpressionLanguageNullabilityTests (the
+recordedReferences test failed before the change, seeing the
+bridged []; the others pass nil, or compile only because the
+parameters are optional, and could not fail before at run
+time), VariablesIndexNullabilityTests.
+
+Reviewed once. The blocking findings were wrong statements
+in this message and the ledgers about what changes; they are
+corrected, and the corrections were checked by the
+orchestrator, not reviewed again.
+
+Swift-Port: nullability-n7-expression-language kind=annotate
+
+2026-11-21: Make two Swift @objc parameters optional so nil
+means no directory and no data
+
+Objective-C passes nil to two non-optional Swift parameters,
+and the bridge turned the nil into an empty value that the
+Swift code then took for a real one (unit N6 of
+docs/swift-migration/nullability-triage.md; both were logged
+in bugs.md). Both parameters are now optional:
+
+PathSniffer.init(...pwd:...) pwd     String?  nil until a
+working directory is known
+ImageRegistry.set(data:image:code:)  Data?    nil for an
+image without encoded data
+
+PathSniffer already stored pwd as String? and skips relative
+candidates when it is nil; with the bridged "" it would have
+resolved them against the root of the file system. That
+branch is unreachable today, because PathExtractor only
+yields candidates that begin with "/" or "~", which are used
+as they are. So the logged wrong result cannot happen and
+nothing a user sees changes; the stored value is now right
+for when relative candidates are added. The only caller is
+-[VT100ScreenMutableState addMarksForPathsInRange:].
+
+ImageRegistry is called by SetDecodedImage, which passes nil
+for a native image (the session-end divider) and for an
+inline image whose base64 payload decodes to no bytes. The
+image info now holds nil data instead of empty data. What
+changes for a user: - Saving a native image under a .tiff
+name wrote an empty file, because
+  the empty data was taken for encoded TIFF data; it now
+  renders the image. Other names already rendered it.
+- Saving such a broken inline image wrote an empty file in
+every format;
+  it now saves the broken-image picture.
+- Cmd-dragging such an image began a drag whose drop gave a
+zero-byte
+  file; now -[PTYTextView _dragImage:forEvent:] returns at
+  its existing nil-data test and no drag starts. The mouse
+  handler's _committedToDrag, already set, is cleared by the
+  next mouse-up or mouse-down, as on the existing path for
+  an image with no picture.
+- Copying it offered zero bytes of public.image; it now
+offers none.
+  -setData:forType: raises on nil, so -[iTermImageInfo
+  pasteboard:item:provideDataForType:] returns early when
+  there is no data.
+Unchanged: -nameForNewSavedTempFile names its file with
+-[NSWorkspace temporaryFileNameWithPrefix:suffix:], which
+creates it, so the pasteboard's file URL and opening the
+image get a zero-byte file as before (writing empty data and
+writing nil both leave it empty). bugs.md has a new entry
+for these paths, none of which gives the user the image.
+After a restore the data is empty again, since -dictionary
+writes _data ?: [NSData data]; that is harmless, because a
+restored native image cannot be rendered anyway.
+
+Both bugs.md entries are removed. No Swift or Objective-C
+caller needed a change; the generated header changes exactly
+these two parameters to _Nullable.
+
+Tests: SwiftObjCNilMeansNoneTests calls each implementation
+with nil the way Objective-C does. The pwd, stored-data,
+.tiff-save and pasteboard tests failed before the change.
+The drag test pins the existing early return with a stand-in
+image and could not be made to fail without starting a real
+drag.
+
+Reviewed once. The blocking findings were wrong statements
+in this message and the ledgers about what changes; they are
+corrected, and the corrections were checked by the
+orchestrator, not reviewed again.
+
+Swift-Port: nullability-n6-swift-parameters kind=fix
+
+2026-11-21: Clamp CSI counts and positions that overflowed,
+and bound the tab loops
+
+A count or position near the largest CSI parameter
+(2147483639) overflowed int arithmetic in cursor movement
+(CUD/CNL/VPR, CUF, CUB on double-width lines, HPR, and
+CUP/HVP/CHA/HPA/VPA in origin mode), ECH, ICH/DCH, IL/DL and
+origin-mode rectangles. The cursor went to the wrong edge,
+nothing happened, or ICH/DCH/DECIC/DECDC/SL/SR passed a
+negative size to memmove and crashed: printf
+'\e[10G\e[2147483639@' was enough.  Each count is now
+clamped to the grid dimension, or compared without adding,
+before the arithmetic. Results for counts up to the
+dimension are unchanged; larger counts stop at the edge.
+
+CHT and CBT looped once per count, so CSI 2147483639 I froze
+the session for minutes, and the window with it at the main
+thread's next join. CBT stops once the cursor reaches column
+0. CHT is capped at the width, past which a tab can have no
+effect, or at 65535 like REP when the tabsWrapAround
+advanced setting is on (a change only for larger counts in
+that mode). The DECRQCRA checksum and the XTREPORTSGR report
+now ignore rows below the screen instead of wrapping onto it
+and looping once per row.
+
+Tests: CSIHugeCountTests sends each sequence through the
+parser to a real screen and compares huge counts with the
+count equal to the grid dimension. Before the fix the tests
+failed on cursor position or contents, and six crashed under
+the address sanitizer with a negative size in insertChar or
+deleteChars.
+
+Reviewed once, no blocking findings: the reviewer derived,
+function by function, that results for every count up to the
+grid dimension are unchanged, and saw the insertChar crash
+reappear with that one hunk reverted. Known and left,
+recorded in docs/swift-migration/bugs.md: the kitty graphics
+protocol can loop once per row for a huge r= value; DECCRA
+reads its destination row and column swapped; DCH does
+nothing on the right margin.
+
+Swift-Port: integer-findings-fixes-2 kind=fix
+
+2026-11-21: Report ivar ownership in runtime snapshots and
+compare ports by meaning
+
+The runtime snapshot now gives each ivar the ownership that
+the class's strong and weak ivar layouts and ARC flag
+support, read through _class_getIvarMemoryManagement, which
+also cross-checks the decoding. Where the runtime cannot
+tell (an unretained pointer from one retained by hand, a C
+struct from a C++ object, a class compiled without ARC, a
+Swift class's storage) the label says so; contradictions are
+OWNERSHIP-CONFLICT lines that fail every comparison.
+Snapshot format 3.
+
+The comparison of a class that moved from Objective-C to
+Swift follows the rule "identical in meaning": systematic
+differences found by snapshotting an Objective-C class and
+its stage-one Swift port are classified with reasons; every
+initializer of the Swift class, vanished ivars, weak versus
+unowned and dynamic dispatch are listed for a check against
+the source; only the pointer encodings swiftc is shown to
+write differently are accepted; everything else fails.
+Fixture classes provide real snapshot pairs: a faithful
+port, a port whose -init is a trapping stub, and ports that
+must fail.
+
+A port of a class with an atomic property, +load,
++initialize, or a -dealloc with no deinit fails the
+comparison today; phase0.md lists these as open items.
+
+Reviewed once. The three blocking findings, all in the
+comparison (a kept initializer that can be a trap stub,
+pointee changes accepted too widely, two undocumented
+limits), were fixed and checked by the orchestrator against
+the reviewer's reproductions, not reviewed again.
+
+Swift-Port: phase0-runtime-snapshot-2 kind=tool
+
+2026-11-21: Make the false nonnull claims of the Metal
+renderer nullable
+
+The nullability sanitizer showed these claims false (unit H1
+of docs/swift-migration/nullability-triage.md). These are
+hot-path files; the owner approved hot-path nullability
+annotations on 2026-11-20.
+
+-[iTermMetalGlueDelegate metalGlueContext],
+-metalGlueBackgroundImage   nullable  NULL until set up; no
+image iTermMetalPerFrameStateDelegate backgroundImage
+nullable  a delegate's answer
+iTermMetalDriverDataSourcePerFrameState badgeImage,
+cursorGuideColor,
+  metalBackgroundImageGetMode:, kittyImageDraws
+  nullable  ivars nil when absent
+-metalGetGlyphKeysData:... bidiInfo
+nullable  I1  LUT read only below its length
+iTermMetalPerFrameState.m: VectorForColor
+colorInUnknownSpace, three bidiLUT
+  parameters, iTermInitializeColorKey ea,
+  iTermMetalSetUnderline url and ea, six
+  iTermEmitGlyphsAndSetAttributes parameters,
+  textColorForCharacter: ea, backgroundColorForCursor return
+  nullable  each tested or only messaged; lookups
+-[iTermBackgroundImageRenderer setImage:...] image
+nullable  I1  tested before use -[iTermBadgeRenderer
+setBadgeImage:...] image                           nullable
+I1  compared, sized, wrapped -[iTermCursorGuideRenderer
+setColor:] color                             nullable  I1
+compared and stored -[iTermMetalDriver
+createTransientStatesWithFrameData:...] local tState
+nullable  bound to a nullable result, then tested
+iTermMetalViewDelegate.metalView(_:drawableSizeWillChange:)
+view        optional  SessionView sends nil once its view is
+gone
+
+Implementations under NS_ASSUME_NONNULL are annotated to
+match, and the Objective-C conformer -[iTermMetalDriver
+metalView:drawableSizeWillChange:] changes with the Swift
+protocol; its body never uses the view. These headers are
+not visible to Swift; the protocol's Swift callers pass
+self. No Swift site gained an unwrap, and the optimized
+Objective-C code of the changed files is identical before
+and after.
+
+Tests: MetalRendererNullabilityTests (renderer setters with
+nil), MetalViewDelegateNullabilityTests (a compile-time pin
+of the protocol).  The per-frame state, glue and file-local
+functions cannot be built in isolation; a collecting
+sanitizer run over the classes that produced the reports no
+longer reports these claims. The full suite passed; the new
+classes do not abort under the nullability sanitizer.
+
+Reviewed once, no blocking findings. Known and left: the
+file-local iTermGlyphKeyEmitImage still claims nonnull for
+two parameters that now receive these nullable values; nil
+is tolerated there.
+
+Swift-Port: nullability-h1-metal kind=annotate
+
+2026-11-21: Make the false nonnull claims of the screen,
+line buffer and metadata headers nullable
+
+The nullability sanitizer showed these claims false (unit H2
+of docs/swift-migration/nullability-triage.md). These are
+hot-path files; the owner approved hot-path nullability
+annotations on 2026-11-20.
+
+-[LineBlock(SwiftInterop) subBidiInfo:range:width:] bidi
+nullable  I1  only messaged -[LineBlockMetadataArray
+setLastExternalAttributeIndex:]   nullable  I1  stored via a
+_Nullable setter -[iTermLineBlockArray lastBlock],
+-firstBlock              nullable  O-default  lastObject,
+firstObject iTermMetadataInitFromArray() array
+nullable  I1  count < 2 gives defaults -[VT100Screen
+namedMarks]                                  nullable  nil
+while the state has no named marks -[VT100ScreenDelegate
+screenSSHLocation]                   nullable  O-default  a
+delegate's answer -[VT100ScreenMutableState
+setSize:visibleLines:selection:hasView:delegate:] selection,
+delegate nullable I1 messaged, delegate tested
+-[VT100ScreenMutableState setSize:delegate:] delegate
+nullable  I1  same -[VT100ScreenMutableState
+appendScreenChars:...] (both) externalAttributeIndex
+nullable I1 forwarded where nil already arrives
+-[VT100ScreenState bidiInfoForLine:]
+nullable  explicit return nil, and lines without bidi
+-[VT100ScreenState rangeOfBlockWithID:], -blockMarkWithID:
+blockID nullable I1 dictionary lookup gives nil
+
+For a nil block ID, -blockMarkWithID: passes nil to
+NSDictionary's keyed subscript, which Apple declares nonnull
+and which returns nil; the sanitizer still reports that
+call, as it does for the other Apple claims in the triage.
+
+No Swift line failed to compile, and a build with the
+changed declarations made unavailable to Swift found no app
+Swift use. The Swift fakes of VT100ScreenDelegate in
+ModernTests and PerformanceTests now return String?. No
+Swift site gained an unwrap, and the optimized Objective-C
+code of the affected files is identical before and after.
+The Swift interface differs in exactly these declarations.
+
+Tests: LineBufferNullabilityTests, ScreenNullabilityTests,
+ScreenDelegateNullabilityTests, LineBlockNullabilityTests.
+The Swift pins did not compile before the change. The full
+suite passed; the new classes do not abort under the
+nullability sanitizer. The PerformanceTests target was not
+built with this change.
+
+Reviewed once. The two blocking findings (a wrong count in
+the triage table, and an edit to PerformanceTests that no
+longer applied) were fixed by the orchestrator.
+
+Swift-Port: nullability-h2-screen-linebuffer kind=annotate
+
+2026-11-21: Make the false nonnull claims of
+iTermSharedImageStore.h, iTermTextDrawingHelperDelegate.h
+and BidiDisplayInfo nullable
+
+The nullability sanitizer showed these claims false (unit H3
+of docs/swift-migration/nullability-triage.md). These are
+hot-path files; the owner approved hot-path nullability
+annotations on 2026-11-20.
+
++[iTermImageWrapper withImage:] image
+nullable  I1  only forwards to -initWithImage:
+-[iTermImageWrapper initWithImage:] image
+nullable  I1  reads size (zero for nil) and stores it
+-[iTermImageWrapper image]
+nullable  outward; stored from that parameter (found beside
+the rows) -[iTermTextDrawingHelperDelegate
+drawingHelperColorForCode:...] return nullable O-default  a
+color map lookup iTermBidiDisplayInfo.init(_:) dictionary
+optional  decoded state, absent for lines without bidi
+
+No Swift line failed to compile. A build with the changed
+declarations made unavailable to Swift found only the three
+iTermImageWrapper(image:) calls in the Metal renderers,
+which pass non-optional images. The Swift conformer
+TextClipDrawing now returns NSColor? and still always
+returns a color; PTYTextView, the Objective-C conformer, is
+not under NS_ASSUME_NONNULL and is unchanged.
+iTermBidiDisplayInfo.init now returns nil at a guard for a
+nil dictionary, which is what subscripting the hidden nil
+gave before (pinned by a test that passes before and after).
+That guard is the only new test in Swift: one pointer
+comparison, once per restored line, not per frame. The
+optimized Objective-C code of the affected files is
+identical before and after. The Swift interface differs in
+exactly these declarations.
+
+Tests: DrawingNullabilityTests,
+DrawingHelperColorNullabilityTests,
+BidiDisplayInfoNullabilityTests. The nil-passing tests did
+not compile before the change. The full suite passed; the
+new classes do not abort under the nullability sanitizer.
+
+Reviewed once, no blocking findings.
+
+Swift-Port: nullability-h3-drawing kind=annotate
+
+2026-11-21: Make the false nonnull claim of iTermGitClient's
+repository nullable
+
+The nullability sanitizer showed this claim false (unit N13
+of docs/swift-migration/nullability-triage.md):
+
+-[iTermGitClient repo] (property, and its ivar _repo)
+nullable  O-default  repoAt: returns NULL for a path outside
+a repository
+
+The property's implicit nonnull also made the synthesized
+ivar _Nonnull, so -initWithRepoPath: stored NULL into a
+_Nonnull ivar. Its readers test it first (iTermGitClient.m,
+if (!client.repo)). The header is not visible to Swift. The
+three PSMTabBarControl rows of N13 are not touched: the tab
+bar is frozen while a large change to it is in progress
+elsewhere (owner queue Q12), and the triage plan says so.
+
+Tests: GitClientNullabilityTests.m. The Swift interface of
+the header differs in exactly this property.
+
+Reviewed once, no blocking findings.
+
+Swift-Port: nullability-n13-pidinfo kind=annotate
+
+2026-11-21: Make the false nonnull claims of external
+attributes and infrastructure nullable
+
+The nullability sanitizer showed these claims false (unit
+N12 of docs/swift-migration/nullability-triage.md):
+
+-[iTermExternalAttributeIndexReading
+isEqualToExternalAttributeIndex:] other  nullable  I1  both
+implementations message it only
++[iTermExternalAttributeIndex
+concatenationOf:length:with:length:] rhs  nullable  I1
+appendValuesFrom: copies nothing from nil
++[iTermUniformExternalAttributes withAttribute:] attr
+nullable  I1  initWithAttribute: returns nil for nil
++[iTermUniformExternalAttributes withAttribute:] return
+nullable  O-default  nil for nil (found beside the row)
+-[iTermExternalAttribute
+initWithURL:blockIDList:controlCode:] code  nullable  I1
+file-local; if (code) else invalid +[TransferrableFile
+unlockFileName:] name                 nullable  I1  if
+(name) +[iTermWarning warningHandler] return
+nullable  O-default  a global, nil until installed
+-[iTermBroadcastInputHelper domainContainingSession:] return
+nullable  O-default  return nil when broadcast is off
+-[ScreenCharArray isDECDHLDuplicateOf:] previous
+nullable  I1  previous != nil && ...
+
+Swift sites. The withAttribute: return is the only fallout:
+LineBlockTests maps an optional attribute with flatMap
+instead of map, and four tests in
+iTermExternalAttributeIndexEqualityTests unwrap the index
+with XCTUnwrap.  None of them passes nil, so they test the
+same thing. No Swift code reads warningHandler or
+domainContainingSession:. The implementation file of the
+external attribute classes is outside NS_ASSUME_NONNULL.
+Declarations only changed; no code the renderer runs per
+cell changed.
+
+Tests: InfrastructureNullabilityTests.swift. The Swift
+interface of the five headers differs in exactly these
+declarations.
+
+Reviewed once. Known and left: two older tests in
+iTermExternalAttributeIndexEqualityTests abort under the
+nullability sanitizer at an Apple nonnull parameter ([keys
+addObjectsFromArray:nil] in iTermExternalAttributeIndex.m),
+as they did before this change; it is a row of the triage
+for a later unit.
+
+Swift-Port: nullability-n12-infrastructure kind=annotate
+
+2026-11-21: Make the false nonnull claims of categories,
+data structures and key mappings nullable
+
+The nullability sanitizer showed these claims false (unit
+N11 of docs/swift-migration/nullability-triage.md):
+
++[NSColor(iTerm) colorFromHexString:] hexString
+nullable  I1  forwarded; nil gives nil +[NSColor(iTerm)
+colorFromHexString:allowingAlpha:] hexString  nullable  I1
+hasPrefix: and getHashColor on nil are NO; returns nil
+-[NSColor(iTerm) blendedWithColor:weight:] color
+nullable  I1  if (!color) return self -[NSString(iTerm)
+firstComposedCharacter:] return         nullable  O-default
+nil for an empty string -[NSTableView(iTerm)
+newTableCellViewWithTextFieldUsingIdentifier:font:string:]
+font  nullable  I1  the sibling variant already passes nil
++[NSURL(iTerm) URLWithUserSuppliedStringImpl:] return
+nullable  O-default  file-local failable parse
+-[IntervalTree restoreFromDictionary:] dict
+nullable  I1  zero iterations for nil -[IntervalTree
+restoreFromGraphRecord:offset:largeContentProvider:] dict
+nullable  I1  returns NO without objects
++[iTermOrderedDictionary byMapping:block:] array
+nullable  I1  nil enumerator, zero iterations
++[iTermOrderedDictionary byMappingEnumerator:block:] array
+nullable  I1  zero iterations +[iTermKeyMappings
+localActionForKeystroke:keyMappings:] keyMappings  nullable
+I1  valueInBindingDictionary: rejects nil +[iTermKeyMappings
+keyMappingsForProfile:] return          nullable  O-default
+profile[KEY_KEYBOARD_MAP], a lookup -[iTermKeystroke
+keyInBindingDictionary:] dict             nullable  I1
+isKindOfClass: test, else nil -[iTermKeystroke
+valueInBindingDictionary:] dict           nullable  I1
+keyInBindingDictionary: gives nil
+
+No Swift line failed to compile: the parameters are inward,
+and no Swift code reads firstComposedCharacter: or
+keyMappingsForProfile:. NSURL+iTerm.m is under
+NS_ASSUME_NONNULL, so its file-local method is annotated
+there.  iTermOrderedDictionary.h is visible to Swift through
+NSStringITerm.h, but no Swift code calls byMapping.
+
+Tests: CategoriesDataStructuresNullabilityTests.swift (eight
+assertions failed to compile before the change),
+OrderedDictionaryNullabilityTests.m.  The Swift interface of
+the seven headers differs in exactly these declarations.
+
+Reviewed once; the one blocking finding, a wrong statement
+about the visibility of iTermOrderedDictionary.h, is
+corrected here and in the test.
+
+Swift-Port: nullability-n11-categories-data-structures
+kind=annotate
+
+2026-11-21: Make the false nonnull claims of the text view's
+event methods nullable
+
+The nullability sanitizer showed these claims false (unit
+N10 of docs/swift-migration/nullability-triage.md). The app
+passes a nil event on purpose ([_textview updateCursor:nil]
+in PTYSession, and [NSApp currentEvent], nil outside event
+handling):
+
+-[PTYTextView(ARC) clickPoint:allowRightMarginOverflow:]
+event  nullable  I1  [nil locationInWindow] is NSZeroPoint
+-[PTYTextView(ARC) coordForEvent:] event
+nullable  I1  ignored; uses [NSEvent mouseLocation]
+-[PTYTextView(ARC) updateCursor:action:] event
+nullable  I1  forwarded to nil-tolerant methods
+-[PTYTextView(ARC) updateCursorAndUnderlinedRange:] event
+nullable  I1  DLog and forwarded -[PTYTextView(ARC)
+mouseIsOverImageInEvent:] event        nullable  I1
+forwarded to clickPoint: -[PTYMouseHandlerDelegate
+mouseHandlerInUnderlinedRangeForEvent:] event  nullable  I1
+only conformer calls coordForEvent: -[PTYMouseHandler
+mouseReportingAllowedForEvent:] event   nullable  I1  zero
+modifier flags and type for nil
+-[iTermContextMenuHelperDelegate
+contextMenu:offscreenCommandLineForClickAt:] return
+nullable  O-default  a hit test; the callers test it
+-[SessionView addSubviewBelowFindView:] aView
+nullable  I1  isKindOfClass: and == tests, then -addSubview:
+-[iTermFakeWindowTitleLabel
+setTitle:subtitle:icon:alignmentProvider:] subtitle, icon
+nullable  I1  stored; missing subtitle and icon handled
+-[iTermImageView image] (property)
+nullable  O-default  the lower view's image, nil without a
+background image; the setter already accepted nil
+
+The only one of these declarations Swift uses is
+addSubviewBelowFindView:, called from the right gutter
+controller, the chat mention picker, two workgroup overlays
+and two tests. Every call passes a non-optional view, so all
+compile unchanged and behave as before. Each protocol has
+one conformer, PTYTextView, in files outside
+NS_ASSUME_NONNULL.  PTYMouseHandler, iTermImageView and
+iTermFakeWindowTitleLabel are not visible to Swift, nor is
+-updateCursor:action:, whose URLAction type Swift cannot
+see. With a nil view, -addSubviewBelowFindView: ends in
+AppKit's -addSubview:, declared nonnull, which happens to
+ignore nil; that is unchanged.
+
+Tests: TextViewEventsNullabilityTests.swift (compile-time
+pins), ImageViewNullabilityTests.m,
+FakeWindowTitleLabelNullabilityTests.m. The Swift interface
+of the six headers differs in exactly these declarations.
+
+Reviewed once; the one blocking finding, a wrong statement
+in this message about Swift callers, is corrected.
+
+Swift-Port: nullability-n10-text-view-events kind=annotate
+
+2026-11-21: Make the false nonnull claims of the status bar
+and composer nullable
+
+The nullability sanitizer showed these claims false (unit N8
+of docs/swift-migration/nullability-triage.md):
+
+-[NSImageView(iTerm) it_setTintColor:] color
+nullable  I1  assigned to contentTintColor, nullable in
+AppKit -[iTermMinimalComposerViewControllerDelegate
+minimalComposerShouldFetchSuggestions:forHost:tmuxController:]
+remoteHost, tmuxController  nullable  I1  conformers forward
+or ignore them
+-[iTermStatusBarLargeComposerViewControllerDelegate
+largeComposerViewControllerShouldFetchSuggestions:forHost:tmuxController:]
+remoteHost, tmuxController  nullable  I1  only conformer
+forwards them to the line above +[iTermCPUUtilization
+instanceForSessionID:] sessionID    nullable  I1  if
+(!sessionID) return nil +[iTermCPUUtilization
+instanceForSessionID:] return       nullable  O-default  nil
+for a nil ID (found beside the row) -[iTermGitPollWorker
+didFetchState:timedOut:cacheKey:] state  nullable  I1
+file-local; the gateway's completion declares it nullable
+-[iTermGitState(MainApp) initWithScope:] return
+nullable  O5 fails: return nil when a git variable is
+missing -[iTermStatusBarBaseComponent
+statusBarBackgroundColor] return  nullable  O-default
+advanced configuration's color, nil when unset
+-[iTermStatusBarViewControllerDelegate
+statusBarBackgroundColor] return  nullable  O-default
+delegate answer; PTYSession returns the layout's color
+-[iTermStatusBarTextComponent textColor] return
+nullable  O-default  file-local; knob ?: default ?: delegate
+answer -[iTermStatusBarTextComponent backgroundColor] return
+nullable  O-default  file-local; knob ?: super's nullable
+color -[iTermStatusBarVariableBaseComponent fullString]
+return  nullable  O-default  a variable lookup
++[iTermStatusBarAdvancedConfiguration
+advancedConfigurationFromDictionary:] dict  nullable  I1
+castFrom: and value messages only +[iTermStatusBarLayout
+componentsArrayFromDictionary:scope:] scope  nullable  I1
+file-local; passed to the line below
+-[iTermStatusBarComponent initWithConfiguration:scope:]
+scope  nullable  I1  every implementation already declares
+it nullable (found beside the row)
+-[iTermStatusBarLayoutAlgorithm
+initWithContainerViews:mandatoryView:...] mandatoryView
+nullable  I1  stored; the factory already takes nil and the
+stable algorithm tests it -[iTermStatusBarViewController
+searchViewController] return  nullable  O-default
+firstObject of a map -[iTermStatusBarViewController
+filterViewController] return  nullable  O-default
+firstObject of a map -[iTermStatusBarViewController
+containerViewForComponent:] return  nullable  O-default
+file-local search; both callers test it
+
+The triage placed the PTYSession statusBarBackgroundColor
+claim in iTermStatusBarComponent.h:159, which is already
+nullable; the claim PTYSession satisfies is in
+iTermStatusBarViewControllerDelegate. The initializer's
+override in iTermStatusBarBaseLayoutAlgorithm.m and four
+-statusBarBackgroundColor overrides in implementation files
+under NS_ASSUME_NONNULL (text, attributed text, fixed spacer
+and function call components) are annotated as well, because
+an implicit nonnull that conflicts with the nullable
+declaration does not compile.
+
+Swift sites. The two Swift conformers of the minimal
+composer delegate, CockpitWindowController and the fake in
+CockpitComposerSendEachTests, take optional host and
+controller parameters now; both ignore them and return
+false, as they did when Objective-C passed nil into the
+non-optional parameters. Conductor.swift sets the CPU
+publisher through optional chaining; it passes a non-nil
+session ID, for which the instance is non-nil, so nothing
+changes. No Swift code reads the other changed returns. The
+Objective-C conformers (iTermComposerManager,
+iTermMinimalComposerViewController, PTYSession) are in files
+outside NS_ASSUME_NONNULL and compile unchanged.
+
+The protocol initializer's scope is not a triage row: the
+new layout test aborted on it in the sanitizer's aborting
+mode, because the file-local method passes its nil scope on
+to that nonnull position. Every implementation (the base
+component, its Objective-C subclasses and the Swift
+StatusBarFilterComponent) already takes an optional scope.
+
+Tests: StatusBarComposerNullabilityTests.swift,
+StatusBarNullabilityTests.m.  Seven compile errors showed
+the Swift tests failing before the change. The Swift
+interface of the eleven changed headers differs in exactly
+these declarations.
+
+Reviewed once; the one blocking finding, a wrong count in
+this message, is corrected.
+
+Swift-Port: nullability-n8-status-bar-composer kind=annotate
+
+2026-11-21: Make the false nonnull claims of PTYSession,
+profile switching and triggers nullable
+
+The nullability sanitizer showed these claims false (unit N9
+of docs/swift-migration/nullability-triage.md):
+
+-[iTermAutomaticProfileSwitcherDelegate
+automaticProfileSwitcherCurrentProfile] return  nullable
+O-default  delegate answer; PTYSession returns
+_originalProfile, nil before setProfile:
+-[iTermAutomaticProfileSwitcher
+setHostname:...expressionValueProvider:]
+expressionValueProvider  nullable  I1  only forwarded to
+iTermRule, which messages it -[iTermAutomaticProfileSwitcher
+highestScoringProfileForHostname:...]
+hostname..expressionValueProvider  nullable  I1  file-local;
+forwarded to iTermRule scoring
+-[iTermAutomaticProfileSwitcher highestScoreForProfile:...]
+candidate..expressionValueProvider  nullable  I1
+file-local; nil candidate skips the loop
+-[iTermAutomaticProfileSwitcher
+topmostSavedProfileMatchingHostname:...]
+hostname..expressionValueProvider  nullable  I1  file-local;
+forwarded -[PTYSession
+ansiColorsMatchingForeground:andBackground:inBookmark:] fg,
+bg  nullable  I1  decodeColor: and isEqual: only
+-[PTYSession namedMarks] return
+nullable  O-default  the screen's named marks, nil when
+unset -[PTYSession profileNameDidChangeTo:] name
+nullable  I1  ?: and variable assignment only +[PTYSession
+desiredRightExtraForProfile:session:] profile  nullable  I1
+profile preference reads (nullable since N1) and the
+registry +[PTYSession
+desiredPanelReservationForProfile:session:] profile
+nullable  I1  forwarded to the registry +[PTYSession
+protoStyleForCharacter:externalAttributes:] ea  nullable  I1
+property reads only -[iTermRightGutterPanelRegistry
+totalWidthForProfile:session:] profile  nullable  I1  handed
+to each width provider iTermRightGutterPanelWidthProvider
+profile               nullable  O-default  block parameter
+the registry passes from the line above -[iTermPrintGuard
+shouldPrintWithProfile:inWindow:willPrint:] profile, window
+nullable  I1  objectForKey: and iTermWarning's nullable
+window -[PTYTriggerEvaluator loadFromProfileArray:] array
+nullable  I1  mapWithBlock: on nil gives no triggers
+-[Trigger setContentRegex:] contentRegex
+nullable  I1  setter copies Trigger.contentRegex (property)
+nullable  O-default  decoded from a trigger dictionary, nil
+when missing
+
+Not changed, though in the triage: -[iTermNaggingController
+offerToFixSessionWithBrokenArrangementProfileIn:guid:]. Its
+reason says a nil arrangement name gives no arrangements,
+but +[WindowArrangements arrangementWithName:nil] returns
+the default arrangement, and accepting the offer ends in
++[WindowArrangements setArrangement:withName:nil], which
+raises. Logged in bugs.md; the claim waits for that fix.
+
+Swift sites. Nothing failed to compile in the app. The two
+gutter width providers (ClippingsGutterPanel.swift,
+ChatViewController.swift) ignore the profile; a nil used to
+reach them as an empty dictionary and now arrives as nil,
+ignored either way. PTYSession.swift passes a non-nil
+apsContext to setHostname:. The fake delegate in
+AutomaticProfileSwitcherTests.swift returns an optional now,
+since a non-optional result is a "different optionality"
+warning. No Swift code reads Trigger.contentRegex,
+PTYSession.namedMarks or the other parameters' results.
+iTermPrintGuard.h is not visible to Swift. The only
+Objective-C conformer of the switcher delegate is
+PTYSession, whose implementation file is not under
+NS_ASSUME_NONNULL; iTermAutomaticProfileSwitcher.m and
+Trigger.m are annotated to match.
+
+Tests: SessionTriggersNullabilityTests.swift (switcher,
+PTYSession, gutter registry, triggers),
+PrintGuardNullabilityTests.m. The swift interface of the six
+headers differs in exactly these declarations.
+
+Reviewed once, no blocking findings.
+
+Swift-Port: nullability-n9-session-triggers kind=annotate
+
+2026-11-21: Replay stress inputs and extreme escape
+sequences through a screen in tests
+
+tools/perf/run_stress_test.sh cannot run beside another
+iTerm2: it drives the app by name with AppleScript.
+StressStreamReplayTests feeds the same kind of input through
+the pty path of a VT100Screen instead: a deterministic
+capture of stress_load.py's output (made by the new
+tools/perf/capture_stress_load.py, byte-identical across
+runs), prefixes of the large files under tests/, a small
+kitty image, and generated streams that push CSI parameters,
+line lengths, line counts and combining marks to extremes.
+Every test takes under a second.
+
+Run under the integer sanitizers, these tests and the whole
+suite found the bugs now recorded in
+docs/swift-migration/bugs.md: insert and delete character
+with a huge count passing a size near 2^64 to memmove,
+cursor movement overflowing on huge counts, tab forward and
+back looping once per count with no cap, inline images sized
+from a zero backing scale factor, and an unsigned wrap in
+the execution permits health check. The tests keep clear of
+the first three until they are fixed; comments say where.
+
+SanitizerProbeTests gains a probe for the sign-change check.
+
+Reviewed once. The three blocking findings (two crash sites
+missing from the bug list, a wrong statement about which
+builds crash, and a slow test) were fixed and checked by the
+orchestrator, not reviewed again.
+
+Swift-Port: phase0-integer-discovery-2 kind=tool
+
+2026-11-21: Repair PerformanceTests and add the migration's
+baseline scenarios
+
+PerformanceTests had stopped compiling: its fake screen
+delegate was about 37 methods behind VT100ScreenDelegate. It
+is now a copy of the ModernTests one whose conformance is
+added at run time, since the Deployment configuration has no
+testability and some delegate methods take module-internal
+Swift classes; each test asserts that no required selector
+is missing.
+
+MigrationBaselineTests adds the in-process scenarios the
+migration's performance harness
+(tools/swift_migration/perf_baseline.py) runs before and
+after a port: the parser alone on 1 MB of mixed output, the
+same bytes parsed and executed on a screen with full
+scrollback, the attributed-string build of text drawing in
+three variants, and a scripted scrollback fill that reports
+memory. Each 64 KB chunk runs in its own autorelease pool,
+as the app's read loop does. Only peak memory is compared
+for now; the live allocation figures are recorded as
+informational until they are made deterministic.
+
+No baseline has been taken: it needs a quiet machine.
+
+Reviewed twice. The second review's two blocking findings,
+both in the comparison tool and its tests, were fixed and
+checked by the orchestrator against the reviewer's
+reproductions, not reviewed again.
+
+Swift-Port: phase0-performance-baselines kind=tool
+
+2026-11-21: Take the right lock when registering a
+recent-branches callback
+
+-[iTermSlowOperationGateway
+fetchRecentBranchesAt:count:completion:] added to
+_gitRecentBranchFetchCallbacks while holding
+@synchronized(_gitStateHandlers), but -didInterrupt and
+-didGetRecentBranches:box: (which runs on an arbitrary
+queue) guard that array with
+@synchronized(_gitRecentBranchFetchCallbacks), so the array
+could be mutated from two threads at once. It now holds the
+same lock as its peers. A test seam makes a gateway without
+an XPC connection and with a caller-supplied callback array;
+the new test checks that the array is changed while the
+thread holds the lock on it.
+
+Reviewed once. The one blocking finding, two compiler
+warnings in the new test file, was fixed and checked by the
+orchestrator, not reviewed again.
+
+Swift-Port: slow-operation-gateway-lock kind=fix
+
+2026-11-21: Fail run_tests.expect when a run executes no
+tests
+
+xcodebuild reports success when an -only-testing name
+matches nothing, so a misspelled test name looked like a
+passing run. The runner now reads the per-test result lines,
+in both the serial and the parallel form: any line that
+names a test and ends with a duration counts as an executed
+test, whatever its status, so a skipped test and one that
+recorded an expected failure both count. When xcodebuild
+exits 0, the run fails if no test ran, and fails naming each
+given class or method name that matched no executed test.
+Other behavior, including the stall watchdog, is unchanged.
+
+Reviewed once. The one blocking finding, a parallel run of a
+test using XCTExpectFailure reported as having run nothing,
+was fixed with the reviewer's reproduction and checked by
+the orchestrator, not reviewed again.
+
+Swift-Port: test-runner-zero-tests kind=tool
+
+2026-11-21: Delete three uncalled reflective helpers and fix
+stale swizzler comments
+
+No caller remains for -[NSObject(iTerm)
+performSelectorWithObjects:], the three-object
+-[NSObject(iTerm)
+it_performNonObjectReturningSelector:withObject:object:object:],
+or -[iTermController noAction:] (the action of a submenu
+item in a method already deleted): no reference in sources,
+xibs, the sdef, scripts or string-built selectors. None of
+the three names is a method of any framework class in the
+run-time method lists consulted: header dumps for macOS
+13.6, 14.6, 15.6, 26.7 and 27.0, and a live list from macOS
+27. So none can be an override that a framework calls.
+
+Also correct the comments in iTermSelectorSwizzler.h that
+described the block-scoped swizzling deleted earlier.
+
+Reviewed once, no blocking findings. Known and left:
+iTermSelectorSwizzlerContext is never created and is itself
+dead.
+
+Swift-Port: dead-code-followup kind=fix
+
+2026-11-21: Make the discardTokensFromPTY queue assertion
+live; fix tests that skipped the join
+
+TokenExecutorImpl.discardTokensFromPTY() asserted its queue
+only under DEBUG, which no configuration of this target
+sets. It now uses ITERM_DEBUG like the rest of the file. Its
+one app caller, -[PTYSession
+discardOutputAndResetForRelaunch], runs with threads joined.
+
+Enabling it (and pause()'s) showed tests reaching the
+executor without the join the app performs:
+TokenExecutorPermitTests called whilePaused without marking
+the main queue safe for the session's queue (a new join
+helper does what performSynchroDanceWithBlock: does), and
+MouseModeChangeCoalescingTests executed tokens on the shared
+mutation queue although the screen has a queue of its own
+when task I/O monitors are on, as they are in tests.
+
+pause()'s assertion stays dormant: enabled, it fires from
+app code, where the paused side effect of an OSC 4
+color-table set runs on the main queue outside a join and
+calls -setColor:forKey:, which pauses the executor.  pause()
+is safe on any queue; a comment records the path and the
+open question behind it. assertQueue() is now compiled under
+ITERM_DEBUG || DEBUG so neither guard can reference an
+undefined method.
+
+Reviewed once, no blocking findings; the comment was
+reworded by the orchestrator afterwards.
+
+Swift-Port: token-executor-pause-assertions kind=fix
+
+2026-11-21: Mark -[iTermHTTPConnection init] unavailable
+
+A plain init leaves the connection without the queue, lock,
+buffer and stream that
+-initWithFileDescriptor:clientAddress:euid: sets up. No
+caller uses it; marking it NS_UNAVAILABLE makes the compiler
+reject any future one.
+
+Reviewed once, no blocking findings. Known and left: +new is
+not marked unavailable.
+
+Swift-Port: http-connection-init-unavailable kind=fix
+
+2026-11-21: Make it_floatToInteger clamp, and add an
+unchecked form for hot paths
+
+For a NaN or a value outside the target type's range, C's
+float to integer conversion has no fixed result: it is
+undefined, and what the compiler emits differs between arm64
+and x86_64 and between constant and run-time operands. So
+"what C does" could not be reproduced, and by the owner's
+decision the helper clamps instead: NaN gives 0 and anything
+else out of range gives the nearest bound of the type, on
+both processors. In Development, Beta and Nightly builds and
+in tests such a conversion is still a beta assertion.
+
+The clamp is done by static inline C functions in
+DebugLogging.h. On arm64 they are the processor's own
+saturating conversion, one instruction for a 32 or 64 bit
+result in an optimized build; elsewhere they compare against
+the bounds before casting, so no path is undefined behavior.
+
+it_floatToIntegerUnchecked gives the same result with no
+check and no report in any build, for conversions in hot
+paths where the owner has agreed to give up the assertion.
+Nothing calls it yet.
+
+Tests: the clamp tables cover every boundary of every
+integer type for Float, Double and CGFloat. The reviewer
+compared every path against an exact oracle on about 180
+million inputs with no mismatch and ran the portable
+functions under the undefined behavior sanitizer. x86_64
+code was compiled and read but not run: this machine has no
+Rosetta.
+
+Reviewed once; the one blocking finding, an overstated
+sentence about instruction counts in translation-rules.md,
+was corrected by the orchestrator and not reviewed again.
+Known and left: the inventory does not yet count calls to
+the unchecked form.
+
+Swift-Port: helpers-float-clamp kind=tool
+
+2026-11-21: Make iTermFunctionCallSuggester's suggestions an
+empty array instead of nil
+
+-[iTermFunctionCallSuggester suggestionsForString:] is
+claimed nonnull but returned nil on two paths of the base
+implementation: when the parser yields no array for the
+prefix (a complete call such as "add(x: 1, y: 2)"), and when
+the path source gives no paths. The nullability sanitizer
+reported the first (unit N3 of
+docs/swift-migration/nullability-triage.md). Following the
+plan's alternative, the claim stays and both paths return
+@[] instead.  The swifty-string override only passed its
+superclass's nil on, and the expression suggester inherits
+the method, so neither needed a change.
+
+The three Objective-C callers treat nil and an empty array
+alike: -[iTermFunctionCallTextFieldDelegate
+suggestionsForRange:] returns nil when the count is zero;
+the recursive call for a truncated interpolation
+(iTermFunctionCallSuggester.m:716) returns the array through
+-suggestedExpressions:...; and the swifty-string override
+(:838) maps it.  The one place where nil and @[] could
+differ, a nested truncated interpolation whose inner
+suggestions become a parse tree value, needs a path source
+that returns nil, and every path source in the app builds a
+set. Swift saw [] already, through bridging, so the 89 Swift
+references are unchanged.
+
+Test: FunctionCallSuggesterEmptyResultTests (Objective-C,
+because only Objective-C could observe the nil); all four
+tests failed before the fix.
+
+Reviewed once, no findings.
+
+Swift-Port: nullability-n3-function-call-suggester kind=fix
+
+2026-11-21: Fix an int overflow in wrapped-line ranges and
+bound regex word selection
+
+-[iTermTextExtractor
+lineNumberWithStartOfWholeLineIncludingLine:...] and
+-lineNumberWithEndOfWholeLineIncludingLine:... compared
+count against maxChars + width in int.
+locatedStringForWrappedLineEncompassing passed INT_MAX to
+mean no limit, so the sum overflowed negative and only the
+clicked row was examined: word selection in regular
+expression mode cut short a match that continued across a
+soft wrap. The limit is now computed in NSInteger.
+
+With the overflow fixed, the regex word path would build a
+located string and atoms for the whole soft-wrapped line on
+the main thread, which takes seconds and gigabytes for a
+multi-million-character line.  By the owner's decision it
+now examines at most max(20, 2 x the screen height) rows,
+centred on the clicked row, giving rows unused on one side
+to the other. The screen height comes from a new optional
+-height on iTermTextDataSource; a data source without it
+gets 20 rows. A match that extends beyond the window is cut
+at its edge. Other callers of the wrapped-line range methods
+are unchanged.
+
+The located string leaves out null cells, so a click on one
+was never found in it and the target fell back to the start
+of the string, which with a larger window could be a word
+rows above the click; copy-mode forward word movement then
+cycled forever. A click on a null cell in regular expression
+mode is now treated as in character mode, where a run of
+nulls is its own word, and an unrecorded click otherwise
+targets the first character of the clicked row. (Shipped
+builds selected the first word of the clicked row for such a
+click.)
+
+Affects double-click selection, Look Up, copy-mode word
+movement, Autocomplete (including -[VT100Screen
+wordEndingAt:]), and the word selection used when no Smart
+Selection rule matches, all of which use this path when
+"Characters considered part of a word" is in regular
+expression mode.
+
+Reviewed twice in parts: the overflow fix, then the bound.
+The second review's one blocking finding, the null-cell
+click, was fixed with the reviewer's failing tests as
+regression tests and checked by the orchestrator, not
+reviewed again. The integer findings ledger and the bug log
+are updated for this fix and for the background renderer
+fix.
+
+Swift-Port: integer-findings-fixes kind=fix
+
+2026-11-21: Remove the Companion pairing URL automation hook
+
+A #if DEBUG block that wrote the pairing URL, which holds
+the pairing's secret material, to a world-readable file in
+/tmp for simulator tests.  Swift's DEBUG condition is set in
+no configuration of the app, so the block never compiled and
+nothing used it. Removed at the owner's request; it is easy
+to add back if a simulator test ever needs it.
+
+2026-11-21: Stop tracking
+WebExtensionsFramework/.claude/settings.local.json
+
+A per-machine Claude Code settings file that was committed
+by mistake (owner, 2026-11-20). The file stays on disk;
+.gitignore already ignores every .claude/ directory except
+the top-level .claude/agents/.
+
+2026-11-21: Make six Swift @objc parameters that Objective-C
+passes nil to optional
+
+The nullability sanitizer showed Objective-C passing nil to
+these non-optional Swift parameters (unit N5 of
+docs/swift-migration/nullability-triage.md). Each is now
+optional, and each body substitutes what the bridge used to
+deliver, so behavior is unchanged:
+
+EventTriggerEvaluator.loadFromProfileArray(_:) array
+?? []   profile without triggers
+iTermTitlebarAccessoryNanny.has(viewController:)
+false   asked before the accessory exists
+ToolNamedMarks.set(marks:) marks                          ??
+[]   session without named marks
+AppSwitchingPreventionDetector.didExecute(command:)       ??
+""   aborted command
+WindowInitialPositioner.init(...profileGUID:...)          ??
+""   window made without a profile
+iTermTmuxTabGroups.prune(_:memberships:) parents          ??
+[:]  tab groups not yet saved
+
+The generated Objective-C header changes exactly these six
+parameters to _Nullable; four parameter names in it change
+too, with the selectors unchanged. No Objective-C caller
+passes a literal nil or needed a change, and Swift callers
+compile unchanged.
+
+Tests: SwiftObjCNilParameterTests calls each implementation
+with nil the way Objective-C does and pins today's result;
+they pass before and after.  The named marks test sets marks
+before passing nil and fails against a body that ignores
+nil. The didExecuteCommand: test only shows that nil is
+accepted, because with secure input off the method returns
+before reading the command. Targeted tests and the full
+suite passed; the nullability sanitizer no longer reports
+these call sites, and the test class does not abort in its
+aborting mode.
+
+Reviewed once. The reviewer probed the class-typed parameter
+(has(viewController:)) at -Onone and -O and found the same
+result at both, so returning false preserves debug and
+release alike. Its two blocking findings were in the tests
+and were fixed. This commit also marks N2, N4 and N5 done in
+the triage plan.
+
+Swift-Port: nullability-n5-swift-objc-parameters
+kind=annotate
+
+2026-11-21: Make the false nonnull claims of
+iTermScriptsMenuController and iTermScriptHistory nullable
+
+The nullability sanitizer showed these claims false (unit N4
+of docs/swift-migration/nullability-triage.md):
+
+-[iTermScriptsMenuController scriptItems] return
+nullable  O-default  root.children, nil when nothing was
+added -[iTermScriptsMenuController
+addMenuItemsForScriptItems:toMenu:] unsortedScriptItems
+nullable I1 file-local; sorting nil gives nil and adds
+nothing -[iTermScriptHistory entryWithIdentifier:] return
+nullable  O-default  a search -[iTermScriptHistory
+entryWithIdentifier:] identifier              nullable  I1
+only compared with isEqualToString:, NO for nil
+
+Both Objective-C callers of scriptItems, -addMenuItemsTo:
+and iTermDependencyEditorWindowController, tolerate nil.
+Both implementation files are under NS_ASSUME_NONNULL, where
+an implicit nonnull that conflicts with a nullable
+declaration does not compile, so the implementations are
+annotated too. The two iTermScriptsMenuController entries in
+sanitizer_nullability_suppressions.txt are no longer needed
+and are removed.
+
+No Swift line failed to compile.
+iTermScriptsMenuController.h is not visible to Swift. The
+one Swift reader of entryWithIdentifier:, a test helper
+returning an optional, compiles unchanged; for a missing
+entry it now gets a real nil where XCTUnwrap used to let a
+hidden nil through. The Swift interface differs in exactly
+these declarations.
+
+A nil identifier now reaches -isEqualToString:, whose
+parameter Apple declares nonnull; it answers NO, and the
+sanitizer reports it as an SDK claim. The test therefore
+pins the optional parameter at compile time with a non-nil
+String? rather than passing nil.
+
+Tests: ScriptsNullabilityTests (the unknown-identifier case
+crashed printing the hidden nil before the change),
+ScriptsMenuControllerNullabilityTests.  Targeted tests and
+the full suite passed; the nullability sanitizer no longer
+reports these claims, and the new test classes do not abort
+in its aborting mode. Reviewed once; the review's blocking
+finding was a test that aborted under the sanitizer, since
+replaced.
+
+Swift-Port: nullability-n4-scripts kind=annotate
+
+2026-11-21: Make the false nonnull claims of
+PreferencePanel.h and iTermPreferencesBaseViewController.h
+nullable
+
+The nullability sanitizer showed these claims false (unit N2
+of docs/swift-migration/nullability-triage.md; allSettings
+was fixed in the previous commit):
+
+-[iTermPrefsPanelDelegate
+responderWillBecomeFirstResponder:] responder  nullable  I1
+PreferencePanel.m tests responder != nil;
+makeFirstResponder:nil sends nil
+-[iTermPreferencesBaseViewController defaultValueForKey:]
+return         nullable  O-default  a lookup in
+iTermPreferences' defaults
+
+No Swift code calls, implements or reads either declaration,
+so no Swift site changed. The only conformer of the protocol
+is PreferencePanel, in Objective-C. The Swift interface of
+both headers differs in exactly these two declarations.
+
+Tests: PreferencePanelNullabilityTests (the
+defaultValueForKey: nil case failed before the change; the
+nil responder case did not compile).  Targeted tests and the
+full suite passed; the nullability sanitizer no longer
+reports either claim. Reviewed once, nothing blocking.
+
+Swift-Port: nullability-n2-settings-panel kind=annotate
+
+2026-11-21: Make PreferencePanel's allSettings return an
+empty array before the window loads
+
+-[PreferencePanel allSettings] is claimed nonnull but
+returned nil when called before the settings window's nib
+loaded: it folds over _tabView, an outlet that is nil until
+then, and not every caller loads the window first. The
+nullability sanitizer reported the nil return (unit N2 of
+docs/swift-migration/nullability-triage.md). Following the
+plan's alternative, the claim stays and the method returns
+@[] in that case.
+
+Swift readers already received [] through bridging, so they
+see no change; Objective-C now gets an empty array instead
+of nil.
+
+Test: PreferencePanelAllSettingsTests (Objective-C, because
+only Objective-C could observe the nil); it failed before
+the fix. Reviewed once, nothing blocking.
+
+Swift-Port: nullability-n2-settings-panel kind=fix
+
+2026-11-21: Clamp the suppressed bottom region height at
+zero in the background renderer
+
+-[iTermBackgroundColorRenderer
+drawWithFrameData:transientState:] converted
+suppressedBottomHeight * scale - margins.top to NSUInteger
+on every frame, before checking that anything was
+suppressed, so it usually converted a negative value:
+undefined, 0 on arm64 and near 2^64 on x86_64. It is now
+computed only inside the suppressed-region branch, by an
+inline helper that returns 0 for a non-positive height.
+Non-negative results are unchanged, and the common frame
+does less work than before: once per draw, outside the
+per-segment loop.
+
+A hot-path file; committed with the owner's approval
+(2026-11-20). The integer sanitizer reported the conversion
+before and not after. Reviewed once with the unit's other
+fixes, nothing blocking.
+
+Swift-Port: integer-findings-fixes kind=fix
+
+2026-11-21: Make the migration helpers return the C result
+in release and assert in tests
+
+In release builds it_add, it_subtract, it_multiply and
+it_negate now wrap, it_narrow keeps the low bits,
+it_shiftLeft drops shifted-out bits and masks its count as
+arm64 and x86_64 do (at the promoted width), and
+it_floatToInteger gives what clang's code gives on each
+processor, as established with a C probe (arm64 run at -O0
+and -Os; x86_64 derived from the emitted cvttsd2si
+sequences, since macOS 27 has no Rosetta). Without the BETA
+condition each helper compiles to the C result alone; it_add
+on Int32 is one add. In Development, Beta and Nightly every
+overflow, changed value, undefined or lossy shift and
+out-of-range float conversion is a beta assertion, and in
+ModernTests a failed beta assertion now fails the running
+test instead of crashing the host.
+
+The three file-scope variables move into enum
+iTermBetaAssertions. The inventory summary counts the
+remaining helper calls. README.md, translation-rules.md
+section 1 and assertions.md follow the owner's rule of
+2026-11-20, which removes the Clamp, Wrap or Stop choice.
+
+Reviewed once, nothing blocking. The reviewer built its own
+C ground truth (arithmetic on 14 type forms, all 196 integer
+conversions, shifts with 22 counts, float conversions to 14
+targets) and compared 180,959 cases: the release result
+matched C on arm64 in every case, at both optimization
+levels, and an assertion fired exactly when an event
+occurred. The x86_64 model matched an independent derivation
+from the instructions (5,222 cases); it was not run. Two
+sentences were corrected by the orchestrator after the
+review: the header no longer says every helper costs what
+the C did (a float conversion is about 16 instructions where
+C has one), and the float table says it gives the stored
+value.  Known and left: phase0.md, lifecycle.md and the
+division bullet of translation-rules.md still describe
+clamping; a same-width sign change that the code does not
+rely on now goes through it_narrow, which asserts.
+
+Swift-Port: helpers-like-c kind=tool
+
+2026-11-21: Fix three integer sanitizer findings in
+PTYSession and ScreenChar
+
+Each fired the integer sanitizer in ordinary test runs, so a
+faithful port through the asserting arithmetic helpers would
+fail the suite (docs/swift-migration/integer-findings.md).
+
+- -[PTYSession theoreticalGridSize] (CSI 19 t, DECST8C)
+divided the room
+  left on the screen by the cell size and converted the sum
+  to int. With a zero cell size that is NaN or infinite,
+  which is undefined: arm64 gave 0 (a 0x0 screen report, and
+  DECST8C clearing every tab stop), INT_MAX or INT_MIN. A
+  dimension whose growth is not finite now does not grow.
+  Finite results are unchanged. A cell dimension is 0 or at
+  least 1 (the text view applies ceil), so no finite
+  out-of-range growth is reachable.
+- -[PTYSession screenWindowIndex] returned -[iTermController
+  indexOfTerminal:] through an int, implicitly truncating
+  NSNotFound to -1. It now returns -1 for NSNotFound
+  explicitly, the same value; its callers treat a negative
+  index as no window.
+- CharArrayToString stored NSUTF16LittleEndianStringEncoding
+in an int,
+  truncating it to a negative value that was sign-extended
+  when passed back to Foundation, which decodes it the same
+  way (56 inputs compared, no difference). The variable is
+  now an NSStringEncoding.
+
+Tests: PTYSessionTheoreticalGridSizeTests,
+PTYSessionScreenWindowIndexTests, CharArrayToStringTests.
+The sanitizer reported all three before and none after; the
+full suite passed in a build lane. Reviewed once, nothing
+blocking on these three. The other two fixes of this unit
+(the text extractor's INT_MAX overflow and the Metal
+background renderer) wait for the owner, and the two ledger
+documents are updated when they land.
+
+Swift-Port: integer-findings-fixes kind=fix
+
+2026-11-21: Make the false nonnull claims of
+iTermProfilePreferences and iTermTuple nullable
+
+The nullability sanitizer showed these claims false (unit N1
+of docs/swift-migration/nullability-triage.md):
+
++[iTermProfilePreferences objectForKey:inProfile:] return
+nullable  O-default: nil when no computed value, profile
+value or default +[iTermProfilePreferences
+boolForKey:inProfile:] profile     nullable  I1  only
+messages objectForKey:'s result +[iTermProfilePreferences
+intForKey:inProfile:] profile      nullable  I1  same
++[iTermProfilePreferences integerForKey:inProfile:] profile
+nullable  I1  same +[iTermProfilePreferences
+unsignedIntegerForKey:inProfile:] profile nullable I1 same,
+respondsToSelector: then 0 +[iTermProfilePreferences
+floatForKey:inProfile:] profile    nullable  I1  same
++[iTermProfilePreferences doubleForKey:inProfile:] profile
+nullable  I1  same +[iTermProfilePreferences
+stringForKey:inProfile:] profile   nullable  I1  returns
+objectForKey:'s result +[iTermProfilePreferences
+objectForKey:inProfile:] profile   nullable  I1  computed
+blocks and profile[key] only read it
++[iTermProfilePreferences expressionForBindingValue:] value
+nullable  I1  isKindOfClass: tests, else nil
++[iTermProfilePreferences bindingValueIsPaletteOwned:] value
+nullable  I1  isKindOfClass: before subscripting
++[iTermProfilePreferences
+valueIsExplicitlySetForKey:inProfile:] profile nullable I1
+profile[key] != nil +[iTermTuple fromPlistValue:] plistValue
+nullable  I1  castFrom: nil, then @{} fallbacks
+
+No Swift line failed to compile, but two sites would have
+changed behavior silently and are preserved explicitly: -
+get_profile_property answered NSNull for a missing key:
+Swift typed
+  the nil it got from the nonnull method as Any, and passing
+  that through the completion block delivered NSNull. It now
+  passes value ?? NSNull().
+- iTermProfilePreferenceObserver.value(_:) passed the
+implicitly
+  unwrapped bookmark(withGuid:) to the nonnull profile
+  parameter, which trapped when the profile was missing; the
+  trap is now an explicit it_fatalError, logged in bugs.md.
+One more site differs only in a debug log line:
+iTermBellSound now returns nil at its guard instead of after
+a failed cast.
+
+Tests: ProfilePreferencesNullabilityTests,
+GetProfilePropertyBuiltInFunctionTests. Full suite passed in
+a build lane; the nullability sanitizer no longer reports
+any of the 13 claims.
+
+Reviewed once, nothing blocking. The reviewer re-derived the
+bridging behavior with its own probe, typed the arguments of
+all Swift call sites, and compared the Swift interface of
+both headers before and after: exactly these 13 declarations
+differ. Left for a follow-up: iTermAmendedColorKey's profile
+parameter, which the triage missed.
+
+Swift-Port: nullability-n1-profile-preferences kind=annotate
+
+2026-11-21: Change Swift #if DEBUG to #if ITERM_DEBUG where
+it is safe to enable
+
+Swift's DEBUG condition is set in no configuration of
+iTerm2SharedARC, so these blocks never compiled. ITERM_DEBUG
+is the app's Development condition. 31 sites now run in
+Development builds and tests; Beta, Nightly and Deployment
+are unchanged. The sites enabled are assertions that can
+fire only on a real bug: the queue assertions in
+TokenExecutor (every app caller was traced to the executor's
+queue, a joined block or the mutation queue), the tip index
+and menu icon checks, an unreachable branch in SearchEngine,
+the workgroup registry consistency check, the interval tree
+sanity calls (an empty function unless a macro is defined),
+an assertion on completion detail text, and the alternate
+SSH integration script setting (empty by default).
+
+Twelve sites stay #if DEBUG, dormant as before, for the
+owner: - five in the browser's debug autofill code, which no
+longer compiles
+  (safelyEvaluateJavaScript changed signature);
+- TokenExecutor.pause() and discardTokensFromPTY(), whose
+queue
+  assertions fire in four tests and from app code on the
+  main queue via terminalSetColorTableEntryAtIndex;
+- the Unpauser deinit assertion (three linked sites), which
+would turn a
+  logged condition at teardown into a crash;
+- CompanionPairingController's hook that writes the pairing
+URL, which
+  holds the pairing's secret material, to a world-readable
+  file in /tmp;
+- the browser logger verbosity, which would send page
+message bodies to
+  the system log.
+PSMTabBarControl is frozen and was not touched.
+
+Reviewed once. The review's one blocking finding was the
+pairing URL site; the orchestrator reverted it and four more
+the review rated improbable. A build and the full suite were
+then run in a build lane with exactly these files: 11,678
+passed and one failed,
+TaskIOMonitorCharacterizationTests.testStress, which passed
+when its class was rerun alone and is not touched by this
+change.
+
+Swift-Port: swift-build-conditions kind=fix
+
+2026-11-21: Give Swift a BETA compilation condition matching
+the C macro
+
+iTerm2SharedARC and iTerm2 now set
+SWIFT_ACTIVE_COMPILATION_CONDITIONS BETA in Development,
+Beta and Nightly, where OTHER_CFLAGS defines BETA.
+it_conservativeBetaAssert compiles to nothing without it, as
+assertions.md requires; before, release kept a load and a
+branch. iTermBetaAssertionsCrash stays: the other helpers
+read it, and tests use it to check the release policy. A
+mismatch between the two fails to link in any configuration
+(DebugLogging.m refers to a symbol Swift defines only under
+the matching condition), and a test compares them in the
+test configuration.
+
+Swift-Port: swift-build-conditions kind=fix
+
+2026-11-21: Compile Swift as a whole module in the Beta and
+Nightly configurations
+
+Deployment already did. Without it a helper defined in one
+file cannot be inlined into another, so ported hot code ran
+much slower in nightlies than in release and nightly timing
+did not predict release timing. Sets the project-level
+SWIFT_COMPILATION_MODE = wholemodule for Beta and Nightly,
+exactly as Deployment has it (owner queue Q17, decisions.md
+2026-11-20).  A clean Beta build takes roughly twice as long
+(about 160 s to 340 s, measured on a loaded machine).
+
+Swift-Port: swift-build-conditions kind=fix
+
+2026-11-21: Give each screen its own FakeSession in
+FlagAcrossWritesTests
+
+Two screens shared one FakeSession, so joining the first
+screen forwarded screenRestoreState: to the second and
+merged its state while that screen's own mutation queue was
+running. The thread sanitizer reported -[VT100Grid
+setCurrentDate:] against -[VT100Grid currentDate] in
+testSkinToneWidensNarrowBaseAcrossWrites and
+testWriteBoundaryDoesNotChangeResultForVS16 (1 of 1 runs
+before; 0 of 5 after). makeScreen() now makes a FakeSession
+per screen, kept alive until tearDown because the screen's
+delegate is weak.
+
+Removes thread baseline entry 2.2 (now a resolved note) and
+the matching bugs.md entry.
+
+Not sent to a separate reviewer: an eight-line fixture
+change whose evidence is the sanitizer run before and after;
+the orchestrator read the diff. Built and tested in a build
+lane.
+
+Swift-Port: flag-across-writes-fixture kind=test
+
+2026-11-21: Replace the last Swift XLog with DLog and remove
+XLog
+
+The one Swift XLog call logged every console message from
+web pages in the built-in browser. The owner chose DLog over
+RLog for it: page content is recorded only when debug
+logging is on, as before, and never goes to the always-on
+retrospective ring. What changes is that with debug logging
+on the message no longer also goes to NSLog. The Swift XLog
+function had no other caller and is removed, so XLog no
+longer exists in either language.
+
+The line is compiled only without ITERM_DEBUG; a Deployment
+build with this change succeeded.
+
+Swift-Port: xlog-to-rlog kind=fix
+
+2026-11-21: Add Phase 0 sanitizer ledgers: nullability
+triage, thread baseline, integer findings
+
+nullability-triage.tsv judges the 196 rows of nullability
+claims the sanitizer contradicted in the 2026-11-20
+whole-suite run (160 wrong annotations, 12 test-only, 20 SDK
+claims, 1 caller bug, 3 unclear), each with a reason
+checkable from the row, the first-pass class, and the Swift
+and Objective-C fallout from the code database.
+nullability-triage.md explains the columns and lays out a
+16-unit fix plan, Swift-visible claims first, with the
+hot-path units queued for the owner.
+
+thread-baseline.md records the two thread sanitizer races: a
+false report in a Metal completion handler, kept as a
+baseline entry keyed by its pair of top frames for the
+gate's comparison, and a real race in FlagAcrossWritesTests,
+where two screens share one FakeSession, to be fixed in the
+tests. It says what the summary tool needs to compare a run
+with the baseline. integer-findings.md judges the 14 integer
+sanitizer locations and says what a port of each must do
+under the release-wraps, development-asserts rule, and
+records that sign changes were not examined and how LLVM 22
+could examine them. bugs.md gains two entries for wrong
+results where a bridged nil became an empty value
+(PathSniffer, ImageRegistry), and three existing entries are
+corrected (the currentDate race is a test fixture race; two
+entries name their functions).
+
+Reviewed once. The review reconciled the nullability rows
+one-to-one with the raw data, agreed with every sampled
+verdict and all 14 integer entries, and overturned the first
+thread verdict (the currentDate report was called benign and
+given a suppression; it is a real race in test code) and the
+Metal suppression (too broad). The corrected thread ledger
+was checked by the orchestrator against the fixture, not
+reviewed again.
+
+Swift-Port: phase0-sanitizer-ledgers kind=tool
+
+2026-11-21: Track the migration's agent definitions under
+.claude/agents
+
+The author and reviewer definitions move from
+docs/swift-migration/agents to .claude/agents, which is
+tracked; every other .claude/ directory, at any depth, stays
+ignored. The nightly session that uses them is in
+tools/swift_migration/.
+
+Swift-Port: phase0-nightly-start-clone-tmux kind=tool
+
+2026-11-21: Delete seven unused reflective helpers
+
+Six of these methods had no caller in Objective-C, Swift,
+selector references, xibs, the sdef, property lists or the
+reflective-site registry, overrode nothing and were declared
+by no SDK or project protocol, and the entry-point census
+listed each under "no caller found":
+
+- -[NSObject(iTerm)
+performSelectorOnMainThread:withObjects:] - -[NSTimer(iTerm)
+it_performSelector:onTarget:] - +[iTermSelectorSwizzler
+swizzleSelector:fromClass:withBlock:forBlock:] -
+-[NSObject(Swizzle)
+swizzleInstanceMethodSelector:withBlock:], with its
+  now-empty category
+- -[iTermThread
+newCallbackWithWeakTarget:selector:userInfo:] -
+-[iTermController
+_addBookmarksForTag:toMenu:target:withShortcuts:
+  selector:alternateSelector:openAllSelector:]
+
+The seventh, -[iTermController
+_addBookmark:toMenu:target:withShortcuts:
+selector:alternateSelector:], was called only by
+_addBookmarksForTag:, which this commit deletes; with that
+gone the census lists it under "no caller found" too.
+
+For the NSTimer and iTermController methods the census
+consults the list of private framework methods of one macOS
+release and therefore always reports itself incomplete; that
+was accepted here because no framework method has any of
+these selectors and nothing in the tree names them.
+
+The reflective-site registry drops the entries for the
+removed sites and its counts are corrected (167 database
+rows, was 186).
+
+Reviewed once: no deleted method can be reached and no side
+effect is lost. The review's two findings were in this
+message and the registry counts, corrected by the
+orchestrator. Dead code this exposes, left for a follow-up:
+performSelectorWithObjects:, the three-object
+it_performNonObjectReturningSelector: variant, the
+scoped-swizzle context classes, and -[iTermController
+noAction:].
+
+Swift-Port: delete-unused-reflective-helpers kind=fix
+
+2026-11-21: Delete stale duplicate files that no project
+compiles
+
+SignedArchive/resign/main.c is an earlier draft of
+resign/main.m, which replaced it in 2019; no target of any
+project compiles it. The top-level
+SearchableComboListView.h,
+SearchableComboListSearchField.swift,
+SearchableComboViewStringAdditions.swift and Info.plist are
+byte-identical to the copies in
+SearchableComboListView/SearchableComboView/, which is the
+only group the framework project builds from. No project,
+synchronized folder, Makefile, script or import refers to
+any of them.
+
+The other top-level Swift files and SearchableComboView.xib
+differ from their subdirectory counterparts and are left for
+the owner to decide.
+
+Swift-Port: delete-stale-files kind=fix
+
+2026-11-21: Add the per-class coverage observer to the test
+bundle
+
+Used by tools/swift_migration/coverage_tests.sh --observer
+to write one coverage profile per test class in a single
+run. Inert unless its environment variable is set.
+
+Swift-Port: phase0-coverage-report kind=tool
+
+2026-11-21: Replace Objective-C XLog with RLog and remove
+the XLog macro
+
+The owner judged RLog strictly better than XLog and asked
+for a straight swap with no classification of message
+content. All 91 Objective-C XLog calls in 35 files now use
+RLog, unchanged in text and arguments, and the XLog macro is
+removed from DebugLogging.h.
+
+Consequences: - The text of these messages no longer reaches
+the system log
+  (Console.app, log show) in any build. XLog always called
+  NSLog; RLog never does.
+- With debug logging off they are kept in the in-memory
+  retrospective ring (10 MB, saved only through Save
+  Retrospective Debug Logs) instead of being dropped; in
+  ITERM_DEBUG builds they are then also printed to stderr.
+- With debug logging on they go to the debug log as before,
+now
+  with arguments evaluated once instead of twice.
+- Private data in these messages (paths, SQL, API requests)
+is no
+  longer persisted by the system log.
+
+The one Swift XLog call, in iTermBrowserManager.swift, is
+left unchanged pending a decision: it logs web page console
+output and does nothing today when debug logging is off, so
+RLog would add always-on cost and capture page content. The
+Swift XLog function stays until that is decided.
+
+Known and left as they are (reviewed once, nothing
+blocking): in a failure state a few sites can turn the ring
+over quickly, notably JavaScript console output from
+toolbelt web views and status bar components and OSC 1337
+BeginFile/EndFile in terminal output; the website's dynamic
+profiles page still says load errors are logged to
+Console.app.
+
+Swift-Port: xlog-to-rlog kind=fix
+
+2026-11-21: Reject commits that add an @synchronized on a
+lock that could be nil
+
+@synchronized(nil) silently locks nothing. ITNonnilLock was
+added at the existing sites, but nothing stopped a new one
+being added without it.  tools/check_nonnil_locks.py reads
+the staged change (or --range A..B, or --all) and reports
+every added or changed @synchronized in Objective-C under
+sources/, ThirdParty/PSMTabBarControl/ and ModernTests/
+whose lock is not self, a class object or ITNonnilLock(...),
+with the exact fix. A // nonnil-lock-ok: <reason> comment on
+the line suppresses a report.  Its diff options are
+explicit, so user configuration and attributes do not change
+which lines count, and file names come from git diff --raw
+-z.  The pre-commit hook now runs every check instead of
+exec'ing the catalog check, starts Python for this one only
+when a staged covered file contains @synchronized, honors
+the temporary index of git commit -a and --only, and never
+rejects silently. Records the owner's decision in
+decisions.md and concurrency.md section 2.
+
+The hook protects only checkouts where make install-hooks
+has been run.  By git's design pre-commit does not run for a
+clean cherry-pick, rebase picks, a clean revert or merge, or
+--no-verify.
+
+Reviewed twice; the second review found nothing blocking.
+Three small items from it were fixed by the orchestrator
+with tests and not reviewed again: every mode now works from
+a subdirectory, a symlink replaced by a regular file is
+checked, and one stale sentence in --help.
+
+Swift-Port: nonnil-lock-commit-hook kind=tool
+
+2026-11-21: Restore only interval tree objects from saved
+interval tree dictionaries
+
+-[IntervalTree restoreFromDictionary:] instantiated any
+class named in saved state that responds to
+-initWithDictionary:, which 77 unrelated classes do. It now
+skips entries whose class does not conform to
+IntervalTreeObject, as the graph-record path already does,
+and logs the skipped name. Tests cover a foreign class being
+skipped, a round trip of all 12 IntervalTreeObject classes
+(including iTerm2SharedARC.PortholeMark), and restoring the
+18 trees of the 3.4.0 corpus with the same 84 objects as
+before.
+
+Swift-Port: fix-interval-tree-class-check kind=fix
+
+2026-11-21: Reject archived status bar component factories
+whose class is not a component
+
+-[iTermStatusBarBuiltInComponentFactory initWithCoder:]
+looked up the archived class name and accepted any class
+that exists. It now requires the class to conform to
+iTermStatusBarComponent, so a drag archive can no longer use
+the factory to send +statusBarComponentDefaultKnobs and
+-initWithConfiguration:scope: to an arbitrary class. The
+rejected name is logged. Tests show an archive naming
+NSObject or NSTask decodes to nil and every component class
+found at run time still round-trips.
+
+This does not stop an archive from instantiating other
+NSCoding classes directly: the drag data is still unarchived
+without secure coding (-[NSData
+it_unarchivedObjectOfClasses:] and the plain decode of
+componentFactory in iTermStatusBarSetupElement). Moving that
+path to secure coding is a separate follow-up.
+
+Swift-Port: fix-statusbar-component-class-check kind=fix
+
+2026-11-21: Read every classified macro and comment the
+surprises at their definitions
+
+Write the reading of all 69 rows of
+macro-classification.tsv: what each macro expands to and
+reaches, how often each argument is evaluated, what it needs
+from the caller, and how it differs by target or
+configuration, with the recommended Swift form. Add comments
+at the definitions of the macros whose behavior is
+surprising for a port (arguments evaluated more than once or
+not at all, names reached only by prefix or by string,
+definitions that differ by target, locals the macro needs by
+name). Comments in .m and .c files are trailing so that no
+__LINE__ value changes; the preprocessed output of every
+changed file is identical. hidden-callers.md and
+reflective-sites.md now say that macro readings live in the
+classification file, per the owner's decision of 2026-11-20.
+
+A reviewer measured every evaluation count with a program
+that includes the real headers, in five build
+configurations; one reading (CTVectorGetData) was corrected
+from three evaluations to two. The full test suite passes
+with the comments in place.
+
+Known and left as they are: some Swift types define their
+own DLog that shadows the global one with different behavior
+(Conductor, CPUGovernor), which the readings do not cover;
+ITCriticalError ends an already running debug logging
+session on its first failure at a site; the lines recorded
+in the classification file drift below the new comments
+until the next macrolint --write.
+
+Swift-Port: phase0-macro-readings kind=tool
+
+2026-11-21: Add iTermStrictWarnings.h
+
+A header that turns on the stricter warnings for files that
+opt in, ahead of making them errors everywhere. The survey
+of which warnings each target builds with is
+tools/swift_migration/warning_survey.py.
+
+Swift-Port: phase0-warning-survey kind=tool
+
+2026-11-21: Disable two flaky CompanionBrowserInputTests
+
+testInputReachesPageInWindowThatIsNotKey and
+testInputReachesPageWithNoWindow failed in one full parallel
+run (15 second waits timing out under load) and pass alone
+on the same commit. Disabled per test-speed.md section 3 and
+recorded in bugs.md.
+
+Swift-Port: phase0-flaky-companion-browser-input kind=tool
+
+2026-11-21: Drain autorelease pools in three tests that
+expect an object to be dead
+
+PromptMarkExcludedSubrangeTests, ResilientCoordinateTests
+and WeakReferenceTests assumed an object returned
+autoreleased by Objective-C (-doppelganger,
+-weaklyReferencedObject) was released when the Swift
+reference went away. Under the nullability and thread
+sanitizers it stays in the autorelease pool and the tests
+failed. Each now creates or reads the object in an explicit
+pool; the assertions are unchanged and still fail when the
+object is made to leak. Replaces the bugs.md entry with one
+for the RuntimeSnapshotTests case that does fail outside
+Build/.
+
+Swift-Port: phase0-weakref-tests-pool kind=tool
+
+2026-11-21: Parse the string catalog once in two layout test
+classes
+
+StatusPriorityPopoverLayoutTests and
+ShellIntegrationInstallerButtonLayoutTests read and parsed
+the 47 MB Localizable.xcstrings for every lookup, once per
+language. Each class now parses it once and reuses the
+result. The same 930 lookups return the same values in the
+same order, and the same injected faults produce the same
+110 failures. The classes went from 187 s to 2 s and from 79
+s to 9 s.
+
+Swift-Port: phase0-slow-tests-framer kind=tool
+
+2026-11-21: Disable the flaky
+AIPluginClientLifetimeTests.testCancelledRequestFreesItsObjects
+
+It failed once in two full parallel runs on the same commit
+(21 s, both of its 10 second waits timing out) and passes
+alone. Disabled per test-speed.md section 3 and recorded in
+bugs.md.
+
+Swift-Port: phase0-flaky-aiplugin-lifetime kind=tool
+
+2026-11-21: Add the macro classification table for the Swift
+migration
+
+Every macro the code database finds in scope, with how a
+port must treat it. The macro lint in
+tools/swift_migration/codedb/ checks the table against the
+tree.
+
+Swift-Port: phase0-codedb-macros kind=tool
+
+2026-11-21: Add binding tests for names the runtime resolves
+from strings
+
+Add the binding tests of docs/swift-migration/phase0.md
+section 3. They parse the files that name classes, methods
+and keys as strings (every xib and storyboard compiled into
+the app, iTerm2.sdef, Info.plist, the Core Data model, the
+stored-state corpus, and the registry of names persisted or
+sent between processes) and ask the Objective-C runtime of
+the test host whether each name resolves. Nothing is
+instantiated.
+
+The runtime is read without messaging the classes asked
+about: method, ivar, property and protocol lists are walked
+by hand, and key-value coding's documented search order is
+applied to them. An ivar counts only when it has a type
+encoding: a Swift stored property without @objc is listed
+under its own name with an empty encoding, and Foundation's
+setValue:forKey: and valueForKey: raise for it. A probe
+class pins the checker's verdict to Foundation's real
+behavior for an @IBOutlet, an @objc var, and plain, weak,
+private and non-object stored properties.
+
+First Responder actions must have an implementer in the app
+or AppKit, and the app's implementers must equal a recorded
+table. Corpus SQLite databases are copied with any -wal
+file, the copy is checkpointed and opened read-only, and the
+source is never touched; a fixture keeps a write only in the
+-wal file and checks that it is found and that the source
+directory is unchanged. The corpus test warns when it covers
+zero app classes.
+
+Problems that exist today are listed in a known-failures
+table with a reason each; a test fails on a new problem and
+on a known failure that no longer happens. Fixture tests run
+every checker against a fake runtime and assert that it
+reports exactly the deliberate breaks. The defects found are
+logged in bugs.md.
+
+Known and left as they are: the best-effort second test of
+section 3, which loads each nib, is not included (many nibs
+cannot be loaded safely, and capturing AppKit's messages
+depends on the test environment); the corpus holds no
+archive of an app class, so persisted app class names are
+protected only by the names table; the fix after the review
+was checked by its tests, a full suite run and the simulated
+port it had missed, not by a further review.
+
+Swift-Port: phase0-binding-tests kind=tool
+
+2026-11-21: Add the reflective-site registry for the Swift
+migration
+
+Adds docs/swift-migration/reflective-sites.md, generated
+from the code database and checked by a verifier. It covers
+every in-scope dynamic reflective row (186), the callers of
+generic helpers, selector and class names used as data, and
+names that frameworks persist or send between processes:
+window restoration classes, the two XPC interfaces (their
+selectors and classes are a wire format), and all 17
+keyed-archive sites with where their data goes. The names
+table lists 462 names to preserve, with the runtime name of
+every class. Swift classes without @objc(Name) keep their
+module-qualified runtime names, and the rule for porting
+says to leave them alone.
+
+Callers of helpers were derived from the database's send
+rows and, for Swift, its swift_ref rows, because Swift
+imports Objective-C methods under other names and a text
+search for the Objective-C spelling misses them.
+
+Known and left as they are: the macro classification and its
+lint, which the same checklist item names, are not done, so
+the item stays open; the generator and verifier scripts are
+not committed (they are in
+tmp/reflective-registry/final/notes on the machine that made
+this); the last fix round was checked by its verifier and by
+spot checks against the source, not by a further review.
+
+Swift-Port: phase0-reflective-registry kind=tool
+
+2026-11-21: Add the author and reviewer agent definitions
+for the Swift migration
+
+The orchestrator's author and reviewer subagents are defined
+in docs/swift-migration/agents/, pinned to Opus, pointing at
+the process files and repeating the standing rules each
+brief needs. They live under docs/swift-migration/ because
+CLAUDE.md allows committed Markdown written by agents only
+there, and not in .claude/agents/ because .claude/ is
+ignored. The author may write the record files its unit
+calls for (its dossier and entries in traps.md, bugs.md,
+claims.md, hot-paths.md and reflective-sites.md) and must
+not change README.md, the topic files or CLAUDE.md; rule
+changes are proposed in its report.
+
+agents_json.py converts the definitions to the JSON that
+claude -p --agents takes, refusing undocumented fields and
+multi-line values, and converts the default directory when
+given no paths.
+
+Swift-Port: phase0-agent-definitions kind=tool
+
+2026-11-21: Add probe tests for the sanitizer test modes
+
+Each provokes one sanitizer report so that
+tools/swift_migration/sanitizer_tests.sh can show its mode
+is active.
+
+Swift-Port: phase0-sanitizer-configs kind=tool
+
+2026-11-21: Add a sanitized stored-state corpus
+
+Stored state written by iTerm2 3.4.0 to 3.7.8, sanitized,
+for testing that ported code still reads what older versions
+wrote. The tools that make and scan it are in
+tools/swift_migration/. Also closes three gaps in
+tools/sanitize_iterm2_plist.py.
+
+Swift-Port: phase0-stored-state-corpus kind=tool
+
+2026-11-21: Assert that ivar and call-result @synchronized
+locks are not nil
+
+@synchronized(nil) runs its block with no lock and no error.
+Add ITNonnilLock to DebugLogging.h: it wraps the lock
+expression of a @synchronized statement, evaluates it once,
+beta-asserts that it is not nil (crash in Development, Beta
+and Nightly builds, log in Deployment) and yields the same
+object to lock. Use it at the 50 sites in sources/ that lock
+on an ivar or on the result of a call, as concurrency.md
+section 2 requires. Which object is locked and the extent of
+each lock are unchanged, and in optimized code each site
+gains one compare and branch, with no extra retain or
+release.
+
+None of the 50 can be nil in ordinary use: each ivar is set
+in the only initializer and never reassigned, and each
+called function returns an object created under
+dispatch_once. The build is clean and the full suite passes
+with no assertion firing.
+
+Of the 262 @synchronized sites in scope, the rest lock on
+self, a class object, a static or a local. Two of those can
+be nil and are logged in bugs.md, along with an existing
+data race the audit found, where iTermSlowOperationGateway
+adds to one array while holding the lock for another. None
+of the three is fixed here.
+
+Known and left as they are: two ivar sites in the pidinfo
+helper are not wrapped, because that target has no beta
+assertion; an observer being deallocated while a
+notification for it is in flight on another thread could
+trip the assertion in beta builds, on a path that is already
+a use-after-free.
+
+Swift-Port: phase0-nil-lock-assertions kind=tool
+
+2026-11-21: Add the Swift migration helper library
+
+Ported Swift needs the assertions, overflow-checked
+arithmetic, conversions and lock that the Objective-C got
+from macros and C semantics. This adds them in one file:
+
+- it_betaAssert and it_conservativeBetaAssert, the Swift
+equivalents
+  of ITBetaAssert and ITConservativeBetaAssert.
+- it_add, it_subtract, it_multiply, it_negate and
+it_shiftLeft, which
+  report overflow and return the saturated value.
+- it_narrow and it_floatToInteger, which report out-of-range
+values
+  and return the nearest value of the target type, zero for
+  NaN.
+- it_synchronized, which takes the lock @synchronized takes.
+Given a
+  nil lock it reports and runs the body unprotected, as
+  @synchronized(nil) does.
+
+A failure crashes in builds compiled with BETA (Development,
+Beta, Nightly) and logs and continues in Deployment. Swift
+cannot see the BETA macro, so DebugLogging exports
+iTermBetaAssertionsCrash for it.  The flag is writable only
+so that tests can check the Deployment behavior; nothing
+else assigns it. Each helper also has a form that takes the
+failure handler, so tests can check the clamped result
+without crashing. The public forms crash through
+iTermBetaAssertionCrashHandler, which tests replace to check
+that every public helper applies the build's policy.
+
+The checks are inlined, and nothing is allocated or logged
+unless a check fails. it_floatToInteger compares against
+exact bounds and then converts with a single instruction. It
+rejects infinite values explicitly, because a float type
+narrower than the integer type, such as Float16, cannot
+represent the integer's bounds.
+
+Checked against an independent exact reference: every pair
+of 8-bit values and a dense sample of wider ones for the
+arithmetic, and every Float bit pattern into all ten integer
+types for the conversion.
+
+Swift-Port: phase0-helper-library kind=tool
+
+2026-11-21: Disable three flaky tests
+
+AsyncFilterTemporaryLineTests.testOnCompleteCallback,
+AsyncFilterStateMachineTests.testStateTransitionsWithPendingDeliveries
+and
+PTYSessionEndedMessageTests.testShortOutputMovesToTheBottomOfTheScreen
+each failed in a full parallel run and passed alone. Skip
+each one with a FLAKY-DISABLED marker so they show as
+skipped in the log and can all be found with one search, and
+record each in bugs.md for the owner to have debugged. The
+test bodies are unchanged.
+
+A full parallel run with this change has 680 skipped, three
+more than before, and none failed.
+
+Swift-Port: tests-disable-flaky kind=test
+
+2026-11-21: Remove PTYTask's duplicate -processInfoPID
+getter
+
+PTYTask.h declares processInfoPID in the class interface,
+but the getter is written only in the ProcessInfo category.
+With no getter or @dynamic in PTYTask.m, the compiler also
+synthesized a getter and an unassigned ivar in the main
+implementation, so the class had two -processInfoPID methods
+and which one ran was not defined. Declare the property
+@dynamic in the main implementation so only the category's
+getter exists.
+
+Tests pin what callers observe: the tmux client pid when one
+is set, otherwise the task's pid, using a job manager with a
+nonzero pid. They passed before and after the change, so the
+category's getter is the one that ran before, and callers
+see no difference. The runtime snapshot loses the duplicate
+method, the _processInfoPID ivar, and the ivar in the
+property's attributes, which are now marked dynamic.
+Nothing reads that ivar, uses the property through key-value
+coding, or subclasses PTYTask. The full suite passes.
+
+Swift-Port: fix-ptytask-duplicate-selector kind=fix
+
+2026-11-21: Create the Swift migration's record files
+
+Add traps.md, bugs.md, claims.md and hot-paths.md with their
+formats.  bugs.md starts with the PTYTask duplicate selector
+and the tests that fail under load. claims.md lists the
+Phase 0 units in progress, on hold and parked.
+
+2026-11-21: Add the test-bundle side of the Objective-C
+runtime snapshot tool
+
+The scripts are in tools/swift_migration/; these tests dump
+what the runtime sees of a class from inside the test host.
+
+Swift-Port: phase0-runtime-snapshot kind=tool
+
+2026-11-21: Add the Swift migration tools
+
+Everything under tools/swift_migration/, in its current
+form. The tools were built over three days as many
+separately reviewed units; the history of their evolution is
+folded into this one commit at the owner's request, and
+docs/swift-migration/phase0.md describes each one.
+
+- inventory.py: what is left to port, leaf ordering, marker
+counts.  - test_timing.py: slow tests from an xcodebuild
+log.  - runtime_snapshot.sh, compare_runtime_snapshots.sh:
+what the
+  Objective-C runtime sees of a class, before and after.
+- pure_move.py: checks that an extract or move commit only
+moved code.  - codedb/: the code database. A LibTooling
+extractor and a Swift AST
+  reader record sends, methods, properties, ivars, statics,
+  macros, preprocessor conditions and SDK declarations from
+  captured compile commands; codedb.py answers who calls,
+  reads or declares what, and crosscheck.py compares the
+  database with the object files; swiftimports.py records
+  what Swift imports from each bridging header, and
+  other_projects.json names the other Xcode projects
+  captured.
+- entry_points.py, sdk_selectors.py: the entry-point census,
+which
+  decides whether a method has a caller, with lists of the
+  methods the frameworks implement at run time.
+- swift_lints.py, swift_ast_lints.py: the lints for
+migration Swift, on
+  tokens and on the compiler's AST.
+- swift_interface.py: snapshots of what a Swift module shows
+  Objective-C and Swift.
+- sanitizer_tests.sh, sanitizer_app.sh,
+sanitizer_summary.py: test and
+  app builds under the nullability, integer and thread
+  sanitizers.
+- coverage_tests.sh, coverage_report.py: per-function
+coverage
+  verdicts.
+- warning_survey.py: which warnings each target builds with.
+- The stored-state corpus tools.  - fast_tests.sh,
+test_tiers.py, slow_tier.txt: the fast test tier.  -
+perf_baseline.py, perf_compare.py: the performance and
+memory
+  baseline harness and its comparison.
+- ivar_ownership_check.py: the runtime's ivar ownership
+against the
+  compiler's.
+- lane_clone.py: build lanes as worktrees, one per agent.  -
+nightly_start.sh, nightly_clone.sh, deadline_run.py,
+usage_check.py,
+  agents_json.py: the unattended nightly session in its own
+  clone.
+- extraction/: checks that an extracted block keeps its
+control-flow
+  exits, the locals it writes and its compiled code.
+- reflective_registry.py: checks the reflective-site
+registry against
+  the code database.
+- pbxproj_swap.py: replaces a .m and .h with a .swift in the
+project
+  file, for whole-class ports.
+- tests/: the tools' own tests and fixtures.
+
+2026-11-21: Add the Objective-C to Swift migration process
+
+Add docs/swift-migration/, which defines how Objective-C, C
+and C++ code is moved to Swift: the unit lifecycle,
+translation rules, nullability, concurrency, hidden callers,
+the unattended author and reviewer workflow, the
+orchestrator's runbook with the Phase 0 checklist, the
+record of decisions, and the queue of items that need the
+owner.
+
+Update CLAUDE.md to allow AI-written files under
+docs/swift-migration/ and to point migration work at its
+README.
+
+Swift-Port: process kind=tool
+
+2026-11-21: Don't scroll to a search result when a click
+selects a command
+
+With Find open, selecting a command re-runs the search
+restricted to that command. It also scrolled to the first
+match, and since a plain click in the terminal selects the
+command under it, clicking in a pane could move the view
+unbidden. Selecting a command now re-runs the search without
+scrolling, the same as deselecting.
+
 2026-11-20: Add 3.7.10beta1 release notes
 
 2026-11-20: Strip control characters from all terminal
