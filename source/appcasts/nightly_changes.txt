@@ -1,4 +1,232 @@
-2026-11-21: Save restorable state faster by skipping
+2026-11-22: Follow the pidinfo protocol's renamed shell
+script selector in the binding tests
+
+"Let Claude Code show pages in a workgroup browser" added an
+environment argument to the XPC method that runs a shell
+script, which changed its selector. The reflective-site
+registry and the binding test table still named the old one,
+so BindingTests.testPersistedAndWireNames failed.
+
+Swift-Port: binding-tests kind=test
+
+2026-11-22: Skip a nil argument in the tab bar's group
+identifier comparisons and let the minimal style's
+background color be nil
+
+Setting tab group identifiers compared a cell's identifier
+with nil through -isEqualToString: when the new value was
+NSNull; the nil is now tested first, with the same result.
+The minimal tab style's delegate returns nil for its
+background color while a window has no current session, so
+the protocol now says nullable; callers already handled nil.
+No behavior changes. TabGroupSubgroupDragOutTests and
+MinimalWindowSubtitleLayoutTests now run under the
+nullability sanitizer.
+
+Swift-Port: psm-nullability-guards kind=fix
+
+
+2026-11-22: Swift migration tools and documents, 2026-11-22:
+Phase 0 complete, nights may start
+
+The nightly clone is made and the nightly start passes its
+dry run, which was the last open item of the Phase 0
+checklist. The owner allowed further units: the night of
+2026-11-23 does one unit regardless of the usage ceiling
+(nightly_start.sh, NIGHTLY_ONE_UNIT_DATE, which has effect
+on the named date only; unknown usage still stops), and
+later nights follow the ordinary rule. The performance
+baseline is kept in tools/swift_migration/perf_baselines.
+Class +setUp time does not count toward a test's one second.
+
+2026-11-22: Offer to resume Claude Code and Codex
+conversations a restart ended
+
+The agent hook already reports each conversation's start and
+end through it2 session set-agent-conversation, for the
+workgroup browser.  A start now also carries the agent, its
+directory, and its transcript, and an end says whether the
+user quit on purpose. The session keeps the conversation in
+its restorable state. When restoration has to start a new
+shell because the old job is gone, as after a reboot, the
+session shows a banner offering to resume the conversation,
+with Resume All when several sessions have one and Dont Ask
+Again. Nothing is typed unless the user asks.
+
+The offer appears only when the saved foreground-job
+ancestry shows the agent was running, its directory and
+transcript still exist, and the session is not a restored
+archive. Quitting the agent forgets the conversation; being
+killed keeps it. One-off runs (claude -p, codex exec) report
+nothing, so they can't replace or end the conversation of
+the interactive agent that started them. Resume before the
+shell's first prompt waits for it. Remote and tmux sessions
+are refused. If an older iTerm2 refuses the new arguments,
+it2 retries without them.
+
+Issue 13171.
+
+2026-11-22: Don't report a just-heard-from execution permit
+holder as silent
+
+checkpointIsNeeded records hearing from a holder without the
+lock, so it can land after the health check read the clock.
+The unsigned difference then wrapped to about 2^64 ns, and
+the check woke the holder and logged a lost wakeup. Treat a
+time after the check's reading as no silence.
+
+2026-11-22: Let Claude Code show pages in a workgroup
+browser
+
+A workgroup browser member whose URL is a user variable,
+such as \(user.browserURL), now follows it: setting the
+variable navigates.  `it2 session set-var --peer-name NAME
+VAR URL` sets it on the members of the caller's workgroup
+with that name, including ones still starting, which get it
+when they join. --peer-name refuses to search any workgroup
+but the caller's own.
+
+The Claude Code workgroup gains a browser peer, and a setup
+checklist (from onboarding, a one-time offer to existing
+users, and the workgroup session editor's help) adds the
+peer, restarts running workgroups that lack it, adds an
+allow rule for the command to Claude's settings, and appends
+instructions to CLAUDE.md. Setup works for Claude on hosts
+reached through SSH Integration and tmux, reusing the hook
+installer's remote machinery; nothing about remote hosts is
+written to disk.
+
+The agent's hooks report which conversation it runs, and the
+browser remembers the pages shown for each one, bringing
+them back when the conversation resumes. A report counts
+only while an agent runs in the leader, so one that died
+without SessionEnd leaves nothing behind.
+
+2026-11-22: Skip nil arguments to nonnull Foundation and
+AppKit calls in session and window setup
+
+Creating a session, a window or a tab passed nil to Apple
+methods declared nonnull, which stops the nullability
+sanitizer. Each call site now tests for nil and keeps what
+the call did with nil:
+
+- -unionSet: in iTermGenericEvaluator,
+iTermScriptFunctionCall and
+  iTermExpressionEvaluator, and -addObjectsFromArray: in
+  IntervalTree, which did nothing;
+- -isEqualToString: in ProfileModel, PTYSession,
+PseudoTerminal,
+  SessionTitleView, iTermAutomaticProfileSwitcher and
+  iTermRule, -isEqualToArray: in ProfileModel,
+  -isEqualToDictionary: in
+  iTermMutableAttributedStringBuilder -setAttributes: (one
+  nil test on the text drawing path) and -intersectsSet: in
+  iTermBroadcastInputHelper, which gave NO; in
+  -[ProfileModel bookmark:differsJournalablyFrom:] a value
+  of another class still gets the message;
+- -indexOfTabViewItem: in PseudoTerminal and -indexOfObject:
+in
+  iTermController, which gave NSNotFound;
+- -initWithData:encoding: in iTermKeyboardHandler and
+-initWithArray: in
+  the profile journal, which gave the empty value;
+- -removeObject: in iTermSessionHotkeyController,
+  -dictionaryWithContentsOfFile: in iTermTouchbarMappings, a
+  nil block ID in VT100ScreenState -blockMarkWithID: and
+  -addSubview: in iTermRootTerminalView.
+
+Session, window and tab test classes now run clean under
+sanitizer_tests.sh nullability, except two that reach sites
+needing an edit in ThirdParty/PSMTabBarControl (bugs.md). No
+behavior change.
+
+Swift-Port: session-nullability-guards kind=fix
+
+
+2026-11-22: Correct four nonnull claims that session and
+window setup violate
+
+-[VT100ScreenDelegate screenRestoreState:] receives nil when
+a joined block restores a state that was never saved;
+iTermAmendedColorKey() receives the nil profile a PTYSession
+has before setProfile:;
+-[iTermSearchResultsMinimapViewDelegate
+searchResultsMinimapViewLocations:] returns nil from
+SessionView, which forwards it to a weak delegate; and
+-[iTermTheme
+statusBarTextColorForEffectiveAppearance:marginColor:colorMap:
+tabStyle:mainAndActive:] receives a nil tabStyle from
+PTYSession while the status bar is set up. All four are now
+nullable; the implementations and callers already accepted
+nil. The Swift test delegates take an optional state and
+return early. No Swift caller or conformer of the other
+three.  No behavior change.
+
+Swift-Port: session-nullability kind=annotate
+
+
+2026-11-22: Make the tests over five seconds fast
+
+Waits in TokenExecutorPermitTests,
+SwiftyStringTextFieldRenameTests and
+ToolStatusCellViewJobExitTests used
+XCTNSPredicateExpectation, which checks its predicate about
+once a second; they now run the main run loop and check
+after every pass (TokenExecutorPermitTests 59 s to 0.6 s
+alone with the address sanitizer). That second used to delay
+the checks that a session did not run; it was in effect a
+sleep, so those checks now record a wrong run when it
+happens and assert on it after the session finishes, except
+after discarded tokens, where the test first waits for the
+session's queue.
+
+The framer two-hop tests run their independent simulations
+at once and assert afterwards
+(testASlowOuterHopBoundsCtrlCAtTheInnerHost 14.2 s to 1.8
+s); the class is clean under the thread sanitizer.
+testEveryPairOfItems is split into eight tests over the same
+64 layouts, with the bar's fingerprint taken only on the
+compared ticks, and the still-mouse drag test into four by
+mouse position. The translation layout tests parse each
+table, nib and xib once and free each editor before the
+next.
+
+No assertion, input or case was dropped. The whole suite's
+wall time went from about 480 s to about 145 s. Also drops
+two comments in iTermCacheableImageTests that pointed at a
+deleted dossier.
+
+Swift-Port: slow-tests-over-5s kind=test 2026-11-22: Swift
+migration tools and documents, 2026-11-21 and 2026-11-22
+
+Tools: the class state table (codedb.py classstate) and its
+inventory check; sends in unreachable code marked from
+Clang's control flow graph (code database schema 13) and the
+cross-check rule that uses it; a whole-tree mode for the
+entry-point census; qualify_unit.py, which checks the light
+path's conditions for a class; pbxproj_swap.py, which swaps
+a ported file in the project; the reflective registry's
+check and update; codedb.py refuses to rebuild another
+checkout's extractor.
+
+Performance: tools/perf/run_stress_test.sh addresses the app
+under test by path and process, so it runs beside other
+iTerm2 instances; the baseline runner judges the machine
+after a run on the settled 1-minute load; time and rate
+metrics are compared on their best sample (the owner,
+2026-11-22: "Given the variance you should take the fastest
+time, since that's our best estimate."). The thresholds are
+still a proposal.
+
+Process: the light path for leaf units (lifecycle.md section
+3), one document commit per session, the skill that runs one
+unit (.claude/skills/swift-migration-unit, now tracked), and
+the rule for nil passed to Apple's nonnull parameters.
+
+Records: the performance and memory baseline and the fast
+test tier's budget (77 s), both from quiet runs on
+2026-11-22; the owner's decisions and open questions; bugs
+found.  2026-11-21: Save restorable state faster by skipping
 unchanged objects
 
 Saving window state for restoration re-encoded every object
