@@ -1,3 +1,791 @@
+2026-11-23: Make VT100SavedColorsSlot's four colors
+optional, keeping the stored form
+
+A color map lacks one when a profile's value for it is not a
+color dictionary. A missing color is still written as an
+empty keyed archive that fails to decode, and a pop still
+leaves that color as it is: the encoded bytes are identical
+to before for a full slot and for each color missing.
+Changing the stored form is a question for the owner.
+
+Swift-Port: nullability-zero-colors kind=annotate
+2026-11-23: Offer to repair a broken arrangement profile
+only when it can be saved, and make no throwaway conductor
+parser
+
+Accepting the offer for a session restored without an
+arrangement name saved under a nil name, which raised and
+crashed iTerm2. The offer now needs both the arrangement
+name and the session GUID. Conductor recovery mode's
+token-less hook sequence no longer builds a parser with a
+nil ID that it then discards.
+
+Swift-Port: nullability-zero-bugs kind=fix 2026-11-23: Make
+tests pass the values the app passes where they passed bogus
+nils
+
+iTermScriptHistoryTests posts the request iTermAPIServer
+always attaches. The workgroup close and native-float
+stand-in tests give the live session and the stand-in views.
+PasteHelperTests gives the paste indicator a view. The
+detached split tests pass a tab scope.
+testGetFullPathFailsOnNil is removed: both app callers
+reject a nil or empty name first, and
+testGetFullPathFailsOnEmpty stays.
+
+Swift-Port: nullability-zero-tests kind=test 2026-11-23:
+Skip nil arguments in the tab bar and tab labels found by
+the nullability sanitizer
+
+Each site now tests for nil and keeps the result the call
+gave with nil, checked with probe programs against the SDK:
+-isEqualToString: (NO) in the drag assistant's pill
+debounce, the collapsed chip drawing,
+-setSearchHighlightQuery: and PTYTab's label refresh;
+-isEqualToArray: (NO) in -setDisplayOrder:; -containsObject:
+(NO) for a placeholder cell's missing indicator;
+-indexOfObject: (NSNotFound) in the touch bar's scrubber
+update; and no run loop perform requests for a missing tab
+bar (a nil target is never delivered). The close button's
+accessibility element and -fontSize sent nil only to a nil
+receiver; they now return NSZeroRect and 11 directly. One
+caller bug is fixed, test first: Yosemite's -drawSubtitle:
+went on for a tab with no subtitle and passed the nil string
+to the search highlighter, whose Swift parameter is
+non-optional; it now returns, as -willDrawSubtitle: already
+decided. No behavior change.
+
+Swift-Port: psm-nullability-guards kind=fix 2026-11-23: Make
+four more wrong nonnull claims nullable
+
+The nullability sanitizer showed nil reaching claims the
+code already handles: the tab color of -[PSMYosemiteTabStyle
+effectiveBackgroundColorForTabWithTabColor:selected:highlightAmount:window:]
+(a tab without a color), the tab view of
+-[PSMTabBarControlDelegate tabViewDesiredTabBarHeight:]
+(while iTermTabBarControlView is set up, before it has a tab
+view), iTermTmuxOptionMonitor's gateway (a tmux client whose
+queued mode change runs after it was terminated or its
+controller detached; the monitor keeps it in a weak ivar and
+only messages it), and the string of +[NSScreen
+it_stringLooksLikeUniqueKey:] (its caller passes a nullable
+identifier; the body only sends -hasPrefix:). A test's tab
+bar delegate takes an optional tab view so it still matches
+the optional requirement, and its drag info now has the
+source bar a real tab drag has. No behavior change.
+
+Swift-Port: nullability-zero-claims kind=annotate
+2026-11-23: Keep one shell integration installer per text
+view
+
+When the view leaves its window, close the installer's panel
+but keep the installer in its ivar instead of moving it to a
+list of retired installers, so its pending work goes on
+while the session is hidden.  Installing again replaces it
+the way Cancel then Install does: the previous installer is
+canceled (stopping its step and exiting its helper shells
+once that is safe), the new one takes it over and waits for
+those exits, and the ARC store releases it. Before, the ivar
+was cleared on a tab switch, so a new installer ran
+alongside the old one instead of waiting for it. -dealloc
+closes and releases the installer.  At most one installer is
+retained per text view.
+
+Swift-Port: ptytextview-installer-lifetime kind=fix
+2026-11-23: Skip nil arguments to nonnull Foundation and
+AppKit calls found by the nullability baseline
+
+Thirty-six sites passed nil to Apple methods declared
+nonnull where the result with nil is fixed. Each now tests
+for nil and keeps that result, with the other calls in the
+same order: -isEqualToString: (NO) in fourteen files,
+through the new iTermObjectIsEqualToString() where the
+receiver comes from a property list; -containsObject: (NO);
+-removeObject:, -addObjectsFromArray: and -appendData: (no
+effect); -objectForKeyedSubscript: (nil);
+-fileExistsAtPath:isDirectory: (NO); NSStringFromClass()
+(nil); -initWithData:encoding: (empty data gives the same
+empty string); -stringByAppendingPathComponent: ("" gives
+the same string); and -addSubview:positioned:relativeTo: and
+-addSubview: in SessionView (AppKit ignores nil; the order
+check still runs). Results were checked with probe programs
+against the SDK, and new tests pin the observable ones.
+Three guards are in VT100ScreenMutableState. No behavior
+change.
+
+Swift-Port: nullability-baseline-guards kind=fix 2026-11-23:
+Make wrong nonnull claims from the nullability baseline
+nullable
+
+The whole-suite nullability baseline of 2026-11-23 showed
+nil reaching claims that cannot be true: +[iTermWarning
+setWarningHandler:] (nil restores real alerts), the return
+of +[NSData(iTerm) it_dataWithSecurelyArchivedObject:error:]
+(nil when archiving fails), -[iTermChangeTrackingDictionary
+loadFromRecord:...] (a nil record loads nothing), the
+tmuxController of +[PTYSession
+arrangementFromTmuxParsedLayout:...] (PTYTab passes nil when
+it only resizes views), the return of -[VT100ScreenDelegate
+screenSelection] (nil after -hardStop clears the text view),
+the statusBarController of -[iTermPasteViewManager
+startWithViewForDropdown:statusBarViewController:] (nil
+without a status bar), the text field of
+iTermStatusBarTextComponent's -setValueInField:compressed:
+and -shouldUpdateValue:inField: (nil during initialization),
+and the return of -[iTermURLActionHelperDelegate
+urlActionHelper:imageInfoAt:] (a lookup). All are now
+nullable.
+iTermSessionDirectoryTracker.switchToTmuxPoller(tmuxController:)
+takes an optional; nil still logs and returns. Swift now
+imports the archiving method as throwing; its test callers
+let a failure fail the test. The two Swift screen delegate
+fakes return an optional selection. No behavior change in
+the app.
+
+Swift-Port: nullability-baseline-annotate kind=annotate
+2026-11-23: Keep TokenBudgetTests off the dispatch pool
+while it waits
+
+The concurrent register-and-release test blocked
+concurrentPerform workers on work sent to the global queue,
+which deadlocked a long test host whose dispatch threads
+were used up. Each round now races against a dedicated
+releasing thread at the test thread's QoS; the rounds and
+the assertion are unchanged. A comment says it is a stress
+test of the lock, not a deterministic race test.
+
+Swift-Port: suite-load-causes kind=test 2026-11-23: Release
+PTYTextView's shell integration installers
+
+The installer's window controller is stored with strong
+semantics by -installShellIntegration: in the ARC category
+file, but PTYTextView.m is not ARC: -viewDidMoveToWindow
+cleared the ivar with a plain store and -dealloc never
+released it, so every installer and its panel leaked. The
+leak also kept an installer running after its view left the
+window (a tab switch, say), so it could finish its step and
+exit its helper shells.
+
+Keep that: on leaving the window, close the panel and move
+the installer from the ivar to a list of retired installers,
+still clearing the ivar so a later install starts fresh as
+before. In -dealloc, close and release the held installer
+and the retired ones.  Lifetime witness tests cover leaving
+the window, deallocation, replacement, moving between
+windows, and pending work continuing after the view leaves
+its window, both through the real install path (gated, on
+screen) and off screen in the regular suite.
+
+Swift-Port: ptytextview-installer-leak kind=fix 2026-11-23:
+Port iTermShellIntegrationPanel to Swift
+
+A whole-class translation of an empty NSPanel subclass. The
+class keeps its runtime name through
+@objc(iTermShellIntegrationPanel), so
+iTermShellIntegrationWindowController.xib, which names it as
+the installer window's custom class, is unchanged and still
+finds it. The superclass stays NSPanel, which windowDidLoad
+relies on. No file imported the header.
+
+The Swift class declares no initializer and no stored
+property, so it inherits
+init(contentRect:styleMask:backing:defer:), which nib
+loading calls. The runtime now lists that initializer on the
+class, as a real override that chains to NSPanel, and the
+generated header declares it as the designated initializer.
+No Objective-C code names the class.
+
+The project file was edited by
+tools/swift_migration/pbxproj_swap.py.  The runtime snapshot
+comparison passes, with two items for the reviewer: the
+inherited initializer, and the class's members not being
+dynamic.  The characterization tests pass unchanged, as do
+the xib binding test and the shell integration installer
+tests. The tests fail when the pinned name is removed and
+when a designated initializer is added.
+
+Reviewed once, with no blocking findings.
+
+Swift-Port: iTermShellIntegrationPanel kind=port 2026-11-23:
+Add characterization tests for iTermShellIntegrationPanel
+
+Pin the class before its port to Swift. It resolves by its
+bare name, as iTermShellIntegrationWindowController.xib
+names it, and its superclass is exactly NSPanel. Loading the
+installer window the way the app does gives a window of that
+class: an NSPanel whose delegate and window controller are
+the controller, floating because windowDidLoad set it, and
+not on screen. The tests reach the class only through the
+runtime and the nib, so they run unchanged against the port.
+
+Each test was seen failing when the superclass was changed
+to NSWindow and when the class was renamed so the xib's name
+no longer resolved. In both cases windowDidLoad raised on
+setFloatingPanel:, which NSWindow does not implement. The
+dossier records the runs.
+
+The dossier now says the installer's owning ivar belongs to
+the non-ARC PTYTextView and is cleared without a release,
+names the installer's PTYSession callers, keeps the probe
+sources, and adds a post-port mutation for a written
+designated initializer, which a probe showed makes nib
+loading trap.
+
+Reviewed once, with no blocking findings.
+
+Swift-Port: iTermShellIntegrationPanel kind=test 2026-11-23:
+Swift migration tools and documents, 2026-11-23
+
+Tools: the nightly supervisor no longer ends a healthy
+session on a failed tmux call, honors its hard limit when
+tmux hangs, and stops on signals during the start; the
+nightly session may use local-path git transports, so
+SwiftPM can resolve packages; the suite scripts gain --skip,
+--workers, --jobs and a two-worker default, the fast tier's
+budget is 300 seconds, and whole-suite nullability runs no
+longer abort the test host but are judged against a
+checked-in baseline of known violations; a per-test load
+profiler.
+
+Documents: the first unattended night's unit
+(iTermShellIntegrationPanel) and what it found; one heavy
+job at a time and no load thresholds; the causes of the
+day's load and what remains unexplained; the nullability
+baseline, generated with 69 entries and brought to none the
+same day, with the triage of each; the lifting of the tab
+bar freeze; the owner's decisions of the day; the rule for
+deleting apparent dead code.
+
+2026-11-23: Stop enabling zombies and malloc stack logging
+in ModernTests
+
+NSZombieEnabled keeps every deallocated Objective-C object
+alive for the life of the test host, and MallocStackLogging
+with NoCompact records a stack for every allocation.
+Together they pushed a parallel run of the suite to about 23
+GB peak. Without them the peak is under 10 GB. ASan, which
+the plan already enables, still catches use-after-free.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-23: Let agent hooks connect without a cookie when
+all apps are allowed
+
+Since 76bd5c9f8, a hook whose automation permission check
+timed out skipped connecting, because iTerm2 rejects a
+cookieless connection. That is wrong for users who turned on
+"Allow all apps to connect": iTerm2 accepts those
+connections, so under load their status updates stopped.
+
+The hook now reads that setting itself, the way
++[iTermAPIHelper noAuthStatus:] does (a root-owned
+disable-automation-auth file holding the hex of its own path
+and a fixed UUID), and when it is on connects without a
+cookie before doing any permission check or cookie request.
+That also saves those users two round trips through iTerm2's
+main thread per event.
+
+The file is found next to the Unix socket the hook is about
+to connect to, so it always belongs to the iTerm2 on the
+hook's own machine. Only SocketChannel can reach the check;
+a hook embedded in iTerm2 for a remote host uses its own
+channel and never reads it, which a test enforces.
+
+Issue 13183.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-23: Create Script Console entries when a connection
+is accepted, not when a cookie is issued
+
+2026-11-23: Leave room for the section guide beside Tahoe's
+tabs
+
+In a sorted vertical tab bar, the guide line beside a
+section's tabs ran along the tabs' leading edge, where
+Tahoe's selected tab pill starts. A style can now ask for a
+gap between the guide and its tabs, and Tahoe uses 6 points.
+The heading text and guide stay put; the tabs move right.
+
+Also fix a warning in RichTabContentIntegrationTests now
+that setObject: takes a nonnull value.
+
+2026-11-23: Keep dual-mode background colors on erased and
+filled cells. Issue 13231
+
+SGR 48:12/48:13 marks cells ColorModeExternal and keeps the
+light/dark pair on the external attribute. Cells filled with
+the current background (EL, ED, ECH, DECSEL, ICH, DCH,
+IL/DL, RI, scrolling, resizing, restoring from the line
+buffer) got defaultChar's ColorModeExternal colors but no
+external attribute, so they rendered the light color in dark
+mode.
+
+The terminal now builds one background-only external
+attribute per SGR change, nil unless colors are dual-mode.
+The grid attaches it when a fill char has ColorModeExternal
+colors matching defaultChar, so the normal case costs only a
+color-mode check and creates no external attributes.
+
+Also fix protected-mode EL and ED passing an inclusive end
+column to selectiveEraseRange:, which skipped the last
+column and the cursor cell.
+
+2026-11-23: Stop leaking a tab style observer per session
+
+Every PTYSession called -it_addObserverForKey:block:, which
+appended a block to a global array and added another KVO
+registration that was never removed. One theme change ran
+every block once per registration, so the work grew with the
+square of the number of sessions ever created, including
+closed ones.
+
+Sessions, the global scope controller, and the app delegate
+now own an iTermUserDefaultsObserver, which removes its
+registrations on dealloc.  The NSUserDefaults+iTerm category
+is removed. iTermUserDefaultsObserver now ignores writes
+that leave the value unchanged (as the category did) and no
+longer adds a second KVO registration when a key is observed
+twice.
+
+TabBarVisibilityWindowSizeTests restored zero-initialized
+prefs in tearDown when setUp was skipped, which changed the
+tab style and set off the expensive refresh. It now restores
+only what setUp saved.
+
+Issue 13233
+
+2026-11-23: Keep Minimal's collapsed tab group chips short
+with rich content on
+
+Minimal draws a collapsed group as a short capsule without
+rich content lines, but with rich content on the chip was
+sized like a full tab row.  A style can now say it doesn't
+show lines on collapsed chips, and Minimal does, so its
+collapsed chip is as tall as a group header and keeps its
+own width on a horizontal bar.
+
+Also rename the tab content editor's Reset to Default
+action, which was reset:, the terminal's Reset First
+Responder action, so the editor window took over Reset while
+it was key.
+
+2026-11-23: Add section headings to the sorted vertical tab
+bar
+
+When a vertical tab bar is sorted by status or by working
+directory, each run of tabs gets a heading, and the tabs
+under it are indented beside a guide line.
+
+- Status order: a section for each status priority pattern,
+then Other,
+  No Status, and Snoozed. Editing the priority list updates
+  the headings.
+- Working Directory order: the heading shows the directory's
+name with its
+  parent dimmer before it, and Home for the home directory.
+- Headings match the tab title size and draw the same in
+every style.  - A status change that arrives while the
+pointer is over the bar applies
+  once the pointer leaves, even if the bar never hears it
+  leave.
+- Rich tab lines use their light or dark color based on a
+tab color that
+  fills the space behind them, not the bar's appearance.
+- Rename the Manual Order menu item to Ungrouped.
+
+2026-11-23: Add an order control to the vertical tab bar
+
+A segmented control under the tab bar search field shows
+tabs in Manual order, by Status, or by working Directory. It
+changes only how the bar shows tabs: the window's tab order,
+Cmd-number, and saved arrangements are unaffected. The order
+is per window and saved with the window.
+
+- Status sorts tabs by status priority, then manual order.
+Snoozed tabs
+  go last, and the bar re-sorts when a status changes.
+- Directory shows a section for each working directory,
+headed by the
+  folder name with the full path as a tooltip. Tabs whose
+  directory isn't known go in a section after those, and
+  tabs waiting at a shell prompt in a last section. A tab
+  changes to or from the prompt section only after its state
+  has held for about a second.
+- Tab groups aren't shown in the sorted orders but are
+unchanged, and
+  come back in Manual, where the selected tab's group
+  expands.
+- Pinned tabs stay first. While the pointer is over the bar
+nothing
+  moves; changes apply when it leaves.
+- Next and Previous Tab, swipes, and the tab chosen when one
+closes
+  follow the order the bar shows. Move Tab Left and Right
+  trade places within a section, or among tabs with the same
+  status, staying in the tab's group.
+- Dragging tabs and panes, collapsing groups, pinning, and
+Close Tabs
+  Below are disabled in a sorted bar. Search works as usual.
+- A horizontal or hidden bar shows the window's order.
+
+PSMTabBarControl gains a displayOrder: tab cells are put in
+that order when group chips are derived and back in tab view
+order when chips are stripped, which every path that matches
+cells to tabs by index does first. Sections are drawn as
+group chips.
+
+Also measure the search band's height once rather than on
+every tab bar layout, and restore the tab style after
+closing the window in the Minimal style tests.
+
+2026-11-23: Add rich tab content
+
+Tabs can show several lines of information, such as the
+title, subtitle, directory, and job with its status, instead
+of just a title. It is a per-window setting that follows the
+profile the window was created with: turn on "Show rich tab
+content" in Settings > Profiles > Window and click Rich Tab
+Content to choose the lines.
+
+- Each line is an interpolated string, plain text or
+lightweight HTML,
+  with a size, how many lines it wraps to, bold, italic,
+  truncation, whether it collapses when empty, and a normal,
+  dimmed, or custom color.  A custom color can differ
+  between light and dark mode.
+- Tab height comes only from the layout, and an optional
+line limit, so it
+  never changes with what tabs show. Horizontal and vertical
+  tab bars, Tahoe and Yosemite-family styles, and collapsed
+  tab group chips all draw the lines.
+- The editor sheet previews a tab, applies changes to open
+windows as they
+  are made, and puts the profile back on Cancel.
+- Collapsed tab groups show the most urgent status among
+their tabs.  - Adds iterm2.escape_html() for building HTML
+lines safely.
+
+Tab bar search: - A vertical tab bar has a search field at
+the top. Only tabs whose
+  title, rich lines, or group name match are shown,
+  including the selected tab. Return selects the first match
+  and Esc ends the search.  Matches are highlighted, kept
+  groups show expanded, and Next/Previous Tab and the
+  Ctrl-Tab switcher cycle among the shown tabs.
+- While the pointer is over the bar, title and status
+changes don't add
+  or remove tabs; they apply when it leaves.
+- Acting on a hidden current tab, selecting a hidden tab, or
+a new tab in
+  the foreground ends the search. Typing in the terminal,
+  cancelled prompts, Close, and Move Tab to New Window
+  don't. Pin is disabled during a search.
+- Dragging to reorder within the bar is refused during a
+search, with
+  the not-allowed cursor. A window's only tab can still be
+  dragged out.  Drops from other windows are accepted and
+  end the search.
+- In the Minimal style the field follows the bar's light or
+dark look.
+
+Snooze: - A tab's context menu can snooze it. Snooze is
+shared with the Session
+  Status tool: the status dims and stops asking for
+  attention until it changes. A change to the most urgent
+  status still rings the tab.
+
+2026-11-23: Keep bidi info in grid copies so synchronized
+updates don't flash RTL text
+
+A program that brackets each repaint in a synchronized
+update (DECSET 2026), such as Claude Code, makes the
+terminal draw a saved copy of the grid until the update
+ends. That copy had no bidi info: -copyWithZone: builds the
+copy with -initWithSize:, which fills _bidiInfo with NSNull,
+and then -copyMiscellaneousStateTo: copies the source's
+tables only when _bidiDirty is set or the destination has
+none. Between syncs _bidiDirty is always NO
+(copyDirtyFromGrid: resets it), and that is exactly when the
+snapshot is taken, so every right-to-left row was drawn
+unreordered while the update was open.
+
+Copy the tables unconditionally in -copyWithZone:. The
+incremental path (copyDirtyFromGrid:) keeps its dirty check.
+
+Copying the tables unconditionally exposed a second problem:
+when text changes in the same read that begins the
+synchronized update, the snapshot is taken before the
+end-of-block sync recomputes bidi for the changed lines, so
+the saved grid drew the new text with reorder tables built
+for the old text. -temporaryDoubleBufferedGridSavedState now
+brings the grid's bidi state up to date before copying it.
+The changed lines stay dirty, so the next sync recomputes
+them as before.
+
+Tests cover the snapshot taken between syncs, and a row
+rewritten with LTR text or with different RTL text in the
+same block that begins the update.
+tests/bidi-synchronized-update.sh shows it by eye.
+
+Closes #832
+
+2026-11-23: Never echo request text or error text in kitty
+protocol replies
+
+Kitty image and drag-and-drop replies are written to the
+PTY's input, so any text in them that the program chose ends
+up at the shell prompt.  Replacing control characters with
+spaces is not enough: a value like ";cmd;#" or "x&&cmd" runs
+as soon as the user presses Return, and the reply's own
+framing supplies a semicolon.
+
+- Kitty images: the shared-memory transmit error is now a
+fixed string
+  instead of localizedDescription, and the "non-existent
+  image" display error no longer interpolates the id.
+- Kitty drag and drop: x, y, Y and i are echoed only as
+32-bit decimal
+  integers re-serialized by iTerm2, and are omitted
+  otherwise. The multiplexer id is stored as a UInt32 and
+  revalidated when restored from saved state.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-23: Do not fall back to title when a menu item
+binding names a disabled item
+
+A Select Menu Item key binding whose stable identifier names
+a disabled or hidden item fell back to the first item with
+the same title, such as a user-defined Action in Edit >
+Actions named after the real item. It now resolves to
+nothing.
+
+- Block the title fallback only for a stable identifier. A
+synthetic
+  "_NS:<n>" identifier is positional, so it can name an
+  unrelated item after a relaunch; legacy bindings with one
+  keep the title fallback.
+- Do not resolve again in each submenu when the root fails,
+since a
+  submenu would use the title fallback.
+- Try the move-to-screen identifier once, up front, for any
+menu. A
+  screen key names no menu item.
+- Update each submenu before reading isEnabled, which can
+otherwise be
+  stale from the last time the submenu was open.
+
+From https://github.com/gnachman/iterm2/pull/830
+
+2026-11-23: Don't let the remote Claude Code hook block
+prompts outside iTerm2
+
+The Claude Code integration installed over SSH Integration
+adds `it2 handle-agent-hook` to the host's
+~/.claude/settings.json, which applies in every terminal.
+Started from anywhere else, the Python it2 client couldn't
+find a connection and exited 2, which Claude Code treats as
+"block this prompt", so every prompt was rejected.
+
+Bumps the shell-integration submodule: handle-agent-hook now
+always exits 0, and other commands fail with 1 instead of 2
+when the client can't reach iTerm2. Regenerates the embedded
+copies, the remote wrapper and the utilities archive, and
+adds tests for each client failure path.
+
+Issue 13236.
+
+2026-11-23: Swift migration documents, 2026-11-23: one heavy
+job at a time
+
+After a resumed night session ran a sanitized whole suite,
+an x86_64 build and a database capture together and made the
+machine unusable, the orchestrator and its agents run at
+most one heavy job at a time, at low priority. Records that
+and the framer simulation tests' gate.
+
+2026-11-23: Add files to cat that show the inline image
+sizing fixes
+
+tests/inline-image-too-wide.txt draws an image wider than
+the space right of the cursor, and
+tests/inline-image-too-tall.txt one asked to be more than
+255 rows tall; each says what the fixed and the old behavior
+look like.
+
+2026-11-23: Skip the nested SSH flow control simulations by
+default and run them on one core
+
+FramerFlowTwoHopSimulationTests takes about six minutes of
+CPU time. An earlier change made it fast by running its
+simulations on every core at once at the highest priority,
+which made the machine unusable while the suite ran, worst
+under a sanitizer. The class now skips itself unless
+ITERM2_FRAMER_SIMULATION_TESTS=1 is set, and when it runs,
+the simulations run one after another. Run it after changing
+the framer's flow control:
+
+  TEST_RUNNER_ITERM2_FRAMER_SIMULATION_TESTS=1
+  tools/run_tests.expect
+  ModernTests/FramerFlowTwoHopSimulationTests
+
+Swift-Port: framer-simulation-gate kind=test
+
+2026-11-22: Rename three NSView category methods that
+collide with Apple's to it_
+
++[NSView animateWithDuration:animations:completion:],
+-insertSubview:atIndex: and -snapshot have the same
+selectors as methods that GameCenterUICore, UXKit and
+OpusFoundation implement on NSView. Those frameworks are not
+loaded at launch, but once one is, its method replaces the
+app's for every view in the process. Each is now it_<name>,
+with every caller and SessionView's override of
+-insertSubview:atIndex: renamed. The other classes' own
+-snapshot methods (PTYSession, the double-buffered grid
+controller) keep their names.
+
+The app's method won before, so no caller changes behavior.
+No framework the app links sends these selectors to a view
+or tests a view for them: AppKit's own sends of
+animateWithDuration:animations:completion: and snapshot go
+to _NSUIAnimator and to data-source, layout and
+window-transaction objects, and SwiftUICore's one send of
+insertSubview:atIndex: is on its UIKit path.
+
+The guard test now also fails if code outside the system's
+images implements one of these selectors on NSView or
+SessionView again.
+
+Swift-Port: category-collisions-nsview kind=fix
+
+
+2026-11-22: Swift migration documents, 2026-11-22: the
+owner's answers to the open questions
+
+Records his answers to the owner queue (terminal fixes, the
+kitty file denylist, the colliding category methods, the
+dormant debug blocks, the fast tier's ceiling, thread
+assertions, the test delegate), the rule for deleting
+apparent dead code, and what the day's fixes found and left.
+
+
+2026-11-22: Refuse kitty file transmission from /etc,
+/var/db and /var/root, and give every failure one reply
+
+The t=f denylist named /private/etc, /private/var/db and
+/private/var/root, but the path is resolved first and
+resolution removes /private, so those entries never matched.
+The check now compares whole components of the resolved
+path, ignores case and empty or "." components, and treats
+/private/etc, /private/var and /private/tmp as /etc, /var
+and /tmp.
+
+Replies to t=f also told a missing file, a non-file, a
+denied path, an unreadable file, an oversized file and a
+non-image apart, so program output, even from a remote host,
+could probe which paths exist. As the kitty specification
+requires, every such failure now gets "EBADF:Failed to read
+image file", and the reason goes to the log only.
+
+Swift-Port: kitty-file-denylist kind=fix
+
+2026-11-22: Fix the checksum reply's width, DECCRA's
+destination in origin mode, and inline image sizing
+
+The DECRQCRA reply formatted (short)checksum with %04x, so a
+checksum of 0x8000 or more came out as eight hex digits; it
+now always has four. DECCRA's destination ignored origin
+mode while its source honored it; it now counts from the
+margins too, as xterm does. An inline image capped at 255
+rows had its width multiplied by height / 255 instead of
+shrunk in proportion, and an image too wide for the rest of
+the line kept the screen's width; it is now narrowed in
+proportion and shrunk to the columns left.
+
+Ported by hand from the parked patch, without its CHT
+change: the owner does not believe the tabsWrapAround stall
+exists, and 65535 wrapping tabs measured under a second in
+the sanitized test build.  The DECRQCRA private-code fix
+landed earlier, in integer-findings-fixes-3b.
+
+Tests: CSIHugeCountTests, ImageProtocolSizeTests.
+
+Swift-Port: terminal-fixes kind=fix
+
+2026-11-22: Rename seven category methods that collide with
+Apple's to it_
+
+Seven category methods had the same selector as a method an
+Apple framework implements on the same class: -[NSString
+lastComposedCharacter] (CoreHandwriting), -firstCharacter
+(libmecabra), -stringByTrimmingLeadingWhitespace and
+-stringByTrimmingTrailingWhitespace (AnnotationKit),
+-[NSArray objectPassingTest:] and -[NSMutableArray
+removeObjectsPassingTest:] (CoreFoundation), and -[NSImage
+CGImage] (PencilKit, PDFKit). One replaced the other for
+every instance in the process. Each is now it_<name>, and
+every caller is updated.
+
+The app's callers see no change: those frameworks load at
+launch from the shared cache, so the app's category won
+before. Apple's frameworks now get their own methods back;
+libmecabra's firstCharacter returns an object where the
+app's returned a UTF32Char.
+
+A test fails if code outside the system's images implements
+one of the old selectors again.
+
+Swift-Port: category-collisions kind=fix
+
+2026-11-22: Delete the Swift #if DEBUG blocks that never
+compiled
+
+Swift's DEBUG condition is set in no configuration of
+iTerm2SharedARC, the only target that compiles these files,
+so the blocks have never been built. The owner's decision:
+"Dormant #if DEBUG: Delete them since they were never used".
+
+Deleted: the browser's debug autofill tool (the manager's
+debugAutofillFields, the view controller's delegate method,
+the toolbar's delegate requirement, menu item and action),
+the queue assertion in TokenExecutorImpl.pause() with its
+comment, the three Unpauser sites that asserted unpause
+before deinit, the browser logger's debug verbosity, and a
+fatalError under the misspelled #if DEUG in SearchEngine.
+The pairing URL hook and the discardTokensFromPTY assertion,
+also on the owner's list, had already gone.
+
+The object code of the six files is unchanged except for
+line number constants. The question the pause() assertion
+stood for is kept in bugs.md.
+
+Swift-Port: dormant-debug-blocks kind=fix
+
+2026-11-22: Judge performance regressions against each
+scenario's own variation and confirm them back to back
+
+The owner decided the regression rule on 2026-11-22:
+"per-scenario variation plus a back-to-back confirmation".
+perf_compare.py's threshold is now the larger of 5% and the
+scenario's variation, which for a best-of metric is how far
+the reference's worst sample but one lies from its best (our
+measure; one hiccup does not set it); memory and counts keep
+3 x noise. One comparison now gives at most a "suspected
+regression" (still exit 1) and says how to confirm it. The
+new --confirm mode takes at least two result files a side
+from interleaved runs in one lane, compares pooled
+statistics against the variation between the base runs, and
+requires the direction to hold run by run. On time and rate
+metrics in result files of identical code the flat 5%
+flagged 10 false regressions; the new threshold flags 5.
+performance.md, owner-queue.md Q23 items 3, 18 and 19, and
+decisions.md record the rule, its cost, the remaining
+proposals and the procedure.
+
+Swift-Port: perf-threshold kind=tool
+
 2026-11-22: Follow the pidinfo protocol's renamed shell
 script selector in the binding tests
 
