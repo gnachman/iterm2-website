@@ -1,3 +1,383 @@
+2026-11-24: Add 3.7.10beta2 release notes
+
+2026-11-24: Keep inline images that scrolled into history.
+Issue 13235.
+
+Since fdd88955, an image whose mark was on screen at the
+last sync was kept only if its code was on screen or within
+a few lines of history. A burst of output, ED2 or RIS could
+move the whole image further into history than that in one
+sync, so it was released and drawn as a brown rectangle.
+
+Track which image codes have entered history instead of
+scanning for them. Each line's metadata gets an imageFound
+flag that travels into and out of the line buffer like
+rtlFound, so the grid only scans lines that may hold an
+image. The grid reports codes it appends to the real history
+buffer, and the mutable state keeps them in
+imageCodesInHistory. Resize, removeLastLine and unfolding
+move lines out and back, so they suppress the reports and
+scan only the lines left in history afterwards.
+
+Data saved before imageFound existed decodes as "maybe", so
+each old line is scanned at most once, when it is first
+checked on screen.  History loaded by session restoration
+isn't in the set, so before releasing an image the scan also
+looks max(its height, screen height) lines above its mark,
+which bounds where its cells can be.
+
+2026-11-24: Make the fast preference accessor caches atomic
+
+The FastAccessors in iTermPreferences returned cache->value
+with no synchronization while the refresh block stored it
+under iTermPreferencesFastCacheLock(), a data race by the
+C11 memory model that the thread sanitizer reported on
+bidiEnabled's cache. The value fields are now _Atomic and
+both sides use relaxed atomic loads and stores. Refreshes
+stay serialized by the existing lock, and on arm64 and
+x86_64 the load and store are the same single plain
+instructions as before in an optimized build, so behavior
+and cost are unchanged.  Static asserts check that the three
+value types are lock-free.
+
+There is no test that fails before the change: the evidence
+is the thread sanitizer's report on
+AIAutomaticCredentialHostTests and BidiSupportModeTests
+before it and none after.
+
+Swift-Port: fast-accessor-atomic kind=fix 2026-11-24: Add
+the trivial path and once-per-session closing checks
+
+qualify_unit.py now prints the path a unit takes: trivial,
+light or full. A unit is trivial when its method and
+function bodies total at most 50 lines (from Clang's AST,
+unit_ast.py), it has no storage, lock, queue, C pointer,
+C++, retained Core Foundation result, +load, swizzling,
+associated object or -dealloc, and it is ARC or has nothing
+ARC changes; a hot path, stored state (including NSCoding
+and Core Data) or an Objective-C subclass forces the full
+path. Names in the sdef, xibs or selector strings no longer
+stop a small unit; its port carries the runtime snapshot and
+a test through each such door instead, and a unit named in
+the sdef also gets a real osascript comparison before and
+after. Categories can be qualified as Class(Category), and
+--classify gives the path of every unit: 24 trivial, 72
+light, 684 full today.
+
+The trivial path has no dossier, one commit holding tests
+and port, and one review. Whole suites, sanitizer suites,
+the x86_64 build and the lints now run once at the end of
+each session over everything that landed (lifecycle.md
+section 5), and the nightly prompt names when they must
+start; until they pass a unit is "landed, closing checks
+pending".  Dossiers are capped in proportion to the code,
+checked by dossier_cap.py. A thread assertion now needs
+evidence that every entry to the method is on that thread,
+and the reviewer challenges each one.
+
+The owner asked for the four changes on 2026-11-24; the
+numbers and the other choices are the migration's and are
+listed for him in owner-queue.md Q32.
+
+
+After the owner's answers the same day:
+
+The plain whole suite is back in the gate (README section 5,
+step 3) on light and full code commits, as before
+2026-11-24, and stays off the trivial path; it also still
+runs once among the closing checks. Whole suites serialize
+through the whole-suite lock. A commit that changes only
+scripts or documents is gated by its own tests (the
+migration's reading, open to the owner).
+
+perf_compare.py judges median metrics (memory, counts)
+against 15% and best-of metrics (times, rates) against 5%,
+in single and confirm mode.  At 15% the resampled baseline
+falsely flags about 3.5% of unchanged builds, against 58% at
+5%.
+
+At night up to three trivial or light units may be authored
+at once, each in its own lane, commits landing one at a
+time; by day one at a time. The display-frames test rule and
+its one exception are confirmed. bugs.md records the
+decisions on the parked-thread question (not investigated)
+and the two unbounded waits (unchanged), and drops the
+fast-accessor race, now fixed. The trivial-path numbers,
+dossier caps, closing reserve, batch order and daytime
+AppleScript comparison are confirmed as they are.
+
+Swift-Port: trivial-path kind=tool
+
+
+2026-11-24: Check the runtime snapshot header against the
+test host's own path
+
+testHeaderRecordsArchitectureAndConfiguration asserted that
+a build variant is always present, which holds for the plain
+test build (Build/Variant-ASan/Development/iTerm2.app) but
+not for the builds of sanitizer_tests.sh
+(tmp/sanitizers/<mode>/Build/Development), so it failed in
+every sanitized run. The test now works out the
+configuration and variant from the host's path itself,
+compares the four header lines exactly against them (a bare
+build-variant line when there is no variant), and asserts
+that a variant is recorded exactly when the path has a
+Variant- directory. It passes in both layouts.
+
+Swift-Port: runtime-snapshot-variant-test kind=tool
+2026-11-24: Turn off AppKit window animations in test hosts
+
+Test hosts piled up to 80 threads parked in -[NSAnimation
+_runBlocking] while the screen was locked: every window a
+test ordered in or out started AppKit's window zoom
+animation, which holds a user-interactive dispatch thread
+until it gets enough display frames to finish. With the
+dispatch pool exhausted, global-queue work and XPC replies
+stopped, and tests with unbounded waits hung the nightly
+run.
+
+The ModernTests and Benchmark test plans now launch the host
+with -NSAutomaticWindowAnimationsEnabled NO.
+TestHostWindowAnimationTests checks that the default reaches
+the host and that opening and closing a terminal window
+leaves no thread inside -[NSAnimation _runBlocking].  The
+waits in AdvancedSettingsThreadSafetyTests and in the page
+saver test helper (page loads, JavaScript evaluations, the
+page save) now time out after 60 seconds and fail the test
+instead of hanging; a late navigation callback can no longer
+resume a later load.
+
+iTermApplicationScriptingTests' "current but not key" test
+failed after TabBarSearchWindowTests, which activates the
+test host; it now sets up that state whether or not the app
+is active, and TabBarSearchWindowTests deactivates the host
+again after each test that started with it inactive.
+
+Swift-Port: test-host-window-animations kind=tool
+2026-11-24: Port iTermApplication+Scripting to Swift
+
+A whole-category translation into an extension of
+iTermApplication, which stays in Objective-C. The two
+methods keep their selectors and encodings:
+-valueForUndefinedKey: still answers every key nothing else
+answers on the application object with an empty array, and
+-currentScriptingWindow, the AppleScript property "current
+window", still wraps the current terminal's window, or gives
+nil when there is no shared controller, no current terminal
+or no window. The class's runtime snapshot is unchanged.
+
+One intended difference: a key that is not a string, sent
+straight to -valueForUndefinedKey: (as from objc_msgSend
+with an NSNumber), now raises NSInvalidArgumentException in
+the bridging to String before the method runs; the
+Objective-C ignored the key and returned an empty array. The
+SDK declares the parameter as NSString and Swift requires an
+override to take String, so this cannot be avoided;
+valueForKey: always passes a string, and nothing in the tree
+sends such a key. A nil key still gives an empty array (it
+reaches Swift as an empty string).
+
+-currentScriptingWindow gains a main-thread beta assertion:
+it reads iTermController's current terminal and AppKit
+window state, which belong to the main thread, and Cocoa
+Scripting calls it there. -valueForUndefinedKey: gains none:
+any code may look up any key on the application object from
+any thread, and nothing in the method depends on the thread.
+
+Nothing imported the header. The project file was edited by
+tools/swift_migration/pbxproj_swap.py.
+
+Swift-Port: iTermApplication+Scripting kind=port 2026-11-24:
+Compile iTermApplication+Scripting.m with ARC
+
+Move the file from iTerm2Shared to iTerm2SharedARC with the
+move mode of pbxproj_swap.py. The source is unchanged. The
+arc.md audit is empty: the category has no ivars,
+properties, dealloc, Core Foundation crossings, inner
+pointers, __block variables or self retains, so no lifetime
+changes.  Its one autoreleased object, the
+iTermScriptingWindow from scriptingWindowWithWindow:, is
+still returned to the caller at +0. There is no owned object
+to witness or count, so no lifetime witness or census entry
+is added. The runtime snapshot of iTermApplication is
+byte-identical to the dossier's, and the category's
+selectors and encodings are unchanged.
+
+Swift-Port: iTermApplication+Scripting kind=arc 2026-11-24:
+Add characterization tests for iTermApplication+Scripting
+
+Pin the category before its port to a Swift extension. Any
+key-value lookup on the application whose key nothing
+answers, by valueForKey:, valueForKeyPath:, a direct send,
+or a nil key, gives an empty array, while keys the
+application answers (isActive, and the sdef's name and
+version, which NSApplication answers itself) never reach the
+override.
+
+The AppleScript property "current window" is checked with
+two terminal windows open: it is nil with no current
+terminal, and with each terminal current in turn it wraps
+that terminal's window and not the other's, also when the
+current window is ordered out and so not key. That holds
+both through key-value coding and through an object
+specifier evaluated by Cocoa Scripting, so an answer taken
+from the first or last terminal, the last window or the key
+window fails. Each lookup makes a new wrapper. The two
+selectors keep their encodings.
+
+The tests reach iTermScriptingWindow through the bridging
+header, which now imports it; the port needs that too.
+
+Swift-Port: iTermApplication+Scripting kind=test 2026-11-24:
+Swift migration tools and documents, 2026-11-24
+
+Reliability of unattended runs. On 2026-11-24 five test
+hosts in three sanitized whole suites each sat for two and a
+half hours in a test that waits with no deadline; nothing
+had a per-test timeout or a stall watchdog, and the night
+session, idle waiting on the jobs, missed its clean stop.
+The cause was confirmed the same day: with the screen
+locked, AppKit's window animations never finish, each parks
+a dispatch thread, and at 80 the pool is exhausted
+(bugs.md).
+
+- suite_guard.py: a stall watchdog (xcodebuild on a pty;
+progress read
+  from each test host's output in the result bundle,
+  following a host restarted in the same directory;
+  diagnosis recorded before the kill; exit 124), a
+  machine-wide whole-suite lock (--no-wait exits 75), and a
+  bounded wait for a background job.
+- sanitizer_tests.sh, fast_tests.sh, coverage_tests.sh,
+  test_load_profile.py: XCTest per-test time allowances, the
+  watchdog, the lock; sanitizer_tests.sh refuses thread
+  --parallel; fast_tests.sh leaves the lock wait out of its
+  budget.
+- whole_suite.sh: run_tests.expect -parallel under the lock;
+an
+  interruption lets its own cleanup run, then kills what is
+  left.
+- deadline_run.py --nudge-text, set by nightly_start.sh at
+the clean
+  stop; the stop sequence clears the input with Ctrl-C
+  before /exit.  Both checked against Claude Code 2.1.331.
+
+Performance comparison. perf_compare.py compares best
+against best for times and rates and median against median
+otherwise, with a flat 5% and a back-to-back confirmation;
+the per-scenario variation measure is gone.  Three unsteady
+app iteration rates are recorded but not compared.
+
+pbxproj_swap.py gains a target-move mode, used by the port
+of iTermApplication+Scripting.
+
+Documents: one whole suite at a time and bounded waits (the
+orchestrator's decisions, open to the owner), the night's
+notes, the close of iTermApplication+Scripting, the owner's
+answers of 2026-11-23, and new owner questions.
+
+Swift-Port: phase0-2026-11-24 kind=tool
+
+
+2026-11-24: Keep a saved colors slot when one of its colors
+is missing
+
+A color map lacks one of its four colors when a profile's
+value for it is not a color dictionary. Such a slot is
+written with that color as an empty keyed archive, and
+decoding required every color, so the whole slot failed to
+decode. SSH Integration then restored none of the saved
+colors when the conductor ended, and a restored session's
+XTPUSHCOLORS stack came back empty because one bad slot
+failed the whole stack.
+
+Decode an absent color, or one whose archive holds no color,
+as missing.  The stored form is unchanged, so versions that
+require every color behave as before. Malformed data still
+fails to decode.
+
+2026-11-24: Strip shell metacharacters from title reports
+
+With title reporting enabled, a title report is written to
+the PTY's input stream and can echo text a program chose
+(the title, or a user variable, which SetUserVar accepts as
+base64). reportSafeTitle: stripped control characters plus |
+and ;, which still let && and $(...) through: the report
+would sit at the shell prompt and run as a command when the
+user pressed Return.
+
+Add -stringByReplacingReportUnsafeCharactersWithSpace, which
+replaces control characters and shell metacharacters in one
+pass, and use it for title reports. Kitty graphics and
+drag-and-drop replies no longer echo program text, so they
+keep the control-character sanitizer; update their comments,
+which said all three paths shared one sanitizer.
+
+Based on GitHub PR 836 by Dem0ns.
+
+2026-11-24: Replace the Rust railroad_dsl renderer with a
+Swift port
+
+The regex visualizer now renders railroad diagrams with a
+Swift port of the railroad crate 0.3.12 and the railroad_dsl
+parser, and its light and dark stylesheets ship as
+resources. This removes the railroad_dsl submodule, the
+prebuilt librailroad_dsl.dylib, and the Rust toolchain
+(rustup, cargo, cbindgen) from make setup and make deps;
+nothing else in the build used Rust.
+
+The port reproduces the Rust output byte for byte: - Label
+widths use a port of unicode-width 0.2.3's string width,
+  including its emoji, ZWJ, flag and ligature sequence
+  rules, with the per-code-point data generated from that
+  crate.
+- XML escaping works per code point, so a special character
+followed by
+  a combining mark is still escaped.
+- Input that starts with whitespace is rejected, as pest
+does.
+
+Each node's geometry is computed once when it is built. The
+Rust crate recomputes it on every query, which takes time
+exponential in nesting depth; nested groups in a regex could
+stall the editor for seconds.
+
+Tests include the ported railroad core and DSL tests and a
+byte-for-byte comparison against 60 diagrams rendered by the
+Rust library (tests/railroad/fixtures.json). A differential
+fuzz of about 115,000 random regexes and DSL inputs against
+the Rust dylib found no differences. The MIT licensed
+original is credited in ThirdParty/Licenses.txt.
+
+2026-11-24: Ignore full-width punctuation after paths and
+URLs
+
+In Chinese and Japanese text a path or URL is often followed
+by a full-width mark such as , which became part of the link
+so -click failed. Trim full-width marks the way ASCII ones
+are trimmed, unwrap full-width bracket and quote pairs, and
+have the path finder exclude punctuation the cleaner had to
+strip from the returned path and range.
+
+Based on the diagnosis and tests in GitHub PR 828.
+
+2026-11-24: Report the cell under the mouse on
+bidi-reordered lines
+
+Mouse reports carried the column the mouse was in. On a line
+iTerm2 has reordered, that is not the cell drawn there, and
+a program that tracks the mouse knows only the cells it
+wrote. In Claude Code a drag over right-justified Persian
+text selected the empty cells on the other side.
+
+Convert the visual column to the logical cell before
+reporting, the way iTerm2's own selection already does. The
+session's mouse info uses the same cell, so it agrees with
+what the program received. Pixel reports (mode 1016) still
+give the on-screen position.
+
+Closes #834.
+
 2026-11-23: Make VT100SavedColorsSlot's four colors
 optional, keeping the stored form
 
