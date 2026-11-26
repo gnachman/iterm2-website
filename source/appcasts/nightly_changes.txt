@@ -1,3 +1,587 @@
+2026-11-25: Keep pinned tabs' content in a vertical tab bar
+
+A pinned tab is narrow in a horizontal tab bar, so it shows
+only its pin, graphic, or the first character of its title.
+In a vertical tab bar it is as wide as any other tab, but it
+was stripped down the same way: it lost its rich content
+lines, its subtitle, and its title when it had a graphic.
+
+Now only a pinned tab in a horizontal bar is compact. In a
+vertical bar a pinned tab keeps all its content and always
+shows its pin, before its graphic, so it still looks pinned.
+With rich content, the pin goes on the first line like the
+tab's other accessories.
+
+2026-11-25: Stop workgroups from polling git status every
+two seconds
+
+A workgroup's git poller asked for full-tree diff stats
+every two seconds for as long as the workgroup existed,
+whether or not anyone could see it. In a large repository
+each poll walks every tracked file, which kept fseventsd and
+pidinfo busy for every open workgroup (#13243).
+
+WorkgroupGitPollPolicy now decides when to poll. Off screen,
+a workgroup doesn't poll until it comes back. On screen, it
+polls every two seconds while the leader is working, every
+five seconds while a Diff member waits for changes, once
+after the leader goes idle or starts waiting, after a
+newline in any member, and every 30 seconds as a fallback
+for changes made elsewhere. After a timeout it stops the
+every-tick polling.
+
+Polling less often means cached state can be old, so Diff
+members no longer launch from it. WorkgroupGitStateFreshness
+tracks whether state came from a poll that started after a
+request for fresh state, didn't time out, and is for the
+current directory, base, and worker.
+
+To make that knowable, iTermGitPoller runs one poll at a
+time, numbers its polls, counts deliveries separately from
+other update callbacks, and repolls without the cache after
+a bump during a poll.  The local and remote poll workers
+still answer requests that an invalidation removed instead
+of dropping them.
+
+2026-11-25: Replace the GPU renderer's brown image
+placeholder once the code has image info
+
+The Metal image renderer caches one texture per image code.
+When a code had no image info it cached a brown placeholder
+and kept reusing it for as long as the code stayed on
+screen, even after the code got image info. The legacy
+renderer looks the code up on every draw, so part of a
+restart banner's divider could stay brown only with the GPU
+renderer.
+
+Mark the no-info placeholder and rebuild it once the code
+has image info, as the gray not-yet-decoded placeholder
+already was. Also add DLogs for image runs, placeholder
+creation, and image registry assignments to find out why a
+code was missing from the registry.
+
+2026-11-25: Keep Tahoe's collapsed tab group chips short
+with rich content on
+
+On a vertical bar, a collapsed group's chip was at least a
+full tab row tall, a height that counts the title and
+subtitle the chip never shows.  Below the name it reserved a
+line for each other slot, and a slot only has text when
+every member agrees, so the chip was mostly empty group
+color. Tahoe now draws a collapsed group without lines, as
+Minimal does, so its chip is as tall as a group header.
+
+Remove the collapsed-chip line sizing and drawing that Tahoe
+no longer uses.
+
+2026-11-25: Select a range of tabs with Shift-click and
+group them together
+
+Shift-clicking a tab selects every tab from the active one
+through the clicked one, as in Chrome, and makes the clicked
+tab active. The other selected tabs get a light tint. A
+plain click, any other change of the active tab, or moving
+or dragging a tab ends the selection, and collapsing a group
+deselects its tabs.
+
+A context menu opened on one of the selected tabs offers Add
+Tabs to Group (New Group or an existing group) and Remove
+Tabs from Group, which act on all of them. Tabs joining a
+group take on its pinned state, as a single tab does, and
+keep their order.
+
+The single-tab New Group now shares the name prompt with it.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-25: Expand a collapsed tab group when its chip is
+clicked at the end of a vertical tab bar
+
+The members of a collapsed group get zero-size frames at the
+chip's origin.  -wantsMouseDownAtPoint: measured the bar's
+extent from the last cell, so when the group ended a
+vertical bar the bar seemed to end where the chip began and
+a click on the chip dragged the window instead. Measure from
+the last cell that takes up space.
+
+2026-11-25: Keep the GPU renderer warm without redrawing
+
+The metalRedrawPeriod timer redraws a full frame every half
+second to avoid a latency spike on the first draw after
+inactivity, which costs a lot of CPU while idle. Record the
+buffers and textures each frame binds and, when the new
+metalKeepWarmWithoutRedrawing advanced setting is on (the
+default in betas), submit a command buffer that declares use
+of them but draws nothing instead. Occluded windows redraw
+when revealed.  Issue 8640.
+
+2026-11-25: Add HDR text for the focused pane
+
+Builds on the HDR cursor. A new per-profile setting
+(Profiles > Colors, with light/dark variants like the HDR
+cursor) draws the focused pane's text brighter than
+reference white on displays with EDR headroom, from 1.5x to
+16x reference white (default 3x).
+
+- iTermHDRText.h/.m holds the rules both renderers share.
+  iTermHDRTextGain() boosts only the focused pane (key
+  window and active session), over a dark default
+  background, when the display has headroom.
+  iTermHDRTextBoostedColor() is the CPU twin of the shader's
+  color math and uses the existing sRGB helpers in
+  NSColor+iTerm.
+- Both renderers also skip the boost per cell over a light
+cell
+  background, such as a selection or reverse video. Metal
+  carries this as iTermTextPIU.hdrEligible, which fits in
+  existing padding.
+- Metal: the fp16 framebuffer and EDR engager now turn on
+for HDR text
+  as well as the HDR cursor. The monochrome text fragment
+  shaders apply the gain in linear light and scale the whole
+  color down if a channel would exceed headroom, so hues are
+  preserved. Underlines are boosted, including under emoji;
+  the filled cursor cell and emoji are not.
+- Legacy: after drawing glyphs, underlines and box-drawing
+characters
+  normally, the drawing helper adds the difference to the
+  boosted color in a single plusLighter pass, using a color
+  in the extended-range version of the text's color space so
+  it isn't clamped to 1.0.  Overlapping draws (fake bold,
+  box drawing, curly underlines) go through a transparency
+  layer bounded to the glyphs or cell so each pixel is
+  boosted once.
+- Checkbox and slider are in PreferencePanel.xib next to the
+HDR cursor
+  controls.
+- ModernTests cover the gain rules and the color math.
+
+Co-Authored-By: Claude Fable 5.2 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+2026-11-25: Restore windows to their Spaces when opening a
+window arrangement
+
+A saved window arrangement now records which Space (virtual
+desktop) each window was on, and Window > Restore Window
+Arrangement moves the window back there. A Space is saved by
+the UUID macOS keeps for each desktop and also by its
+display and position among that display's desktops, never by
+the transient ManagedSpaceID. Restoring uses the UUID while
+that desktop exists.  macOS never reuses a closed desktop's
+UUID, so after one is closed the window goes to the desktop
+now in the same position, as Mission Control numbers it.
+
+If a display has too few desktops, an alert asks the user to
+add them in Mission Control (it can open Mission Control)
+and then press Continue, since there is no supported way to
+create a desktop. Skip leaves the windows where they are.
+Windows restored together are batched so one alert covers
+them all.
+
+The window stays where macOS opened it if its display is not
+connected, if the Space belongs to a display other than the
+one holding the window's frame, or if the window joins all
+Spaces or is in full screen. Hotkey windows never save or
+restore a Space. Session restoration also loads
+arrangements, but there macOS decides the Space (Restore
+windows to same Spaces), so it does not move windows.
+
+macOS has no public API for this, so it uses
+CGSCopyManagedDisplaySpaces, CGSCopySpacesForWindows, and
+CGSMoveWindowsToManagedSpace, looked up at runtime. If any
+of them is missing the feature does nothing. Since macOS
+14.5 the window server ignores moves of windows the caller
+does not own, so a move that did not take is logged.
+
+Only a window's own arrangement remembers its Space. Save
+Tab as Window Arrangement does not, so such a window opens
+where the user is.
+
+The Save Window Arrangement dialog has a checkbox, "Reopen
+windows on the desktops they're on now", so an arrangement
+used as a template can open on the current desktop instead.
+Leaving it off saves the arrangement without the Space. The
+checkbox remembers the last choice and is offered to iTerm2
+Buddy as the warning's remote checkbox. The Python API keeps
+saving the Space.  The dialog moved to Swift
+(WindowArrangementNamePrompt); only the save panel for Save
+to File stays in Objective-C, because its API takes Swift
+classes that Swift can't see through the header.
+
+The code is in Swift (iTermWindowSpace, WindowSpaceRestorer,
+and a PseudoTerminal extension).  PseudoTerminal now
+declares iTermSessionRestorationStatusProtocol in its public
+header so Swift can see isPerformingSessionRestoration.
+
+WindowSpaceDesktopChoiceTests covers choosing the desktop
+and detecting missing ones. The onscreen tests in
+WindowArrangementSpaceTests
+(TEST_RUNNER_ITERM2_ONSCREEN_TESTS=1) cover the window
+server side.
+
+Issues 5741 and 11895.
+
+2026-11-25: Fix a wrong nullability annotation and make
+inline image release tests pool their reads
+
++[iTermExternalAttributeIndex
+concatenationOf:length:with:length:] treats a nil left-hand
+index as having no attributes, as it already did for the
+right-hand one, so annotate it nullable. The nullability
+sanitizer reported the nil passed by -[ScreenCharArray
+screenCharArrayByAppendingScreenCharArray:] for a line
+without external attributes. No behavior changes.
+
+Six InlineImageReleaseTests failed under the nullability and
+thread sanitizer builds because joined-block reads without
+an autorelease pool left an object holding the image mark in
+the test's outer pool, so the image outlived its release
+check. Give those reads their own pools, like the other
+helpers. No assertion changes, and a real leak would still
+fail them.
+
+Swift-Port: inline-image-nullability kind=fix 2026-11-25:
+Port NSTableColumn(iTerm) to Swift
+
+A whole-category translation into an extension of
+NSTableColumn, which stays in Objective-C. Its one method,
+-suggestedRowHeight, keeps its selector and its encoding
+(d16@0:8) and still returns the height of [dataCell
+cellSizeForBounds:] for bounds (0, 0, width, CGFLOAT_MAX),
+and 0 when dataCell is nil. dataCell is declared id, so the
+Swift sends cellSizeForBounds: to whatever object it is,
+through AnyObject, as the Objective-C did, instead of
+casting to NSCell. Nothing in the app calls the method;
+seven files imported the header without using it, and those
+imports are removed. NSTableColumn+iTerm.m was compiled
+without ARC in iTerm2Shared; pbxproj_swap.py moved the .m to
+iTerm2SharedARC and then swapped it and the
+.h for the .swift, as the trap "A non-ARC file cannot take a Swift
+replacement in its own target" requires.
+
+Unit notes (trivial path):
+
+- qualify_unit.py: "Path: trivial.", T1 to T8 all PASS.  -
+Reflective entries: none. No caller, selector string, xib,
+sdef or plist
+  use.
+- Runtime snapshot of NSTableColumn: before and after are
+identical, as a
+  category's class must be (taken after this unit and the
+  earlier units of the same batch were applied). The
+  comparison's only failure is NSNull's duplicate Foundation
+  -initWithCoder: and -encodeWithCoder:, identical in both
+  snapshots and not from the app (owner's ruling of
+  2026-11-25).
+- Tests: 6 in ModernTests/NSTableColumnITermTests.swift, all
+seen passing
+  against the Objective-C. A body passing width + 1 failed
+  testFollowsTheCellAndTheWidth and
+  testPassesTheColumnWidthAndUnboundedHeight.
+  testDataCellThatIsNotACell was added after that run and
+  was seen passing against the Objective-C only, not
+  failing. After those runs the tests' door changed from
+  calling the method's IMP to key-value coding (to drop an
+  unsafeBitCast the lint flagged); the Swift passes through
+  both doors, the Objective-C was run through the IMP door
+  only.
+- Bridging: dataCell imports as Any; a nil from the getter
+(pinned by
+  testNilDataCellIsZero, a subclass whose getter returns nil
+  through the runtime) gives 0 through the `as? NSObject`
+  guard. A dataCell that does not answer cellSizeForBounds:
+  raised in Objective-C and traps in Swift.
+- No thread assertion: it reads the receiver's width and
+data cell and
+  stores nothing.
+
+The project file was edited by
+tools/swift_migration/pbxproj_swap.py.
+
+Swift-Port: NSTableColumn(iTerm) kind=port 2026-11-25: Port
+NSImageView(iTerm) to Swift
+
+A whole-category translation into an extension of
+NSImageView, which stays in Objective-C. Its one method,
+-it_setTintColor:, keeps its selector and its encoding
+(v24@0:8@16) and still sets contentTintColor, with nil
+clearing it; the parameter is NSColor?, as the header's
+nullable said. Its callers: iTermStatusBarContainerView.m
+already imported iTerm2SharedARC-Swift.h, so its import of
+the header is removed; iTermStatusBarViewController.m did
+not, so its import of the header is replaced by one of
+iTerm2SharedARC-Swift.h.
+ModernTests/StatusBarNullabilityTests.m imported the header;
+since ModernTests cannot import the generated Swift header,
+it now declares the one method in a local category, as the
+other Objective-C test files in ModernTests do for ported
+code.
+
+Unit notes (trivial path):
+
+- qualify_unit.py: "Path: trivial.", T1 to T8 all PASS.  -
+Reflective entries: none. Three ordinary Objective-C sends
+and one test;
+  no selector string, xib, sdef or plist use.
+- Runtime snapshot of NSImageView: before and after are
+identical,
+  as a category's class must be (taken after this unit and
+  the later units of the same batch were applied; every
+  NSImageView line is unchanged). The comparison's only
+  failure is NSNull's duplicate Foundation -initWithCoder:
+  and -encodeWithCoder:, identical in both snapshots and not
+  from the app (owner's ruling of 2026-11-25).
+- Tests: 3 in ModernTests/NSImageViewITermTests.swift, all
+seen passing
+  against the Objective-C. A body setting red instead of the
+  argument failed testSetsTheContentTintColor and
+  testNilClearsTheContentTintColor. After the port,
+  StatusBarNullabilityTests and StatusBarProxyIconTests also
+  pass.
+- Bridging and nullability: nullable NSColor * becomes
+NSColor?; nil was
+  tolerated and is still passed through
+  (testNilClearsTheContentTintColor and
+  StatusBarNullabilityTests'
+  testSetTintColorToNilClearsTheTint).
+- No thread assertion: it sets one property of the receiver,
+as any AppKit
+  view setter does, and adds no state of its own.
+
+The project file was edited by
+tools/swift_migration/pbxproj_swap.py.
+
+Swift-Port: NSImageView(iTerm) kind=port 2026-11-25: Port
+NSNull(iTerm) to Swift
+
+A whole-category translation into an extension of NSNull,
+which stays in Objective-C. Its one method,
+-it_jsonSafeValue, keeps its selector and its encoding
+(@16@0:8) and still returns the receiver. NSObject(iTerm)
+declares the same selector, visible to Swift through the
+bridging header, so the Swift method is a public override;
+NSNull keeps its own implementation in its own method list,
+as the category gave it. The callers send the selector to id
+(NSArray, NSDictionary and NSJSONSerialization categories,
+profile code) and are unchanged. iTermNotificationCenter.m
+imported the header without using it; that import is
+removed.
+
+Unit notes (trivial path):
+
+- qualify_unit.py: "Path: trivial.", T1 to T8 all PASS.  -
+Reflective entries: none. Every use is an ordinary send to
+id; no
+  selector string, xib, sdef or plist use.
+- Runtime snapshot of NSNull: before and after are
+identical,
+  as a category's class must be (taken after this unit and
+  the later units of the same batch were applied; every
+  NSNull line is unchanged). NSNull's method list holds
+  Foundation's -initWithCoder: and -encodeWithCoder: twice
+  in both snapshots, so the comparison exits 1 on those
+  duplicates alone; they are identical in both and not from
+  the app (owner's ruling of 2026-11-25).
+- Tests: 4 in ModernTests/NSNullITermTests.swift, all seen
+passing against
+  the Objective-C. A body returning @1 failed
+  testReturnsTheReceiver and testCollectionsKeepNullValues.
+- Bridging: id becomes Any, as NSObject(iTerm)'s declaration
+imports; the
+  receiver is never nil, and the encoding test checks
+  @16@0:8.
+- No thread assertion: it returns the receiver and touches
+no state.
+
+The project file was edited by
+tools/swift_migration/pbxproj_swap.py.
+
+Swift-Port: NSNull(iTerm) kind=port 2026-11-25: Port
+iTermShellIntegrationFinishedViewController to Swift
+
+A whole-class translation of the shell integration
+installer's last page, an NSViewController that adopts
+iTermShellIntegrationInstallerViewController with an empty
+-setBusy:. The class keeps its runtime name with
+@objc(iTermShellIntegrationFinishedViewController), which
+iTermShellIntegrationWindowController.xib names as its
+customClass, its superclass, its protocol, and -setBusy:
+with its encoding (v20@0:8B16 on arm64). The xib connects
+only the inherited view outlet. The window controller
+imported the header without naming the class (its outlet is
+typed
+NSViewController<iTermShellIntegrationInstallerViewController>);
+that import is removed.
+
+Unit notes (trivial path):
+
+- qualify_unit.py: "Path: trivial.", T1 to T8 all PASS (the
+light path's 3a
+  fails because of the xib, which the trivial path allows).
+- Reflective entries: the xib's customClass, covered by
+  testXibInstantiatesTheClassAndConnectsItsView (loads the
+  nib with a window controller as owner, finds one instance
+  of the class by its runtime name, its view loaded, held by
+  the owner's finishedViewController outlet).  No selector
+  string, sdef, plist or key-value coding use.
+- Runtime snapshot: language objc becomes swift; the four
+NSObject protocol
+  properties clang copied into the class's list are gone
+  (classified as expected); -initWithCoder: and
+  -initWithNibName:bundle: are now listed on the class.
+  CHECK AGAINST THE SOURCE: the class declares no
+  initializer and no stored property, so Swift inherits both
+  of NSViewController's designated initializers and these
+  entries forward to them, not trapping stubs; the xib test
+  exercises -initWithCoder: and testSetBusyDoesNothing
+  -initWithNibName:bundle:. Nothing observes or swizzles the
+  class. The comparison exits 1 only for NSNull's
+  -initWithCoder: and -encodeWithCoder:, listed twice by
+  Foundation, identical in both snapshots and not from the
+  app (owner's ruling of 2026-11-25).
+- Tests: 5 in
+ModernTests/iTermShellIntegrationFinishedViewControllerTests.swift,
+  all seen passing against the Objective-C. A -setBusy: body
+  that set the view failed testSetBusyDoesNothing.
+- Bridging: BOOL becomes Bool, both encoded B on arm64,
+checked by the
+  encoding test.
+- No thread assertion: the body is empty.
+
+The project file was edited by
+tools/swift_migration/pbxproj_swap.py.
+
+Swift-Port: iTermShellIntegrationFinishedViewController
+kind=port 2026-11-25: Port NSLocale(iTerm) to Swift
+
+A whole-category translation into an extension of NSLocale,
+which stays in Objective-C. Its one method,
+-commasAndPeriodsGoInsideQuotationMarks, keeps its selector
+and its encoding (B16@0:8 on arm64, c16@0:8 on x86_64) and
+still answers YES exactly when the receiver's
+-localeIdentifier is the string en_US. The Swift compares
+with ==; for this ASCII literal that is the same answer
+-isEqualToString: gave for every string. Its one caller,
+-[NSString(iTerm) stringByInsertingTerminalPunctuation:],
+now reaches it through iTerm2SharedARC-Swift.h, which
+NSStringITerm.m already imported.  NSArray+iTerm.m imported
+the header without using it; that import is removed.
+NSLocale+iTerm.m was compiled without ARC in iTerm2Shared;
+the port is also its move to ARC: pbxproj_swap.py moved the
+.m to iTerm2SharedARC and then swapped it and the .h for the
+.swift, as the trap "A non-ARC file cannot take a Swift
+replacement in its own target" requires.
+
+Unit notes (trivial path):
+
+- qualify_unit.py: "Path: trivial.", 3 body lines, T1 to T8
+all PASS.  - Reflective entries: none. The entry-point
+census for
+  -[NSLocale commasAndPeriodsGoInsideQuotationMarks] finds
+  one Objective-C send (NSStringITerm.m), no Swift caller,
+  no selector reference, no xib, sdef or plist use, and no
+  registry site that names it.
+- Runtime snapshot of NSLocale: before and after are
+byte-identical
+  (diff exit 0), as a category's class must be. NSLocale's
+  own method list holds -initWithCoder: and
+  -encodeWithCoder: twice, Apple's, in both snapshots; the
+  owner ruled on 2026-11-25 that a duplicate identical in
+  both and not from the app does not fail the comparison.
+- Characterization tests: 9 in
+ModernTests/NSLocaleITermTests.swift, all
+  seen passing against the Objective-C. Each was seen
+  failing against a broken Objective-C body: "return NO;"
+  failed the en_US, canonicalized en_us and EN_US, bridged
+  Swift Locale, receiver's identifier and terminal
+  punctuation tests (the test host's locale is en_US);
+  "return YES;" failed the other identifiers, hyphenated,
+  bridged, receiver's identifier and nil identifier tests;
+  implementing the method under another selector (with
+  -Wincomplete-implementation silenced) failed the selector
+  and encoding test.
+- Bridging probes: the result is BOOL in Objective-C and
+Bool in Swift,
+  both encoded B on arm64 and c on x86_64, which the
+  encoding test checks (only the arm64 branch was run; no
+  x86_64 test host exists). The receiver's -localeIdentifier
+  is NSString, nonnull in the SDK. A probe with a receiver
+  whose getter returns nil found that "(localeIdentifier as
+  NSString).isEqual(to:)" traps ("Unexpectedly found nil
+  while implicitly unwrapping"), where the Objective-C
+  answered NO by messaging nil. Used as a String the nil
+  bridges to an empty string and the comparison gives false;
+  testNilLocaleIdentifierIsFalse, seen crashing against the
+  NSString cast and passing against the Objective-C, pins
+  it.
+- No thread assertion: the method reads only the receiver's
+immutable
+  identifier and depends on no shared state.
+- Surprising: NSLocale keeps en_us and EN_US as the
+identifier en_US, so
+  they answer YES; en_USA becomes en-usa, and en-US is kept
+  hyphenated, so both answer NO.
+
+The project file was edited by
+tools/swift_migration/pbxproj_swap.py.
+
+Swift-Port: NSLocale(iTerm) kind=port 2026-11-25: Swift
+migration tools and documents, 2026-11-25
+
+The owner, 2026-11-25, after a night that ported a
+three-line category in 96 minutes and then parked it on
+Apple's own duplicate selectors: "It is absurd to stop on
+something like this, and it is absurd that it would take
+over an hour to port three lines of code. Fix the lane tool
+- submodules come and go, that is life."
+
+- The snapshot comparison ignores a duplicate that is
+identical in both
+  snapshots and has no entry from the app's own image; a new
+  or changed duplicate, or one involving the app's code,
+  still fails.
+- A unit is never parked on a tool defect: a lint,
+comparison or other
+  gate tool (never the build or a test) that fails the same
+  way on the unmodified tree, or on the before state
+  compared with itself, is recorded in bugs.md with the
+  evidence and the unit is committed.
+- lane_clone.py and nightly_clone.sh refresh survive a
+submodule that
+  upstream removed, clearing what is left of it when it
+  holds no work.
+- The code database refresh and the baseline whole suite run
+in the
+  background; the first trivial units come from
+  tmp/classify.txt and none is committed before the refresh
+  ends and it qualifies trivial again; light and full units
+  start only after the refresh.
+- Trivial authoring proves its tests can fail with one
+broken body per
+  method and one rebuild; trivial reviews read and do not
+  rebuild; the orchestrator gates and commits each unit as
+  its author returns.
+- The night session ends its run with nightly_done.sh; the
+supervisor
+  then stops it at once instead of at the time limit.
+- The NIGHTLY_ONE_UNIT_DATE night is an "at least one unit"
+night (the
+  owner, 2026-11-24: "Ensure the agent does at least one
+  unit tonight even if it goes over quota"): under the usage
+  ceiling it is an ordinary night that does not stop for the
+  ceiling until one unit has landed; at or over it, it
+  starts anyway and does exactly one unit.
+
+Documents: ports prefer canonical Swift idioms where there
+is no loss of correctness (the owner, 2026-11-25); the night
+of 2026-11-25, the owner's other decisions of that day, and
+what the closing checks found.
+
+Swift-Port: phase0-2026-11-25 kind=tool
+
+
+
 2026-11-24: Add 3.7.10beta2 release notes
 
 2026-11-24: Keep inline images that scrolled into history.
