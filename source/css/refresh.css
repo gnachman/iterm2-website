@@ -1,0 +1,423 @@
+/*
+ * refresh.css: a flat, modern skin layered over app.css.
+ *
+ * Loaded after app.css by every Jekyll layout (via _layouts/default.html) and
+ * by the Python API's Sphinx layout, so the landing page, documentation, FAQ
+ * and API reference change together. System fonts only, no external requests,
+ * no build step. Removing the one <link> line restores the previous look.
+ */
+
+:root {
+  --bg: #0c0e11;
+  --surface: #ffffff;
+  --surface-2: #f4f5f7;
+  --border: #e3e5e8;
+  --text: #1d2125;
+  --muted: #5d6670;
+  --accent: #0a7c3e;          /* prompt green, darkened for text contrast */
+  --accent-strong: #33d17a;   /* prompt green as drawn in the icon */
+  --donate: #e5484d;
+  --code-bg: #111418;
+  --code-text: #e6e8eb;
+  --radius: 14px;
+  --font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect x='4' y='4' width='88' height='88' rx='22' fill='%23e9edf1'/%3E%3Crect x='11' y='11' width='74' height='74' rx='16' fill='%2316191d'/%3E%3Cpath d='M30 30v4m0 20v4m6-23h-8a4 4 0 0 0 0 8h4a4 4 0 0 1 0 8h-8' fill='none' stroke='%2333d17a' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='47' y='29' width='14' height='30' rx='1.5' fill='%2333d17a'/%3E%3C/svg%3E");
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #15181c;
+    --surface-2: #1c2025;
+    --border: #2a2f35;
+    --text: #e6e8eb;
+    --muted: #9aa3ad;
+    --accent: #4ade80;
+    --code-bg: #0b0d10;
+  }
+}
+
+/* ---------- Page ---------- */
+
+html, body {
+  background: var(--bg);
+}
+
+body {
+  font-family: var(--font);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+a, .panel a {
+  color: var(--accent);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+a:hover, .panel a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.wide-row {
+  max-width: 64rem;
+}
+
+/* ---------- Header: the JPEG logo becomes a flat vector mark ---------- */
+
+header {
+  padding: 3rem 0 2.25rem;
+}
+
+header > .row > .columns > .text-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+header > .row > .columns > .text-center > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.1rem;
+  color: #fff;
+  text-decoration: none !important;
+}
+
+header > .row > .columns > .text-center > a > img {
+  display: none;
+}
+
+header > .row > .columns > .text-center > a::before {
+  content: "";
+  width: 72px;
+  height: 72px;
+  background: var(--icon) center / contain no-repeat;
+}
+
+header > .row > .columns > .text-center > a::after {
+  content: "iTerm2";
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+header > .row > .columns > .text-center::after {
+  content: "iTerm2 is a terminal emulator for macOS that does amazing things.";
+  color: #9aa3ad;
+  font-size: 1.15rem;
+  max-width: 34ch;
+  line-height: 1.45;
+}
+
+/* ---------- Navigation ---------- */
+
+.contain-to-grid,
+.top-bar,
+.top-bar-section ul,
+.top-bar .title-area {
+  background: transparent;
+}
+
+.contain-to-grid .top-bar {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0 0.5rem;
+}
+
+.top-bar-section,
+.top-bar-section ul,
+.top-bar-section ul li,
+.top-bar-section ul li > a {
+  background: transparent !important;
+}
+
+.top-bar-section ul li > a,
+.top-bar-section ul li:hover > a {
+  font-family: var(--font);
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: #b8c0c8;
+  background: transparent;
+  padding: 0 1rem !important;
+  line-height: 59px;
+}
+
+.top-bar-section ul li:hover > a {
+  color: #fff;
+}
+
+.top-bar-section ul li.active > a,
+.top-bar-section ul li.active > a:hover {
+  background: transparent;
+  color: #fff;
+  box-shadow: inset 0 -2px 0 var(--accent-strong);
+}
+
+/* Donate: the PNG button becomes a flat pill */
+a[href="/donate.html"] {
+  display: inline-flex !important;
+  align-items: center;
+  height: 59px;
+}
+
+a[href="/donate.html"] > img {
+  display: none;
+}
+
+a[href="/donate.html"]::after {
+  content: "Donate";
+  display: inline-block;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: var(--donate);
+  color: #fff;
+  font: 600 0.92rem/1 var(--font);
+}
+
+.top-bar .toggle-topbar.menu-icon a {
+  color: #fff;
+  font-family: var(--font);
+}
+
+/* ---------- Content card ---------- */
+
+.main.panel,
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.5rem 3rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 24px 48px -24px rgba(0, 0, 0, 0.5);
+}
+
+.panel p, .panel li, .panel dd, .panel td,
+.doc-wrapper p, .doc-wrapper ul li {
+  color: var(--text);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 {
+  color: var(--text);
+  font-family: var(--font);
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+.panel h1 { font-size: 2.25rem; font-weight: 700; margin: 0.5rem 0 1rem; }
+.panel h2 { font-size: 1.6rem;  font-weight: 650; margin-top: 2.25rem; }
+.panel h3 { font-size: 1.3rem;  font-weight: 650; margin-top: 2rem; }
+.panel h4 { font-size: 1.2rem;  font-weight: 650; margin-top: 2.25rem; }
+.panel h5, .panel h6 { font-size: 1.05rem; font-weight: 650; margin-top: 1.5rem; }
+
+.panel > h4:first-child { margin-top: 0; }
+
+.panel hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0;
+}
+
+.panel strong, .panel b { color: var(--text); font-weight: 650; }
+
+/* FAQ: each question reads as its own block */
+.panel > h4 {
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.panel > h4:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* Landing download: the PNG button becomes a flat button */
+a[href$="/downloads/stable/latest"] {
+  display: inline-block;
+  margin: 1rem 0 0.5rem;
+  text-decoration: none !important;
+}
+
+a[href$="/downloads/stable/latest"] > img {
+  display: none;
+}
+
+a[href$="/downloads/stable/latest"]::after {
+  content: "Download";
+  display: inline-block;
+  padding: 0.9rem 2.25rem;
+  border-radius: 999px;
+  background: var(--accent-strong);
+  color: #062b14;
+  font: 700 1.15rem/1 var(--font);
+  letter-spacing: -0.01em;
+}
+
+a[href$="/downloads/stable/latest"]:hover::after {
+  filter: brightness(1.06);
+}
+
+/* ---------- Code: a small terminal ---------- */
+
+code, kbd, samp, tt, .pre {
+  font-family: var(--mono);
+}
+
+:not(pre) > code {
+  font-size: 0.9em;
+  padding: 0.1em 0.4em;
+  border-radius: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+pre,
+div.highlight pre,
+.panel pre {
+  background: var(--code-bg) !important;
+  color: var(--code-text) !important;
+  border: 0;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0 1.5rem;
+  font: 0.9rem/1.55 var(--mono);
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+}
+
+/* ---------- Documentation ---------- */
+
+.version-selector {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.doc-wrapper > a[data-dropdown] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-weight: 550;
+  font-size: 0.95rem;
+}
+
+.doc-wrapper > a[data-dropdown]::before {
+  content: "";
+  width: 14px;
+  height: 10px;
+  background: linear-gradient(currentColor 0 0) top / 100% 2px no-repeat,
+              linear-gradient(currentColor 0 0) center / 100% 2px no-repeat,
+              linear-gradient(currentColor 0 0) bottom / 100% 2px no-repeat;
+}
+
+.f-dropdown.content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.35);
+}
+
+.inner-menu a { color: var(--text); }
+.inner-menu a:hover { color: var(--accent); }
+.toc_subhead { color: var(--muted); }
+
+.panel table {
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+}
+
+.panel table tr:nth-of-type(even) { background: var(--surface-2); }
+.panel table th, .panel table td { color: var(--text); border-color: var(--border); }
+
+/* ---------- Python API (Sphinx) ---------- */
+
+div.document, div.documentwrapper, div.bodywrapper, div.body {
+  background: transparent !important;
+}
+
+dl.py > dt.sig {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent-strong);
+  border-radius: 0 8px 8px 0;
+  padding: 0.55rem 0.9rem;
+  margin-top: 1.75rem;
+}
+
+dl.py > dt.sig .sig-name { color: var(--text); font-weight: 650; }
+dl.py > dt.sig em.property, dl.py > dt.sig .sig-paren { color: var(--muted); }
+dl.py > dt.sig a { color: var(--accent); border-bottom: 0; }
+dl.py > dt.sig em.sig-param, dl.py > dt.sig .default_value { color: var(--text); }
+.panel code.xref, .panel a code, .panel code.literal {
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+dl.py > dd { margin-left: 1.25rem; }
+
+dl.field-list > dt { color: var(--muted); font-weight: 600; }
+
+a.headerlink { color: var(--muted); opacity: 0; padding-left: 0.3em; }
+h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink,
+dt:hover > a.headerlink { opacity: 1; }
+
+div.admonition {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+div.admonition p.admonition-title { color: var(--text); font-weight: 650; }
+
+/* ---------- Footer ---------- */
+
+footer {
+  padding: 2rem 0 3rem;
+}
+
+footer p {
+  color: #7d8792;
+  font-size: 0.85rem;
+  margin: 0.25rem 0;
+}
+
+footer a { color: #b8c0c8; }
+
+/* ---------- Small screens ---------- */
+
+@media only screen and (max-width: 40em) {
+  header { padding: 1.5rem 0.75rem 0; }
+  header > .row > .columns > .text-center > a::before { width: 52px; height: 52px; }
+  header > .row > .columns > .text-center > a::after { font-size: 2.5rem; }
+  header > .row > .columns > .text-center::after { font-size: 1rem; }
+
+  .contain-to-grid { background: var(--bg); left: 0; right: 0; }
+  .small-screen-donate { right: 0.75rem; top: 0; }
+  .panel p, .panel li, .doc-wrapper p, .doc-wrapper ul li { line-height: 1.55; }
+  .contain-to-grid .top-bar { border-radius: 0; border-width: 0 0 1px; padding: 0; }
+  .top-bar.expanded .top-bar-section ul { background: var(--bg); }
+
+  .main.panel, .panel { border-radius: 0; border-left: 0; border-right: 0; padding: 1.5rem 1.1rem; }
+  pre { margin: 1rem 0 !important; }
+}
